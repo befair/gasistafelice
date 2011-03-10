@@ -13,6 +13,7 @@ Contents:
    INSTALL
    GUIDELINES 
    LICENSE
+   devel
 
 Indices and tables
 ==================

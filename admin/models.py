@@ -3,10 +3,10 @@ from django.db import models
 
 from gasistafelice.base import models as base_models
 
-class GASUserAdmin(admin.ModelAdmin):
+class GASMemberAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'gas')
     fieldsets = ((None,
-            { 'fields' : ('gas', ('name', 'surname'), 'uuid')
+            { 'fields' : ('gas',)
     }),
     )
 
@@ -22,7 +22,7 @@ class SupplierOrderAdmin(admin.ModelAdmin):
     )
     
 admin.site.register(base_models.Person)
-admin.site.register(base_models.GASUser, GASUserAdmin)
+admin.site.register(base_models.GASMember, GASMemberAdmin)
 admin.site.register(base_models.GAS)
 
 admin.site.register(base_models.Supplier)

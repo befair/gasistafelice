@@ -2,36 +2,15 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
-STATES_LIST = [
-    ('OPEN', _('open')),
-    ('CLOSED', _('closed')),
-    ('PENDING', _('pending')),
-    ('SENT', _('sent')),
-    ('DELIVERED', _('delivered')),
-    ('ULTIMATED', _('ultimated')),
-]
-
-ROLES_LIST = [
-('NOBODY', _('Nobody')),
-('SUPPLIER_REFERRER', _('Supplier referrer')),
-('GAS_USER', _('GAS user')),
-('GAS_REFERRER_SUPPLIER', _('GAS supplier referrer')),
-('GAS_REFERRER_ORDER', _('GAS order referrer')),
-('GAS_REFERRER_WITHDRAWAL', _('GAS withdrawal referrer')),
-('GAS_REFERRER_DELIVERY', _('GAS delivery referrer')),
-('GAS_REFERRER_CASH', _('GAS cash referrer')),
-('GAS_REFERRER_TECH', _('GAS technical referrer')),
-]
-SUPPLIER_FLAVOUR_LIST = [
-('COMPANY', _('Company')),
-('COOPERATING', _('Cooperating')),
-]
-MU_CHOICES = [('Km', 'Km')]
-ALWAYS_AVAILABLE = 1000000000
+from gasistafelice.base import managers
+from gasistafelice.base.const import STATES_LIST, ROLES_LIST, MU_CHOICES, ALWAYS_AVAILABLE, SUPPLIER_FLAVOUR_LIST, CONTACT_CHOICES
 
 class GAS(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"))
+    roles = models.ManyToManyField("Person", through="GASMember")
+
+    objects = managers.GASRolesManager()
 
     #TODO: Prevedere qui tutta la parte di configurazione del GAS
 
@@ -51,24 +30,38 @@ class GAS(models.Model):
 #    che abilita il nuovo utente"""
 #    name = models.CharField(max_length=128, choices=ROLES_LIST, default=ROLES_LIST[0][0])
 
+class Contact(models.Model):
+
+    contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
+    contact_value = models.CharField(max_length=32)
+
 class Person(models.Model):
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
-    name = models.CharField(max_length=128)
-    surname = models.CharField(max_length=128)
-    contact_email = models.EmailField(blank=True)
-    contact_phone = models.CharField(max_length=128, blank=True)
+    first_name = models.CharField(max_length=128)
+    last_name = models.CharField(max_length=128)
+    displayName = models.CharField(max_length=128)
+    contacts = models.ManyToManyField(Contact)
+    user = models.OneToOneField(User, null=True)
 
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname)
+   
+class Role(models.Model):
+    name = models.CharField(max_length=128)
+    description = models.TextField()
+
     
-#class Role(models.Model):
-#    name = models.CharField(max_length=128, choices=ROLES_LIST, default=ROLES_LIST[0][0])
-    
-class GASUser(Person): #, User):
-    # I ruoli determinano i diritti di accesso e 
-    # quindi possono essere gestiti con i Gruppi
+class GASMember(models.Model):
+    """A GAS member is a bind of a Person into a GAS.
+
+    """
+    person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    #roles = models.ManyToManyField(Role)
+    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gasmember_available_for_roles_set")
+    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gasmember_set")
+
+    def __unicode__(self):
+        return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
 
 #    def save(self):
 #        self.first_name = self.name
@@ -117,11 +110,21 @@ class Product(models.Model):
 
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True)
     producer = models.ForeignKey(Supplier)
+    supplier = models.ForeignKey(Supplier)
     category = models.ForeignKey(ProductCategory)
-    # Fare un riferimento esterno?
+    # Fare un riferimento esterno?. Mi sa di si... GasDotto lo fa.
     mu = models.CharField(max_length=16, choices=MU_CHOICES, default=MU_CHOICES[0][0])
     name = models.CharField(max_length=128)
     description = models.TextField()
+
+    def perm_check(self, perm, user):
+        if perm == const.SUPPLIER_REFERRER:
+            rv = user in self.referrers.values_list('user')
+        return rv
+
+    @property
+    def referrers(self):
+        return self.supplier.referrers.all()
 
 class SupplierStock(models.Model):
     # Il prodotto a disposizione del DES
