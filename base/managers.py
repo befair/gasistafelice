@@ -11,15 +11,15 @@ class GASRolesManager(models.Manager):
         return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_CASH)
 
     def supplier_referrers(self):
-        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_TECH)
+        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_SUPPLIER)
 
     def order_referrers(self):
-        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_TECH)
+        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_ORDER)
 
     def withdraw_referrers(self):
-        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_TECH)
+        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_WITHDRAW)
 
-    def delivery_referrerss(self):
-        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_TECH)
+    def delivery_referrers(self):
+        return self.get_query_set().filter(roles__name__exact=role.GAS_REFERRER_DELIVERY)
 
 

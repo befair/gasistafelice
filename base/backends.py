@@ -9,7 +9,7 @@ class MyAuthBackend(ModelBackend):
     def has_perm(self, user, perm, obj=None):
 
         if obj:
-            rv = obj.perm_check(user, perm)
+            rv = obj.permission_check(user, perm)
         else:
             rv = super(ModelBackend, self).has_perm(user, perm)
 
