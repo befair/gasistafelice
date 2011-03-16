@@ -27,9 +27,17 @@ Naming
  * in caso di computazione minima, usare una property
  * in caso di computazione più complessa, usare un metodo 
 
-Struttura classi del modello
-----------------------------
+Django
+------
 
+Il file models.py
+^^^^^^^^^^^^^^^^^
+
+* Le classi del models.py vengono scritte nel modo più intuitivo possibile. Ad esempio: se la persona ha vari contatti, si scrive prima la classe Person e il riferimento alla classe Contact nel campo ManyToManyField dei contatti viene messa tra apici
+* Cercare di massimizzare i campi ``blank=True``. Lo specifico perché è importante non ragionare su `cosa l'utente dovrebbe scrivere di un determinato oggetto, ma qual è il minimo sforzo con cui può farlo`. Ad esempio: ha senso inserire il nome della categoria di prodotto e non la descrizione? Secondo me sì. Per appuntare un "reminder" sulla nuova categoria ad esempio. Poi il software si occuperà di mostrare un messaggio "non hai inserito la descrizione della categoria del prodotto" all'utente amministratore del programma.
+
+Struttura classi del modello
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 * Prima ci sono i campi
 * Poi i manager
 * Poi la classe Meta
