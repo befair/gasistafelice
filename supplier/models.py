@@ -3,6 +3,8 @@
 These are fundamental DES data to relies on. They represents market offering.
 
 It relies on base model.
+
+Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#Fornitori>`__ (ita only)
 """
 
 from django.db import models

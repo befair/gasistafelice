@@ -1,6 +1,8 @@
 """This model includes all thing necessary to manage GAS activity.
 
 It relies on base model and on supplier model to get products and stock infos.
+
+Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#GAS>`__ (ita only)
 """
 
 from django.db import models
