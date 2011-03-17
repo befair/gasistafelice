@@ -8,6 +8,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
+from workflows.models import Workflow, Transition
 
 class Person(models.Model):
     """A person is an anagraphic record of a human.
@@ -33,4 +34,30 @@ class Role(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
 
+
+class Place(models.Model):
+    """Place should be managed as a separate entity because of:
+
+    * multiple Place useful for retina orders
+    """
+    name = models.CharField(max_length=128)
+    description = models.TextField(blank=True)
+
+    #TODO geolocation: use GeoDjango PointField?
+    lon = models.FloatField(blank=True)
+    lat = models.FloatField(blank=True)
+
+
+# Generic workflow management
+
+class DefaultWorkflow(models.Model):
+
+    workflow = models.ForeignKey(Workflow)
+    transition_set = models.ManyToManyField(Transition, through="DefaultWorkflowTransition")
+
+class DefaultWorkflowTransition(models.Model):
+
+    workflow = models.ForeignKey(GASMemberOrderDefaultWorkflow)
+    transition = models.ForeignKey(Transition)
+    sort = models.PositiveIntegerField()
 

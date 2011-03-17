@@ -31,6 +31,6 @@ admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock)
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS)
-admin.site.register(gas_models.GASSupplierStock)
-admin.site.register(gas_models.GASSupplierOrder, GASSupplierOrderAdmin)
+#admin.site.register(gas_models.order.GASSupplierStock)
+#admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
 
