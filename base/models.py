@@ -36,13 +36,19 @@ class Role(models.Model):
 
 
 class Place(models.Model):
-    """Places should be managed as separate entities because of:
-
-    * multiple Places useful for retina orders
+    """Places should be managed as separate entities for various reasons:
+    * among the entities arising in the description of GAS' activities, 
+      there are several being places or involving places, 
+      so abstracting this information away seems a good thing;
+    * in the context of multi-GAS (retina) orders,  
+      multiple delivery and/or withdrawal locations can be present.  
     """
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-    
+    address = models.CharField(max_length=128)
+    city = models.CharField(max_length=128)
+    province = models.CharField(max_length=128)
+        
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(blank=True)
     lat = models.FloatField(blank=True)
