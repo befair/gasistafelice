@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.base.models import Person, Role, DefaultWorkflow
-from gasistafelice.supplier.models import Supplier, SupplierStock
+from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
 from gasistafelice.gas.const import STATES_LIST
 from gasistafelice.gas import managers
@@ -74,8 +74,18 @@ class GASSupplierSolidalPact(models.Model):
     gas = models.ForeignKey(GAS)
     supplier = models.ForeignKey(Supplier)
     date_signed = models.DateField()
+    # which Products GAS members can order from Supplier
+    supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
+    # TODO: perhaps should be a `CurrencyField` ?
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    # TODO: perhaps should be a `CurrencyField` ?
     order_delivery_cost = models.PositiveIntegerField(null=True, blank=True)
-    order_deliver_interval = models.TimeField()
+    #time needed for the delivery since the GAS issued the order disposition
+    order_deliver_interval = models.TimeField()  
+    # how much (in percentage) base prices from the Supplier are modified for the GAS  
     order_price_percent_update = models.FloatField()
+    # TODO
+    #supplier_referrers = ...
+    
+     
     
