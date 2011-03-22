@@ -30,7 +30,7 @@ class GAS(models.Model):
     workflow_default_gasmember_order = models.ForeignKey(DefaultWorkflow)
     workflow_default_gassupplier_order = models.ForeignKey(DefaultWorkflow)
 
-    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
+    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
 
     objects = managers.GASRolesManager()
 
@@ -51,8 +51,8 @@ class GASMember(models.Model):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    available_for_role_set = models.ManyToManyField(Role, null=True, blank=True, related_name="gasmember_available_for_roles_set")
-    role_set = models.ManyToManyField(Role, null=True, blank=True, related_name="gasmember_set")
+    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available_for_this_role")
+    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_with_this_role")
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
