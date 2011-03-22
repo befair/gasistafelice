@@ -1,6 +1,6 @@
-"""This model includes all thing necessary to manage GAS activity.
+"""These models include everything necessary to manage GAS activity.
 
-It relies on base model and on supplier model to get products and stock infos.
+They rely on base models and Supplier-related ones to get Product and Stock infos.
 
 Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#GAS>`__ (ita only)
 """
@@ -17,8 +17,8 @@ from gasistafelice.gas import managers
 from workflows.models import Workflow, Transition
 
 class GAS(models.Model):
-    """A a group of people which make some purchases altogether.
-    Every GAS member has a role where the basic role is just to be a member of the GAS.
+    """A group of people which make some purchases together.
+    Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
     """
     #TODO: Prevedere qui tutta la parte di configurazione del GAS
@@ -43,10 +43,10 @@ class GAS(models.Model):
 
 class GASMember(models.Model):
     """A bind of a Person into a GAS.
-    Each GAS member specifies for which role he is available for.
-    In this way every time a user (i.e. user with proper rights) has to bind a role to
-    a GAS member he can choose among available users.
-
+    Each GAS member specifies which Roles he is available for.
+    This way, every time there is a need to assign one or more GAS Members to a given Role,
+    there is already a group of people to choose from. 
+    
     """
 
     person = models.ForeignKey(Person)
@@ -63,8 +63,8 @@ class GASMember(models.Model):
 #        super(GASUser, self).save()
     
 class GASSupplierSolidalPact(models.Model):
-    """Define GAS <-> Supplier relationship agreement
-    Each supplier come into relathionship with a GAS by signing this pact.
+    """Define a GAS <-> Supplier relationship agreement.
+    Each Supplier comes into relathionship with a GAS by signing this pact.
     In this pact we factorize behaviour agreements 
     between these two entities.
     It acts as configuration for order and delivery management 
