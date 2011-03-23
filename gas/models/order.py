@@ -25,7 +25,7 @@ class GASSupplierStock(models.Model):
     ## constraints on what a single GAS Member is able to order
     # minimun amount of Product units a GAS Member is able to order 
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
-    # increment step (in Product units) after `order_minimum_amount`; 
+    # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units. 
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
     
