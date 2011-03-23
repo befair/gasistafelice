@@ -1,4 +1,4 @@
-"""Order management. Includes state machine."""
+"""Models related to Order management (including state machine)."""
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -15,12 +15,15 @@ if not Workflow.objects.get(name="DefaultOrder"):
     init_workflow()
 
 class GASSupplierStock(models.Model):
-    """Product as available to GAS"""
+    """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
     gas = models.ForeignKey(GAS)
     supplier_stock = models.ForeignKey(SupplierStock)
-    # Amount and step refers to what a single GAS member could purchase
+    ## constraints on what a single GAS Member is able to order
+    # minimun amount of Product units a GAS Member is able to order 
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    # increment step (in Product units) after `order_minimum_amount`; 
+    # useful when a Product ships in packages containing multiple units. 
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
 
     @property
@@ -29,17 +32,17 @@ class GASSupplierStock(models.Model):
 
     @property
     def price(self):
-        # Price is updated by GASSupplierSolidalPact
+        # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.gas.supplier_set.get(supplier=self.supplier).price_percent_update
         return self.supplier_stock.price*price_percent_update
 
 class GASSupplierOrder(models.Model):
-    """Order managed in a GAS.
-    http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore
+    """An Order issued by a GAS to a Supplier.
+    See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
     * status is a meaningful parameter... TODO
     * product_set references specified products available for the specific order \
-      (they can be a subset of all available products from that supplier for the order);
+      (they can be a subset of all available products from that Supplier for the order);
 
     """
 
@@ -70,8 +73,8 @@ class GASSupplierOrder(models.Model):
 
 class GASSupplierOrderProduct(models.Model):
 
-    """Meant to be referenced as ForeignKey for GASMemberOrder
-    http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista
+    """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
+    See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
 
     """
 
@@ -86,9 +89,9 @@ class GASSupplierOrderProduct(models.Model):
     delivered_amount = models.PositiveIntegerField(blank=True)
     
 class GASMemberOrder(models.Model):
-    """An order made by a GAS member in a supplier order.
+    """An Order made by a GAS Member in the context of a given GASSupplierOrder.
 
-    http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista
+    See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
 
     """
 
