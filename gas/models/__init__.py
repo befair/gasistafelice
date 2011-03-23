@@ -1,6 +1,6 @@
-"""This model includes all thing necessary to manage GAS activity.
+"""These models include everything necessary to manage GAS activity.
 
-It relies on base model and on supplier model to get products and stock infos.
+They rely on base models and Supplier-related ones to get Product and Stock infos.
 
 Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#GAS>`__ (ita only)
 """
@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.base.models import Person, Role
-from gasistafelice.supplier.models import Supplier, SupplierStock
+from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
 from gasistafelice.gas.const import STATES_LIST
 from gasistafelice.gas import managers
@@ -17,8 +17,8 @@ from gasistafelice.gas import managers
 from workflows.models import Workflow, Transition
 
 class GAS(models.Model):
-    """A a group of people which make some purchases altogether.
-    Every GAS member has a role where the basic role is just to be a member of the GAS.
+    """A group of people which make some purchases together.
+    Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
     """
     #TODO: Prevedere qui tutta la parte di configurazione del GAS
@@ -30,7 +30,7 @@ class GAS(models.Model):
     workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
     workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set")
 
-    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
+    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
 
     objects = managers.GASRolesManager()
 
@@ -43,16 +43,16 @@ class GAS(models.Model):
 
 class GASMember(models.Model):
     """A bind of a Person into a GAS.
-    Each GAS member specifies for which role he is available for.
-    In this way every time a user (i.e. user with proper rights) has to bind a role to
-    a GAS member he can choose among available users.
-
+    Each GAS member specifies which Roles he is available for.
+    This way, every time there is a need to assign one or more GAS Members to a given Role,
+    there is already a group of people to choose from. 
+    
     """
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    available_for_role_set = models.ManyToManyField(Role, null=True, blank=True, related_name="gasmember_available_for_roles_set")
-    role_set = models.ManyToManyField(Role, null=True, blank=True, related_name="gasmember_set")
+    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available_for_this_role")
+    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_with_this_role")
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
@@ -63,8 +63,8 @@ class GASMember(models.Model):
 #        super(GASUser, self).save()
     
 class GASSupplierSolidalPact(models.Model):
-    """Define GAS <-> Supplier relationship agreement
-    Each supplier come into relathionship with a GAS by signing this pact.
+    """Define a GAS <-> Supplier relationship agreement.
+    Each Supplier comes into relathionship with a GAS by signing this pact.
     In this pact we factorize behaviour agreements 
     between these two entities.
     It acts as configuration for order and delivery management 
@@ -74,8 +74,18 @@ class GASSupplierSolidalPact(models.Model):
     gas = models.ForeignKey(GAS)
     supplier = models.ForeignKey(Supplier)
     date_signed = models.DateField()
+    # which Products GAS members can order from Supplier
+    supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
+    # TODO: perhaps should be a `CurrencyField` ?
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    # TODO: perhaps should be a `CurrencyField` ?
     order_delivery_cost = models.PositiveIntegerField(null=True, blank=True)
-    order_deliver_interval = models.TimeField()
+    #time needed for the delivery since the GAS issued the order disposition
+    order_deliver_interval = models.TimeField()  
+    # how much (in percentage) base prices from the Supplier are modified for the GAS  
     order_price_percent_update = models.FloatField()
+    # TODO
+    #supplier_referrers = ...
+    
+     
     

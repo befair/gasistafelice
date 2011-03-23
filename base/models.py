@@ -1,4 +1,4 @@
-"""This is the base model for Gasista Felice. i
+"""This is the base model for Gasista Felice. 
 
 It includes common data on which all (or almost all) other applications rely on.
 """
@@ -11,14 +11,14 @@ from gasistafelice.base.const import CONTACT_CHOICES
 from workflows.models import Workflow, Transition
 
 class Person(models.Model):
-    """A person is an anagraphic record of a human.
-    It can be a user or not.
+    """A Person is an anagraphic record of a human being.
+    It can be a User or not.
     """
 
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
-    first_name = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
-    displayName = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
+    surname = models.CharField(max_length=128)
+    display_name = models.CharField(max_length=128)
     contacts = models.ManyToManyField('Contact')
     user = models.OneToOneField(User, null=True)
 
@@ -36,13 +36,19 @@ class Role(models.Model):
 
 
 class Place(models.Model):
-    """Place should be managed as a separate entity because of:
-
-    * multiple Place useful for retina orders
+    """Places should be managed as separate entities for various reasons:
+    * among the entities arising in the description of GAS' activities, 
+      there are several being places or involving places, 
+      so abstracting this information away seems a good thing;
+    * in the context of multi-GAS (retina) orders,  
+      multiple delivery and/or withdrawal locations can be present.  
     """
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-
+    address = models.CharField(max_length=128)
+    city = models.CharField(max_length=128)
+    province = models.CharField(max_length=128)
+        
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(blank=True)
     lat = models.FloatField(blank=True)
