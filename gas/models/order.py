@@ -84,39 +84,49 @@ class GASSupplierOrderProduct(models.Model):
 
     """
 
-    gas_supplier_order = models.ForeignKey(GASSupplierOrder)
-    gas_supplier_stock = models.ForeignKey(GASSupplierStock)
+    order = models.ForeignKey(GASSupplierOrder)
+    stock = models.ForeignKey(GASSupplierStock)
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
     maximum_amount = models.PositiveIntegerField(blank=True, default=0)
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
     ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
     # how many items were ordered (globally by the GAS)
-    ordered_amount = models.PositiveIntegerField(blank=True)
+    ordered_amount = models.PositiveIntegerField(blank=True) #FIXME: should be a dynamically computed attribute
     # the actual price of the Product (as resulting from the invoice)
     delivered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
     # how many items were actually delivered by the Supplier 
     delivered_amount = models.PositiveIntegerField(blank=True)
     
 class GASMemberOrder(models.Model):
-    """An Order made by a GAS Member in the context of a given GASSupplierOrder.
+    """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
 
     """
 
-    gasmember = models.ForeignKey(GASMember)
-    gassupplierorder = models.ForeignKey(GASSupplierOrder)
+    purchaser = models.ForeignKey(GASMember)
     product = models.ForeignKey(GASSupplierOrderProduct)
-
-    ordered_price = models.FloatField(blank=True)
+    # price of the Product at order time
+    ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    # how many Product units were ordered by the GAS member
     ordered_amount = models.PositiveIntegerField(blank=True)
-    #TODO? delivered_price = models.FloatField(blank=True)
-    delivered_amount = models.PositiveIntegerField(blank=True)
+    # how many Product units were withdrawn by the GAS member 
+    withdrawn_amount = models.PositiveIntegerField(blank=True)
     
+    # how much the GAS member actually payed for this Product (as resulting from the invoice)   
+    @property
+    def actual_price(self):
+        return self.product.delivered_price
+    
+    # GASSupplierOrder this GASMemberOrder belongs to
+    @property
+    def order(self):
+        return self.product.order 
+    # which GAS this order was issued to ? 
     @property
     def gas(self):
-        return self.gasmember.gas
+        return self.purchaser.gas
 
     # Workflow management
 
