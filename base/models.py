@@ -50,14 +50,9 @@ class Place(models.Model):
 
 # Generic workflow management
 
-class DefaultWorkflow(models.Model):
+class WorkflowDefaultTransitionOrder(models.Model):
 
     workflow = models.ForeignKey(Workflow)
-    transition_set = models.ManyToManyField(Transition, through="DefaultWorkflowTransition")
-
-class DefaultWorkflowTransition(models.Model):
-
-    workflow = models.ForeignKey(GASMemberOrderDefaultWorkflow)
     transition = models.ForeignKey(Transition)
-    sort = models.PositiveIntegerField()
+    order = models.PositiveIntegerField()
 

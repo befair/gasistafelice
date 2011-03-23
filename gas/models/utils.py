@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _
 
 from workflows.models import Workflow, State, Transition
+from base.models import WorkflowDefaultTransitionOrder
 from permissions.utils import register_role
 from permissions.utils import register_role
 
@@ -29,6 +30,10 @@ def init_workflow():
     workflow.initial_state = confirmed
     workflow.save()
 
+    workflow.defaultworkflowtransitionorder_set.add(transition=finalize, order=1)
+    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=2)
+    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=3)
+
     #GASMember Order full workflow
     workflow = Workflow.objects.create(name="GASMemberOrderFull")
 
@@ -51,6 +56,7 @@ def init_workflow():
     left_there = Transition.objects.create(name=_("Make not Withdrawn"), workflow=workflow, destination=not_withdrawn)
     cancel = Transition.objects.create(name=_("Cancel"), workflow=workflow, destination=canceled)
 
+    unconfirmed.transitions.add(confirm)
     confirmed.transitions.add(finalize)
     confirmed.transitions.add(cancel)
     finalized.transitions.add(send)
@@ -60,6 +66,12 @@ def init_workflow():
 
     workflow.initial_state = unconfirmed
     workflow.save()
+
+#TODO
+    workflow.defaultworkflowtransitionorder_set.add(transition=finalize, order=1)
+    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=2)
+    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=3)
+
 
     # SupplierOrder Default Workflow
 #TODO TODO TODO
