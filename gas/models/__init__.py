@@ -27,8 +27,8 @@ class GAS(models.Model):
     logo = models.ImageField(upload_to="/images/")
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"))
 
-    workflow_default_gasmember_order = models.ForeignKey(Workflow)
-    workflow_default_gassupplier_order = models.ForeignKey(Workflow)
+    workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
+    workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set")
 
     supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
 

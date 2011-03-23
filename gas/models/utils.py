@@ -67,11 +67,11 @@ def init_workflow():
     workflow.initial_state = unconfirmed
     workflow.save()
 
-#TODO
-    workflow.defaultworkflowtransitionorder_set.add(transition=finalize, order=1)
-    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=2)
-    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=3)
-
+    workflow.defaultworkflowtransitionorder_set.add(transition=confirm, order=1)
+    workflow.defaultworkflowtransitionorder_set.add(transition=finalized, order=2)
+    workflow.defaultworkflowtransitionorder_set.add(transition=sent, order=3)
+    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=4)
+    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=4)
 
     # SupplierOrder Default Workflow
 #TODO TODO TODO
