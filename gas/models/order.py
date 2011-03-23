@@ -41,7 +41,7 @@ class GASSupplierStock(models.Model):
         return self.supplier_stock.price*(1 + price_percent_update)
 
 class GASSupplierOrder(models.Model):
-    """An Order issued by a GAS to a Supplier.
+    """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
     * status is a meaningful parameter... TODO
@@ -70,11 +70,11 @@ class GASSupplierOrder(models.Model):
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     def save(self):
-        # If no product_set has been specified --> use all products bound to the supplier
+        # If no Products has been associated to this order, then use every Product bound to the Supplier
         super(GASSupplierOrder, self).save()
-        if not self.product_set.all():
-            for product in self.gas.supplier_set.get(self.supplier).all():
-                self.product_set.add(product)
+        if not self.products.all():
+            for product in self.supplier.product_catalog:
+                self.products.add(product)
         return
 
 class GASSupplierOrderProduct(models.Model):
