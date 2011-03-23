@@ -91,12 +91,20 @@ class GASSupplierOrderProduct(models.Model):
     maximum_amount = models.PositiveIntegerField(blank=True, default=0)
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
     ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
-    # how many items were ordered (globally by the GAS)
-    ordered_amount = models.PositiveIntegerField(blank=True) #FIXME: should be a dynamically computed attribute
     # the actual price of the Product (as resulting from the invoice)
     delivered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
     # how many items were actually delivered by the Supplier 
     delivered_amount = models.PositiveIntegerField(blank=True)
+    
+    # how many items of this kind were ordered (globally by the GAS)
+    @property
+    def ordered_amount(self):
+        # grab all GASMemberOrders related to this product
+        orders = GASMemberOrder.objects.filter(product=self)
+        amount = 0 
+        for order in orders:
+            amount=+ order.ordered_amount
+        return amount 
     
 class GASMemberOrder(models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
