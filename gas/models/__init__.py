@@ -64,11 +64,10 @@ class GASMember(models.Model):
     
 class GASSupplierSolidalPact(models.Model):
     """Define a GAS <-> Supplier relationship agreement.
-    Each Supplier comes into relathionship with a GAS by signing this pact.
-    In this pact we factorize behaviour agreements 
-    between these two entities.
-    It acts as configuration for order and delivery management 
-    to the specific supplier.
+    
+    Each Supplier comes into relationship with a GAS by signing this pact,
+    where are factorized behaviour agreements between these two entities.
+    This pact acts as a configurator for order and delivery management with respect to the given Supplier.
     """
 
     gas = models.ForeignKey(GAS)
@@ -76,9 +75,9 @@ class GASSupplierSolidalPact(models.Model):
     date_signed = models.DateField()
     # which Products GAS members can order from Supplier
     supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
-    # TODO: perhaps should be a `CurrencyField` ?
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
-    # TODO: perhaps should be a `CurrencyField` ?
+    # FIXME: perhaps should be a `CurrencyField` ?
+    order_minimum_amount = models.FloatField(null=True, blank=True)
+    # FIXME: perhaps should be a `CurrencyField` ?
     order_delivery_cost = models.PositiveIntegerField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
     order_deliver_interval = models.TimeField()  
