@@ -8,7 +8,7 @@ Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVoca
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.base.models import Person, Role, DefaultWorkflow
+from gasistafelice.base.models import Person, Role
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
 from gasistafelice.gas.const import STATES_LIST
@@ -27,8 +27,8 @@ class GAS(models.Model):
     logo = models.ImageField(upload_to="/images/")
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"))
 
-    workflow_default_gasmember_order = models.ForeignKey(DefaultWorkflow)
-    workflow_default_gassupplier_order = models.ForeignKey(DefaultWorkflow)
+    workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
+    workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set")
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
 
