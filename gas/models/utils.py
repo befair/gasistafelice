@@ -76,57 +76,63 @@ def init_workflow():
    # default Workflow for a SupplierOrder 
     workflow = Workflow.objects.create(name="SupplierOrderDefault")
     
-    ## in which States a SupplierOrder can be
-    # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
-    open = State.objects.create(name=_("Open"), workflow=workflow)
-    # SupplierOrder is closed; GasMemberOrders are disabled 
-    closed = State.objects.create(name=_("Closed"), workflow=workflow)
-    # SupplierOrder was closed, but some constraints were not satisfied,
-    # so a completion procedure was started 
-    on_completion = State.objects.create(name=_("On completion"), workflow=workflow)
-    # SupplierOrder was finalized (no more chances left for reopening)
-    finalized = State.objects.create(name=_("Finalized"), workflow=workflow)
-    # SupplierOrder was sent to the Supplier
-    sent = State.objects.create(name=_("Sent"), workflow=workflow)
-    # SupplierOrder was delivered to the GAS
-    delivered = State.objects.create(name=_("Delivered"), workflow=workflow)
-    # SupplierOrder was canceled
-    canceled = State.objects.create(name=_("Canceled"), workflow=workflow)
-    # exception_raised = State.objects.create(name=_("Exception raised"), workflow=workflow)
+    ## States in which a SupplierOrder can be
+    state_data = (
+             # (key, state name),
+              ('open', "Open"), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
+              ('closed', "Closed"), # SupplierOrder is closed; GasMemberOrders are disabled 
+              ('on_completion', "On completion"), # SupplierOrder was closed, but some constraints were not satisfied, so a completion procedure was started 
+              ('finalized', "Finalized"), # SupplierOrder was finalized (no more chances left for reopening)
+              ('sent', "Sent"), # SupplierOrder was sent to the Supplier
+              ('delivered', "Delivered"), # SupplierOrder was delivered to the GAS
+              ('canceled', "Canceled"),# SupplierOrder was canceled
+              #(exception_raised,"Exception raised")
+              )
+    
+    # create States objects
+    states = {} # dictionary containing State objects for the current Workflow 
+    for (key, name) in state_data:
+        states[key] = State.objects.create(name=_(name), workflow=workflow )
+       
         
     ## Transitions allowed among States defined for a SupplierOrder
-    # close the SupplierOrder
-    close = Transition.objects.create(name=_("Close"), workflow=workflow, destination=closed)
-    # re-open the SupplierOrder
-    reopen = Transition.objects.create(name=_("Reopen"), workflow=workflow, destination=open)
-    # start the completion procedure for the SupplierOrder
-    start_completion = Transition.objects.create(name=_("Star completion"), workflow=workflow, destination=on_completion)
-    # end the completion procedure for the SupplierOrder
-    end_completion = Transition.objects.create(name=_("Star completion"), workflow=workflow, destination=closed)
-    # finalize the SupplierOrder
-    finalize = Transition.objects.create(name=_("Finalize"), workflow=workflow, destination=finalized)
-    # send the SupplierOrder to the Supplier
-    send = Transition.objects.create(name=_("Send"), workflow=workflow, destination=sent)
-    # mark the SupplierOrder as "delivered"
-    set_delivered = Transition.objects.create(name=_("Set delivered"), workflow=workflow, destination=delivered)
-    # cancel the SupplierOrder
-    cancel = Transition.objects.create(name=_("Canceled"), workflow=workflow, destination=canceled)
+    
+    transition_data = ( 
+                    # (key, transition name, destination state), 
+                    ('close', "Close", 'closed'), # close the SupplierOrder
+                    ('reopen', "Reopen", 'open'), # re-open the SupplierOrder
+                    ('start_completion', "Start completion", 'on_completion'), # start the completion procedure for the SupplierOrder
+                    ('end_completion', "End completion", 'closed'), # end the completion procedure for the SupplierOrder
+                    ('finalize', "Finalize", 'finalized'), # finalize the SupplierOrder
+                    ('send', "Send", 'sent'), # send the SupplierOrder to the Supplier
+                    ('set_delivered', "Set delivered", 'delivered'), # mark the SupplierOrder as "delivered"
+                    ('cancel', "Cancel", 'canceled'), # cancel the SupplierOrder                                     
+                       )
+    # create Transition objects
+    transitions = {} # dictionary containing Transition objects for the current Workflow
+    for (key, transition_name, destination) in transition_data:
+        transitions[key] = Transition.objects.create(name=_(transition_name), workflow=workflow, destination=states[destination])
+    
     
     ## associate Transitions to States
-    open.transitions.add(close)
-    closed.transitions.add(reopen)
-    closed.transitions.add(finalize)
-    closed.transitions.add(start_completion)
-    on_completion.transitions.add(end_completion)
-    finalized.transitions.add(sent)
-    sent.transitions.add(set_delivered)
-    # SupplierOrder may be canceled at every time before delivery
-    # FIXME: remove boilerplate (for loop ?)
-    open.transitions.add(cancel)
-    close.transitions.add(cancel)
-    on_completion.transitions.add(cancel)
-    finalized.transitions.add(cancel)
-    sent.transitions.add(cancel)
-       
+    state_transition_map = (
+                              # (state name, transition name), 
+                              ('open', 'close'),
+                              ('closed', 'reopen'),
+                              ('closed', 'finalize'),
+                              ('closed', 'start_completion'),
+                              ('on_completion', 'end_completion'),
+                              ('finalized', 'sent'),
+                              # SupplierOrder may be canceled at every time before delivery
+                              ('open', 'cancel'),
+                              ('close', 'cancel'),
+                              ('on_completion', 'cancel'),
+                              ('finalized', 'cancel'),
+                              ('sent', 'cancel'),
+                              )
+
+    for (state, transition) in state_transition_map:
+        states[state].transitions.add(transitions[transition])
+           
     workflow.initial_state = open
     workflow.save()
