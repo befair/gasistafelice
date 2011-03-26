@@ -7,64 +7,120 @@ from permissions.utils import register_role
 
 def init_workflow():
 
-    # GASMemberOrder simplest workflow
+    # basic Workflow for a GASMemberOrder 
     workflow = Workflow.objects.create(name="GASMemberOrderSimple")
 
-    confirmed = State.objects.create(name=_("Confirmed"), workflow=workflow)
-    finalized = State.objects.create(name=_("Finalized"), workflow=workflow)
-    delivered = State.objects.create(name=_("Ready for withdraw"), workflow=workflow)
-    withdrawn = State.objects.create(name=_("Withdrawn"), workflow=workflow)
-    canceled = State.objects.create(name=_("Canceled"), workflow=workflow)
-    #TODO? exception_raised = State.objects.create(name=_("Exception raised"), workflow=workflow)
+## States in which a GASMemberOrder can be
+    state_data = (
+             # (key, State name),
+              ('confirmed', "Confirmed"), # GASMemberOrder has been confirmed (by the GASMember who issued it)
+              ('finalized', "Finalized"), # SupplierOrder has been closed, so related GASMemberOrders can't be changed anymore
+              ('ready', "Ready for withdraw"), # GASMemberOrder is ready to be withdrawn
+              ('withdrawn', "Withdrawn"), # GASMemberOrder has been withdrawn (by the GASMember who issued it)
+              ('canceled', "Canceled"), # GASMemberOrder has been canceled 
+              #(exception_raised,"Exception raised")
+              )
+    
+    # create States objects
+    states = {} # dictionary containing State objects for the current Workflow 
+    for (key, name) in state_data:
+        states[key] = State.objects.create(name=_(name), workflow=workflow )
+         
+    
+    ## Transitions allowed among States defined for a  GASMemberOrder
+    transition_data = ( 
+                    # (key, Transition name, destination State), 
+                    ('finalize', "Finalize", 'finalized'), # finalize the GASMemberOrder (usually is a side-effect of the associated SupplierOrder being finalized)
+                    ('make_ready', "Make ready", 'ready'), # flag a GASMemberOrder as 'available for withdrawal' 
+                    ('set_withdrawn', "Set withdrawn", 'withdrawn'), # flag a GASMemberOrder as 'withdrawn by the GASMember who issued it'
+                    ('cancel', "Cancel", 'canceled'), # cancel a GASMemberOrder
+                       )
+    # create Transition objects
+    transitions = {} # dictionary containing Transition objects for the current Workflow
+    for (key, transition_name, destination) in transition_data:
+        transitions[key] = Transition.objects.create(name=_(transition_name), workflow=workflow, destination=states[destination])
+    
+    
+    ## associate Transitions to States
+    state_transition_map = (
+                              # (State name, Transition name), 
+                              ('confirmed', 'finalize'), 
+                              ('confirmed', 'cancel'),
+                              ('finalized', 'make_ready'),
+                              ('ready', 'set_withdrawn'), 
+                              )
 
-    finalize = Transition.objects.create(name=_("Finalize"), workflow=workflow, destination=finalized)
-    deliver = Transition.objects.create(name=_("Deliver"), workflow=workflow, destination=delivered)
-    withdraw = Transition.objects.create(name=_("Withdraw"), workflow=workflow, destination=withdrawn)
-    cancel = Transition.objects.create(name=_("Cancel"), workflow=workflow, destination=canceled)
-
-    confirmed.transitions.add(finalize)
-    confirmed.transitions.add(cancel)
-    finalized.transitions.add(deliver)
-    delivered.transitions.add(withdraw)
-
-    workflow.initial_state = confirmed
+    for (state, transition) in state_transition_map:
+        states[state].transitions.add(transitions[transition])
+           
+    workflow.initial_state = states['confirmed']
     workflow.save()
-
+ 
     workflow.defaultworkflowtransitionorder_set.add(transition=finalize, order=1)
     workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=2)
     workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=3)
-
-    #GASMember Order full workflow
+#-----------------------------------------------------------------------------
+    # Full Workflow for a GASMemberOrder  
     workflow = Workflow.objects.create(name="GASMemberOrderFull")
+        
+    ## States in which a GASMemberOrder can be
+    state_data = (
+             # (key, State name),
+              ('unconfirmed', "Unconfirmed"), # GASMemberOrder has not been confirmed by the GASMember yet 
+              ('confirmed', "Confirmed"), # GASMemberOrder has been confirmed by GASMember
+              ('finalized', "Finalized"), # SupplierOrder has been closed, so GASMemberOrders can't be changed anymore
+              # TODO: is really necessary ?
+              ('sent', "Sent"), # GASMemberOrder has been sent to the Supplier
+              ('ready', "Ready for withdraw"), # GASMemberOrder is ready for withdrawal
+              ('withdrawn', "Withdrawn"), # GASMemberOrder has been withdrawn by the GASMember who issued it
+              #COMMENT: is it useful to know what has been delivered but not withdrawn
+              #charged COMMENT: is it useful to make an automatic state update when order is charged by economist?
+              ('canceled', "Canceled"), # GASMemberOrder has been canceled
+              #(exception_raised,"Exception raised")
+              )
+    
+    # create States objects
+    states = {} # dictionary containing State objects for the current Workflow 
+    for (key, name) in state_data:
+        states[key] = State.objects.create(name=_(name), workflow=workflow )
+     
+    ## Transitions allowed among States defined for a GASMemberOrder 
+    transition_data = ( 
+                    # (key, Transition name, destination State), 
+                    ('confirm', "Confirm", 'confirmed'), # GASMember has confirmed its GASMemberOrder
+                    ('unconfirm', "Unconfirm", 'unconfirmed'), # GASMember has un-confirmed its GASMemberOrder
+                    ('finalize', "Finalize", 'finalized'), # finalize the GASMemberOrder (usually is a side-effect of the associated SupplierOrder being finalized)
+                    ('send', "Send", 'sent'), # GASMemberOrder has been sent to the Supplier (as a side-effect of the SupplierOrder it belongs to being sent)
+                    ('make_ready', "Make ready", 'ready'), # flag a GASMemberOrder as 'available for withdrawal' 
+                    ('set_withdrawn', "Set withdrawn", 'withdrawn'), # flag a GASMemberOrder as 'withdrawn by the GASMember who issued it'
+                    ('set_not_withdrawn', "Set not withdrawn", 'not_withdrawn'), # flag a GASMemberOrder as 'not withdrawn by the GASMember who issued it'
+                    ('cancel', "Cancel", 'canceled'), # cancel a GASMemberOrder
+                       )
+    # create Transition objects
+    transitions = {} # dictionary containing Transition objects for the current Workflow
+    for (key, transition_name, destination) in transition_data:
+        transitions[key] = Transition.objects.create(name=_(transition_name), workflow=workflow, destination=states[destination])         
+    
+    ## associate Transitions to States
+    state_transition_map = (
+                              # (state name, transition name), 
+                              ('unconfirmed', 'confirm'),
+                              ('confirmed', 'unconfirm'),
+                              ('confirmed', 'finalize'), 
+                              ('finalized', 'send'),
+                              ('sent', 'make_ready'),
+                              ('ready', 'set_withdrawn'), 
+                              ('ready', 'set_not_withdrawn'),
+                              # GASMemberOrder may be canceled at any time before delivery happens
+                              ('confirmed', 'cancel'),
+                              ('finalized', 'cancel'),
+                              ('sent', 'cancel'),
+                              )
 
-    unconfirmed = State.objects.create(name=_("Unconfirmed"), workflow=workflow)
-    confirmed = State.objects.create(name=_("Confirmed"), workflow=workflow)
-    finalized = State.objects.create(name=_("Finalized"), workflow=workflow)
-    sent = State.objects.create(name=_("Sent"), workflow=workflow)
-    delivered = State.objects.create(name=_("Ready for withdraw"), workflow=workflow)
-    withdrawn = State.objects.create(name=_("Withdrawn"), workflow=workflow)
-    not_withdrawn = State.objects.create(name=_("NOT Withdrawn"), workflow=workflow) #COMMENT: is it useful to know what has been delivered but not withdrawn
-    #charged COMMENT: is it useful to make an automatic state update when order is charged by economist?
-    canceled = State.objects.create(name=_("Canceled"), workflow=workflow)
-    #TODO exception_raised = State.objects.create(name=_("Exception raised"), workflow=workflow)
-
-    confirm = Transition.objects.create(name=_("Confirm"), workflow=workflow, destination=confirmed)
-    finalize = Transition.objects.create(name=_("Finalize"), workflow=workflow, destination=finalized)
-    send = Transition.objects.create(name=_("Send"), workflow=workflow, destination=sent) #COMMENT: is it useful?
-    deliver = Transition.objects.create(name=_("Deliver"), workflow=workflow, destination=delivered)
-    withdraw = Transition.objects.create(name=_("Withdraw"), workflow=workflow, destination=withdrawn)
-    left_there = Transition.objects.create(name=_("Make not Withdrawn"), workflow=workflow, destination=not_withdrawn)
-    cancel = Transition.objects.create(name=_("Cancel"), workflow=workflow, destination=canceled)
-
-    unconfirmed.transitions.add(confirm)
-    confirmed.transitions.add(finalize)
-    confirmed.transitions.add(cancel)
-    finalized.transitions.add(send)
-    sent.transitions.add(deliver)
-    delivered.transitions.add(withdraw)
-    delivered.transitions.add(left_there)
-
-    workflow.initial_state = unconfirmed
+    for (state, transition) in state_transition_map:
+        states[state].transitions.add(transitions[transition])
+           
+    workflow.initial_state = states['unconfirmed']    
     workflow.save()
 
     workflow.defaultworkflowtransitionorder_set.add(transition=confirm, order=1)
@@ -72,7 +128,7 @@ def init_workflow():
     workflow.defaultworkflowtransitionorder_set.add(transition=sent, order=3)
     workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=4)
     workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=4)
-
+#----------------------------------------------------------------------------- 
    # default Workflow for a SupplierOrder 
     workflow = Workflow.objects.create(name="SupplierOrderDefault")
     
@@ -123,7 +179,7 @@ def init_workflow():
                               ('closed', 'start_completion'),
                               ('on_completion', 'end_completion'),
                               ('finalized', 'sent'),
-                              # SupplierOrder may be canceled at every time before delivery
+                              # SupplierOrder may be canceled at any time before delivery happens
                               ('open', 'cancel'),
                               ('close', 'cancel'),
                               ('on_completion', 'cancel'),
@@ -134,5 +190,5 @@ def init_workflow():
     for (state, transition) in state_transition_map:
         states[state].transitions.add(transitions[transition])
            
-    workflow.initial_state = open
+    workflow.initial_state = states['open']
     workflow.save()
