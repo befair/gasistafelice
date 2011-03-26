@@ -6,61 +6,9 @@ from permissions.utils import register_role
 
 def init_workflow():
 
-    # basic Workflow for a GASMemberOrder 
-    workflow = Workflow.objects.create(name="GASMemberOrderSimple")
-
-## States in which a GASMemberOrder can be
-    state_data = (
-             # (key, State name),
-              ('confirmed', "Confirmed"), # GASMemberOrder has been confirmed (by the GASMember who issued it)
-              ('finalized', "Finalized"), # SupplierOrder has been closed, so related GASMemberOrders can't be changed anymore
-              ('ready', "Ready for withdraw"), # GASMemberOrder is ready to be withdrawn
-              ('withdrawn', "Withdrawn"), # GASMemberOrder has been withdrawn (by the GASMember who issued it)
-              ('canceled', "Canceled"), # GASMemberOrder has been canceled 
-              #(exception_raised,"Exception raised")
-              )
-    
-    # create States objects
-    states = {} # dictionary containing State objects for the current Workflow 
-    for (key, name) in state_data:
-        states[key] = State.objects.create(name=_(name), workflow=workflow )
-         
-    
-    ## Transitions allowed among States defined for a  GASMemberOrder
-    transition_data = ( 
-                    # (key, Transition name, destination State), 
-                    ('finalize', "Finalize", 'finalized'), # finalize the GASMemberOrder (usually is a side-effect of the associated SupplierOrder being finalized)
-                    ('make_ready', "Make ready", 'ready'), # flag a GASMemberOrder as 'available for withdrawal' 
-                    ('set_withdrawn', "Set withdrawn", 'withdrawn'), # flag a GASMemberOrder as 'withdrawn by the GASMember who issued it'
-                    ('cancel', "Cancel", 'canceled'), # cancel a GASMemberOrder
-                       )
-    # create Transition objects
-    transitions = {} # dictionary containing Transition objects for the current Workflow
-    for (key, transition_name, destination) in transition_data:
-        transitions[key] = Transition.objects.create(name=_(transition_name), workflow=workflow, destination=states[destination])
-    
-    
-    ## associate Transitions to States
-    state_transition_map = (
-                              # (State name, Transition name), 
-                              ('confirmed', 'finalize'), 
-                              ('confirmed', 'cancel'),
-                              ('finalized', 'make_ready'),
-                              ('ready', 'set_withdrawn'), 
-                              )
-
-    for (state, transition) in state_transition_map:
-        states[state].transitions.add(transitions[transition])
-           
-    workflow.initial_state = states['confirmed']
-    workflow.save()
- 
-    workflow.defaultworkflowtransitionorder_set.add(transition=finalize, order=1)
-    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=2)
-    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=3)
 #-----------------------------------------------------------------------------
-    # Full Workflow for a GASMemberOrder  
-    workflow = Workflow.objects.create(name="GASMemberOrderFull")
+    # default Workflow for a GASMemberOrder 
+    workflow = Workflow.objects.create(name="GASMemberOrderDefault")
         
     ## States in which a GASMemberOrder can be
     state_data = (
