@@ -3,7 +3,6 @@ from django.utils.translation import ugettext as _
 from workflows.models import Workflow, State, Transition
 from base.models import WorkflowDefaultTransitionOrder
 from permissions.utils import register_role
-from permissions.utils import register_role
 
 def init_workflow():
 
