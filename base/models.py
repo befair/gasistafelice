@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
 from workflows.models import Workflow, Transition
+from django.db.models.fields.related import ManyToManyField, ForeignKey
 
 class Person(models.Model):
     """A Person is an anagraphic record of a human being.
@@ -30,10 +31,22 @@ class Contact(models.Model):
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Role(models.Model):
-    name = models.CharField(max_length=128)
-    description = models.TextField()
-
+class Role(permissions.models.Role):
+    """
+    A custom `Role` model class inheriting from `django-permissions`'s`Role` model.
+    
+    This way, we are able to augment the base `Role` model 
+    (carrying only a `name` field attribute) with additional information
+    needed to describe those 'parametric' roles arising in this application domain
+    (e.g. GAS' supplier|tech|cash referrers).    
+    """
+    # a Role can be tied to a given GAS
+    gas = ForeignKey('gas.models.GAS') 
+    # a Role can be tied to a given Supplier
+    supplier = ForeignKey('supplier.models.Supplier')
+    #TODO: roles can be retina-specific
+    #retina = ForeignKey('gas.models.retina')
+        
 
 class Place(models.Model):
     """Places should be managed as separate entities for various reasons:
