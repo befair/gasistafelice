@@ -11,7 +11,9 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.base import const
-from gasistafelice.base.models import Person, Place
+from gasistafelice.base.const import SUPPLIER_REFERRER
+from gasistafelice.base.models import Person, Place, Role
+from gasistafelice.base.utils import register_role
 
 class Supplier(models.Model):
     """An actor having a stock of Products for sale to the DES."""
@@ -43,7 +45,18 @@ class SupplierReferrer(models.Model):
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
-    # TODO: automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
+
+    def save(self):
+        super(SupplierReferrer, self).save()
+        # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
+        user = self.person.user
+        try:
+            role = Role.objects.get(name=SUPPLIER_REFERRER, supplier=self.supplier)            
+        except Role.DoesNotExist: # Role hasn't been registered, yet
+            register_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
+        finally:
+            role.add_principal(user)     
+            
     
 class Certification(models.Model):
     name = models.CharField(max_length=128, unique=True) 

@@ -68,10 +68,17 @@ class GASMember(models.Model):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
 
     def save(self):
-    # TODO: automatically add a new GASMember to the `GAS_MEMBER` Role
     #    self.first_name = self.name
     #    self.last_name = self.last_name
-         super(GASMember, self).save()
+        super(GASMember, self).save()
+        # automatically add a new GASMember to the `GAS_MEMBER` Role
+        user = self.person.user
+        try:
+            role = Role.objects.get(name=GAS_MEMBER, gas=self.gas)            
+        except Role.DoesNotExist: # Role hasn't been registered, yet
+            register_role(name=GAS_MEMBER, gas=self.gas)
+        finally:
+            role.add_principal(user) 
    
 class GASSupplierSolidalPact(models.Model):
     """Define a GAS <-> Supplier relationship agreement.
