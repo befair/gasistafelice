@@ -41,6 +41,8 @@ class Role(BaseRole):
     needed to describe those 'parametric' roles arising in this application domain
     (e.g. GAS' supplier|tech|cash referrers).    
     """
+    # link to the base model class (`BaseRole`)
+    base_role = models.OneToOneField(BaseRole, parent_link=True)
     # a Role can be tied to a given GAS (e.g. GAS_REFERRER_CASH, GAS_REFERRER_TECH)
     gas = models.ForeignKey('gas.models.GAS', null=True, blank=True) 
     # a Role can be tied to a given Supplier (e.g. SUPPLIER_REFERRER, GAS_REFERRER_SUPPLIER)
