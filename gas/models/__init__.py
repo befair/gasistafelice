@@ -11,7 +11,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from gasistafelice.base.models import Person, Role
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
-from gasistafelice.gas.const import STATES_LIST
+from gasistafelice.base.utils import register_role
+from gasistafelice.gas.const import STATES_LIST, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.gas import managers
 
 from workflows.models import Workflow, Transition
@@ -40,6 +41,15 @@ class GAS(models.Model):
     def __unicode__(self):
         return self.name
     
+    def save(self):
+        super(GAS, self).save()
+        # register a new `GAS_MEMBER` Role for this GAS
+        register_role(name=GAS_MEMBER, gas=self)
+        # register a new `GAS_REFERRER_TECH` Role for this GAS
+        register_role(name=GAS_REFERRER_TECH, gas=self)
+        # register a new `GAS_REFERRER_CASH` Role for this GAS
+        register_role(name=GAS_REFERRER_CASH, gas=self)
+    
 
 class GASMember(models.Model):
     """A bind of a Person into a GAS.
@@ -57,11 +67,12 @@ class GASMember(models.Model):
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
 
-#    def save(self):
-#        self.first_name = self.name
-#        self.last_name = self.last_name
-#        super(GASUser, self).save()
-    
+    def save(self):
+    # TODO: automatically add a new GASMember to the `GAS_MEMBER` Role
+    #    self.first_name = self.name
+    #    self.last_name = self.last_name
+         super(GASMember, self).save()
+   
 class GASSupplierSolidalPact(models.Model):
     """Define a GAS <-> Supplier relationship agreement.
     
@@ -86,5 +97,9 @@ class GASSupplierSolidalPact(models.Model):
     # TODO
     #supplier_referrers = ...
     
-     
+    def save(self):
+        super(GASSupplierSolidalPact, self).save()
+        # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
+        register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+
     

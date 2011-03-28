@@ -6,7 +6,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from gasistafelice.base.models import Place 
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
-from gasistafelice.gas.const import STATES_LIST
+from gasistafelice.base.utils import register_role
+from gasistafelice.gas.const import STATES_LIST, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 from workflows.models import Workflow
 from workflows.utils import get_workflow
@@ -65,12 +66,14 @@ class GASSupplierOrder(models.Model):
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     def save(self):
-        # If no Products has been associated to this order, then use every Product bound to the Supplier
         super(GASSupplierOrder, self).save()
+        # If no Products has been associated to this order, then use every Product bound to the Supplier        
         if not self.products.all():
             for product in self.supplier.product_catalog:
                 self.products.add(product)
         return
+        # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
+        register_role(name=GAS_REFERRER_ORDER, order=self)
 
 class GASSupplierOrderProduct(models.Model):
 
@@ -156,7 +159,7 @@ class GASMemberOrder(models.Model):
 
         return super(GASMemberOrder, self).save()
 
-Class Delivery(models.Model):
+class Delivery(models.Model):
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
@@ -167,7 +170,12 @@ Class Delivery(models.Model):
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
     
-Class Withdrawal(models.Model):
+    def save(self):
+        super(Delivery, self).save()
+        # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
+        register_role(name=GAS_REFERRER_DELIVERY, delivery=self)
+    
+class Withdrawal(models.Model):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
@@ -179,3 +187,9 @@ Class Withdrawal(models.Model):
     end_time = models.TimeField(help_text=_("when the withdrawal will end")
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
+    
+    def save(self):
+        super(Withdrawal, self).save()
+        # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
+        register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)
+    

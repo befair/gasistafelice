@@ -31,13 +31,19 @@ class Supplier(models.Model):
 
     def __unicode__(self):
         return self.name
-
+    
+    def save(self):
+        super(Supplier, self).save()
+        # register a new `SUPPLIER_REFERRER` Role for this Supplier
+        register_role(name=SUPPLIER_REFERRER, supplier=self)
+    
+    
 class SupplierReferrer(models.Model):
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
-
+    # TODO: automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
     
 class Certification(models.Model):
     name = models.CharField(max_length=128, unique=True) 
