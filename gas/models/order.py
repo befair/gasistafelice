@@ -54,17 +54,12 @@ class GASSupplierOrder(models.Model):
     supplier = models.ForeignKey(Supplier)
     date_start = models.DateTimeField(help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(help_text=_("when the order will be closed"))
-    # Where and when delivery occurs
-    # TODO: factor out delivery information in a `DeliveryAppointment` model class
-    delivery_date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))
-    delivery_place = models.ForeignKey('Place', related_name="deliveries", help_text=_("where the order will be delivered by supplier"))
+    # Where and when Delivery occurs
+    delivery = models.ForeignKey('Delivery', related_name="supplier_orders")
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True) # FIXME: should be a `CurrencyField` ?
-    # Where and when withdrawal occurs
-    # TODO: factor out withdrawal information in a `WithdrawalAppointment` model class
-    withdrawal_date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
-    withdrawal_place = models.ForeignKey('Place', related_name="withdrawals", help_text=_("where the order will be withdrawn by GAS members"))
-
+    # Where and when Withdrawal occurs
+    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_orders")
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
@@ -161,3 +156,26 @@ class GASMemberOrder(models.Model):
 
         return super(GASMemberOrder, self).save()
 
+Class Delivery(models.Model):
+    """
+    A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
+    associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
+    """
+    
+    place = models.ForeignKey(Place, related_name="deliveries", help_text=_("where the order will be delivered by supplier"))
+    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier")    
+    # GAS referrers for this Delivery appointment (if any) 
+    referrers = models.ManyToManyField(GASMember, null=True, blank=True)
+    
+Class Withdrawal(models.Model):
+    """
+    A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
+    to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
+    """
+    
+    place = models.ForeignKey(Place, related_name="withdrawals", help_text=_("where the order will be withdrawn by GAS members")
+    # a Withdrawal appointment usually span a time interval
+    start_time = models.TimeField(help_text=_("when the withdrawal will start")
+    end_time = models.TimeField(help_text=_("when the withdrawal will end")
+    # GAS referrers for this Withdrawal appointment  
+    referrers = models.ManyToManyField(GASMember)
