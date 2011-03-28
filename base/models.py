@@ -8,6 +8,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
+from permissions.models import Role as BaseRole 
 from workflows.models import Workflow, Transition
 from django.db.models.fields.related import ManyToManyField, ForeignKey
 
@@ -31,7 +32,7 @@ class Contact(models.Model):
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Role(permissions.models.Role):
+class Role(BaseRole):
     """
     A custom `Role` model class inheriting from `django-permissions`'s`Role` model.
     
@@ -52,7 +53,7 @@ class Role(permissions.models.Role):
     order = models.ForeignKey('gas.models.order.GASSupplierOrder', null=True, blank=True)
     #TODO: roles can be retina-specific
     #retina = ForeignKey('gas.models.retina')
-        
+            
 
 class Place(models.Model):
     """Places should be managed as separate entities for various reasons:
