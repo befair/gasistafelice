@@ -10,8 +10,7 @@ Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/Boz
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.base import const
-from gasistafelice.base.const import SUPPLIER_REFERRER
+from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, SUPPLIER_REFERRER, ALWAYS_AVAILABLE
 from gasistafelice.base.models import Person, Place, Role
 from gasistafelice.base.utils import register_role
 
@@ -23,7 +22,7 @@ class Supplier(models.Model):
     vat_number =  models.CharField(max_length=128, unique=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website =  models.URLField(verify_exists=True, blank=True)
     referrers = models.ManyToManyField(Person, through="SupplierReferrer") 
-    flavour = models.CharField(max_length=128, choices=const.SUPPLIER_FLAVOUR_LIST, default=const.SUPPLIER_FLAVOUR_LIST[0][0])
+    flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification')
 
     # the set of products provided by this Supplier to every GAS
@@ -109,7 +108,7 @@ class SupplierStock(models.Model):
     supplier = models.ForeignKey(Supplier)
     product = models.ForeignKey(Product)
     price = models.FloatField() # FIXME: should be a `CurrencyField` ?
-    amount_available = models.PositiveIntegerField(default=const.ALWAYS_AVAILABLE)
+    amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
