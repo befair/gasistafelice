@@ -40,10 +40,16 @@ class Role(permissions.models.Role):
     needed to describe those 'parametric' roles arising in this application domain
     (e.g. GAS' supplier|tech|cash referrers).    
     """
-    # a Role can be tied to a given GAS
-    gas = ForeignKey('gas.models.GAS') 
-    # a Role can be tied to a given Supplier
-    supplier = ForeignKey('supplier.models.Supplier')
+    # a Role can be tied to a given GAS (e.g. GAS_REFERRER_CASH, GAS_REFERRER_TECH)
+    gas = models.ForeignKey('gas.models.GAS', null=True, blank=True) 
+    # a Role can be tied to a given Supplier (e.g. SUPPLIER_REFERRER, GAS_REFERRER_SUPPLIER)
+    supplier = models.ForeignKey('supplier.models.Supplier', null=True, blank=True)
+    # a Role can be tied to a given Delivery appointment (e.g. GAS_REFERRER_DELIVERY)
+    delivery = models.ForeignKey('gas.models.order.Delivery', null=True, blank=True)
+    # a Role can be tied to a given Withdrawal appointment (e.g. GAS_REFERRER_WITHDRAWAL)
+    withdrawal = models.ForeignKey('gas.models.order.Withdrawal', null=True, blank=True)
+    # a Role can be tied to a given GASSupplierOrder (e.g. GAS_REFERRER_ORDER)
+    order = models.ForeignKey('gas.models.order.GASSupplierOrder', null=True, blank=True)
     #TODO: roles can be retina-specific
     #retina = ForeignKey('gas.models.retina')
         
