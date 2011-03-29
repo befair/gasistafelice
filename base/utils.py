@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from permissions.models import Role as BaseRole
 from gasistafelice.base import Role 
 
@@ -30,12 +31,11 @@ def register_role(name, gas=None, supplier=None, delivery=None, withdrawal=None,
         # if not, create it      
         base_role = BaseRole.objects.create(name=name)
     finally:
+        # create the new Role, if not already existing in the DB 
         try: 
-            # check if a Role with the passed parameters already exists in the DB
-            role = Role.objects.get(base_role=base_role, gas=gas, supplier=supplier, delivery=delivery, withdrawal=withdrawal, order=order)
+            role = Role.objects.create(base_role=base_role, gas=gas, supplier=supplier, delivery=delivery, withdrawal=withdrawal, order=order)                        
+        except IntegrityError:
             return False
-        except Role.DoesNotExist:
-            role = Role.objects.create(base_role=base_role, gas=gas, supplier=supplier, delivery=delivery, withdrawal=withdrawal, order=order)
-            return role
+        return role
         
             

@@ -55,7 +55,9 @@ class Role(BaseRole):
     order = models.ForeignKey('gas.models.order.GASSupplierOrder', null=True, blank=True)
     #TODO: roles can be retina-specific
     #retina = ForeignKey('gas.models.retina')
-            
+    class Meta:
+        # forbid duplicated Role entries in the DB
+        unique_together = ("base_role", "gas", "supplier", "delivery", "withdrawal", "order")
 
 class Place(models.Model):
     """Places should be managed as separate entities for various reasons:
