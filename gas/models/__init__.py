@@ -80,6 +80,16 @@ class GASMember(models.Model):
             register_role(name=GAS_MEMBER, gas=self.gas)
         finally:
             role.add_principal(user)
+    
+    # a map between Permissions (local an global ones) and Roles to which grant them
+    permission_grants = (
+                         # (permission codename, Role (query)set, is_local?)
+                        # GAS tech referrers have full access to members of their own GAS 
+                        ('ALL', Role.objects.filter(base_role=GAS_REFERRER_TECH, gas=self.gas), True),
+                        # GAS members can see list and details of their fellow members
+                        ('LIST', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas), True),
+                        ('VIEW', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas), True),
+                            )       
            
     def save(self):
     #    self.first_name = self.name
