@@ -151,7 +151,7 @@ class GASMemberOrder(models.Model):
         """Apply default transition"""
         #TODO!
         default_workflow = self.gas.workflow_default_gasmember_order
-        transition = default_workflow. #TODO! Serie di stati o serie di transizioni? TODO
+        # transition = default_workflow. #TODO! Serie di stati o serie di transizioni? TODO
         
 
     def save(self):
@@ -169,7 +169,7 @@ class Delivery(models.Model):
     """
     
     place = models.ForeignKey(Place, related_name="deliveries", help_text=_("where the order will be delivered by supplier"))
-    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier")    
+    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
     
@@ -188,10 +188,10 @@ class Withdrawal(models.Model):
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
     """
     
-    place = models.ForeignKey(Place, related_name="withdrawals", help_text=_("where the order will be withdrawn by GAS members")
+    place = models.ForeignKey(Place, related_name="withdrawals", help_text=_("where the order will be withdrawn by GAS members"))
     # a Withdrawal appointment usually span a time interval
-    start_time = models.TimeField(help_text=_("when the withdrawal will start")
-    end_time = models.TimeField(help_text=_("when the withdrawal will end")
+    start_time = models.TimeField(help_text=_("when the withdrawal will start"))
+    end_time = models.TimeField(help_text=_("when the withdrawal will end"))
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
     
