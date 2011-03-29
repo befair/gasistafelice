@@ -12,7 +12,8 @@ from gasistafelice.base.models import Person, Role
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
 from gasistafelice.base.utils import register_role
-from gasistafelice.gas.const import STATES_LIST, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+from gasistafelice.base.const import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+from gasistafelice.gas.const import STATES_LIST
 from gasistafelice.gas import managers
 
 from workflows.models import Workflow, Transition
@@ -33,8 +34,8 @@ class GAS(models.Model):
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
 
-    objects = managers.GASRolesManager()
-
+    objects = managers.GASRolesManager()                      
+    
     class Meta:
         verbose_name_plural = _('GAS')
 
@@ -79,7 +80,7 @@ class GASMember(models.Model):
             register_role(name=GAS_MEMBER, gas=self.gas)
         finally:
             role.add_principal(user)
-    
+           
     def save(self):
     #    self.first_name = self.name
     #    self.last_name = self.last_name
