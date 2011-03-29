@@ -29,13 +29,15 @@ LIST = 'list'
 CREATE = 'create'
 EDIT = 'edit'
 DELETE = 'delete'
+ALL = 'all' # catchall
 
 PERMISSIONS_LIST = [
 (VIEW, _('View')),
 (LIST, _('List')),
 (CREATE, _('Create')),
 (EDIT, _('Edit')),               
-(DELETE, _('Delete')),                     
+(DELETE, _('Delete')),
+(ALL, _('All')), # catchall                     
 ]
 
 
