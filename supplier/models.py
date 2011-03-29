@@ -29,14 +29,17 @@ class Supplier(models.Model):
     @property
     def product_catalog(self):
         return [s.product for s in SupplierStock.objects.filter(supplier=self)]
-
+    
     def __unicode__(self):
         return self.name
     
-    def save(self):
-        super(Supplier, self).save()
+    def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_role(name=SUPPLIER_REFERRER, supplier=self)
+    
+    def save(self):
+        super(Supplier, self).save()
+        self.setup_roles()
     
     
 class SupplierReferrer(models.Model):
@@ -44,9 +47,9 @@ class SupplierReferrer(models.Model):
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
-
-    def save(self):
-        super(SupplierReferrer, self).save()
+    
+    
+    def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
         try:
@@ -55,7 +58,11 @@ class SupplierReferrer(models.Model):
             register_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
         finally:
             role.add_principal(user)     
-            
+    
+        
+    def save(self):
+        super(SupplierReferrer, self).save()
+        self.setup_roles() 
     
 class Certification(models.Model):
     name = models.CharField(max_length=128, unique=True) 

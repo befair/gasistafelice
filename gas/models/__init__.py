@@ -41,14 +41,17 @@ class GAS(models.Model):
     def __unicode__(self):
         return self.name
     
-    def save(self):
-        super(GAS, self).save()
+    def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
         register_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_role(name=GAS_REFERRER_CASH, gas=self)
+        
+    def save(self):
+        super(GAS, self).save()
+        self.setup_roles()
     
 
 class GASMember(models.Model):
@@ -66,11 +69,8 @@ class GASMember(models.Model):
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
-
-    def save(self):
-    #    self.first_name = self.name
-    #    self.last_name = self.last_name
-        super(GASMember, self).save()
+    
+    def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
         try:
@@ -78,7 +78,13 @@ class GASMember(models.Model):
         except Role.DoesNotExist: # Role hasn't been registered, yet
             register_role(name=GAS_MEMBER, gas=self.gas)
         finally:
-            role.add_principal(user) 
+            role.add_principal(user)
+    
+    def save(self):
+    #    self.first_name = self.name
+    #    self.last_name = self.last_name
+        super(GASMember, self).save()
+        self.setup_roles() 
    
 class GASSupplierSolidalPact(models.Model):
     """Define a GAS <-> Supplier relationship agreement.
@@ -104,9 +110,12 @@ class GASSupplierSolidalPact(models.Model):
     # TODO
     #supplier_referrers = ...
     
-    def save(self):
-        super(GASSupplierSolidalPact, self).save()
+    def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+    
+    def save(self):
+        super(GASSupplierSolidalPact, self).save()
+        self.setup_roles()
 
     

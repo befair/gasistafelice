@@ -65,16 +65,19 @@ class GASSupplierOrder(models.Model):
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
+    def setup_roles(self):
+        # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
+        register_role(name=GAS_REFERRER_ORDER, order=self)
+
     def save(self):
         super(GASSupplierOrder, self).save()
+        self.setup_roles()
         # If no Products has been associated to this order, then use every Product bound to the Supplier        
         if not self.products.all():
             for product in self.supplier.product_catalog:
                 self.products.add(product)
         return
-        # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
-        register_role(name=GAS_REFERRER_ORDER, order=self)
-
+        
 class GASSupplierOrderProduct(models.Model):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
@@ -170,11 +173,15 @@ class Delivery(models.Model):
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
     
-    def save(self):
-        super(Delivery, self).save()
+    def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
         register_role(name=GAS_REFERRER_DELIVERY, delivery=self)
+            
+    def save(self):
+        super(Delivery, self).save()
+        self.setup_roles()
     
+
 class Withdrawal(models.Model):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
@@ -188,8 +195,10 @@ class Withdrawal(models.Model):
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
     
+    def setup_roles(self):
+        # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
+        register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)    
+    
     def save(self):
         super(Withdrawal, self).save()
-        # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)
-    
+        self.setup_roles()
