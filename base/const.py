@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+## role-related constants
 NOBODY = 'NOBODY'
 SUPPLIER_REFERRER = 'SUPPLIER_REFERRER'
 GAS_MEMBER = 'GAS_MEMBER'
@@ -21,6 +22,22 @@ ROLES_LIST = [
 (GAS_REFERRER_CASH, _('GAS cash referrer')),
 (GAS_REFERRER_TECH, _('GAS technical referrer')),
 ]
+
+## permission-related constants
+VIEW = 'view'
+LIST = 'list'
+CREATE = 'create'
+EDIT = 'edit'
+DELETE = 'delete'
+
+PERMISSIONS_LIST = [
+(VIEW, _('View')),
+(LIST, _('List')),
+(CREATE, _('Create')),
+(EDIT, _('Edit')),               
+(DELETE, _('Delete')),                     
+]
+
 
 SUPPLIER_FLAVOUR_LIST = [
 ('COMPANY', _('Company')),
