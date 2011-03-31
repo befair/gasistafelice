@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from gasistafelice.base.utils import register_role
+from gasistafelice.base.const import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+
 from gasistafelice.base.models import Person, Role
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
@@ -33,6 +36,18 @@ class GAS(models.Model):
     def __unicode__(self):
         return self.name
     
+    def setup_roles(self):
+        # register a new `GAS_MEMBER` Role for this GAS
+        register_role(name=GAS_MEMBER, gas=self)
+        # register a new `GAS_REFERRER_TECH` Role for this GAS
+        register_role(name=GAS_REFERRER_TECH, gas=self)
+        # register a new `GAS_REFERRER_CASH` Role for this GAS
+        register_role(name=GAS_REFERRER_CASH, gas=self)
+        
+    def save(self):
+        super(GAS, self).save()
+        self.setup_roles()
+    
 
 class GASMember(models.Model):
     """A bind of a Person into a GAS.
@@ -50,18 +65,39 @@ class GASMember(models.Model):
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
 
-#    def save(self):
-#        self.first_name = self.name
-#        self.last_name = self.last_name
-#        super(GASUser, self).save()
     
+    def setup_roles(self):
+        # automatically add a new GASMember to the `GAS_MEMBER` Role
+        user = self.person.user
+        try:
+            role = Role.objects.get(name=GAS_MEMBER, gas=self.gas)            
+        except Role.DoesNotExist: # Role hasn't been registered, yet
+            register_role(name=GAS_MEMBER, gas=self.gas)
+        finally:
+            role.add_principal(user)
+    
+    # a map between Permissions (local an global ones) and Roles to which grant them
+    permission_grants = (
+                         # (permission codename, Role (query)set, is_local?)
+                        # GAS tech referrers have full access to members of their own GAS 
+                        ('ALL', Role.objects.filter(base_role=GAS_REFERRER_TECH, gas=self.gas), True),
+                        # GAS members can see list and details of their fellow members
+                        ('LIST', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas), True),
+                        ('VIEW', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas), True),
+                            )       
+           
+    def save(self):
+    #    self.first_name = self.name
+    #    self.last_name = self.last_name
+        super(GASMember, self).save()
+        self.setup_roles() 
+   
 class GASSupplierSolidalPact(models.Model):
     """Define a GAS <-> Supplier relationship agreement.
-    Each Supplier comes into relathionship with a GAS by signing this pact.
-    In this pact we factorize behaviour agreements 
-    between these two entities.
-    It acts as configuration for order and delivery management 
-    to the specific supplier.
+    
+    Each Supplier comes into relationship with a GAS by signing this pact,
+    where are factorized behaviour agreements between these two entities.
+    This pact acts as a configurator for order and delivery management with respect to the given Supplier.
     """
 
     gas = models.ForeignKey(GAS)
@@ -69,9 +105,9 @@ class GASSupplierSolidalPact(models.Model):
     date_signed = models.DateField()
     # which Products GAS members can order from Supplier
     supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
-    # TODO: perhaps should be a `CurrencyField` ? (should be positive)
+    # TODO: should be a `CurrencyField` 
     order_minimum_amount = models.FloatField(null=True, blank=True)
-    # TODO: perhaps should be a `CurrencyField` ? (should be positive)
+    # TODO: should be a `CurrencyField`
     order_delivery_cost = models.FloatField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
     order_deliver_interval = models.TimeField()  
@@ -80,6 +116,13 @@ class GASSupplierSolidalPact(models.Model):
     # TODO must be a property (use django-permissions)
     #supplier_referrers = ...
     
+    def setup_roles(self):
+        # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
+        register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+    
+    def save(self):
+        super(GASSupplierSolidalPact, self).save()
+        self.setup_roles()
      
     
 

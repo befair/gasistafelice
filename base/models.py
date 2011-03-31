@@ -8,7 +8,9 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
+from permissions.models import Role as BaseRole 
 from workflows.models import Workflow, Transition, State
+from django.db.models.fields.related import ManyToManyField, ForeignKey
 
 class Person(models.Model):
     """A Person is an anagraphic record of a human being.
@@ -30,10 +32,32 @@ class Contact(models.Model):
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Role(models.Model):
-    name = models.CharField(max_length=128)
-    description = models.TextField()
-
+class Role(BaseRole):
+    """
+    A custom `Role` model class inheriting from `django-permissions`'s`Role` model.
+    
+    This way, we are able to augment the base `Role` model 
+    (carrying only a `name` field attribute) with additional information
+    needed to describe those 'parametric' roles arising in this application domain
+    (e.g. GAS' supplier|tech|cash referrers).    
+    """
+    # link to the base model class (`BaseRole`)
+    base_role = models.OneToOneField(BaseRole, parent_link=True)
+    # a Role can be tied to a given GAS (e.g. GAS_REFERRER_CASH, GAS_REFERRER_TECH)
+    gas = models.ForeignKey('gas.models.GAS', null=True, blank=True) 
+    # a Role can be tied to a given Supplier (e.g. SUPPLIER_REFERRER, GAS_REFERRER_SUPPLIER)
+    supplier = models.ForeignKey('supplier.models.Supplier', null=True, blank=True)
+    # a Role can be tied to a given Delivery appointment (e.g. GAS_REFERRER_DELIVERY)
+    delivery = models.ForeignKey('gas.models.order.Delivery', null=True, blank=True)
+    # a Role can be tied to a given Withdrawal appointment (e.g. GAS_REFERRER_WITHDRAWAL)
+    withdrawal = models.ForeignKey('gas.models.order.Withdrawal', null=True, blank=True)
+    # a Role can be tied to a given GASSupplierOrder (e.g. GAS_REFERRER_ORDER)
+    order = models.ForeignKey('gas.models.order.GASSupplierOrder', null=True, blank=True)
+    #TODO: roles can be retina-specific
+    #retina = ForeignKey('gas.models.retina')
+    class Meta:
+        # forbid duplicated Role entries in the DB
+        unique_together = ("base_role", "gas", "supplier", "delivery", "withdrawal", "order")
 
 class Place(models.Model):
     """Places should be managed as separate entities for various reasons:
