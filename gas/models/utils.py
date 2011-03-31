@@ -1,11 +1,12 @@
 from django.utils.translation import ugettext as _
 
 from workflows.models import Workflow, State, Transition
-from base.models import WorkflowDefaultTransitionOrder
+from gasistafelice.base.models import WorkflowDefaultTransitionOrder
 from permissions.utils import register_role
 from permissions.utils import register_role
 
 def init_workflow():
+    return
 
     # GASMemberOrder simplest workflow
     workflow = Workflow.objects.create(name="GASMemberOrderSimple")
@@ -30,9 +31,9 @@ def init_workflow():
     workflow.initial_state = confirmed
     workflow.save()
 
-    workflow.defaultworkflowtransitionorder_set.add(transition=finalize, order=1)
-    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=2)
-    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=3)
+    workflow.workflowdefaulttransitionorder_set.add(state=confirmed, transition=finalize)
+    workflow.workflowdefaulttransitionorder_set.add(state=finalized, transition=deliver)
+    workflow.workflowdefaulttransitionorder_set.add(state=delivered, transition=withdraw)
 
     #GASMember Order full workflow
     workflow = Workflow.objects.create(name="GASMemberOrderFull")
@@ -67,11 +68,11 @@ def init_workflow():
     workflow.initial_state = unconfirmed
     workflow.save()
 
-    workflow.defaultworkflowtransitionorder_set.add(transition=confirm, order=1)
-    workflow.defaultworkflowtransitionorder_set.add(transition=finalized, order=2)
-    workflow.defaultworkflowtransitionorder_set.add(transition=sent, order=3)
-    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=4)
-    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=4)
+    workflow.workflowdefaulttransitionorder_set.add(state=unconfirmed, transition=confirm)
+    workflow.workflowdefaulttransitionorder_set.add(state=confirmed, transition=finalize)
+    workflow.workflowdefaulttransitionorder_set.add(state=finalized, transition=send)
+    workflow.workflowdefaulttransitionorder_set.add(state=sent, transition=deliver)
+    workflow.workflowdefaulttransitionorder_set.add(state=delivered, transition=withdraw)
 
     # SupplierOrder Default Workflow
 #TODO TODO TODO

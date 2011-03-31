@@ -8,7 +8,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
-from workflows.models import Workflow, Transition
+from workflows.models import Workflow, Transition, State
 
 class Person(models.Model):
     """A Person is an anagraphic record of a human being.
@@ -45,9 +45,9 @@ class Place(models.Model):
     """
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-    address = models.CharField(max_length=128)
-    city = models.CharField(max_length=128)
-    province = models.CharField(max_length=128)
+    address = models.CharField(max_length=128, blank=True)
+    city = models.CharField(max_length=128, blank=True)
+    province = models.CharField(max_length=128, blank=True)
         
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(blank=True)
@@ -59,6 +59,6 @@ class Place(models.Model):
 class WorkflowDefaultTransitionOrder(models.Model):
 
     workflow = models.ForeignKey(Workflow)
+    state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
-    order = models.PositiveIntegerField()
 
