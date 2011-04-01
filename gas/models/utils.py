@@ -20,6 +20,7 @@ def init_workflow():
               ('sent', "Sent"), # GASMemberOrder has been sent to the Supplier
               ('ready', "Ready for withdraw"), # GASMemberOrder is ready for withdrawal
               ('withdrawn', "Withdrawn"), # GASMemberOrder has been withdrawn by the GASMember who issued it
+              ('not_withdrawn', "Not withdrawn"), # GASMemberOrder hasn't been withdrawn in due time by the GASMember who issued it
               #COMMENT: is it useful to know what has been delivered but not withdrawn
               #charged COMMENT: is it useful to make an automatic state update when order is charged by economist?
               ('canceled', "Canceled"), # GASMemberOrder has been canceled
@@ -128,7 +129,7 @@ def init_workflow():
                               ('finalized', 'sent'),
                               # SupplierOrder may be canceled at any time before delivery happens
                               ('open', 'cancel'),
-                              ('close', 'cancel'),
+                              ('closed', 'cancel'),
                               ('on_completion', 'cancel'),
                               ('finalized', 'cancel'),
                               ('sent', 'cancel'),
