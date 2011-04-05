@@ -75,7 +75,6 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
 
     def save(self):
         super(GASSupplierOrder, self).save()
-        self.setup_roles()
         # If no Products has been associated to this order, then use every Product bound to the Supplier        
         if not self.products.all():
             for product in self.supplier.product_catalog:
@@ -179,11 +178,8 @@ class Delivery(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_role(name=GAS_REFERRER_DELIVERY, delivery=self)
-            
-    def save(self):
-        super(Delivery, self).save()
-        self.setup_roles()
+        register_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
+    
     
 
 class Withdrawal(Resource, PermissionBase, models.Model):
@@ -203,6 +199,3 @@ class Withdrawal(Resource, PermissionBase, models.Model):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
         register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)    
     
-    def save(self):
-        super(Withdrawal, self).save()
-        self.setup_roles()

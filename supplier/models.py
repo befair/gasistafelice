@@ -38,11 +38,7 @@ class Supplier(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_role(name=SUPPLIER_REFERRER, supplier=self)
-    
-    def save(self):
-        super(Supplier, self).save()
-        self.setup_roles()
-    
+        
     
 class SupplierReferrer(Resource, PermissionBase, models.Model):
     supplier = models.ForeignKey(Supplier)
@@ -61,10 +57,6 @@ class SupplierReferrer(Resource, PermissionBase, models.Model):
         finally:
             role.add_principal(user)     
     
-        
-    def save(self):
-        super(SupplierReferrer, self).save()
-        self.setup_roles() 
     
 class Certification(Resource, PermissionBase, models.Model):
     name = models.CharField(max_length=128, unique=True) 

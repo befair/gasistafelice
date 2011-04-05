@@ -44,12 +44,8 @@ class GAS(Resource, PermissionBase, models.Model):
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_role(name=GAS_REFERRER_CASH, gas=self)
+        register_role(name=GAS_REFERRER_CASH, gas=self)     
         
-    def save(self):
-        super(GAS, self).save()
-        self.setup_roles()
-    
 
 class GASMember(Resource, PermissionBase, models.Model):
     """A bind of a Person into a GAS.
@@ -91,8 +87,7 @@ class GASMember(Resource, PermissionBase, models.Model):
     def save(self):
     #    self.first_name = self.name
     #    self.last_name = self.last_name
-        super(GASMember, self).save()
-        self.setup_roles() 
+        super(GASMember, self).save()         
    
 class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     """Define a GAS <-> Supplier relationship agreement.
@@ -120,11 +115,8 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
-    
-    def save(self):
-        super(GASSupplierSolidalPact, self).save()
-        self.setup_roles()
+        register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
+        
      
     
 
