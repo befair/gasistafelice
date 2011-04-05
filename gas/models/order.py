@@ -46,7 +46,7 @@ class GASSupplierStock(Resource, PermissionBase, models.Model):
         return self.supplier_stock.price*(1 + price_percent_update)
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -82,7 +82,7 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
         register_role(name=GAS_REFERRER_ORDER, order=self)
         
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -126,7 +126,7 @@ class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
         return amount 
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -180,7 +180,7 @@ class GASMemberOrder(Resource, PermissionBase, models.Model):
         do_transition(self, transition, user)
         
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -210,7 +210,7 @@ class Delivery(Resource, PermissionBase, models.Model):
         register_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -235,7 +235,7 @@ class Withdrawal(Resource, PermissionBase, models.Model):
         register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
         
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     

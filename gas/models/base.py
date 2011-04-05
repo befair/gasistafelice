@@ -47,7 +47,7 @@ class GAS(Resource, PermissionBase, models.Model):
         register_role(name=GAS_REFERRER_CASH, gas=self)     
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -82,7 +82,7 @@ class GASMember(Resource, PermissionBase, models.Model):
             role.add_principal(user)
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
             # GAS tech referrers have full access to members of their own GAS 
             ('ALL', Role.objects.filter(base_role=GAS_REFERRER_TECH, gas=self.gas)),
@@ -126,7 +126,7 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
         register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     

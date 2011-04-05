@@ -10,8 +10,8 @@ def get_models_with_permissions():
     for which permission management is active. 
     """
     from django.db.models.loading import cache
-    # we are only interested in installed model classes for which the `permission_grants` property is defined
-    rv = [m for m in cache.get_models() if m._meta.installed and hasattr(m, permission_grants)]
+    # we are only interested in installed model classes for which the `local_grants` property is defined
+    rv = [m for m in cache.get_models() if m._meta.installed and hasattr(m, local_grants)]
     return rv
 
  
@@ -44,7 +44,7 @@ for (codename, name)  in  PERMISSIONS_LIST:
 def setup_perms(sender, instance, created, **kwargs):
         """
         Setup proper Permissions after a model instance is saved to the DB for the first time,
-        based on data contained on the `permission_grants` attribute (if any) of the given model class (`sender`).
+        based on data contained on the `local_grants` attribute (if any) of the given model class (`sender`).
         """
         # TODO: global permissions' management
         if created: # Permissions have to be set only for newly created instances
@@ -54,7 +54,7 @@ def setup_perms(sender, instance, created, **kwargs):
                 model_list = [m for m in get_models_with_permissions() if m is not Role]  
                 for m in model_list:
                     for obj in m.objects.all():
-                        grants = obj.permission_grants
+                        grants = obj.local_grants
                         for (perm_code, roles) in grants:
                                 if role in roles:                        
                                     # retrieve the Permission object  
@@ -63,8 +63,8 @@ def setup_perms(sender, instance, created, **kwargs):
             else: # a not-Role model instance has just been created, so grant the right Permissions on it to proper Roles
                 try:
                     # `instance` is the model instance just created
-                    grants = instance.permission_grants
-                    # `permission_grants` is a tuple of 2-tuples of the form:
+                    grants = instance.local_grants
+                    # `local_grants` is a tuple of 2-tuples of the form:
                     # (codename of the permission to be granted, (query)set of Roles to which that Permission is granted for the give model instance)                    
                     for (perm_code, roles) in grants:                        
                             # retrieve the Permission object  

@@ -40,7 +40,7 @@ class Supplier(Resource, PermissionBase, models.Model):
         register_role(name=SUPPLIER_REFERRER, supplier=self)
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -65,7 +65,7 @@ class SupplierReferrer(Resource, PermissionBase, models.Model):
             role.add_principal(user)     
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -80,7 +80,7 @@ class Certification(Resource, PermissionBase, models.Model):
         return self.name
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -96,7 +96,7 @@ class ProductCategory(Resource, PermissionBase, models.Model):
         return self.name
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -116,7 +116,7 @@ class ProductMU(Resource, PermissionBase, models.Model):
         return self.name
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -136,7 +136,7 @@ class Product(Resource, PermissionBase, models.Model):
         return self.producer.referrers.all()
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
@@ -165,7 +165,7 @@ class SupplierStock(Resource, PermissionBase, models.Model):
         return self.product.producer
     
     @property        
-    def permission_grants(self):
+    def local_grants(self):
         rv = (
               # permission specs go here
               )     
