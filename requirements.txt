@@ -1,0 +1,2 @@
+django-permissions
+django-workflows>=1.0
