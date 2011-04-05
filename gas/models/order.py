@@ -3,17 +3,19 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.base.models import Place 
-from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
+from gasistafelice.base.models import Place, WorkflowDefaultTransitionOrder
+from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.base.utils import register_role
 from gasistafelice.gas.const import STATES_LIST, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 from workflows.models import Workflow
-from workflows.utils import get_workflow
+from workflows.utils import get_workflow, get_state, do_transition
 
-if not Workflow.objects.get(name="DefaultOrder"):
-    from gasistafelice.gas.utils import init_workflow
+try:
+    Workflow.objects.get(name="GASMemberOrderSimple")
+except Workflow.DoesNotExist:
+    from gasistafelice.gas.models.utils import init_workflow
     init_workflow()
 
 class GASSupplierStock(models.Model):
@@ -132,6 +134,7 @@ class GASMemberOrder(models.Model):
     @property
     def order(self):
         return self.product.order 
+
     # which GAS this order was issued to ? 
     @property
     def gas(self):
@@ -143,16 +146,15 @@ class GASMemberOrder(models.Model):
     def workflow(self):
         return get_workflow(self)
 
-    @workflow.set
+    @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(_("Workflow for specific order is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(_("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
 
-    def forward(self):
+    def forward(self, user):
         """Apply default transition"""
-        #TODO!
-        default_workflow = self.gas.workflow_default_gasmember_order
-        # transition = default_workflow. #TODO! Serie di stati o serie di transizioni? TODO
-        
+        state = get_state(self)
+        transition = WorkflowDefaultTransitionOrder.objects.get(workflow=self.workflow, state=state).transition
+        do_transition(self, transition, user)
 
     def save(self):
         if not self.workflow:

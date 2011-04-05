@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
 from permissions.models import Role as BaseRole 
-from workflows.models import Workflow, Transition
+from workflows.models import Workflow, Transition, State
 from django.db.models.fields.related import ManyToManyField, ForeignKey
 
 class Person(models.Model):
@@ -69,9 +69,9 @@ class Place(models.Model):
     """
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
-    address = models.CharField(max_length=128)
-    city = models.CharField(max_length=128)
-    province = models.CharField(max_length=128)
+    address = models.CharField(max_length=128, blank=True)
+    city = models.CharField(max_length=128, blank=True)
+    province = models.CharField(max_length=128, blank=True)
         
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(blank=True)
@@ -83,6 +83,6 @@ class Place(models.Model):
 class WorkflowDefaultTransitionOrder(models.Model):
 
     workflow = models.ForeignKey(Workflow)
+    state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
-    order = models.PositiveIntegerField()
 

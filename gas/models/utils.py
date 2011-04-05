@@ -1,10 +1,11 @@
 from django.utils.translation import ugettext as _
 
 from workflows.models import Workflow, State, Transition
-from base.models import WorkflowDefaultTransitionOrder
+from gasistafelice.base.models import WorkflowDefaultTransitionOrder
 from permissions.utils import register_role
 
 def init_workflow():
+    return
 
 #-----------------------------------------------------------------------------
     # default Workflow for a GASMemberOrder 
@@ -71,11 +72,12 @@ def init_workflow():
     workflow.initial_state = states['unconfirmed']    
     workflow.save()
 
-    workflow.defaultworkflowtransitionorder_set.add(transition=confirm, order=1)
-    workflow.defaultworkflowtransitionorder_set.add(transition=finalized, order=2)
-    workflow.defaultworkflowtransitionorder_set.add(transition=sent, order=3)
-    workflow.defaultworkflowtransitionorder_set.add(transition=deliver, order=4)
-    workflow.defaultworkflowtransitionorder_set.add(transition=withdraw, order=4)
+    workflow.workflowdefaulttransitionorder_set.add(state=states["unconfirmed"], transition=transitions["confirm"])
+    workflow.workflowdefaulttransitionorder_set.add(state=states["confirmed"], transition=transitions["finalize"])
+    workflow.workflowdefaulttransitionorder_set.add(state=states["finalized"], transition=transitions["send"])
+    workflow.workflowdefaulttransitionorder_set.add(state=states["sent"], transition=transitions["deliver"])
+    workflow.workflowdefaulttransitionorder_set.add(state=states["delivered"], transition=transitions["withdraw"])
+
 #----------------------------------------------------------------------------- 
    # default Workflow for a SupplierOrder 
     workflow = Workflow.objects.create(name="SupplierOrderDefault")
