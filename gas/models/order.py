@@ -3,7 +3,9 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.base.models import Place, WorkflowDefaultTransitionOrder
+from permissions import PermissionBase # mix-in class for permissions management
+
+from gasistafelice.base.models import Resource, Place, WorkflowDefaultTransitionOrder
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.base.utils import register_role
@@ -18,7 +20,7 @@ except Workflow.DoesNotExist:
     from gasistafelice.gas.models.utils import init_workflow
     init_workflow()
 
-class GASSupplierStock(models.Model):
+class GASSupplierStock(Resource, PermissionBase, models.Model):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
     gas = models.ForeignKey(GAS)
@@ -43,7 +45,7 @@ class GASSupplierStock(models.Model):
         price_percent_update = GASSupplierSolidalPact.objects.get(gas=self.gas, supplier=self.supplier).order_price_percent_update
         return self.supplier_stock.price*(1 + price_percent_update)
 
-class GASSupplierOrder(models.Model):
+class GASSupplierOrder(Resource, PermissionBase, models.Model):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
@@ -80,7 +82,7 @@ class GASSupplierOrder(models.Model):
                 self.products.add(product)
         return
         
-class GASSupplierOrderProduct(models.Model):
+class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -109,7 +111,7 @@ class GASSupplierOrderProduct(models.Model):
             amount=+ order.ordered_amount
         return amount 
     
-class GASMemberOrder(models.Model):
+class GASMemberOrder(Resource, PermissionBase, models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
@@ -164,7 +166,7 @@ class GASMemberOrder(models.Model):
 
         return super(GASMemberOrder, self).save()
 
-class Delivery(models.Model):
+class Delivery(Resource, PermissionBase, models.Model):
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
@@ -184,7 +186,7 @@ class Delivery(models.Model):
         self.setup_roles()
     
 
-class Withdrawal(models.Model):
+class Withdrawal(Resource, PermissionBase, models.Model):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  

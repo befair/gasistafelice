@@ -8,11 +8,19 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from gasistafelice.base.const import CONTACT_CHOICES
+from permissions import PermissionBase # mix-in class for permissions management
 from permissions.models import Role as BaseRole 
 from workflows.models import Workflow, Transition, State
 from django.db.models.fields.related import ManyToManyField, ForeignKey
 
-class Person(models.Model):
+class Resource(object):
+    """
+    A basic mix-in class used to factor out data/behaviours common 
+    to the majority of model classes in the project's applications. 
+    """
+    pass
+
+class Person(Resource, PermissionBase, models.Model):
     """A Person is an anagraphic record of a human being.
     It can be a User or not.
     """
@@ -27,12 +35,12 @@ class Person(models.Model):
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname)
    
-class Contact(models.Model):
+class Contact(Resource, PermissionBase, models.Model):
 
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Role(BaseRole):
+class Role(Resource, PermissionBase, BaseRole):
     """
     A custom `Role` model class inheriting from `django-permissions`'s`Role` model.
     
@@ -59,7 +67,7 @@ class Role(BaseRole):
         # forbid duplicated Role entries in the DB
         unique_together = ("base_role", "gas", "supplier", "delivery", "withdrawal", "order")
 
-class Place(models.Model):
+class Place(Resource, PermissionBase, models.Model):
     """Places should be managed as separate entities for various reasons:
     * among the entities arising in the description of GAS' activities, 
       there are several being places or involving places, 
@@ -80,7 +88,7 @@ class Place(models.Model):
 
 # Generic workflow management
 
-class WorkflowDefaultTransitionOrder(models.Model):
+class WorkflowDefaultTransitionOrder(Resource, PermissionBase, models.Model):
 
     workflow = models.ForeignKey(Workflow)
     state = models.ForeignKey(State)

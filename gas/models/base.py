@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from permissions import PermissionBase # mix-in class for permissions management
+
 from gasistafelice.base.utils import register_role
 from gasistafelice.base.const import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 
-from gasistafelice.base.models import Person, Role
+from gasistafelice.base.models import Resource, Person, Role
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product
 
 from gasistafelice.gas.const import STATES_LIST
@@ -12,7 +14,7 @@ from gasistafelice.gas import managers
 
 from workflows.models import Workflow, Transition
 
-class GAS(models.Model):
+class GAS(Resource, PermissionBase, models.Model):
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
@@ -49,7 +51,7 @@ class GAS(models.Model):
         self.setup_roles()
     
 
-class GASMember(models.Model):
+class GASMember(Resource, PermissionBase, models.Model):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
     This way, every time there is a need to assign one or more GAS Members to a given Role,
@@ -92,7 +94,7 @@ class GASMember(models.Model):
         super(GASMember, self).save()
         self.setup_roles() 
    
-class GASSupplierSolidalPact(models.Model):
+class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     """Define a GAS <-> Supplier relationship agreement.
     
     Each Supplier comes into relationship with a GAS by signing this pact,

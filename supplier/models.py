@@ -10,11 +10,13 @@ Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/Boz
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from permissions import PermissionBase # mix-in class for permissions management
+
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, SUPPLIER_REFERRER, ALWAYS_AVAILABLE
-from gasistafelice.base.models import Person, Place, Role
+from gasistafelice.base.models import Resource, Person, Place, Role
 from gasistafelice.base.utils import register_role
 
-class Supplier(models.Model):
+class Supplier(Resource, PermissionBase, models.Model):
     """An actor having a stock of Products for sale to the DES."""
 
     name = models.CharField(max_length=128) 
@@ -42,7 +44,7 @@ class Supplier(models.Model):
         self.setup_roles()
     
     
-class SupplierReferrer(models.Model):
+class SupplierReferrer(Resource, PermissionBase, models.Model):
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
@@ -64,14 +66,14 @@ class SupplierReferrer(models.Model):
         super(SupplierReferrer, self).save()
         self.setup_roles() 
     
-class Certification(models.Model):
+class Certification(Resource, PermissionBase, models.Model):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.name
 
-class ProductCategory(models.Model):
+class ProductCategory(Resource, PermissionBase, models.Model):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
     # like sourceforge categories
     name = models.CharField(max_length=128, unique=True, blank=False)
@@ -80,7 +82,7 @@ class ProductCategory(models.Model):
     def __unicode__(self):
         return self.name
 
-class ProductMU(models.Model):
+class ProductMU(Resource, PermissionBase, models.Model):
     """Measurement unit for a Product.
          
     """
@@ -93,7 +95,7 @@ class ProductMU(models.Model):
     def __unicode__(self):
         return self.name
 
-class Product(models.Model):
+class Product(Resource, PermissionBase, models.Model):
 
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True) # if empty, should be programmatically set at DB save time
     producer = models.ForeignKey(Supplier)
@@ -106,7 +108,7 @@ class Product(models.Model):
     def referrers(self):
         return self.producer.referrers.all()
 
-class SupplierStock(models.Model):
+class SupplierStock(Resource, PermissionBase, models.Model):
     """A Product that a Supplier offers in the DES marketplace.
         
        Includes price, order constraints and availability information.          
