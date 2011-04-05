@@ -90,6 +90,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
               )     
         return rv
 
+    @property
+    def report_name(self):
+	# Clean file order name
+	#TODO: clean supplier name 
+	return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
+
     def save(self):
         super(GASSupplierOrder, self).save()
         # If no Products has been associated to this order, then use every Product bound to the Supplier        
