@@ -38,6 +38,13 @@ class Supplier(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_role(name=SUPPLIER_REFERRER, supplier=self)
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv   
         
     
 class SupplierReferrer(Resource, PermissionBase, models.Model):
@@ -57,6 +64,13 @@ class SupplierReferrer(Resource, PermissionBase, models.Model):
         finally:
             role.add_principal(user)     
     
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
+    
     
 class Certification(Resource, PermissionBase, models.Model):
     name = models.CharField(max_length=128, unique=True) 
@@ -64,6 +78,13 @@ class Certification(Resource, PermissionBase, models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
 
 class ProductCategory(Resource, PermissionBase, models.Model):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
@@ -73,6 +94,13 @@ class ProductCategory(Resource, PermissionBase, models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
 
 class ProductMU(Resource, PermissionBase, models.Model):
     """Measurement unit for a Product.
@@ -86,6 +114,13 @@ class ProductMU(Resource, PermissionBase, models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
 
 class Product(Resource, PermissionBase, models.Model):
 
@@ -99,6 +134,13 @@ class Product(Resource, PermissionBase, models.Model):
     @property
     def referrers(self):
         return self.producer.referrers.all()
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
 
 class SupplierStock(Resource, PermissionBase, models.Model):
     """A Product that a Supplier offers in the DES marketplace.
@@ -121,4 +163,10 @@ class SupplierStock(Resource, PermissionBase, models.Model):
     @property
     def producer(self):
         return self.product.producer
-
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv

@@ -45,7 +45,14 @@ class GAS(Resource, PermissionBase, models.Model):
         register_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_role(name=GAS_REFERRER_CASH, gas=self)     
-        
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv  
+    
 
 class GASMember(Resource, PermissionBase, models.Model):
     """A bind of a Person into a GAS.
@@ -74,16 +81,17 @@ class GASMember(Resource, PermissionBase, models.Model):
         finally:
             role.add_principal(user)
     
-    # a map between Permissions (local an global ones) and Roles to which grant them
-    permission_grants = (
-                         # (permission codename, Role (query)set, is_local?)
-                        # GAS tech referrers have full access to members of their own GAS 
-                        ('ALL', Role.objects.filter(base_role=GAS_REFERRER_TECH, gas=self.gas), True),
-                        # GAS members can see list and details of their fellow members
-                        ('LIST', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas), True),
-                        ('VIEW', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas), True),
-                            )       
-           
+    @property        
+    def permission_grants(self):
+        rv = (
+            # GAS tech referrers have full access to members of their own GAS 
+            ('ALL', Role.objects.filter(base_role=GAS_REFERRER_TECH, gas=self.gas)),
+            # GAS members can see list and details of their fellow members
+            ('LIST', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas)),
+            ('VIEW', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas)),
+              )     
+        return rv  
+       
     def save(self):
     #    self.first_name = self.name
     #    self.last_name = self.last_name
@@ -116,7 +124,13 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
-        
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
      
     
 

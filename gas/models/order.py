@@ -44,6 +44,14 @@ class GASSupplierStock(Resource, PermissionBase, models.Model):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = GASSupplierSolidalPact.objects.get(gas=self.gas, supplier=self.supplier).order_price_percent_update
         return self.supplier_stock.price*(1 + price_percent_update)
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
+    
 
 class GASSupplierOrder(Resource, PermissionBase, models.Model):
     """An order issued by a GAS to a Supplier.
@@ -72,6 +80,13 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
         register_role(name=GAS_REFERRER_ORDER, order=self)
+        
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
 
     def save(self):
         super(GASSupplierOrder, self).save()
@@ -109,6 +124,13 @@ class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
         for order in orders:
             amount=+ order.ordered_amount
         return amount 
+    
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
     
 class GASMemberOrder(Resource, PermissionBase, models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
@@ -156,6 +178,13 @@ class GASMemberOrder(Resource, PermissionBase, models.Model):
         state = get_state(self)
         transition = WorkflowDefaultTransitionOrder.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
+        
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
 
     def save(self):
         if not self.workflow:
@@ -180,6 +209,12 @@ class Delivery(Resource, PermissionBase, models.Model):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
         register_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
     
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
     
 
 class Withdrawal(Resource, PermissionBase, models.Model):
@@ -197,5 +232,12 @@ class Withdrawal(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)    
+        register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
+        
+    @property        
+    def permission_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv 
     
