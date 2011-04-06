@@ -68,6 +68,7 @@ class GASMember(PermissionResource, models.Model):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
+    identifier = models.CharField("Numero tessera", max_length=10, null=True, blank=True, help_text=_("Inserire cui il vostro numero di tessera"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
     roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
 
