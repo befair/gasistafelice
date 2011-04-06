@@ -6,10 +6,11 @@ It includes common data on which all (or almost all) other applications rely on.
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.base.const import CONTACT_CHOICES
 from permissions import PermissionBase # mix-in class for permissions management
-from permissions.models import Role as BaseRole 
+from permissions.models import Permission, Role as BaseRole 
 from workflows.models import Workflow, Transition, State
 from django.db.models.fields.related import ManyToManyField, ForeignKey
 
@@ -40,7 +41,7 @@ class Contact(Resource, PermissionBase, models.Model):
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Role(Resource, PermissionBase, BaseRole):
+class Role(Resource, BaseRole):
     """
     A custom `Role` model class inheriting from `django-permissions`'s`Role` model.
     
@@ -66,6 +67,12 @@ class Role(Resource, PermissionBase, BaseRole):
     class Meta:
         # forbid duplicated Role entries in the DB
         unique_together = ("base_role", "gas", "supplier", "delivery", "withdrawal", "order")
+        
+class GlobalPermission(models.Model):
+    permission = models.ForeignKey(Permission)
+    role = models.ForeignKey(BaseRole)
+    content_type = models.ForeignKey(ContentType)
+    
 
 class Place(Resource, PermissionBase, models.Model):
     """Places should be managed as separate entities for various reasons:
