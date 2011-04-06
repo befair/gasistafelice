@@ -72,7 +72,9 @@ class GlobalPermission(models.Model):
     permission = models.ForeignKey(Permission)
     role = models.ForeignKey(BaseRole)
     content_type = models.ForeignKey(ContentType)
-    
+    class Meta:
+        # forbid duplicated GlobalPermission entries in the DB
+        unique_together = ("permission", "role", "content_type")
 
 class Place(Resource, PermissionBase, models.Model):
     """Places should be managed as separate entities for various reasons:
