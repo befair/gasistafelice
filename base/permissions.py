@@ -47,6 +47,17 @@ def get_models_with_local_permissions():
     rv = [m for m in cache.get_models() if m._meta.installed and hasattr(m, local_grants)]
     return rv
 
+def register_global_permission(perm, role, ctype):
+    """
+    This trivial helper function just creates a new GlobalPermission object, 
+    taking care of avoiding duplicated entries in the DB. 
+    """
+    
+    try:
+        GlobalPermission.objects.create(permission=perm, role=role, content_type=ctype)
+    except IntegrityError: # this global permission already exists in the DB
+        pass
+    
  
 def setup_roles(sender, instance, created, **kwargs):
     """
@@ -99,10 +110,7 @@ def setup_perms(sender, instance, created, **kwargs):
                             # retrieve the Permission object  
                             perm = perms_dict[perm_code]
                             ct = ContentType.objects.get_for_model(m)
-                            try:
-                                GlobalPermission.objects.create(permission=perm, role=role, content_type=ct)
-                            except IntegrityError: # this global permission already exists in the DB
-                                pass
+                            register_global_permission(perm, role, ct)                            
                 ## setup local permission
                 # iterate on all installed models (excluding Role) for which local Permission management is a concern
                 model_list = [m for m in get_models_with_local_permissions() if m is not Role]  
@@ -126,10 +134,7 @@ def setup_perms(sender, instance, created, **kwargs):
                         # get the Contentype associated with the model class
                         ct = ContentType.objects.get_for_model(sender)
                         for role in roles:
-                            try:
-                                GlobalPermission.objects.create(permission=perm, role=role, content_type=ct)
-                            except IntegrityError: # this global permission already exists in the DB
-                                pass
+                            register_global_permission(perm, role, ct)
                 elif hasattr(instance, 'local_grants'): # model instance has local permissions data
                     ## grant local Permissions
                     # `instance` is the model instance just created
