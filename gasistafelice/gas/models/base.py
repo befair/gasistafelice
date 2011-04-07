@@ -26,6 +26,8 @@ class GAS(PermissionResource, models.Model):
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"), null=True, blank=True)
+    identifier = models.CharField("GAS code (3 letters)", max_length=3, null=False, blank=False, help_text=_("Insert here your GAS unique identier in the DES. For example: CAMERINO--> CAM"))	
+      description = models.TextField(help_text=_("Who are you? What are yours specialties?"))
 
     workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set", null=True, blank=True)
     workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set", null=True, blank=True)
