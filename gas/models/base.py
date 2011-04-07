@@ -23,6 +23,7 @@ class GAS(Resource, PermissionBase, models.Model):
 
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/")
+    identifier = models.CharField("Codice GAS (3 lettere)", max_length=3, null=False, blank=False, help_text=_("Inserire cui il codice GAS nel DES. Ad es: MATELICA--> MAT"))	
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"))
 
     workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
