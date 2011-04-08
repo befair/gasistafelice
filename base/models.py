@@ -104,7 +104,7 @@ class DefaultTransition(Resource, PermissionBase, models.Model):
     state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
 
-class WorkflowDefinition():
+class WorkflowDefinition(object):
     """            
     This class encapsulates all the data and logic needed to create and setup a Workflow 
     (as in the `django-workflows` app), including creation of States and Transitions, 
@@ -153,6 +153,7 @@ class WorkflowDefinition():
         ## set the initial State for the Workflow
         state = self.states[self.initial_state_name]
         self.workflow.initial_state = state
+        self.workflow.save()
         ## define default Transitions for States in a Workflow, 
         ## so we can suggest to end-users what the next "logical" State could be
         for (state_name, transition_name) in default_transitions:
