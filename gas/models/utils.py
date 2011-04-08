@@ -1,11 +1,14 @@
 from django.utils.translation import ugettext as _
 
 from workflows.models import Workflow, State, Transition
-from gasistafelice.base.models import WorkflowDefaultTransitionOrder
+from gasistafelice.base.models import DefaultTransition
 from permissions.utils import register_role
 
 def init_workflow():
-    return
+    """
+    This function is simple initialization routine for workflow-related data 
+    needed for GAS' order management.
+    """
 
 #-----------------------------------------------------------------------------
     # default Workflow for a GASMemberOrder 
@@ -72,11 +75,20 @@ def init_workflow():
     workflow.initial_state = states['unconfirmed']    
     workflow.save()
 
-    workflow.workflowdefaulttransitionorder_set.add(state=states["unconfirmed"], transition=transitions["confirm"])
-    workflow.workflowdefaulttransitionorder_set.add(state=states["confirmed"], transition=transitions["finalize"])
-    workflow.workflowdefaulttransitionorder_set.add(state=states["finalized"], transition=transitions["send"])
-    workflow.workflowdefaulttransitionorder_set.add(state=states["sent"], transition=transitions["deliver"])
-    workflow.workflowdefaulttransitionorder_set.add(state=states["delivered"], transition=transitions["withdraw"])
+    ## define default Transitions for States in a Workflow, 
+    ## so we can suggest to end-users what the next "logical" State could be   
+    default_transitions = (
+                           # (state name, transition name),
+                            ('unconfirmed', 'confirm'),
+                            ('confirmed', 'finalize'),
+                            ('finalized', 'send'),
+                            ('sent', 'make_ready'),
+                            ('ready', 'set_withdrawn'),
+                           )
+    
+    for (state_name, transition_name) in default_transitions:
+        workflow.default_transition_set.add(state=states[state_name], transition=transitions[transition_name])
+    
 
 #----------------------------------------------------------------------------- 
    # default Workflow for a SupplierOrder 
@@ -142,3 +154,13 @@ def init_workflow():
            
     workflow.initial_state = states['open']
     workflow.save()
+
+    ## define default Transitions for States in a Workflow, 
+    ## so we can suggest to end-users what the next "logical" State could be   
+    default_transitions = (
+                           # (state name, transition name),
+                            
+                           )
+    
+    for (state_name, transition_name) in default_transitions:
+        workflow.default_transition_set.add(state=states[state_name], transition=transitions[transition_name])

@@ -97,9 +97,9 @@ class Place(Resource, PermissionBase, models.Model):
 
 # Generic workflow management
 
-class WorkflowDefaultTransitionOrder(Resource, PermissionBase, models.Model):
+class DefaultTransition(Resource, PermissionBase, models.Model):
 
-    workflow = models.ForeignKey(Workflow)
+    workflow = models.ForeignKey(Workflow, related_name="default_transition_set")
     state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
 
