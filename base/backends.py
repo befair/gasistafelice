@@ -6,7 +6,25 @@ from permissions.models import ObjectPermission
 
 from gasistafelice.base.models import GlobalPermission
 
+class DummyBackend(object):
+    """A dummy authorization backend intended only for development purposes.
+    
+    Using this backend, permission checks always succeed ! ;-)
+          
+    """
+    
+    supports_object_permissions = True
+    supports_anonymous_user = True
+    supports_inactive_user = True
 
+    def authenticate(self, username, password):
+        return None
+    
+    def has_perm(self, user_obj, perm, obj=None):
+        return True
+    
+    
+        
 class ObjectPermissionsBackend(object):
     """An authorization backend for Django for role-based permission checking.
     
