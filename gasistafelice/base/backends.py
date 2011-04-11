@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 import permissions.utils
 from permissions.models import ObjectPermission
 
-from gasistafelice.base.models import GlobalPermission
+from gasistafelice.auth.models import GlobalPermission
 
 class DummyBackend(object):
     """A dummy authorization backend intended only for development purposes.
@@ -65,7 +65,7 @@ class ObjectPermissionsBackend(object):
         roles = []
         groups = user_obj.groups.all()         
         for group in groups:
-             roles.extend(permissions.utils.get_roles(group))
+            roles.extend(permissions.utils.get_roles(group))
         if isinstance(obj, ContentType): # `obj` is a model class, so check for global Permissions for this model        
             perms = GlobalPermission.objects.filter(content_type=obj, role__in=roles)
         elif isinstance(obj, Model) : # `obj` is a model instance, so check for local Permissions for this instance

@@ -6,6 +6,6 @@ Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVoca
 """
 
 
-from gas.models.base import GAS, GASMember, GASSupplierSolidalPact
-from gas.models.order import GASSupplierStock, GASSupplierOrder, GASSupplierOrderProduct, GASMemberOrder
+from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
+from gasistafelice.gas.models.order import GASSupplierStock, GASSupplierOrder, GASSupplierOrderProduct, GASMemberOrder, Delivery, Withdrawal
 
