@@ -5,20 +5,14 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from permissions import PermissionBase # mix-in class for permissions management
 
-from gasistafelice.base.models import Resource, Place, WorkflowDefaultTransitionOrder
+from gasistafelice.base.models import Resource, Place
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
-from gasistafelice.base.utils import register_role
-from gasistafelice.gas.const import STATES_LIST, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
+from gasistafelice.auth.utils import register_role
+from gasistafelice.base.const import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 from workflows.models import Workflow
 from workflows.utils import get_workflow, get_state, do_transition
-
-try:
-    Workflow.objects.get(name="GASMemberOrderSimple")
-except Workflow.DoesNotExist:
-    from gasistafelice.gas.models.utils import init_workflow
-    init_workflow()
 
 class GASSupplierStock(Resource, PermissionBase, models.Model):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -176,7 +170,7 @@ class GASMemberOrder(Resource, PermissionBase, models.Model):
     def forward(self, user):
         """Apply default transition"""
         state = get_state(self)
-        transition = WorkflowDefaultTransitionOrder.objects.get(workflow=self.workflow, state=state).transition
+        transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
         
     @property        

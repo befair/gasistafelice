@@ -13,8 +13,9 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from permissions import PermissionBase # mix-in class for permissions management
 
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, SUPPLIER_REFERRER, ALWAYS_AVAILABLE
-from gasistafelice.base.models import Resource, Person, Place, Role
-from gasistafelice.base.utils import register_role
+from gasistafelice.base.models import Resource, Person, Place
+from gasistafelice.auth.models import Role
+from gasistafelice.auth.utils import register_role
 
 class Supplier(Resource, PermissionBase, models.Model):
     """An actor having a stock of Products for sale to the DES."""

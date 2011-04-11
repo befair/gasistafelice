@@ -3,13 +3,13 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from permissions import PermissionBase # mix-in class for permissions management
 
-from gasistafelice.base.utils import register_role
+
 from gasistafelice.base.const import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+from gasistafelice.auth.utils import register_role
+from gasistafelice.auth.models import Role
+from gasistafelice.base.models import Resource, Person
+from gasistafelice.supplier.models import Supplier, Product
 
-from gasistafelice.base.models import Resource, Person, Role
-from gasistafelice.supplier.models import Supplier, SupplierStock, Product
-
-from gasistafelice.gas.const import STATES_LIST
 from gasistafelice.gas import managers
 
 from workflows.models import Workflow, Transition

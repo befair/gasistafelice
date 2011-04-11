@@ -17,7 +17,7 @@ class GASRolesManager(models.Manager):
         return self.get_query_set().filter(role_set__name__exact=role.GAS_REFERRER_ORDER)
 
     def withdraw_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=role.GAS_REFERRER_WITHDRAW)
+        return self.get_query_set().filter(role_set__name__exact=role.GAS_REFERRER_WITHDRAWAL)
 
     def delivery_referrers(self):
         return self.get_query_set().filter(role_set__name__exact=role.GAS_REFERRER_DELIVERY)

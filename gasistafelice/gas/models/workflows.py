@@ -4,9 +4,7 @@ This module contains workflow-related data needed for GAS' order management.
 
 from django.utils.translation import ugettext as _
 
-from workflows.models import Workflow, State, Transition
-
-from gasistafelice.base.models import DefaultTransition, WorkflowDefinition
+from gasistafelice.base.models import WorkflowDefinition
 
 #-----------------------------------------------------------------------------
 ## default Workflow for a GASMemberOrder
@@ -79,7 +77,7 @@ w.register_workflow()
 ## default Workflow for a SupplierOrder 
 name="SupplierOrderDefault"
  
- ## States in which a SupplierOrder can be
+## States in which a SupplierOrder can be
 state_list = (
           # (key, state name),
            ('open', "Open"), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
@@ -93,7 +91,7 @@ state_list = (
            )
   
      
- ## Transitions allowed among States defined for a SupplierOrder
+## Transitions allowed among States defined for a SupplierOrder
  
 transition_list = ( 
                  # (key, transition name, destination state), 
@@ -126,9 +124,8 @@ state_transition_map = (
        
 initial_state = 'open'
  
-
- ## define default Transitions for States in a Workflow, 
- ## so we can suggest to end-users what the next "logical" State could be   
+## define default Transitions for States in a Workflow, 
+## so we can suggest to end-users what the next "logical" State could be   
 default_transitions = (
                         # (state name, transition name),                         
                         )
