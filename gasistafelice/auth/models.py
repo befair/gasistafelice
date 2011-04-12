@@ -2,21 +2,21 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from permissions.models import Permission, Role as BaseRole
+from permissions.models import Permission, Role
 
 from gasistafelice.base.models import Resource
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
 
-class Role(Resource, BaseRole):
+class ParamRole(Resource, Role):
     """
-    A custom `Role` model class inheriting from `django-permissions`'s`Role` model.
+    A custom role model class inheriting from `django-permissions`'s`Role` model.
     This way, we are able to augment the base `Role` model
     (carrying only a `name` field attribute) with additional information
     needed to describe those 'parametric' roles arising in this application domain.
     
-     A (parametric) Role can be tied to:
+     A parametric role (`ParamRole`) can be tied to:
      
      1) a given GAS (e.g. GAS_REFERRER_CASH, GAS_REFERRER_TECH),
      2) a given Supplier (e.g. SUPPLIER_REFERRER, GAS_REFERRER_SUPPLIER),
@@ -27,7 +27,7 @@ class Role(Resource, BaseRole):
     
     """
     # link to the base model class (`BaseRole`)
-    base_role = models.OneToOneField(BaseRole, parent_link=True)
+    role = models.OneToOneField(Role, parent_link=True)
     ## Generic ForeignKey for the first (optional) Role parameter
     content_type_1 = models.ForeignKey(ContentType)
     obj_id_1 = models.PositiveIntegerField()
@@ -40,7 +40,7 @@ class Role(Resource, BaseRole):
         
 class GlobalPermission(models.Model):
     permission = models.ForeignKey(Permission)
-    role = models.ForeignKey(BaseRole)
+    role = models.ForeignKey(Role)
     content_type = models.ForeignKey(ContentType)
     class Meta:
         # forbid duplicated GlobalPermission entries in the DB
