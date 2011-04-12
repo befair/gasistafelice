@@ -36,7 +36,9 @@ class ParamRole(Resource, Role):
     content_type_2 = models.ForeignKey(ContentType, null=True, blank=True)
     obj_id_2 = models.PositiveIntegerField(null=True, blank=True)
     param2 = generic.GenericForeignKey(ct_field="content_type_2", fk_field="obj_id_2")
-
+    class Meta:
+        # forbid duplicated ParamRole entries in the DB
+        unique_together = ("role", "content_type_1", "obj_id_1", "content_type_2", "obj_id_2")
         
 class GlobalPermission(models.Model):
     permission = models.ForeignKey(Permission)
