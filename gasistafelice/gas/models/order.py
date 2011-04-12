@@ -5,7 +5,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from permissions import PermissionBase # mix-in class for permissions management
 
-from gasistafelice.base.models import Resource, Place
+from gasistafelice.base.models import Resource, Place, DefaultTransition
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_role
