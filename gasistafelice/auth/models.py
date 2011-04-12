@@ -29,11 +29,11 @@ class ParamRole(Resource, Role):
     # link to the base model class (`BaseRole`)
     role = models.OneToOneField(Role, parent_link=True)
     ## Generic ForeignKey for the first (optional) Role parameter
-    content_type_1 = models.ForeignKey(ContentType)
+    content_type_1 = models.ForeignKey(ContentType, related_name="param_role_primary_set")
     obj_id_1 = models.PositiveIntegerField()
     param1 = generic.GenericForeignKey(ct_field="content_type_1", fk_field="obj_id_1")
     ## Generic ForeignKey for the second (optional) Role parameter
-    content_type_2 = models.ForeignKey(ContentType, null=True, blank=True)
+    content_type_2 = models.ForeignKey(ContentType, null=True, blank=True, related_name="param_role_secondary_set")
     obj_id_2 = models.PositiveIntegerField(null=True, blank=True)
     param2 = generic.GenericForeignKey(ct_field="content_type_2", fk_field="obj_id_2")
     class Meta:
