@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from permissions.utils import register_role, register_permission
+
 ## role-related constants
 NOBODY = 'NOBODY'
 GAS_MEMBER = 'GAS_MEMBER'
@@ -53,3 +55,15 @@ PERMISSIONS_LIST = [
 (DELETE, _('Delete')),
 (ALL, _('All')), # catchall
 ]
+
+## register project-level Roles
+# a dictionary holding Roles model instances, keyed by name
+roles_dict = {}
+for (name, description) in ROLES_LIST:
+    roles_dict[name] = register_role(name)
+
+## register project-level Permissions
+# a dictionary holding Permission model instances, keyed by Permission's codename
+perms_dict = {}
+for (codename, name) in PERMISSIONS_LIST:
+    perms_dict[codename] = register_permission(name, codename)
