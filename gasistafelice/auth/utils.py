@@ -3,29 +3,57 @@ from django.db.models import signals
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.loading import cache
 
-from permissions.models import Role as BaseRole
-from permissions.utils import register_role, register_permission 
+from permissions.models import Role
 
-from gasistafelice.base.const import ROLES_LIST, PERMISSIONS_LIST
-from gasistafelice.auth.models import Role, GlobalPermission
+from gasistafelice.base.utils import get_ctype_from_model_label 
 
-
-
-## register project-level Roles
-
-# a dictionary holding Roles model instances, keyed by name
-roles_dict = {}
-for (name, description) in ROLES_LIST:
-    roles_dict[name] = register_role(name)
+from gasistafelice.auth import roles_dict, perms_dict, valid_params_for_roles
+from gasistafelice.auth.models import ParamRole, GlobalPermission
 
 
-## register project-level Permissions
 
-# a dictionary holding Permission model instances, keyed by Permission's codename
-perms_dict = {}
-for (codename, name) in PERMISSIONS_LIST:
-    perms_dict[codename] = register_permission(name, codename)
+def validate_parametric_role(name, param1, param2, constraints=None):
+    """
+    Check if the parameters passed on creation of a new (parametric) role
+    are allowed in the application domain.  
+    """
+    for (role_name, model_name_1, model_name_2) in constraints:
+        ct_1 = get_ctype_from_model_label(model_name_1)
+        ct_2 = get_ctype_from_model_label(model_name_2)
+        param1_ct = ContentType.objects.get_for_model(param1)
+        param2_ct = ContentType.objects.get_for_model(param2)
+        if name == role_name and ct_1 == param1_ct and ct_2 == param2_ct:
+            # parameters are of the right type for the role
+            return True
+    return False
 
+
+def register_parametric_role(name, param1, param2=None):
+    """Registers a parametric role (`ParamRole`) with passed parameters.
+    Check if parameters' type is suitable for the application domain, and
+    prevent registering duplicated roles in the DB.     
+    Returns the new parametric role if the registration was successfully, otherwise False.    
+    
+    **Parameters:**
+
+    name
+        a (unique) string identifying the basic Role associated with the ParamRole 
+    param1
+        the primary (mandatory) parameter describing the parametric role 
+    param2
+        a secondary (optional) parameter describing the parametric role
+    
+    It's just a trivial extension of the `register_role` function found in `django-permissions`,
+    taking into account the additional parameters for the constructor of our custom `ParamRole` model class.
+    """
+    if validate_parametric_role(name, param1, param2, constraints=valid_params_for_roles):   
+        # check if a Role with the passed name already exists in the DB; if not, create it
+        role = Role.objects.get_or_create(name=name) 
+        # create the new Role, if not already existing in the DB 
+        param_role = ParamRole.objects.get_or_create(role=role, param1=param1, param2=param2)                        
+        return param_role
+    else:
+        return False
 
 def get_models_with_global_permissions():
     """
@@ -58,7 +86,7 @@ def register_global_permission(perm, role, ctype):
         GlobalPermission.objects.create(permission=perm, role=role, content_type=ctype)
     except IntegrityError: # this global permission already exists in the DB
         pass
-    
+   
  
 def setup_roles(sender, instance, created, **kwargs):
     """
@@ -144,39 +172,3 @@ def setup_perms(sender, instance, created, **kwargs):
                                         
 # add `setup_perms` function as a listener to the `post_save` signal
 signals.post_save.connect(setup_perms)
-
-def register_role(name, gas=None, supplier=None, delivery=None, withdrawal=None, order=None):
-    """Registers a Role with passed parameters. Returns the new
-    Role if the registration was successfully, otherwise False.    
-
-    **Parameters:**
-
-    name
-        a (unique) name for the Role 
-    gas
-        the GAS (if any) the Role is related to 
-    supplier
-        the Supplier (if any) the Role is related to
-    delivery
-        the Delivery appointment (if any) the Role is related to
-    withdrawal
-        the Withdrawal appointment (if any) the Role is related to
-    order
-        the GASSuplierOrder (if any) the Role is related to
-    """
-
-# just a trivial extension of the `register_role` function found in `django-permissions`,
-# taking into account the additional parameters for the constructor of our custom `Role` model class     
-    try:
-        # check if a BaseRole with the passed name already exists in the DB
-        base_role = BaseRole.objects.get(name=name) 
-    except BaseRole.DoesNotExist:  
-        # if not, create it      
-        base_role = BaseRole.objects.create(name=name)
-    finally:
-        # create the new Role, if not already existing in the DB 
-        try: 
-            role = Role.objects.create(base_role=base_role, gas=gas, supplier=supplier, delivery=delivery, withdrawal=withdrawal, order=order)                        
-        except IntegrityError:
-            return False
-        return role
