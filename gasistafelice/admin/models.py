@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db import models
 
 from gasistafelice.base import models as base_models
 from gasistafelice.supplier import models as supplier_models
