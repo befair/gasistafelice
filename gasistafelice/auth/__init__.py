@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext as _, ugettext_lazy 
 
 from permissions.utils import register_role, register_permission
 
@@ -33,9 +33,9 @@ valid_params_for_roles = (
 (GAS_REFERRER_CASH, 'gas.GAS', '' ),
 (GAS_REFERRER_TECH, 'gas.GAS', ''),
 (GAS_REFERRER_SUPPLIER, 'gas.GAS', 'supplier.Supplier'),
-(GAS_REFERRER_ORDER, 'gas.GAS',  'gas.GASSupplierOrder'),
-(GAS_REFERRER_WITHDRAWAL, 'gas.GAS',  'gas.Withdrawal'),
-(GAS_REFERRER_DELIVERY, 'gas.GAS', 'gas.Delivery'),
+(GAS_REFERRER_ORDER, 'gas.GASSupplierOrder', ''),
+(GAS_REFERRER_WITHDRAWAL, 'gas.Withdrawal', ''),
+(GAS_REFERRER_DELIVERY, 'gas.Delivery', ''),
 )
 
 
@@ -65,5 +65,5 @@ for (name, description) in ROLES_LIST:
 ## register project-level Permissions
 # a dictionary holding Permission model instances, keyed by Permission's codename
 perms_dict = {}
-for (codename, name) in PERMISSIONS_LIST:
+for (codename, name) in PERMISSIONS_LIST:    
     perms_dict[codename] = register_permission(name, codename)
