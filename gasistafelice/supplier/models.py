@@ -12,10 +12,12 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from permissions import PermissionBase # mix-in class for permissions management
 
-from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, SUPPLIER_REFERRER, ALWAYS_AVAILABLE
+from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import Resource, Person, Place
-from gasistafelice.auth.models import Role
-from gasistafelice.auth.utils import register_role
+
+from gasistafelice.auth import SUPPLIER_REFERRER
+from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth.utils import register_parametric_role
 
 class Supplier(Resource, PermissionBase, models.Model):
     """An actor having a stock of Products for sale to the DES."""
@@ -38,7 +40,7 @@ class Supplier(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
-        register_role(name=SUPPLIER_REFERRER, supplier=self)
+        register_parametric_role(name=SUPPLIER_REFERRER, param1=self)
     
     @property        
     def local_grants(self):
@@ -58,12 +60,8 @@ class SupplierReferrer(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
-        try:
-            role = Role.objects.get(name=SUPPLIER_REFERRER, supplier=self.supplier)            
-        except Role.DoesNotExist: # Role hasn't been registered, yet
-            register_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        finally:
-            role.add_principal(user)     
+        role = register_parametric_role(name=SUPPLIER_REFERRER, param1=self.supplier)
+        role.add_principal(user)     
     
     @property        
     def local_grants(self):

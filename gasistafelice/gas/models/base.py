@@ -1,13 +1,15 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from permissions.models import Role
 from permissions import PermissionBase # mix-in class for permissions management
 
-
-from gasistafelice.base.const import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
-from gasistafelice.auth.utils import register_role
-from gasistafelice.auth.models import Role
 from gasistafelice.base.models import Resource, Person
+
+from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+from gasistafelice.auth.utils import register_parametric_role 
+from gasistafelice.auth.models import ParamRole
+
 from gasistafelice.supplier.models import Supplier, Product
 
 from gasistafelice.gas import managers
@@ -29,7 +31,6 @@ class GAS(Resource, PermissionBase, models.Model):
     workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set")
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
-
     objects = managers.GASRolesManager()
 
     class Meta:
@@ -40,11 +41,11 @@ class GAS(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
-        register_role(name=GAS_MEMBER, gas=self)
+        register_parametric_role(name=GAS_MEMBER, param1=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_role(name=GAS_REFERRER_TECH, gas=self)
+        register_parametric_role(name=GAS_REFERRER_TECH, param1=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_role(name=GAS_REFERRER_CASH, gas=self)     
+        register_parametric_role(name=GAS_REFERRER_CASH, param1=self)     
     
     @property        
     def local_grants(self):
@@ -65,7 +66,7 @@ class GASMember(Resource, PermissionBase, models.Model):
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
-    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
+    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_members")
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
@@ -74,21 +75,17 @@ class GASMember(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        try:
-            role = Role.objects.get(name=GAS_MEMBER, gas=self.gas)            
-        except Role.DoesNotExist: # Role hasn't been registered, yet
-            register_role(name=GAS_MEMBER, gas=self.gas)
-        finally:
-            role.add_principal(user)
+        role = register_parametric_role(name=GAS_MEMBER, param1=self.gas)
+        role.add_principal(user)
     
     @property        
     def local_grants(self):
         rv = (
             # GAS tech referrers have full access to members of their own GAS 
-            ('ALL', Role.objects.filter(base_role=GAS_REFERRER_TECH, gas=self.gas)),
+            ('ALL', ParamRole.objects.filter(role=GAS_REFERRER_TECH, param1=self.gas)),
             # GAS members can see list and details of their fellow members
-            ('LIST', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas)),
-            ('VIEW', Role.objects.filter(base_role=GAS_MEMBER, gas=self.gas)),
+            ('LIST', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
+            ('VIEW', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
               )     
         return rv  
        
@@ -123,7 +120,7 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, param1=self.gas, param2=self.supplier)     
     
     @property        
     def local_grants(self):

@@ -8,8 +8,8 @@ from permissions import PermissionBase # mix-in class for permissions management
 from gasistafelice.base.models import Resource, Place, DefaultTransition
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
-from gasistafelice.auth.utils import register_role
-from gasistafelice.base.const import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
+from gasistafelice.auth.utils import register_parametric_role
+from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 from workflows.models import Workflow
 from workflows.utils import get_workflow, get_state, do_transition
@@ -73,7 +73,7 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
-        register_role(name=GAS_REFERRER_ORDER, order=self)
+        register_parametric_role(name=GAS_REFERRER_ORDER, param1=self)
         
     @property        
     def local_grants(self):
@@ -201,7 +201,7 @@ class Delivery(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
+        register_parametric_role(name=GAS_REFERRER_DELIVERY, param1=self)            
     
     @property        
     def local_grants(self):
@@ -226,7 +226,7 @@ class Withdrawal(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
+        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, param1=self)   
         
     @property        
     def local_grants(self):
