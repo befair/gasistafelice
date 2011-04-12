@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
+from gasistafelice.base.utils import get_ctype_from_model_label
 from permissions.models import Permission, Role
 
 from gasistafelice.base.models import Resource
@@ -40,6 +41,72 @@ class ParamRole(Resource, Role):
         # forbid duplicated ParamRole entries in the DB
         unique_together = ("role", "content_type_1", "obj_id_1", "content_type_2", "obj_id_2")
         
+    @property
+    def gas(self):
+        gas_ct = get_ctype_from_model_label('gas.GAS')
+        GAS = gas_ct.model_class()
+        if  self.content_type_1 == gas_ct:
+            try:
+                gas = GAS.objects.get(pk=self.obj_id_2)
+                return gas
+            except GAS.DoesNotExist:
+                return None    
+        elif self.content_type_2 == gas_ct:
+            try:
+                gas = GAS.objects.get(pk=self.obj_id_2)
+                return gas
+            except GAS.DoesNotExist:
+                return None
+        else:
+            return None
+    
+    @property
+    def supplier(self):
+        supplier_ct = get_ctype_from_model_label('supplier.Supplier')
+        Supplier = supplier_ct.model_class()
+        if  self.content_type_1 == supplier_ct:
+            try:
+                supplier = Supplier.objects.get(pk=self.obj_id_1)
+                return supplier
+            except Supplier.DoesNotExist:
+                return None    
+        elif self.content_type_2 == supplier_ct:
+            try:
+                supplier = Supplier.objects.get(pk=self.obj_id_2)
+                return supplier
+            except Supplier.DoesNotExist:
+                return None
+        else:
+            return None
+
+    @property
+    def order(self):
+        order_ct = get_ctype_from_model_label('gas.GASSupplierOrder')
+        GASSupplierOrder = order_ct.model_class()
+        if  self.content_type_1 == order_ct:
+            try:
+                order = GASSupplierOrder.objects.get(pk=self.obj_id_1)
+                return order
+            except GASSupplierOrder.DoesNotExist:
+                return None    
+        elif self.content_type_2 == order_ct:
+            try:
+                order = GASSupplierOrder.objects.get(pk=self.obj_id_2)
+                return order
+            except GASSupplierOrder.DoesNotExist:
+                return None
+        else:
+            return None
+
+#    @property
+#    def delivery(self):
+#        ...
+
+#    @property
+#    def withdrawal(self):
+#        ...
+
+     
 class GlobalPermission(models.Model):
     permission = models.ForeignKey(Permission)
     role = models.ForeignKey(Role)
