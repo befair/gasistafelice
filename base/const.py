@@ -2,6 +2,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 ## role-related constants
 NOBODY = 'NOBODY'
+SUPPLIER_REFERRER = 'SUPPLIER_REFERRER'
 GAS_MEMBER = 'GAS_MEMBER'
 GAS_REFERRER_SUPPLIER = 'GAS_REFERRER_SUPPLIER'
 GAS_REFERRER_ORDER = 'GAS_REFERRER_ORDER'
