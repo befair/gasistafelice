@@ -7,7 +7,7 @@ from permissions.models import Role
 
 from gasistafelice.base.utils import get_ctype_from_model_label 
 
-from gasistafelice.auth import roles_dict, perms_dict, valid_params_for_roles
+from gasistafelice.auth import PermissionsRegister, valid_params_for_roles
 from gasistafelice.auth.models import ParamRole, GlobalPermission
 
 
@@ -128,10 +128,9 @@ def setup_perms(sender, instance, created, **kwargs):
                     grants = m.global_grants
                     for (perm_code, roles) in grants:
                         # get a list of actual Role objects
-                        roles = [roles_dict[r] for r in roles]
-                        if role in roles:
+                        if role in PermissionsRegister.roles:
                             # retrieve the Permission object
-                            perm = perms_dict[perm_code]
+                            perm = PermissionsRegister.get_perm(perm_code)
                             ct = ContentType.objects.get_for_model(m)
                             register_global_permission(perm, role, ct)
                 ## setup local permission
@@ -143,7 +142,7 @@ def setup_perms(sender, instance, created, **kwargs):
                         for (perm_code, roles) in grants:
                                 if role in roles:
                                     # retrieve the Permission object
-                                    perm = perms_dict[perm_code]
+                                    perm = PermissionsRegister.get_perm(perm_code)
                                     obj.grant_permission(role, perm)
             else: # a non-Role model instance has just been created, so grant the right Permissions on it to proper Roles
                 if hasattr(sender, 'global_grants'): # model has global permissions data
@@ -151,9 +150,9 @@ def setup_perms(sender, instance, created, **kwargs):
                     grants = sender.global_grants
                     for (perm_code, roles) in grants:
                         # get a list of actual Role objects
-                        roles = [roles_dict[r] for r in roles]
+                        roles = PermissionsRegister.roles
                         # retrieve the Permission object
-                        perm = perms_dict[perm_code]
+                        perm = PermissionsRegister.get_perm(perm_code)
                         # get the Contentype associated with the model class
                         ct = ContentType.objects.get_for_model(sender)
                         for role in roles:
@@ -164,7 +163,7 @@ def setup_perms(sender, instance, created, **kwargs):
                     grants = instance.local_grants
                     for (perm_code, roles) in grants:
                         # retrieve the Permission object
-                        perm = perms_dict[perm_code]
+                        perm = PermissionsRegister.get_perm(perm_code)
                         for role in roles:
                             instance.grant_permission(role, perm)
                 else: # sender model has no permission-related data, so just ignore the signal
