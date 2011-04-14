@@ -1,6 +1,11 @@
 {% extends "admin/base.html" %}
 {% load basic_tags %}
 {% load i18n %}
+{% load admin_tags %}
+
+{% block nav-global %}
+    {% des_admin_nav %}
+{% endblock %}
 
 {% block title %}{{ title }} | {% trans 'GAS administration' %}{% endblock %}
 
