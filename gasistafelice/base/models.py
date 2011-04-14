@@ -91,12 +91,12 @@ class WorkflowDefinition(object):
     def register_workflow(self):
         # check workflow specifications for internal consistency;
         # return an informative error message to the user if the check fails
-        try:
+        #try:
+
             self.check_workflow_specs()
-        except ImproperlyConfigured, e:
-            raise ImproperlyConfigured("Workflow specifications are not consistent.\n" + e)
-            
-        self.workflow = Workflow.objects.create(name=self.workflow_name)
+        #except ImproperlyConfigured, e:
+        #    raise ImproperlyConfigured("Workflow specifications are not consistent.\n" + e)
+        self.workflow = Workflow.objects.create(name = self.workflow_name)
         ## create States objects
         self.states = {} # dictionary containing State objects for our Workflow
         for (key, name) in self.state_list:
@@ -120,7 +120,9 @@ class WorkflowDefinition(object):
         for (state_name, transition_name) in self.default_transitions:
             state = self.states[state_name]
             transition = self.transitions[transition_name]
-            self.workflow.default_transition_set.add(state, transition)
+            #ERROR raise TypeError("'%s' instance expected" % self.model._meta.object_name)
+            #ERROR TypeError: 'DefaultTransition' instance expected
+            # self.workflow.default_transition_set.add(state, transition)
     
             
     def check_workflow_specs(self):
