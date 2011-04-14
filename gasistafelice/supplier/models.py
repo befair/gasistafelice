@@ -91,6 +91,9 @@ class ProductCategory(Resource, PermissionBase, models.Model):
     name = models.CharField(max_length=128, unique=True, blank=False)
     description = models.TextField(blank=True)
 
+    class Meta:
+        verbose_name_plural = _("Product categories")
+
     def __unicode__(self):
         return self.name
     
