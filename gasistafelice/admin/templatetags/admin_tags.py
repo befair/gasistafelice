@@ -17,11 +17,11 @@ def des_admin_nav():
     menu = {
         'orders_open' : { 
             'label' : _("Open orders"), 
-            'url' : '/gas-admin/' #models/gassupplierorder/' #urlresolvers.reverse('admin:gas_gassupplierorder_changelist')
+            'url' : urlresolvers.reverse('gas_admin:gas_gassupplierorder_changelist')
         },
         'products_ordered' : {
             'label' : _("Products ordered"),
-            'url' : '/gas-admin/' #models/gasmemberorder/', #urlresolvers.reverse('admin:gas_gasmemberorder_changelist')
+            'url' : urlresolvers.reverse('gas_admin:gas_gasmemberorder_changelist')
         }
     }
 

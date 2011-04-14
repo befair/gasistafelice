@@ -22,8 +22,9 @@ gas_admin.register(supplier_models.Product)
 gas_admin.register(supplier_models.ProductCategory)
 gas_admin.register(supplier_models.SupplierStock)
 gas_admin.register(gas_models.GASMember, admin_models.GASMemberAdmin)
-gas_admin.register(gas_models.GAS)
+#gas_admin.register(gas_models.GAS, GASAdmin)
 gas_admin.register(gas_models.order.GASSupplierStock)
 gas_admin.register(gas_models.order.GASSupplierOrder) #, admin_models.GASSupplierOrderAdmin)
+gas_admin.register(gas_models.order.GASMemberOrder)
 
 
