@@ -3,10 +3,13 @@ This module contains workflow-related data needed for GAS' order management.
 """
 
 from django.utils.translation import ugettext as _
-from django.db.models.signals import post_syncdb
 
 from gasistafelice.base.models import WorkflowDefinition
-import workflows
+
+
+# a dictionary containing all workflows declarations (as `WorkflowDefinition` objects)
+# listed in this module, keyed by name 
+workflow_dict = {}
 
 #-----------------------------------------------------------------------------
 ## default Workflow for a GASMemberOrder
@@ -71,8 +74,8 @@ default_transitions = (
                         ('sent', 'make_ready'),
                         ('ready', 'set_withdrawn'),
                        )
-
-w1 = WorkflowDefinition(name, state_list, transition_list, state_transition_map, initial_state_name, default_transitions)  
+  
+workflow_dict[name] = WorkflowDefinition(name, state_list, transition_list, state_transition_map, initial_state_name, default_transitions)
 
 #----------------------------------------------------------------------------- 
 ## default Workflow for a SupplierOrder 
@@ -131,13 +134,4 @@ default_transitions = (
                         # (state name, transition name),                         
                         )
  
-w2= WorkflowDefinition(name, state_list, transition_list, state_transition_map, initial_state_name, default_transitions)  
-
-def init_workflows(sender, **kwargs):
-
-    w1.register_workflow()
-    w2.register_workflow()
-    return
-
-post_syncdb.connect(init_workflows, sender=workflows.models)
-
+workflow_dict[name] = WorkflowDefinition(name, state_list, transition_list, state_transition_map, initial_state_name, default_transitions)
