@@ -88,8 +88,9 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'workflows',
     'permissions',
+    'workflows',
+    'gasistafelice.auth',
     'gasistafelice.base',
     'gasistafelice.supplier',
     'gasistafelice.gas',
