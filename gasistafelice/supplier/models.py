@@ -10,16 +10,13 @@ Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/Boz
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from permissions import PermissionBase # mix-in class for permissions management
-
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
-from gasistafelice.base.models import Resource, Person, Place
+from gasistafelice.base.models import Resource, PermissionResource, Person, Place
 
 from gasistafelice.auth import SUPPLIER_REFERRER
-from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 
-class Supplier(Resource, PermissionBase, models.Model):
+class Supplier(PermissionResource, models.Model):
     """An actor having a stock of Products for sale to the DES."""
 
     name = models.CharField(max_length=128) 
@@ -50,7 +47,7 @@ class Supplier(Resource, PermissionBase, models.Model):
         return rv   
         
     
-class SupplierReferrer(Resource, PermissionBase, models.Model):
+class SupplierReferrer(PermissionResource, models.Model):
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
@@ -71,7 +68,7 @@ class SupplierReferrer(Resource, PermissionBase, models.Model):
         return rv
     
     
-class Certification(Resource, PermissionBase, models.Model):
+class Certification(PermissionResource, models.Model):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)
 
@@ -85,7 +82,7 @@ class Certification(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class ProductCategory(Resource, PermissionBase, models.Model):
+class ProductCategory(PermissionResource, models.Model):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
     # like sourceforge categories
     name = models.CharField(max_length=128, unique=True, blank=False)
@@ -101,7 +98,7 @@ class ProductCategory(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class ProductMU(Resource, PermissionBase, models.Model):
+class ProductMU(PermissionResource, models.Model):
     """Measurement unit for a Product.
          
     """
@@ -121,7 +118,7 @@ class ProductMU(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class Product(Resource, PermissionBase, models.Model):
+class Product(PermissionResource, models.Model):
 
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True) # if empty, should be programmatically set at DB save time
     producer = models.ForeignKey(Supplier)
@@ -141,7 +138,7 @@ class Product(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class SupplierStock(Resource, PermissionBase, models.Model):
+class SupplierStock(PermissionResource, models.Model):
     """A Product that a Supplier offers in the DES marketplace.
         
        Includes price, order constraints and availability information.          

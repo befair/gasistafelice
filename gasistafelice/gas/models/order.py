@@ -3,9 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from permissions import PermissionBase # mix-in class for permissions management
-
-from gasistafelice.base.models import Resource, Place, DefaultTransition
+from gasistafelice.base.models import Resource, PermissionResource, Place, DefaultTransition
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_parametric_role
@@ -14,7 +12,7 @@ from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_RE
 from workflows.models import Workflow
 from workflows.utils import get_workflow, get_state, do_transition
 
-class GASSupplierStock(Resource, PermissionBase, models.Model):
+class GASSupplierStock(PermissionResource, models.Model):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
     gas = models.ForeignKey(GAS)
@@ -47,7 +45,7 @@ class GASSupplierStock(Resource, PermissionBase, models.Model):
         return rv
     
 
-class GASSupplierOrder(Resource, PermissionBase, models.Model):
+class GASSupplierOrder(PermissionResource, models.Model):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
@@ -90,7 +88,7 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
                 self.products.add(product)
         return
         
-class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
+class GASSupplierOrderProduct(PermissionResource, models.Model):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -126,7 +124,7 @@ class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
               )     
         return rv
     
-class GASMemberOrder(Resource, PermissionBase, models.Model):
+class GASMemberOrder(PermissionResource, models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
@@ -188,7 +186,7 @@ class GASMemberOrder(Resource, PermissionBase, models.Model):
 
         return super(GASMemberOrder, self).save()
 
-class Delivery(Resource, PermissionBase, models.Model):
+class Delivery(PermissionResource, models.Model):
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
@@ -211,7 +209,7 @@ class Delivery(Resource, PermissionBase, models.Model):
         return rv
     
 
-class Withdrawal(Resource, PermissionBase, models.Model):
+class Withdrawal(PermissionResource, models.Model):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
