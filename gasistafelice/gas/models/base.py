@@ -15,8 +15,10 @@ from gasistafelice.supplier.models import Supplier, Product
 
 from gasistafelice.gas import managers
 
+from gasistafelice.bank.models import Account, Movement
 
 class GAS(PermissionResource, models.Model):
+
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
@@ -35,6 +37,9 @@ class GAS(PermissionResource, models.Model):
 
     objects = managers.GASRolesManager()
     history = HistoricalRecords()
+
+    account = models.ForeignKey(Account)
+    liquidity = models.ForeignKey(Account)
 
     active = BooleanField()
     birthday = models.DateField()
@@ -91,6 +96,7 @@ class GASMember(PermissionResource, models.Model):
     identifier = models.CharField("Numero tessera", max_length=10, null=True, blank=True, help_text=_("Inserire cui il vostro numero di tessera"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
     roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
+    account = models.ForeignKey(Account)
 
     history = HistoricalRecords()
 
@@ -131,6 +137,31 @@ class GASSupplierSolidalPact(PermissionResource, models.Model):
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
     """
 
+    PRODUCTS_GROWN = (
+        ('CE', 'CEREAL'),
+        ('VE', 'VEGETABLE'),
+        ('FR', 'FRUIT'),
+        ('LE', 'LEGUME'),
+        ('ME', 'MEAT'),
+        ('MI', 'MILK_CHEESE'),
+        ('OI', 'OIL'),
+        ('HO', 'HONEY'),
+        ('WI', 'WINE'),
+        ('CH', 'CHEESE'),
+        ('NF', 'NO_FOOD'),
+        ('SW', 'SERVICE'),
+    )
+    DISTRIBUTION_TYPE = (
+        ('CO', 'IN THE COMPANY'),
+        ('DD', 'DIRECT DELIVERY'),
+        ('DE', 'DELIVERY BY COURIER SERVICE'),
+    )
+    AVAILABLE_TYPE = (
+        ('VI', 'VISITE'),
+        ('FH', 'FARM HOLIDAYS'),
+        ('RE', 'REFRESHMENT'),
+    )
+
     gas = models.ForeignKey(GAS)
     supplier = models.ForeignKey(Supplier)
     date_signed = models.DateField()
@@ -149,6 +180,30 @@ class GASSupplierSolidalPact(PermissionResource, models.Model):
     
     history = HistoricalRecords()
 
+    account = models.ForeignKey(Account)
+    pds_presentaion = models.TextField(blank=True)
+    pds_first_year_of_certification = models.CharField(max_length=50, blank=True)
+    pds_last_year_of_certification = models.CharField(max_length=50, blank=True)
+    pds_extension_cultivated = models.CharField(max_length=50, blank=True)
+    pds_start_year_cultivation_with_biological_method = models.CharField(max_length=50, blank=True)
+    pds_altitude_of_the_compagny = models.CharField(max_length=50, blank=True)
+    pds_products_grown = models.CharField(max_length=50, choices=PRODUCTS_GROWN, blank=True) 
+    pds_products_seasonability = models.ManyToManyField(PDSProductSeasonality, help_text=_("indicative products seasonality and availability"), null=True)
+    pds_water_provenance = models.CharField(max_length=100, help_text=_("provenance water for irrigation"), blank=True)
+    pds_manure_used = models.CharField(max_length=300, help_text=_("type of manure used"), blank=True)
+    pds_manure_provenance = models.CharField(max_length=100, help_text=_("provenance manure used"), blank=True)
+    pds_manure_hectare = models.CharField(max_length=300, help_text=_("quantity of manure per hectare and crops concerned the manuring"), blank=True)
+    pds_fertilizer_rought = models.CharField(max_length=300, help_text=_("any other fertilizers and rough-treatment"), blank=True)
+    pds_pollution_distance = models.CharField(max_length=100, help_text=_("distance from any possible sources of pollution"), blank=True)
+    pds_seed_provenance = models.CharField(max_length=300, help_text=_("provenance of the seed"), blank=True)
+    pds_distribution_type = models.CharField(max_length=50, choices=DISTRIBUTION_TYPE, blank=True) 
+    pds_market = models.CharField(max_length=300, help_text=_("day and town of presence in biological market place"), blank=True) 
+    pds_available_for = models.CharField(max_length=50, choices=AVAILABLE_TYPE, blank=True, help_text=_("producer is available for: visit, inspection, examination, farm holidays, refreshment, feeding ...")) 
+    pds_farm_holidays_name =  models.CharField(max_length=100, blank=True)
+    pds_other_info = models.TextField(blank=True, help_text=_("other information from the manufacturer")) 
+    pds_aggreement = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
+    pds_attached_documents = models.ManyToManyField(Documents, help_text=_("producer declarative on honor"), null=True)
+    
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
