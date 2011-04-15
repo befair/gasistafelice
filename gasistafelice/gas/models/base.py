@@ -16,6 +16,8 @@ from gasistafelice.gas import managers
 
 from workflows.models import Workflow, Transition
 
+from gasistafelice.bank.models import Account, Movement
+
 class GAS(Resource, PermissionBase, models.Model):
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
@@ -33,6 +35,9 @@ class GAS(Resource, PermissionBase, models.Model):
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
     objects = managers.GASRolesManager()
+
+    account = models.ForeignKey(Account)
+    liquidity = models.ForeignKey(Account)
 
     active = BooleanField()
     birthday = models.DateField()
@@ -88,6 +93,7 @@ class GASMember(Resource, PermissionBase, models.Model):
     identifier = models.CharField("Numero tessera", max_length=10, null=True, blank=True, help_text=_("Inserire cui il vostro numero di tessera"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_members")
+    account = models.ForeignKey(Account)
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
@@ -122,7 +128,6 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
     """
-
     PRODUCTS_GROWN = (
         ('CE', 'CEREAL'),
         ('VE', 'VEGETABLE'),
@@ -164,6 +169,7 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     # TODO must be a property (use django-permissions)
     #supplier_referrers = ...
     
+    account = models.ForeignKey(Account)
     pds_presentaion = models.TextField(blank=True)
     pds_first_year_of_certification = models.CharField(max_length=50, blank=True)
     pds_last_year_of_certification = models.CharField(max_length=50, blank=True)
