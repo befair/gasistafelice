@@ -84,10 +84,12 @@ class PermissionsRegister(object):
     @property
     def perm_names(cls):
         return cls.perms_dict.keys()
-
+    
+    @classmethod
     def get_role(cls, code):
         return cls.roles_dict[code]
-
+    
+    @classmethod
     def get_perm(cls, code):
         return cls.perms_dict[code]
 
