@@ -9,6 +9,17 @@ from gasistafelice.base.models import Resource
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
+class Param(models.Model):
+    """
+    A trivial wrapper model class around a generic ForeignKey; 
+    used to create (parametric) Roles with more than one parameter.  
+    """
+    # TODO: validate parameter names (they should belongs to a predefined list,
+    # e.g. 'gas', 'supplier', 'order', ..)
+    name = models.CharField(max_lenght=20)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    param = generic.GenericForeignKey(ct_field="content_type", fk_field="obj_id")
 
 class ParamRole(Resource, Role):
     """
@@ -29,83 +40,79 @@ class ParamRole(Resource, Role):
     """
     # link to the base model class (`BaseRole`)
     role = models.OneToOneField(Role, parent_link=True)
-    ## Generic ForeignKey for the first (optional) Role parameter
-    content_type_1 = models.ForeignKey(ContentType, related_name="param_role_primary_set")
-    obj_id_1 = models.PositiveIntegerField()
-    param1 = generic.GenericForeignKey(ct_field="content_type_1", fk_field="obj_id_1")
-    ## Generic ForeignKey for the second (optional) Role parameter
-    content_type_2 = models.ForeignKey(ContentType, null=True, blank=True, related_name="param_role_secondary_set")
-    obj_id_2 = models.PositiveIntegerField(null=True, blank=True)
-    param2 = generic.GenericForeignKey(ct_field="content_type_2", fk_field="obj_id_2")
-    class Meta:
-        # forbid duplicated ParamRole entries in the DB
-        unique_together = ("role", "content_type_1", "obj_id_1", "content_type_2", "obj_id_2")
-        
-    @property
-    def gas(self):
-        gas_ct = get_ctype_from_model_label('gas.GAS')
-        GAS = gas_ct.model_class()
-        if  self.content_type_1 == gas_ct:
-            try:
-                gas = GAS.objects.get(pk=self.obj_id_2)
-                return gas
-            except GAS.DoesNotExist:
-                return None    
-        elif self.content_type_2 == gas_ct:
-            try:
-                gas = GAS.objects.get(pk=self.obj_id_2)
-                return gas
-            except GAS.DoesNotExist:
-                return None
-        else:
-            return None
+    # parameters for this Role
+    param_set = models.ManyToManyField(Param)
     
-    @property
+    ## we define a few properties providing easier access to allowed role parameters            
+    # note that access is read-only; parameter assignment is managed by the 
+    #`register_parametric_role()` factory function
+    
+    @property 
+    def gas(self):
+        """
+        If this role has a 'gas' parameter, return it; else return None. 
+        """
+        # examine all the parameters attached to this role 
+        # and see if there is one named 'gas'
+        for p in self.param_set.all():
+            if p.name == 'gas':
+                gas = p.param
+                return gas
+        return None
+                
+    @property 
     def supplier(self):
-        supplier_ct = get_ctype_from_model_label('supplier.Supplier')
-        Supplier = supplier_ct.model_class()
-        if  self.content_type_1 == supplier_ct:
-            try:
-                supplier = Supplier.objects.get(pk=self.obj_id_1)
+        """
+        If this role has a 'supplier' parameter, return it; else return None. 
+        """
+        # examine all the parameters attached to this role 
+        # and see if there is one named 'supplier'
+        for p in self.param_set.all():
+            if p.name == 'supplier':
+                supplier = p.param
                 return supplier
-            except Supplier.DoesNotExist:
-                return None    
-        elif self.content_type_2 == supplier_ct:
-            try:
-                supplier = Supplier.objects.get(pk=self.obj_id_2)
-                return supplier
-            except Supplier.DoesNotExist:
-                return None
-        else:
-            return None
-
-    @property
+        return None
+    
+    
+    @property 
     def order(self):
-        order_ct = get_ctype_from_model_label('gas.GASSupplierOrder')
-        GASSupplierOrder = order_ct.model_class()
-        if  self.content_type_1 == order_ct:
-            try:
-                order = GASSupplierOrder.objects.get(pk=self.obj_id_1)
+        """
+        If this role has an 'order' parameter, return it; else return None. 
+        """
+        # examine all the parameters attached to this role 
+        # and see if there is one named 'order'
+        for p in self.param_set.all():
+            if p.name == 'order':
+                order = p.param
                 return order
-            except GASSupplierOrder.DoesNotExist:
-                return None    
-        elif self.content_type_2 == order_ct:
-            try:
-                order = GASSupplierOrder.objects.get(pk=self.obj_id_2)
-                return order
-            except GASSupplierOrder.DoesNotExist:
-                return None
-        else:
-            return None
-
-#    @property
-#    def delivery(self):
-#        ...
-
-#    @property
-#    def withdrawal(self):
-#        ...
-
+        return None
+    
+    @property 
+    def delivery(self):
+        """
+        If this role has a 'delivery' parameter, return it; else return None. 
+        """
+        # examine all the parameters attached to this role 
+        # and see if there is one named 'delivery'
+        for p in self.param_set.all():
+            if p.name == 'delivery':
+                delivery = p.param
+                return delivery
+        return None
+    
+    @property 
+    def withdrawal(self):
+        """
+        If this role has an 'withdrawal' parameter, return it; else return None. 
+        """
+        # examine all the parameters attached to this role 
+        # and see if there is one named 'withdrawal'
+        for p in self.param_set.all():
+            if p.name == 'withdrawal':
+                withdrawal = p.param
+                return withdrawal
+        return None
+        
      
 class GlobalPermission(models.Model):
     permission = models.ForeignKey(Permission)

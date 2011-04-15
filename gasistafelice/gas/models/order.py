@@ -71,7 +71,7 @@ class GASSupplierOrder(PermissionResource, models.Model):
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
-        register_parametric_role(name=GAS_REFERRER_ORDER, param1=self)
+        register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
         
     @property        
     def local_grants(self):
@@ -199,7 +199,7 @@ class Delivery(PermissionResource, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, param1=self)            
+        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
     
     @property        
     def local_grants(self):
@@ -224,7 +224,7 @@ class Withdrawal(PermissionResource, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, param1=self)   
+        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
         
     @property        
     def local_grants(self):

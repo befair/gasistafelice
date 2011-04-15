@@ -37,7 +37,7 @@ class Supplier(PermissionResource, models.Model):
     
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
-        register_parametric_role(name=SUPPLIER_REFERRER, param1=self)
+        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
     
     @property        
     def local_grants(self):
@@ -57,7 +57,8 @@ class SupplierReferrer(PermissionResource, models.Model):
     def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
-        role = register_parametric_role(name=SUPPLIER_REFERRER, param1=self.supplier)
+        role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
+        # TODO: adapt method to the parametric role framework
         role.add_principal(user)     
     
     @property        

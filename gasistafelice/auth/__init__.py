@@ -27,19 +27,20 @@ ROLES_LIST = [
 (GAS_REFERRER_TECH, _('GAS technical referrer')),
 ]
 
-valid_params_for_roles = (
+valid_params_for_roles = {
 ## format
-# (Role' codename, allowed model for 1st param, allowed model for 2nd param)
-(SUPPLIER_REFERRER, 'supplier.Supplier', ''),
-(GAS_MEMBER, 'gas.GAS', ''),
-(GAS_REFERRER_CASH, 'gas.GAS', '' ),
-(GAS_REFERRER_TECH, 'gas.GAS', ''),
-(GAS_REFERRER_SUPPLIER, 'gas.GAS', 'supplier.Supplier'),
-(GAS_REFERRER_ORDER, 'gas.GASSupplierOrder', ''),
-(GAS_REFERRER_WITHDRAWAL, 'gas.Withdrawal', ''),
-(GAS_REFERRER_DELIVERY, 'gas.Delivery', ''),
+# {Role' codename: {parameter name: parameter type, ..}}
+# where the parameter type is expressed as a string of the format 'app_label.model_name'
+SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
+GAS_MEMBER : {'gas':'gas.GAS'},
+GAS_REFERRER_CASH : {'gas':'gas.GAS'},
+GAS_REFERRER_TECH : {'gas':'gas.GAS'},
+GAS_REFERRER_SUPPLIER : {'gas':'gas.GAS', 'supplier':'supplier.Supplier'},
+GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
+GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
+GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},                         
+}
 
-)
 
 
 ## permission-related constants

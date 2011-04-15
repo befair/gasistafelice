@@ -8,51 +8,84 @@ from permissions.models import Role
 from gasistafelice.base.utils import get_ctype_from_model_label 
 
 from gasistafelice.auth import PermissionsRegister, valid_params_for_roles
-from gasistafelice.auth.models import ParamRole, GlobalPermission
+from gasistafelice.auth.models import Param, ParamRole, GlobalPermission
 
 
 
-def validate_parametric_role(name, param1, param2, constraints=None):
+def validate_parametric_role(name, params, constraints=None):
     """
-    Check if the parameters passed on creation of a new (parametric) role
-    are allowed in the application domain.  
+    Check if the parameters passed on registration of a new (parametric) role
+    are allowed in current the application domain.  
+    
+    **Parameters:**
+    name
+        a string identifying the kind of parametric role to register;
+        must be an identifier of an existing (non-parametric) Role
+    params
+        a dictionary containing names and values of the parameters to be associated
+        with the parametric Role 
+    constraints
+        a data structure specifiyng what combinations of basic roles and parameters
+        are valid in the context of the current application domain. 
     """
-    for (role_name, model_name_1, model_name_2) in constraints:
-        ct_1 = get_ctype_from_model_label(model_name_1)
-        ct_2 = get_ctype_from_model_label(model_name_2)
-        param1_ct = ContentType.objects.get_for_model(param1)
-        param2_ct = ContentType.objects.get_for_model(param2)
-        if name == role_name and ct_1 == param1_ct and ct_2 == param2_ct:
-            # parameters are of the right type for the role
-            return True
-    return False
+    # construct a dictionary holding ContentTypes of passed parameters
+    param_specs = {}
+    for (k,v) in params.items():
+        param_specs[k] = ContentType.objects.get_for_model(v)
+    # construct a dictionary holding expected ContentTypes of expected parameters
+    role_name = name
+    expected_param_specs = {}
+    for (k,v) in constraints[role_name].items():
+        expected_param_specs[k] = get_ctype_from_model_label(v)
+    # compare computed and expected signatures for parameters
+    if expected_param_specs == param_specs:
+        return True
+    else:
+        return False
 
 
-def register_parametric_role(name, param1, param2=None):
-    """Registers a parametric role (`ParamRole`) with passed parameters.
-    Check if parameters' type is suitable for the application domain, and
-    prevent registering duplicated roles in the DB.     
+def register_parametric_role(name, **kwargs):
+    """Registers a parametric role (`ParamRole`) with given parameters.
+    
+    Role parameters are passed as keyword arguments; this registration function 
+    checks that name, type and number of provided parameters is suitable for 
+    the application domain, and prevents duplication of parametric roles in the DB.     
+    
     Returns the new parametric role if the registration was successfully, otherwise False.    
     
     **Parameters:**
 
     name
         a (unique) string identifying the basic Role associated with the ParamRole 
-    param1
-        the primary (mandatory) parameter describing the parametric role 
-    param2
-        a secondary (optional) parameter describing the parametric role
     
-    It's just a trivial extension of the `register_role` function found in `django-permissions`,
-    taking into account the additional parameters for the constructor of our custom `ParamRole` model class.
+    **kwargs
+         a dictionary of keyword arguments describing the parameters associated with the ParamRole
+    
+    This function is just a simple extension of the `register_role()` function found in `django-permissions`,
+    taking into account the additional parameters needed by the constructor of our custom `ParamRole` model class.
     """
-    if validate_parametric_role(name, param1, param2, constraints=valid_params_for_roles):   
+    # TODO: adapt implementation to the new version of ParamRole
+    params = kwargs
+    if validate_parametric_role(name, params, constraints=valid_params_for_roles):   
         # check if a Role with the passed name already exists in the DB; if not, create it
-        role = Role.objects.get_or_create(name=name) 
-        # create the new Role, if not already existing in the DB 
-        param_role = ParamRole.objects.get_or_create(role=role, param1=param1, param2=param2)                        
-        return param_role
-    else:
+        role = Role.objects.get_or_create(name=name)
+        ## TODO: enclose in a transaction 
+        # create a new blank ParamRole 
+        p_role = ParamRole.objects.create(role=role)
+        for (k,v) in params:
+            p = Param.objects.get_or_create(name=k, param=v)
+            p_role.param_set.add(p)
+            # avoid storing duplicated parametric roles in the DB
+            # if a parametric role with the same parameters of the one just constructed
+            # already exists in the DB, registration isn't actually needed
+            existing_p_roles = ParamRole.objects.all()
+            if p_role in existing_p_roles:
+                return True 
+            else:
+                # this parametric role doesn't exists yet, so save it to the DB 
+                p.save()
+                return p_role
+    else: # this kind of parametric role isn't allowed in the current application domain
         return False
 
 def get_models_with_global_permissions():

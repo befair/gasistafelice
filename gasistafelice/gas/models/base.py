@@ -40,11 +40,11 @@ class GAS(PermissionResource, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
-        register_parametric_role(name=GAS_MEMBER, param1=self)
+        register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_TECH, param1=self)
+        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_CASH, param1=self)     
+        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)     
     
     @property        
     def local_grants(self):
@@ -74,7 +74,8 @@ class GASMember(PermissionResource, models.Model):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        role = register_parametric_role(name=GAS_MEMBER, param1=self.gas)
+        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        # TODO: adapt method to the parametric role framework
         role.add_principal(user)
     
     @property        
@@ -119,7 +120,7 @@ class GASSupplierSolidalPact(PermissionResource, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, param1=self.gas, param2=self.supplier)     
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
     
     @property        
     def local_grants(self):
