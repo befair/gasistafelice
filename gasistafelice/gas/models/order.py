@@ -44,6 +44,9 @@ class GASSupplierStock(PermissionResource, models.Model):
               )     
         return rv
     
+    class Meta:
+        app_label = 'gas'
+
 
 class GASSupplierOrder(PermissionResource, models.Model):
     """An order issued by a GAS to a Supplier.
@@ -87,7 +90,11 @@ class GASSupplierOrder(PermissionResource, models.Model):
             for product in self.supplier.product_catalog:
                 self.products.add(product)
         return
+
+    class Meta:
+        app_label = 'gas'
         
+
 class GASSupplierOrderProduct(PermissionResource, models.Model):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
@@ -123,6 +130,10 @@ class GASSupplierOrderProduct(PermissionResource, models.Model):
               # permission specs go here
               )     
         return rv
+
+    class Meta:
+        app_label = 'gas'
+
     
 class GASMemberOrder(PermissionResource, models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
@@ -185,6 +196,9 @@ class GASMemberOrder(PermissionResource, models.Model):
             set_workflow(self, w)
 
         return super(GASMemberOrder, self).save()
+    
+    class Meta:
+        app_label = 'gas'
 
 class Delivery(PermissionResource, models.Model):
     """
@@ -208,6 +222,9 @@ class Delivery(PermissionResource, models.Model):
               )     
         return rv
     
+    class Meta:
+        app_label = 'gas'
+
 
 class Withdrawal(PermissionResource, models.Model):
     """
@@ -233,3 +250,6 @@ class Withdrawal(PermissionResource, models.Model):
               )     
         return rv 
     
+    class Meta:
+        app_label = 'gas'
+

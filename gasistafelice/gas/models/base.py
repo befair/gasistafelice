@@ -23,17 +23,18 @@ class GAS(PermissionResource, models.Model):
     #TODO: Prevedere qui tutta la parte di configurazione del GAS
 
     name = models.CharField(max_length=128)
-    logo = models.ImageField(upload_to="/images/")
-    description = models.TextField(help_text=_("Who are you? What are yours specialties?"))
+    logo = models.ImageField(upload_to="/images/", null=True, blank=True)
+    description = models.TextField(help_text=_("Who are you? What are yours specialties?"), null=True, blank=True)
 
-    workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
-    workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set")
+    workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set", null=True, blank=True)
+    workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set", null=True, blank=True)
 
-    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
+    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True)
     objects = managers.GASRolesManager()
 
     class Meta:
         verbose_name_plural = _('GAS')
+        app_label = 'gas'
 
     def __unicode__(self):
         return self.name
@@ -65,7 +66,7 @@ class GASMember(PermissionResource, models.Model):
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
-    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_members")
+    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
@@ -92,7 +93,10 @@ class GASMember(PermissionResource, models.Model):
     #    self.first_name = self.name
     #    self.last_name = self.last_name
         super(GASMember, self).save()         
-   
+    
+    class Meta:
+        app_label = 'gas'
+
 class GASSupplierSolidalPact(PermissionResource, models.Model):
     """Define a GAS <-> Supplier relationship agreement.
     
@@ -128,5 +132,7 @@ class GASSupplierSolidalPact(PermissionResource, models.Model):
               )     
         return rv
      
-    
+    class Meta:
+        app_label = 'gas'
+
 
