@@ -34,7 +34,7 @@ class GAS(Resource, PermissionBase, models.Model):
 
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    identifier = models.CharField("Codice GAS (3 lettere)", max_length=3, null=False, blank=False, help_text=_("Inserire cui il codice GAS nel DES. Ad es: MATELICA--> MAT"))	
+    identifier = models.CharField("GAS code (3 letters)", max_length=3, null=False, blank=False, help_text=_("Insert here your GAS unique identier in the DES. For example: CAMERINO--> CAM"))	
     description = models.TextField(help_text=_("Who are you? What are yours specialities?"))
 
     workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
@@ -48,10 +48,10 @@ class GAS(Resource, PermissionBase, models.Model):
 
     active = models.BooleanField()
     birthday = models.DateField()
-    vat =  models.CharField(max_length=11, null=True, blank=True, help_text=_("Partita IVA"))	
-    fiscal_code =  models.CharField(max_length=16, null=True, blank=False, help_text=_("Codice fiscale"))	
+    vat =  models.CharField(max_length=11, null=True, blank=True, help_text=_("VAT number"))	
+    fiscal_code =  models.CharField(max_length=16, null=True, blank=False, help_text=_("Fiscal code"))	
     email_gas = models.EmailField()
-    email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email responsabili"))
+    email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email coordinator"))
     phone = models.CharField(max_length=50, null=True, blank=True)	
     website = models.URLField(verify_exists=True, null=True, blank=True) 
     #TODO: gallery album
@@ -217,10 +217,10 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
 
 #TODO: put in base and import
 class AbstractClass(models.Model):
-    created_at=models.DateField(_"Created at")
-    created_by=models.ForeignKey(User, db_column="created_by", related_name=_"poll_user_created_by")
-    updated_at=models.DateTimeField("Updated at")
-    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_"poll_user_updated_by")
+    created_at=models.DateField(_("Created at"))
+    created_by=models.ForeignKey(User, db_column="created_by", related_name=_("user_created_by"))
+    updated_at=models.DateTimeField(_("Updated at"))
+    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_("user_updated_by"))
     class Meta:
         abstract = True
     
