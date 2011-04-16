@@ -13,7 +13,7 @@ from gasistafelice.supplier.models import Supplier, Product
 
 from gasistafelice.gas import managers
 
-from workflows.models import Workflow, Transition
+from workflows.models import Workflow
 
 class GAS(PermissionResource, models.Model):
     """A group of people which make some purchases together.
@@ -75,7 +75,6 @@ class GASMember(PermissionResource, models.Model):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
-        # TODO: adapt method to the parametric role framework
         role.add_principal(user)
     
     @property        

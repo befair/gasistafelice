@@ -1,8 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User, Group 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from gasistafelice.base.utils import get_ctype_from_model_label
 from permissions.models import Permission, Role
 
 from gasistafelice.base.models import Resource
@@ -43,10 +43,59 @@ class ParamRole(Resource, Role):
     # parameters for this Role
     param_set = models.ManyToManyField(Param)
     
+    def add_principal(self, principal, content=None):
+        """
+        Add the given principal (User or Group) to this parametric role.
+        
+        Raise `AttributeError` if the principal is neither a User nor a Group instance.
+        """
+        if isinstance(principal, User):
+            PrincipalParamRoleRelation.objects.create(user=principal, role=self)
+        elif isinstance(principal, Group):
+            PrincipalParamRoleRelation.objects.create(group=principal, role=self)
+        else:
+            raise AttributeError("The principal must be either a User instance or a Group instance.")   
+
+            
+    def get_groups(self, content=None):
+        """
+        Returns all Groups to which this parametric role is assigned. 
+        
+        If a content object is given, parametric roles local to this object are returned, too.
+        """
+        if content:
+            ctype = ContentType.objects.get_for_model(content)
+            prrs = PrincipalParamRoleRelation.objects.filter(role=self,
+                content_id__in = (None, content.id),
+                content_type__in = (None, ctype)).exclude(group=None)
+        else:
+            prrs = PrincipalParamRoleRelation.objects.filter(role=self,
+            content_id=None, content_type=None).exclude(group=None)
+
+        return [prr.group for prr in prrs]
+
+    def get_users(self, content=None):
+        """
+        Returns all Users to which this parametric role was assigned. 
+        
+        If a content object is given, parametric roles local to this object are returned, too.
+        """
+        if content:
+            ctype = ContentType.objects.get_for_model(content)
+            prrs = PrincipalParamRoleRelation.objects.filter(role=self,
+                content_id__in = (None, content.id),
+                content_type__in = (None, ctype)).exclude(user=None)
+        else:
+            prrs = PrincipalParamRoleRelation.objects.filter(role=self,
+                content_id=None, content_type=None).exclude(user=None)
+
+        return [prr.user for prr in prrs]
+
+    
     ## we define a few properties providing easier access to allowed role parameters            
     # note that access is read-only; parameter assignment is managed by the 
     #`register_parametric_role()` factory function
-    
+        
     @property 
     def gas(self):
         """
@@ -112,6 +161,54 @@ class ParamRole(Resource, Role):
                 withdrawal = p.param
                 return withdrawal
         return None
+    
+class PrincipalParamRoleRelation(models.Model):
+    """This model is a relation describing the fact that a parametric role (`ParamRole`) 
+    is assigned to a principal (i.e. a User or Group). If a content object is
+    given this is a local role, i.e. the principal has this role only for this
+    content object. Otherwise it is a global role, i.e. the principal has
+    this role for all content objects.
+
+    user
+        The User to which the parametric role should be assigned. 
+        Either a User instance xor a Group instance needs to be given.
+
+    group
+        The Group to which the parametric role should be assigned. 
+        Either a User instance xor a Group instance needs to be given.
+
+    role
+        The role (a `ParamRole` instance) to be assigned to the principal.
+
+    content [optional]
+        If given, the role assigned to the principal is local to that content object.
+        
+    CREDITS: this class is inspired by the `PrincipalRoleRelation` model in `django-permissions`.
+    """
+    user = models.ForeignKey(User, blank=True, null=True)
+    group = models.ForeignKey(Group, blank=True, null=True)
+    role = models.ForeignKey(ParamRole)
+
+    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    content_id = models.PositiveIntegerField(blank=True, null=True)
+    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
+
+    def get_principal(self):
+        """Returns the principal.
+        """
+        return self.user or self.group
+
+    def set_principal(self, principal):
+        """Sets the principal.
+        """
+        if isinstance(principal, User):
+            self.user = principal
+        elif isinstance(principal, Group):
+            self.group = principal
+        else:
+            raise AttributeError("The principal must be either a User instance or a Group instance.")
+
+    principal = property(get_principal, set_principal)
         
      
 class GlobalPermission(models.Model):
@@ -121,3 +218,5 @@ class GlobalPermission(models.Model):
     class Meta:
         # forbid duplicated GlobalPermission entries in the DB
         unique_together = ("permission", "role", "content_type")
+        
+

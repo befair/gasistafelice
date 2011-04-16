@@ -3,14 +3,17 @@ from django.db.models import signals
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.loading import cache
 
+from django.contrib.auth.models import User, Group
+
 from permissions.models import Role
 
 from gasistafelice.base.utils import get_ctype_from_model_label 
 
 from gasistafelice.auth import PermissionsRegister, valid_params_for_roles
-from gasistafelice.auth.models import Param, ParamRole, GlobalPermission
+from gasistafelice.auth.models import Param, ParamRole, PrincipalParamRoleRelation, GlobalPermission
 
-
+# Roles ######################################################################
+# CREDITS: inspired by `django-permissions`
 
 def validate_parametric_role(name, params, constraints=None):
     """
@@ -87,7 +90,273 @@ def register_parametric_role(name, **kwargs):
                 return p_role
     else: # this kind of parametric role isn't allowed in the current application domain
         return False
+    
 
+def add_parametric_role(principal, role):
+    """Adds a global parametric role to a principal.  
+    
+    Return True if a new parametric role was added to the principal, 
+    False the given parametric role was already assigned to the principal;
+    raise `AttributeError` if the principal is neither a User nor a Group instance.  
+
+    **Parameters:**
+
+    principal
+        The principal (User or Group) which gets the parametric role added.
+
+    role
+        The (parametric) role which is assigned.
+    """
+    if isinstance(principal, User):
+        try:
+            PrincipalParamRoleRelation.objects.get(user=principal, role=role, content_id=None, content_type=None)
+        except PrincipalParamRoleRelation.DoesNotExist:
+            PrincipalParamRoleRelation.objects.create(user=principal, role=role)
+            return True
+    elif isinstance(principal, Group):
+        try:
+            PrincipalParamRoleRelation.objects.get(group=principal, role=role, content_id=None, content_type=None)
+        except PrincipalParamRoleRelation.DoesNotExist:
+            PrincipalParamRoleRelation.objects.create(group=principal, role=role)
+            return True
+    else:
+        raise AttributeError("The principal must be either a User instance or a Group instance.")
+
+    return False
+
+def add_local_parametric_role(obj, principal, role):
+    """Adds a local parametric role to a principal for a given content object.
+      
+    Return True if a new parametric role was added to the principal, 
+    False the given parametric role was already assigned to the principal;
+    raise `AttributeError` if the principal is neither a User nor a Group instance.  
+
+    **Parameters:**
+
+    principal
+        The principal (User or Group) which gets the parametric role added.
+
+    role
+        The (parametric) role which is assigned.
+        
+    obj
+        The content object for which the local role is assigned.
+    """
+        
+    ctype = ContentType.objects.get_for_model(obj)
+    if isinstance(principal, User):
+        try:
+            PrincipalParamRoleRelation.objects.get(user=principal, role=role, content_id=obj.id, content_type=ctype)
+        except PrincipalParamRoleRelation.DoesNotExist:
+            PrincipalParamRoleRelation.objects.create(user=principal, role=role, content=obj)
+            return True
+    elif isinstance(principal, Group):
+        try:
+            PrincipalParamRoleRelation.objects.get(group=principal, role=role, content_id=obj.id, content_type=ctype)
+        except PrincipalParamRoleRelation.DoesNotExist:
+            PrincipalParamRoleRelation.objects.create(group=principal, role=role, content=obj)
+            return True
+    else:
+        raise AttributeError("The principal must be either a User instance or a Group instance.")
+
+    return False
+
+def remove_parametric_role(principal, role):
+    """Remove a parametric role from a principal.
+      
+    Return True if the removal was successful, False otherwise; 
+    raise `AttributeError` if the principal is neither a User nor a Group instance.  
+
+    **Parameters:**
+
+    principal
+        The principal (User or Group) which gets the parametric role removed.
+
+    role
+        The (parametric) role which is removed from the principal.
+    """
+        
+    try:
+        if isinstance(principal, User):
+            ppr = PrincipalParamRoleRelation.objects.get(
+                    user=principal, role=role, content_id=None, content_type=None)
+        elif isinstance(principal, Group):
+            ppr = PrincipalParamRoleRelation.objects.get(
+                    group=principal, role=role, content_id=None, content_type=None)
+        else:
+            raise AttributeError("The principal must be either a User instance or a Group instance.")
+
+    except PrincipalParamRoleRelation.DoesNotExist:
+        return False
+    else:
+        ppr.delete()
+
+    return True
+
+def remove_local_parametric_role(obj, principal, role):
+    """Remove a local parametric role from a principal with respect to a content object.
+      
+    Return True if the removal was successful, False otherwise; 
+    raise `AttributeError` if the principal is neither a User nor a Group instance.  
+
+    **Parameters:**
+
+    principal
+        The principal (User or Group) which gets the parametric role removed.
+
+    role
+        The (parametric) role which is removed from the principal.
+    obj
+        The content object for which the local role is removed.
+    """
+
+    try:
+        ctype = ContentType.objects.get_for_model(obj)
+
+        if isinstance(principal, User):
+            ppr = PrincipalParamRoleRelation.objects.get(
+                user=principal, role=role, content_id=obj.id, content_type=ctype)
+        elif isinstance(principal, Group):
+            ppr = PrincipalParamRoleRelation.objects.get(
+                group=principal, role=role, content_id=obj.id, content_type=ctype)
+        else:
+            raise AttributeError("The principal must be either a User instance or a Group instance.")
+    except PrincipalParamRoleRelation.DoesNotExist:
+        return False
+    else:
+        ppr.delete()
+
+    return True
+
+def remove_parametric_roles(principal):
+    """Removes all parametric roles assigned to a principal (User or Group).
+    
+    Return True if the removal was successful, False otherwise; 
+    raise `AttributeError` if the principal is neither a User nor a Group instance.
+      
+    **Parameters:**
+
+    principal
+        The principal (a User or group instance) from which all parametric roles are removed.
+    """
+    if isinstance(principal, User):
+        ppr = PrincipalParamRoleRelation.objects.filter(
+            user=principal, content_id=None, content_type=None)
+    elif isinstance(principal, Group):
+        ppr = PrincipalParamRoleRelation.objects.filter(
+            group=principal, content_id=None, content_type=None)
+    else:
+        raise AttributeError("The principal must be either a User instance or a Group instance.")   
+    if ppr:
+        ppr.delete()
+        return True
+    else:
+        return False
+
+def remove_local_parametric_roles(obj, principal):
+    """Removes all local parametric roles from a principal (User or Group) with respect to a content object.
+   
+    Return True if the removal was successful, False otherwise; 
+    raise `AttributeError` if the principal is neither a User nor a Group instance.
+   
+    **Parameters:**
+
+    obj
+        content object with respect to the local parametric roles are removed from the principal     
+    principal
+        The principal (user or group) from which the roles are removed.
+    """
+    ctype = ContentType.objects.get_for_model(obj)
+
+    if isinstance(principal, User):
+        ppr = PrincipalParamRoleRelation.objects.filter(
+            user=principal, content_id=obj.id, content_type=ctype)
+    elif isinstance(principal, Group):
+        ppr = PrincipalParamRoleRelation.objects.filter(
+            group=principal, content_id=obj.id, content_type=ctype)
+    else:
+        raise AttributeError("The principal must be either a User instance or a Group instance.")      
+    if ppr:
+        ppr.delete()
+        return True
+    else:
+        return False
+
+def get_parametric_roles(principal, obj=None):
+    """Returns all parametric roles of a given principal  (User or Group). 
+    
+    This takes into account roles assigned directly to the principal and, 
+    if the principal is a User, also roles obtained via a group the user belongs to. 
+    
+    If an object is passed also local parametric roles will be added to the result.
+
+    **Parameters:**
+
+    principal
+        The principal (User or Group) for which the roles are retrieved.
+    obj [optional]
+        A content object with respect to retreiving local parametric roles. 
+
+    
+    """
+    roles = get_global_parametric_roles(principal)
+
+    if obj is not None:
+        roles.extend(get_local_parametric_roles(obj, principal))
+
+    if isinstance(principal, User):
+        for group in principal.groups.all():
+            if obj is not None:
+                roles.extend(get_local_parametric_roles(obj, group))
+            roles.extend(get_parametric_roles(group))
+
+    return roles
+
+def get_global_parametric_roles(principal):
+    """Returns global parametric roles assigned to a principal (User or Group).
+        
+       Raise `AttributeError` if the principal is neither a User nor a Group instance.
+    """
+    if isinstance(principal, User):
+        return [prr.role for prr in PrincipalParamRoleRelation.objects.filter(
+            user=principal, content_id=None, content_type=None)]
+    elif isinstance(principal, Group):
+        return [prr.role for prr in PrincipalParamRoleRelation.objects.filter(
+            group=principal, content_id=None, content_type=None)]
+    else:
+        raise AttributeError("The principal must be either a User instance or a Group instance.")      
+
+def get_local_parametric_roles(obj, principal):
+    """Returns local parametric roles assigned to a principal (User or Group),
+     with respect to a given content object.
+     
+     Raise `AttributeError` if the principal is neither a User nor a Group instance.
+    """
+    ctype = ContentType.objects.get_for_model(obj)
+
+    if isinstance(principal, User):
+        return [prr.role for prr in PrincipalParamRoleRelation.objects.filter(
+            user=principal, content_id=obj.id, content_type=ctype)]
+    elif isinstance(principal, Group):
+        return [prr.role for prr in PrincipalParamRoleRelation.objects.filter(
+            group=principal, content_id=obj.id, content_type=ctype)]
+    else:
+        raise AttributeError("The principal must be either a User instance or a Group instance.")   
+
+
+# Permissions ################################################################
+def register_global_permission(perm, role, ctype):
+    """
+    This trivial helper function just creates a new GlobalPermission object,
+    taking care of avoiding duplicated entries in the DB.
+    """
+    
+    try:
+        GlobalPermission.objects.create(permission=perm, role=role, content_type=ctype)
+    except IntegrityError: # this global permission already exists in the DB
+        pass
+ 
+# Role and Permission setup utilities ################################################################
 def get_models_with_global_permissions():
     """
     This is a simple helper function that retrieves the list of installed models
@@ -109,18 +378,7 @@ def get_models_with_local_permissions():
     rv = [m for m in cache.get_models() if m._meta.installed and hasattr(m, 'local_grants')]
     return rv
 
-def register_global_permission(perm, role, ctype):
-    """
-    This trivial helper function just creates a new GlobalPermission object,
-    taking care of avoiding duplicated entries in the DB.
-    """
-    
-    try:
-        GlobalPermission.objects.create(permission=perm, role=role, content_type=ctype)
-    except IntegrityError: # this global permission already exists in the DB
-        pass
-   
- 
+
 def setup_roles(sender, instance, created, **kwargs):
     """
     Setup proper Roles after a model instance is saved to the DB for the first time.

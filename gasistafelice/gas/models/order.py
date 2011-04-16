@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.base.models import Resource, PermissionResource, Place, DefaultTransition
+from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_parametric_role

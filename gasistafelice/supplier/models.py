@@ -58,7 +58,6 @@ class SupplierReferrer(PermissionResource, models.Model):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
         role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        # TODO: adapt method to the parametric role framework
         role.add_principal(user)     
     
     @property        
