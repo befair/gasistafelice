@@ -24,6 +24,13 @@ class GAS(Resource, PermissionBase, models.Model):
 
     """
     #TODO: Prevedere qui tutta la parte di configurazione del GAS
+    config_change_price = models.BooleanField(help_text=_("GAS change supplier list price or not"))  
+    config_view_subjective = models.BooleanField(help_text=_("GAS use subjective or economic views "))  
+    config_deliver_only_one = models.BooleanField(help_text=_("GAS use only one delivery place"))  
+    config_close_day = models.DateField(auto_now=False, null=True, help_text=_("default order closing day of the week")) 
+    config_close_time = models.TimeField(help_text=_("default order closing hour and minutes"))  
+    config_deliver_day = models.BooleanField(help_text=_("default delivery closing day of the week"))  
+    config_deliver_time = models.TimeField(help_text=_("default delivery closing hour and minutes"))  
 
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
@@ -39,7 +46,7 @@ class GAS(Resource, PermissionBase, models.Model):
     account = models.ForeignKey(Account)
     liquidity = models.ForeignKey(Account)
 
-    active = BooleanField()
+    active = models.BooleanField()
     birthday = models.DateField()
     vat =  models.CharField(max_length=11, null=True, blank=True, help_text=_("Partita IVA"))	
     fiscal_code =  models.CharField(max_length=16, null=True, blank=False, help_text=_("Codice fiscale"))	
@@ -56,7 +63,7 @@ class GAS(Resource, PermissionBase, models.Model):
     note = models.TextField(null=True, blank=True)
     #TODO: rotation turn --> referrer through GASMemberSupplier
     #TODO: motor
-    motor_active = BooleanField()  
+    motor_active = models.BooleanField()  
    
     class Meta:
         verbose_name_plural = _('GAS')
@@ -210,10 +217,10 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
 
 #TODO: put in base and import
 class AbstractClass(models.Model):
-    created_at=models.DateField("Created at")
-    created_by=models.ForeignKey(User, db_column="created_by", related_name="poll_user_created_by")
+    created_at=models.DateField(_"Created at")
+    created_by=models.ForeignKey(User, db_column="created_by", related_name=_"poll_user_created_by")
     updated_at=models.DateTimeField("Updated at")
-    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name="poll_user_updated_by")
+    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_"poll_user_updated_by")
     class Meta:
         abstract = True
     
