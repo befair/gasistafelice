@@ -35,12 +35,12 @@ class GAS(Resource, PermissionBase, models.Model):
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     identifier = models.CharField("GAS code (3 letters)", max_length=3, null=False, blank=False, help_text=_("Insert here your GAS unique identier in the DES. For example: CAMERINO--> CAM"))	
-    description = models.TextField(help_text=_("Who are you? What are yours specialities?"))
+    description = models.TextField(help_text=_("Who are you? What are yours specialties?"), null=True, blank=True)
 
-    workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set")
-    workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set")
+    workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set", null=True, blank=True)
+    workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set", null=True, blank=True)
 
-    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact')
+    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True)
     objects = managers.GASRolesManager()
 
     account = models.ForeignKey(Account)
@@ -67,6 +67,7 @@ class GAS(Resource, PermissionBase, models.Model):
    
     class Meta:
         verbose_name_plural = _('GAS')
+        app_label = 'gas'
 
     def __unicode__(self):
         return self.name
@@ -99,7 +100,7 @@ class GASMember(Resource, PermissionBase, models.Model):
     gas = models.ForeignKey(GAS)
     identifier = models.CharField("Numero tessera", max_length=10, null=True, blank=True, help_text=_("Inserire cui il vostro numero di tessera"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
-    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_members")
+    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
     account = models.ForeignKey(Account)
 
     def __unicode__(self):
@@ -128,6 +129,9 @@ class GASMember(Resource, PermissionBase, models.Model):
     #    self.last_name = self.last_name
         super(GASMember, self).save()         
    
+    class Meta:
+        app_label = 'gas'
+
 class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     """Define a GAS <-> Supplier relationship agreement.
     
@@ -210,6 +214,9 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
               # permission specs go here
               )     
         return rv
+
+    class Meta:
+        app_label = 'gas'
      
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners

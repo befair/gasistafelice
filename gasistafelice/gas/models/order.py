@@ -46,6 +46,9 @@ class GASSupplierStock(Resource, PermissionBase, models.Model):
               )     
         return rv
     
+    class Meta:
+        app_label = 'gas'
+
 
 class GASSupplierOrder(Resource, PermissionBase, models.Model):
     """An order issued by a GAS to a Supplier.
@@ -96,6 +99,9 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
                 self.products.add(product)
         return
         
+    class Meta:
+        app_label = 'gas'
+
 class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
@@ -132,6 +138,9 @@ class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
               )     
         return rv
     
+    class Meta:
+        app_label = 'gas'
+
 class GASMemberOrder(Resource, PermissionBase, models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
@@ -194,6 +203,9 @@ class GASMemberOrder(Resource, PermissionBase, models.Model):
 
         return super(GASMemberOrder, self).save()
 
+    class Meta:
+        app_label = 'gas'
+
 class Delivery(Resource, PermissionBase, models.Model):
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
@@ -216,6 +228,9 @@ class Delivery(Resource, PermissionBase, models.Model):
               )     
         return rv
     
+    class Meta:
+        app_label = 'gas'
+
 
 class Withdrawal(Resource, PermissionBase, models.Model):
     """
@@ -241,3 +256,6 @@ class Withdrawal(Resource, PermissionBase, models.Model):
               )     
         return rv 
     
+    class Meta:
+        app_label = 'gas'
+

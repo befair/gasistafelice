@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy 
+from django.db.models.signals import post_syncdb
 
+import permissions
 from permissions.utils import register_role, register_permission
 
 ## role-related constants
@@ -36,6 +38,7 @@ valid_params_for_roles = (
 (GAS_REFERRER_ORDER, 'gas.GASSupplierOrder', ''),
 (GAS_REFERRER_WITHDRAWAL, 'gas.Withdrawal', ''),
 (GAS_REFERRER_DELIVERY, 'gas.Delivery', ''),
+
 )
 
 
@@ -56,14 +59,50 @@ PERMISSIONS_LIST = [
 (ALL, _('All')), # catchall
 ]
 
-## register project-level Roles
-# a dictionary holding Roles model instances, keyed by name
-roles_dict = {}
-for (name, description) in ROLES_LIST:
-    roles_dict[name] = register_role(name)
+class PermissionsRegister(object):
+    """Support global register to hold Role and Permissions dicts"""
 
-## register project-level Permissions
-# a dictionary holding Permission model instances, keyed by Permission's codename
-perms_dict = {}
-for (codename, name) in PERMISSIONS_LIST:    
-    perms_dict[codename] = register_permission(name, codename)
+    # a dictionary holding Roles model instances, keyed by name
+    roles_dict = {}
+
+    # a dictionary holding Permission model instances, keyed by Permission's codename
+    perms_dict = {}
+
+    @property
+    def roles(cls):
+        return cls.roles_dict.values()
+
+    @property
+    def perms(cls):
+        return cls.perms_dict.values()
+
+    @property
+    def role_names(cls):
+        return cls.roles_dict.keys()
+
+    @property
+    def perm_names(cls):
+        return cls.perms_dict.keys()
+
+    def get_role(cls, code):
+        return cls.roles_dict[code]
+
+    def get_perm(cls, code):
+        return cls.perms_dict[code]
+
+
+def init_permissions(sender, **kwargs):
+
+    ## register project-level Roles
+    for (name, description) in ROLES_LIST:
+        PermissionsRegister.roles_dict[name] = register_role(name)
+
+    ## register project-level Permissions
+    for (codename, name) in PERMISSIONS_LIST:    
+        PermissionsRegister.perms_dict[codename] = register_permission(name, codename)
+
+    return
+
+post_syncdb.connect(init_permissions, sender=permissions.models)
+
+    

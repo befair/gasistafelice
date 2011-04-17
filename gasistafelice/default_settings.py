@@ -6,6 +6,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -88,12 +89,15 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'workflows',
     'permissions',
+    'workflows',
+    'gasistafelice.auth',
     'gasistafelice.base',
+    'gasistafelice.bank',
     'gasistafelice.supplier',
     'gasistafelice.gas',
     'gasistafelice.admin',
+    'gasistafelice.gas_admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

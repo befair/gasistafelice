@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% load basic_tags %}
+{% load i18n %}
+{% load admin_tags %}
+
+{% block nav-global %}
+    {% des_admin_nav %}
+{% endblock %}
+
+{% block title %}{{ title }} | {% trans 'GAS administration' %}{% endblock %}
+
+{% block extrahead %}
+    {# head javascript goes here #}
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">{% trans 'GAS administration' %}</h1>
+{% endblock %}
+
+{% block footer %}<div style="text-align: center; font-style: italic; font-size: 10px; margin-bottom: 20px;">django-des - v{% des_version %}</div>{% endblock %}

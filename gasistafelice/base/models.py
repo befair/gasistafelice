@@ -30,8 +30,8 @@ class Person(Resource, PermissionBase, models.Model):
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
     display_name = models.CharField(max_length=128)
-    contacts = models.ManyToManyField('Contact')
-    user = models.OneToOneField(User, null=True)
+    contacts = models.ManyToManyField('Contact', null=True, blank=True)
+    user = models.OneToOneField(User, null=True, blank=True)
 
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname)
