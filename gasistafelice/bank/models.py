@@ -18,7 +18,7 @@ class Account(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=4)
 
     def __unicode__(self):
-        return _("balance: %") % {self.balance}
+        return _("balance: %") % {'balance' : self.balance}
 
 class Movement(models.Model):
     """Economic movement
@@ -27,8 +27,8 @@ class Movement(models.Model):
     #TODO: This is the basis of the economic part. To discuss and extend
     account = models.ForeignKey(Account)
     balance = models.DecimalField(max_digits=10, decimal_places=4)
-    causal = mCharField(max_length=200, help_text=_("causal of economic movement"))	
+    causal = models.CharField(max_length=200, help_text=_("causal of economic movement"))	
 
     def __unicode__(self):
-        return _("causal: %") % {self.causal}
+        return _("causal: %") % {'causal' : self.causal}
 
