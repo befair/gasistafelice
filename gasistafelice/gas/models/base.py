@@ -16,6 +16,7 @@ from gasistafelice.gas import managers
 
 from workflows.models import Workflow, Transition
 
+from django.contrib.auth.models import User
 from gasistafelice.bank.models import Account, Movement
 
 class GAS(Resource, PermissionBase, models.Model):
@@ -43,8 +44,8 @@ class GAS(Resource, PermissionBase, models.Model):
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True)
     objects = managers.GASRolesManager()
 
-    account = models.ForeignKey(Account)
-    liquidity = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_account")
+    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_liquidity")
 
     active = models.BooleanField()
     birthday = models.DateField()
@@ -57,8 +58,8 @@ class GAS(Resource, PermissionBase, models.Model):
     #TODO: gallery album
     #TODO: generic class documents 
     #documents = models.ManyToManyField(Document)
-    association_act = models.FileField(null=True, blank=True)
-    intent_act = models.FileField(null=True, blank=True)
+    association_act = models.FileField(upload_to='gasdocs', null=True, blank=True)
+    intent_act = models.FileField(upload_to='gasdocs', null=True, blank=True)
     #TODO: Widget wysywig
     note = models.TextField(null=True, blank=True)
     #TODO: rotation turn --> referrer through GASMemberSupplier
@@ -131,6 +132,115 @@ class GASMember(Resource, PermissionBase, models.Model):
    
     class Meta:
         app_label = 'gas'
+
+#TODO: put in base and import
+class AbstractClass(models.Model):
+    created_at=models.DateField(_("Created at"))
+    created_by=models.ForeignKey(User, db_column="created_by", related_name=_("user_created_by"))
+    updated_at=models.DateTimeField(_("Updated at"))
+    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_("user_updated_by"))
+    class Meta:
+        abstract = True
+    
+#TODO: put in base and import
+class Documents(AbstractClass):
+    """
+    General document that refers to a special entity
+    """
+    DOC_TYPE = (
+        ('01', 'GAS'),
+        ('02', 'SUPPLIER'),
+        ('03', 'PRODUCT'),
+        ('04', 'MEMBER'),
+        ('05', 'PDS'),
+        ('06', 'ORDER'),
+    )
+    name = models.CharField(max_length=300, help_text=_("title and brief description"))
+    type_doc = models.CharField(max_length=1, choices=DOC_TYPE)
+    #TODO: how to access to a volatile foreign key 
+    parent_class_id = models.AutoField(primary_key=True)
+    file_doc = models.FileField(upload_to='docs/%Y/%m/%d')
+    date = models.DateField()
+     
+class PDSAgreement(models.Model):
+    """list of agreement with YES/NO response with optional note and date
+    default values are 3: put in requirements?
+     1: It recognizes and work consistently to the charter of intent of purchasing groups (organization and working conditions).
+     2: It is available for visits to the company and control by the engineers of confidence of GAS
+     3: Puts at the disposal of GAS certification documents provided for by the marks.
+     4: Has carried out analyzes of products in date (if yes use note and date)
+    """
+    gas_question = models.CharField(max_length=1000)
+    producer_response = models.NullBooleanField(null=True, help_text=_("producer response encharge responsability about the above question"))
+    producer_note = models.CharField(max_length=200, blank=True)
+    declaration_date = models.DateTimeField(auto_now_add=True)
+    
+class PDSProductSeasonality(models.Model):
+    """Products type, variety and periodical availability"""
+    #YEAR_MONTH = (
+    #    ('01', 'JANUARY'),
+    #    ('02', 'FEBRUARY'),
+    #    ('03', 'MARCH'),
+    #    ('04', 'APRIL'),
+    #    ('05', 'MAY'),
+    #    ('06', 'JUNE'),
+    #    ('07', 'JULY'),
+    #    ('08', 'AUGUST'),
+    #    ('09', 'SEPTEMBER'),
+    #    ('10', 'OCTOBER'),
+    #    ('11', 'NOVEMBER'),
+    #    ('12', 'DECEMBER'),
+    #)
+    product_type = models.CharField(max_length=100)
+    #product_transformation = models.BooleanField(null=True, help_text=_("fresh product or human operation done on it"))
+    product_transformation = models.NullBooleanField(null=True, help_text=_("fresh product or human operation done on it"))
+    variety = models.CharField(max_length=100, blank=True)
+    #seasonality = models.CharField(max_length=50, choices=YEAR_MONTH, null=True, blank=True)
+    seasonality = models.DateField(auto_now=False, null=True, help_text=_("a month"))
+    medium_available_quantity = models.CharField(max_length=100, blank=True)
+
+class PDSMarketPlace(models.Model):
+    """Town and Days of market"""
+    #WEEK_DAYS = (
+    #    ('01', 'MONDAY'),
+    #    ('02', 'TUESDAY'),
+    #    ('03', 'WEDNESDAY'),
+    #    ('04', 'THURSDAY'),
+    #    ('05', 'FRIDAY'),
+    #    ('06', 'SATURDAY'),
+    #    ('07', 'SUNDAY'),
+    #)
+    #DAY_HOURS = (
+    #    ('01', '01'),
+    #    ('02', '02'),
+    #    ('03', '03'),
+    #    ('04', '04'),
+    #    ('05', '05'),
+    #    ('06', '06'),
+    #    ('07', '07'),
+    #    ('08', '08'),
+    #    ('09', '09'),
+    #    ('10', '10'),
+    #    ('11', '11'),
+    #    ('12', '12'),
+    #    ('13', '13'),
+    #    ('14', '14'),
+    #    ('15', '15'),
+    #    ('16', '16'),
+    #    ('17', '17'),
+    #    ('18', '18'),
+    #    ('19', '19'),
+    #    ('20', '20'),
+    #    ('21', '21'),
+    #    ('22', '22'),
+    #    ('23', '23'),
+    #)
+    #TODO: Geo location Gmap
+    town = models.CharField(max_length=100)
+    #day = models.CharField(max_length=50, choices=WEEK_DAYS, null=True, blank=True)
+    day = models.DateField(auto_now=False, null=True, help_text=_("a week day"))
+    #from_hour = models.CharField(max_length=50, choices=DAY_HOURS, null=True, blank=True)
+    from_hour = models.TimeField(auto_now=False, null=True, help_text=_("an hour"))    
 
 class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     """Define a GAS <-> Supplier relationship agreement.
@@ -221,112 +331,3 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
-
-#TODO: put in base and import
-class AbstractClass(models.Model):
-    created_at=models.DateField(_("Created at"))
-    created_by=models.ForeignKey(User, db_column="created_by", related_name=_("user_created_by"))
-    updated_at=models.DateTimeField(_("Updated at"))
-    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_("user_updated_by"))
-    class Meta:
-        abstract = True
-    
-#TODO: put in base and import
-class Documents(AbstractClass):
-    """
-    General document that refers to a special entity
-    """
-    DOC_TYPE = (
-        ('01', 'GAS'),
-        ('02', 'SUPPLIER'),
-        ('03', 'PRODUCT'),
-        ('04', 'MEMBER'),
-        ('05', 'PDS'),
-        ('06', 'ORDER'),
-    )
-    name = models.CharField(max_length=300, help_text=_("title and brief description"))
-    type = models.CharField(max_length=1, choices=DOC_TYPE)
-    #TODO: how to access to a volatile foreign key 
-    parent_class_id = models.AutoField(primary_key=False)
-    file= models.FileField(upload_to='docs/%Y/%m/%d')
-    date_ = models.DateField()
-     
-class PDSAgreement(models.Model):
-    """list of agreement with YES/NO response with optional note and date
-    default values are 3: put in requirements?
-     1: It recognizes and work consistently to the charter of intent of purchasing groups (organization and working conditions).
-     2: It is available for visits to the company and control by the engineers of confidence of GAS
-     3: Puts at the disposal of GAS certification documents provided for by the marks.
-     4: Has carried out analyzes of products in date (if yes use note and date)
-    """
-    gas_question = models.CharField(max_length=1000)
-    producer_response = models.BooleanField(null=True, help_text=_("producer response encharge responsability about the above question"))
-    producer_note = models.CharField(max_length=200, blank=True)
-    declaration_date = models.DateTimeField(auto_now_add=True)
-    
-class PDSProductSeasonality(models.Model):
-    """Products type, variety and periodical availability"""
-    #YEAR_MONTH = (
-    #    ('01', 'JANUARY'),
-    #    ('02', 'FEBRUARY'),
-    #    ('03', 'MARCH'),
-    #    ('04', 'APRIL'),
-    #    ('05', 'MAY'),
-    #    ('06', 'JUNE'),
-    #    ('07', 'JULY'),
-    #    ('08', 'AUGUST'),
-    #    ('09', 'SEPTEMBER'),
-    #    ('10', 'OCTOBER'),
-    #    ('11', 'NOVEMBER'),
-    #    ('12', 'DECEMBER'),
-    #)
-    product_type = models.CharField(max_length=100)
-    product_transformation = models.BooleanField(null=True, help_text=_("fresh product or human operation done on it"))
-    variety = models.CharField(max_length=100, blank=True)
-    #seasonality = models.CharField(max_length=50, choices=YEAR_MONTH, null=True, blank=True)
-    seasonality = models.DateField(auto_now=False, null=True, help_text=_("a month"))
-    medium_available_quantity = models.CharField(max_length=100, blank=True)
-
-class PDSMarketPlace(models.Model):
-    """Town and Days of market"""
-    #WEEK_DAYS = (
-    #    ('01', 'MONDAY'),
-    #    ('02', 'TUESDAY'),
-    #    ('03', 'WEDNESDAY'),
-    #    ('04', 'THURSDAY'),
-    #    ('05', 'FRIDAY'),
-    #    ('06', 'SATURDAY'),
-    #    ('07', 'SUNDAY'),
-    #)
-    #DAY_HOURS = (
-    #    ('01', '01'),
-    #    ('02', '02'),
-    #    ('03', '03'),
-    #    ('04', '04'),
-    #    ('05', '05'),
-    #    ('06', '06'),
-    #    ('07', '07'),
-    #    ('08', '08'),
-    #    ('09', '09'),
-    #    ('10', '10'),
-    #    ('11', '11'),
-    #    ('12', '12'),
-    #    ('13', '13'),
-    #    ('14', '14'),
-    #    ('15', '15'),
-    #    ('16', '16'),
-    #    ('17', '17'),
-    #    ('18', '18'),
-    #    ('19', '19'),
-    #    ('20', '20'),
-    #    ('21', '21'),
-    #    ('22', '22'),
-    #    ('23', '23'),
-    #)
-    #TODO: Geo location Gmap
-    town = models.CharField(max_length=100)
-    #day = models.CharField(max_length=50, choices=WEEK_DAYS, null=True, blank=True)
-    day = models.DateField(auto_now=False, null=True, help_text=_("a week day"))
-    #from_hour = models.CharField(max_length=50, choices=DAY_HOURS, null=True, blank=True)
-    from_hour = models.TimeField(auto_now=False, null=True, help_text=_("an hour"))    
-

@@ -87,15 +87,14 @@ class WorkflowDefinition(object):
         self.state_transition_map = state_transition_map
         self.initial_state_name = initial_state
         self.default_transitions = default_transitions
-            
+  
     def register_workflow(self):
         # check workflow specifications for internal consistency;
         # return an informative error message to the user if the check fails
         #try:
-
-            self.check_workflow_specs()
+        self.check_workflow_specs()
         #except ImproperlyConfigured, e:
-        #    raise ImproperlyConfigured("Workflow specifications are not consistent.\n" + e)
+        # raise ImproperlyConfigured("Workflow specifications are not consistent.\n" + e)
         self.workflow = Workflow.objects.create(name = self.workflow_name)
         ## create States objects
         self.states = {} # dictionary containing State objects for our Workflow
