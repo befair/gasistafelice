@@ -100,7 +100,7 @@ class GASMember(PermissionResource, models.Model):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    identifier = models.CharField("Numero tessera", max_length=10, null=True, blank=True, help_text=_("Inserire cui il vostro numero di tessera"))	
+    identifier = models.CharField(_("Card number"), max_length=10, null=True, blank=True, help_text=_("Insert your Card Number"))
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
     roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
     account = models.ForeignKey(Account)
@@ -108,8 +108,9 @@ class GASMember(PermissionResource, models.Model):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
-
+        #return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
+        #See ticket #54
+        return _("%(identifier)s %(person)s") % {'person' : self.person, 'identifier': self.identifier}
     
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
@@ -254,8 +255,16 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
      
     history = HistoricalRecords()
    
+    #if GAS's configuration use only one
+    #default withdrawal time
+    withdrawal_day = models.DateField(auto_now=False, null=True, help_text=_("a week day"))
+    #defaultfavorite withdrawal time
+    withdrawal_time = models.TimeField(auto_now=False, null=True, help_text=_("an hour and minutes"))
+    #default withdrawal Where and when Withdrawal occurs
+    withdrawal = models.ForeignKey('Withdrawal', related_name="default_Withdrawal")
+
     account = models.ForeignKey(Account)
-    pds_presentaion = models.TextField(blank=True)
+    pds_presentation = models.TextField(blank=True)
     pds_first_year_of_certification = models.CharField(max_length=50, blank=True)
     pds_last_year_of_certification = models.CharField(max_length=50, blank=True)
     pds_extension_cultivated = models.CharField(max_length=50, blank=True)
