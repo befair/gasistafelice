@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
+from gasistafelice.base.fields import CurrencyField
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_parametric_role
@@ -65,7 +66,7 @@ class GASSupplierOrder(PermissionResource, models.Model):
     # Where and when Delivery occurs
     delivery = models.ForeignKey('Delivery', related_name="supplier_orders")
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True) # FIXME: should be a `CurrencyField` ?
+    order_minimum_amount = CurrencyField(null=True, blank=True)
     # Where and when Withdrawal occurs
     withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_orders")
     # STATUS is MANAGED BY WORKFLOWS APP: 
@@ -107,9 +108,9 @@ class GASSupplierOrderProduct(PermissionResource, models.Model):
     # useful for Products with a low availability
     maximum_amount = models.PositiveIntegerField(blank=True, default=0)
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
-    ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    ordered_price = CurrencyField(blank=True)
     # the actual price of the Product (as resulting from the invoice)
-    delivered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    delivered_price = CurrencyField(blank=True)
     # how many items were actually delivered by the Supplier 
     delivered_amount = models.PositiveIntegerField(blank=True)
     
@@ -143,7 +144,7 @@ class GASMemberOrder(PermissionResource, models.Model):
     purchaser = models.ForeignKey(GASMember)
     product = models.ForeignKey(GASSupplierOrderProduct)
     # price of the Product at order time
-    ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    ordered_price = CurrencyField(blank=True)
     # how many Product units were ordered by the GAS member
     ordered_amount = models.PositiveIntegerField(blank=True)
     # how many Product units were withdrawn by the GAS member 
