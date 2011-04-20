@@ -154,3 +154,31 @@ class WorkflowDefinition(object):
                 raise ImproperlyConfigured("The default Transition for the State %s can't be set to a non-existent Transitions %s" % (state_name, transition_name))
             elif (state_name, transition_name) not in self.state_transition_map:
                 raise ImproperlyConfigured("The default Transition for the State %s must be one of its valid Transitions" % state_name)
+
+class AbstractClass(models.Model):
+    created_at=models.DateField(_("Created at"))
+    created_by=models.ForeignKey(User, db_column="created_by", related_name=_("%(app_label)s_%(class)s_created"))
+    updated_at=models.DateTimeField(_("Updated at"))
+    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_("%(app_label)s_%(class)s_updated"))
+    class Meta:
+        abstract = True
+    
+class Document(AbstractClass):
+    """
+    General document that refers to a special entity
+    """
+    DOC_TYPE = (
+        ('01', 'GAS'),
+        ('02', 'SUPPLIER'),
+        ('03', 'PRODUCT'),
+        ('04', 'MEMBER'),
+        ('05', 'PDS'),
+        ('06', 'ORDER'),
+    )
+    name = models.CharField(max_length=300, help_text=_("title and brief description"))
+    type_doc = models.CharField(max_length=1, choices=DOC_TYPE)
+    #TODO: how to access to a volatile foreign key 
+    parent_class_id = models.AutoField(primary_key=True)
+    file_doc = models.FileField(upload_to='docs/%Y/%m/%d')
+    date = models.DateField()
+     

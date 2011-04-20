@@ -7,6 +7,8 @@ from gasistafelice.gas import models as gas_models
 
 from gasistafelice.gas_admin.models import base as admin_models
 
+from gasistafelice.bank import models as bank_models
+
 class GasAdminSite(AdminSite):
 
     index_template = "gas_admin/index.html"
@@ -27,4 +29,5 @@ gas_admin.register(gas_models.order.GASSupplierStock)
 gas_admin.register(gas_models.order.GASSupplierOrder) #, admin_models.GASSupplierOrderAdmin)
 gas_admin.register(gas_models.order.GASMemberOrder)
 
+gas_admin.register(bank_models.Account)
 
