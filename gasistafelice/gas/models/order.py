@@ -3,9 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from permissions import PermissionBase # mix-in class for permissions management
-
-from gasistafelice.base.models import Resource, Place, DefaultTransition
+from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_parametric_role
@@ -14,7 +12,7 @@ from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_RE
 from workflows.models import Workflow
 from workflows.utils import get_workflow, get_state, do_transition
 
-class GASSupplierStock(Resource, PermissionBase, models.Model):
+class GASSupplierStock(PermissionResource, models.Model):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
     gas = models.ForeignKey(GAS)
@@ -50,7 +48,7 @@ class GASSupplierStock(Resource, PermissionBase, models.Model):
         app_label = 'gas'
 
 
-class GASSupplierOrder(Resource, PermissionBase, models.Model):
+class GASSupplierOrder(PermissionResource, models.Model):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
@@ -76,7 +74,7 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
-        register_parametric_role(name=GAS_REFERRER_ORDER, param1=self)
+        register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
         
     @property        
     def local_grants(self):
@@ -96,7 +94,7 @@ class GASSupplierOrder(Resource, PermissionBase, models.Model):
     class Meta:
         app_label = 'gas'
 
-class GASSupplierOrderProduct(Resource, PermissionBase, models.Model):
+class GASSupplierOrderProduct(PermissionResource, models.Model):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -200,7 +198,7 @@ class GASMemberOrder(Resource, PermissionBase, models.Model):
     class Meta:
         app_label = 'gas'
 
-class Delivery(Resource, PermissionBase, models.Model):
+class Delivery(PermissionResource, models.Model):
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
@@ -213,7 +211,7 @@ class Delivery(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, param1=self)            
+        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
     
     @property        
     def local_grants(self):
@@ -226,7 +224,7 @@ class Delivery(Resource, PermissionBase, models.Model):
         app_label = 'gas'
 
 
-class Withdrawal(Resource, PermissionBase, models.Model):
+class Withdrawal(PermissionResource, models.Model):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
@@ -241,7 +239,7 @@ class Withdrawal(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, param1=self)   
+        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
         
     @property        
     def local_grants(self):

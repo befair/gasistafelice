@@ -2,9 +2,8 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from permissions.models import Role
-from permissions import PermissionBase # mix-in class for permissions management
 
-from gasistafelice.base.models import Resource, Person
+from gasistafelice.base.models import PermissionResource, Person
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.auth.utils import register_parametric_role 
@@ -14,9 +13,9 @@ from gasistafelice.supplier.models import Supplier, Product
 
 from gasistafelice.gas import managers
 
-from workflows.models import Workflow, Transition
+from workflows.models import Workflow
 
-class GAS(Resource, PermissionBase, models.Model):
+class GAS(PermissionResource, models.Model):
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
@@ -42,11 +41,11 @@ class GAS(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
-        register_parametric_role(name=GAS_MEMBER, param1=self)
+        register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_TECH, param1=self)
+        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_CASH, param1=self)     
+        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)     
     
     @property        
     def local_grants(self):
@@ -56,7 +55,7 @@ class GAS(Resource, PermissionBase, models.Model):
         return rv  
     
 
-class GASMember(Resource, PermissionBase, models.Model):
+class GASMember(PermissionResource, models.Model):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
     This way, every time there is a need to assign one or more GAS Members to a given Role,
@@ -76,7 +75,7 @@ class GASMember(Resource, PermissionBase, models.Model):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        role = register_parametric_role(name=GAS_MEMBER, param1=self.gas)
+        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
     
     @property        
@@ -98,7 +97,7 @@ class GASMember(Resource, PermissionBase, models.Model):
     class Meta:
         app_label = 'gas'
 
-class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
+class GASSupplierSolidalPact(PermissionResource, models.Model):
     """Define a GAS <-> Supplier relationship agreement.
     
     Each Supplier comes into relationship with a GAS by signing this pact,
@@ -124,7 +123,7 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, param1=self.gas, param2=self.supplier)     
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
     
     @property        
     def local_grants(self):
