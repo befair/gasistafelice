@@ -133,7 +133,7 @@ class GASSupplierOrderProduct(PermissionResource, models.Model):
     class Meta:
         app_label = 'gas'
 
-class GASMemberOrder(Resource, PermissionBase, models.Model):
+class GASMemberOrder(PermissionResource, models.Model):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
