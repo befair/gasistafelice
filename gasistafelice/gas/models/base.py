@@ -5,7 +5,7 @@ from permissions.models import Role
 from workflows.models import Workflow
 from history.models import HistoricalRecords
 
-from gasistafelice.base.models import PermissionResource, Person
+from gasistafelice.base.models import Resource, Person, AbstractClass, Document
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.auth.utils import register_parametric_role 
@@ -17,8 +17,7 @@ from gasistafelice.gas import managers
 
 from gasistafelice.bank.models import Account, Movement
 
-class GAS(PermissionResource, models.Model):
-
+class GAS(Resource, PermissionBase, AbstractClass, models.Model):
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
@@ -90,7 +89,7 @@ class GAS(PermissionResource, models.Model):
         return rv  
     
 
-class GASMember(PermissionResource, models.Model):
+class GASMember(Resource, PermissionBase, AbstractClass, models.Model):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
     This way, every time there is a need to assign one or more GAS Members to a given Role,
@@ -137,36 +136,6 @@ class GASMember(PermissionResource, models.Model):
     class Meta:
         app_label = 'gas'
 
-#TODO: put in base and import
-class AbstractClass(models.Model):
-    created_at=models.DateField(_("Created at"))
-    created_by=models.ForeignKey(User, db_column="created_by", related_name=_("user_created_by"))
-    updated_at=models.DateTimeField(_("Updated at"))
-    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_("user_updated_by"))
-
-    class Meta:
-        abstract = True
-    
-#TODO: put in base and import
-class Documents(AbstractClass):
-    """
-    General document that refers to a special entity
-    """
-    DOC_TYPE = (
-        ('01', 'GAS'),
-        ('02', 'SUPPLIER'),
-        ('03', 'PRODUCT'),
-        ('04', 'MEMBER'),
-        ('05', 'PDS'),
-        ('06', 'ORDER'),
-    )
-    name = models.CharField(max_length=300, help_text=_("title and brief description"))
-    type_doc = models.CharField(max_length=1, choices=DOC_TYPE)
-    #TODO: how to access to a volatile foreign key 
-    parent_class_id = models.AutoField(primary_key=True)
-    file_doc = models.FileField(upload_to='docs/%Y/%m/%d')
-    date = models.DateField()
-     
 class PDSAgreement(models.Model):
     """list of agreement with YES/NO response with optional note and date
     default values are 3: put in requirements?
@@ -283,9 +252,9 @@ class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
     pds_market = models.CharField(max_length=300, help_text=_("day and town of presence in biological market place"), blank=True)
     pds_available_for = models.CharField(max_length=50, choices=AVAILABLE_TYPE, blank=True, help_text=_("producer is available for: visit, inspection, examination, farm holidays, refreshment, feeding ..."))
     pds_farm_holidays_name =  models.CharField(max_length=100, blank=True)
-    pds_other_info = models.TextField(blank=True, help_text=_("other information from the manufacturer"))
-    pds_aggreement = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
-    pds_attached_documents = models.ManyToManyField(Documents, help_text=_("producer declarative on honor"), null=True)
+    pds_other_info = models.TextField(blank=True, help_text=_("other information from the manufacturer")) 
+    pds_aggreements = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
+    pds_attached_documents = models.ManyToManyField(Document, help_text=_("producer declarative on honor"), null=True)
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
