@@ -127,7 +127,7 @@ class WorkflowDefinition(object):
         for (state_name, transition_name) in self.default_transitions:
             state = self.states[state_name]
             transition = self.transitions[transition_name]
-            self.workflow.default_transition_set.add(state, transition)
+            self.workflow.default_transition_set.add(DefaultTransition(state=state, transition=transition))
     
             
     def check_workflow_specs(self):
