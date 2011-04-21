@@ -21,7 +21,7 @@ class Resource(object):
     """
     pass
 
-class Person(Resource, PermissionBase, models.Model):
+class Person(models.Model, Resource, PermissionBase):
     """A Person is an anagraphic record of a human being.
     It can be a User or not.
     """
@@ -36,12 +36,12 @@ class Person(Resource, PermissionBase, models.Model):
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname)
    
-class Contact(Resource, PermissionBase, models.Model):
+class Contact(models.Model, Resource, PermissionBase):
 
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Place(Resource, PermissionBase, models.Model):
+class Place(models.Model, Resource, PermissionBase):
     """Places should be managed as separate entities for various reasons:
     * among the entities arising in the description of GAS' activities,
     there are several being places or involving places,
@@ -62,7 +62,7 @@ class Place(Resource, PermissionBase, models.Model):
 
 # Generic workflow management
 
-class DefaultTransition(Resource, PermissionBase, models.Model):
+class DefaultTransition(models.Model, Resource, PermissionBase):
 
     workflow = models.ForeignKey(Workflow, related_name="default_transition_set")
     state = models.ForeignKey(State)

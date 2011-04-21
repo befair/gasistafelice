@@ -19,7 +19,7 @@ from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 
-class Supplier(Resource, PermissionBase, models.Model):
+class Supplier(models.Model, Resource, PermissionBase):
     """An actor having a stock of Products for sale to the DES."""
 
     name = models.CharField(max_length=128) 
@@ -50,7 +50,7 @@ class Supplier(Resource, PermissionBase, models.Model):
         return rv   
         
     
-class SupplierReferrer(Resource, PermissionBase, models.Model):
+class SupplierReferrer(models.Model, Resource, PermissionBase):
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
@@ -71,7 +71,7 @@ class SupplierReferrer(Resource, PermissionBase, models.Model):
         return rv
     
     
-class Certification(Resource, PermissionBase, models.Model):
+class Certification(models.Model, Resource, PermissionBase):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)
 
@@ -85,7 +85,7 @@ class Certification(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class ProductCategory(Resource, PermissionBase, models.Model):
+class ProductCategory(models.Model, Resource, PermissionBase):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
     # like sourceforge categories
     name = models.CharField(max_length=128, unique=True, blank=False)
@@ -104,7 +104,7 @@ class ProductCategory(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class ProductMU(Resource, PermissionBase, models.Model):
+class ProductMU(models.Model, Resource, PermissionBase):
     """Measurement unit for a Product.
          
     """
@@ -124,7 +124,7 @@ class ProductMU(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class Product(Resource, PermissionBase, models.Model):
+class Product(models.Model, Resource, PermissionBase):
 
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True) # if empty, should be programmatically set at DB save time
     producer = models.ForeignKey(Supplier)
@@ -144,7 +144,7 @@ class Product(Resource, PermissionBase, models.Model):
               )     
         return rv
 
-class SupplierStock(Resource, PermissionBase, models.Model):
+class SupplierStock(models.Model, Resource, PermissionBase):
     """A Product that a Supplier offers in the DES marketplace.
         
        Includes price, order constraints and availability information.          

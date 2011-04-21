@@ -19,7 +19,7 @@ from workflows.models import Workflow, Transition
 from django.contrib.auth.models import User
 from gasistafelice.bank.models import Account, Movement
 
-class GAS(Resource, PermissionBase, AbstractClass, models.Model):
+class GAS(models.Model, Resource, PermissionBase, AbstractClass):
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
@@ -89,7 +89,7 @@ class GAS(Resource, PermissionBase, AbstractClass, models.Model):
         return rv  
     
 
-class GASMember(Resource, PermissionBase, AbstractClass, models.Model):
+class GASMember(models.Model, Resource, PermissionBase, AbstractClass):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
     This way, every time there is a need to assign one or more GAS Members to a given Role,
@@ -214,7 +214,7 @@ class PDSMarketPlace(models.Model):
     #from_hour = models.CharField(max_length=50, choices=DAY_HOURS, null=True, blank=True)
     from_hour = models.TimeField(auto_now=False, null=True, help_text=_("an hour"))    
 
-class GASSupplierSolidalPact(Resource, PermissionBase, models.Model):
+class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
     """Define a GAS <-> Supplier relationship agreement.
     
     Each Supplier comes into relationship with a GAS by signing this pact,
