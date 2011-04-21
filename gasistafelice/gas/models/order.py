@@ -15,7 +15,7 @@ from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 
-class GASSupplierStock(models.Model, PermissionResource):
+class GASSupplierStock(models.Model, Resource, PermissionBase):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
     gas = models.ForeignKey(GAS)
@@ -53,7 +53,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         app_label = 'gas'
 
 
-class GASSupplierOrder(models.Model, PermissionResource):
+class GASSupplierOrder(models.Model, Resource, PermissionBase):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
@@ -107,7 +107,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     class Meta:
         app_label = 'gas'
 
-class GASSupplierOrderProduct(models.Model, PermissionResource):
+class GASSupplierOrderProduct(models.Model, Resource, PermissionBase):
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -148,7 +148,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     class Meta:
         app_label = 'gas'
 
-class GASMemberOrder(models.Model, PermissionResource):
+class GASMemberOrder(models.Model, Resource, PermissionBase):
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
@@ -215,7 +215,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     class Meta:
         app_label = 'gas'
 
-class Delivery(models.Model, PermissionResource):
+class Delivery(models.Model, Resource, PermissionBase):
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
@@ -243,7 +243,7 @@ class Delivery(models.Model, PermissionResource):
         return rv
     
 
-class Withdrawal(models.Model, PermissionResource):
+class Withdrawal(models.Model, Resource, PermissionBase):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
