@@ -31,6 +31,7 @@ class Account(models.Model):
     #balance = CurrencyField(max_digits=10, decimal_places=4)
     #FIXME: Caught ValueError while rendering: incomplete format TemplateSyntaxError
     #I ran into an python locale issue with the DecimalField?. During MySQL INSERTs and UPDATEs invalid sql-statements are generated since a comma-seperator ',' is used for formating DecimalField? instead of the expected dot-seperator '.' 
+    #USE_L10N is set to true and LANGUAGE_CODE to it-IT
     
     def __unicode__(self):
         return _("balance: %") % {'balance' : self.balance}
