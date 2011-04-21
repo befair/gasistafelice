@@ -11,6 +11,7 @@ from gasistafelice.base.models import Resource
 #from gasistafelice.supplier.models import Supplier
 
 class ParamByName(object):
+    """Helper class used to set param role properties by name """
 
     def get_param(self, param_role, name):
         """

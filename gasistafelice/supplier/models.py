@@ -10,6 +10,8 @@ Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/Boz
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from history.models import HistoricalRecords
+
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import Resource, PermissionResource, Person, Place
 
@@ -26,6 +28,8 @@ class Supplier(PermissionResource, models.Model):
     referrers = models.ManyToManyField(Person, through="SupplierReferrer") 
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification')
+
+    history = HistoricalRecords()
 
     # the set of products provided by this Supplier to every GAS
     @property
@@ -53,6 +57,8 @@ class SupplierReferrer(PermissionResource, models.Model):
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
     
+    history = HistoricalRecords()
+
     
     def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
@@ -72,6 +78,8 @@ class Certification(PermissionResource, models.Model):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)
 
+    history = HistoricalRecords()
+
     def __unicode__(self):
         return self.name
     
@@ -87,6 +95,8 @@ class ProductCategory(PermissionResource, models.Model):
     # like sourceforge categories
     name = models.CharField(max_length=128, unique=True, blank=False)
     description = models.TextField(blank=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name_plural = _("Product categories")
@@ -111,6 +121,8 @@ class ProductMU(PermissionResource, models.Model):
     name = models.CharField(max_length=32, unique=True, blank=False)
     description = models.TextField(blank=True)
 
+    history = HistoricalRecords()
+
     def __unicode__(self):
         return self.name
     
@@ -130,6 +142,8 @@ class Product(PermissionResource, models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     
+    history = HistoricalRecords()
+
     @property
     def referrers(self):
         return self.producer.referrers.all()
@@ -159,6 +173,9 @@ class SupplierStock(PermissionResource, models.Model):
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
     # how the Product will be delivered
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
+
+    history = HistoricalRecords()
+
     @property
     def producer(self):
         return self.product.producer

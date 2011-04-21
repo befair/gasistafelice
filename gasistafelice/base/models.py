@@ -10,6 +10,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from permissions import PermissionBase # mix-in class for permissions management
 from workflows.models import Workflow, Transition, State
+from history.models import HistoricalRecords
 
 from gasistafelice.base.const import CONTACT_CHOICES
 
@@ -19,7 +20,6 @@ class Resource(object):
     A basic mix-in class used to factor out data/behaviours common
     to the majority of model classes in the project's applications.
     """
-    pass
 
 class PermissionResource(Resource, PermissionBase):
     """
@@ -27,8 +27,7 @@ class PermissionResource(Resource, PermissionBase):
     """
     pass
 
-
-class Person(PermissionResource, models.Model):
+class Person(models.Model, PermissionResource):
     """A Person is an anagraphic record of a human being.
     It can be a User or not.
     """
@@ -40,15 +39,19 @@ class Person(PermissionResource, models.Model):
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
 
+    history = HistoricalRecords()
+
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname)
    
-class Contact(PermissionResource, models.Model):
+class Contact(models.Model, PermissionResource):
 
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
 
-class Place(PermissionResource, models.Model):
+    history = HistoricalRecords()
+
+class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
     * among the entities arising in the description of GAS' activities,
     there are several being places or involving places,
@@ -66,14 +69,18 @@ class Place(PermissionResource, models.Model):
     lon = models.FloatField(blank=True)
     lat = models.FloatField(blank=True)
 
+    history = HistoricalRecords()
+
 
 # Generic workflow management
 
-class DefaultTransition(PermissionResource, models.Model):
+class DefaultTransition(models.Model, PermissionResource):
 
     workflow = models.ForeignKey(Workflow, related_name="default_transition_set")
     state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
+
+    history = HistoricalRecords()
 
 class WorkflowDefinition(object):
     """
@@ -101,7 +108,7 @@ class WorkflowDefinition(object):
         try:
             self.check_workflow_specs()
         except ImproperlyConfigured, e:
-            raise ImproperlyConfigured("Workflow specifications are not consistent.\n" + e)
+            raise ImproperlyConfigured(_("Workflow specifications are not consistent.\n %s") % e)
             
         self.workflow = Workflow.objects.create(name=self.workflow_name)
         ## create States objects
@@ -129,7 +136,6 @@ class WorkflowDefinition(object):
             transition = self.transitions[transition_name]
             self.workflow.default_transition_set.add(DefaultTransition(state=state, transition=transition))
     
-            
     def check_workflow_specs(self):
         """
         Check the provided workflow specifications for internal consistency;
@@ -151,7 +157,7 @@ class WorkflowDefinition(object):
                 raise ImproperlyConfigured("Transition %s can't be assigned to the non-existent State %s" % (transition_name, state_name))
         ## initial State must exists
         if self.initial_state_name not in state_names:
-            raise ImproperlyConfigured("Initial state %s must exists" % self.initial_state_name)
+            raise ImproperlyConfigured("Workflow %s: initial state %s must be included in state names %s" % (self.workflow_name, self.initial_state_name, state_names))
         ## a default Transition for a State must exists and had to be previously assigned to that State
         for (state_name, transition_name) in self.default_transitions:
             if state_name not in state_names:
