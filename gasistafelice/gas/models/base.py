@@ -34,7 +34,7 @@ class GAS(PermissionResource, models.Model):
 
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    identifier = models.CharField("GAS code (3 letters)", max_length=3, null=False, blank=False, help_text=_("Insert here your GAS unique identier in the DES. For example: CAMERINO--> CAM"))	
+    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identier in the DES. Example: CAMERINO--> CAM"))	
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"), null=True, blank=True)
 
     workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set", null=True, blank=True)
@@ -100,7 +100,7 @@ class GASMember(PermissionResource, models.Model):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    identifier = models.CharField(_("Card number"), max_length=10, null=True, blank=True, help_text=_("Insert your Card Number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=64, null=True, blank=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
     roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
     account = models.ForeignKey(Account)
@@ -108,10 +108,33 @@ class GASMember(PermissionResource, models.Model):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        #return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
-        #See ticket #54
-        return _("%(identifier)s %(person)s") % {'person' : self.person, 'identifier': self.identifier}
+        return _("%(person)s in GAS %(gas)s") % {'person' : self.person, 'gas': self.gas}
     
+    @property
+    def verbose_name(self):
+        """Return GASMember representation along with his own card number in GAS"""
+        #See ticket #54
+        return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
+
+    @property
+    def id_in_des(self):
+        """TODO: Return unique GAS member "card number" in the DES.
+        This must be referred to a Person, not to a GAS membership.
+        Think about its use cases.."""
+        # TODO:
+        # return self.person.id_in_des
+        # or
+        # return something
+        raise NotImplementedError
+
+    @property
+    def id_in_retina(self):
+        #TODO: Should we provide also and id for retina?
+        #TODO: is it dependent by person or by membership?
+        #TODO: should we provide a "retina" parameter and make this a function
+        """Some algorhythm to return unique GAS member "card number" in Retina"""
+        raise NotImplementedError
+
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
@@ -129,11 +152,6 @@ class GASMember(PermissionResource, models.Model):
               )     
         return rv  
        
-    def save(self):
-    #    self.first_name = self.name
-    #    self.last_name = self.last_name
-        super(GASMember, self).save()         
-   
     class Meta:
         app_label = 'gas'
 
