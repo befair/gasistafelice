@@ -5,7 +5,7 @@ from permissions.models import Role
 from workflows.models import Workflow
 from history.models import HistoricalRecords
 
-from gasistafelice.base.models import PermissionResource, Person
+from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
@@ -225,14 +225,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     
     #domthu: if GAS's configuration use only one 
     #TODO: see ticket #65
-    default_withdrawal_day = models.CharField(choices=DAY_CHOICES, null=True,
+    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, null=True,
         help_text=_("Withdrawal week day agreement")
     )
     default_withdrawal_time = models.TimeField(null=True, \
         help_text=_("withdrawal time agreement")
     )    
 
-    default_withdrawal_place = models.ForeignKey('Place', related_name="default_for_solidal_pacts")
+    default_withdrawal_place = models.ForeignKey(Place, related_name="default_for_solidal_pacts")
 
     account = models.ForeignKey(Account)
 
