@@ -10,6 +10,45 @@ from gasistafelice.base.models import Resource
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
+class ParamByName(object):
+    """Helper class used to set param role properties by name """
+
+    def get_param(self, param_role, name):
+        """
+        If this role has a "%s" parameter, return it; else return None
+        """
+        # Retrieve param which has name 'name'. If it does not exist return None
+        # Duck typing
+        try: 
+            rv = param_role.param_set.get(name=name)
+        except Param.DoesNotExist:
+            rv = None
+
+        return rv
+
+#    def set_param(self, param_role, name, value):
+#
+#        param_names = map(lambda x : x[0], Param.PARAM_CHOICES)
+#
+#        #Sanity check
+#        if name in param_names:
+#            # TODO: check also content type
+#            param_role.param_set.add(Param(name=name, param=value))
+#        else:
+#            raise NameError(ugettext("Wrong param name %s. Allowed param names are %s") % (value, param_names))
+
+    def contribute_to_class(self, cls, name):
+        """Create a property to retrieve param by name"""
+
+        p = property(
+            lambda obj : self.get_param(obj, name), 
+            None,
+            None, 
+            self.get_param.__doc__ % name
+        )
+
+        setattr(cls, name, p)
+
 class Param(models.Model):
     """
     A trivial wrapper model class around a generic ForeignKey; 
@@ -103,64 +142,12 @@ class ParamRole(Resource, Role):
     # note that access is read-only; parameter assignment is managed by the 
     #`register_parametric_role()` factory function
 
-    def __get_param(self, name):
-        """
-        If this role has a "%s" parameter, return it; else return None
-        """
-        # Retrieve param which has name 'name'. If it does not exist return None
-        # Duck typing
-        try: 
-            rv = self.param_set.get(name=name)
-        except Param.DoesNotExist:
-            rv = None
-
-        return rv
-
-    def __set_param(self, name, value):
-
-        param_names = map(lambda x : x[0], Param.PARAM_CHOICES)
-
-        #Sanity check
-        if name in param_names:
-            # TODO: check also content type
-            self.param_set.add(Param(name=name, param=value))
-        else:
-            raise NameError(ugettext("Wrong param name %s. Allowed param names are %s") % (value, param_names))
-        
-    # TODO: Surely we can set these attributes with __new__ metaclass stuff and PARAM_CHOICES
-    # but pay attention on Django metaclass magic before doing it !
-    gas = property(
-        lambda obj : obj.__get_param('gas'), 
-        lambda obj : obj.__set_param('gas'),
-        None, 
-        __get_param.__doc__ % 'gas'
-    )
-
-    supplier = property(
-        lambda obj : obj.__get_param('supplier'), 
-        lambda obj : obj.__set_param('supplier'), 
-        None, 
-        __get_param.__doc__ % 'supplier')
-
-    order = property(
-        lambda obj : obj.__get_param('order'), 
-        lambda obj : obj.__set_param('order'), 
-        None, 
-        __get_param.__doc__ % 'order'
-    )
-
-    delivery = property(
-        lambda obj : obj.__get_param('delivery'), 
-        lambda obj : obj.__set_param('delivery'), 
-        None, 
-        __get_param.__doc__ % 'delivery'
-    )
-    withdrawal = property(
-        lambda obj : obj.__get_param('withdrawal'), 
-        lambda obj : obj.__set_param('withdrawal'), 
-        None, 
-        __get_param.__doc__ % 'withdrawal'
-    )
+    # Use contribute_to_class django trickery
+    gas = ParamByName()
+    supplier = ParamByName()
+    order = ParamByName()
+    delivery = ParamByName()
+    withdrawal = ParamByName()
 
 class PrincipalParamRoleRelation(models.Model):
     """This model is a relation describing the fact that a parametric role (`ParamRole`) 
