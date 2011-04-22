@@ -31,8 +31,11 @@ class GAS(models.Model, PermissionResource):
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
-    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_account")
-    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_liquidity")
+    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set")
+    #COMMENT fero: what does liquidity stands for?!?
+    #TODO: change name
+    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set2")
+
     birthday = models.DateField()
     vat = models.CharField(max_length=11, null=True, blank=True, help_text=_("VAT number"))	
     ssn = models.CharField(max_length=16, null=True, blank=False, help_text=_("Social Security Number"))	
@@ -91,10 +94,10 @@ class GASConfig(GAS):
     # Link to parent class
     gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
 
-    workflow_default_gasmember_order = models.ForeignKey(Workflow, 
+    default_workflow_gasmember_order = models.ForeignKey(Workflow, 
         related_name="gasmember_order_set", null=True, blank=True
     )
-    workflow_default_gassupplier_order = models.ForeignKey(Workflow, 
+    default_workflow_gassupplier_order = models.ForeignKey(Workflow, 
         related_name="gassupplier_order_set", null=True, blank=True
     )
 
@@ -144,8 +147,8 @@ class GASMember(models.Model, PermissionResource):
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
     id_in_gas = models.CharField(_("Card number"), max_length=64, null=True, blank=True, help_text=_("GAS card number"))	
-    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
-    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
+    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
+    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account)
 
     history = HistoricalRecords()
@@ -232,7 +235,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         help_text=_("withdrawal time agreement")
     )    
 
-    default_withdrawal_place = models.ForeignKey(Place, related_name="default_for_solidal_pacts")
+    default_withdrawal_place = models.ForeignKey(Place, related_name="default_for_solidal_pact_set")
 
     account = models.ForeignKey(Account)
 
