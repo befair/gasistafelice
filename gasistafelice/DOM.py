@@ -1,4 +1,5 @@
 ATTIBUTI PATTO SOLIDALE AGGIUNTI DA DOMINIQUE E DA VALUTARE...
+"pds_" should be avoided. 
 
     PRODUCTS_GROWN = (
         ('CE', 'CEREAL'),
@@ -48,6 +49,10 @@ ATTIBUTI PATTO SOLIDALE AGGIUNTI DA DOMINIQUE E DA VALUTARE...
     pds_aggreement = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
     pds_attached_documents = models.ManyToManyField(Documents, help_text=_("producer declarative on honor"), null=True)
     
+    #COMMENT fero: following is insteresting, but 
+    #it MUST be ManyToManyField or at least not AVAILABLE_TYPE choices
+    supplier_available_for = models.CharField(max_length=50, choices=AVAILABLE_TYPE, blank=True, help_text=_("producer is available for: visit, inspection, examination, farm holidays, refreshment, feeding ...")) 
+
 #TODO: put in base and import
 class Documents(AbstractClass):
     """
