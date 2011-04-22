@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User, Group 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -9,14 +10,59 @@ from gasistafelice.base.models import Resource
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
+class ParamByName(object):
+    """Helper class used to set param role properties by name """
+
+    def get_param(self, param_role, name):
+        """
+        If this role has a "%s" parameter, return it; else return None
+        """
+        # Retrieve param which has name 'name'. If it does not exist return None
+        # Duck typing
+        try: 
+            rv = param_role.param_set.get(name=name)
+        except Param.DoesNotExist:
+            rv = None
+
+        return rv
+
+#    def set_param(self, param_role, name, value):
+#
+#        param_names = map(lambda x : x[0], Param.PARAM_CHOICES)
+#
+#        #Sanity check
+#        if name in param_names:
+#            # TODO: check also content type
+#            param_role.param_set.add(Param(name=name, param=value))
+#        else:
+#            raise NameError(ugettext("Wrong param name %s. Allowed param names are %s") % (value, param_names))
+
+    def contribute_to_class(self, cls, name):
+        """Create a property to retrieve param by name"""
+
+        p = property(
+            lambda obj : self.get_param(obj, name), 
+            None,
+            None, 
+            self.get_param.__doc__ % name
+        )
+
+        setattr(cls, name, p)
+
 class Param(models.Model):
     """
     A trivial wrapper model class around a generic ForeignKey; 
     used to create (parametric) Roles with more than one parameter.  
     """
-    # TODO: validate parameter names (they should belongs to a predefined list,
-    # e.g. 'gas', 'supplier', 'order', ..)
-    name = models.CharField(max_lenght=20)
+    #Choice are limited. May this be correct?
+    PARAM_CHOICES = (
+        ('gas', _('GAS')),
+        ('supplier', _('Supplier')),
+        ('order', _('Order')),
+        ('delivery', _('Delivery')),
+        ('withdrawal', _('Withdrawal')),
+    )
+    name = models.CharField(max_length=20, choices=PARAM_CHOICES)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="obj_id")
@@ -95,73 +141,14 @@ class ParamRole(Resource, Role):
     ## we define a few properties providing easier access to allowed role parameters            
     # note that access is read-only; parameter assignment is managed by the 
     #`register_parametric_role()` factory function
-        
-    @property 
-    def gas(self):
-        """
-        If this role has a 'gas' parameter, return it; else return None. 
-        """
-        # examine all the parameters attached to this role 
-        # and see if there is one named 'gas'
-        for p in self.param_set.all():
-            if p.name == 'gas':
-                gas = p.param
-                return gas
-        return None
-                
-    @property 
-    def supplier(self):
-        """
-        If this role has a 'supplier' parameter, return it; else return None. 
-        """
-        # examine all the parameters attached to this role 
-        # and see if there is one named 'supplier'
-        for p in self.param_set.all():
-            if p.name == 'supplier':
-                supplier = p.param
-                return supplier
-        return None
-    
-    
-    @property 
-    def order(self):
-        """
-        If this role has an 'order' parameter, return it; else return None. 
-        """
-        # examine all the parameters attached to this role 
-        # and see if there is one named 'order'
-        for p in self.param_set.all():
-            if p.name == 'order':
-                order = p.param
-                return order
-        return None
-    
-    @property 
-    def delivery(self):
-        """
-        If this role has a 'delivery' parameter, return it; else return None. 
-        """
-        # examine all the parameters attached to this role 
-        # and see if there is one named 'delivery'
-        for p in self.param_set.all():
-            if p.name == 'delivery':
-                delivery = p.param
-                return delivery
-        return None
-    
-    @property 
-    def withdrawal(self):
-        """
-        If this role has an 'withdrawal' parameter, return it; else return None. 
-        """
-        # examine all the parameters attached to this role 
-        # and see if there is one named 'withdrawal'
-        for p in self.param_set.all():
-            if p.name == 'withdrawal':
-                withdrawal = p.param
-                return withdrawal
-        return None
-    
+
+    # Use contribute_to_class django trickery
+    gas = ParamByName()
+    supplier = ParamByName()
+    order = ParamByName()
+    delivery = ParamByName()
+    withdrawal = ParamByName()
+
 class PrincipalParamRoleRelation(models.Model):
     """This model is a relation describing the fact that a parametric role (`ParamRole`) 
     is assigned to a principal (i.e. a User or Group). If a content object is

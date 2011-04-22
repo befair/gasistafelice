@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from permissions.models import Role
+from workflows.models import Workflow
+from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Person
 
@@ -13,7 +15,6 @@ from gasistafelice.supplier.models import Supplier, Product
 
 from gasistafelice.gas import managers
 
-from workflows.models import Workflow
 
 class GAS(PermissionResource, models.Model):
     """A group of people which make some purchases together.
@@ -30,7 +31,9 @@ class GAS(PermissionResource, models.Model):
     workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set", null=True, blank=True)
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True)
+
     objects = managers.GASRolesManager()
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name_plural = _('GAS')
@@ -68,6 +71,8 @@ class GASMember(PermissionResource, models.Model):
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_members")
 
+    history = HistoricalRecords()
+
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}
 
@@ -93,7 +98,7 @@ class GASMember(PermissionResource, models.Model):
     #    self.first_name = self.name
     #    self.last_name = self.last_name
         super(GASMember, self).save()         
-    
+
     class Meta:
         app_label = 'gas'
 
@@ -121,6 +126,8 @@ class GASSupplierSolidalPact(PermissionResource, models.Model):
     # TODO must be a property (use django-permissions)
     #supplier_referrers = ...
     
+    history = HistoricalRecords()
+
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     

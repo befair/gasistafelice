@@ -6,7 +6,7 @@ def init_workflows(app, created_models, verbosity, **kwargs):
     app_label = app.__name__.split('.')[-2]
     if app_label == 'workflows' and created_models: # `worklows` app was syncronized for the first time
         # now that all necessary tables are in the DB, we can register our workflows
-        for (name, w) in workflow_dict:
+        for name, w in workflow_dict.items():
             w.register_workflow()
             if verbosity == 2:
                 # give some feedback to the user

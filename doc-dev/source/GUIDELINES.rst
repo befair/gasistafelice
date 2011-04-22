@@ -15,6 +15,15 @@ Qualche linea guida sulla scrittura del codice
 * La documentazione utente è in italiano
 * La documentazione tecnica è in inglese (notare come queste linee guida non la rispettino. Adeguarle pls :))
 * Stile `duck typing <http://en.wikipedia.org/wiki/Duck_typing>`__ riassunto da `Alex Martelli <http://en.wikipedia.org/wiki/Alex_Martelli>`__: `In other words, don't check whether it IS-a duck: check whether it QUACKS-like-a duck, WALKS-like-a duck, etc, etc, depending on exactly what subset of duck-like behaviour you need to play your language-games with.`
+* I ticket sono in italiano, le risposte date tramite i commit in inglese. Opzionalmente si può aggiungere di seguito alla versione inglese anche quella in italiano
+
+Import
+------
+
+* Prima si importano i moduli inclusi nella distribuzione ufficiale di Django
+* Poi i moduli di applicazioni Django non incluse nel progetto
+* Poi le librerie di sistema
+* Infine i moduli delle applicazioni incluse nel progetto
 
 Naming
 ------

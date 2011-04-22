@@ -1,0 +1,12 @@
+#header {
+    background-color:#993;
+}
+
+.module caption {
+    background : none;
+    background-color: #C6C400;
+}
+
+a:link, a:visited {
+    color : #993;
+}

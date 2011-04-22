@@ -3,16 +3,19 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from workflows.models import Workflow
+from workflows.utils import get_workflow, get_state, do_transition
+from history.models import HistoricalRecords
+
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
+from gasistafelice.base.fields import CurrencyField
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
-from workflows.models import Workflow
-from workflows.utils import get_workflow, get_state, do_transition
 
-class GASSupplierStock(PermissionResource, models.Model):
+class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
     gas = models.ForeignKey(GAS)
@@ -26,6 +29,8 @@ class GASSupplierStock(PermissionResource, models.Model):
     # useful when a Product ships in packages containing multiple units. 
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
     
+    history = HistoricalRecords()
+
 
     @property
     def supplier(self):
@@ -48,7 +53,7 @@ class GASSupplierStock(PermissionResource, models.Model):
         app_label = 'gas'
 
 
-class GASSupplierOrder(PermissionResource, models.Model):
+class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
@@ -65,12 +70,14 @@ class GASSupplierOrder(PermissionResource, models.Model):
     # Where and when Delivery occurs
     delivery = models.ForeignKey('Delivery', related_name="supplier_orders")
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True) # FIXME: should be a `CurrencyField` ?
+    order_minimum_amount = CurrencyField(null=True, blank=True)
     # Where and when Withdrawal occurs
     withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_orders")
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+
+    history = HistoricalRecords()
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -95,7 +102,8 @@ class GASSupplierOrder(PermissionResource, models.Model):
         app_label = 'gas'
         
 
-class GASSupplierOrderProduct(PermissionResource, models.Model):
+class GASSupplierOrderProduct(models.Model, PermissionResource):
+
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -108,12 +116,14 @@ class GASSupplierOrderProduct(PermissionResource, models.Model):
     # useful for Products with a low availability
     maximum_amount = models.PositiveIntegerField(blank=True, default=0)
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
-    ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    ordered_price = CurrencyField(blank=True)
     # the actual price of the Product (as resulting from the invoice)
-    delivered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    delivered_price = CurrencyField(blank=True)
     # how many items were actually delivered by the Supplier 
     delivered_amount = models.PositiveIntegerField(blank=True)
     
+    history = HistoricalRecords()
+
     # how many items of this kind were ordered (globally by the GAS)
     @property
     def ordered_amount(self):
@@ -130,12 +140,12 @@ class GASSupplierOrderProduct(PermissionResource, models.Model):
               # permission specs go here
               )     
         return rv
-
+    
     class Meta:
         app_label = 'gas'
 
-    
-class GASMemberOrder(PermissionResource, models.Model):
+class GASMemberOrder(models.Model, PermissionResource):
+
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
@@ -145,12 +155,14 @@ class GASMemberOrder(PermissionResource, models.Model):
     purchaser = models.ForeignKey(GASMember)
     product = models.ForeignKey(GASSupplierOrderProduct)
     # price of the Product at order time
-    ordered_price = models.FloatField(blank=True) # FIXME: should be a `CurrencyField` ?
+    ordered_price = CurrencyField(blank=True)
     # how many Product units were ordered by the GAS member
     ordered_amount = models.PositiveIntegerField(blank=True)
     # how many Product units were withdrawn by the GAS member 
     withdrawn_amount = models.PositiveIntegerField(blank=True)
     
+    history = HistoricalRecords()
+
     # how much the GAS member actually payed for this Product (as resulting from the invoice)   
     @property
     def actual_price(self):
@@ -196,11 +208,12 @@ class GASMemberOrder(PermissionResource, models.Model):
             set_workflow(self, w)
 
         return super(GASMemberOrder, self).save()
-    
+
     class Meta:
         app_label = 'gas'
 
-class Delivery(PermissionResource, models.Model):
+class Delivery(models.Model, PermissionResource):
+
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
@@ -211,6 +224,11 @@ class Delivery(PermissionResource, models.Model):
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
     
+    history = HistoricalRecords()
+
+    class Meta:
+        app_label = 'gas'
+
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
@@ -222,11 +240,8 @@ class Delivery(PermissionResource, models.Model):
               )     
         return rv
     
-    class Meta:
-        app_label = 'gas'
 
-
-class Withdrawal(PermissionResource, models.Model):
+class Withdrawal(models.Model, PermissionResource):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
@@ -239,6 +254,11 @@ class Withdrawal(PermissionResource, models.Model):
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
     
+    history = HistoricalRecords()
+
+    class Meta:
+        app_label = 'gas'
+
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
@@ -250,6 +270,3 @@ class Withdrawal(PermissionResource, models.Model):
               )     
         return rv 
     
-    class Meta:
-        app_label = 'gas'
-

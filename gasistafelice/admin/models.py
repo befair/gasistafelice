@@ -13,6 +13,7 @@ class GASAdmin(admin.ModelAdmin):
     inlines = [ GASMemberAdminInline, ]
 
 class GASMemberAdmin(admin.ModelAdmin):
+
     list_display = ('__unicode__', 'gas_with_link')
     fieldsets = ((None,
             { 'fields' : ('gas', 'person')
@@ -28,6 +29,13 @@ class GASMemberAdmin(admin.ModelAdmin):
 
     actions = ['say_hello']
 
+    class Media:
+        css = {
+            "all": ("css/addchangestyles.css",)
+        }
+        js = ("js/addchangecode.js",)
+
+    
     def say_hello(self, request, queryset):
         for obj in queryset.all():
             messages.info(request, ugettext("Hello %s") % obj)
@@ -51,10 +59,18 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
             }),
     )
     
+class ProductAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+
+    list_display = ('category', 'name', 'description', 'mu', 'producer', 'uuid')
+    list_editable = ('category', 'name', 'description', 'mu', 'producer')
+    list_display_links = ('uuid',)
+
 admin.site.register(base_models.Person)
 
 admin.site.register(supplier_models.Supplier)
-admin.site.register(supplier_models.Product)
+admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock)
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
