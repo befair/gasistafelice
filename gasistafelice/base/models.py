@@ -101,7 +101,7 @@ class WorkflowDefinition(object):
         self.state_transition_map = state_transition_map
         self.initial_state_name = initial_state
         self.default_transitions = default_transitions
-            
+  
     def register_workflow(self):
         # check workflow specifications for internal consistency;
         # return an informative error message to the user if the check fails
