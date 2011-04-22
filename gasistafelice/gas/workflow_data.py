@@ -117,7 +117,7 @@ state_transition_map = (
                            ('closed', 'finalize'),
                            ('closed', 'start_completion'),
                            ('on_completion', 'end_completion'),
-                           ('finalized', 'sent'),
+                           ('finalized', 'send'),
                            # SupplierOrder may be canceled at any time before delivery happens
                            ('open', 'cancel'),
                            ('closed', 'cancel'),
@@ -126,7 +126,7 @@ state_transition_map = (
                            ('sent', 'cancel'),
                            )
        
-initial_state = 'open'
+initial_state_name = 'open'
  
 ## define default Transitions for States in a Workflow, 
 ## so we can suggest to end-users what the next "logical" State could be   
