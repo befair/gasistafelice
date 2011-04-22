@@ -75,7 +75,6 @@ class Place(models.Model, PermissionResource):
 # Generic workflow management
 
 class DefaultTransition(models.Model, PermissionResource):
-
     workflow = models.ForeignKey(Workflow, related_name="default_transition_set")
     state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
@@ -193,4 +192,3 @@ class Document(AbstractClass):
     parent_class_id = models.AutoField(primary_key=True)
     file_doc = models.FileField(upload_to='docs/%Y/%m/%d')
     date = models.DateField()
-     

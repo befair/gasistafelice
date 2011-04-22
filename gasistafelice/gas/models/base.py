@@ -29,10 +29,11 @@ class GAS(models.Model, Resource, PermissionBase, AbstractClass):
     config_close_day = models.DateField(auto_now=False, null=True, help_text=_("default order closing day of the week"))
     config_close_time = models.TimeField(help_text=_("default order closing hour and minutes"))
     config_deliver_day = models.BooleanField(help_text=_("default delivery closing day of the week"))
-    config_deliver_time = models.TimeField(help_text=_("default delivery closing hour and minutes")) 
+    config_deliver_time = models.TimeField(help_text=_("default delivery closing hour and minutes"))
 
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
+    identifier = models.CharField("GAS code (3 letters)", max_length=3, null=False, blank=False, help_text=_("Insert here your GAS unique identier in the DES. For example: CAMERINO--> CAM"))	
     description = models.TextField(help_text=_("Who are you? What are yours specialties?"), null=True, blank=True)
     identifier = models.CharField("GAS code (3 letters)", max_length=3, null=False, blank=False, help_text=_("Insert here your GAS unique identier in the DES. For example: CAMERINO--> CAM"))	
 
@@ -148,7 +149,7 @@ class PDSAgreement(models.Model):
     producer_response = models.NullBooleanField(null=True, help_text=_("producer response encharge responsability about the above question"))
     producer_note = models.CharField(max_length=200, blank=True)
     declaration_date = models.DateTimeField(auto_now_add=True)
-    
+  
 class PDSProductSeasonality(models.Model):
     """Products type, variety and periodical availability"""
     #YEAR_MONTH = (
@@ -173,6 +174,48 @@ class PDSProductSeasonality(models.Model):
     seasonality = models.DateField(auto_now=False, null=True, help_text=_("a month"))
     medium_available_quantity = models.CharField(max_length=100, blank=True)
 
+class PDSMarketPlace(models.Model):
+    """Town and Days of market"""
+    #WEEK_DAYS = (
+    #    ('01', 'MONDAY'),
+    #    ('02', 'TUESDAY'),
+    #    ('03', 'WEDNESDAY'),
+    #    ('04', 'THURSDAY'),
+    #    ('05', 'FRIDAY'),
+    #    ('06', 'SATURDAY'),
+    #    ('07', 'SUNDAY'),
+    #)
+    #DAY_HOURS = (
+    #    ('01', '01'),
+    #    ('02', '02'),
+    #    ('03', '03'),
+    #    ('04', '04'),
+    #    ('05', '05'),
+    #    ('06', '06'),
+    #    ('07', '07'),
+    #    ('08', '08'),
+    #    ('09', '09'),
+    #    ('10', '10'),
+    #    ('11', '11'),
+    #    ('12', '12'),
+    #    ('13', '13'),
+    #    ('14', '14'),
+    #    ('15', '15'),
+    #    ('16', '16'),
+    #    ('17', '17'),
+    #    ('18', '18'),
+    #    ('19', '19'),
+    #    ('20', '20'),
+    #    ('21', '21'),
+    #    ('22', '22'),
+    #    ('23', '23'),
+    #)
+    #TODO: Geo location Gmap
+    town = models.CharField(max_length=100)
+    #day = models.CharField(max_length=50, choices=WEEK_DAYS, null=True, blank=True)
+    day = models.DateField(auto_now=False, null=True, help_text=_("a week day"))
+    #from_hour = models.CharField(max_length=50, choices=DAY_HOURS, null=True, blank=True)
+    from_hour = models.TimeField(auto_now=False, null=True, help_text=_("an hour"))    
 
 class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
     """Define a GAS <-> Supplier relationship agreement.
@@ -256,6 +299,38 @@ class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
     pds_aggreements = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
     pds_attached_documents = models.ManyToManyField(Document, help_text=_("producer declarative on honor"), null=True)
     
+    #if GAS's configuration use only one 
+    #default withdrawal time
+    withdrawal_day = models.DateField(auto_now=False, null=True, help_text=_("a week day"))
+    #defaultfavorite withdrawal time
+    withdrawal_time = models.TimeField(auto_now=False, null=True, help_text=_("an hour and minutes"))    
+    #default withdrawal Where and when Withdrawal occurs
+    withdrawal = models.ForeignKey('Withdrawal', related_name="default_Withdrawal")
+
+    account = models.ForeignKey(Account)
+    pds_presentation = models.TextField(blank=True)
+    pds_first_year_of_certification = models.CharField(max_length=50, blank=True)
+    pds_last_year_of_certification = models.CharField(max_length=50, blank=True)
+    pds_extension_cultivated = models.CharField(max_length=50, blank=True)
+    pds_start_year_cultivation_with_biological_method = models.CharField(max_length=50, blank=True)
+    pds_altitude_of_the_compagny = models.CharField(max_length=50, blank=True)
+    pds_products_grown = models.CharField(max_length=50, choices=PRODUCTS_GROWN, blank=True) 
+    pds_products_seasonability = models.ManyToManyField(PDSProductSeasonality, help_text=_("indicative products seasonality and availability"), null=True)
+    pds_water_provenance = models.CharField(max_length=100, help_text=_("provenance water for irrigation"), blank=True)
+    pds_manure_used = models.CharField(max_length=300, help_text=_("type of manure used"), blank=True)
+    pds_manure_provenance = models.CharField(max_length=100, help_text=_("provenance manure used"), blank=True)
+    pds_manure_hectare = models.CharField(max_length=300, help_text=_("quantity of manure per hectare and crops concerned the manuring"), blank=True)
+    pds_fertilizer_rought = models.CharField(max_length=300, help_text=_("any other fertilizers and rough-treatment"), blank=True)
+    pds_pollution_distance = models.CharField(max_length=100, help_text=_("distance from any possible sources of pollution"), blank=True)
+    pds_seed_provenance = models.CharField(max_length=300, help_text=_("provenance of the seed"), blank=True)
+    pds_distribution_type = models.CharField(max_length=50, choices=DISTRIBUTION_TYPE, blank=True) 
+    pds_market = models.CharField(max_length=300, help_text=_("day and town of presence in biological market place"), blank=True) 
+    pds_available_for = models.CharField(max_length=50, choices=AVAILABLE_TYPE, blank=True, help_text=_("producer is available for: visit, inspection, examination, farm holidays, refreshment, feeding ...")) 
+    pds_farm_holidays_name =  models.CharField(max_length=100, blank=True)
+    pds_other_info = models.TextField(blank=True, help_text=_("other information from the manufacturer")) 
+    pds_aggreements = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
+    pds_attached_documents = models.ManyToManyField(Document, help_text=_("producer declarative on honor"), null=True)
+    
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
@@ -266,6 +341,9 @@ class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
               # permission specs go here
               )     
         return rv
+
+    class Meta:
+        app_label = 'pds'
      
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
