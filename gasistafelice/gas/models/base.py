@@ -66,7 +66,7 @@ class GASMember(PermissionResource, models.Model):
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members_available")
-    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_members")
+    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_members")
 
     def __unicode__(self):
         return _("%(person)s of %(gas)s GAS") % {'person' : self.person, 'gas': self.gas}

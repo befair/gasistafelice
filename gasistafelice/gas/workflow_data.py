@@ -110,6 +110,7 @@ transition_list = (
                     )
  
 ## Transitions-to-States map
+# FIXME: should be a dictionary
 state_transition_map = (
                            # (state name, transition name), 
                            ('open', 'close'),
@@ -130,6 +131,7 @@ initial_state = 'open'
  
 ## define default Transitions for States in a Workflow, 
 ## so we can suggest to end-users what the next "logical" State could be   
+# FIXME: should be a dictionary
 default_transitions = (
                         # (state name, transition name),                         
                         )
