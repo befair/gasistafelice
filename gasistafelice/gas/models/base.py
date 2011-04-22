@@ -176,6 +176,7 @@ class PDSProductSeasonality(models.Model):
 
 class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
     """Define a GAS <-> Supplier relationship agreement.
+
     Each Supplier comes into relationship with a GAS by signing this pact,
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
