@@ -1,4 +1,4 @@
-"""
+""""
 This is the base model for Gasista Felice.
 It includes common data on which all (or almost all) other applications rely on.
 """
@@ -17,20 +17,20 @@ from gasistafelice.base.const import CONTACT_CHOICES
 
 class Resource(object):
     """
-    A basic mix-in class used to factor out data/behaviours common
-    to the majority of model classes in the project's applications.
-    """
+A basic mix-in class used to factor out data/behaviours common
+to the majority of model classes in the project's applications.
+"""
 
 class PermissionResource(Resource, PermissionBase):
     """
-    Just a convenience for classes inheriting both from Resource and PermissionBase
-    """
+Just a convenience for classes inheriting both from Resource and PermissionBase
+"""
     pass
 
 class Person(models.Model, PermissionResource):
     """A Person is an anagraphic record of a human being.
-    It can be a User or not.
-    """
+It can be a User or not.
+"""
 
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
     name = models.CharField(max_length=128)
@@ -53,12 +53,12 @@ class Contact(models.Model, PermissionResource):
 
 class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
-    * among the entities arising in the description of GAS' activities,
-    there are several being places or involving places,
-    so abstracting this information away seems a good thing;
-    * in the context of multi-GAS (retina) orders,
-    multiple delivery and/or withdrawal locations can be present.
-    """
+* among the entities arising in the description of GAS' activities,
+there are several being places or involving places,
+so abstracting this information away seems a good thing;
+* in the context of multi-GAS (retina) orders,
+multiple delivery and/or withdrawal locations can be present.
+"""
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     address = models.CharField(max_length=128, blank=True)
@@ -75,6 +75,7 @@ class Place(models.Model, PermissionResource):
 # Generic workflow management
 
 class DefaultTransition(models.Model, PermissionResource):
+
     workflow = models.ForeignKey(Workflow, related_name="default_transition_set")
     state = models.ForeignKey(State)
     transition = models.ForeignKey(Transition)
@@ -83,14 +84,14 @@ class DefaultTransition(models.Model, PermissionResource):
 
 class WorkflowDefinition(object):
     """
-    This class encapsulates all the data and logic needed to create and setup a Workflow
-    (as in the `django-workflows` app), including creation of States and Transitions,
-    assignment of Transitions to States and specification of the initial state and the
-    default Transition for each State.
-    To setup a new Workflow, just specify the needed data in the declarative format
-    described below, then call the `register_workflow` method.
-    ## TODO: workflow declaration's specs go here.
-    """
+This class encapsulates all the data and logic needed to create and setup a Workflow
+(as in the `django-workflows` app), including creation of States and Transitions,
+assignment of Transitions to States and specification of the initial state and the
+default Transition for each State.
+To setup a new Workflow, just specify the needed data in the declarative format
+described below, then call the `register_workflow` method.
+## TODO: workflow declaration's specs go here.
+"""
     
     def __init__(self, workflow_name, state_list, transition_list, state_transition_map, initial_state, default_transitions):
         # stash the workflow specs for later use
@@ -100,7 +101,7 @@ class WorkflowDefinition(object):
         self.state_transition_map = state_transition_map
         self.initial_state_name = initial_state
         self.default_transitions = default_transitions
-  
+            
     def register_workflow(self):
         # check workflow specifications for internal consistency;
         # return an informative error message to the user if the check fails
@@ -137,9 +138,9 @@ class WorkflowDefinition(object):
     
     def check_workflow_specs(self):
         """
-        Check the provided workflow specifications for internal consistency;
-        return True if the specs are fine, False otherwise.
-        """
+Check the provided workflow specifications for internal consistency;
+return True if the specs are fine, False otherwise.
+"""
         state_names = [key for (key, name) in self.state_list]
         transition_names = [key for (key, transition_name, destination_name) in self.transition_list]
         ## States have to be unique
@@ -166,6 +167,8 @@ class WorkflowDefinition(object):
             elif (state_name, transition_name) not in self.state_transition_map:
                 raise ImproperlyConfigured("The default Transition for the State %s must be one of its valid Transitions" % state_name)
 
+
+
 class AbstractClass(models.Model):
     created_at=models.DateField(_("Created at"))
     created_by=models.ForeignKey(User, db_column="created_by", related_name=_("%(app_label)s_%(class)s_created"))
@@ -179,12 +182,12 @@ class Document(AbstractClass):
     General document that refers to a special entity
     """
     DOC_TYPE = (
-        ('01', 'GAS'),
-        ('02', 'SUPPLIER'),
-        ('03', 'PRODUCT'),
-        ('04', 'MEMBER'),
-        ('05', 'PDS'),
-        ('06', 'ORDER'),
+        ('gas', 'GAS'),
+        ('supplier', 'SUPPLIER'),
+        ('product', 'PRODUCT'),
+        ('member', 'MEMBER'),
+        ('pds', 'PDS'),
+        ('order', 'ORDER'),
     )
     name = models.CharField(max_length=300, help_text=_("title and brief description"))
     type_doc = models.CharField(max_length=1, choices=DOC_TYPE)
@@ -192,3 +195,8 @@ class Document(AbstractClass):
     parent_class_id = models.AutoField(primary_key=True)
     file_doc = models.FileField(upload_to='docs/%Y/%m/%d')
     date = models.DateField()
+
+    class Meta:
+        app_label = 'doc'
+
+

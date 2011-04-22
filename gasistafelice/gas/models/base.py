@@ -5,7 +5,7 @@ from permissions.models import Role
 from workflows.models import Workflow
 from history.models import HistoricalRecords
 
-from gasistafelice.base.models import Resource, Person, AbstractClass, Document
+from gasistafelice.base.models import PermissionResource, Place, Person, AbstractClass, Document
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.auth.utils import register_parametric_role 
@@ -17,7 +17,8 @@ from gasistafelice.gas import managers
 
 from gasistafelice.bank.models import Account, Movement
 
-class GAS(models.Model, Resource, PermissionBase, AbstractClass):
+#class GAS(models.Model, PermissionResource, AbstractClass): kappao
+class GAS(PermissionResource, AbstractClass, models.Model):
     """A group of people which make some purchases together.
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
 
@@ -40,7 +41,9 @@ class GAS(models.Model, Resource, PermissionBase, AbstractClass):
     workflow_default_gasmember_order = models.ForeignKey(Workflow, related_name="gasmember_order_set", null=True, blank=True)
     workflow_default_gassupplier_order = models.ForeignKey(Workflow, related_name="gassupplier_order_set", null=True, blank=True)
 
-    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True)
+    #FIXME: gas.gas: 'suppliers' specifies an m2m relation through model base.GASSupplierSolidalPact, which has not been installed    
+    #suppliers = models.ManyToManyField(Supplier, through='base.GASSupplierSolidalPact', null=True, blank=True)
+    #TODO: Use manager to return list of PDSs for this GAS
 
     objects = managers.GASRolesManager()
     history = HistoricalRecords()
@@ -82,7 +85,7 @@ class GAS(models.Model, Resource, PermissionBase, AbstractClass):
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)     
     
-    @property        
+    @property
     def local_grants(self):
         rv = (
               # permission specs go here
@@ -90,7 +93,8 @@ class GAS(models.Model, Resource, PermissionBase, AbstractClass):
         return rv  
     
 
-class GASMember(models.Model, Resource, PermissionBase, AbstractClass):
+#class GASMember(models.Model, PermissionResource, AbstractClass):
+class GASMember(PermissionResource, AbstractClass, models.Model):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
     This way, every time there is a need to assign one or more GAS Members to a given Role,
@@ -136,6 +140,7 @@ class GASMember(models.Model, Resource, PermissionBase, AbstractClass):
    
     class Meta:
         app_label = 'gas'
+
 
 class PDSAgreement(models.Model):
     """list of agreement with YES/NO response with optional note and date
@@ -217,7 +222,7 @@ class PDSMarketPlace(models.Model):
     #from_hour = models.CharField(max_length=50, choices=DAY_HOURS, null=True, blank=True)
     from_hour = models.TimeField(auto_now=False, null=True, help_text=_("an hour"))    
 
-class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
+class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
     Each Supplier comes into relationship with a GAS by signing this pact,
@@ -273,7 +278,9 @@ class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
     #defaultfavorite withdrawal time
     withdrawal_time = models.TimeField(auto_now=False, null=True, help_text=_("an hour and minutes"))
     #default withdrawal Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="default_Withdrawal")
+    #FIXME: Syncdb --> pds.historicalgassuppliersolidalpact: 'withdrawal' has a relation with model Withdrawal, which has either not been installed or is abstract.
+    #withdrawal = models.ForeignKey('Withdrawal', related_name="default_Withdrawal")
+    place = models.ForeignKey(Place, related_name="default_withdrawal", help_text=_("where the order will be withdrawn by GAS members"))
 
     account = models.ForeignKey(Account)
     pds_presentation = models.TextField(blank=True)
@@ -298,39 +305,7 @@ class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
     pds_other_info = models.TextField(blank=True, help_text=_("other information from the manufacturer")) 
     pds_aggreements = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
     pds_attached_documents = models.ManyToManyField(Document, help_text=_("producer declarative on honor"), null=True)
-    
-    #if GAS's configuration use only one 
-    #default withdrawal time
-    withdrawal_day = models.DateField(auto_now=False, null=True, help_text=_("a week day"))
-    #defaultfavorite withdrawal time
-    withdrawal_time = models.TimeField(auto_now=False, null=True, help_text=_("an hour and minutes"))    
-    #default withdrawal Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="default_Withdrawal")
-
-    account = models.ForeignKey(Account)
-    pds_presentation = models.TextField(blank=True)
-    pds_first_year_of_certification = models.CharField(max_length=50, blank=True)
-    pds_last_year_of_certification = models.CharField(max_length=50, blank=True)
-    pds_extension_cultivated = models.CharField(max_length=50, blank=True)
-    pds_start_year_cultivation_with_biological_method = models.CharField(max_length=50, blank=True)
-    pds_altitude_of_the_compagny = models.CharField(max_length=50, blank=True)
-    pds_products_grown = models.CharField(max_length=50, choices=PRODUCTS_GROWN, blank=True) 
-    pds_products_seasonability = models.ManyToManyField(PDSProductSeasonality, help_text=_("indicative products seasonality and availability"), null=True)
-    pds_water_provenance = models.CharField(max_length=100, help_text=_("provenance water for irrigation"), blank=True)
-    pds_manure_used = models.CharField(max_length=300, help_text=_("type of manure used"), blank=True)
-    pds_manure_provenance = models.CharField(max_length=100, help_text=_("provenance manure used"), blank=True)
-    pds_manure_hectare = models.CharField(max_length=300, help_text=_("quantity of manure per hectare and crops concerned the manuring"), blank=True)
-    pds_fertilizer_rought = models.CharField(max_length=300, help_text=_("any other fertilizers and rough-treatment"), blank=True)
-    pds_pollution_distance = models.CharField(max_length=100, help_text=_("distance from any possible sources of pollution"), blank=True)
-    pds_seed_provenance = models.CharField(max_length=300, help_text=_("provenance of the seed"), blank=True)
-    pds_distribution_type = models.CharField(max_length=50, choices=DISTRIBUTION_TYPE, blank=True) 
-    pds_market = models.CharField(max_length=300, help_text=_("day and town of presence in biological market place"), blank=True) 
-    pds_available_for = models.CharField(max_length=50, choices=AVAILABLE_TYPE, blank=True, help_text=_("producer is available for: visit, inspection, examination, farm holidays, refreshment, feeding ...")) 
-    pds_farm_holidays_name =  models.CharField(max_length=100, blank=True)
-    pds_other_info = models.TextField(blank=True, help_text=_("other information from the manufacturer")) 
-    pds_aggreements = models.ManyToManyField(PDSAgreement, help_text=_("producer declarative on honor"), null=True)
-    pds_attached_documents = models.ManyToManyField(Document, help_text=_("producer declarative on honor"), null=True)
-    
+        
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
@@ -343,9 +318,10 @@ class GASSupplierSolidalPact(models.Model, Resource, PermissionBase):
         return rv
 
     class Meta:
-        app_label = 'pds'
+        app_label = 'gas'
      
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
+
 

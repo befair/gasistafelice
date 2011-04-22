@@ -3,9 +3,7 @@ from django.db import models
 from gasistafelice.auth import GAS_REFERRER_CASH, GAS_REFERRER_DELIVERY, GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_WITHDRAWAL
 
 class GASRolesManager(models.Manager):
-	"""version too old on domthu-dev. must re-align
 
-	"""
     def tech_referrers(self):
         return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_TECH)
 
