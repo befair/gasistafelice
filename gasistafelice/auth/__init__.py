@@ -7,6 +7,7 @@ from permissions.utils import register_role, register_permission
 ## role-related constants
 NOBODY = 'NOBODY'
 GAS_MEMBER = 'GAS_MEMBER'
+GAS_REFERRER = 'GAS_REFERRER'
 GAS_REFERRER_SUPPLIER = 'GAS_REFERRER_SUPPLIER'
 GAS_REFERRER_ORDER = 'GAS_REFERRER_ORDER'
 GAS_REFERRER_WITHDRAWAL = 'GAS_REFERRER_WITHDRAWAL'
@@ -19,6 +20,7 @@ ROLES_LIST = [
 (NOBODY, _('Nobody')),
 (SUPPLIER_REFERRER, _('Supplier referrer')),
 (GAS_MEMBER, _('GAS member')),
+(GAS_REFERRER, _('GAS referrer')),
 (GAS_REFERRER_SUPPLIER, _('GAS supplier referrer')),
 (GAS_REFERRER_ORDER, _('GAS order referrer')),
 (GAS_REFERRER_WITHDRAWAL, _('GAS withdrawal referrer')),
@@ -33,6 +35,7 @@ valid_params_for_roles = {
 # where the parameter type is expressed as a string of the format 'app_label.model_name'
 SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
 GAS_MEMBER : {'gas':'gas.GAS'},
+GAS_REFERRER : {'gas':'gas.GAS'},
 GAS_REFERRER_CASH : {'gas':'gas.GAS'},
 GAS_REFERRER_TECH : {'gas':'gas.GAS'},
 GAS_REFERRER_SUPPLIER : {'gas':'gas.GAS', 'supplier':'supplier.Supplier'},
