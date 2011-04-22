@@ -50,7 +50,8 @@ class GASMemberAdmin(admin.ModelAdmin):
 class GASSupplierOrderAdmin(admin.ModelAdmin):
     fieldsets = ((None,
             { 'fields' : ('supplier', 
-                ('date_start', 'date_end'), 
+                ('date_start', 'date_end'),
+                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
                 ('delivery_date', 'delivery_place'), 
                 ('withdraw_date', 'withdraw_place'), 
                 'product_set'

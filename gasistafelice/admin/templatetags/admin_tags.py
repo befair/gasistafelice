@@ -12,7 +12,7 @@ register = template.Library()
 
 @register.simple_tag
 def des_admin_nav():
-    # Inspired from django-pki
+    # Inspired from `django-pki`
 
     menu = {
         'orders_open' : { 

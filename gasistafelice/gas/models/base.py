@@ -148,7 +148,7 @@ class GASMember(models.Model, PermissionResource):
     gas = models.ForeignKey(GAS)
     id_in_gas = models.CharField(_("Card number"), max_length=64, null=True, blank=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
-    roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_set")
+    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account)
 
     history = HistoricalRecords()
