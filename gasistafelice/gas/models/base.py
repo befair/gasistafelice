@@ -32,7 +32,7 @@ class GAS(PermissionResource, AbstractClass, models.Model):
     config_deliver_day = models.BooleanField(help_text=_("default delivery closing day of the week"))
     config_deliver_time = models.TimeField(help_text=_("default delivery closing hour and minutes"))
     config_confirm_new_product = models.BooleanField(help_text=_("GAS must confirm new product insert by producer"))
-    config_basket_name = models.CharField(null=True, blank=True, help_text=_("GAS prefered basket name"))
+    config_basket_name = models.CharField(max_length=128, null=True, blank=True, help_text=_("GAS prefered basket name"))
 
     name = models.CharField(max_length=128)
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
