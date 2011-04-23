@@ -114,12 +114,12 @@ class WorkflowDefinition(object):
         ## create States objects
         self.states = {} # dictionary containing State objects for our Workflow
         for (key, name) in self.state_list:
-            self.states[key] = State.objects.create(name=_(name), workflow=self.workflow)
+            self.states[key] = State.objects.create(name=name, workflow=self.workflow)
         ## create Transition objects
         self.transitions = {} # dictionary containing Transition objects for the current Workflow
         for (key, transition_name, destination_name) in self.transition_list:
             dest_state = self.states[destination_name]
-            self.transitions[key] = Transition.objects.create(name=_(transition_name), workflow=self.workflow, destination=dest_state)
+            self.transitions[key] = Transition.objects.create(name=transition_name, workflow=self.workflow, destination=dest_state)
         ## associate Transitions to States
         for (state_name, transition_name) in self.state_transition_map:
             state = self.states[state_name]
