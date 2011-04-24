@@ -68,11 +68,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
     date_start = models.DateTimeField(help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(help_text=_("when the order will be closed"))
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', related_name="supplier_orders")
+    delivery = models.ForeignKey('Delivery', related_name="supplier_order_set")
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(null=True, blank=True)
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_orders")
+    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_order_set")
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
@@ -207,7 +207,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     def save(self):
         if not self.workflow:
             # Set default workflow
-            w = self.gas.workflow_default_gasmember_order.workflow
+            w = self.gas.default_workflow_gasmember_order.workflow
             set_workflow(self, w)
 
         return super(GASMemberOrder, self).save()
@@ -221,7 +221,7 @@ class Delivery(models.Model, PermissionResource):
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
     """
     
-    place = models.ForeignKey(Place, related_name="deliveries", help_text=_("where the order will be delivered by supplier"))
+    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"))
     date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
@@ -249,7 +249,7 @@ class Withdrawal(models.Model, PermissionResource):
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
     """
     
-    place = models.ForeignKey(Place, related_name="withdrawals", help_text=_("where the order will be withdrawn by GAS members"))
+    place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
     # a Withdrawal appointment usually span a time interval
     start_time = models.TimeField(help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(help_text=_("when the withdrawal will end"))

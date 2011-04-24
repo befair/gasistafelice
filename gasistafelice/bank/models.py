@@ -1,9 +1,11 @@
 from django.db import models
+
 from django.utils.translation import ugettext_lazy as _
 
 from permissions.models import Role
 from permissions import PermissionBase # mix-in class for permissions management
 
+from gasistafelice.base.fields import CurrencyField
 from gasistafelice.base.models import Resource, Person
 
 from django.db import models
@@ -42,7 +44,7 @@ class Movement(models.Model):
     """
     #TODO: This is the basis of the economic part. To discuss and extend
     account = models.ForeignKey(Account)
-    balance = models.DecimalField(max_digits=10, decimal_places=4)
+    balance = CurrencyField(max_digits=10, decimal_places=4)
     causal = models.CharField(max_length=200, help_text=_("causal of economic movement"))	
 
     def __unicode__(self):
