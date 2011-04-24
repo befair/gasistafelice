@@ -11,15 +11,6 @@ from gasistafelice.base.models import Resource, Person
 from django.db import models
 from decimal import Decimal
 
-class CurrencyField(models.DecimalField):
-    __metaclass__ = models.SubfieldBase
-
-    def to_python(self, value):
-        try:
-           return super(CurrencyField, self).to_python(value).quantize(Decimal("0.01"))
-        except AttributeError:
-           return None
-
 class Account(models.Model):
     """An current account. Dispose of the current state and a list of financial opertion say as movements 
     A GAS have two accounts
@@ -29,14 +20,15 @@ class Account(models.Model):
 
     """
     #TODO: This is the basis of the economic part. To discuss and extend
-    balance = models.DecimalField(max_digits=10, decimal_places=4)
+    #FIXME: MoneyFields stored localization decimal separator    
+    balance = models.DecimalField(max_digits=10, decimal_places=4, default=Decimal("0"))
     #balance = CurrencyField(max_digits=10, decimal_places=4)
-    #FIXME: Caught ValueError while rendering: incomplete format TemplateSyntaxError
-    #I ran into an python locale issue with the DecimalField?. During MySQL INSERTs and UPDATEs invalid sql-statements are generated since a comma-seperator ',' is used for formating DecimalField? instead of the expected dot-seperator '.' 
-    #USE_L10N is set to true and LANGUAGE_CODE to it-IT
+    #COMMENT: DecimalField --> 84 table on MySQL FloatField --> 84 table
+    #balance = models.FloatField()
+    #balance = models.IntegerField()
     
     def __unicode__(self):
-        return _("balance: %") % {'balance' : self.balance}
+        return _("balance: %s") % {'balance' : self.balance}
 
 class Movement(models.Model):
     """Economic movement
@@ -48,5 +40,5 @@ class Movement(models.Model):
     causal = models.CharField(max_length=200, help_text=_("causal of economic movement"))	
 
     def __unicode__(self):
-        return _("causal: %") % {'causal' : self.causal}
+        return _("causal: %s") % {'causal' : self.causal}
 
