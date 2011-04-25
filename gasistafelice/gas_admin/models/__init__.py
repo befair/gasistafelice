@@ -17,7 +17,9 @@ gas_admin = GasAdminSite("gas_admin")
 
 # Register models in GAS admin instance
 
-gas_admin.register(base_models.Person)
+gas_admin.register(base_models.Person, admin_models.PersonAdmin)
+#gas_admin.register(base_models.Place, admin_models.PlaceAdmin)
+gas_admin.register(base_models.Place)
 
 gas_admin.register(supplier_models.Supplier)
 gas_admin.register(supplier_models.Product)

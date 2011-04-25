@@ -32,17 +32,37 @@ class Person(models.Model, PermissionResource):
 It can be a User or not.
 """
 
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
+    #id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
     display_name = models.CharField(max_length=128)
+    #TODO: Verify if this information is necesary
+    #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
+    uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
+    address = models.OneToOneField('Place')
 
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return u"%s %s" % (self.name, self.surname)
+        return u"%s %s" % (self.name, self.surname) 
+
+    def city(self):
+        return u"%s" % (self.address) 
+
+    def save(self, force_insert=False, force_update=False):
+        self.name = self.name.upper()
+        self.surname = self.surname.title() #capitalized
+        if self.uuid == "":
+            self.uuid = None
+        if self.pk is None:
+            if len(self.address.name) == 0:
+                self.address.name = _("main address")
+            if len(self.address.description) == 0:
+                self.address.description = _("auto insert from admin interface")
+        super(Person, self).save(force_insert, force_update)
+
    
 class Contact(models.Model, PermissionResource):
 
@@ -59,17 +79,32 @@ so abstracting this information away seems a good thing;
 * in the context of multi-GAS (retina) orders,
 multiple delivery and/or withdrawal locations can be present.
 """
-    name = models.CharField(max_length=128)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=128, blank=True, editable=False)
+    description = models.TextField(blank=True, editable=False)
     address = models.CharField(max_length=128, blank=True)
-    city = models.CharField(max_length=128, blank=True)
-    province = models.CharField(max_length=128, blank=True)
+    postal_code = models.CharField(max_length=128, blank=True)
+    city = models.CharField(max_length=128)
+    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"))
         
     #TODO geolocation: use GeoDjango PointField?
-    lon = models.FloatField(blank=True)
-    lat = models.FloatField(blank=True)
+    #If we want to allow blank values in a date or numeric field, we will need to use both null=True and blank=True.
+    lon = models.FloatField(null=True, blank=True, editable=False)
+    lat = models.FloatField(null=True, blank=True, editable=False)
 
     history = HistoricalRecords()
+
+    def __unicode__(self):
+        return u"%s (%s)" % (self.city, self.province)
+
+    def save(self, force_insert=False, force_update=False):
+        self.city = self.city.upper()
+        self.province = self.province.upper()
+        #if self.pk is not None:
+        #    orig = Place.objects.get(pk=self.pk)
+        #    if orig.city != self.city and len(self.city) > 0:
+        #if len(self.lon) == 0:
+        #    self.lon = 
+        super(Place, self).save(force_insert, force_update)
 
 
 # Generic workflow management

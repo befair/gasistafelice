@@ -9,6 +9,14 @@ from django.core import urlresolvers
 class GASMemberAdminInline(admin.TabularInline):
     model = gas_models.GASMember
 
+#class PlaceAdmin(admin.ModelAdmin):
+
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
+    list_editable = ('name', 'surname') #, 'display_name', 'uuid')
+    list_display_links = ('__unicode__', 'display_name')
+
+
 class GASAdmin(admin.ModelAdmin):
     inlines = [ GASMemberAdminInline, ]
 
