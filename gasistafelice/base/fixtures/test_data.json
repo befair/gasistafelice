@@ -1,0 +1,52 @@
+[
+    {
+        "pk": 1, 
+        "model": "base.person", 
+        "fields": {
+            "display_name": "Mario Rossi", 
+            "uuid": "", 
+            "contacts": [], 
+            "user": null, 
+            "surname": "Rossi", 
+            "name": "Mario"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "base.person", 
+        "fields": {
+            "display_name": "Giorgio Bianchi", 
+            "uuid": "123", 
+            "contacts": [], 
+            "user": null, 
+            "surname": "Bianchi", 
+            "name": "Giorgio "
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "base.place", 
+        "fields": {
+            "province": "Ancona", 
+            "city": "Senigallia", 
+            "name": "Centro San Gregorio", 
+            "lon": null, 
+            "address": "via delle Cave, 16", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "base.place", 
+        "fields": {
+            "province": "Ancona", 
+            "city": "Senigallia", 
+            "name": "Centro sociale Saline", 
+            "lon": null, 
+            "address": "via Campo Boario, 25", 
+            "lat": null, 
+            "description": ""
+        }
+    }
+]

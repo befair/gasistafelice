@@ -1,2 +1,8 @@
-django-permissions
+Django>=1.2.3
+django-permissions>=1.0
 django-workflows>=1.0
+South>=0.7.3
+Sphinx>=0.6.6
+pisa>=3.0.32
+psycopg2>=2.2.1
+pysqlite>=1.0.1

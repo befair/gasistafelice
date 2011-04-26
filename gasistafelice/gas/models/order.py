@@ -68,11 +68,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
     date_start = models.DateTimeField(help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(help_text=_("when the order will be closed"))
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', related_name="supplier_order_set")
+    delivery = models.ForeignKey('Delivery', related_name="supplier_order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(null=True, blank=True)
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_order_set")
+    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
@@ -103,11 +103,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
             for product in self.supplier.product_catalog:
                 self.products.add(product)
         return
-        
+
     class Meta:
         app_label = 'gas'
+        
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
+
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -149,6 +151,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
 class GASMemberOrder(models.Model, PermissionResource):
+
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
@@ -216,6 +219,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         app_label = 'gas'
 
 class Delivery(models.Model, PermissionResource):
+
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
