@@ -34,13 +34,13 @@ It can be a User or not.
 
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
-    display_name = models.CharField(max_length=128)
+    display_name = models.CharField(max_length=128, blank=True)
     #TODO: Verify if this information is necesary
     #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
     uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
-    address = models.OneToOneField('Place')
+    address = models.OneToOneField('Place', null=True)
 
     history = HistoricalRecords()
 
@@ -51,17 +51,12 @@ It can be a User or not.
     def city(self):
         return self.address.city 
 
-    def save(self, force_insert=False, force_update=False):
-        self.name = self.name.upper()
-        self.surname = self.surname.title() #capitalized
+    def save(self, *args, **kw):
+        self.name = self.name.capitalized()
+        self.surname = self.surname.capitalized()
         if self.uuid == "":
             self.uuid = None
-        if self.pk is None:
-            if len(self.address.name) == 0:
-                self.address.name = _("main address")
-            if len(self.address.description) == 0:
-                self.address.description = _("auto insert from admin interface")
-        super(Person, self).save(force_insert, force_update)
+        super(Person, self).save(*args, **kw)
 
    
 class Contact(models.Model, PermissionResource):
@@ -73,38 +68,35 @@ class Contact(models.Model, PermissionResource):
 
 class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
-* among the entities arising in the description of GAS' activities,
-there are several being places or involving places,
-so abstracting this information away seems a good thing;
-* in the context of multi-GAS (retina) orders,
-multiple delivery and/or withdrawal locations can be present.
-"""
-    name = models.CharField(max_length=128, blank=True, editable=False)
-    description = models.TextField(blank=True, editable=False)
+    * among the entities arising in the description of GAS' activities,
+    there are several being places or involving places,
+    so abstracting this information away seems a good thing;
+    * in the context of multi-GAS (retina) orders,
+    multiple delivery and/or withdrawal locations can be present.
+    """
+
+    name = models.CharField(max_length=128, blank=True, unique=True)
+    description = models.TextField(blank=True)
     address = models.CharField(max_length=128, blank=True)
-    postal_code = models.CharField(max_length=128, blank=True)
+    zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
+
     city = models.CharField(max_length=128)
     province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"))
         
     #TODO geolocation: use GeoDjango PointField?
-    #If we want to allow blank values in a date or numeric field, we will need to use both null=True and blank=True.
-    lon = models.FloatField(null=True, blank=True, editable=False)
-    lat = models.FloatField(null=True, blank=True, editable=False)
+    lon = models.FloatField(null=True, blank=True)
+    lat = models.FloatField(null=True, blank=True)
 
     history = HistoricalRecords()
 
     def __unicode__(self):
         return u"%s (%s)" % (self.city, self.province)
 
-    def save(self, force_insert=False, force_update=False):
-        self.city = self.city.upper()
-        self.province = self.province.upper()
-        #if self.pk is not None:
-        #    orig = Place.objects.get(pk=self.pk)
-        #    if orig.city != self.city and len(self.city) > 0:
-        #if len(self.lon) == 0:
-        #    self.lon = 
-        super(Place, self).save(force_insert, force_update)
+    def save(self, *args, **kw):
+        #TODO: we should compute city and province starting from zipcode
+        self.city = self.city.capitalized()
+        self.province = self.province.capitalized()
+        super(Place, self).save(*args, **kw)
 
 
 # Generic workflow management
@@ -119,14 +111,14 @@ class DefaultTransition(models.Model, PermissionResource):
 
 class WorkflowDefinition(object):
     """
-This class encapsulates all the data and logic needed to create and setup a Workflow
-(as in the `django-workflows` app), including creation of States and Transitions,
-assignment of Transitions to States and specification of the initial state and the
-default Transition for each State.
-To setup a new Workflow, just specify the needed data in the declarative format
-described below, then call the `register_workflow` method.
-## TODO: workflow declaration's specs go here.
-"""
+    This class encapsulates all the data and logic needed to create and setup a Workflow
+    (as in the `django-workflows` app), including creation of States and Transitions,
+    assignment of Transitions to States and specification of the initial state and the
+    default Transition for each State.
+    To setup a new Workflow, just specify the needed data in the declarative format
+    described below, then call the `register_workflow` method.
+    ## TODO: workflow declaration's specs go here.
+    """
     
     def __init__(self, workflow_name, state_list, transition_list, state_transition_map, initial_state, default_transitions):
         # stash the workflow specs for later use
@@ -201,37 +193,5 @@ return True if the specs are fine, False otherwise.
                 raise ImproperlyConfigured("The default Transition for the State %s can't be set to a non-existent Transitions %s" % (state_name, transition_name))
             elif (state_name, transition_name) not in self.state_transition_map:
                 raise ImproperlyConfigured("The default Transition for the State %s must be one of its valid Transitions" % state_name)
-
-
-
-class AbstractClass(models.Model):
-    created_at=models.DateField(_("Created at"))
-    created_by=models.ForeignKey(User, db_column="created_by", related_name=_("%(app_label)s_%(class)s_created"))
-    updated_at=models.DateTimeField(_("Updated at"))
-    updated_by=models.ForeignKey(User, db_column="updated_by", null=True, related_name=_("%(app_label)s_%(class)s_updated"))
-    class Meta:
-        abstract = True
-    
-class Document(AbstractClass):
-    """
-    General document that refers to a special entity
-    """
-    DOC_TYPE = (
-        ('gas', 'GAS'),
-        ('supplier', 'SUPPLIER'),
-        ('product', 'PRODUCT'),
-        ('member', 'MEMBER'),
-        ('pds', 'PDS'),
-        ('order', 'ORDER'),
-    )
-    name = models.CharField(max_length=300, help_text=_("title and brief description"))
-    type_doc = models.CharField(max_length=1, choices=DOC_TYPE)
-    #TODO: how to access to a volatile foreign key 
-    parent_class_id = models.AutoField(primary_key=True)
-    file_doc = models.FileField(upload_to='docs/%Y/%m/%d')
-    date = models.DateField()
-
-    class Meta:
-        app_label = 'doc'
 
 
