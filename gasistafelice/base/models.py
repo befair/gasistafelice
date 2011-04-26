@@ -1,4 +1,4 @@
-"""
+""""
 This is the base model for Gasista Felice.
 It includes common data on which all (or almost all) other applications rely on.
 """
@@ -17,32 +17,47 @@ from gasistafelice.base.const import CONTACT_CHOICES
 
 class Resource(object):
     """
-    A basic mix-in class used to factor out data/behaviours common
-    to the majority of model classes in the project's applications.
-    """
+A basic mix-in class used to factor out data/behaviours common
+to the majority of model classes in the project's applications.
+"""
 
 class PermissionResource(Resource, PermissionBase):
     """
-    Just a convenience for classes inheriting both from Resource and PermissionBase
-    """
+Just a convenience for classes inheriting both from Resource and PermissionBase
+"""
     pass
 
 class Person(models.Model, PermissionResource):
     """A Person is an anagraphic record of a human being.
-    It can be a User or not.
-    """
+It can be a User or not.
+"""
 
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
-    display_name = models.CharField(max_length=128)
+    display_name = models.CharField(max_length=128, blank=True)
+    #TODO: Verify if this information is necesary
+    #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
+    uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
+    address = models.OneToOneField('Place', null=True)
 
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return u"%s %s" % (self.name, self.surname)
+        return u"%s %s" % (self.name, self.surname) 
+
+    @property
+    def city(self):
+        return self.address.city 
+
+    def save(self, *args, **kw):
+        self.name = self.name.capitalized()
+        self.surname = self.surname.capitalized()
+        if self.uuid == "":
+            self.uuid = None
+        super(Person, self).save(*args, **kw)
+
    
 class Contact(models.Model, PermissionResource):
 
@@ -59,11 +74,14 @@ class Place(models.Model, PermissionResource):
     * in the context of multi-GAS (retina) orders,
     multiple delivery and/or withdrawal locations can be present.
     """
-    name = models.CharField(max_length=128)
+
+    name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(blank=True)
     address = models.CharField(max_length=128, blank=True)
-    city = models.CharField(max_length=128, blank=True)
-    province = models.CharField(max_length=128, blank=True)
+    zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
+
+    city = models.CharField(max_length=128)
+    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"))
         
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(null=True, blank=True)
@@ -73,6 +91,15 @@ class Place(models.Model, PermissionResource):
     
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kw):
+        #TODO: we should compute city and province starting from zipcode
+        self.city = self.city.capitalized()
+        self.province = self.province.capitalized()
+        if not self.name:
+            self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
+
+        super(Place, self).save(*args, **kw)
 
 # Generic workflow management
 
@@ -103,7 +130,7 @@ class WorkflowDefinition(object):
         self.state_transition_map = state_transition_map
         self.initial_state_name = initial_state
         self.default_transitions = default_transitions
-  
+            
     def register_workflow(self):
         # check workflow specifications for internal consistency;
         # return an informative error message to the user if the check fails
@@ -140,9 +167,9 @@ class WorkflowDefinition(object):
     
     def check_workflow_specs(self):
         """
-        Check the provided workflow specifications for internal consistency;
-        return True if the specs are fine, False otherwise.
-        """
+Check the provided workflow specifications for internal consistency;
+return True if the specs are fine, False otherwise.
+"""
         state_names = [key for (key, name) in self.state_list]
         transition_names = [key for (key, transition_name, destination_name) in self.transition_list]
         ## States have to be unique
@@ -168,3 +195,5 @@ class WorkflowDefinition(object):
                 raise ImproperlyConfigured("The default Transition for the State %s can't be set to a non-existent Transitions %s" % (state_name, transition_name))
             elif (state_name, transition_name) not in self.state_transition_map:
                 raise ImproperlyConfigured("The default Transition for the State %s must be one of its valid Transitions" % state_name)
+
+

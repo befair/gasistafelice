@@ -61,7 +61,7 @@ state_transition_map = (
                           ('finalized', 'cancel'),
                           ('sent', 'cancel'),
                           )
-          
+
 initial_state_name = 'unconfirmed'    
 
 ## define default Transitions for States in a Workflow, 

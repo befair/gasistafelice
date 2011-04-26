@@ -8,6 +8,9 @@ from permissions import PermissionBase # mix-in class for permissions management
 from gasistafelice.base.fields import CurrencyField
 from gasistafelice.base.models import Resource, Person
 
+from django.db import models
+from decimal import Decimal
+
 class Account(models.Model):
     """An current account. Dispose of the current state and a list of financial opertion say as movements 
     A GAS have two accounts
@@ -17,10 +20,15 @@ class Account(models.Model):
 
     """
     #TODO: This is the basis of the economic part. To discuss and extend
-    balance = models.DecimalField(max_digits=10, decimal_places=4)
-
+    #FIXME: MoneyFields stored localization decimal separator    
+    balance = models.DecimalField(max_digits=10, decimal_places=4, default=Decimal("0"))
+    #balance = CurrencyField(max_digits=10, decimal_places=4)
+    #COMMENT: DecimalField --> 84 table on MySQL FloatField --> 84 table
+    #balance = models.FloatField()
+    #balance = models.IntegerField()
+    
     def __unicode__(self):
-        return _("balance: %") % {'balance' : self.balance}
+        return _("balance: %s") % {'balance' : self.balance}
 
 class Movement(models.Model):
     """Economic movement
@@ -32,5 +40,5 @@ class Movement(models.Model):
     causal = models.CharField(max_length=200, help_text=_("causal of economic movement"))	
 
     def __unicode__(self):
-        return _("causal: %") % {'causal' : self.causal}
+        return _("causal: %s") % {'causal' : self.causal}
 

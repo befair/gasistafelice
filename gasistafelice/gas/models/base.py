@@ -18,6 +18,9 @@ from gasistafelice.gas import managers
 
 from gasistafelice.bank.models import Account, Movement
 
+from gasistafelice.base.fields import CurrencyField
+from decimal import Decimal
+
 class GAS(models.Model, PermissionResource):
 
     """A group of people which make some purchases together.
@@ -28,23 +31,32 @@ class GAS(models.Model, PermissionResource):
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     description = models.TextField(null=True, blank=True, help_text=_("Who are you? What are yours specialties?"))
+    #FIXME: MoneyFields stored localization decimal separator    
+    membership_fee = models.DecimalField(max_digits=10, decimal_places=4, default=Decimal("0"), help_text=_("How much is the annual quote for adering to your GAS"))
+    #membership_fee = CurrencyField(max_digits=10, decimal_places=4, help_text=_("How much is the annual quote for adering to your GAS"))
 
+    #FIXME: gas.gas: 'suppliers' specifies an m2m relation through model base.GASSupplierSolidalPact, which has not been installed    
+    #suppliers = models.ManyToManyField(Supplier, through='base.GASCOMMENTSupplierSolidalPact', null=True, blank=True)
+    #TODO: Use manager to return list of PDSs for this GAS
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
-    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set")
-    #COMMENT fero: what does liquidity stands for?!?
+    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
     #TODO: change name
-    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set2")
+    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set2", help_text=_("GAS have is own bank account. "))
 
-    birthday = models.DateField()
+    #active = models.BooleanField()
+    birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
     vat = models.CharField(max_length=11, null=True, blank=True, help_text=_("VAT number"))	
-    ssn = models.CharField(max_length=16, null=True, blank=False, help_text=_("Social Security Number"))	
+    #TODO: change name. 
+    #COMMENT domthu: This is not a security social number (medical assistance) but a TAX CODE!!! in other words a fiscal code (like previous name)
+    ssn = models.CharField(max_length=16, null=True, blank=True, help_text=_("Social Security Number"))	
 
     email_gas = models.EmailField(null=True, blank=True)
 
     #COMMENT fero: imho email_referrer should be a property
     #that retrieve email contact from GAS_REFERRER (role just added)
-    email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email coordinator"))
+    #COMMENT domthu: The president 
+    email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
     phone = models.CharField(max_length=50, null=True, blank=True)	
     website = models.URLField(verify_exists=True, null=True, blank=True) 
 
@@ -82,12 +94,19 @@ class GAS(models.Model, PermissionResource):
 
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
-        register_parametric_role(name=GAS_MEMBER, gas=self)
+        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
+        #register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        #FIXME: Cannot assign "(<Role: GAS_REFERRER_TECH>, False)": "ParamRole.role" must be a "Role" instance.
+        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)     
-    
+        #FIXME: Cannot assign "(<Role: GAS_REFERRER_CASH>, False)": "ParamRole.role" must be a "Role" instance.
+        #register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
+        rv = (
+              # initial roles setup goes here
+              )     
+        return rv  
+
 class GASConfig(GAS):
     """Encapsulate here gas settings and configuration facilities"""
 
@@ -146,10 +165,11 @@ class GASMember(models.Model, PermissionResource):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=64, null=True, blank=True, help_text=_("GAS card number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=10, null=True, blank=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
+    membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, blank=True, help_text=_("When was the last the annual quote payment"))
 
     history = HistoricalRecords()
 
@@ -162,6 +182,7 @@ class GASMember(models.Model, PermissionResource):
         #See ticket #54
         return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
+    #COMMENT domthu: fero add id_in_des for GASMember. That it not required.
     @property
     def id_in_des(self):
         """TODO: Return unique GAS member "card number" in the DES.
@@ -173,6 +194,7 @@ class GASMember(models.Model, PermissionResource):
         # return something
         raise NotImplementedError
 
+    #COMMENT domthu: fero add id_in_des for GASMember. That it not required.
     @property
     def id_in_retina(self):
         #TODO: Should we provide also and id for retina?
@@ -203,7 +225,7 @@ class GASMember(models.Model, PermissionResource):
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
-    
+
     Each Supplier comes into relationship with a GAS by signing this pact,
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
@@ -211,7 +233,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     gas = models.ForeignKey(GAS)
     supplier = models.ForeignKey(Supplier)
-    date_signed = models.DateField()
+    date_signed = models.DateField(auto_now=False, auto_now_add=False, blank=True)
 
     # which Products GAS members can order from Supplier
     supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
@@ -258,3 +280,5 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
+
+

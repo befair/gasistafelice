@@ -14,9 +14,12 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    (r'^gas/$', 'gas.views.index'),
+
     (r'^gas-admin/', include(gas_admin.urls)),
 
     (r'^admin/', include(admin.site.urls)),
+
 )
 
 if settings.DEBUG:

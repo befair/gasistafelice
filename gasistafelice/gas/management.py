@@ -10,7 +10,7 @@ def init_workflows(app, created_models, verbosity, **kwargs):
             w.register_workflow()
             if verbosity == 2:
                 # give some feedback to the user
-                print "Workflow %s was successfully registered." % name    
+                print "Workflow %s was successfully registered." % name
         return
 
 post_syncdb.connect(init_workflows)
