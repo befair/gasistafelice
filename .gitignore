@@ -2,5 +2,3 @@
 settings.py
 db/
 doc*/build/
-.settings/
-.gitignore
