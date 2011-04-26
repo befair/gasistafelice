@@ -1,0 +1,48 @@
+[
+ 
+    {
+        "pk": 1, 
+        "model": "gas.gas", 
+        "fields": {
+            "website": "", 
+            "account": null, 
+            "association_act": "", 
+            "description": "", 
+            "ssn": "12233", 
+            "email_gas": "", 
+            "note": "", 
+            "phone": "", 
+            "birthday": "2011-04-26", 
+            "intent_act": "", 
+            "logo": "", 
+            "id_in_des": "CAM", 
+            "email_referrer": "", 
+            "liquidity": null, 
+            "vat": "", 
+            "name": "GAS Camerino"
+        }
+    },
+	
+	{
+        "pk": 2, 
+        "model": "gas.gas", 
+        "fields": {
+            "website": "", 
+            "account": null, 
+            "association_act": "", 
+            "description": "", 
+            "ssn": "12234", 
+            "email_gas": "", 
+            "note": "", 
+            "phone": "", 
+            "birthday": "2011-04-26", 
+            "intent_act": "", 
+            "logo": "", 
+            "id_in_des": "MC", 
+            "email_referrer": "", 
+            "liquidity": null, 
+            "vat": "", 
+            "name": "GAS Macerata"
+        }
+    },
+]

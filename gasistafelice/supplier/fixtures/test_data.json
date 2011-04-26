@@ -1,0 +1,105 @@
+[
+     {
+        "pk": 1, 
+        "model": "supplier.supplier", 
+        "fields": {
+            "website": "", 
+            "certifications": [], 
+            "flavour": "COMPANY", 
+            "name": "Tizio Tizi", 
+            "seat": null, 
+            "vat_number": "123456789"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "supplier.supplier", 
+        "fields": {
+            "website": "http://www.example.com/", 
+            "certifications": [], 
+            "flavour": "COMPANY", 
+            "name": "Caio Cai", 
+            "seat": null, 
+            "vat_number": "1234567890"
+        }
+    }, 
+
+    {
+        "pk": 1, 
+        "model": "supplier.productcategory", 
+        "fields": {
+            "name": "Abbigliamento", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "supplier.productcategory", 
+        "fields": {
+            "name": "Alimentari", 
+            "description": ""
+        }
+    }, 
+
+    {
+        "pk": 1, 
+        "model": "supplier.productmu", 
+        "fields": {
+            "symbol": "Kg", 
+            "name": "Kilogram", 
+            "description": ""
+        }
+    }, 
+ 
+    {
+        "pk": 1, 
+        "model": "supplier.product", 
+        "fields": {
+            "category": 2, 
+            "description": "", 
+            "producer": 1, 
+            "name": "Carote", 
+            "mu": 1, 
+            "uuid": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "supplier.product", 
+        "fields": {
+            "category": 1, 
+            "description": "", 
+            "producer": 2, 
+            "name": "Scarpe ecologiche", 
+            "mu": 1, 
+            "uuid": null
+        }
+    }, 
+
+    {
+        "pk": 1, 
+        "model": "supplier.supplierstock", 
+        "fields": {
+            "product": 1, 
+            "price": 10.0, 
+            "amount_available": 1000000000, 
+            "order_step": null, 
+            "order_minimum_amount": 7, 
+            "supplier": 1, 
+            "delivery_terms": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "supplier.supplierstock", 
+        "fields": {
+            "product": 2, 
+            "price": 5.0, 
+            "amount_available": 1000000000, 
+            "order_step": 5, 
+            "order_minimum_amount": null, 
+            "supplier": 2, 
+            "delivery_terms": "Viene consegnato in confezioni da 2 paia"
+        }
+    }
+]
