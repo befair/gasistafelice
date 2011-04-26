@@ -68,11 +68,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
     date_start = models.DateTimeField(help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(help_text=_("when the order will be closed"))
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', related_name="supplier_order_set")
+    delivery = models.ForeignKey('Delivery', related_name="supplier_order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(null=True, blank=True)
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_order_set")
+    withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')

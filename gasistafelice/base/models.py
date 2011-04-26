@@ -66,11 +66,13 @@ class Place(models.Model, PermissionResource):
     province = models.CharField(max_length=128, blank=True)
         
     #TODO geolocation: use GeoDjango PointField?
-    lon = models.FloatField(blank=True)
-    lat = models.FloatField(blank=True)
+    lon = models.FloatField(null=True, blank=True)
+    lat = models.FloatField(null=True, blank=True)
 
     history = HistoricalRecords()
-
+    
+    def __unicode__(self):
+        return self.name
 
 # Generic workflow management
 

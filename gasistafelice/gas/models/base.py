@@ -25,7 +25,7 @@ class GAS(models.Model, PermissionResource):
     """
 
     name = models.CharField(max_length=128)
-    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identier in the DES. Example: CAMERINO--> CAM"))	
+    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     description = models.TextField(null=True, blank=True, help_text=_("Who are you? What are yours specialties?"))
 
@@ -149,7 +149,7 @@ class GASMember(models.Model, PermissionResource):
     id_in_gas = models.CharField(_("Card number"), max_length=64, null=True, blank=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, null=True, blank=True)
 
     history = HistoricalRecords()
 

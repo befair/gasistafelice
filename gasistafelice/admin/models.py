@@ -2,6 +2,7 @@ from django.contrib import admin, messages
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.base import models as base_models
+from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
 from django.core import urlresolvers
@@ -58,23 +59,113 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
               )
             }),
     )
+
+class GASSupplierOrderProductAdmin(admin.ModelAdmin):
+    pass
+
+class GASMemberOrderAdmin(admin.ModelAdmin):
+    fieldsets = ((None,
+            { 'fields' : ('supplier', 
+                ('date_start', 'date_end'),
+                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
+                ('delivery_date', 'delivery_place'), 
+                ('withdraw_date', 'withdraw_place'), 
+                'product_set'
+              )
+            }),
+    )
+
     
 class ProductAdmin(admin.ModelAdmin):
 
     save_on_top = True
+    
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'producer', 'description','category','mu')
+        }),
+        )
 
-    list_display = ('category', 'name', 'description', 'mu', 'producer', 'uuid')
-    list_editable = ('category', 'name', 'description', 'mu', 'producer')
-    list_display_links = ('uuid',)
+    list_display = ('name', 'producer', 'category', 'description',)
+    list_display_links = ('name',)
+    list_filter = ('producer', 'category')
+    search_fields = ['name', 'producer__name', 'description']
 
+
+class SupplierAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'seat', 'website',)
+        }),
+        ('Details', {
+            'fields': ('flavour', 'vat_number','certifications',)
+        }),        
+        )
+
+    list_display = ('name', 'flavour', 'website_with_link',)
+    list_display_links = ('name',)
+    list_filter = ('flavour',)
+    search_fields = ['name', 'referrers__name', 'referrers__surname',]
+    
+    def website_with_link(self, obj):
+        url = obj.website
+        return u'<a href="%s">%s</a>' % (url, url)
+    website_with_link.allow_tags = True
+    website_with_link.short_description = "website"
+
+
+class SupplierStockAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    
+    fieldsets = (
+        (None, {
+            'fields': ('product', 'supplier', 'price', 'amount_available',)
+        }),
+        ('Constraints', {
+            'classes': ('collapse',),
+            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
+         })
+        )
+
+    list_display = ('product','supplier', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_display_links = ('product',)
+    list_filter = ('supplier',)
+    search_fields = ['product', 'supplier__name',]
+    
+    # FIXME: try to make it more generic !
+    def order_min_amount_pretty(self, obj):
+        return obj.order_minimum_amount or '--'
+    order_min_amount_pretty.short_description = "minimum amount"
+    
+    # FIXME: try to make it more generic !
+    def order_step_pretty(self, obj):
+        return obj.order_step or '--'
+    order_step_pretty.short_description = "increment step"
+    
+    def amount_avail_pretty(self, obj):
+        if obj.amount_available == ALWAYS_AVAILABLE:
+            return 'infinity'
+    amount_avail_pretty.short_description = 'amount available'
+    
+    # FIXME: try to make it more generic !
+    # TODO: 'euro' should be rendered as a currency symbol 
+    def price_pretty(self, obj):
+        return str(obj.price) + ' euro'
+    price_pretty.short_description = "price"
+    
 admin.site.register(base_models.Person)
 
-admin.site.register(supplier_models.Supplier)
+admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
-admin.site.register(supplier_models.SupplierStock)
+admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.order.GASSupplierStock)
 admin.site.register(gas_models.order.GASSupplierOrder) #, GASSupplierOrderAdmin)
-
+admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderProductAdmin)
+admin.site.register(gas_models.order.GASMemberOrder)

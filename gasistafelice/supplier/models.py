@@ -22,12 +22,12 @@ class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
 
     name = models.CharField(max_length=128) 
-    seat =  models.ForeignKey(Place)
+    seat =  models.ForeignKey(Place, null=True, blank=True)
     vat_number =  models.CharField(max_length=128, unique=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website =  models.URLField(verify_exists=True, blank=True)
     referrers = models.ManyToManyField(Person, through="SupplierReferrer") 
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
-    certifications = models.ManyToManyField('Certification')
+    certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
     history = HistoricalRecords()
 
@@ -112,19 +112,22 @@ class ProductCategory(models.Model, PermissionResource):
         return rv
 
 class ProductMU(models.Model, PermissionResource):
-    """Measurement unit for a Product.
-         
-    """
+    """Measurement unit for a Product."""
     # Implemented as a separated entity like GasDotto software.
     # Each SupplierReferrer has to be able to create its own measurement units.
     
     name = models.CharField(max_length=32, unique=True, blank=False)
+    symbol = models.CharField(max_length=5, unique=True, null=True, blank=True)
     description = models.TextField(blank=True)
 
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return self.name
+        return self.symbol
+    
+    class Meta():
+        verbose_name="measurement unit"
+        verbose_name_plural="measurement units"
     
     @property        
     def local_grants(self):
@@ -132,17 +135,20 @@ class ProductMU(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv
-
+    
 class Product(models.Model, PermissionResource):
 
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True) # if empty, should be programmatically set at DB save time
+    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID') # if empty, should be programmatically set at DB save time
     producer = models.ForeignKey(Supplier)
     category = models.ForeignKey(ProductCategory)
-    mu = models.ForeignKey(ProductMU)
+    mu = models.ForeignKey(ProductMU, blank=True, null=True)
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     
     history = HistoricalRecords()
+    
+    def __unicode__(self):
+        return self.name
 
     @property
     def referrers(self):
@@ -175,6 +181,9 @@ class SupplierStock(models.Model, PermissionResource):
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
 
     history = HistoricalRecords()
+    
+    def __unicode__(self):
+        return "%s (by %s)" % (self.product, self.supplier)
 
     @property
     def producer(self):
