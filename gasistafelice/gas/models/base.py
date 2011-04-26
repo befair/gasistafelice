@@ -198,6 +198,14 @@ class GASMember(models.Model, PermissionResource):
               )     
         return rv  
        
+<<<<<<< HEAD
+=======
+    def save(self):
+    #    self.first_name = self.name
+    #    self.last_name = self.last_name
+        super(GASMember, self).save()         
+
+>>>>>>> origin/seldon-dev
     class Meta:
         app_label = 'gas'
 

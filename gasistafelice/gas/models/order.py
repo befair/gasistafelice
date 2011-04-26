@@ -103,11 +103,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
             for product in self.supplier.product_catalog:
                 self.products.add(product)
         return
-        
+
     class Meta:
         app_label = 'gas'
+        
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
+
 
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -149,6 +151,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
 class GASMemberOrder(models.Model, PermissionResource):
+
     """An order made by a GAS member in the context of a given GASSupplierOrder.
 
     See `here http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineGasista`__  for details (ITA only).
@@ -216,6 +219,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         app_label = 'gas'
 
 class Delivery(models.Model, PermissionResource):
+
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
