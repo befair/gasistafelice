@@ -89,7 +89,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'south',
     'permissions',
     'workflows',
     'history',
@@ -106,6 +105,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
+    #'south',
     
 )
 

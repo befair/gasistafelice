@@ -87,14 +87,11 @@ class GAS(models.Model, PermissionResource):
 
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
-        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
-        #register_parametric_role(name=GAS_MEMBER, gas=self)
+        register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        #FIXME: Cannot assign "(<Role: GAS_REFERRER_TECH>, False)": "ParamRole.role" must be a "Role" instance.
-        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        #FIXME: Cannot assign "(<Role: GAS_REFERRER_CASH>, False)": "ParamRole.role" must be a "Role" instance.
-        #register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
+        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
               # initial roles setup goes here
               )     
@@ -226,7 +223,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     gas = models.ForeignKey(GAS)
     supplier = models.ForeignKey(Supplier)
-    date_signed = models.DateField(blank=True, null=True)
+    date_signed = models.DateField(blank=True, null=True, default=None)
 
     # which Products GAS members can order from Supplier
     supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
