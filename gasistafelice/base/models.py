@@ -17,20 +17,20 @@ from gasistafelice.base.const import CONTACT_CHOICES
 
 class Resource(object):
     """
-A basic mix-in class used to factor out data/behaviours common
-to the majority of model classes in the project's applications.
-"""
+    A basic mix-in class used to factor out data/behaviours common
+    to the majority of model classes in the project's applications.
+    """
 
 class PermissionResource(Resource, PermissionBase):
     """
-Just a convenience for classes inheriting both from Resource and PermissionBase
-"""
+    Just a convenience for classes inheriting both from Resource and PermissionBase
+    """
     pass
 
 class Person(models.Model, PermissionResource):
     """A Person is an anagraphic record of a human being.
-It can be a User or not.
-"""
+    It can be a User or not.
+    """
 
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
