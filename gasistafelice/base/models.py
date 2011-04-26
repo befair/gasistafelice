@@ -32,7 +32,6 @@ class Person(models.Model, PermissionResource):
 It can be a User or not.
 """
 
-    #id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
     display_name = models.CharField(max_length=128)
@@ -48,8 +47,9 @@ It can be a User or not.
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname) 
 
+    @property
     def city(self):
-        return u"%s" % (self.address) 
+        return self.address.city 
 
     def save(self, force_insert=False, force_update=False):
         self.name = self.name.upper()
