@@ -52,8 +52,8 @@ class Person(models.Model, PermissionResource):
         return self.address.city 
 
     def save(self, *args, **kw):
-        self.name = self.name.capitalized()
-        self.surname = self.surname.capitalized()
+        self.name = self.name.capitalize()
+        self.surname = self.surname.capitalize()
         if self.uuid == "":
             self.uuid = None
         super(Person, self).save(*args, **kw)

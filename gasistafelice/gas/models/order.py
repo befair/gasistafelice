@@ -14,6 +14,7 @@ from gasistafelice.supplier.models import Supplier, SupplierStock
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
+from datetime import datetime
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -64,11 +65,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
       (they can be a subset of all available products from that Supplier for the order);
 
     """
-
+    
     gas = models.ForeignKey(GAS)
     supplier = models.ForeignKey(Supplier)
-    date_start = models.DateTimeField(help_text=_("when the order will be opened"))
-    date_end = models.DateTimeField(help_text=_("when the order will be closed"))
+    date_start = models.DateTimeField(default=datetime.now, help_text=_("when the order will be opened"))
+    date_end = models.DateTimeField(help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
     delivery = models.ForeignKey('Delivery', related_name="supplier_order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  

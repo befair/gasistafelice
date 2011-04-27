@@ -10,17 +10,26 @@ from django.core import urlresolvers
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
-  
+    extra = 0
+    exclude = ('account', 'available_for_roles')
+
+class GASMemberOrderInline(admin.TabularInline):
+    model = gas_models.GASMemberOrder
+    extra = 1
+
 class SupplierStockInline(admin.TabularInline):
     model = supplier_models.SupplierStock
-
+    exclude = ('delivery_terms',)
+    
 class GASSupplierOrderProductInline(admin.TabularInline):
     model = gas_models.GASSupplierOrderProduct
-
+    extra = 1
 
 ########################## ModelAdmin customizations ######
 
 class PersonAdmin(admin.ModelAdmin):
+    inlines = [GASMemberInline, ] 
+    
     list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
     list_editable = ('name', 'surname') #, 'display_name', 'uuid')
     list_display_links = ('__unicode__', 'display_name')
@@ -33,7 +42,9 @@ class GASAdmin(admin.ModelAdmin):
     
 
 class GASMemberAdmin(admin.ModelAdmin):
-        
+    
+    inlines = [GASMemberOrderInline, ]
+     
     list_display = ('__unicode__', 'gas_with_link')
     fieldsets = ((None,
             { 'fields' : ('gas', 'person')
@@ -68,6 +79,7 @@ class GASMemberAdmin(admin.ModelAdmin):
 
 
 class SupplierAdmin(admin.ModelAdmin):
+    inlines = [SupplierStockInline, ]
 
     save_on_top = True
     
@@ -155,8 +167,7 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
             { 'fields' : (
                 'gas',
                 'supplier', 
-                ('date_start', 'date_end'),
-                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
+                ('date_start', 'date_end'),   
                 'delivery',  
                 'withdrawal',              
               )
@@ -172,13 +183,13 @@ class GASSupplierOrderProductAdmin(admin.ModelAdmin):
 
 class GASMemberOrderAdmin(admin.ModelAdmin):
     fieldsets = ((None,
-            { 'fields' : ('supplier', 
-                ('date_start', 'date_end'),
-                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
-                ('delivery_date', 'delivery_place'), 
-                ('withdraw_date', 'withdraw_place'), 
-                'product_set'
-              )
+            { 'fields' : (
+            'purchaser',
+            'product',
+            'ordered_price',
+            'ordered_amount',
+            'withdrawn_amount',          
+              )  
             }),
     )
   
@@ -201,7 +212,7 @@ admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.order.GASSupplierStock)
 admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
 admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderProductAdmin)
-admin.site.register(gas_models.order.GASMemberOrder)
+admin.site.register(gas_models.order.GASMemberOrder, GASMemberOrderAdmin)
 admin.site.register(gas_models.order.Delivery, DeliveryAdmin)
 admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
 
