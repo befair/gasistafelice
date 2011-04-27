@@ -29,9 +29,10 @@ gas_admin.register(supplier_models.SupplierStock, admin_models.SupplierStockAdmi
 gas_admin.register(gas_models.GAS, admin_models.GASAdmin)
 gas_admin.register(gas_models.GASMember, admin_models.GASMemberAdmin)
 gas_admin.register(gas_models.order.GASSupplierStock)
-gas_admin.register(gas_models.order.GASSupplierOrder) #, admin_models.GASSupplierOrderAdmin)
+gas_admin.register(gas_models.order.GASSupplierOrder, admin_models.GASSupplierOrderAdmin)
 gas_admin.register(gas_models.order.GASSupplierOrderProduct, admin_models.GASSupplierOrderProductAdmin) 
 gas_admin.register(gas_models.order.GASMemberOrder)
-
+gas_admin.register(gas_models.order.Delivery, admin_models.DeliveryAdmin)
+gas_admin.register(gas_models.order.Withdrawal, admin_models.WithdrawalAdmin)
 gas_admin.register(bank_models.Account)
 
