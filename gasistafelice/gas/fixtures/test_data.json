@@ -8,11 +8,35 @@
             "account": null, 
             "association_act": "", 
             "description": "", 
-            "ssn": "12233", 
-            "email_gas": "", 
-            "note": "", 
             "phone": "", 
-            "birthday": "2011-04-26", 
+            "email_gas": "", 
+            "membership_fee": "0", 
+            "note": "", 
+            "fcc": "", 
+            "birthday": null, 
+            "intent_act": "", 
+            "logo": "", 
+            "id_in_des": "MC", 
+            "email_referrer": "", 
+            "liquidity": null, 
+            "vat": "", 
+            "name": "GAS Macerata"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "gas.gas", 
+        "fields": {
+            "website": "", 
+            "account": null, 
+            "association_act": "", 
+            "description": "", 
+            "phone": "", 
+            "email_gas": "", 
+            "membership_fee": "0", 
+            "note": "", 
+            "fcc": "", 
+            "birthday": null, 
             "intent_act": "", 
             "logo": "", 
             "id_in_des": "CAM", 
@@ -24,25 +48,54 @@
     },
 	
 	{
-        "pk": 2, 
-        "model": "gas.gas", 
+        "pk": 1, 
+        "model": "gas.gasmember", 
         "fields": {
-            "website": "", 
             "account": null, 
-            "association_act": "", 
-            "description": "", 
-            "ssn": "12234", 
-            "email_gas": "", 
-            "note": "", 
-            "phone": "", 
-            "birthday": "2011-04-26", 
-            "intent_act": "", 
-            "logo": "", 
-            "id_in_des": "MC", 
-            "email_referrer": "", 
-            "liquidity": null, 
-            "vat": "", 
-            "name": "GAS Macerata"
+            "roles": [], 
+            "gas": 1, 
+            "membership_fee_payed": null, 
+            "id_in_gas": null, 
+            "person": 1, 
+            "available_for_roles": []
         }
     },
+	
+	{
+        "pk": 1, 
+        "model": "gas.delivery", 
+        "fields": {
+            "date": "2011-04-29 06:00:00", 
+            "referrers": [
+                1
+            ], 
+            "place": 1
+        }
+    },
+	
+	{
+        "pk": 1, 
+        "model": "gas.gassupplierstock", 
+        "fields": {
+            "order_minimum_amount": null, 
+            "supplier_stock": 1, 
+            "gas": 2, 
+            "enabled": false, 
+            "order_step": null
+        }
+    }, 
+
+	{
+        "pk": 1, 
+        "model": "gas.gassupplierorder", 
+        "fields": {
+            "date_end": "2011-04-28 14:49:01", 
+            "date_start": "2011-04-27 14:48:56", 
+            "gas": 1, 
+            "delivery": 1, 
+            "order_minimum_amount": null, 
+            "withdrawal": null, 
+            "supplier": 1
+        }
+    } 
 ]
