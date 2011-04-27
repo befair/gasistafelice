@@ -6,3 +6,4 @@ Sphinx>=0.6.6
 pisa>=3.0.32
 psycopg2>=2.2.1
 pysqlite>=1.0.1
+-e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
