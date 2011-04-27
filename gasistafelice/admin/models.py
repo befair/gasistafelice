@@ -7,19 +7,41 @@ from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
 from django.core import urlresolvers
 
-class GASMemberAdminInline(admin.TabularInline):
+########################## Inlines #######################
+class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
+    
+class SupplierStockInline(admin.TabularInline):
+    model = supplier_models.SupplierStock
 
-#class PlaceAdmin(admin.ModelAdmin):
+class GASSupplierOrderProductInline(admin.TabularInline):
+    model = gas_models.GASSupplierOrderProduct
+
+
+########################## ModelAdmin customizations ######
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
     list_editable = ('name', 'surname') #, 'display_name', 'uuid')
     list_display_links = ('__unicode__', 'display_name')
-
+    
+class PlaceAdmin(admin.ModelAdmin):
+    pass
 
 class GASAdmin(admin.ModelAdmin):
-    inlines = [ GASMemberAdminInline, ]
+    inlines = [GASMemberInline, ]
+    
+    def say_hello(self, request, queryset):
+        for obj in queryset.all():
+            messages.info(request, ugettext("Hello %s") % obj)
+    say_hello.short_description = _("Say hello to gas members")
+
+    def gas_with_link(self, obj):
+        url = urlresolvers.reverse('admin:gas_gas_change', args=(obj.gas.id,))
+        return u'<a href="%s">%s</a>' % (url, obj.gas)
+    gas_with_link.allow_tags = True
+    gas_with_link.short_description = "GAS"
+
 
 class GASMemberAdmin(admin.ModelAdmin):
 
@@ -43,61 +65,6 @@ class GASMemberAdmin(admin.ModelAdmin):
             "all": ("css/addchangestyles.css",)
         }
         js = ("js/addchangecode.js",)
-
-    
-    def say_hello(self, request, queryset):
-        for obj in queryset.all():
-            messages.info(request, ugettext("Hello %s") % obj)
-    say_hello.short_description = _("Say hello to gas members")
-
-    def gas_with_link(self, obj):
-        url = urlresolvers.reverse('admin:gas_gas_change', args=(obj.gas.id,))
-        return u'<a href="%s">%s</a>' % (url, obj.gas)
-    gas_with_link.allow_tags = True
-    gas_with_link.short_description = "GAS"
-
-class GASSupplierOrderAdmin(admin.ModelAdmin):
-    fieldsets = ((None,
-            { 'fields' : ('supplier', 
-                ('date_start', 'date_end'),
-                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
-                ('delivery_date', 'delivery_place'), 
-                ('withdraw_date', 'withdraw_place'), 
-                'product_set'
-              )
-            }),
-    )
-
-class GASSupplierOrderProductAdmin(admin.ModelAdmin):
-    pass
-
-class GASMemberOrderAdmin(admin.ModelAdmin):
-    fieldsets = ((None,
-            { 'fields' : ('supplier', 
-                ('date_start', 'date_end'),
-                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
-                ('delivery_date', 'delivery_place'), 
-                ('withdraw_date', 'withdraw_place'), 
-                'product_set'
-              )
-            }),
-    )
-
-    
-class ProductAdmin(admin.ModelAdmin):
-
-    save_on_top = True
-    
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'producer', 'description','category','mu')
-        }),
-        )
-
-    list_display = ('name', 'producer', 'category', 'description',)
-    list_display_links = ('name',)
-    list_filter = ('producer', 'category')
-    search_fields = ['name', 'producer__name', 'description']
 
 
 class SupplierAdmin(admin.ModelAdmin):
@@ -123,6 +90,22 @@ class SupplierAdmin(admin.ModelAdmin):
         return u'<a href="%s">%s</a>' % (url, url)
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
+
+
+class ProductAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'producer', 'description','category','mu')
+        }),
+        )
+
+    list_display = ('name', 'producer', 'category', 'description',)
+    list_display_links = ('name',)
+    list_filter = ('producer', 'category')
+    search_fields = ['name', 'producer__name', 'description']
 
 
 class SupplierStockAdmin(admin.ModelAdmin):
@@ -164,6 +147,48 @@ class SupplierStockAdmin(admin.ModelAdmin):
     def price_pretty(self, obj):
         return str(obj.price) + ' euro'
     price_pretty.short_description = "price"
+
+
+
+class GASSupplierOrderAdmin(admin.ModelAdmin):
+    fieldsets = ((None,
+            { 'fields' : (
+                'gas',
+                'supplier', 
+                ('date_start', 'date_end'),
+                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
+                'delivery',  
+                'withdrawal',              
+              )
+            }),
+    )
+    
+    inlines = [GASSupplierOrderProductInline, ]
+    
+
+class GASSupplierOrderProductAdmin(admin.ModelAdmin):
+    pass
+
+
+class GASMemberOrderAdmin(admin.ModelAdmin):
+    fieldsets = ((None,
+            { 'fields' : ('supplier', 
+                ('date_start', 'date_end'),
+                # FIXME: Delivery and Withdrawal info is encapsulated in specific models, now!   
+                ('delivery_date', 'delivery_place'), 
+                ('withdraw_date', 'withdraw_place'), 
+                'product_set'
+              )
+            }),
+    )
+  
+    
+class DeliveryAdmin(admin.ModelAdmin):
+    pass
+
+class WithdrawalAdmin(admin.ModelAdmin):
+    pass
+    
     
 admin.site.register(base_models.Person)
 
@@ -174,6 +199,9 @@ admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.order.GASSupplierStock)
-admin.site.register(gas_models.order.GASSupplierOrder) #, GASSupplierOrderAdmin)
+admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
 admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderProductAdmin)
 admin.site.register(gas_models.order.GASMemberOrder)
+admin.site.register(gas_models.order.Delivery, DeliveryAdmin)
+admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
+
