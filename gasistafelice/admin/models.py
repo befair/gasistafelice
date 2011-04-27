@@ -10,7 +10,7 @@ from django.core import urlresolvers
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
-    
+  
 class SupplierStockInline(admin.TabularInline):
     model = supplier_models.SupplierStock
 
@@ -31,20 +31,9 @@ class PlaceAdmin(admin.ModelAdmin):
 class GASAdmin(admin.ModelAdmin):
     inlines = [GASMemberInline, ]
     
-    def say_hello(self, request, queryset):
-        for obj in queryset.all():
-            messages.info(request, ugettext("Hello %s") % obj)
-    say_hello.short_description = _("Say hello to gas members")
-
-    def gas_with_link(self, obj):
-        url = urlresolvers.reverse('admin:gas_gas_change', args=(obj.gas.id,))
-        return u'<a href="%s">%s</a>' % (url, obj.gas)
-    gas_with_link.allow_tags = True
-    gas_with_link.short_description = "GAS"
-
 
 class GASMemberAdmin(admin.ModelAdmin):
-
+        
     list_display = ('__unicode__', 'gas_with_link')
     fieldsets = ((None,
             { 'fields' : ('gas', 'person')
@@ -59,12 +48,23 @@ class GASMemberAdmin(admin.ModelAdmin):
     list_filter = ('gas', 'roles')
 
     actions = ['say_hello']
-
+    
     class Media:
         css = {
             "all": ("css/addchangestyles.css",)
         }
         js = ("js/addchangecode.js",)
+        
+    def say_hello(self, request, queryset):
+        for obj in queryset.all():
+            messages.info(request, ugettext("Hello %s") % obj)
+    say_hello.short_description = _("Say hello to gas members")
+
+    def gas_with_link(self, obj):
+        url = urlresolvers.reverse('admin:gas_gas_change', args=(obj.gas.id,))
+        return u'<a href="%s">%s</a>' % (url, obj.gas)
+    gas_with_link.allow_tags = True
+    gas_with_link.short_description = "GAS"
 
 
 class SupplierAdmin(admin.ModelAdmin):
