@@ -31,7 +31,7 @@ class GAS(models.Model, PermissionResource):
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     description = models.TextField(null=True, blank=True, help_text=_("Who are you? What are yours specialties?"))
-    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"))
+    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), null=True, blank=True)    
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
@@ -139,7 +139,11 @@ class GASConfig(GAS):
     )
   
     is_active = models.BooleanField(default=True)
-    use_scheduler = models.BooleanField(default=True)  
+    use_scheduler = models.BooleanField(default=True) 
+    
+    class Meta:
+        app_label = 'gas'
+    
     
     #COMMENT fero: domthu left the following TODO. I don't know if it is right
     # to provide it here, but new I leave it as a reminder
@@ -159,7 +163,7 @@ class GASMember(models.Model, PermissionResource):
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
-    membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, blank=True, help_text=_("When was the last the annual quote payment"))
+    membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
     history = HistoricalRecords()
 

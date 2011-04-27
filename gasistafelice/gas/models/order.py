@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from workflows.models import Workflow
-from workflows.utils import get_workflow, get_state, do_transition
+from workflows.utils import get_workflow, set_workflow, get_state, do_transition
 from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
@@ -31,7 +31,9 @@ class GASSupplierStock(models.Model, PermissionResource):
     
     history = HistoricalRecords()
 
-
+    def __unicode__(self):
+        return unicode(self.supplier_stock)
+        
     @property
     def supplier(self):
         return self.supplier_stock.supplier
@@ -92,18 +94,23 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def report_name(self):
-	# Clean file order name
-	#TODO: clean supplier name 
-	return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
+        # Clean file order name
+        #TODO: clean supplier name 
+        return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
 
     def save(self):
         super(GASSupplierOrder, self).save()
-        # If no Products has been associated to this order, then use every Product bound to the Supplier        
+        # If no Products has been associated to this order, then use every Product bound to the Supplier this order will be issued to        
         if not self.products.all():
-            for product in self.supplier.product_catalog:
-                self.products.add(product)
+            # retrieve all `GASSupplierStock`s bound to the GAS and Supplier this order relates to 
+            stocks = GASSupplierStock.objects.filter(gas=self.gas, supplier_stock__supplier=self.supplier)
+            for s in stocks:
+                GASSupplierOrderProduct.objects.create(order=self, stock=s)
         return
-
+    
+    def __unicode__(self):
+        return "Order from gas %s to supplier %s" % (self.gas, self.supplier)
+    
     class Meta:
         app_label = 'gas'
         
@@ -120,15 +127,18 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     stock = models.ForeignKey(GASSupplierStock)
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
-    maximum_amount = models.PositiveIntegerField(blank=True, default=0)
+    maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0)
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
-    ordered_price = CurrencyField(blank=True)
+    ordered_price = CurrencyField(null=True, blank=True)
     # the actual price of the Product (as resulting from the invoice)
-    delivered_price = CurrencyField(blank=True)
+    delivered_price = CurrencyField(null=True, blank=True)
     # how many items were actually delivered by the Supplier 
-    delivered_amount = models.PositiveIntegerField(blank=True)
+    delivered_amount = models.PositiveIntegerField(null=True, blank=True)
     
     history = HistoricalRecords()
+    
+    def __unicode__(self):
+        return  unicode(self.stock)
 
     # how many items of this kind were ordered (globally by the GAS)
     @property
@@ -161,14 +171,17 @@ class GASMemberOrder(models.Model, PermissionResource):
     purchaser = models.ForeignKey(GASMember)
     product = models.ForeignKey(GASSupplierOrderProduct)
     # price of the Product at order time
-    ordered_price = CurrencyField(blank=True)
+    ordered_price = CurrencyField(null=True, blank=True)
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.PositiveIntegerField(blank=True)
+    ordered_amount = models.PositiveIntegerField(null=True, blank=True)
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.PositiveIntegerField(blank=True)
+    withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
     
     history = HistoricalRecords()
 
+    def __unicode__(self):
+        return unicode(self.product)
+    
     # how much the GAS member actually payed for this Product (as resulting from the invoice)   
     @property
     def actual_price(self):
@@ -207,13 +220,14 @@ class GASMemberOrder(models.Model, PermissionResource):
               )     
         return rv
 
-    def save(self):
-        if not self.workflow:
-            # Set default workflow
-            w = self.gas.default_workflow_gasmember_order.workflow
-            set_workflow(self, w)
-
-        return super(GASMemberOrder, self).save()
+## FIXME: commented out model's save override waiting for issue #1 (on GitHub) to be resolved
+#    def save(self):
+#        if not self.workflow:
+#            # Set default workflow
+#            w = self.gas.config.default_workflow_gasmember_order
+#            set_workflow(self, w)
+#
+#        return super(GASMemberOrder, self).save()
 
     class Meta:
         app_label = 'gas'
@@ -234,7 +248,11 @@ class Delivery(models.Model, PermissionResource):
 
     class Meta:
         app_label = 'gas'
-
+        verbose_name_plural = 'deliveries'
+        
+    def __unicode__(self):
+        return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
+        
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
