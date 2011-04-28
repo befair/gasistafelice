@@ -28,15 +28,18 @@ def des_admin_nav():
     
     rv = """
     <div id="des-admin-nav">
-        <ul>
+        <div class="table">
     """
 
     for k,v in menu.items():
 
+        rv += '<ul class="select">'
         rv += '<li><a href="%(url)s">%(label)s</a></li>' % v
+        rv += '</ul>'
 
     rv += """
-        </ul>
-    </div>""" 
+        </div>
+    </div>
+    """ 
 
     return rv

@@ -15,8 +15,14 @@
     {# head javascript goes here #}
 {% endblock %}
 
+{% block bodyclass %}dashboard{% endblock %}
 {% block branding %}
-<h1 id="site-name">{% trans 'GAS administration' %}</h1>
+<h0 id="site-name">{% trans 'GAS administration' %}</h0>
+<h6 id="site-name2">Gruppo di Acquisto Solidale</h6>
 {% endblock %}
 
-{% block footer %}<div style="text-align: center; font-style: italic; font-size: 10px; margin-bottom: 20px;">django-des - v{% des_version %}</div>{% endblock %}
+{% block userlinks %}
+{{ block.super }}
+<img src="{{ MEDIA_URL }}img/icon_beta3.jpg" />
+{% endblock %}
+{% block footer %}<div style="text-align: center; font-style: italic; font-size: 10px; margin-bottom: 20px;">Gasista Felice - v{% des_version %}</div>{% endblock %}
