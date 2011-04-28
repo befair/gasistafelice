@@ -29,7 +29,7 @@
         "fields": {
             "province": "MC", 
             "city": "CAMERINO", 
-            "name": "sede1", 
+            "name": "sede111", 
             "lon": null, 
             "address": "Località RIO", 
             "lat": null, 
@@ -42,7 +42,7 @@
         "fields": {
             "province": "AN", 
             "city": "MATELICA", 
-            "name": "sede2", 
+            "name": "sede112", 
             "lon": null, 
             "address": "", 
             "lat": null, 
@@ -55,7 +55,7 @@
         "fields": {
             "province": "MC", 
             "city": "TOLENTINO", 
-            "name": "sede3", 
+            "name": "sede113", 
             "lon": null, 
             "address": "", 
             "lat": null, 
@@ -68,7 +68,7 @@
         "fields": {
             "province": "MC", 
             "city": "RECANATI", 
-            "name": "sede4", 
+            "name": "sede114", 
             "lon": null, 
             "address": "", 
             "lat": null, 
@@ -81,7 +81,7 @@
         "fields": {
             "province": "MC", 
             "city": "MACERATA", 
-            "name": "sede5", 
+            "name": "sede115", 
             "lon": null, 
             "address": "", 
             "lat": null, 
@@ -94,7 +94,7 @@
         "fields": {
             "province": "MC", 
             "city": "MONTEFANO", 
-            "name": "sede6", 
+            "name": "sede116", 
             "lon": null, 
             "address": "", 
             "lat": null, 
@@ -107,7 +107,7 @@
         "fields": {
             "province": "An", 
             "city": "Senigallia", 
-            "name": "Centro sociale Saline", 
+            "name": "11Centro sociale Saline", 
             "lon": null, 
             "address": "via Campo Boario, 25", 
             "lat": null, 
@@ -120,20 +120,7 @@
         "fields": {
             "province": "An", 
             "city": "Senigallia", 
-            "name": "Centro San Gregorio", 
-            "lon": null, 
-            "address": "via delle Cave, 16", 
-            "lat": null, 
-            "description": ""
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "base.place", 
-        "fields": {
-            "province": "An", 
-            "city": "Senigallia", 
-            "name": "Centro San Gregorio", 
+            "name": "11Centro San Gregorio", 
             "lon": null, 
             "address": "via delle Cave, 16", 
             "lat": null, 

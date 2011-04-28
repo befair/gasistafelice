@@ -74,8 +74,7 @@
             "mu": 1, 
             "uuid": null
         }
-    }, 
-
+    },
     {
         "pk": 1, 
         "model": "supplier.supplierstock", 
@@ -101,5 +100,7158 @@
             "supplier": 2, 
             "delivery_terms": "Viene consegnato in confezioni da 2 paia"
         }
-    }
+    },
+    {
+		"pk":"3",
+		"model":"supplier.supplier", "fields": { 
+		"name":"Serra di Mezzo",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"4",
+		"model":"supplier.supplier", "fields": { 
+		"name":"ANGELI",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"5",
+		"model":"supplier.supplier", "fields": { 
+		"name":"IL GIRASOLE (miele)",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"6",
+		"model":"supplier.supplier", "fields": { 
+		"name":"ASTORFLEX",
+		"website":"http://www.astorflex.it/wp/",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"7",
+		"model":"supplier.supplier", "fields": { 
+		"name":"BISONNI Mirco",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"8",
+		"model":"supplier.supplier", "fields": { 
+		"name":"CARAVANSERRAGLIO",
+		"website":"http://www.caravanserraglio.com/",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"9",
+		"model":"supplier.supplier", "fields": { 
+		"name":"COLLESTEFANO",
+		"website":"www.collestefano.com",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"10",
+		"model":"supplier.supplier", "fields": { 
+		"name":"CONTESSA",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"11",
+		"model":"supplier.supplier", "fields": { 
+		"name":"D'ALOISIO Agrumi",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"12",
+		"model":"supplier.supplier", "fields": { 
+		"name":"DRAGONCELLO",
+		"website":"www.agriturismo-dragoncello.com",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"13",
+		"model":"supplier.supplier", "fields": { 
+		"name":"EOS fashion",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"14",
+		"model":"supplier.supplier", "fields": { 
+		"name":"GRAPHIC MARCHE",
+		"website":"http://graphicmarche.altervista.org/index.php",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"15",
+		"model":"supplier.supplier", "fields": { 
+		"name":"IL GIRASOLE (Verdure)",
+		"website":"www.il-gira-sole.com",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"16",
+		"model":"supplier.supplier", "fields": { 
+		"name":"L'APE SIBILLA",
+		"website":"www.maialebradodinorcia.com",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"17",
+		"model":"supplier.supplier", "fields": { 
+		"name":"LA SAPONERIA",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"18",
+		"model":"supplier.supplier", "fields": { 
+		"name":"MONDO SOLIDALE",
+		"website":"http://www.mondosolidale.it/",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"19",
+		"model":"supplier.supplier", "fields": { 
+		"name":"TEA NATURA",
+		"website":"http://www.teanatura.com",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"20",
+		"model":"supplier.supplier", "fields": { 
+		"name":"TERRA CIELO",
+		"website":"http://www.pastadifarro.it/",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"21",
+		"model":"supplier.supplier", "fields": { 
+		"name":"VERDE NATURALE",
+		"website":"www.verdenaturale.it",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"22",
+		"model":"supplier.supplier", "fields": { 
+		"name":"VITO CELESTE",
+		"website":"http://www.slowpix.org/it/celeste.html",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"23",
+		"model":"supplier.supplier", "fields": { 
+		"name":"ACQUATERRA",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"24",
+		"model":"supplier.supplier", "fields": { 
+		"name":"CALABRÒ",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"25",
+		"model":"supplier.supplier", "fields": { 
+		"name":"BELARDINELLI",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"26",
+		"model":"supplier.supplier", "fields": { 
+		"name":"FATTORIA  SAN MARTINO",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"27",
+		"model":"supplier.supplier", "fields": { 
+		"name":"BOTTA CARLO ",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"28",
+		"model":"supplier.supplier", "fields": { 
+		"name":"Luigi Gironelli",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"29",
+		"model":"supplier.supplier", "fields": { 
+		"name":"pinko pallino",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"30",
+		"model":"supplier.supplier", "fields": { 
+		"name":"MORETTI  ",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"31",
+		"model":"supplier.supplier", "fields": { 
+		"name":"Hi Tex",
+		"website":"http://www.hitex.it",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"32",
+		"model":"supplier.supplier", "fields": { 
+		"name":"CARMELLA",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"33",
+		"model":"supplier.supplier", "fields": { 
+		"name":"DEMETRA",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"34",
+		"model":"supplier.supplier", "fields": { 
+		"name":"PEVERI ROBERTO ",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"35",
+		"model":"supplier.supplier", "fields": { 
+		"name":"Luigi Cecoli",
+		"website":"n.p.",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"36",
+		"model":"supplier.supplier", "fields": { 
+		"name":"La Collina Incantata",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"37",
+		"model":"supplier.supplier", "fields": { 
+		"name":"BIOFATTORIA AL RESPIRO NEL BOSCO ",
+		"website":"http://www.alrespironelbosco.it/",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"38",
+		"model":"supplier.supplier", "fields": { 
+		"name":"Alessandro VECCHIETTI",
+		"website":"www.cantinaprimadiesanatoglia.it",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"39",
+		"model":"supplier.supplier", "fields": { 
+		"name":"CIAMBOTTI/MARIANI",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"40",
+		"model":"supplier.supplier", "fields": { 
+		"name":"LUANA CIPRIANI",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+	{
+		"pk":"41",
+		"model":"supplier.supplier", "fields": { 
+		"name":"Mirco Bisonni",
+		"website":"",
+		"flavour":"COMPAGNY",
+		"seat":"NULL",
+		"vat_number":"1",
+		"certifications":"[]"
+		} },
+{
+		"pk":"3",
+		"model":"supplier.product", "fields": { 
+		"name":"Gallette di ciocolatto al latte (2)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"4",
+		"model":"supplier.product", "fields": { 
+		"name":"Gallette di ciocolatto fondante (2)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"5",
+		"model":"supplier.product", "fields": { 
+		"name":"Gallette di farro (12)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"6",
+		"model":"supplier.product", "fields": { 
+		"name":"1 Sale Pecorino",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"7",
+		"model":"supplier.product", "fields": { 
+		"name":"Caciofiore di latte Bovino",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"8",
+		"model":"supplier.product", "fields": { 
+		"name":"Caciofiore di latte ovino",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"9",
+		"model":"supplier.product", "fields": { 
+		"name":"Caciotta morbida (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"10",
+		"model":"supplier.product", "fields": { 
+		"name":"Ceci (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"11",
+		"model":"supplier.product", "fields": { 
+		"name":"Cicerchia (pacco da 1kg)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"12",
+		"model":"supplier.product", "fields": { 
+		"name":"Farina di ceci (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"13",
+		"model":"supplier.product", "fields": { 
+		"name":"Farina di cicerchia (pacco di 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"14",
+		"model":"supplier.product", "fields": { 
+		"name":"Farina di farro (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"15",
+		"model":"supplier.product", "fields": { 
+		"name":"Farina di lenticchia (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"16",
+		"model":"supplier.product", "fields": { 
+		"name":"Farina di orzo (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"17",
+		"model":"supplier.product", "fields": { 
+		"name":"Farro (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"18",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio al pepe (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"19",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio al peperoncino (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"20",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio al tartufo (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"21",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio alle erbe (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"22",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio allo zafferano (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"23",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio misto (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"24",
+		"model":"supplier.product", "fields": { 
+		"name":"Lenticchia (pacco da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"25",
+		"model":"supplier.product", "fields": { 
+		"name":"Orzo (pacco di un kilo)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"26",
+		"model":"supplier.product", "fields": { 
+		"name":"Patate (pacco di un kilo)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"27",
+		"model":"supplier.product", "fields": { 
+		"name":"Pecorino (a forma)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"28",
+		"model":"supplier.product", "fields": { 
+		"name":"Pecorino (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"29",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta di pecora (forma da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"30",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta di pecora (forma da un kilo)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"31",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta di vacca (forma da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"32",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta di vacca (forma da un kilo)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"33",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta mista (forma da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"34",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta mista (forma da un kilo)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"35",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta* mista allo zafferano (forma da 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"36",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta* mista allo zafferano (forma da un kilo)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"37",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta* mista allo zafferano residuale (500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"38",
+		"model":"supplier.product", "fields": { 
+		"name":"Ricotta* mista allo zafferano residuale (1kg)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"39",
+		"model":"supplier.product", "fields": { 
+		"name":"Tricotta al peperoncino (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"40",
+		"model":"supplier.product", "fields": { 
+		"name":"Tricotta allo zafferano (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"41",
+		"model":"supplier.product", "fields": { 
+		"name":"Tricotta aromatizzata alle erbe (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"42",
+		"model":"supplier.product", "fields": { 
+		"name":"Tricotta semplice mista (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"43",
+		"model":"supplier.product", "fields": { 
+		"name":"Zuppa cereali (orzo, farro, lenticchia 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"44",
+		"model":"supplier.product", "fields": { 
+		"name":"Tagliatelle con farina di farro (pacco 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"45",
+		"model":"supplier.product", "fields": { 
+		"name":"Gigli con farina di lenticcia (pacco 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"46",
+		"model":"supplier.product", "fields": { 
+		"name":"Strozzapreti con farina di lenticcia (pacco 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"47",
+		"model":"supplier.product", "fields": { 
+		"name":"Tagliatelle con farina di lenticchia (pacco 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"48",
+		"model":"supplier.product", "fields": { 
+		"name":"Tagliatelle con farina di orzo (pacco 500gr)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"49",
+		"model":"supplier.product", "fields": { 
+		"name":"Tricotta allo zafferano residuale (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"50",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè El Bosque 100% arabica mac. Moka",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"51",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè El Bosque 100% arabica mac.Espresso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"52",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè El Bosque 100% arabica in grani",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"53",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè Equomondo Decaffeinato 100% arabica Moka",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"54",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè Uciri 100% arabica mac. Moka",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"55",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè Miscela Classica mac. Moka",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"56",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè Miscela Classica mac.Espresso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"57",
+		"model":"supplier.product", "fields": { 
+		"name":"Orzo tostato e macinato dall'Ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"58",
+		"model":"supplier.product", "fields": { 
+		"name":"Orzo solubile dall'Ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"59",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero Tanzania  20 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"60",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero Lemon Honey  in cestino   25 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"61",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero BOPF dallo Sri Lanka,  in cestino   100 fi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"62",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero Assam Bio  10 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"63",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde Darjeeling Bio  10 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"64",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde alla menta 20 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"65",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde deteinato 20 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"66",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde al gelsomino 25 filtri - in cestino",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"67",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde deteinato in cialde",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"68",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde in cialde",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"69",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde dal Vietnam 20 filtri",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"70",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero dalla Tanzania sfuso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"71",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero Assam Bio sfuso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"72",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde Darjeling  Bio sfuso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"73",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè Verde Darjeeling all'arancia in foglie",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"74",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè Verde in foglie in cestino, 50 g",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"75",
+		"model":"supplier.product", "fields": { 
+		"name":"Carcadè sfuso 50 g",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"76",
+		"model":"supplier.product", "fields": { 
+		"name":"Erva mate dal Brasile, in sacchetto richiudibile",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"77",
+		"model":"supplier.product", "fields": { 
+		"name":"Fiori di camomilla sfusa",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"78",
+		"model":"supplier.product", "fields": { 
+		"name":"Camomilla in bustine 20x1,5g",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"79",
+		"model":"supplier.product", "fields": { 
+		"name":"Rooibos naturale in bustine 25x1,5g",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"80",
+		"model":"supplier.product", "fields": { 
+		"name":"Rooibos arancia/cannella bustine 25x1,5g",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"81",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana della sera in bustine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"82",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana della buona notte in bustine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"83",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana depurativa in bustine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"84",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana rilassante in bustine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"85",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana dopo pasto in bustine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"86",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana al finocchio in bustine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"87",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana depurativa sfusa",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"88",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana rilassante sfusa",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"89",
+		"model":"supplier.product", "fields": { 
+		"name":"Tisana al finocchio sfusa",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"90",
+		"model":"supplier.product", "fields": { 
+		"name":"Succo di arancia dal Brasile",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"91",
+		"model":"supplier.product", "fields": { 
+		"name":"Succo tropicale  100 dal Brasile",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"92",
+		"model":"supplier.product", "fields": { 
+		"name":"Sciroppo al guaranà",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"93",
+		"model":"supplier.product", "fields": { 
+		"name":"Guaranito bevanda gassata al guarana' bottiglia ve",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"94",
+		"model":"supplier.product", "fields": { 
+		"name":"Guaranito  bibita al guaranà bottiglietta di vetro",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"95",
+		"model":"supplier.product", "fields": { 
+		"name":"Tererito  bibita all'Erva Mate in bottiglietta di ",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"96",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè Verde in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"97",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero al limone in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"98",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè alla pesca in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"99",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè verde deteinato al limone in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"100",
+		"model":"supplier.product", "fields": { 
+		"name":"Matì - al mate e guaranà in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"101",
+		"model":"supplier.product", "fields": { 
+		"name":"Carcadé in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"102",
+		"model":"supplier.product", "fields": { 
+		"name":"Succo ananas 100%  in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"103",
+		"model":"supplier.product", "fields": { 
+		"name":"Succo tropical 100%  in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"104",
+		"model":"supplier.product", "fields": { 
+		"name":"Ananas-guaranà 100% in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"105",
+		"model":"supplier.product", "fields": { 
+		"name":"Mango 100% in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"106",
+		"model":"supplier.product", "fields": { 
+		"name":"ACE 100% in bottiglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"107",
+		"model":"supplier.product", "fields": { 
+		"name":"Azucador, zucchero canna integrale Ecuador 500gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"108",
+		"model":"supplier.product", "fields": { 
+		"name":"Azucador, zucchero canna integrale Ecuador 1kg",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"109",
+		"model":"supplier.product", "fields": { 
+		"name":"Dulcita zucchero di canna integrale dall'Ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"110",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascobado, zucchero canna integrale Filippine500gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"111",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascobado, zucchero canna integrale Filippine 1kg",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"112",
+		"model":"supplier.product", "fields": { 
+		"name":"Jarabe zucchero di canna cristallino",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"113",
+		"model":"supplier.product", "fields": { 
+		"name":"El Ceibo cacao magro in polvere dalla Bolivia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"114",
+		"model":"supplier.product", "fields": { 
+		"name":"Conacado cacao amaro in polvere dalla Rep. Dominic",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"115",
+		"model":"supplier.product", "fields": { 
+		"name":"Equik cacao solubile",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"116",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato al latte",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"117",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato al latte con nocciole intere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"118",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato alla gianduia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"119",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato fondente extra amaro 100gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"120",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato al caffè",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"121",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato fondente 80% con granella di c",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"122",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato fondente extra amaro 1kg",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"123",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato fondente extra amaro 500gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"124",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascao cioccolato al latte",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"125",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascao cioccolato al latte con nocciole",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"126",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascao cioccolato fondente extra 70%",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"127",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascao cioccolato fondente extra 73% con fave caca",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"128",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascao cioccolato fondente extra 61% alla menta",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"129",
+		"model":"supplier.product", "fields": { 
+		"name":"Mascao cioccolato fondente extra 61% con quinoa e ",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"130",
+		"model":"supplier.product", "fields": { 
+		"name":"Morena cioccolato al latte",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"131",
+		"model":"supplier.product", "fields": { 
+		"name":"Morena cioccolato fondente 75%",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"132",
+		"model":"supplier.product", "fields": { 
+		"name":"Juanita cioccolato fondente 60%  - SENZA ZUCCHERO",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"133",
+		"model":"supplier.product", "fields": { 
+		"name":"Juanita cioccolato fondente 60% arancia SENZA ZUCC",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"134",
+		"model":"supplier.product", "fields": { 
+		"name":"Pepita cioccolato fondente al peperoncino",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"135",
+		"model":"supplier.product", "fields": { 
+		"name":"Pepita cioccolato fondente con scorza d'arancia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"136",
+		"model":"supplier.product", "fields": { 
+		"name":"Pepita cioccolato fondente con tè verde",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"137",
+		"model":"supplier.product", "fields": { 
+		"name":"Estrella primera crema di cioccolato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"138",
+		"model":"supplier.product", "fields": { 
+		"name":"Equo Bonita, crema cacao e nocciole 400gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"139",
+		"model":"supplier.product", "fields": { 
+		"name":"Equo Bonita, crema cacao e nocciole 750gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"140",
+		"model":"supplier.product", "fields": { 
+		"name":"Equo Bonita Free, crema cacao e nocciole- SENZA LA",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"141",
+		"model":"supplier.product", "fields": { 
+		"name":"Confettura Extra di Mora dall'Ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"142",
+		"model":"supplier.product", "fields": { 
+		"name":"I Sapori del Sole confettura extra di mango",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"143",
+		"model":"supplier.product", "fields": { 
+		"name":"I Sapori del Sole confettura extra papaya",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"144",
+		"model":"supplier.product", "fields": { 
+		"name":"I Sapori del Sole confettura extra papaya e limone",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"145",
+		"model":"supplier.product", "fields": { 
+		"name":"I Sapori del Sole confettura extra di karkadè",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"146",
+		"model":"supplier.product", "fields": { 
+		"name":"I Sapori del Sole confettura extra di ananas",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"147",
+		"model":"supplier.product", "fields": { 
+		"name":"Pequena barretta al sesamo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"148",
+		"model":"supplier.product", "fields": { 
+		"name":"Guiro snack 2 biscotti al miele farciti al cacao",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"149",
+		"model":"supplier.product", "fields": { 
+		"name":"Tris baci di dama snack",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"150",
+		"model":"supplier.product", "fields": { 
+		"name":"Tris baci di dama al cacao snack",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"151",
+		"model":"supplier.product", "fields": { 
+		"name":"Biscotti al miele e zucchero di canna confezione f",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"152",
+		"model":"supplier.product", "fields": { 
+		"name":"Biscotti cacao e anacardi, con zucchero di canna",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"153",
+		"model":"supplier.product", "fields": { 
+		"name":"Biscotti miele e anacardi, con zucchero di canna",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"154",
+		"model":"supplier.product", "fields": { 
+		"name":"Biscotti gocce di cioccolato con zucchero di canna",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"155",
+		"model":"supplier.product", "fields": { 
+		"name":"BioFrolle - biscotti al cacao",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"156",
+		"model":"supplier.product", "fields": { 
+		"name":"Coccole",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"157",
+		"model":"supplier.product", "fields": { 
+		"name":"Lune di miele",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"158",
+		"model":"supplier.product", "fields": { 
+		"name":"Gocce di cacao",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"159",
+		"model":"supplier.product", "fields": { 
+		"name":"Sultanine",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"160",
+		"model":"supplier.product", "fields": { 
+		"name":"Fior di cacao - SENZA ZUCCHERO",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"161",
+		"model":"supplier.product", "fields": { 
+		"name":"Tarallini",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"162",
+		"model":"supplier.product", "fields": { 
+		"name":"Anacardi (noci cajou) tostati e salati, dal Brasil",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"163",
+		"model":"supplier.product", "fields": { 
+		"name":"Datteri al naturale dalla Palestina, varietà medjo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"164",
+		"model":"supplier.product", "fields": { 
+		"name":"Arachidi tostate e salate",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"165",
+		"model":"supplier.product", "fields": { 
+		"name":"Noci dell'Amazzonia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"166",
+		"model":"supplier.product", "fields": { 
+		"name":"Papaya essiccata",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"167",
+		"model":"supplier.product", "fields": { 
+		"name":"L'ape dei maya al miele/eucalipto (lav. Art.)",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"168",
+		"model":"supplier.product", "fields": { 
+		"name":"Gocce di miele al propoli",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"169",
+		"model":"supplier.product", "fields": { 
+		"name":"Riso Thay aromatico varieta' Hom mali",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"170",
+		"model":"supplier.product", "fields": { 
+		"name":"Riso Basmati - semi integrale",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"171",
+		"model":"supplier.product", "fields": { 
+		"name":"Riso Indica sottovuoto in astuccio cartone",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"172",
+		"model":"supplier.product", "fields": { 
+		"name":"Riso Indica integrale sottovuoto in astuccio carto",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"173",
+		"model":"supplier.product", "fields": { 
+		"name":"Quinoa Real dalla Bolivia (cereale andino senza gl",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"174",
+		"model":"supplier.product", "fields": { 
+		"name":"Cous Cous Bianco dalla Palestina",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"175",
+		"model":"supplier.product", "fields": { 
+		"name":"Cous Cous Integrale dalla Palestina",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"176",
+		"model":"supplier.product", "fields": { 
+		"name":"Anice in semi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"177",
+		"model":"supplier.product", "fields": { 
+		"name":"Cannella in bastoncini",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"178",
+		"model":"supplier.product", "fields": { 
+		"name":"Cannella in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"179",
+		"model":"supplier.product", "fields": { 
+		"name":"Cardamono in semi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"180",
+		"model":"supplier.product", "fields": { 
+		"name":"Cardamono in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"181",
+		"model":"supplier.product", "fields": { 
+		"name":"Chili macinato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"182",
+		"model":"supplier.product", "fields": { 
+		"name":"Chiodi di garofano interi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"183",
+		"model":"supplier.product", "fields": { 
+		"name":"Chiodi di garofano in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"184",
+		"model":"supplier.product", "fields": { 
+		"name":"Coriandolo macinato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"185",
+		"model":"supplier.product", "fields": { 
+		"name":"Coriandolo in semi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"186",
+		"model":"supplier.product", "fields": { 
+		"name":"Cumino in semi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"187",
+		"model":"supplier.product", "fields": { 
+		"name":"Cumino in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"188",
+		"model":"supplier.product", "fields": { 
+		"name":"Curcuma in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"189",
+		"model":"supplier.product", "fields": { 
+		"name":"Curry dolce in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"190",
+		"model":"supplier.product", "fields": { 
+		"name":"Curry piccante",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"191",
+		"model":"supplier.product", "fields": { 
+		"name":"Curry saporito",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"192",
+		"model":"supplier.product", "fields": { 
+		"name":"Masala mix di spezie per carni alla griglia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"193",
+		"model":"supplier.product", "fields": { 
+		"name":"Masala mix di spezie per carni bianche",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"194",
+		"model":"supplier.product", "fields": { 
+		"name":"Masala mix di spezie per carni rosse",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"195",
+		"model":"supplier.product", "fields": { 
+		"name":"Masala mix di spezie per verdure",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"196",
+		"model":"supplier.product", "fields": { 
+		"name":"Miscela per dolci",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"197",
+		"model":"supplier.product", "fields": { 
+		"name":"Noci moscate intere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"198",
+		"model":"supplier.product", "fields": { 
+		"name":"Pepe bianco in grani",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"199",
+		"model":"supplier.product", "fields": { 
+		"name":"Pepe nero in grani",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"200",
+		"model":"supplier.product", "fields": { 
+		"name":"Pepe nero macinato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"201",
+		"model":"supplier.product", "fields": { 
+		"name":"Peperoncino in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"202",
+		"model":"supplier.product", "fields": { 
+		"name":"Peperoncino secco intero",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"203",
+		"model":"supplier.product", "fields": { 
+		"name":"Scatola 12 spezie legno",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"204",
+		"model":"supplier.product", "fields": { 
+		"name":"Scatola 4 curries + ricette",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"205",
+		"model":"supplier.product", "fields": { 
+		"name":"Scatolina 4 spezie legno",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"206",
+		"model":"supplier.product", "fields": { 
+		"name":"Senape in semi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"207",
+		"model":"supplier.product", "fields": { 
+		"name":"Sesamo in semi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"208",
+		"model":"supplier.product", "fields": { 
+		"name":"Spezie assortite per vin brulè - 3x2,5g",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"209",
+		"model":"supplier.product", "fields": { 
+		"name":"Spezie esotiche assortite, in cestino di palma",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"210",
+		"model":"supplier.product", "fields": { 
+		"name":"Zenzero in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"211",
+		"model":"supplier.product", "fields": { 
+		"name":"Zenzero intero",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"212",
+		"model":"supplier.product", "fields": { 
+		"name":"Zafferano in stimmi rossi - marocco",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"213",
+		"model":"supplier.product", "fields": { 
+		"name":"Equo banana bio vaschetta",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"214",
+		"model":"supplier.product", "fields": { 
+		"name":"Guaranà  in compresse   (50 x flacone)",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"215",
+		"model":"supplier.product", "fields": { 
+		"name":"Guaranà  in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"216",
+		"model":"supplier.product", "fields": { 
+		"name":"Spirulina MAXIMA in compresse",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"217",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Piatti - flacone",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"218",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Piatti - tanica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"219",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Piatti - ricarica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"220",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Bucato Mano/Lavatrice - flacone",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"221",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Bucato Mano/Lavatrice - tanica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"222",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Bucato Mano/Lavatrice - ricarica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"223",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Pavimenti - flacone",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"224",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Pavimenti - tanica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"225",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Pavimenti - ricarica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"226",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Anticalcare bagno/Cucina  - spra",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"227",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha detergente Anticalcare bagno/Cucina  - rica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"228",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha Sapone liquido per mani  con dispenser",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"229",
+		"model":"supplier.product", "fields": { 
+		"name":"Lympha Sapone liquido per mani - ricarica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"230",
+		"model":"supplier.product", "fields": { 
+		"name":"Tanica  vuota con rubinetto per  piatti sfuso 20 K",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"231",
+		"model":"supplier.product", "fields": { 
+		"name":"Tanica  vuota con rubinetto per  bucato sfuso 20 k",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"232",
+		"model":"supplier.product", "fields": { 
+		"name":"Tanica  vuota con rubinetto per pavimenti sfuso 20",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"233",
+		"model":"supplier.product", "fields": { 
+		"name":"Pompa per tanica erogatrice",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"234",
+		"model":"supplier.product", "fields": { 
+		"name":"Tappo + guarnizione per pompa",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"235",
+		"model":"supplier.product", "fields": { 
+		"name":"Flacone vuoto   Lympha Piatti  Lt 1 per sfuso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"236",
+		"model":"supplier.product", "fields": { 
+		"name":"Flacone vuoto  Lympha Bucato Lt 2 per sfuso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"237",
+		"model":"supplier.product", "fields": { 
+		"name":"Flacone vuoto  Lympha Pavimenti Lt 1 per sfuso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"238",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema Idratante al Miele e malva",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"239",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema Nutriente al Burro di Karitè e Tè verde",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"240",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema Corpo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"241",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema Mani",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"242",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema tonificante anticellulite",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"243",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema multiattiva viso - corpo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"244",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema restitutiva antirughe viso",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"245",
+		"model":"supplier.product", "fields": { 
+		"name":"EspritEquo Savon Noir all'eucalipto",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"246",
+		"model":"supplier.product", "fields": { 
+		"name":"Burro di Karitè 50gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"247",
+		"model":"supplier.product", "fields": { 
+		"name":"Unguento all'olio di avocado e cocco",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"248",
+		"model":"supplier.product", "fields": { 
+		"name":"Latte detergente all'olio di cocco con camomilla",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"249",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema viso all'olio di avocado con camomilla",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"250",
+		"model":"supplier.product", "fields": { 
+		"name":"Crema fluida per il corpo all'olio di avocado con ",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"251",
+		"model":"supplier.product", "fields": { 
+		"name":"Pomata all'eucalipto e timo balsamica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"252",
+		"model":"supplier.product", "fields": { 
+		"name":"Pomata alla calendula e achillea protettiva",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"253",
+		"model":"supplier.product", "fields": { 
+		"name":"Pomata all'arnica lenitiva",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"254",
+		"model":"supplier.product", "fields": { 
+		"name":"Taama Crema idratante bimbi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"255",
+		"model":"supplier.product", "fields": { 
+		"name":"Taama Crema dopobarba",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"256",
+		"model":"supplier.product", "fields": { 
+		"name":"Taama Stick protettivo per labbra",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"257",
+		"model":"supplier.product", "fields": { 
+		"name":"Taama Olio di argan puro 100%",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"258",
+		"model":"supplier.product", "fields": { 
+		"name":"Taama Olio di Jojoba puro 100%",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"259",
+		"model":"supplier.product", "fields": { 
+		"name":"Taama Argilla verde",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"260",
+		"model":"supplier.product", "fields": { 
+		"name":"Olio di Cocco e Mandorle",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"261",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone da bucato all'olio di palma e citronella",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"262",
+		"model":"supplier.product", "fields": { 
+		"name":"Hennè naturale ramato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"263",
+		"model":"supplier.product", "fields": { 
+		"name":"Hennè naturale ramato chiaro",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"264",
+		"model":"supplier.product", "fields": { 
+		"name":"Hennè naturale ramato scuro",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"265",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone olio di cocco profumo di citronella",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"266",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone olio di neem senza profumazione",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"267",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone olio di neem profumo lavanda",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"268",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone aloe senza profumazione",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"269",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone aloe profumo di citronella",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"270",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone per capelli alla camomilla",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"271",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone per capelli all' ortica",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"272",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone per il corpo all'arancia e neem",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"273",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone per il corpo alla cannella e salvia",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"274",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone per il corpo al limone e calendula",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"275",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone Vegetale al Cocco",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"276",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone Vegetale al Neem",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"277",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone Vegetale al Sandalo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"278",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone Vegetale al Rosa",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"279",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone Vegetale al Miele",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"280",
+		"model":"supplier.product", "fields": { 
+		"name":"Sapone Vegetale al Eucalipto",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"281",
+		"model":"supplier.product", "fields": { 
+		"name":"Roveja",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"282",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio misto ai pistachi (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"283",
+		"model":"supplier.product", "fields": { 
+		"name":"Formaggio misto ai pistachi (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"284",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè  el bosque 100% arabica in grani 1000 gr",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"285",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè el bosque 100% arabica in grani 1000g.",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"286",
+		"model":"supplier.product", "fields": { 
+		"name":"Cafè tatawelo decaffeinato 100% arabica moka",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"287",
+		"model":"supplier.product", "fields": { 
+		"name":"Caffè uciri 100% arabica solubile",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"288",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero bopf dallo sri lanka,  in cestino   25 fil",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"289",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero pekoe dallo sri lanka,  in cestino   in fo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"290",
+		"model":"supplier.product", "fields": { 
+		"name":"Tè nero darjeeling  in foglie,  \"\"selimbong\"\"",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"291",
+		"model":"supplier.product", "fields": { 
+		"name":"Muesli esotico  quinoa, frutta secca e gocce di ci",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"292",
+		"model":"supplier.product", "fields": { 
+		"name":"Cioccodrilli petali di cereali al cioccolato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"293",
+		"model":"supplier.product", "fields": { 
+		"name":"Estrella primera dolce crema di cioccolato",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"294",
+		"model":"supplier.product", "fields": { 
+		"name":"Equo bonita green, crema cacao e nocciole  senza o",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"295",
+		"model":"supplier.product", "fields": { 
+		"name":"Confettura extra di fragole dall'ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"296",
+		"model":"supplier.product", "fields": { 
+		"name":"Confettura extra di mirtillo dall'ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"297",
+		"model":"supplier.product", "fields": { 
+		"name":"Confettura extra di ananas 100% frutta  senza zucc",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"298",
+		"model":"supplier.product", "fields": { 
+		"name":"Confettura extra di fragola 100% frutta  senza zuc",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"299",
+		"model":"supplier.product", "fields": { 
+		"name":"Dulcita zucchero di canna integrale dall'ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"300",
+		"model":"supplier.product", "fields": { 
+		"name":"Biscotti gocce di cioccolato con zucchero di canna",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"301",
+		"model":"supplier.product", "fields": { 
+		"name":"Ciocador cioccolato fondente con nocciole intere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"302",
+		"model":"supplier.product", "fields": { 
+		"name":"Pequena barretta al sesamo",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"303",
+		"model":"supplier.product", "fields": { 
+		"name":"Barrita nuts barretta alle noci",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"304",
+		"model":"supplier.product", "fields": { 
+		"name":"Bribon latte con quinoa soffiata",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"305",
+		"model":"supplier.product", "fields": { 
+		"name":"Bribon bianco con quinoa soffiata",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"306",
+		"model":"supplier.product", "fields": { 
+		"name":"Bribon latte cajoú con anacardi tostati del brasil",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"307",
+		"model":"supplier.product", "fields": { 
+		"name":"Bribon fondente zenzero e limone",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"308",
+		"model":"supplier.product", "fields": { 
+		"name":"Bribon fondente nocciole",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"309",
+		"model":"supplier.product", "fields": { 
+		"name":"Tuka biscotto + cioccolato al latte",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"310",
+		"model":"supplier.product", "fields": { 
+		"name":"Cocco rapè (grattuggiato)",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"311",
+		"model":"supplier.product", "fields": { 
+		"name":"Le locas chips salate al mais non fritte",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"312",
+		"model":"supplier.product", "fields": { 
+		"name":"Spizzichi - cracker di focaccia al naturale",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"313",
+		"model":"supplier.product", "fields": { 
+		"name":"Spizzichi - cracker di focaccia al rosmarino",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"314",
+		"model":"supplier.product", "fields": { 
+		"name":"Liquore al caffè in bottiglia (el bosque)",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"315",
+		"model":"supplier.product", "fields": { 
+		"name":"Liquore al cacao",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"316",
+		"model":"supplier.product", "fields": { 
+		"name":"Riso thay rosso integrale varieta' hom mali",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"317",
+		"model":"supplier.product", "fields": { 
+		"name":"Riso basmati - bianco",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"318",
+		"model":"supplier.product", "fields": { 
+		"name":"Fagioli neri dall'ecuador",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"319",
+		"model":"supplier.product", "fields": { 
+		"name":"Bauletto 4 spezie",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"320",
+		"model":"supplier.product", "fields": { 
+		"name":"Chiodi di garofano interi",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"321",
+		"model":"supplier.product", "fields": { 
+		"name":"Vaniglia 4 stecche dal madagascar",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"322",
+		"model":"supplier.product", "fields": { 
+		"name":"Vaniglia in polvere",
+		"category":"1",
+		"description":"",
+		"producer":"16",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"323",
+		"model":"supplier.product", "fields": { 
+		"name":"Caciotta dura (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+	{
+		"pk":"324",
+		"model":"supplier.product", "fields": { 
+		"name":"Tricotta semplice di pecora (a peso)",
+		"category":"1",
+		"description":"",
+		"producer":"2",
+		"mu":"1",
+		"uuid":"NULL"
+		} },
+{
+		"pk":"3",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"3",
+		"price": 1.46,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"4",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"4",
+		"price": 1.46,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"5",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"5",
+		"price": 1.46,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"6",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"6",
+		"price": 9.26,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"7",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"7",
+		"price": 19,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"8",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"8",
+		"price": 20,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"9",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"9",
+		"price": 8.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"10",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"10",
+		"price": 4.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"11",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"11",
+		"price": 2.08,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"12",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"12",
+		"price": 4.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"13",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"13",
+		"price": 4.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"14",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"14",
+		"price": 3.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"15",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"15",
+		"price": 6.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"16",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"16",
+		"price": 3.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"17",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"17",
+		"price": 3.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"18",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"18",
+		"price": 11.32,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"19",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"19",
+		"price": 11.32,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"20",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"20",
+		"price": 14.56,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"21",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"21",
+		"price": 11.32,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"22",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"22",
+		"price": 14.56,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"23",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"23",
+		"price": 8.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"24",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"24",
+		"price": 6.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"25",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"25",
+		"price": 1.56,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"26",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"26",
+		"price": 0.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"27",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"27",
+		"price": 13.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"28",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"28",
+		"price": 9.36,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"29",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"29",
+		"price": 3.26,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"30",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"30",
+		"price": 6.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"31",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"31",
+		"price": 2.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"32",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"32",
+		"price": 5.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"33",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"33",
+		"price": 2.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"34",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"34",
+		"price": 5.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"35",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"35",
+		"price": 3.38,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"36",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"36",
+		"price": 7.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"37",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"37",
+		"price": 2.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"38",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"38",
+		"price": 5.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"39",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"39",
+		"price": 10.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"40",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"40",
+		"price": 11.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"41",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"41",
+		"price": 10.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"42",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"42",
+		"price": 10.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"43",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"43",
+		"price": 4.36,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"44",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"44",
+		"price": 4,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"45",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"45",
+		"price": 4,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"46",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"46",
+		"price": 4,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"47",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"47",
+		"price": 4,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"48",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"48",
+		"price": 4,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"49",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"49",
+		"price": 10.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"50",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"50",
+		"price": 10.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"51",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"51",
+		"price": 10.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"52",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"52",
+		"price": 10.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"53",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"53",
+		"price": 12.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"54",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"54",
+		"price": 12.48,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"55",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"55",
+		"price": 10.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"56",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"56",
+		"price": 10.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"57",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"57",
+		"price": 3.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"58",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"58",
+		"price": 11.15,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"59",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"59",
+		"price": 44.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"60",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"60",
+		"price": 58.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"61",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"61",
+		"price": 32.15,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"62",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"62",
+		"price": 73.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"63",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"63",
+		"price": 73.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"64",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"64",
+		"price": 60.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"65",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"65",
+		"price": 87.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"66",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"66",
+		"price": 59.14,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"67",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"67",
+		"price": 67.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"68",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"68",
+		"price": 89.29,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"69",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"69",
+		"price": 60.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"70",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"70",
+		"price": 17.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"71",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"71",
+		"price": 35,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"72",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"72",
+		"price": 35,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"73",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"73",
+		"price": 31.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"74",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"74",
+		"price": 41.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"75",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"75",
+		"price": 35,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"76",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"76",
+		"price": 13.08,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"77",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"77",
+		"price": 92,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"78",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"78",
+		"price": 67.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"79",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"79",
+		"price": 61.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"80",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"80",
+		"price": 66.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"81",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"81",
+		"price": 89.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"82",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"82",
+		"price": 89.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"83",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"83",
+		"price": 89.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"84",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"84",
+		"price": 89.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"85",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"85",
+		"price": 89.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"86",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"86",
+		"price": 60.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"87",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"87",
+		"price": 34,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"88",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"88",
+		"price": 35,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"89",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"89",
+		"price": 34,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"90",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"90",
+		"price": 3.43,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"91",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"91",
+		"price": 3.43,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"92",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"92",
+		"price": 6.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"93",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"93",
+		"price": 2.14,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"94",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"94",
+		"price": 3.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"95",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"95",
+		"price": 3.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"96",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"96",
+		"price": 3.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"97",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"97",
+		"price": 3.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"98",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"98",
+		"price": 3.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"99",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"99",
+		"price": 3.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"100",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"100",
+		"price": 4.15,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"101",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"101",
+		"price": 3.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"102",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"102",
+		"price": 4.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"103",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"103",
+		"price": 5.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"104",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"104",
+		"price": 5.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"105",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"105",
+		"price": 4.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"106",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"106",
+		"price": 5.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"107",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"107",
+		"price": 3.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"108",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"108",
+		"price": 3.31,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"109",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"109",
+		"price": 3.22,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"110",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"110",
+		"price": 4.26,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"111",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"111",
+		"price": 3.45,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"112",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"112",
+		"price": 3.34,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"113",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"113",
+		"price": 12.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"114",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"114",
+		"price": 15.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"115",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"115",
+		"price": 7.39,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"116",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"116",
+		"price": 17.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"117",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"117",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"118",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"118",
+		"price": 17.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"119",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"119",
+		"price": 17.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"120",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"120",
+		"price": 17.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"121",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"121",
+		"price": 20.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"122",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"122",
+		"price": 15.46,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"123",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"123",
+		"price": 14.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"124",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"124",
+		"price": 17.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"125",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"125",
+		"price": 22,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"126",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"126",
+		"price": 17.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"127",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"127",
+		"price": 18.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"128",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"128",
+		"price": 19.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"129",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"129",
+		"price": 19.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"130",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"130",
+		"price": 16.18,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"131",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"131",
+		"price": 16.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"132",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"132",
+		"price": 21.44,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"133",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"133",
+		"price": 22.29,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"134",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"134",
+		"price": 16.18,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"135",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"135",
+		"price": 16.18,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"136",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"136",
+		"price": 16.18,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"137",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"137",
+		"price": 9.46,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"138",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"138",
+		"price": 6.45,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"139",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"139",
+		"price": 6.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"140",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"140",
+		"price": 9.35,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"141",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"141",
+		"price": 8.27,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"142",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"142",
+		"price": 7.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"143",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"143",
+		"price": 7.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"144",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"144",
+		"price": 7.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"145",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"145",
+		"price": 6.38,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"146",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"146",
+		"price": 7.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"147",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"147",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"148",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"148",
+		"price": 14.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"149",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"149",
+		"price": 20.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"150",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"150",
+		"price": 20.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"151",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"151",
+		"price": 4.27,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"152",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"152",
+		"price": 6.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"153",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"153",
+		"price": 6.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"154",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"154",
+		"price": 6.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"155",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"155",
+		"price": 7.36,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"156",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"156",
+		"price": 8.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"157",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"157",
+		"price": 7.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"158",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"158",
+		"price": 8.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"159",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"159",
+		"price": 7.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"160",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"160",
+		"price": 13.35,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"161",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"161",
+		"price": 6.28,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"162",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"162",
+		"price": 22,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"163",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"163",
+		"price": 17.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"164",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"164",
+		"price": 12.48,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"165",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"165",
+		"price": 13.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"166",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"166",
+		"price": 27.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"167",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"167",
+		"price": 12.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"168",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"168",
+		"price": 13.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"169",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"169",
+		"price": 4.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"170",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"170",
+		"price": 5.34,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"171",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"171",
+		"price": 4.26,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"172",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"172",
+		"price": 4.36,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"173",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"173",
+		"price": 8.22,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"174",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"174",
+		"price": 7,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"175",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"175",
+		"price": 7,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"176",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"176",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"177",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"177",
+		"price": 66.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"178",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"178",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"179",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"179",
+		"price": 85,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"180",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"180",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"181",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"181",
+		"price": 64.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"182",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"182",
+		"price": 64,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"183",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"183",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"184",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"184",
+		"price": 43,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"185",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"185",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"186",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"186",
+		"price": 64.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"187",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"187",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"188",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"188",
+		"price": 64,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"189",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"189",
+		"price": 40.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"190",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"190",
+		"price": 64.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"191",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"191",
+		"price": 64.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"192",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"192",
+		"price": 57.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"193",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"193",
+		"price": 57.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"194",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"194",
+		"price": 57.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"195",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"195",
+		"price": 57.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"196",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"196",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"197",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"197",
+		"price": 44.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"198",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"198",
+		"price": 53.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"199",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"199",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"200",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"200",
+		"price": 44.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"201",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"201",
+		"price": 31,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"202",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"202",
+		"price": 67.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"203",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"203",
+		"price": 49.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"204",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"204",
+		"price": 85.32,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"205",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"205",
+		"price": 107.38,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"206",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"206",
+		"price": 64.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"207",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"207",
+		"price": 17,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"208",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"208",
+		"price": 177.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"209",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"209",
+		"price": 46,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"210",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"210",
+		"price": 55,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"211",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"211",
+		"price": 44.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"212",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"212",
+		"price": 7820,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"213",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"213",
+		"price": 3.11,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"214",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"214",
+		"price": 188.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"215",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"215",
+		"price": 92,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"216",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"216",
+		"price": 145.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"217",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"217",
+		"price": 3.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"218",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"218",
+		"price": 3.08,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"219",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"219",
+		"price": 3.19,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"220",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"220",
+		"price": 4.32,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"221",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"221",
+		"price": 3.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"222",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"222",
+		"price": 4.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"223",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"223",
+		"price": 3.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"224",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"224",
+		"price": 2.33,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"225",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"225",
+		"price": 2.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"226",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"226",
+		"price": 5.08,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"227",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"227",
+		"price": 4.18,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"228",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"228",
+		"price": 7.38,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"229",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"229",
+		"price": 5.25,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"230",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"230",
+		"price": 48,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"231",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"231",
+		"price": 48,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"232",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"232",
+		"price": 48,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"233",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"233",
+		"price": 14.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"234",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"234",
+		"price": 13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"235",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"235",
+		"price": 0.25,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"236",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"236",
+		"price": 0.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"237",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"237",
+		"price": 0.25,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"238",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"238",
+		"price": 156.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"239",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"239",
+		"price": 175.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"240",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"240",
+		"price": 265.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"241",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"241",
+		"price": 146.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"242",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"242",
+		"price": 263.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"243",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"243",
+		"price": 51.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"244",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"244",
+		"price": 166.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"245",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"245",
+		"price": 68,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"246",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"246",
+		"price": 172.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"247",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"247",
+		"price": 144.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"248",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"248",
+		"price": 61.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"249",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"249",
+		"price": 151.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"250",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"250",
+		"price": 59.53,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"251",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"251",
+		"price": 167.17,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"252",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"252",
+		"price": 167.17,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"253",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"253",
+		"price": 100.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"254",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"254",
+		"price": 89.03,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"255",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"255",
+		"price": 212.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"256",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"256",
+		"price": 766,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"257",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"257",
+		"price": 278.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"258",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"258",
+		"price": 326,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"259",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"259",
+		"price": 18.25,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"260",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"260",
+		"price": 195.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"261",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"261",
+		"price": 6.39,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"262",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"262",
+		"price": 44.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"263",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"263",
+		"price": 44.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"264",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"264",
+		"price": 44.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"265",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"265",
+		"price": 21.41,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"266",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"266",
+		"price": 12.59,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"267",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"267",
+		"price": 12.59,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"268",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"268",
+		"price": 12.59,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"269",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"269",
+		"price": 12.59,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"270",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"270",
+		"price": 28.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"271",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"271",
+		"price": 28.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"272",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"272",
+		"price": 25.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"273",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"273",
+		"price": 25.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"274",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"274",
+		"price": 25.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"275",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"275",
+		"price": 20.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"276",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"276",
+		"price": 20.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"277",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"277",
+		"price": 20.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"278",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"278",
+		"price": 20.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"279",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"279",
+		"price": 20.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"280",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"280",
+		"price": 18.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"281",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"281",
+		"price": 8,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"282",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"282",
+		"price": 14,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"283",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"283",
+		"price": 14,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"284",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"284",
+		"price": 10.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"285",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"285",
+		"price": 10.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"286",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"286",
+		"price": 13.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"287",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"287",
+		"price": 39.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"288",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"288",
+		"price": 49.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"289",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"289",
+		"price": 28.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"290",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"290",
+		"price": 34,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"291",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"291",
+		"price": 8.37,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"292",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"292",
+		"price": 8.37,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"293",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"293",
+		"price": 9.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"294",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"294",
+		"price": 11.57,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"295",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"295",
+		"price": 8.27,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"296",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"296",
+		"price": 8.27,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"297",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"297",
+		"price": 15.12,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"298",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"298",
+		"price": 16.16,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"299",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"299",
+		"price": 4.08,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"300",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"300",
+		"price": 4.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"301",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"301",
+		"price": 20.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"302",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"302",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"303",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"303",
+		"price": 25.06,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"304",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"304",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"305",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"305",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"306",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"306",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"307",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"307",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"308",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"308",
+		"price": 23,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"309",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"309",
+		"price": 23.09,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"310",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"310",
+		"price": 7.36,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"311",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"311",
+		"price": 18.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"312",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"312",
+		"price": 13.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"313",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"313",
+		"price": 13.13,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"314",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"314",
+		"price": 18.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"315",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"315",
+		"price": 20.24,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"316",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"316",
+		"price": 4.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"317",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"317",
+		"price": 6.28,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"318",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"318",
+		"price": 4.26,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"319",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"319",
+		"price": 32.17,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"320",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"320",
+		"price": 43.07,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"321",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"321",
+		"price": 287.05,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"322",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"322",
+		"price": 193,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"16",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"323",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"323",
+		"price": 8.02,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+		} },
+	{
+		"pk":"324",
+		"model":"supplier.supplierstock", "fields": {
+		"product":"324",
+		"price": 10.04,
+		"amount_available":"100000000",
+		"order_step": null,
+		"order_minimun_amount":"2",
+		"supplier":"2",
+		"delivery_terms":""
+	}
+	}
 ]
