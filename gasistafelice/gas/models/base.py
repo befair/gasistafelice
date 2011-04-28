@@ -20,6 +20,7 @@ from gasistafelice.bank.models import Account, Movement
 
 from gasistafelice.base.fields import CurrencyField
 from decimal import Decimal
+import datetime
 
 class GAS(models.Model, PermissionResource):
 
@@ -28,21 +29,23 @@ class GAS(models.Model, PermissionResource):
     """
 
     name = models.CharField(max_length=128)
-    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
+    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    description = models.TextField(null=True, blank=True, help_text=_("Who are you? What are yours specialties?"))
-    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), null=True, blank=True)    
+    hearthquarter = models.ForeignKey(Place, related_name="hearthquarter_set", help_text=_("main address"))
+    description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
+    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
+    #, editable=False: admin validation refers to field 'account_state' that is missing from the form
     account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
     #TODO: change name
     liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set2", help_text=_("GAS have is own bank account. "))
 
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
-    vat = models.CharField(max_length=11, null=True, blank=True, help_text=_("VAT number"))	
-    fcc = models.CharField(max_length=16, null=True, blank=True, help_text=_("Fiscal code card"))	
+    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))	
+    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))	
 
     email_gas = models.EmailField(null=True, blank=True)
 
@@ -50,16 +53,60 @@ class GAS(models.Model, PermissionResource):
     #that retrieve email contact from GAS_REFERRER (role just added). GAS REFERRER usually is GAS President
     #COMMENT domthu: The president 
     email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
-    phone = models.CharField(max_length=50, null=True, blank=True)	
+    phone = models.CharField(max_length=50, blank=True)	
     website = models.URLField(verify_exists=True, null=True, blank=True) 
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
     intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
 
-    note = models.TextField(null=True, blank=True)
+    note = models.TextField(blank=True)
 
     #COMMENT fero: photogallery and attachments does not go here
     #they should be managed elsewhere in Wordpress (now, at least)
+
+    #-- Config --#
+    #config = models.OneToOneField(GASConfig, null=True)
+    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
+        related_name="gasmember_order_set", null=True, blank=True
+    )
+    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
+        related_name="gassupplier_order_set", null=True, blank=True
+    )
+
+    can_change_price = models.BooleanField(default=False,
+        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
+    )
+
+    show_order_by_supplier = models.BooleanField(default=True, 
+        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
+    )  
+
+    #TODO: see ticket #65
+    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+        help_text=_("default closing order day of the week")
+    )  
+    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
+    default_close_time = models.TimeField(null=True,
+        help_text=_("default order closing hour and minutes")
+    )
+  
+    #TODO: see ticket #65
+    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+        help_text=_("default delivery day of the week")
+    )  
+
+    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
+    default_delivery_time = models.TimeField(null=True,
+        help_text=_("default delivery closing hour and minutes")
+    )  
+
+    use_single_delivery = models.BooleanField(default=True, 
+        help_text=_("GAS uses only one delivery place")
+    )
+
+    use_hearthquarter_as_withdrawal = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    use_scheduler = models.BooleanField(default=True)  
 
     #-- Managers --#
 
@@ -82,72 +129,113 @@ class GAS(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv  
+
+    @property
+    def city(self):
+        return self.hearthquarter.city 
+
+    @property
+    def economic_state(self):
+        return u"%s - %s" % (self.account, self.liquidity)
     
     #-- Methods --#
 
     def setup_roles(self):
+        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
         # register a new `GAS_MEMBER` Role for this GAS
-        register_parametric_role(name=GAS_MEMBER, gas=self)
+        #register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
+        #register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
               # initial roles setup goes here
               )     
         return rv  
 
-class GASConfig(GAS):
+    # register a handler for the pre_save. NON do post save
+    #def pre_save_signal(sender, **kwargs):
+    #    self.config = GASConfig.objects.create()
+
+    #def __init()__:
+    #   pre_save.connect(pre_save_signal, sender=self)
+
+    def save(self, *args, **kw):
+        if self.id_in_des == "":
+            self.id_in_des = None
+        if self.id_in_des is not None:
+            #TODO: Control is unique
+            self.id_in_des = self.id_in_des.upper()
+        if self.pk == None:
+            self.account = Account.objects.create(balance=0)
+            self.liquidity = Account.objects.create(balance=0)
+            #if self.config is None:
+            #    self.config = GASConfig.objects.create()
+            #    #TODO: add default values   
+            #TODO: issue #1 need to create workflow for default_workflow_gasmember_order and default_workflow_gassupplier_order?
+        if self.default_close_time is None:
+            selft.default_close_time = datetime.time.now()
+        if self.default_delivery_time is None:
+            selft.default_delivery_time = datetime.time.now()
+        super(GAS, self).save(*args, **kw)
+
+#class GASConfig(GAS):
+class GASConfig(models.Model, PermissionResource):
     """Encapsulate here gas settings and configuration facilities"""
-
-    # Link to parent class
-    gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
-
-    default_workflow_gasmember_order = models.ForeignKey(Workflow, 
-        related_name="gasmember_order_set", null=True, blank=True
-    )
-    default_workflow_gassupplier_order = models.ForeignKey(Workflow, 
-        related_name="gassupplier_order_set", null=True, blank=True
-    )
-
-    can_change_price = models.BooleanField(
-        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
-    )
-
-    show_order_by_supplier = models.BooleanField(default=True, 
-        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-    )  
-
-    #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
-        help_text=_("default closing order day of the week")
-    )  
-    default_close_time = models.TimeField(
-        help_text=_("default order closing hour and minutes")
-    )
-  
-    #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
-        help_text=_("default delivery day of the week")
-    )  
-    default_delivery_time = models.TimeField(
-        help_text=_("default delivery closing hour and minutes")
-    )  
-
-    use_single_delivery = models.BooleanField(default=True, 
-        help_text=_("GAS uses only one delivery place")
-    )
-  
-    is_active = models.BooleanField(default=True)
-    use_scheduler = models.BooleanField(default=True) 
-    
-    class Meta:
-        app_label = 'gas'
-    
-    
-    #COMMENT fero: domthu left the following TODO. I don't know if it is right
-    # to provide it here, but new I leave it as a reminder
-    #TODO: rotation turn --> referrer through GASMemberSupplier
+    pass
+#
+#    # Link to parent class
+#    gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
+#
+#    default_workflow_gasmember_order = models.ForeignKey(Workflow, 
+#        related_name="gasmember_order_set", null=True, blank=True
+#    )
+#    default_workflow_gassupplier_order = models.ForeignKey(Workflow, 
+#        related_name="gassupplier_order_set", null=True, blank=True
+#    )
+#
+#    can_change_price = models.BooleanField(
+#        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
+#    )
+#
+#    show_order_by_supplier = models.BooleanField(default=True, 
+#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
+#    )  
+#
+#    #TODO: see ticket #65
+#    default_close_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
+#        help_text=_("default closing order day of the week")
+#    )  
+#    default_close_time = models.TimeField(
+#        help_text=_("default order closing hour and minutes")
+#    )
+#  
+#    #TODO: see ticket #65
+#    default_delivery_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
+#        help_text=_("default delivery day of the week")
+#    )  
+#    default_delivery_time = models.TimeField(
+#        help_text=_("default delivery closing hour and minutes")
+#    )  
+#
+#    use_single_delivery = models.BooleanField(default=True, 
+#        help_text=_("GAS uses only one delivery place")
+#    )
+#  
+#    is_active = models.BooleanField(default=True)
+#    use_scheduler = models.BooleanField(default=True) 
+#    
+#    class Meta:
+#        app_label = 'gas'
+#    
+#    #COMMENT fero: domthu left the following TODO. I don't know if it is right
+#    # to provide it here, but new I leave it as a reminder
+#    #TODO: rotation turn --> referrer through GASMemberSupplier
+#
+#    #history = HistoricalRecords()
+#
+#    #def __unicode__(self):
+#    #    return self.default_close_day 
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
@@ -159,7 +247,7 @@ class GASMember(models.Model, PermissionResource):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=10, null=True, blank=True, help_text=_("GAS card number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=10, null=True, blank=True, unique=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
@@ -176,7 +264,7 @@ class GASMember(models.Model, PermissionResource):
         #See ticket #54
         return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
-    #COMMENT domthu: fero added id_in_des for GASMember. That it not required.
+    #COMMENT domthu: fero added id_in_des (or id_in_gas ) for GASMember. That it not required: ask to community if necesary.
     @property
     def id_in_des(self):
         """TODO: Return unique GAS member "card number" in the DES.
@@ -188,7 +276,7 @@ class GASMember(models.Model, PermissionResource):
         # return something
         raise NotImplementedError
 
-    #COMMENT domthu: fero added id_in_des for GASMember. That it not required.
+    #COMMENT domthu: fero added id_in_retina for GASMember. That it not required: ask to community if necesary.
     @property
     def id_in_retina(self):
         #TODO: Should we provide also and id for retina?
@@ -200,8 +288,10 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
-        role.add_principal(user)
+        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
+        #COMMENT: issue #2 In my local database i've seen that roles are empty: needed fixtures?
+        #role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        #role.add_principal(user)
     
     @property        
     def local_grants(self):
@@ -216,6 +306,11 @@ class GASMember(models.Model, PermissionResource):
        
     class Meta:
         app_label = 'gas'
+
+    def save(self, *args, **kw):
+        if self.membership_fee_payed is None:
+            self.membership_fee_payed = datetime.date.today()
+        super(GASMember, self).save(*args, **kw)
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.

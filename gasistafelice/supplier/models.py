@@ -39,9 +39,9 @@ class Supplier(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
     
-    def setup_roles(self):
-        # register a new `SUPPLIER_REFERRER` Role for this Supplier
-        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
+    #def setup_roles(self):
+    #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
+    #    register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
     
     @property        
     def local_grants(self):

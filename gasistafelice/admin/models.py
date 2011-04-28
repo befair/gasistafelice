@@ -32,10 +32,13 @@ class GASSupplierOrderProductInline(admin.TabularInline):
 
 class PersonAdmin(admin.ModelAdmin):
     inlines = [GASMemberInline, ] 
+
+    save_on_top = True
     
     list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
-    list_editable = ('name', 'surname') #, 'display_name', 'uuid')
+    list_editable = ('name', 'surname') 
     list_display_links = ('__unicode__', 'display_name')
+    search_fields = ('^name','^surname', 'address__city')
     
 class PlaceForm(forms.ModelForm):
 
@@ -51,6 +54,8 @@ class PlaceForm(forms.ModelForm):
 
 class PlaceAdmin(admin.ModelAdmin):
     form = PlaceForm
+
+    save_on_top = True 
     fieldsets = ((None,
             { 'fields' : ('name', 
                 'description', 'address', 
@@ -63,14 +68,42 @@ class PlaceAdmin(admin.ModelAdmin):
     }),
     )
 
+    list_display = ('__unicode__', 'name', 'city', 'province')
+    list_editable = ('city', 'province') 
+    search_fields = ('name', 'city','province')
+
+
+#class GASConfigAdmin(admin.ModelAdmin):
+#    pass
+
 class GASAdmin(admin.ModelAdmin):
-    inlines = [GASMemberInline, ]
-    
+    list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
+    fieldsets = (('Identity',
+            { 'fields' : ('name', 'id_in_des', 'email_gas', 'logo', 'hearthquarter', 'description')
+    }),
+    ("Congiguration", {
+        'fields' : ('can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'use_hearthquarter_as_withdrawal', 'is_active', 'use_scheduler'),
+        'classes': ('collapse',)
+    }),
+    ("Economic", {
+        'fields' : ('membership_fee', 'account', 'liquidity'),
+        'classes': ('collapse',)
+    }),
+    )
+    inlines = [ GASMemberAdminInline, ]
+    search_fields = ('^name', '^id_in_des','email_gas', 'hearthquarter__city')
+
+    def website_with_link(self, obj):
+        url = obj.website
+        return u'<a target="_blank" href="%s">%s</a>' % (url, url)
+    website_with_link.allow_tags = True
+    website_with_link.short_description = "website"
+
 
 class GASMemberAdmin(admin.ModelAdmin):
+
+    save_on_top = True
     
-    inlines = [GASMemberOrderInline, ]
-     
     list_display = ('__unicode__', 'gas_with_link')
     fieldsets = ((None,
             { 'fields' : ('gas', 'person')
@@ -125,7 +158,7 @@ class SupplierAdmin(admin.ModelAdmin):
     
     def website_with_link(self, obj):
         url = obj.website
-        return u'<a href="%s">%s</a>' % (url, url)
+        return u'<a target="_blank" href="%s">%s</a>' % (url, url)
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
 
@@ -227,14 +260,14 @@ class WithdrawalAdmin(admin.ModelAdmin):
     pass
     
     
-admin.site.register(base_models.Person)
-admin.site.register(base_models.Place)
-admin.site.register(base_models.Contact)
+admin.site.register(base_models.Person, PersonAdmin)
+admin.site.register(base_models.Place, PlaceAdmin)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
+
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.order.GASSupplierStock)

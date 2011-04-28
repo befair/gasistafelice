@@ -86,8 +86,10 @@ class Place(models.Model, PermissionResource):
     multiple delivery and/or withdrawal locations can be present.
     """
 
+    #COMMENT: What the meaning for name? What is the reason to set it as unique=True? 
     name = models.CharField(max_length=128, blank=True, unique=True, help_text=_("You can avoid to specify a name if you specify an address"))
     description = models.TextField(blank=True)
+    #TODO: ADD place type from CHOICE (HOME, WORK, HEARTHQUARTER, WITHDRAWAL...)     
     address = models.CharField(max_length=128, blank=True)
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
@@ -108,11 +110,16 @@ class Place(models.Model, PermissionResource):
         return self.name
 
     def save(self, *args, **kw):
-        #TODO: we should compute city and province starting from zipcode
+        #TODO: we should compute city and province starting from zipcode using local_flavor in forms
         self.city = self.city.capitalize()
         self.province = self.province.capitalize()
+
         if not self.name:
-            self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
+            if self.address:
+                self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
+            else:
+                #COMMENT LF: This never occur because in form we check that name or address have been set
+                self.name = u"%s (%s)" % (self.city, self.province)
 
         super(Place, self).save(*args, **kw)
 
