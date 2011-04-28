@@ -27,6 +27,97 @@
         "pk": 1, 
         "model": "base.place", 
         "fields": {
+            "province": "MC", 
+            "city": "CAMERINO", 
+            "name": "sede1", 
+            "lon": null, 
+            "address": "Località RIO", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "base.place", 
+        "fields": {
+            "province": "AN", 
+            "city": "MATELICA", 
+            "name": "sede2", 
+            "lon": null, 
+            "address": "", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "base.place", 
+        "fields": {
+            "province": "MC", 
+            "city": "TOLENTINO", 
+            "name": "sede3", 
+            "lon": null, 
+            "address": "", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "base.place", 
+        "fields": {
+            "province": "MC", 
+            "city": "RECANATI", 
+            "name": "sede4", 
+            "lon": null, 
+            "address": "", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "base.place", 
+        "fields": {
+            "province": "MC", 
+            "city": "MACERATA", 
+            "name": "sede5", 
+            "lon": null, 
+            "address": "", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "base.place", 
+        "fields": {
+            "province": "MC", 
+            "city": "MONTEFANO", 
+            "name": "sede6", 
+            "lon": null, 
+            "address": "", 
+            "lat": null, 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "base.place", 
+        "fields": {
+            "province": "An", 
+            "city": "Senigallia", 
+            "name": "Centro sociale Saline", 
+            "lon": null, 
+            "address": "via Campo Boario, 25", 
+            "lat": null, 
+            "description": ""
+        }
+    },
+    {
+        "pk": 8, 
+        "model": "base.place", 
+        "fields": {
             "province": "An", 
             "city": "Senigallia", 
             "name": "Centro San Gregorio", 
@@ -37,14 +128,14 @@
         }
     }, 
     {
-        "pk": 2, 
+        "pk": 9, 
         "model": "base.place", 
         "fields": {
             "province": "An", 
             "city": "Senigallia", 
-            "name": "Centro sociale Saline", 
+            "name": "Centro San Gregorio", 
             "lon": null, 
-            "address": "via Campo Boario, 25", 
+            "address": "via delle Cave, 16", 
             "lat": null, 
             "description": ""
         }
