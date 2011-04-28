@@ -2,7 +2,7 @@
 	background-color: #fff;
 	margin-top:30px;
 	margin-left:15px;
-	margin-right:15px;
+	margin-right:2px;
 	border:Solid 1px #afd909;
 }
 
@@ -17,43 +17,75 @@ a:link, a:visited {
 
 /* MENU */
 
-#des-admin-nav {
-	position:static;	
+.des-admin-nav {
+	position:relative;	
 	height:40px;
+	font-family:arial, verdana, sans-serif; 
+	font-size:15px; 
+	width:100%; 
+	z-index:100;
+	margin-left:12px;
+	padding:0;
 }
 
-#primo {
-	position:static;
-	background: #afd909;
-	height:40px;
-	width:100px;
-	text-align:center;
-	margin-left: 10px;
-	padding:0px;
+.des-admin-nav .table {
+	display:table; 
+	margin-left:0 auto;
 }
 
-.menu_element {
-	background-color: wite;
-	height: 40px;
-	vertical-align:middle;
-		
+.des-admin-nav .select,
+.des-admin-nav .current {
+	margin:0; 
+	padding:0; 
+	list-style:none; 
+	display:table-cell; 
+	white-space:nowrap;
 }
 
-.link {
-	background-color: wite;
-	height: 40px;
-	vertical-align:middle;
-		
+.des-admin-nav li {
+	margin:0; 
+	padding:0; 
+	height:auto; 
+	float:left;
+	list-style-type:none;
 }
 
-.link a:hover {
-	background-color: #afd909;
+.des-admin-nav .select a {
+	display:block; 
+	height:40px; 
+	float:left; 
+	font-weight:bold;
+	background: white; 
+	padding:0 30px 0 30px; 
+	text-decoration:none; 
+	line-height:35px; 
+	white-space:nowrap; 
+	color:#2b3238;
 }
 
-#secondo {
-	position:relative;
-	background: white;
-	margin: 0px;
-	padding:0px;
-		
+
+.des-admin-nav .select a:hover, 
+.des-admin-nav .select li:hover a {
+	background: #afd909; 
+	margin:0;
+	cursor:pointer; 
+	color:#2b3238;
 }
+
+.des-admin-nav .select a b{
+	font-weight:bold;
+}
+
+.des-admin-nav .select a:hover b, 
+.des-admin-nav .select li:hover a b {
+	display:block; 
+	float:left; 
+	padding:0 30px 0 15px; 
+	background:afd909; 
+	cursor:pointer;
+}
+
+.des-admin-nav .select_sub {
+	display:none;
+}
+
