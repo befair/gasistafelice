@@ -103,7 +103,7 @@ msgstr "gasisti"
 #: admin/models.py:97
 #, python-format
 msgid "Hello %s"
-msgstr ""Ciao %s"
+msgstr "Ciao %s"
 
 #: admin/models.py:98
 msgid "Say hello to gas members"
@@ -433,12 +433,12 @@ msgstr "Ultimo pagamento della quota associativa"
 #: gas/models/base.py:171
 #, python-format
 msgid "%(person)s in GAS %(gas)s"
-msgstr ""%(Persona)s nel GAS %(gas)"
+msgstr "%(person)s del GAS %(gas)s"
 
 #: gas/models/base.py:177
 #, python-format
 msgid "%(id_in_gas)s - %(gas_member)s"
-msgstr "%(id_in_gas)s - %(gas_member)"
+msgstr "%(id_in_gas)s - %(gas_member)s"
 
 #: gas/models/base.py:248
 msgid "Withdrawal week day agreement"
@@ -531,7 +531,7 @@ msgstr "Modelli disponibili nell'applicazione %(name)s"
 #: gas_admin/templates/gas_admin/index.html:19
 #, python-format
 msgid "%(name)s"
-msgstr ""%(name)s"
+msgstr "%(name)s"
 
 #: gas_admin/templates/gas_admin/index.html:29
 msgid "Add"
