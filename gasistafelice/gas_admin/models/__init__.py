@@ -18,8 +18,8 @@ gas_admin = GasAdminSite("gas_admin")
 # Register models in GAS admin instance
 
 gas_admin.register(base_models.Person, admin_models.PersonAdmin)
-#gas_admin.register(base_models.Place, admin_models.PlaceAdmin)
-gas_admin.register(base_models.Place)
+gas_admin.register(base_models.Place, admin_models.PlaceAdmin)
+gas_admin.register(base_models.Contact)
 
 gas_admin.register(supplier_models.Supplier, admin_models.SupplierAdmin)
 gas_admin.register(supplier_models.Product, admin_models.ProductAdmin)
@@ -34,5 +34,4 @@ gas_admin.register(gas_models.order.GASSupplierOrderProduct, admin_models.GASSup
 gas_admin.register(gas_models.order.GASMemberOrder)
 gas_admin.register(gas_models.order.Delivery, admin_models.DeliveryAdmin)
 gas_admin.register(gas_models.order.Withdrawal, admin_models.WithdrawalAdmin)
-gas_admin.register(bank_models.Account)
 

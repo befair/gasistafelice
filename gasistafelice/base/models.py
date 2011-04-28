@@ -40,9 +40,13 @@ class Person(models.Model, PermissionResource):
     uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
-    address = models.OneToOneField('Place', null=True)
+    address = models.OneToOneField('Place', null=True, blank=True)
 
     history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = _("person")
+        verbose_name_plural = _("persons")
 
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname) 
@@ -66,6 +70,13 @@ class Contact(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
+    class Meta:
+        verbose_name = _("contact")
+        verbose_name_plural = _("contacts")
+
+    def __unicode__(self):
+        return u"%(t)s: %(v)s" % {'t': self.contact_type, 'v': self.contact_value}
+
 class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
     * among the entities arising in the description of GAS' activities,
@@ -75,7 +86,7 @@ class Place(models.Model, PermissionResource):
     multiple delivery and/or withdrawal locations can be present.
     """
 
-    name = models.CharField(max_length=128, blank=True, unique=True)
+    name = models.CharField(max_length=128, blank=True, unique=True, help_text=_("You can avoid to specify a name if you specify an address"))
     description = models.TextField(blank=True)
     address = models.CharField(max_length=128, blank=True)
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
@@ -89,13 +100,17 @@ class Place(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
+    class Meta:
+        verbose_name = _("place")
+        verbose_name_plural = _("places")
+
     def __unicode__(self):
         return self.name
 
     def save(self, *args, **kw):
         #TODO: we should compute city and province starting from zipcode
-        self.city = self.city.capitalized()
-        self.province = self.province.capitalized()
+        self.city = self.city.capitalize()
+        self.province = self.province.capitalize()
         if not self.name:
             self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
 
@@ -110,6 +125,10 @@ class DefaultTransition(models.Model, PermissionResource):
     transition = models.ForeignKey(Transition)
 
     history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = _("default transition")
+        verbose_name_plural = _("default transitions")
 
 class WorkflowDefinition(object):
     """
