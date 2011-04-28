@@ -10,19 +10,36 @@ from django.core import urlresolvers
 class GASMemberAdminInline(admin.TabularInline):
     model = gas_models.GASMember
 
-#class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(admin.ModelAdmin):
+
+    #COMMENT: don't appear button on the top?
+    save_on_top = True 
+    
+    list_display = ('__unicode__', 'city', 'province') #, 'name')
+    list_editable = ('city', 'province') 
+    #list_display_links = ('__unicode__', 'name')
+    search_fields = ('city','province')
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
-    list_editable = ('name', 'surname') #, 'display_name', 'uuid')
-    list_display_links = ('__unicode__', 'display_name')
 
+    save_on_top = True
+    
+    list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
+    list_editable = ('name', 'surname') 
+    list_display_links = ('__unicode__', 'display_name')
+    search_fields = ('^name','^surname', 'address__city')
+
+#class GASConfigAdmin(admin.ModelAdmin):
+#    pass
 
 class GASAdmin(admin.ModelAdmin):
     inlines = [ GASMemberAdminInline, ]
 
+
 class GASMemberAdmin(admin.ModelAdmin):
 
+    save_on_top = True
+    
     list_display = ('__unicode__', 'gas_with_link')
     fieldsets = ((None,
             { 'fields' : ('gas', 'person')
@@ -165,12 +182,14 @@ class SupplierStockAdmin(admin.ModelAdmin):
         return str(obj.price) + ' euro'
     price_pretty.short_description = "price"
     
-admin.site.register(base_models.Person)
+admin.site.register(base_models.Place, PlaceAdmin)
+admin.site.register(base_models.Person, PersonAdmin)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
+
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.order.GASSupplierStock)

@@ -28,16 +28,16 @@ class GAS(models.Model, PermissionResource):
     """
 
     name = models.CharField(max_length=128)
-    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
+    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     description = models.TextField(null=True, blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"))
 
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
-    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
+    account = models.ForeignKey(Account, null=True, blank=True, editable=False, related_name="gas_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
     #TODO: change name
-    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set2", help_text=_("GAS have is own bank account. "))
+    liquidity = models.ForeignKey(Account, null=True, blank=True, editable=False, related_name="gas_set2", help_text=_("GAS have is own bank account. "))
 
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
@@ -66,6 +66,8 @@ class GAS(models.Model, PermissionResource):
     objects = managers.GASRolesManager()
     history = HistoricalRecords()
 
+    #config = models.OneToOneField(GASConfig, null=True)
+
     #-- Meta --#
     class Meta:
         verbose_name_plural = _('GAS')
@@ -86,18 +88,34 @@ class GAS(models.Model, PermissionResource):
     #-- Methods --#
 
     def setup_roles(self):
+        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
         # register a new `GAS_MEMBER` Role for this GAS
-        register_parametric_role(name=GAS_MEMBER, gas=self)
+        #register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
+        #register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
               # initial roles setup goes here
               )     
         return rv  
 
+    def save(self, *args, **kw):
+        if self.id_in_des == "":
+            self.id_in_des = None
+        if self.id_in_des is not None:
+            #TODO: Control is unique
+            self.id_in_des = self.id_in_des.upper()
+        if self.pk == None:
+            self.account = Account.objects.create(balance=0)
+            self.liquidity = Account.objects.create(balance=0)
+            #if self.config is None:
+            #    self.config = GASConfig.objects.create()
+            #    #TODO: add default values            
+        super(GAS, self).save(*args, **kw)
+
 class GASConfig(GAS):
+#class GASConfig(models.Model, PermissionResource):
     """Encapsulate here gas settings and configuration facilities"""
 
     # Link to parent class
@@ -110,7 +128,7 @@ class GASConfig(GAS):
         related_name="gassupplier_order_set", null=True, blank=True
     )
 
-    can_change_price = models.BooleanField(
+    can_change_price = models.BooleanField(default=False,
         help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
     )
 
@@ -119,18 +137,18 @@ class GASConfig(GAS):
     )  
 
     #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
+    default_close_day = models.CharField(max_length=16, null=True, blank=True, choices=DAY_CHOICES, 
         help_text=_("default closing order day of the week")
     )  
-    default_close_time = models.TimeField(
+    default_close_time = models.TimeField(auto_now=True,
         help_text=_("default order closing hour and minutes")
     )
   
     #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
+    default_delivery_day = models.CharField(max_length=16, null=True, blank=True, choices=DAY_CHOICES, 
         help_text=_("default delivery day of the week")
     )  
-    default_delivery_time = models.TimeField(
+    default_delivery_time = models.TimeField(auto_now=True,
         help_text=_("default delivery closing hour and minutes")
     )  
 
@@ -145,6 +163,11 @@ class GASConfig(GAS):
     # to provide it here, but new I leave it as a reminder
     #TODO: rotation turn --> referrer through GASMemberSupplier
 
+    #history = HistoricalRecords()
+
+    #def __unicode__(self):
+    #    return self.default_close_day 
+
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
@@ -155,7 +178,7 @@ class GASMember(models.Model, PermissionResource):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=10, null=True, blank=True, help_text=_("GAS card number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=10, null=True, blank=True, unique=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
@@ -172,7 +195,7 @@ class GASMember(models.Model, PermissionResource):
         #See ticket #54
         return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
-    #COMMENT domthu: fero added id_in_des for GASMember. That it not required.
+    #COMMENT domthu: fero added id_in_des (or id_in_gas ) for GASMember. That it not required: ask to community if necesary.
     @property
     def id_in_des(self):
         """TODO: Return unique GAS member "card number" in the DES.
@@ -184,7 +207,7 @@ class GASMember(models.Model, PermissionResource):
         # return something
         raise NotImplementedError
 
-    #COMMENT domthu: fero added id_in_des for GASMember. That it not required.
+    #COMMENT domthu: fero added id_in_retina for GASMember. That it not required: ask to community if necesary.
     @property
     def id_in_retina(self):
         #TODO: Should we provide also and id for retina?

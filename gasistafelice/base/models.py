@@ -52,8 +52,11 @@ class Person(models.Model, PermissionResource):
         return self.address.city 
 
     def save(self, *args, **kw):
-        self.name = self.name.capitalized()
-        self.surname = self.surname.capitalized()
+        #Exception Value: 'unicode' object has no attribute 'capitalized'
+        #self.name = self.name.capitalized()
+        #self.surname = self.surname.capitalized()
+        self.name = self.name.upper()
+        self.surname = self.surname.title()
         if self.uuid == "":
             self.uuid = None
         super(Person, self).save(*args, **kw)
@@ -74,9 +77,10 @@ class Place(models.Model, PermissionResource):
     * in the context of multi-GAS (retina) orders,
     multiple delivery and/or withdrawal locations can be present.
     """
-
+    #COMMENT: What the meaning for name? What is the reason to set it as unique=True? 
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(blank=True)
+    #TODO: ADD place type from CHOICE (HOME, WORK, HEARTHQUARTER, WITHDRAWAL...)     
     address = models.CharField(max_length=128, blank=True)
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
@@ -93,11 +97,14 @@ class Place(models.Model, PermissionResource):
         return self.name
 
     def save(self, *args, **kw):
-        #TODO: we should compute city and province starting from zipcode
-        self.city = self.city.capitalized()
-        self.province = self.province.capitalized()
+        #TODO: we should compute city and province starting from zipcode using local_flavor in forms
+        self.city = self.city.upper()
+        self.province = self.province.upper()
         if not self.name:
-            self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
+            if len(self.address) > 0:
+                self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
+            else:
+                self.name = u"%s (%s)" % (self.city, self.province)
 
         super(Place, self).save(*args, **kw)
 

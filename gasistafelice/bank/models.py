@@ -25,7 +25,9 @@ class Account(models.Model):
     #COMMENT fero: what does this mean?
 
     def __unicode__(self):
-        return self.balance
+        #FIXME: Caught TypeError while rendering: coercing to Unicode: need string or buffer, Decimal found
+        #return self.balance
+        return _("%(balance)s") % {'balance' : self.balance}
 
 class Movement(models.Model):
     """Economic movement
