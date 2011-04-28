@@ -33,7 +33,27 @@ class PersonAdmin(admin.ModelAdmin):
 #    pass
 
 class GASAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
+    fieldsets = (('Identity',
+            { 'fields' : ('name', 'id_in_des', 'email_gas', 'logo', 'hearthquarter', 'description')
+    }),
+    ("Congiguration", {
+        'fields' : ('can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'use_hearthquarter_as_withdrawal', 'is_active', 'use_scheduler'),
+        'classes': ('collapse',)
+    }),
+    ("Economic", {
+        'fields' : ('membership_fee', 'account', 'liquidity'),
+        'classes': ('collapse',)
+    }),
+    )
     inlines = [ GASMemberAdminInline, ]
+    search_fields = ('^name', '^id_in_des','email_gas', 'hearthquarter__city')
+
+    def website_with_link(self, obj):
+        url = obj.website
+        return u'<a target="_blank" href="%s">%s</a>' % (url, url)
+    website_with_link.allow_tags = True
+    website_with_link.short_description = "website"
 
 
 class GASMemberAdmin(admin.ModelAdmin):
@@ -137,7 +157,7 @@ class SupplierAdmin(admin.ModelAdmin):
     
     def website_with_link(self, obj):
         url = obj.website
-        return u'<a href="%s">%s</a>' % (url, url)
+        return u'<a target="_blank" href="%s">%s</a>' % (url, url)
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
 

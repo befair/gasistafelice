@@ -56,7 +56,7 @@ class Person(models.Model, PermissionResource):
         #self.name = self.name.capitalized()
         #self.surname = self.surname.capitalized()
         self.name = self.name.upper()
-        self.surname = self.surname.title()
+        self.surname = self.surname.capitalize() #title()
         if self.uuid == "":
             self.uuid = None
         super(Person, self).save(*args, **kw)
