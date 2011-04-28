@@ -141,13 +141,12 @@ class GAS(models.Model, PermissionResource):
     #-- Methods --#
 
     def setup_roles(self):
-        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
         # register a new `GAS_MEMBER` Role for this GAS
-        #register_parametric_role(name=GAS_MEMBER, gas=self)
+        register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
-        #register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
+        register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
               # initial roles setup goes here
               )     
@@ -288,10 +287,9 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
         #COMMENT: issue #2 In my local database i've seen that roles are empty: needed fixtures?
-        #role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
-        #role.add_principal(user)
+        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        role.add_principal(user)
     
     @property        
     def local_grants(self):

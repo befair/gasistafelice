@@ -113,31 +113,5 @@
             "lat": null, 
             "description": ""
         }
-    },
-    {
-        "pk": 8, 
-        "model": "base.place", 
-        "fields": {
-            "province": "An", 
-            "city": "Senigallia", 
-            "name": "Centro San Gregorio", 
-            "lon": null, 
-            "address": "via delle Cave, 16", 
-            "lat": null, 
-            "description": ""
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "base.place", 
-        "fields": {
-            "province": "An", 
-            "city": "Senigallia", 
-            "name": "Centro San Gregorio", 
-            "lon": null, 
-            "address": "via delle Cave, 16", 
-            "lat": null, 
-            "description": ""
-        }
     }
 ]
