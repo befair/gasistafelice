@@ -54,6 +54,8 @@ class GASSupplierStock(models.Model, PermissionResource):
     
     class Meta:
         app_label = 'gas'
+        verbose_name = _("GAS supplier stock")
+        verbose_name_plural = _("GAS supplier stocks")
 
 
 class GASSupplierOrder(models.Model, PermissionResource):
@@ -138,6 +140,9 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     
     history = HistoricalRecords()
     
+    class Meta:
+        app_label = 'gas'
+
     def __unicode__(self):
         return  unicode(self.stock)
 
@@ -158,9 +163,6 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
               )     
         return rv
     
-    class Meta:
-        app_label = 'gas'
-
 class GASMemberOrder(models.Model, PermissionResource):
 
     """An order made by a GAS member in the context of a given GASSupplierOrder.
@@ -179,6 +181,11 @@ class GASMemberOrder(models.Model, PermissionResource):
     withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
     
     history = HistoricalRecords()
+
+    class Meta:
+        app_label = 'gas'
+        verbose_name = _('GAS member order')
+        verbose_name_plural = _('GAS member orders')
 
     def __unicode__(self):
         return unicode(self.product)
@@ -230,9 +237,6 @@ class GASMemberOrder(models.Model, PermissionResource):
 #
 #        return super(GASMemberOrder, self).save()
 
-    class Meta:
-        app_label = 'gas'
-
 class Delivery(models.Model, PermissionResource):
 
     """
@@ -249,7 +253,8 @@ class Delivery(models.Model, PermissionResource):
 
     class Meta:
         app_label = 'gas'
-        verbose_name_plural = 'deliveries'
+        verbose_name = _('delivery')
+        verbose_name_plural = _('deliveries')
         
     def __unicode__(self):
         return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
@@ -283,6 +288,8 @@ class Withdrawal(models.Model, PermissionResource):
 
     class Meta:
         app_label = 'gas'
+        verbose_name = _('wihtdrawal')
+        verbose_name_plural = _('wihtdrawals')
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
