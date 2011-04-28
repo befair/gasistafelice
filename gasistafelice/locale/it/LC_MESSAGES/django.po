@@ -1,0 +1,522 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-28 03:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: DOM.py:36
+msgid "indicative products seasonality and availability"
+msgstr ""
+
+#: DOM.py:37
+msgid "provenance water for irrigation"
+msgstr ""
+
+#: DOM.py:38
+msgid "type of manure used"
+msgstr ""
+
+#: DOM.py:39
+msgid "provenance manure used"
+msgstr ""
+
+#: DOM.py:40
+msgid "quantity of manure per hectare and crops concerned the manuring"
+msgstr ""
+
+#: DOM.py:41
+msgid "any other fertilizers and rough-treatment"
+msgstr ""
+
+#: DOM.py:42
+msgid "distance from any possible sources of pollution"
+msgstr ""
+
+#: DOM.py:43
+msgid "provenance of the seed"
+msgstr ""
+
+#: DOM.py:45
+msgid "day and town of presence in biological market place"
+msgstr ""
+
+#: DOM.py:47
+msgid "other information from the manufacturer"
+msgstr ""
+
+#: DOM.py:49 DOM.py:50
+msgid "producer declarative on honor"
+msgstr ""
+
+#: DOM.py:54
+msgid ""
+"producer is available for: visit, inspection, examination, farm holidays, "
+"refreshment, feeding ..."
+msgstr ""
+
+#: DOM.py:69
+msgid "title and brief description"
+msgstr ""
+
+#: DOM.py:85
+msgid "producer response encharge responsability about the above question"
+msgstr ""
+
+#: DOM.py:107
+msgid "fresh product or human operation done on it"
+msgstr ""
+
+#: DOM.py:110
+msgid "a month"
+msgstr ""
+
+#: DOM.py:152
+msgid "a week day"
+msgstr ""
+
+#: DOM.py:154
+msgid "an hour"
+msgstr ""
+
+#: admin/models.py:71
+#, python-format
+msgid "Hello %s"
+msgstr ""
+
+#: admin/models.py:72
+msgid "Say hello to gas members"
+msgstr ""
+
+#: admin/templates/admin/base_site.html:5
+#: admin/templates/admin/base_site.html:12
+msgid "DES administration"
+msgstr ""
+
+#: admin/templatetags/admin_tags.py:19
+msgid "Open orders"
+msgstr ""
+
+#: admin/templatetags/admin_tags.py:23
+msgid "Products ordered"
+msgstr ""
+
+#: auth/__init__.py:20
+msgid "Nobody"
+msgstr ""
+
+#: auth/__init__.py:21
+msgid "Supplier referrer"
+msgstr ""
+
+#: auth/__init__.py:22
+msgid "GAS member"
+msgstr ""
+
+#: auth/__init__.py:23
+msgid "GAS referrer"
+msgstr ""
+
+#: auth/__init__.py:24
+msgid "GAS supplier referrer"
+msgstr ""
+
+#: auth/__init__.py:25
+msgid "GAS order referrer"
+msgstr ""
+
+#: auth/__init__.py:26
+msgid "GAS withdrawal referrer"
+msgstr ""
+
+#: auth/__init__.py:27
+msgid "GAS delivery referrer"
+msgstr ""
+
+#: auth/__init__.py:28
+msgid "GAS cash referrer"
+msgstr ""
+
+#: auth/__init__.py:29
+msgid "GAS technical referrer"
+msgstr ""
+
+#: auth/__init__.py:58
+msgid "View"
+msgstr ""
+
+#: auth/__init__.py:59
+msgid "List"
+msgstr ""
+
+#: auth/__init__.py:60
+msgid "Create"
+msgstr ""
+
+#: auth/__init__.py:61
+msgid "Edit"
+msgstr ""
+
+#: auth/__init__.py:62
+msgid "Delete"
+msgstr ""
+
+#: auth/__init__.py:63
+msgid "All"
+msgstr ""
+
+#: auth/models.py:59 gas/models/base.py:71
+msgid "GAS"
+msgstr ""
+
+#: auth/models.py:60
+msgid "Supplier"
+msgstr ""
+
+#: auth/models.py:61
+msgid "Order"
+msgstr ""
+
+#: auth/models.py:62
+msgid "Delivery"
+msgstr ""
+
+#: auth/models.py:63
+msgid "Withdrawal"
+msgstr ""
+
+#: bank/models.py:37
+msgid "causal of economic movement"
+msgstr ""
+
+#: bank/models.py:40
+#, python-format
+msgid "%(amount)s (causal: %(causal)s)"
+msgstr ""
+
+#: base/const.py:4
+msgid "Company"
+msgstr ""
+
+#: base/const.py:5
+msgid "Cooperating"
+msgstr ""
+
+#: base/const.py:12
+msgid "PHONE"
+msgstr ""
+
+#: base/const.py:13
+msgid "EMAIL"
+msgstr ""
+
+#: base/const.py:14
+msgid "FAX"
+msgstr ""
+
+#: base/const.py:18
+msgid "Monday"
+msgstr ""
+
+#: base/const.py:19
+msgid "Tuesday"
+msgstr ""
+
+#: base/const.py:20
+msgid "Wednesday"
+msgstr ""
+
+#: base/const.py:21
+msgid "Thursday"
+msgstr ""
+
+#: base/const.py:22
+msgid "Friday"
+msgstr ""
+
+#: base/const.py:23
+msgid "Saturday"
+msgstr ""
+
+#: base/const.py:24
+msgid "Sunday"
+msgstr ""
+
+#: base/models.py:40
+msgid "Write your social security number here"
+msgstr ""
+
+#: base/models.py:81
+msgid "Zip code"
+msgstr ""
+
+#: base/models.py:84
+msgid "Insert the province code here (max 2 char)"
+msgstr ""
+
+#: base/models.py:140
+#, python-format
+msgid ""
+"Workflow specifications are not consistent.\n"
+" %s"
+msgstr ""
+
+#: gas/const.py:4
+msgid "open"
+msgstr ""
+
+#: gas/const.py:5
+msgid "closed"
+msgstr ""
+
+#: gas/const.py:6
+msgid "pending"
+msgstr ""
+
+#: gas/const.py:7
+msgid "sent"
+msgstr ""
+
+#: gas/const.py:8
+msgid "delivered"
+msgstr ""
+
+#: gas/const.py:9
+msgid "ultimated"
+msgstr ""
+
+#: gas/models/base.py:31
+msgid "GAS code"
+msgstr ""
+
+#: gas/models/base.py:31
+msgid "GAS unique identifier in the DES. Example: CAMERINO--> CAM"
+msgstr ""
+
+#: gas/models/base.py:33
+msgid "Who are you? What are yours specialties?"
+msgstr ""
+
+#: gas/models/base.py:34
+msgid "Membership fee for partecipating in this GAS"
+msgstr ""
+
+#: gas/models/base.py:36
+msgid "Suppliers bound to the GAS through a solidal pact"
+msgstr ""
+
+#: gas/models/base.py:38
+msgid "GAS manage all bank account for GASMember and PDS."
+msgstr ""
+
+#: gas/models/base.py:40
+msgid "GAS have is own bank account. "
+msgstr ""
+
+#: gas/models/base.py:43
+msgid "Born"
+msgstr ""
+
+#: gas/models/base.py:44
+msgid "VAT number"
+msgstr ""
+
+#: gas/models/base.py:45
+msgid "Fiscal code card"
+msgstr ""
+
+#: gas/models/base.py:52
+msgid "Email president"
+msgstr ""
+
+#: gas/models/base.py:114
+msgid ""
+"GAS can change supplier products price (i.e. to hold some funds for the GAS "
+"itself)"
+msgstr ""
+
+#: gas/models/base.py:118
+msgid ""
+"GAS views open orders by supplier. If disabled, views open order by delivery "
+"appointment"
+msgstr ""
+
+#: gas/models/base.py:123
+msgid "default closing order day of the week"
+msgstr ""
+
+#: gas/models/base.py:126
+msgid "default order closing hour and minutes"
+msgstr ""
+
+#: gas/models/base.py:131
+msgid "default delivery day of the week"
+msgstr ""
+
+#: gas/models/base.py:134
+msgid "default delivery closing hour and minutes"
+msgstr ""
+
+#: gas/models/base.py:138
+msgid "GAS uses only one delivery place"
+msgstr ""
+
+#: gas/models/base.py:162
+msgid "Card number"
+msgstr ""
+
+#: gas/models/base.py:162
+msgid "GAS card number"
+msgstr ""
+
+#: gas/models/base.py:166
+msgid "When was the last the annual quote payment"
+msgstr ""
+
+#: gas/models/base.py:171
+#, python-format
+msgid "%(person)s in GAS %(gas)s"
+msgstr ""
+
+#: gas/models/base.py:177
+#, python-format
+msgid "%(id_in_gas)s - %(gas_member)s"
+msgstr ""
+
+#: gas/models/base.py:248
+msgid "Withdrawal week day agreement"
+msgstr ""
+
+#: gas/models/base.py:251
+msgid "withdrawal time agreement"
+msgstr ""
+
+#: gas/models/order.py:57
+msgid "GAS supplier stock"
+msgstr ""
+
+#: gas/models/order.py:58
+msgid "GAS supplier stocks"
+msgstr ""
+
+#: gas/models/order.py:73
+msgid "when the order will be opened"
+msgstr ""
+
+#: gas/models/order.py:74
+msgid "when the order will be closed"
+msgstr ""
+
+#: gas/models/order.py:83
+msgid "products available for the order"
+msgstr ""
+
+#: gas/models/order.py:187
+msgid "GAS member order"
+msgstr ""
+
+#: gas/models/order.py:188
+msgid "GAS member orders"
+msgstr ""
+
+#: gas/models/order.py:216
+msgid ""
+"Workflow for specific GASMemberOrder is not allowed. Just provide a default "
+"order workflow for your GAS"
+msgstr ""
+
+#: gas/models/order.py:247
+msgid "where the order will be delivered by supplier"
+msgstr ""
+
+#: gas/models/order.py:248
+msgid "when the order will be delivered by supplier"
+msgstr ""
+
+#: gas/models/order.py:256
+msgid "delivery"
+msgstr ""
+
+#: gas/models/order.py:257
+msgid "deliveries"
+msgstr ""
+
+#: gas/models/order.py:280
+msgid "where the order will be withdrawn by GAS members"
+msgstr ""
+
+#: gas/models/order.py:282
+msgid "when the withdrawal will start"
+msgstr ""
+
+#: gas/models/order.py:283
+msgid "when the withdrawal will end"
+msgstr ""
+
+#: gas/models/order.py:291
+msgid "wihtdrawal"
+msgstr ""
+
+#: gas/models/order.py:292
+msgid "wihtdrawals"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/base_site.html:10
+#: gas_admin/templates/gas_admin/base_site.html:18
+msgid "GAS administration"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:18
+#, python-format
+msgid "Models available in the %(name)s application."
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:19
+#, python-format
+msgid "%(name)s"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:29
+msgid "Add"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:35
+msgid "Change"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:45
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:53
+msgid "Recent Actions"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:54
+msgid "My Actions"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:58
+msgid "None available"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/index.html:72
+msgid "Unknown content"
+msgstr ""
+
+#: supplier/models.py:102
+msgid "Product categories"
+msgstr ""
