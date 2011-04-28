@@ -1,17 +1,20 @@
-from django.contrib import admin, messages
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib import admin, messages
+from django.core import urlresolvers
+from django import forms
 
 from gasistafelice.base import models as base_models
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
-from django.core import urlresolvers
 
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
     extra = 0
     exclude = ('account', 'available_for_roles')
+    verbose_name = _("GAS membership")
+    verbose_name_plural = _("GAS memberships")
 
 class GASMemberOrderInline(admin.TabularInline):
     model = gas_models.GASMemberOrder
@@ -34,8 +37,31 @@ class PersonAdmin(admin.ModelAdmin):
     list_editable = ('name', 'surname') #, 'display_name', 'uuid')
     list_display_links = ('__unicode__', 'display_name')
     
+class PlaceForm(forms.ModelForm):
+
+    class Meta:
+        model = base_models.Place
+
+    def clean_address(self):
+        if not self.cleaned_data["name"]:
+            if not self.cleaned_data["address"]:
+                raise forms.ValidationError("Name field and Address field cannot be empty at the same time. Please set at least one of them.")
+                
+        return self.cleaned_data["address"]
+
 class PlaceAdmin(admin.ModelAdmin):
-    pass
+    form = PlaceForm
+    fieldsets = ((None,
+            { 'fields' : ('name', 
+                'description', 'address', 
+                'zipcode', 'city', 'province'
+            )
+    }),
+    ("Geotagging", {
+        'fields' : ('lat','lon'),
+        'classes': ('collapse',)
+    }),
+    )
 
 class GASAdmin(admin.ModelAdmin):
     inlines = [GASMemberInline, ]
@@ -202,6 +228,8 @@ class WithdrawalAdmin(admin.ModelAdmin):
     
     
 admin.site.register(base_models.Person)
+admin.site.register(base_models.Place)
+admin.site.register(base_models.Contact)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
