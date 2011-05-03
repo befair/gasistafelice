@@ -23,7 +23,7 @@ class Supplier(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128) 
     seat =  models.ForeignKey(Place, null=True, blank=True)
-    vat_number =  models.CharField(max_length=128, unique=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
+    vat_number =  models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website =  models.URLField(verify_exists=True, blank=True)
     referrers = models.ManyToManyField(Person, through="SupplierReferrer") 
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
@@ -137,8 +137,8 @@ class ProductMU(models.Model, PermissionResource):
         return rv
     
 class Product(models.Model, PermissionResource):
-
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID') # if empty, should be programmatically set at DB save time
+    #COMMENT: some producer don't have product codification.
+    uuid = models.CharField(max_length=128, unique=False, blank=True, null=True, verbose_name='UUID', help_text=_("Product code")) 
     producer = models.ForeignKey(Supplier)
     category = models.ForeignKey(ProductCategory)
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
