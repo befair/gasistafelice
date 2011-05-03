@@ -68,6 +68,7 @@ class Param(models.Model):
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="obj_id")
 
 class ParamRole(Resource, Role):
+#class ParamRole(Role):
     """
     A custom role model class inheriting from `django-permissions`'s`Role` model.
     This way, we are able to augment the base `Role` model
@@ -76,7 +77,7 @@ class ParamRole(Resource, Role):
     
      A parametric role (`ParamRole`) can be tied to:
      
-     1) a given GAS (e.g. GAS_REFERRER_CASH, GAS_REFERRER_TECH),
+     1) a given GAS (e.g. GAS_REFERRER, GAS_MEMBER, GAS_REFERRER_CASH, GAS_REFERRER_TECH),
      2) a given Supplier (e.g. SUPPLIER_REFERRER, GAS_REFERRER_SUPPLIER),
      3) a given Delivery appointment (e.g. GAS_REFERRER_DELIVERY)
      4) a given Withdrawal appointment (e.g. GAS_REFERRER_WITHDRAWAL)

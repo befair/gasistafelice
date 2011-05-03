@@ -72,9 +72,15 @@ def register_parametric_role(name, **kwargs):
     if validate_parametric_role(name, params, constraints=valid_params_for_roles):   
         # check if a Role with the passed name already exists in the DB; if not, create it
         role = Role.objects.get_or_create(name=name)
+        #if not isinstance(role, Role):
+        #if not isinstance(name, role):
+        #    raise AttributeError("The role must be a Role instance.")   
         ## TODO: enclose in a transaction 
         # create a new blank ParamRole 
-        p_role = ParamRole.objects.create(role=role)
+        #p_role = ParamRole.objects.create(null, role=role)
+        #p_role = ParamRole.objects.create(role)
+        #p_role = ParamRole.objects.create(role=role)
+        p_role = ParamRole(role=role)
         for (k,v) in params:
             p = Param.objects.get_or_create(name=k, param=v)
             p_role.param_set.add(p)
