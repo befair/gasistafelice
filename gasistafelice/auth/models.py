@@ -67,9 +67,9 @@ class Param(models.Model):
     object_id = models.PositiveIntegerField()
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
-class ParamRole(Resource, Role):
+class ParamRole(Role, Resource):
     """
-    A custom role model class inheriting from `django-permissions`'s`Role` model.
+    A custom role model class inheriting from `django-permissions`'s `Role` model.
     This way, we are able to augment the base `Role` model
     (carrying only a `name` field attribute) with additional information
     needed to describe those 'parametric' roles arising in this application domain.
@@ -84,7 +84,7 @@ class ParamRole(Resource, Role):
      6) a given "Retina" (TODO)
     
     """
-    # link to the base model class (`BaseRole`)
+    # link to the base model class (`Role`)
     role = models.OneToOneField(Role, parent_link=True)
     # parameters for this Role
     param_set = models.ManyToManyField(Param)
