@@ -8,7 +8,7 @@
 <key>DJANGO_MANAGE_LOCATION</key>
 <value>gasistafelice/manage.py</value>
 <key>DJANGO_SETTINGS_MODULE</key>
-<value>/home/lorenzo/djcode/gasistafelice/gasistafelice/settings.py</value>
+<value>gasistafelice.settings</value>
 </pydev_variables_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/GasistaFelice</path>
