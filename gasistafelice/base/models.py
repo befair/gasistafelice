@@ -35,7 +35,7 @@ class Person(models.Model, PermissionResource):
     name = models.CharField(max_length=128)
     surname = models.CharField(max_length=128)
     display_name = models.CharField(max_length=128, blank=True)
-    #TODO: Verify if this information is necesary
+    #TODO: Verify if this information is necessary
     #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
     uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
@@ -55,12 +55,12 @@ class Person(models.Model, PermissionResource):
     def city(self):
         return self.address.city 
 
-    def save(self, *args, **kw):
+    def save(self, *args, **kwargs):
         self.name = self.name.capitalize()
         self.surname = self.surname.capitalize()
-        if self.uuid == "":
+        if self.uuid == '':
             self.uuid = None
-        super(Person, self).save(*args, **kw)
+        super(Person, self).save(*args, **kwargs)
 
    
 class Contact(models.Model, PermissionResource):
@@ -107,14 +107,14 @@ class Place(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kw):
+    def save(self, *args, **kwargs):
         #TODO: we should compute city and province starting from zipcode
         self.city = self.city.capitalize()
-        self.province = self.province.capitalize()
-        if not self.name:
+        self.province = self.province.upper()
+        if not self.name and self.address:
             self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
 
-        super(Place, self).save(*args, **kw)
+        super(Place, self).save(*args, **kwargs)
 
 # Generic workflow management
 
