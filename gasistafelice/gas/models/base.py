@@ -236,24 +236,24 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # TODO: should be a `CurrencyField`
     order_delivery_cost = models.FloatField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
-    order_deliver_interval = models.TimeField()  
+    order_deliver_interval = models.TimeField(null=True, blank=True)  
     # how much (in percentage) base prices from the Supplier are modified for the GAS  
-    order_price_percent_update = models.FloatField()
+    order_price_percent_update = models.FloatField(null=True, blank=True)
     # TODO must be a property (use django-permissions)
     #supplier_referrers = ...
     
     #domthu: if GAS's configuration use only one 
     #TODO: see ticket #65
-    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, null=True,
+    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, blank=True,
         help_text=_("Withdrawal week day agreement")
     )
-    default_withdrawal_time = models.TimeField(null=True, \
+    default_withdrawal_time = models.TimeField(null= True, blank=True, \
         help_text=_("withdrawal time agreement")
     )    
 
-    default_withdrawal_place = models.ForeignKey(Place, related_name="default_for_solidal_pact_set")
+    default_withdrawal_place = models.ForeignKey(Place, related_name="default_for_solidal_pact_set", null=True, blank=True)
 
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, null=True, blank=True)
 
     history = HistoricalRecords()
 
