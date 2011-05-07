@@ -149,12 +149,16 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     # how many items of this kind were ordered (globally by the GAS)
     @property
     def ordered_amount(self):
-        # grab all GASMemberOrders related to this product
-        orders = GASMemberOrder.objects.filter(product=self)
+        # grab all GASMemberOrders related to this product and issued by members of the right GAS
+        orders = GASMemberOrder.objects.filter(product=self, purchaser__gas=self.gas)
         amount = 0 
-        for order in orders:
-            amount=+ order.ordered_amount
+        for order in orders:         
+            amount += order.ordered_amount
         return amount 
+    
+    @property
+    def gas(self):
+        return self.order.gas    
     
     @property        
     def local_grants(self):
@@ -278,6 +282,7 @@ class Withdrawal(models.Model, PermissionResource):
     """
     
     place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
+    date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
     # a Withdrawal appointment usually span a time interval
     start_time = models.TimeField(help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(help_text=_("when the withdrawal will end"))
