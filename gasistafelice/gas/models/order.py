@@ -101,8 +101,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #TODO: clean supplier name 
         return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
 
-    def save(self):
-        super(GASSupplierOrder, self).save()
+    def save(self, *args, **kwargs):
+        super(GASSupplierOrder, self).save(*args, **kwargs)
         # If no Products has been associated to this order, then use every Product bound to the Supplier this order will be issued to        
         if not self.products.all():
             # retrieve all `GASSupplierStock`s bound to the GAS and Supplier this order relates to 
