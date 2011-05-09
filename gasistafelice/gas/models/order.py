@@ -83,6 +83,18 @@ class GASSupplierOrder(models.Model, PermissionResource):
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     history = HistoricalRecords()
+    
+    def set_default_product_list(self):
+        '''
+        A helper function associating a default list of products to a GASSupplierOrder.
+        
+        Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
+        in this case, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
+        '''
+        stocks = GASSupplierStock.objects.filter(gas=self.gas, supplier_stock__supplier=self.supplier)
+        for s in stocks:
+            GASSupplierOrderProduct.objects.create(order=self, stock=s)
+        
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -100,16 +112,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # Clean file order name
         #TODO: clean supplier name 
         return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
-
-    def save(self, *args, **kwargs):
-        super(GASSupplierOrder, self).save(*args, **kwargs)
-        # If no Products has been associated to this order, then use every Product bound to the Supplier this order will be issued to        
-        if not self.products.all():
-            # retrieve all `GASSupplierStock`s bound to the GAS and Supplier this order relates to 
-            stocks = GASSupplierStock.objects.filter(gas=self.gas, supplier_stock__supplier=self.supplier)
-            for s in stocks:
-                GASSupplierOrderProduct.objects.create(order=self, stock=s)
-        return
     
     def __unicode__(self):
         return "Order from gas %s to supplier %s" % (self.gas, self.supplier)
