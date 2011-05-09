@@ -124,3 +124,35 @@ class GASSupplierOrderProductTest(TestCase):
         product = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_1)
         self.assertEqual(product.gas, self.gas_1)
         
+class GASSupplierOrderTest(TestCase):
+    '''Tests GASSupplierOrder methods'''
+    def setUp(self):
+        self.now = date.today()
+                       
+        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2')        
+        
+        self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
+        
+        self.category = ProductCategory.objects.create(name='food') 
+        
+        self.product_1 = Product.objects.create(name='carrots', category=self.category, producer=self.supplier_1)
+        self.product_2 = Product.objects.create(name='beans', category=self.category, producer=self.supplier_1)
+        
+        self.stock_1 = SupplierStock.objects.create(supplier=self.supplier_1, product=self.product_1, price=100)
+        self.stock_2 = SupplierStock.objects.create(supplier=self.supplier_1, product=self.product_2, price=150)
+        self.stock_3 = SupplierStock.objects.create(supplier=self.supplier_2, product=self.product_1, price=120)
+        
+        self.gas_stock_1 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_1)
+        self.gas_stock_2 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_2)
+        self.gas_stock_3 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_3)
+        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.gas_2, supplier_stock=self.stock_1)
+        
+                
+    def testDefaultProductSet(self):
+        '''Verify that the default product set is correctly generated'''
+        order = GASSupplierOrder.objects.create(gas=self.gas_1, supplier=self.supplier_1, date_start=self.now)
+        order.set_default_product_set()
+        self.assertEqual(set(order.products.all()), set((self.gas_stock_1, self.gas_stock_2)))
+        
