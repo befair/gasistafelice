@@ -84,9 +84,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
-    def set_default_product_list(self):
+    def set_default_product_set(self):
         '''
-        A helper function associating a default list of products to a GASSupplierOrder.
+        A helper function associating a default set of products to a GASSupplierOrder.
         
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this case, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
