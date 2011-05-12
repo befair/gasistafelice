@@ -6,7 +6,7 @@
 		"description":"Gruppo dacquisto solidale dellalto Maceratese. CAMERINO Iniziato nel febbraio 2010",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"1",
+        "headquarter":"1",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -17,7 +17,7 @@
 		"id_in_des":"CAM",
 		"association_act":"",
 		"fcc":"",
-		"email_referrer":"dom_thual@yahoo.fr",
+		"email_referrer":"test@example.com",
 		"default_close_day":"TUESDAY ",
 		"default_close_time":"22:00:00",
 		"can_change_price":"0",
@@ -25,7 +25,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	},
 	{
@@ -36,7 +36,7 @@
 		"description":"Gruppo d'acquisto solidale dellalto Maceratese. MATELICA Costituito in associazione il 4 agosto 2009, a seguito dell'assemblea",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"2",
+        "headquarter":"2",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -47,7 +47,7 @@
 		"id_in_des":"MAT",
 		"association_act":"",
 		"fcc":"",
-		"email_referrer":"anyazeta@yahoo.it",
+		"email_referrer":"test@example.com",
 		"default_close_day":"TUESDAY ",
 		"default_close_time":"22:00:00",
 		"can_change_price":"0",
@@ -55,7 +55,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	},
 	{
@@ -66,7 +66,7 @@
 		"description":"Gruppo dacquisto solidale dellalto Maceratese. TOLENTINO",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"3",
+        "headquarter":"3",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -77,7 +77,7 @@
 		"id_in_des":"TOL",
 		"association_act":"",
 		"fcc":"",
-		"email_referrer":"stregabetta@hotmail.com",
+		"email_referrer":"test@example.com",
 		"default_close_day":"TUESDAY ",
 		"default_close_time":"22:00:00",
 		"can_change_price":"0",
@@ -85,7 +85,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	},
 	{
@@ -96,7 +96,7 @@
 		"description":"Gruppo dacquisto solidale di RECANATI",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"4",
+        "headquarter":"4",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -107,7 +107,7 @@
 		"id_in_des":"REC",
 		"association_act":"",
 		"fcc":"",
-		"email_referrer":"orly1@libero.it",
+		"email_referrer":"test@example.com",
 		"default_close_day":"TUESDAY ",
 		"default_close_time":"22:00:00",
 		"can_change_price":"0",
@@ -115,7 +115,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	},
 	{
@@ -126,7 +126,7 @@
 		"description":"Il Gruppo di Acquisto Solidale (GAS), di Macerata (MC); stato costituito il 19 novembre 2006",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"5",
+        "headquarter":"5",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -137,7 +137,7 @@
 		"id_in_des":"MAC",
 		"association_act":"",
 		"fcc":"",
-		"email_referrer":"carlo.migliorelli64@gmail.com",
+		"email_referrer":"test@example.com",
 		"default_close_day":"TUESDAY ",
 		"default_close_time":"22:00:00",
 		"can_change_price":"0",
@@ -145,7 +145,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	},
 	{
@@ -156,7 +156,7 @@
 		"description":"Gruppo dacquisto solidale di CIVITANOVA",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"6",
+        "headquarter":"6",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -167,7 +167,7 @@
 		"id_in_des":"CIV",
 		"association_act":"",
 		"fcc":"",
-		"email_referrer":"g_mercanti@hotmail.com",
+		"email_referrer":"test@example.com",
 		"default_close_day":"TUESDAY ",
 		"default_close_time":"22:00:00",
 		"can_change_price":"1",
@@ -175,7 +175,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	},
 	{
@@ -186,7 +186,7 @@
 		"description":"Gruppo dacquisto solidale di MONTEFANO",
 		"birthday":"2011-04-28",
 		"vat":"", 
-        "hearthquarter":"7",
+        "headquarter":"7",
 		"logo":"",
 		"intent_act":"",
 		"phone":"",
@@ -205,7 +205,7 @@
 		"default_delivery_day":"THURSDAY ",
 		"default_delivery_time":"19:30:00",
 		"use_single_delivery":"1",
-		"use_hearthquarter_as_withdrawal":"1"
+		"use_headquarter_as_withdrawal":"1"
 	}
 	}
 ]

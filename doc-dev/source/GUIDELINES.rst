@@ -85,5 +85,10 @@ Struttura classi del modello
 * Poi le property
 * Poi i metodi
 
+Convenzioni
+^^^^^^^^^^^
 
+* Le cose da fare sono marcate come `TODO`
+* I commenti "che si vogliono indirizzare agli altri sviluppatori" iniziano con `#COMMENT <nick>`
+* Le parti di codice pushate ma che hanno bisogno di revisione includono la stringa `TODO: NEEDS REVIEW`
 

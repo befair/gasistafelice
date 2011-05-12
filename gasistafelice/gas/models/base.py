@@ -31,7 +31,7 @@ class GAS(models.Model, PermissionResource):
     name = models.CharField(max_length=128)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    hearthquarter = models.ForeignKey(Place, related_name="hearthquarter_set", help_text=_("main address"))
+    headquarter = models.ForeignKey(Place, related_name="headquarter_set", help_text=_("main address"))
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
@@ -104,7 +104,7 @@ class GAS(models.Model, PermissionResource):
         help_text=_("GAS uses only one delivery place")
     )
 
-    use_hearthquarter_as_withdrawal = models.BooleanField(default=True)
+    use_headquarter_as_withdrawal = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=True)  
 
@@ -132,7 +132,7 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def city(self):
-        return self.hearthquarter.city 
+        return self.headquarter.city 
 
     @property
     def economic_state(self):
@@ -160,6 +160,7 @@ class GAS(models.Model, PermissionResource):
     #   pre_save.connect(pre_save_signal, sender=self)
 
     def save(self, *args, **kw):
+        """TODO: NEEDS REVIEW"""
         if self.id_in_des == "":
             self.id_in_des = None
         if self.id_in_des is not None:
@@ -180,7 +181,10 @@ class GAS(models.Model, PermissionResource):
 
 #class GASConfig(GAS):
 class GASConfig(models.Model, PermissionResource):
-    """Encapsulate here gas settings and configuration facilities"""
+    """
+    TODO: NEEDS REVIEW.
+    Encapsulate here gas settings and configuration facilities
+    """
     pass
 #
 #    # Link to parent class

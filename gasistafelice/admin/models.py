@@ -81,10 +81,10 @@ class GASAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
     fieldsets = (('Identity',
-            { 'fields' : ('name', 'id_in_des', 'email_gas', 'logo', 'hearthquarter', 'description')
+            { 'fields' : ('name', 'id_in_des', 'email_gas', 'logo', 'headquarter', 'description')
     }),
     (_("Configuration"), {
-        'fields' : ('can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'use_hearthquarter_as_withdrawal', 'is_active', 'use_scheduler'),
+        'fields' : ('can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'use_headquarter_as_withdrawal', 'is_active', 'use_scheduler'),
         'classes': ('collapse',)
     }),
     ("Economic", {
@@ -93,7 +93,7 @@ class GASAdmin(admin.ModelAdmin):
     }),
     )
     inlines = [ GASMemberInline, ]
-    search_fields = ('^name', '^id_in_des','email_gas', 'hearthquarter__city')
+    search_fields = ('^name', '^id_in_des','email_gas', 'headquarter__city')
 
     def website_with_link(self, obj):
         url = obj.website
