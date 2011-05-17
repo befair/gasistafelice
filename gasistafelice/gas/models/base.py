@@ -250,7 +250,7 @@ class GASMember(models.Model, PermissionResource):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
         #FIXME: Cannot assign "(<Role: GAS_MEMBER>, False)": "ParamRole.role" must be a "Role" instance.
-        #COMMENT: issue #2 In my local database i've seen that roles are empty: needed fixtures?
+        #COMMENT: issue #2 
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
     
