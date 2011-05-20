@@ -65,7 +65,7 @@ class Param(models.Model):
     name = models.CharField(max_length=20, choices=PARAM_CHOICES)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    param = generic.GenericForeignKey(ct_field="content_type", fk_field="obj_id")
+    param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
 class ParamRole(Resource, Role):
 #class ParamRole(Role):

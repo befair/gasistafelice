@@ -279,6 +279,52 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     Each Supplier comes into relationship with a GAS by signing this pact,
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
+
+    >>> from gasistafelice.gas.models.base import *
+    >>> from gasistafelice.supplier.models import *
+    >>> g1 = GAS.objects.all()[0]
+    >>> gname = g1.name
+    >>> s1 = Supplier.objects.all()[0]
+    >>> sname = s1.name
+
+    #If running fixtures we can do
+    >>> gname
+    u'Gas1'
+    >>> sname
+    u'NameSupplier1'
+
+    >>> pds = GASSupplierSolidalPact()
+    >>> pds.save()
+    Traceback (most recent call last):
+        ...
+        if not isinstance(self.gas, GAS):
+        ...
+        raise self.field.rel.to.DoesNotExist
+    DoesNotExist
+    >>> pds = GASSupplierSolidalPact(gas=g1)
+    >>> pds.save()
+    Traceback (most recent call last):
+        ...
+        if not isinstance(self.supplier, Supplier):
+        ...
+        raise self.field.rel.to.DoesNotExist
+    DoesNotExist
+    >>> pds.supplier
+    Traceback (most recent call last):
+    ...
+        raise self.field.rel.to.DoesNotExist
+    DoesNotExist
+    >>> pds.supplier = s1
+    >>> pds.save()
+    Traceback (most recent call last):
+      File "<console>", line 1, in <module>
+        ...
+        super(GASMember, self).save(*args, **kw)
+    TypeError: super(type, obj): obj must be an instance or subtype of type
+    #TODO: resolve GASMember
+
+    #TODO: import GASSupplierStock in the GAS models see ticket#79
+
     """
 
     gas = models.ForeignKey(GAS)
@@ -335,8 +381,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     #def set_default_product_set(self):
     def save(self, *args, **kw):
-        if self.pk == None:
-            products = SupplierStock.objects.filter(supplier=self.supplier)
-            for p in products:
-                GASSupplierStock.objects.create(gas=self.gas, supplier_stock=p)
+        if not isinstance(self.gas, GAS):
+            raise AttributeError("PDS gas cannot be null")
+        if not isinstance(self.supplier, Supplier):
+            raise AttributeError("PDS supplier cannot be null")
+        #TODO 
+        #if self.pk == None:
+        #    products = SupplierStock.objects.filter(supplier=self.supplier)
+        #    for p in products:
+        #        GASSupplierStock.objects.create(gas=self.gas, supplier_stock=p)
         super(GASMember, self).save(*args, **kw)
