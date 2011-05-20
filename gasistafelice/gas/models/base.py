@@ -331,4 +331,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
 
+    history = HistoricalRecords()
 
+    #def set_default_product_set(self):
+    def save(self, *args, **kw):
+        if self.pk == None:
+            products = SupplierStock.objects.filter(supplier=self.supplier)
+            for p in products:
+                GASSupplierStock.objects.create(gas=self.gas, supplier_stock=p)
+        super(GASMember, self).save(*args, **kw)

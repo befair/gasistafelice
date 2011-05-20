@@ -174,10 +174,12 @@ class SupplierStock(models.Model, PermissionResource):
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
+    #COMMENT: minimum amount of Product units a GASMember is able to order 
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+    #TODO: Field for Product units per box
     # how the Product will be delivered
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
 
