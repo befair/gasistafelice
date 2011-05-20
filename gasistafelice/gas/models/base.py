@@ -86,7 +86,7 @@ class GAS(models.Model, PermissionResource):
         help_text=_("default closing order day of the week")
     )  
     #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
-    default_close_time = models.TimeField(null=True,
+    default_close_time = models.TimeField(blank=True, null=True,
         help_text=_("default order closing hour and minutes")
     )
   
@@ -96,7 +96,7 @@ class GAS(models.Model, PermissionResource):
     )  
 
     #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
-    default_delivery_time = models.TimeField(null=True,
+    default_delivery_time = models.TimeField(blank=True, null=True,
         help_text=_("default delivery closing hour and minutes")
     )  
 
@@ -174,9 +174,9 @@ class GAS(models.Model, PermissionResource):
             #    #TODO: add default values   
             #TODO: issue #1 need to create workflow for default_workflow_gasmember_order and default_workflow_gassupplier_order?
         if self.default_close_time is None:
-            selft.default_close_time = datetime.time.now()
+            self.default_close_time = datetime.datetime.now()
         if self.default_delivery_time is None:
-            selft.default_delivery_time = datetime.time.now()
+            self.default_delivery_time = datetime.datetime.now()
         super(GAS, self).save(*args, **kw)
 
 #class GASConfig(GAS):
@@ -259,7 +259,7 @@ class GASMember(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return _("%(person)s in GAS %(gas)s") % {'person' : self.person, 'gas': self.gas}
+        return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
     
     @property
     def verbose_name(self):
@@ -328,10 +328,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     # which Products GAS members can order from Supplier
     supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
-    # TODO: should be a `CurrencyField` 
-    order_minimum_amount = models.FloatField(null=True, blank=True)
-    # TODO: should be a `CurrencyField`
-    order_delivery_cost = models.FloatField(null=True, blank=True)
+    order_minimum_amount = CurrencyField(null=True, blank=True)
+    order_delivery_cost = CurrencyField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
     order_deliver_interval = models.TimeField()  
     # how much (in percentage) base prices from the Supplier are modified for the GAS  

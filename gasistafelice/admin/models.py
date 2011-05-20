@@ -23,10 +23,11 @@ class GASMemberOrderInline(admin.TabularInline):
 class SupplierStockInline(admin.TabularInline):
     model = supplier_models.SupplierStock
     exclude = ('delivery_terms',)
+    extra = 1
     
 class GASSupplierOrderProductInline(admin.TabularInline):
     model = gas_models.GASSupplierOrderProduct
-    extra = 1
+    extra = 10
 
 ########################## ModelAdmin customizations ######
 
@@ -222,8 +223,21 @@ class SupplierStockAdmin(admin.ModelAdmin):
     price_pretty.short_description = "price"
 
 
+class GASSupplierOrderForm(forms.ModelForm):
+
+    class Meta:
+        model = gas_models.GASSupplierOrder
+
+    def clean_address(self):
+        if not self.cleaned_data["name"]:
+            if not self.cleaned_data["address"]:
+                raise forms.ValidationError("Name field and Address field cannot be empty at the same time. Please set at least one of them.")
+                
+        return self.cleaned_data["address"]
+
 
 class GASSupplierOrderAdmin(admin.ModelAdmin):
+    form = GASSupplierOrderForm
     fieldsets = ((None,
             { 'fields' : (
                 'gas',
@@ -234,10 +248,51 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
               )
             }),
     )
+    #exclude = ('withdrawal',)
     
+    def get_form(self, request, obj=None, **kwargs):
+        
+        if request.user.is_superuser:
+            pass
+        elif 1: #TODO request.user.has_perm(PERM)
+
+            if request.user.person.gasmember_set.count() == 1:
+                # Ovverride form class
+                orig_form = self.__class__.form
+                default_gas = gas_models.GAS.objects.filter(gasmember__in=[request.user.person])[0]
+                class ReferrerMeta(orig_form.Meta):
+                    widgets = { 'gas' : forms.widgets.TextInput(attrs={ 'value' : default_gas}) }
+                    fields = ('supplier', 'date_start', 'date_end', 'delivery', 'withdrawal')
+                attrs = { 'Meta' : ReferrerMeta }
+                gas_referrer_form = type(orig_form.__name__ + "Referrer", (orig_form,), attrs)
+                self.form = gas_referrer_form
+
+        return super(GASSupplierOrderAdmin, self).get_form(request, obj, **kwargs)
+        
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if request.user.is_superuser:
+            pass
+        elif 1: #TODO request.user.has_perm(PERM)
+            if db_field.name == "gas":
+                gas_qs = gas_models.GAS.objects.filter(gasmember__in=[request.user.person])
+                kwargs["queryset"] = gas_qs
+            elif db_field.name == "supplier":
+                gas_qs = gas_models.GAS.objects.filter(gasmember__in=[request.user.person])
+                supplier_qs = supplier_models.Supplier.objects.filter(gas__in=gas_qs)
+                kwargs["queryset"] = supplier_qs
+        return super(GASSupplierOrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def queryset(self, request):
+        qs = super(GASSupplierOrderAdmin, self).queryset(request)
+        if request.user.is_superuser:
+            rv = qs
+        elif 1: #TODO request.user.has_perm(PERM)
+            rv = qs.filter(gas=request.user.gas)
+        return rv
+
     inlines = [GASSupplierOrderProductInline, ]
     
-
 class GASSupplierOrderProductAdmin(admin.ModelAdmin):
     pass
 
@@ -272,6 +327,7 @@ admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
+admin.site.register(gas_models.base.GASSupplierSolidalPact)
 admin.site.register(gas_models.order.GASSupplierStock)
 admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
 admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderProductAdmin)
