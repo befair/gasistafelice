@@ -67,12 +67,13 @@ class Param(models.Model):
     object_id = models.PositiveIntegerField()
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
-class ParamRole(Role, Resource):
+class ParamRole(models.Model, Resource):
     """
-    A custom role model class inheriting from `django-permissions`'s `Role` model.
-    This way, we are able to augment the base `Role` model
-    (carrying only a `name` field attribute) with additional information
-    needed to describe those 'parametric' roles arising in this application domain.
+    A custom role model class inspired from `django-permissions`'s `Role` model.
+    
+    The goal is to augment the base `Role` model (carrying only a `name` field attribute) 
+    with additional information needed to describe those 'parametric' roles arising 
+    in this application domain.
     
      A parametric role (`ParamRole`) can be tied to:
      
@@ -85,10 +86,14 @@ class ParamRole(Role, Resource):
     
     """
     # link to the base model class (`Role`)
-    role = models.OneToOneField(Role, parent_link=True)
+    role = models.ForeignKey(Role)
     # parameters for this Role
     param_set = models.ManyToManyField(Param)
     
+#TODO: write a more descriptive string representation             
+    def __unicode__(self):
+        return self.role.name
+
     def add_principal(self, principal, content=None):
         """
         Add the given principal (User or Group) to this parametric role.
