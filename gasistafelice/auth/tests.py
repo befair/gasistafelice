@@ -5,11 +5,80 @@ from permissions.models import Role
 from gasistafelice.base.models import Place
 from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER 
+from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
+GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER, SUPPLIER_REFERRER 
+from gasistafelice.auth import valid_params_for_roles
 from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.utils import register_parametric_role
+from gasistafelice.auth.utils import register_parametric_role,\
+    _validate_parametric_role
 
 from datetime import time, date, datetime
+
+class ParamRoleValidationTest(TestCase):
+    '''Tests for the `_validate_parametric_role` function'''
+    def setUp(self):
+        now = datetime.now()
+        today = date.today()        
+        midnight = time(hour=0)
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.place = Place.objects.create(city='senigallia', province='AN')
+        self.delivery = Delivery.objects.create(place=self.place, date=today)
+        self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
+        self.constraints = valid_params_for_roles
+    def testValidationOK(self):
+        '''Verify that validation of a parametric role succeeds if arguments are fine'''
+        name = SUPPLIER_REFERRER
+        params = {'supplier':self.supplier}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_MEMBER
+        params = {'gas':self.gas}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER
+        params = {'gas':self.gas}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER_CASH
+        params = {'gas':self.gas}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER_TECH
+        params = {'gas':self.gas}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER_SUPPLIER
+        params = {'gas':self.gas, 'supplier':self.supplier}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER_ORDER
+        params = {'order':self.order}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER_WITHDRAWAL
+        params = {'withdrawal':self.withdrawal}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+        name = GAS_REFERRER_DELIVERY
+        params = {'delivery':self.delivery}
+        self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
+    def testValidationFailIfRoleNotAllowed(self):
+        '''Verify that validation of a parametric role fails if basic role isn't allowed'''
+        name = 'FOO'
+        params = {'gas':self.gas}
+        self.assertFalse(_validate_parametric_role(name, params, constraints=self.constraints))
+    def testValidationFailIfParamNameNotAllowed(self):
+        '''Verify that validation of a parametric role fails if a param's name isn't allowed'''
+        name = 'GAS_MEMBER'
+        params = {'foo':self.gas}
+        self.assertFalse(_validate_parametric_role(name, params, constraints=self.constraints))
+    
+    def testValidationFailIfParamTypeNotAllowed(self):
+        '''Verify that validation of a parametric role fails if a param's type isn't allowed'''
+        name = 'GAS_MEMBER'
+        params = {'gas':self.supplier}
+        self.assertFalse(_validate_parametric_role(name, params, constraints=self.constraints))    
+        
+    def testValidationOKIfNoConstraints(self):
+        '''Verify that validation of any parametric role succeeds if no costraints are specified'''
+        name = 'FOO'
+        params = {'foo':None}
+        self.assertTrue(_validate_parametric_role(name, params))        
+        
 
 
 class ParamRoleRegistrationTest(TestCase):
@@ -88,7 +157,7 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_ORDER).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_ORDER) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.param_set.all()]        
         self.assertEqual(param_names, ['order',])
         param_values = [p.param for p in pr.param_set.all()]
         self.assertEqual(param_values, [self.order,])
@@ -114,4 +183,23 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(param_names, ['delivery',])
         param_values = [p.param for p in pr.param_set.all()]
         self.assertEqual(param_values, [self.delivery,])
+        
+    def testRegistrationFailIfRoleNotAllowed(self):
+        '''Verify that registration of a parametric role fails if basic role isn't allowed'''
+        self.assertFalse(register_parametric_role(name='FOO', gas=self.gas))
+        
+    def testRegistrationFailIfParamNameNotAllowed(self):
+        '''Verify that registration of a parametric role fails if a param's name isn't allowed'''
+        self.assertFalse(register_parametric_role(name=GAS_MEMBER, foo=self.gas))
+    
+    def testRegistrationFailIfParamTypeNotAllowed(self):
+        '''Verify that registration of a parametric role fails if a param's type isn't allowed'''
+        self.assertFalse(register_parametric_role(name=GAS_MEMBER, gas=self.supplier))
+        
+    def testAvoidDuplicateParamRoles(self):
+        '''If a given parametric role already exists in the DB, don't duplicate it'''
+        register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        self.assertEqual(ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER).count(), 1)
+
                  
