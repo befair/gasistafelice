@@ -10,6 +10,8 @@ def get_ctype_from_model_label(label):
     """
     try:
         (app_label, model_name) = label.split('.')
+        # ContenType framework expects lowercased model names
+        model_name = model_name.lower()               
         ctype = ContentType.objects.get(app_label=app_label, model=model_name)
         return ctype        
     except:
