@@ -3,7 +3,7 @@ from django.test import TestCase
 from gasistafelice.base.models import Person
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact, GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
-from datetime import time, date, timedelta
+from datetime import time, date
 
 class GASSupplierStockTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierStock'''
