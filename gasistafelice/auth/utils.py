@@ -104,7 +104,7 @@ def register_parametric_role(name, **kwargs):
             p, created = Param.objects.get_or_create(name=k, content_type=ct, object_id=obj_id)
             p_role.param_set.add(p)
             p.save()
-            return p_role           
+        return p_role           
     else: # this kind of parametric role isn't allowed in the current application domain
         return False
 
@@ -182,7 +182,7 @@ def _compare_parametric_roles(p_role1, p_role2):
     raise a  TypeError.        
     """
     
-    p_roles = (p_role1, p_role2)     
+    p_roles = [p_role1, p_role2]     
     for i in range(0,2):
         if isinstance(p_roles[i], ParamRole):
             # if argument is a ParamRole instance, convert it to a dictionary representation;
