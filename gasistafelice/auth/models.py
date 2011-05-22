@@ -11,7 +11,7 @@ from gasistafelice.base.models import Resource
 #from gasistafelice.supplier.models import Supplier
 
 class ParamByName(object):
-    """Helper class used to set param role properties by name """
+    """Helper class used to set ParamRole properties by name """
 
     def get_param(self, param_role, name):
         """
@@ -98,14 +98,14 @@ class ParamRole(models.Model, Resource):
         """
         Add the given principal (User or Group) to this parametric role.
         
-        Raise `AttributeError` if the principal is neither a User nor a Group instance.
+        Raise `TypeError` if the principal is neither a User nor a Group instance.
         """
         if isinstance(principal, User):
             PrincipalParamRoleRelation.objects.create(user=principal, role=self)
         elif isinstance(principal, Group):
             PrincipalParamRoleRelation.objects.create(group=principal, role=self)
         else:
-            raise AttributeError("The principal must be either a User instance or a Group instance.")   
+            raise TypeError("The principal must be either a User instance or a Group instance.")   
 
             
     def get_groups(self, content=None):
