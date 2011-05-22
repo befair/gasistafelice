@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from permissions.models import Role
 
 from gasistafelice.base.models import Place
-from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal
+from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER, SUPPLIER_REFERRER 
@@ -344,6 +344,76 @@ class ParamRoleRegistrationTest(TestCase):
         register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
         self.assertEqual(ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER).count(), 1)
         
+class RoleAutoSetupTest(TestCase):
+    '''Tests automatic role-setup operations happening at instance-creation time'''
+    def setUp(self):
+        now = datetime.now()
+        today = date.today()        
+        midnight = time(hour=0)
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.place = Place.objects.create(city='senigallia', province='AN')
+        self.delivery = Delivery.objects.create(place=self.place, date=today)
+        self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+    
+    def testGASRoleSetup(self):
+        '''Verify that GAS-specific parametric roles are created when a new GAS is created'''
+        # GAS_REFERRER_TECH, GAS_REFERRER_CASH
+        
 
+        role, created = Role.objects.get_or_create(name=GAS_MEMBER)
+        p_role = ParamRole.objects.get(role__name=GAS_MEMBER)
+        expected_dict = {'role':role, 'params':{'gas':self.gas}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
+
+        role, created = Role.objects.get_or_create(name=GAS_REFERRER_CASH)
+        p_role = ParamRole.objects.get(role__name=GAS_REFERRER_CASH)
+        expected_dict = {'role':role, 'params':{'gas':self.gas}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
+
+        role, created = Role.objects.get_or_create(name=GAS_REFERRER_TECH)
+        p_role = ParamRole.objects.get(role__name=GAS_REFERRER_TECH)
+        expected_dict = {'role':role, 'params':{'gas':self.gas}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
+     
+
+    def testGASMemberRoleSetup(self):
+        '''Verify that role-related setup tasks are executed when a new GAS member is created'''
+        # TODO
+        pass
+        
+    def testGASSupplierSolidalPactRoleSetup(self):
+        '''Verify that a parametric GAS_REFERRER_SUPPLIER is created when a new solidal pact is created'''
+        # GAS_REFERRER_SUPPLIER
+        
+        role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)
+        p_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER)
+        expected_dict = {'role':role, 'params': {'gas':self.gas, 'supplier':self.supplier}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
+
+    def testGASSupplierOrderRoleSetup(self):
+        '''Verify that a parametric GAS_REFERRER_ORDER is created when a new GAS supplier order is created'''
+        role, created = Role.objects.get_or_create(name=GAS_REFERRER_ORDER)
+        p_role = ParamRole.objects.get(role__name=GAS_REFERRER_ORDER)
+        expected_dict = {'role':role, 'params': {'order':self.order}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
+
+        
+    def testDeliveryRoleSetup(self):
+        '''Verify that a parametric GAS_REFERRER_DELIVERY is created when a new delivery appointment is created'''
+        role, created = Role.objects.get_or_create(name=GAS_REFERRER_DELIVERY)
+        p_role = ParamRole.objects.get(role__name=GAS_REFERRER_DELIVERY)
+        expected_dict = {'role':role, 'params': {'delivery':self.delivery}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
+
+    
+    def testWithdrawalRoleSetup(self):
+        '''Verify that a parametric GAS_REFERRER_WITHDRAWAL is created when a new withdrawal appointment is created'''
+        role, created = Role.objects.get_or_create(name=GAS_REFERRER_WITHDRAWAL)
+        p_role = ParamRole.objects.get(role__name=GAS_REFERRER_WITHDRAWAL)
+        expected_dict = {'role':role, 'params': {'withdrawal':self.withdrawal}}
+        self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
 
                  
