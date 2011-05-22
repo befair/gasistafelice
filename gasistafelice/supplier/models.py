@@ -64,8 +64,8 @@ class SupplierReferrer(models.Model, PermissionResource):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
         #FIXME: ValueError: Cannot assign "(<Role: SUPPLIER_REFERRER>, False)": "ParamRole.role" must be a "Role" instance.
-        role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        role.add_principal(user)     
+        #role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
+        #role.add_principal(user)     
     
     @property        
     def local_grants(self):
