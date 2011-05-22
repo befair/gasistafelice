@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.contenttypes.models import ContentType
 
 from permissions.models import Role
 
@@ -8,11 +9,152 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER, SUPPLIER_REFERRER 
 from gasistafelice.auth import valid_params_for_roles
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.utils import register_parametric_role,\
-    _validate_parametric_role
+from gasistafelice.auth.models import ParamRole, Param
+from gasistafelice.auth.utils import register_parametric_role, _validate_parametric_role,\
+_parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
+    _compare_parametric_roles
 
 from datetime import time, date, datetime
+
+class ParamRoleAsDictTest(TestCase):
+    '''Tests for the `_parametric_role_as_dict()` helper function'''
+    def setUp(self):
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.role = Role.objects.create(name='FOO')
+        p_role= ParamRole.objects.create(role=self.role)
+        p1 = Param.objects.create(name='gas', param=self.gas)
+        p_role.param_set.add(p1)
+        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p_role.param_set.add(p2)
+        
+        p_role.save()
+        self.p_role = p_role
+        
+    def testConversionOK(self):
+        '''If a ParamRole instance is passed, return a dictionary representing it'''
+        expected_dict = {'role':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
+        self.assertEqual(_parametric_role_as_dict(self.p_role), expected_dict)
+        
+    def testConversionFail(self):
+        '''If the argument isn't a ParamRole instance, raise a TypeError'''
+        self.assertRaises(TypeError, _parametric_role_as_dict, None)
+        self.assertRaises(TypeError, _parametric_role_as_dict, 1)
+        self.assertRaises(TypeError, _parametric_role_as_dict, self.role)
+    
+    
+class ParamRoleAsDictValidationTest(TestCase):
+    '''Tests for the `_is_valid_parametric_role_dict_repr()` helper function'''
+    def setUp(self):
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.role = Role.objects.create(name='FOO')        
+        
+    def testValidationOK(self):
+        '''If a dictionary has the right structure to represent a parametric role, return True'''
+        p_role_dict = {'role':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
+        self.assertTrue(_is_valid_parametric_role_dict_repr(p_role_dict))
+    
+    def testValidationFailIfNotDict(self):
+        '''If passed dictionary hasn't expected keys, return False'''
+        p_role_dict = {'foo':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
+        self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))
+        p_role_dict = {'role':self.role, 'foo':{'gas':self.gas, 'supplier':self.supplier}}
+        self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))
+        p_role_dict = {'role':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}, 'foo':None}
+        self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))
+        
+    def testValidationFailIfNotRole(self):
+        '''If `role` key is not a `Role` model instance, return False'''
+        p_role_dict = {'role':1, 'params':{'gas':self.gas, 'supplier':self.supplier}}
+        self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))        
+    
+    def testValidationFailIfNotParams(self):
+        '''If `params` key is not a dictionary, return False'''
+        p_role_dict = {'role':self.role, 'params':1}
+        self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))  
+
+class ParamRoleComparisonTest(TestCase):
+    '''Tests for the `_compare_parametric_roles()` helper function'''
+    def setUp(self):
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.gas_1 = GAS.objects.create(name='barGAS', id_in_des='2')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        self.role = Role.objects.create(name='FOO')
+        self.role_1 = Role.objects.create(name='BAR')
+        
+        self.p1 = Param.objects.create(name='gas', param=self.gas)
+        self.p2 = Param.objects.create(name='supplier', param=self.supplier)
+        self.p3 = Param.objects.create(name='gas', param=self.gas_1)
+        
+        p_role_1 = ParamRole.objects.create(role=self.role)
+        p_role_1.param_set.add(self.p1)
+        p_role_1.param_set.add(self.p2)        
+        p_role_1.save()
+        self.p_role_1 = p_role_1
+        
+        p_role_2 = ParamRole.objects.create(role=self.role)
+        p_role_2.param_set.add(self.p1)
+        p_role_2.param_set.add(self.p2)        
+        p_role_2.save()
+        self.p_role_2 = p_role_2    
+        
+        p_role_3 = ParamRole.objects.create(role=self.role_1)
+        p_role_3.param_set.add(self.p1)
+        p_role_3.param_set.add(self.p2)        
+        p_role_3.save()
+        self.p_role_3 = p_role_3    
+        
+        p_role_4 = ParamRole.objects.create(role=self.role)
+        p_role_4.param_set.add(self.p3)
+        p_role_4.param_set.add(self.p2)        
+        p_role_4.save()
+        self.p_role_4 = p_role_4    
+            
+        
+    def testComparisonOK(self):
+        '''If arguments describe the same parametric role, return True'''         
+        # compare two ParamRole instances
+        self.assertTrue(_compare_parametric_roles(self.p_role_1, self.p_role_2))
+                
+        # compare two dictionary representations
+        p_role_dict_1 = {'role':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
+        p_role_dict_2 = {'role':self.role, 'params':{'supplier':self.supplier, 'gas':self.gas}}
+        self.assertTrue(_compare_parametric_roles(p_role_dict_1, p_role_dict_2))
+        
+        # compare one ParamRole instance and one dictionary representation
+        self.assertTrue(_compare_parametric_roles(p_role_dict_1, self.p_role_2))
+        self.assertTrue(_compare_parametric_roles(p_role_dict_2, self.p_role_1))
+        
+    def testFailIfNotSameKind(self):
+        '''If arguments describe parametric roles of different kind, return False'''
+        
+        self.assertFalse(_compare_parametric_roles(self.p_role_1, self.p_role_3))
+    
+    def testFailIfNotSameParameters(self):
+        '''If arguments describe parametric roles with different parameters, return False'''
+        self.assertFalse(_compare_parametric_roles(self.p_role_1, self.p_role_4))        
+    
+    def testErrorIfTooManyArguments(self):
+        '''If more than two arguments are given, raise TypeError'''
+        self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, self.p_role_2, self.p_role_2)
+        self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, self.p_role_2, None)
+
+    def testErrorIfNotEnoughArguments(self):
+        '''If less than two arguments are given, raise TypeError'''
+        
+        self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1)
+        self.assertRaises(TypeError, _compare_parametric_roles)
+
+    def testErrorIfInvalidArguments(self):
+        '''If an argument is neither a ParamRole instance nor a valid dictionary representation for it, raise TypeError'''
+        
+        self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, None)
+        self.assertRaises(TypeError, _compare_parametric_roles, None, self.p_role_1)
+        self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, {})
+        self.assertRaises(TypeError, _compare_parametric_roles,  {}, self.p_role_1)
+
 
 class ParamRoleValidationTest(TestCase):
     '''Tests for the `_validate_parametric_role` function'''
@@ -201,5 +343,7 @@ class ParamRoleRegistrationTest(TestCase):
         register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
         register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
         self.assertEqual(ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER).count(), 1)
+        
+
 
                  
