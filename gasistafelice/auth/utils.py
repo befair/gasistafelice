@@ -15,36 +15,45 @@ from gasistafelice.auth.models import Param, ParamRole, PrincipalParamRoleRelati
 # Roles ######################################################################
 # CREDITS: inspired by `django-permissions`
 
-def validate_parametric_role(name, params, constraints=None):
+def _validate_parametric_role(name, params, constraints=None):
     """
     Check if the parameters passed on registration of a new (parametric) role
-    are allowed in current the application domain.  
+    are allowed in the current application domain.  
     
     **Parameters:**
     name
         a string identifying the kind of parametric role to register;
-        must be an identifier of an existing (non-parametric) Role
+        must be an identifier of an allowed (non-parametric) Role
     params
         a dictionary containing names and values of the parameters to be associated
         with the parametric Role 
     constraints
-        a data structure specifiyng what combinations of basic roles and parameters
-        are valid in the context of the current application domain. 
+        a data structure specifying what combinations of basic roles and parameters
+        are valid in the context of the current application domain.
+        This data structure must be a dictionary having as keys the string identifiers 
+        of allowed (non-parametric) roles; values must be dictionaries where each key-value pair
+        consists of the name (as as string) and content type (as a 'model label') of an
+        allowed parameter (here, the 'model label' is  a string of the type 'app_name.model_name').  
+         
     """
     # construct a dictionary holding ContentTypes of passed parameters
-    param_specs = {}
-    for (k,v) in params.items():
-        param_specs[k] = ContentType.objects.get_for_model(v)
-    # construct a dictionary holding expected ContentTypes of expected parameters
-    role_name = name
-    expected_param_specs = {}
-    for (k,v) in constraints[role_name].items():
-        expected_param_specs[k] = get_ctype_from_model_label(v)
-    # compare computed and expected signatures for parameters
-    if expected_param_specs == param_specs:
-        return True
-    else:
-        return False
+    if constraints: # if no constraints are specified, any parametric role is valid
+        param_specs = {}
+        for (k,v) in params.items():
+            param_specs[k] = ContentType.objects.get_for_model(v)
+        # construct a dictionary holding expected ContentTypes of expected parameters
+        role_name = name
+        expected_param_specs = {}
+        if role_name not in constraints.keys(): # this generic role is not allowed in the current application domain  
+            return False
+        for (k,v) in constraints[role_name].items():
+            expected_param_specs[k] = get_ctype_from_model_label(v)
+        # compare computed and expected signatures for parameters
+        if expected_param_specs == param_specs:
+            return True
+        else:
+            return False
+    return True
 
 
 def register_parametric_role(name, **kwargs):
@@ -69,28 +78,123 @@ def register_parametric_role(name, **kwargs):
     """
     # TODO: adapt implementation to the new version of ParamRole
     params = kwargs
-    if validate_parametric_role(name, params, constraints=valid_params_for_roles):   
+    if _validate_parametric_role(name, params, constraints=valid_params_for_roles):   
         # check if a Role with the passed name already exists in the DB; if not, create it
-        role = Role.objects.get_or_create(name=name)
-        ## TODO: enclose in a transaction 
+        role, created = Role.objects.get_or_create(name=name)      
+        ## TODO: enclose in a transaction
+        # construct the dictionary representation of the parametric role to be registered,
+        # as specified by the passed arguments
+        p_role_dict = {}
+        p_role_dict['role'] = role
+        p_role_dict['params'] = params           
+                
+        # avoid storing duplicated parametric roles in the DB
+        # if a parametric role of the same kind and with the same parameters 
+        # of the one to be registered already exists in the DB, creation isn't actually needed
+        candidates =  ParamRole.objects.filter(role=role)
+        for c in candidates:
+            if _compare_parametric_roles(p_role_dict, c):
+                return c
+        # the parametric role doesn't already exist in the DB, so create it
         # create a new blank ParamRole 
         p_role = ParamRole.objects.create(role=role)
-        for (k,v) in params:
-            p = Param.objects.get_or_create(name=k, param=v)
+        for (k,v) in params.items():
+            ct = ContentType.objects.get_for_model(v)
+            obj_id = v.id
+            p, created = Param.objects.get_or_create(name=k, content_type=ct, object_id=obj_id)
             p_role.param_set.add(p)
-            # avoid storing duplicated parametric roles in the DB
-            # if a parametric role with the same parameters of the one just constructed
-            # already exists in the DB, registration isn't actually needed
-            existing_p_roles = ParamRole.objects.all()
-            if p_role in existing_p_roles:
-                return True 
-            else:
-                # this parametric role doesn't exists yet, so save it to the DB 
-                p.save()
-                return p_role
+            p.save()
+            return p_role           
     else: # this kind of parametric role isn't allowed in the current application domain
         return False
+
+def _parametric_role_as_dict(p_role):
+    """
+    Convert a parametric role (a ParamRole model instance) to a dictionary representation."
     
+    If argument is not a ParamRole model instance, raise a TypeError.
+    
+    The dictionary representation of a parametric role is of the form:
+    
+    {'role':role, params:{'name1':value1, 'name2':value2,..}},
+    
+    where role is the (basic) role model instance associated with the ParamRole.
+    
+    This kind of representation can be useful when comparing two parametric roles, 
+    since it doesn't depend on details such as instance IDs and similar.    
+    """    
+    if isinstance(p_role, ParamRole):
+        dict_repr = {}
+        role = p_role.role
+        dict_repr['role'] = role
+        dict_repr['params'] = {}
+        params = p_role.param_set.all()
+        for p in params:
+            name = p.name
+            value = p.param
+            dict_repr['params'][name] = value
+        return dict_repr        
+    else:
+        raise TypeError('Argument must be a ParamRole model instance.')
+    
+    
+
+def _is_valid_parametric_role_dict_repr(dict_repr):
+    """
+    Tests if a given dictionary is a valid dictionary representation 
+    for a parametric role (`ParamRole`) model instance 
+    (as specified by the `_parametric_role_as_dict()` function).
+    
+    Return True if the passed dictionary has the right format, False otherwise.
+    
+    Note that this function only checks the general structure of the input dictionary;
+    it doesn't care for the 'semantic' aspects of the parametric role 
+    (i.e. parameter's names and  values), since they depend on domain-specific constraints,
+    if any.    
+    """
+    
+    if isinstance(dict_repr, dict):        
+        if set(dict_repr.keys()) == set(('role', 'params')):
+            role = dict_repr['role']
+            params = dict_repr['params']
+            if isinstance(role, Role) and isinstance(params, dict):
+                return True                                
+    return False
+
+         
+
+def _compare_parametric_roles(p_role1, p_role2):
+    """ 
+    Compare two parametric roles for equality;
+    retrun True if they are equal, False otherwise.
+    
+    Two parametric roles are considered equal iff the following conditions hold:
+    1) they are associated to the same basic role (`ParamRole.role`) 
+    2) they have the same set of parameters (`ParamRole.param_set`)
+    
+    In turn, two parameters are considered equal iff they have the same name (`Param.name`) 
+    and value (`Param.param`).
+    
+    Function arguments can be either ParamRole instances or a dictionary representation of a parametric
+    role (as specified by the `_parametric_role_as_dict()` function).
+    
+    If an argument is neither a ParamRole instance nor a valid dictionary representation of it,
+    raise a  TypeError.        
+    """
+    
+    p_roles = (p_role1, p_role2)     
+    for i in range(0,2):
+        if isinstance(p_roles[i], ParamRole):
+            # if argument is a ParamRole instance, convert it to a dictionary representation;
+            # useful for comparison purposes
+            p_roles[i] = _parametric_role_as_dict(p_roles[i])
+        elif _is_valid_parametric_role_dict_repr(p_roles[i]):
+            pass
+        else:
+            raise TypeError("%s is neither a ParamRole instance nor a valid dictionary representation for a parametric role.")
+        
+    return p_roles[0] == p_roles[1]
+         
 
 def add_parametric_role(principal, role):
     """Adds a global parametric role to a principal.  
@@ -391,7 +495,7 @@ def setup_roles(sender, instance, created, **kwargs):
             instance.setup_roles()
                                                 
         except AttributeError:
-            # sender model doesn't specify any role-setup operations to do, so just ignore the signal
+            # sender model doesn't specify any role-related setup operations to do, so just ignore the signal
             pass
 
 # add `setup_roles` function as a listener to the `post_save` signal
