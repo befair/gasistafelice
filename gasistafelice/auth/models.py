@@ -13,14 +13,14 @@ from gasistafelice.base.models import Resource
 class ParamByName(object):
     """Helper class used to set ParamRole properties by name """
 
-    def get_param(self, param_role, name):
+    def _get_param(self, param_role, name):
         """
         If this role has a "%s" parameter, return it; else return None
         """
-        # Retrieve param which has name 'name'. If it does not exist return None
+        # Retrieve the value of parameter named 'name'; if it's not set, return None
         # Duck typing
         try: 
-            rv = param_role.param_set.get(name=name)
+            rv = param_role.param_set.get(name=name).param
         except Param.DoesNotExist:
             rv = None
 
@@ -41,10 +41,10 @@ class ParamByName(object):
         """Create a property to retrieve param by name"""
 
         p = property(
-            lambda obj : self.get_param(obj, name), 
+            lambda obj : self._get_param(obj, name), 
             None,
             None, 
-            self.get_param.__doc__ % name
+            self._get_param.__doc__ % name
         )
 
         setattr(cls, name, p)

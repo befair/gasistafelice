@@ -486,10 +486,10 @@ def get_models_with_local_permissions():
 def setup_roles(sender, instance, created, **kwargs):
     """
     Setup proper Roles after a model instance is saved to the DB for the first time.
-    This function just calls the `setup_roles` method of the the sender model class (if existing);
+    This function just calls the `setup_roles()` instance method of the the sender model class (if defined);
     actual role-creation/setup logic is encapsulated there.
     """
-    if created: # Permissions have to be set only for newly created instances
+    if created: # Automatic role-setup should happen only at instance-creation time 
         try:
             # `instance` is the model instance that has just been created
             instance.setup_roles()
