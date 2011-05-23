@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User, Group 
 
 from permissions.models import Role
 
@@ -9,7 +9,7 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER, SUPPLIER_REFERRER 
 from gasistafelice.auth import valid_params_for_roles
-from gasistafelice.auth.models import ParamRole, Param
+from gasistafelice.auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from gasistafelice.auth.utils import register_parametric_role, _validate_parametric_role,\
 _parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
     _compare_parametric_roles
@@ -448,4 +448,146 @@ class RoleAutoSetupTest(TestCase):
         expected_dict = {'role':role, 'params': {'withdrawal':self.withdrawal}}
         self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
 
-                 
+class AddParamRoleToPrincipalTest(TestCase):
+    '''Tests `ParamRole.add_principal()` method'''
+    
+    def setUp(self):
+        self.user = User.objects.create(username='Foo')
+        self.group = Group.objects.create(name='Foo')
+        
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        self.role = Role.objects.create(name='FOO')   
+        p_role= ParamRole.objects.create(role=self.role)
+        p1 = Param.objects.create(name='gas', param=self.gas)
+        p_role.param_set.add(p1)
+        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p_role.param_set.add(p2)
+        p_role.save()
+        self.p_role = p_role       
+    
+    def testAddToUserOK(self):
+        '''Verify that if a User instance is passed, the parametric role gets assigned to that user'''
+        self.p_role.add_principal(self.user)
+        self.assertEqual(PrincipalParamRoleRelation.objects.filter(user=self.user, role=self.p_role).count(), 1) 
+    
+    def testAddToGroupOK(self):
+        '''Verify that if a Group instance is passed, the parametric role gets assigned to that group'''
+        self.p_role.add_principal(self.group)
+        self.assertEqual(PrincipalParamRoleRelation.objects.filter(group=self.group, role=self.p_role).count(), 1) 
+    
+    def testAddFail(self):
+        '''If neither a User nor a Group instance is passed, raise `TypeError`'''
+        self.assertRaises(TypeError, self.p_role.add_principal)
+        self.assertRaises(TypeError, self.p_role.add_principal, 1)
+        self.assertRaises(TypeError, self.p_role.add_principal, self.gas)
+        
+class ParamRoleGetUsersTest(TestCase):
+    '''Tests `ParamRole.get_users()` method'''
+    
+    def setUp(self):
+        self.user1 = User.objects.create(username='Foo')
+        self.user2 = User.objects.create(username='Bar')
+        self.user3 = User.objects.create(username='Baz')
+        
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        self.role = Role.objects.create(name='FOO')   
+        p_role= ParamRole.objects.create(role=self.role)
+        p1 = Param.objects.create(name='gas', param=self.gas)
+        p_role.param_set.add(p1)
+        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p_role.param_set.add(p2)
+        p_role.save()
+        self.p_role = p_role       
+    
+    def testGetUsersOK(self):
+        '''Verify that all the users this parametric role was assigned to are returned'''
+        self.p_role.add_principal(self.user1)
+        self.p_role.add_principal(self.user2)
+        prrs = PrincipalParamRoleRelation.objects.filter(role=self.p_role)
+        users = [prr.user for prr in prrs if prr.user is not None]
+        self.assertEqual(set(users), set((self.user1, self.user2)) )
+        
+    # TODO: add tests for local roles
+        
+class ParamRoleGetGroupsTest(TestCase):
+    '''Tests `ParamRole.get_groups()` method'''
+    
+    def setUp(self):
+        self.group1 = Group.objects.create(name='Foo')
+        self.group2 = Group.objects.create(name='Bar')
+        self.group3 = Group.objects.create(name='Baz')
+        
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        self.role = Role.objects.create(name='FOO')   
+        p_role= ParamRole.objects.create(role=self.role)
+        p1 = Param.objects.create(name='gas', param=self.gas)
+        p_role.param_set.add(p1)
+        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p_role.param_set.add(p2)
+        p_role.save()
+        self.p_role = p_role       
+    
+    def testGetGroupsOK(self):
+        '''Verify that all the groups this parametric role was assigned to are returned'''
+        self.p_role.add_principal(self.group1)
+        self.p_role.add_principal(self.group2)
+        prrs = PrincipalParamRoleRelation.objects.filter(role=self.p_role)
+        groups = [prr.group for prr in prrs if prr.group is not None]
+        self.assertEqual(set(groups), set((self.group1, self.group2)))
+        
+    # TODO: add tests for local roles
+class PrincipalRoleRelationTest(TestCase):
+    '''Tests for the `PrincipalRoleRelation` methods'''  
+    def setUp(self):
+        self.user = User.objects.create(username='Foo')
+        self.user1 = User.objects.create(username='Bar')
+        self.group = Group.objects.create(name='Foo')
+        self.group1 = Group.objects.create(name='Bar')
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        self.role = Role.objects.create(name='FOO')   
+        p_role= ParamRole.objects.create(role=self.role)
+        p1 = Param.objects.create(name='gas', param=self.gas)
+        p_role.param_set.add(p1)
+        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p_role.param_set.add(p2)
+        p_role.save()
+        self.p_role = p_role 
+    
+    def testGetPrincipalOK(self):
+        '''Tests if the principal (user or group) is correctly retrieved'''
+        prr = PrincipalParamRoleRelation.objects.create(user=self.user, role=self.p_role)
+        self.assertEqual(prr.get_principal(), self.user)
+        prr = PrincipalParamRoleRelation.objects.create(group=self.group, role=self.p_role)
+        self.assertEqual(prr.get_principal(), self.group)        
+        
+    def testSetPrincipalOK(self):
+        '''Tests if the principal (user or group) is correctly set'''
+        prr = PrincipalParamRoleRelation.objects.create(user=self.user, role=self.p_role)
+        prr.set_principal(self.user1)
+        self.assertEqual(prr.user, self.user1)
+        
+        prr = PrincipalParamRoleRelation.objects.create(group=self.group, role=self.p_role)
+        prr.set_principal(self.group1)
+        self.assertEqual(prr.group, self.group1)
+            
+        prr = PrincipalParamRoleRelation.objects.create(user=self.user, role=self.p_role)
+        prr.set_principal(self.group)
+        self.assertEqual(prr.group, self.group)        
+        
+        prr = PrincipalParamRoleRelation.objects.create(group=self.group, role=self.p_role)
+        prr.set_principal(self.user)
+        self.assertEqual(prr.user, self.user)
+        
+        
+    def testSetPrincipalError(self):
+        '''If neither a User nor a Group instance is passed, raise `TypeError`'''
+        pass    
+    
