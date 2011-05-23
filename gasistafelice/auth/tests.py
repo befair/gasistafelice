@@ -16,6 +16,38 @@ _parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
 
 from datetime import time, date, datetime
 
+class ParamByNameTest(TestCase):
+    '''Tests if parameters of a parametric role can be accessed by name'''
+    def setUp(self):
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        self.role = Role.objects.create(name='FOO')   
+        p_role= ParamRole.objects.create(role=self.role)
+        p1 = Param.objects.create(name='gas', param=self.gas)
+        p_role.param_set.add(p1)
+        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p_role.param_set.add(p2)
+        p_role.save()
+        self.p_role = p_role        
+    
+    def testGetOK(self):
+        '''Verify that an existing parameter can be retrieved by its name'''
+        p_role = self.p_role
+        self.assertEqual(p_role.gas, self.gas)
+        self.assertEqual(p_role.supplier, self.supplier) 
+    
+    def testGetFailIfParameterNotSet(self):
+        '''When trying to retrieve an unset parameter, `None` should be returned'''
+        p_role = self.p_role
+        self.assertIsNone(p_role.order)
+    
+    def testGetErrorIfInvalidParameter(self):
+        '''When trying to retrieve a non-allowed parameter, AttributeError should be raised'''
+        p_role = self.p_role
+        self.assertRaises(AttributeError, getattr, p_role, 'foo')
+    
+
 class ParamRoleAsDictTest(TestCase):
     '''Tests for the `_parametric_role_as_dict()` helper function'''
     def setUp(self):
