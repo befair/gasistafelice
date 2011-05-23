@@ -213,6 +213,11 @@ class GASMember(models.Model, PermissionResource):
             ('VIEW', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
               )     
         return rv  
+    
+    def save(self, *args, **kwargs):
+        if not self.person.user: # GAS members must have an account on the system
+            raise AttributeError('GAS Members must be registered users')     
+        super(GASMember, self).save(*args, **kwargs)
        
     class Meta:
         app_label = 'gas'

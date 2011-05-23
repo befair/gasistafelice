@@ -1,5 +1,7 @@
 from django.test import TestCase
 
+from django.contrib.auth.models import User
+
 from gasistafelice.base.models import Person
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact, GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
@@ -33,9 +35,9 @@ class GASMemberOrderTest(TestCase):
     
     def setUp(self):
         self.now = date.today()
-        
+        user = User.objects.create(username='Foo') 
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')        
-        self.person = Person.objects.create(name='John', surname='Smith')
+        self.person = Person.objects.create(name='John', surname='Smith', user=user)
         self.member = GASMember.objects.create(person=self.person, gas=self.gas)
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.category = ProductCategory.objects.create(name='food') 
@@ -68,10 +70,14 @@ class GASSupplierOrderProductTest(TestCase):
     def setUp(self):
         
         self.now = date.today()
+        
+        user1 = User.objects.create(username='Foo')
+        user2 = User.objects.create(username='Bar')
+        user3 = User.objects.create(username='Baz')
          
-        self.person_1 = Person.objects.create(name='John', surname='Smith')
-        self.person_2 = Person.objects.create(name='Mary', surname='White')
-        self.person_3 = Person.objects.create(name='Paul', surname='Black')
+        self.person_1 = Person.objects.create(name='John', surname='Smith', user=user1)
+        self.person_2 = Person.objects.create(name='Mary', surname='White', user=user2)
+        self.person_3 = Person.objects.create(name='Paul', surname='Black', user=user3)
         
         self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2')        
