@@ -10,13 +10,13 @@ from gasistafelice.base.const import DAY_CHOICES
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.auth.utils import register_parametric_role 
-from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.supplier.models import Supplier, Product
 
 from gasistafelice.gas import managers
 
-from gasistafelice.bank.models import Account, Movement
+from gasistafelice.bank.models import Account
 
 from gasistafelice.base.fields import CurrencyField
 from decimal import Decimal
@@ -215,6 +215,7 @@ class GASMember(models.Model, PermissionResource):
         return rv  
     
     def save(self, *args, **kwargs):
+        # TODO: refactor as a validator (?)
         if not self.person.user: # GAS members must have an account on the system
             raise AttributeError('GAS Members must be registered users')     
         super(GASMember, self).save(*args, **kwargs)
@@ -261,6 +262,22 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     account = models.ForeignKey(Account, null=True, blank=True)
 
     history = HistoricalRecords()
+    
+    @property
+    def supplier_refererrers(self):
+        '''Retrieve all the GAS supplier referrers associated with this solidal pact'''
+        # TODO: write unit tests for this method
+        # retrieve the right parametric role
+        prs = ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER)
+        for pr in prs:
+            if pr.gas == self.gas and pr.supplier == self.supplier:
+                p_role = pr
+                break
+        prrs = PrincipalParamRoleRelation.objects.filter(role=p_role).all()
+        referrers_as_users = [prr.user for prr in prrs if prr.user is not None]
+        referrers_as_members = GASMember.objects.filter(gas=self.gas, person__user__in=referrers_as_users)
+        
+        return referrers_as_members 
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
