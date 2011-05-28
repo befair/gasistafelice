@@ -9,54 +9,12 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
-from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
-from gasistafelice.supplier.models import Supplier, SupplierStock
+from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
+from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 from datetime import datetime
-
-class GASSupplierStock(models.Model, PermissionResource):
-    """A Product as available to a given GAS (including price, order constraints and availability information)."""
-
-    gas = models.ForeignKey(GAS)
-    supplier_stock = models.ForeignKey(SupplierStock)
-    # if a Product is available to GAS Members; policy is GAS-specific
-    enabled = models.BooleanField()    
-    ## constraints on what a single GAS Member is able to order
-    # minimun amount of Product units a GAS Member is able to order 
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
-    # increment step (in Product units) for amounts exceeding minimum; 
-    # useful when a Product ships in packages containing multiple units. 
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True)
-    
-    history = HistoricalRecords()
-
-    def __unicode__(self):
-        return unicode(self.supplier_stock)
-        
-    @property
-    def supplier(self):
-        return self.supplier_stock.supplier
-
-    @property
-    def price(self):
-        # Product base price as updated by agreements contained in GASSupplierSolidalPact
-        price_percent_update = GASSupplierSolidalPact.objects.get(gas=self.gas, supplier=self.supplier).order_price_percent_update
-        return self.supplier_stock.price*(1 + price_percent_update)
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-    
-    class Meta:
-        app_label = 'gas'
-        verbose_name = _("GAS supplier stock")
-        verbose_name_plural = _("GAS supplier stocks")
-
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.

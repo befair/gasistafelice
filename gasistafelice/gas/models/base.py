@@ -12,7 +12,7 @@ from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REF
 from gasistafelice.auth.utils import register_parametric_role 
 from gasistafelice.auth.models import ParamRole
 
-from gasistafelice.supplier.models import Supplier, Product
+from gasistafelice.supplier.models import Supplier, Product, SupplierStock
 
 from gasistafelice.gas import managers
 
@@ -314,6 +314,48 @@ class GASMember(models.Model, PermissionResource):
             self.membership_fee_payed = datetime.date.today()
         super(GASMember, self).save(*args, **kw)
 
+class GASSupplierStock(models.Model, PermissionResource):
+    """A Product as available to a given GAS (including price, order constraints and availability information)."""
+
+    pact = models.ForeignKey("GASSupplierSolidalPact")
+    supplier_stock = models.ForeignKey(SupplierStock)
+    # if a Product is available to GAS Members; policy is GAS-specific
+    enabled = models.BooleanField()    
+    ## constraints on what a single GAS Member is able to order
+    # minimun amount of Product units a GAS Member is able to order 
+    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    # increment step (in Product units) for amounts exceeding minimum; 
+    # useful when a Product ships in packages containing multiple units. 
+    order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+    
+    history = HistoricalRecords()
+
+    def __unicode__(self):
+        return unicode(self.supplier_stock)
+        
+    @property
+    def supplier(self):
+        return self.supplier_stock.supplier
+
+    @property
+    def price(self):
+        # Product base price as updated by agreements contained in GASSupplierSolidalPact
+        price_percent_update = GASSupplierSolidalPact.objects.get(gas=self.gas, supplier=self.supplier).order_price_percent_update
+        return self.supplier_stock.price*(1 + price_percent_update)
+    
+    @property        
+    def local_grants(self):
+        rv = (
+              # permission specs go here
+              )     
+        return rv
+    
+    class Meta:
+        app_label = 'gas'
+        verbose_name = _("GAS supplier stock")
+        verbose_name_plural = _("GAS supplier stocks")
+
+
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
@@ -327,7 +369,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     date_signed = models.DateField(blank=True, null=True, default=None)
 
     # which Products GAS members can order from Supplier
-    supplier_gas_catalog = models.ManyToManyField(Product, null=True, blank=True)
+    supplier_stock = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
     order_minimum_amount = CurrencyField(null=True, blank=True)
     order_delivery_cost = CurrencyField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition

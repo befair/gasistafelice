@@ -5,6 +5,6 @@ They rely on base models and Supplier-related ones to get Product and Stock info
 Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#GAS>`__ (ITA only)
 """
 
-from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact
-from gasistafelice.gas.models.order import GASSupplierStock, GASSupplierOrder, GASSupplierOrderProduct, GASMemberOrder, Delivery, Withdrawal
+from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact
+from gasistafelice.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct, GASMemberOrder, Delivery, Withdrawal
 
