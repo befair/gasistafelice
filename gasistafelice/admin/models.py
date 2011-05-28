@@ -284,12 +284,7 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
         return super(GASSupplierOrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def queryset(self, request):
-        qs = super(GASSupplierOrderAdmin, self).queryset(request)
-        if request.user.is_superuser:
-            rv = qs
-        elif 1: #TODO request.user.has_perm(PERM)
-            rv = qs.filter(gas=request.user.gas)
-        return rv
+        return super(GASSupplierOrderAdmin, self).queryset(request)
 
     inlines = [GASSupplierOrderProductInline, ]
     

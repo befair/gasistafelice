@@ -248,6 +248,8 @@ class Delivery(models.Model, PermissionResource):
     date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
+
+    # COSTO DI QUESTA CONSEGNA SPECIFICA?
     
     history = HistoricalRecords()
 
