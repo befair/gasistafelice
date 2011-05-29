@@ -2,8 +2,17 @@
 from gasistafelice.base.models import Person
 from gasistafelice.admin.models import *
 
+from gasistafelice.auth import EDIT, CREATE
+
 class GASAdmin_GAS(GASAdmin):
     change_list_template = 'gas_admin/change_list.html'
+
+    def has_change_permission(self, request, obj=None):
+        if obj is None:
+            rv = super(GASAdmin, self).has_change_permission(request, None)
+        else:
+            rv = request.user.has_perm(EDIT, obj=obj)
+        return rv
 
     def queryset(self, request):
         qs = super(GASAdmin_GAS, self).queryset(request)
@@ -14,6 +23,20 @@ class GASAdmin_GAS(GASAdmin):
 class GASAdmin_GASSupplierOrder(GASSupplierOrderAdmin):
 
     change_list_template = 'gas_admin/change_list.html'
+
+    def has_add_permission(self, request, obj=None):
+        if obj is None:
+            rv = super(GASSupplierOrderAdmin, self).has_add_permission(request, None)
+        else:
+            rv = request.user.has_perm(CREATE, obj=obj)
+        return rv
+
+    def has_change_permission(self, request, obj=None):
+        if obj is None:
+            rv = super(GASSupplierOrderAdmin, self).has_change_permission(request, None)
+        else:
+            rv = request.user.has_perm(EDIT, obj=obj)
+        return rv
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "gas":
@@ -28,7 +51,7 @@ class GASAdmin_GASSupplierOrder(GASSupplierOrderAdmin):
     def queryset(self, request):
         qs = super(GASAdmin_GASSupplierOrder, self).queryset(request)
         p = Person.objects.get(user=request.user)
-        rv = qs.filter(gas__isnull=True) #in=p.gasmember_set.all())
+        rv = qs.filter(gas__in=p.gasmember_set.all())
         return rv
 
 
