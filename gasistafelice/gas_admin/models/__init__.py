@@ -17,7 +17,7 @@ class GasAdminSite(AdminSite):
 
 gas_admin = GasAdminSite("gas_admin")
 gas_admin.register(base_models.Place, GASAdmin_Place)
-gas_admin.register(gas_models.base.GAS, GASAdmin_GAS)
+gas_admin.register(gas_models.base.GASConfig, GASAdmin_GAS)
 gas_admin.register(gas_models.order.GASSupplierOrder, GASAdmin_GASSupplierOrder)
 gas_admin.register(gas_models.order.GASMemberOrder)
 

@@ -321,7 +321,7 @@ admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
-admin.site.register(gas_models.GAS, GASAdmin)
+admin.site.register(gas_models.GASConfig, GASAdmin)
 admin.site.register(gas_models.base.GASSupplierSolidalPact)
 admin.site.register(gas_models.order.GASSupplierStock)
 admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)

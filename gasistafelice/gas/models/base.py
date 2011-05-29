@@ -64,54 +64,54 @@ class GAS(models.Model, PermissionResource):
     #COMMENT fero: photogallery and attachments does not go here
     #they should be managed elsewhere in Wordpress (now, at least)
 
-    #-- Config --#
-    #config = models.OneToOneField(GASConfig, null=True)
-    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gasmember_order_set", null=True, blank=True
-    )
-    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gassupplier_order_set", null=True, blank=True
-    )
-
-    can_change_price = models.BooleanField(default=False,
-        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
-    )
-
-    show_order_by_supplier = models.BooleanField(default=True, 
-        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-    )  
-
-    #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-        help_text=_("default closing order day of the week")
-    )  
-    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
-    default_close_time = models.TimeField(blank=True, null=True,
-        help_text=_("default order closing hour and minutes")
-    )
-  
-    #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-        help_text=_("default delivery day of the week")
-    )  
-
-    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
-    default_delivery_time = models.TimeField(blank=True, null=True,
-        help_text=_("default delivery closing hour and minutes")
-    )  
-
-    use_single_delivery = models.BooleanField(default=True, 
-        help_text=_("GAS uses only one delivery place")
-    )
-
-    use_headquarter_as_withdrawal = models.BooleanField(default=True)
-    is_active = models.BooleanField(default=True)
-    use_scheduler = models.BooleanField(default=True)  
+#    #-- Config --#
+#    #config = models.OneToOneField(GASConfig, null=True)
+#    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
+#        related_name="gasmember_order_set", null=True, blank=True
+#    )
+#    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
+#        related_name="gassupplier_order_set", null=True, blank=True
+#    )
+#
+#    can_change_price = models.BooleanField(default=False,
+#        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
+#    )
+#
+#    show_order_by_supplier = models.BooleanField(default=True, 
+#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
+#    )  
+#
+#    #TODO: see ticket #65
+#    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+#        help_text=_("default closing order day of the week")
+#    )  
+#    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
+#    default_close_time = models.TimeField(blank=True, null=True,
+#        help_text=_("default order closing hour and minutes")
+#    )
+#  
+#    #TODO: see ticket #65
+#    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+#        help_text=_("default delivery day of the week")
+#    )  
+#
+#    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
+#    default_delivery_time = models.TimeField(blank=True, null=True,
+#        help_text=_("default delivery closing hour and minutes")
+#    )  
+#
+#    use_single_delivery = models.BooleanField(default=True, 
+#        help_text=_("GAS uses only one delivery place")
+#    )
+#
+#    use_headquarter_as_withdrawal = models.BooleanField(default=True)
+#    is_active = models.BooleanField(default=True)
+#    use_scheduler = models.BooleanField(default=True)  
 
     #-- Managers --#
 
     objects = managers.GASRolesManager()
-    history = HistoricalRecords()
+#    history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
@@ -179,66 +179,65 @@ class GAS(models.Model, PermissionResource):
             self.default_delivery_time = datetime.datetime.now()
         super(GAS, self).save(*args, **kw)
 
-#class GASConfig(GAS):
-class GASConfig(models.Model, PermissionResource):
+class GASConfig(GAS):
     """
-    TODO: NEEDS REVIEW.
     Encapsulate here gas settings and configuration facilities
     """
-    pass
-#
-#    # Link to parent class
-#    gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
-#
-#    default_workflow_gasmember_order = models.ForeignKey(Workflow, 
-#        related_name="gasmember_order_set", null=True, blank=True
-#    )
-#    default_workflow_gassupplier_order = models.ForeignKey(Workflow, 
-#        related_name="gassupplier_order_set", null=True, blank=True
-#    )
-#
-#    can_change_price = models.BooleanField(
-#        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
-#    )
-#
-#    show_order_by_supplier = models.BooleanField(default=True, 
-#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-#    )  
-#
-#    #TODO: see ticket #65
-#    default_close_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
-#        help_text=_("default closing order day of the week")
-#    )  
-#    default_close_time = models.TimeField(
-#        help_text=_("default order closing hour and minutes")
-#    )
-#  
-#    #TODO: see ticket #65
-#    default_delivery_day = models.CharField(max_length=16, choices=DAY_CHOICES, 
-#        help_text=_("default delivery day of the week")
-#    )  
-#    default_delivery_time = models.TimeField(
-#        help_text=_("default delivery closing hour and minutes")
-#    )  
-#
-#    use_single_delivery = models.BooleanField(default=True, 
-#        help_text=_("GAS uses only one delivery place")
-#    )
-#  
-#    is_active = models.BooleanField(default=True)
-#    use_scheduler = models.BooleanField(default=True) 
-#    
-#    class Meta:
-#        app_label = 'gas'
-#    
-#    #COMMENT fero: domthu left the following TODO. I don't know if it is right
-#    # to provide it here, but new I leave it as a reminder
-#    #TODO: rotation turn --> referrer through GASMemberSupplier
-#
-#    #history = HistoricalRecords()
-#
-#    #def __unicode__(self):
-#    #    return self.default_close_day 
+
+    # Link to parent class
+    gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
+
+    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
+        related_name="gasmember_order_set", null=True, blank=True
+    )
+    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
+        related_name="gassupplier_order_set", null=True, blank=True
+    )
+
+    can_change_price = models.BooleanField(default=False,
+        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
+    )
+
+    show_order_by_supplier = models.BooleanField(default=True, 
+        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
+    )  
+
+    #TODO: see ticket #65
+    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+        help_text=_("default closing order day of the week")
+    )  
+    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
+    default_close_time = models.TimeField(blank=True, null=True,
+        help_text=_("default order closing hour and minutes")
+    )
+  
+    #TODO: see ticket #65
+    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+        help_text=_("default delivery day of the week")
+    )  
+
+    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
+    default_delivery_time = models.TimeField(blank=True, null=True,
+        help_text=_("default delivery closing hour and minutes")
+    )  
+
+    use_single_delivery = models.BooleanField(default=True, 
+        help_text=_("GAS uses only one delivery place")
+    )
+
+    use_headquarter_as_withdrawal = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    use_scheduler = models.BooleanField(default=True)  
+
+    history = HistoricalRecords()
+
+    #-- Meta --#
+    class Meta:
+        verbose_name_plural = _('GAS')
+        app_label = 'gas'
+
+    def __unicode__(self):
+        return _('Configuration for GAS "%s"') % self.gas 
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
