@@ -24,11 +24,13 @@ class GASAdmin_GASSupplierOrder(GASSupplierOrderAdmin):
 
     change_list_template = 'gas_admin/change_list.html'
 
-    def has_add_permission(self, request, obj=None):
-        if obj is None:
-            rv = super(GASSupplierOrderAdmin, self).has_add_permission(request, None)
-        else:
-            rv = request.user.has_perm(CREATE, obj=obj)
+    def has_add_permission(self, request):
+        # COMMENT fero: typical situation in which the admin interface is not enough!
+        # COMMENT fero: here add is not in the context of a specific solidal pact
+        #if obj is None:
+        rv = super(GASSupplierOrderAdmin, self).has_add_permission(request)
+        #else:
+        #    rv = request.user.has_perm(CREATE, obj=obj) #if user has_perm on GASSupplierSolidalPact
         return rv
 
     def has_change_permission(self, request, obj=None):
