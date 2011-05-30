@@ -235,7 +235,8 @@ class GASConfig(GAS):
 
     #-- Meta --#
     class Meta:
-        verbose_name_plural = _('GAS')
+        verbose_name = _('GAS with configuration')
+        verbose_name_plural = _('GAS with configuration')
         app_label = 'gas'
 
     def __unicode__(self):
