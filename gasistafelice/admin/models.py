@@ -240,8 +240,7 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
     form = GASSupplierOrderForm
     fieldsets = ((None,
             { 'fields' : (
-                'gas',
-                'supplier', 
+                'pact',
                 ('date_start', 'date_end'),   
                 'delivery',  
                 'withdrawal',              

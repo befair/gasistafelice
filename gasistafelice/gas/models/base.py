@@ -31,7 +31,7 @@ class GAS(models.Model, PermissionResource):
     name = models.CharField(max_length=128)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    headquarter = models.ForeignKey(Place, related_name="headquarter_set", help_text=_("main address"))
+    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"))
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
@@ -226,6 +226,8 @@ class GASConfig(GAS):
     )
 
     use_headquarter_as_withdrawal = models.BooleanField(default=True)
+    default_delivery_place = models.ForeignKey(Place, blank=True, related_name='gas_default_delivery_set')
+    default_withdrawal_place = models.ForeignKey(Place, blank=True, related_name='gas_default_withdrawal_set')
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=True)  
 
@@ -249,13 +251,17 @@ class GASMember(models.Model, PermissionResource):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=10, null=True, blank=True, unique=True, help_text=_("GAS card number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
     history = HistoricalRecords()
+
+    class Meta:
+        app_label = 'gas'
+        unique_together = (('gas', 'id_in_gas'), )
 
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
@@ -305,9 +311,6 @@ class GASMember(models.Model, PermissionResource):
               )     
         return rv  
        
-    class Meta:
-        app_label = 'gas'
-
     def save(self, *args, **kw):
         if self.membership_fee_payed is None:
             self.membership_fee_payed = datetime.date.today()
@@ -368,6 +371,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     date_signed = models.DateField(blank=True, null=True, default=None)
 
     # which Products GAS members can order from Supplier
+    # COMMENT fero: I think the solution proposed by domthu in ticket #80 respect
+    # the semantic of the through parameter for a ManyToManyField relation:
+    # GASSupplierStock is just a way to augment relation between a pact and a supplier stock
     supplier_stock = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
     order_minimum_amount = CurrencyField(null=True, blank=True)
     order_delivery_cost = CurrencyField(null=True, blank=True)
@@ -387,7 +393,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         help_text=_("withdrawal time agreement")
     )    
 
-    default_withdrawal_place = models.ForeignKey(Place, related_name="default_for_solidal_pact_set")
+    default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set")
 
     account = models.ForeignKey(Account)
 
