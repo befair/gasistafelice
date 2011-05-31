@@ -10,13 +10,13 @@ from gasistafelice.base.const import DAY_CHOICES
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.auth.utils import register_parametric_role 
-from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.supplier.models import Supplier, Product, SupplierStock
 
 from gasistafelice.gas import managers
 
-from gasistafelice.bank.models import Account, Movement
+from gasistafelice.bank.models import Account
 
 from gasistafelice.base.fields import CurrencyField
 from decimal import Decimal
@@ -311,6 +311,12 @@ class GASMember(models.Model, PermissionResource):
             ('VIEW', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
               )     
         return rv  
+    
+    def save(self, *args, **kwargs):
+        # TODO: refactor as a validator (?)
+        if not self.person.user: # GAS members must have an account on the system
+            raise AttributeError('GAS Members must be registered users')     
+        super(GASMember, self).save(*args, **kwargs)
        
     def save(self, *args, **kw):
         if self.membership_fee_payed is None:
@@ -379,26 +385,42 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     order_minimum_amount = CurrencyField(null=True, blank=True)
     order_delivery_cost = CurrencyField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
-    order_deliver_interval = models.TimeField()  
+    order_deliver_interval = models.TimeField(null=True, blank=True)  
     # how much (in percentage) base prices from the Supplier are modified for the GAS  
-    order_price_percent_update = models.FloatField()
+    order_price_percent_update = models.FloatField(null=True, blank=True)
     # TODO must be a property (use django-permissions)
     #supplier_referrers = ...
     
     #domthu: if GAS's configuration use only one 
     #TODO: see ticket #65
-    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, null=True,
+    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, blank=True,
         help_text=_("Withdrawal week day agreement")
     )
-    default_withdrawal_time = models.TimeField(null=True, \
+    default_withdrawal_time = models.TimeField(null= True, blank=True, \
         help_text=_("withdrawal time agreement")
     )    
 
-    default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set")
+    default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, null=True, blank=True)
 
     history = HistoricalRecords()
+    
+    @property
+    def supplier_refererrers(self):
+        '''Retrieve all the GAS supplier referrers associated with this solidal pact'''
+        # TODO: write unit tests for this method
+        # retrieve the right parametric role
+        prs = ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER)
+        for pr in prs:
+            if pr.gas == self.gas and pr.supplier == self.supplier:
+                p_role = pr
+                break
+        prrs = PrincipalParamRoleRelation.objects.filter(role=p_role).all()
+        referrers_as_users = [prr.user for prr in prrs if prr.user is not None]
+        referrers_as_members = GASMember.objects.filter(gas=self.gas, person__user__in=referrers_as_users)
+        
+        return referrers_as_members 
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
