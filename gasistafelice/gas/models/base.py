@@ -388,8 +388,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     order_deliver_interval = models.TimeField(null=True, blank=True)  
     # how much (in percentage) base prices from the Supplier are modified for the GAS  
     order_price_percent_update = models.FloatField(null=True, blank=True)
-    # TODO must be a property (use django-permissions)
-    #supplier_referrers = ...
     
     #domthu: if GAS's configuration use only one 
     #TODO: see ticket #65
@@ -407,17 +405,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     @property
-    def supplier_refererrers(self):
+    def supplier_referrers(self):
         '''Retrieve all the GAS supplier referrers associated with this solidal pact'''
         # TODO: write unit tests for this method
         # retrieve the right parametric role
-        prs = ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER)
-        for pr in prs:
-            if pr.gas == self.gas and pr.supplier == self.supplier:
-                p_role = pr
-                break
-        prrs = PrincipalParamRoleRelation.objects.filter(role=p_role).all()
-        referrers_as_users = [prr.user for prr in prrs if prr.user is not None]
+        parametric_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+
+        referrer_as_users = parametric_role.principal_param_role_relation_set.filter(user__isnull=False).values('user')
         referrers_as_members = GASMember.objects.filter(gas=self.gas, person__user__in=referrers_as_users)
         
         return referrers_as_members 
