@@ -109,7 +109,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def ordered_amount(self):
         # grab all GASMemberOrders related to this product and issued by members of the right GAS
-        orders = GASMemberOrder.objects.filter(product=self, purchaser__gas=self.gas)
+        orders = self.gas_member_order_set.filter(purchaser__gas=self.gas)
         amount = 0 
         for order in orders:         
             amount += order.ordered_amount
@@ -135,7 +135,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     """
 
     purchaser = models.ForeignKey(GASMember)
-    product = models.ForeignKey(GASSupplierOrderProduct)
+    product = models.ForeignKey(GASSupplierOrderProduct, related_name="gas_member_order_set")
     # price of the Product at order time
     ordered_price = CurrencyField(null=True, blank=True)
     # how many Product units were ordered by the GAS member
