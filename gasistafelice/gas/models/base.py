@@ -173,10 +173,6 @@ class GAS(models.Model, PermissionResource):
             #    self.config = GASConfig.objects.create()
             #    #TODO: add default values   
             #TODO: issue #1 need to create workflow for default_workflow_gasmember_order and default_workflow_gassupplier_order?
-        if self.default_close_time is None:
-            self.default_close_time = datetime.datetime.now()
-        if self.default_delivery_time is None:
-            self.default_delivery_time = datetime.datetime.now()
         super(GAS, self).save(*args, **kw)
 
 class GASConfig(GAS):
@@ -241,6 +237,14 @@ class GASConfig(GAS):
 
     def __unicode__(self):
         return _('Configuration for GAS "%s"') % self.gas 
+
+    def save(self, *args, **kw):
+        if self.default_close_time is None:
+            self.default_close_time = datetime.datetime.now()
+        if self.default_delivery_time is None:
+            self.default_delivery_time = datetime.datetime.now()
+
+        return super(GASConfig, self).save(*args, **kw)
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
@@ -409,10 +413,16 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         '''Retrieve all the GAS supplier referrers associated with this solidal pact'''
         # TODO: write unit tests for this method
         # retrieve the right parametric role
-        parametric_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        # TODO: REFACTORING NEEDED
+        # NOTE: parametric_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        prs = ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER)
+        for pr in prs:
+            if pr.gas == self.gas and pr.supplier == self.supplier:
+                parametric_role = pr
+                break
 
-        referrer_as_users = parametric_role.principal_param_role_relation_set.filter(user__isnull=False).values('user')
-        referrers_as_members = GASMember.objects.filter(gas=self.gas, person__user__in=referrers_as_users)
+        referrer_as_users = User.objects.filter(principal_param_role_relation=parametric_role)
+        referrers_as_members = self.gas.gas_member_set.filter(person__user_in=referrer_as_users)
         
         return referrers_as_members 
 

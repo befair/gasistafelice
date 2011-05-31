@@ -122,7 +122,7 @@ class Place(models.Model, PermissionResource):
             else:
                 #COMMENT LF: This never occur because in form we check that name or address have been set
                 self.name = u"%s (%s)" % (self.city, self.province)
-        super(Place, self).save(*args, **kwargs)
+        super(Place, self).save(*args, **kw)
 
 # Generic workflow management
 
