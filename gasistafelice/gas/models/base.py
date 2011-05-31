@@ -25,6 +25,7 @@ import datetime
 class GAS(models.Model, PermissionResource):
 
     """A group of people which make some purchases together.
+
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
     """
 
@@ -152,27 +153,11 @@ class GAS(models.Model, PermissionResource):
               )     
         return rv  
 
-    # register a handler for the pre_save. NON do post save
-    #def pre_save_signal(sender, **kwargs):
-    #    self.config = GASConfig.objects.create()
-
-    #def __init()__:
-    #   pre_save.connect(pre_save_signal, sender=self)
-
     def save(self, *args, **kw):
-        """TODO: NEEDS REVIEW"""
-        if self.id_in_des == "":
-            self.id_in_des = None
-        if self.id_in_des is not None:
-            #TODO: Control is unique
-            self.id_in_des = self.id_in_des.upper()
+        self.id_in_des = self.id_in_des.upper()
         if self.pk == None:
             self.account = Account.objects.create(balance=0)
             self.liquidity = Account.objects.create(balance=0)
-            #if self.config is None:
-            #    self.config = GASConfig.objects.create()
-            #    #TODO: add default values   
-            #TODO: issue #1 need to create workflow for default_workflow_gasmember_order and default_workflow_gassupplier_order?
         super(GAS, self).save(*args, **kw)
 
 class GASConfig(GAS):
@@ -375,6 +360,54 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     Each Supplier comes into relationship with a GAS by signing this pact,
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
+
+    >>> from gasistafelice.gas.models.base import *
+    >>> from gasistafelice.supplier.models import *
+    >>> g1 = GAS.objects.all()[0]
+    >>> gname = g1.name
+    >>> s1 = Supplier.objects.all()[0]
+    >>> sname = s1.name
+
+    #If running fixtures we can do
+    >>> gname
+    u'Gas1'
+    >>> gname
+    u'Gas1sdfasgasga'
+    >>> sname
+    u'NameSupplier1'
+
+    >>> pds = GASSupplierSolidalPact()
+    >>> pds.save()
+    Traceback (most recent call last):
+        ...
+        if not isinstance(self.gas, GAS):
+        ...
+        raise self.field.rel.to.DoesNotExist
+    DoesNotExist
+    >>> pds = GASSupplierSolidalPact(gas=g1)
+    >>> pds.save()
+    Traceback (most recent call last):
+        ...
+        if not isinstance(self.supplier, Supplier):
+        ...
+        raise self.field.rel.to.DoesNotExist
+    DoesNotExist
+    >>> pds.supplier
+    Traceback (most recent call last):
+    ...
+        raise self.field.rel.to.DoesNotExist
+    DoesNotExist
+    >>> pds.supplier = s1
+    >>> pds.save()
+    Traceback (most recent call last):
+      File "<console>", line 1, in <module>
+        ...
+        super(GASMember, self).save(*args, **kw)
+    TypeError: super(type, obj): obj must be an instance or subtype of type
+    #TODO: resolve GASMember
+
+    #TODO: import GASSupplierStock in the GAS models see ticket#79
+
     """
 
     gas = models.ForeignKey(GAS)
@@ -444,4 +477,17 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
 
+    history = HistoricalRecords()
 
+    #def set_default_product_set(self):
+    def save(self, *args, **kw):
+        if not isinstance(self.gas, GAS):
+            raise AttributeError("PDS gas cannot be null")
+        if not isinstance(self.supplier, Supplier):
+            raise AttributeError("PDS supplier cannot be null")
+        #TODO 
+        #if self.pk == None:
+        #    products = SupplierStock.objects.filter(supplier=self.supplier)
+        #    for p in products:
+        #        GASSupplierStock.objects.create(gas=self.gas, supplier_stock=p)
+        super(GASMember, self).save(*args, **kw)

@@ -3,3 +3,4 @@ settings.py
 db/
 doc*/build/
 *.mo
+.metatada/

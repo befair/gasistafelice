@@ -80,6 +80,7 @@ def register_parametric_role(name, **kwargs):
     params = kwargs
     if _validate_parametric_role(name, params, constraints=valid_params_for_roles):   
         # check if a Role with the passed name already exists in the DB; if not, create it
+
         role, created = Role.objects.get_or_create(name=name)      
         ## TODO: enclose in a transaction
         # construct the dictionary representation of the parametric role to be registered,

@@ -23,7 +23,7 @@ class Supplier(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128) 
     seat =  models.ForeignKey(Place, null=True, blank=True)
-    vat_number =  models.CharField(max_length=128, unique=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
+    vat_number =  models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website =  models.URLField(verify_exists=True, blank=True)
     referrers = models.ManyToManyField(Person, through="SupplierReferrer") 
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
@@ -63,8 +63,9 @@ class SupplierReferrer(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
-        role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        role.add_principal(user)     
+        #FIXME: ValueError: Cannot assign "(<Role: SUPPLIER_REFERRER>, False)": "ParamRole.role" must be a "Role" instance.
+        #role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
+        #role.add_principal(user)     
     
     @property        
     def local_grants(self):
@@ -137,8 +138,8 @@ class ProductMU(models.Model, PermissionResource):
         return rv
     
 class Product(models.Model, PermissionResource):
-
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID') # if empty, should be programmatically set at DB save time
+    #COMMENT: some producer don't have product codification.
+    uuid = models.CharField(max_length=128, unique=False, blank=True, null=True, verbose_name='UUID', help_text=_("Product code")) 
     producer = models.ForeignKey(Supplier)
     category = models.ForeignKey(ProductCategory)
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
@@ -173,10 +174,12 @@ class SupplierStock(models.Model, PermissionResource):
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
+    #COMMENT: minimum amount of Product units a GASMember is able to order 
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+    #TODO: Field for Product units per box
     # how the Product will be delivered
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
 
