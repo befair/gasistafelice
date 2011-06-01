@@ -145,7 +145,7 @@ class Product(models.Model, PermissionResource):
 
     # COMMENT: some producer don't have product codification. 
     # That's why uuid could be blank AND false. See save() method
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code")) 
+    uuid = models.CharField(max_length=128, unique=False, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
     producer = models.ForeignKey(Supplier)
     category = models.ForeignKey(ProductCategory, null=True, blank=True)
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
