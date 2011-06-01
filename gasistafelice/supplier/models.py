@@ -138,10 +138,12 @@ class ProductMU(models.Model, PermissionResource):
         return rv
     
 class Product(models.Model, PermissionResource):
-    #COMMENT: some producer don't have product codification.
-    uuid = models.CharField(max_length=128, unique=False, blank=True, null=True, verbose_name='UUID', help_text=_("Product code")) 
+
+    # COMMENT: some producer don't have product codification. 
+    # That's why uuid could be blank AND false. See save() method
+    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code")) 
     producer = models.ForeignKey(Supplier)
-    category = models.ForeignKey(ProductCategory)
+    category = models.ForeignKey(ProductCategory, null=True, blank=True)
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
@@ -161,6 +163,12 @@ class Product(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv
+
+    def save(self, *args, *kw):
+        # If uuid is blank, make it NULL
+        if not self.uuid:
+            self.uuid = None
+        return super(Product, self).save(*args, **kw)
 
 class SupplierStock(models.Model, PermissionResource):
     """A Product that a Supplier offers in the DES marketplace.
