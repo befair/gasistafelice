@@ -328,6 +328,8 @@ class GASMember(models.Model, PermissionResource):
            return ""
         #TODO: fixtures create user foreach person
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
+        #TODO: fixtures create user foreach person
         role.add_principal(user)
     
     @property        
