@@ -164,7 +164,7 @@ class Product(models.Model, PermissionResource):
               )     
         return rv
 
-    def save(self, *args, *kw):
+    def save(self, *args, **kw):
         # If uuid is blank, make it NULL
         if not self.uuid:
             self.uuid = None

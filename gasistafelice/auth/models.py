@@ -177,9 +177,9 @@ class PrincipalParamRoleRelation(models.Model):
         
     CREDITS: this class is inspired by the `PrincipalRoleRelation` model in `django-permissions`.
     """
-    user = models.ForeignKey(User, blank=True, null=True)
-    group = models.ForeignKey(Group, blank=True, null=True)
-    role = models.ForeignKey(ParamRole)
+    user = models.ForeignKey(User, blank=True, null=True, related_name="principal_param_role_set")
+    group = models.ForeignKey(Group, blank=True, null=True, related_name="principal_param_role_set")
+    role = models.ForeignKey(ParamRole, related_name="principal_param_role_set")
 
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     content_id = models.PositiveIntegerField(blank=True, null=True)
