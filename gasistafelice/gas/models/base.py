@@ -198,7 +198,7 @@ class GASConfig(models.Model, PermissionResource):
 
     auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
-    use_scheduler = models.BooleanField(default=True)  
+    use_scheduler = models.BooleanField(default=False)
 
     history = HistoricalRecords()
 
@@ -357,8 +357,11 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        #COMMENT: issue #2 In my local database i've seen that roles are empty: needed fixtures?
+        if user is None:
+            return ""
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
+        #TODO: fixtures create user foreach person
         role.add_principal(user)
     
     @property        
