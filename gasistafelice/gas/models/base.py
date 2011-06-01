@@ -67,47 +67,6 @@ class GAS(models.Model, PermissionResource):
 
 #    #-- Config --#
 #    #config = models.OneToOneField(GASConfig, null=True)
-#    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-#        related_name="gasmember_order_set", null=True, blank=True
-#    )
-#    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-#        related_name="gassupplier_order_set", null=True, blank=True
-#    )
-#
-#    can_change_price = models.BooleanField(default=False,
-#        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
-#    )
-#
-#    show_order_by_supplier = models.BooleanField(default=True, 
-#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-#    )  
-#
-#    #TODO: see ticket #65
-#    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-#        help_text=_("default closing order day of the week")
-#    )  
-#    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
-#    default_close_time = models.TimeField(blank=True, null=True,
-#        help_text=_("default order closing hour and minutes")
-#    )
-#  
-#    #TODO: see ticket #65
-#    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-#        help_text=_("default delivery day of the week")
-#    )  
-#
-#    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
-#    default_delivery_time = models.TimeField(blank=True, null=True,
-#        help_text=_("default delivery closing hour and minutes")
-#    )  
-#
-#    use_single_delivery = models.BooleanField(default=True, 
-#        help_text=_("GAS uses only one delivery place")
-#    )
-#
-#    use_headquarter_as_withdrawal = models.BooleanField(default=True)
-#    is_active = models.BooleanField(default=True)
-#    use_scheduler = models.BooleanField(default=True)  
 
     #-- Managers --#
 
@@ -210,7 +169,7 @@ class GASConfig(GAS):
     default_delivery_place = models.ForeignKey(Place, blank=True, related_name='gas_default_delivery_set')
     default_withdrawal_place = models.ForeignKey(Place, blank=True, related_name='gas_default_withdrawal_set')
     is_active = models.BooleanField(default=True)
-    use_scheduler = models.BooleanField(default=True)  
+    use_scheduler = models.BooleanField(default=False)  
 
     history = HistoricalRecords()
 
@@ -286,8 +245,11 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        #COMMENT: issue #2 In my local database i've seen that roles are empty: needed fixtures?
+        if user is None:
+            return ""
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
+        #TODO: fixtures create user foreach person
         role.add_principal(user)
     
     @property        
