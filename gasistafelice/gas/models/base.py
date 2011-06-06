@@ -65,54 +65,10 @@ class GAS(models.Model, PermissionResource):
     #COMMENT fero: photogallery and attachments does not go here
     #they should be managed elsewhere in Wordpress (now, at least)
 
-#    #-- Config --#
-#    #config = models.OneToOneField(GASConfig, null=True)
-#    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-#        related_name="gasmember_order_set", null=True, blank=True
-#    )
-#    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-#        related_name="gassupplier_order_set", null=True, blank=True
-#    )
-#
-#    can_change_price = models.BooleanField(default=False,
-#        help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
-#    )
-#
-#    show_order_by_supplier = models.BooleanField(default=True, 
-#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-#    )  
-#
-#    #TODO: see ticket #65
-#    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-#        help_text=_("default closing order day of the week")
-#    )  
-#    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
-#    default_close_time = models.TimeField(blank=True, null=True,
-#        help_text=_("default order closing hour and minutes")
-#    )
-#  
-#    #TODO: see ticket #65
-#    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-#        help_text=_("default delivery day of the week")
-#    )  
-#
-#    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
-#    default_delivery_time = models.TimeField(blank=True, null=True,
-#        help_text=_("default delivery closing hour and minutes")
-#    )  
-#
-#    use_single_delivery = models.BooleanField(default=True, 
-#        help_text=_("GAS uses only one delivery place")
-#    )
-#
-#    use_headquarter_as_withdrawal = models.BooleanField(default=True)
-#    is_active = models.BooleanField(default=True)
-#    use_scheduler = models.BooleanField(default=True)  
-
     #-- Managers --#
 
     objects = managers.GASRolesManager()
-#    history = HistoricalRecords()
+    history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
@@ -155,18 +111,18 @@ class GAS(models.Model, PermissionResource):
 
     def save(self, *args, **kw):
         self.id_in_des = self.id_in_des.upper()
-        if self.pk == None:
+        if not self.pk:
             self.account = Account.objects.create(balance=0)
             self.liquidity = Account.objects.create(balance=0)
         super(GAS, self).save(*args, **kw)
 
-class GASConfig(GAS):
+class GASConfig(models.Model, PermissionResource):
     """
     Encapsulate here gas settings and configuration facilities
     """
 
     # Link to parent class
-    gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
+    gas = models.OneToOneField(GAS, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
         related_name="gasmember_order_set", null=True, blank=True
@@ -187,28 +143,31 @@ class GASConfig(GAS):
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default closing order day of the week")
     )  
-    #COMMENT 'default_close_time'  auto_now=True is specified for this field. That makes it a non-editable field
-    default_close_time = models.TimeField(blank=True, null=True,
-        help_text=_("default order closing hour and minutes")
-    )
-  
     #TODO: see ticket #65
     default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default delivery day of the week")
     )  
 
-    #auto_now=True: admin validation refers to field 'account_state' that is missing from the form
+    #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
+    default_close_time = models.TimeField(blank=True, null=True,
+        help_text=_("default order closing hour and minutes")
+    )
+  
     default_delivery_time = models.TimeField(blank=True, null=True,
         help_text=_("default delivery closing hour and minutes")
     )  
 
+    
     use_single_delivery = models.BooleanField(default=True, 
         help_text=_("GAS uses only one delivery place")
     )
 
-    use_headquarter_as_withdrawal = models.BooleanField(default=True)
-    default_delivery_place = models.ForeignKey(Place, blank=True, related_name='gas_default_delivery_set')
-    default_withdrawal_place = models.ForeignKey(Place, blank=True, related_name='gas_default_withdrawal_set')
+    # Do not set default to both places because we want to have the ability
+    # to follow headquarter value if it changes.
+    # Provide delivery place and withdrawal place properties to get the right value
+    default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name='gas_default_withdrawal_set', help_text=_("to specify if different from headquarter"))
+    default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name='gas_default_delivery_set', help_text=_("to specify if different from delivery place"))
+
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=True)  
 
@@ -216,20 +175,21 @@ class GASConfig(GAS):
 
     #-- Meta --#
     class Meta:
-        verbose_name = _('GAS with configuration')
-        verbose_name_plural = _('GAS with configuration')
+        verbose_name = _('GAS options')
+        verbose_name_plural = _('GAS options')
         app_label = 'gas'
 
     def __unicode__(self):
         return _('Configuration for GAS "%s"') % self.gas 
 
-    def save(self, *args, **kw):
-        if self.default_close_time is None:
-            self.default_close_time = datetime.datetime.now()
-        if self.default_delivery_time is None:
-            self.default_delivery_time = datetime.datetime.now()
+    @property
+    def delivery_place(self):
+        return self.default_delivery_place or self.gas.headquarter
 
-        return super(GASConfig, self).save(*args, **kw)
+    @property
+    def withdrawal_place(self):
+        return self.default_withdrawal_place or self.gas.headquarter
+
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.

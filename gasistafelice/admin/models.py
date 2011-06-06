@@ -74,24 +74,18 @@ class PlaceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'city','province')
 
 
-#class GASConfigAdmin(admin.ModelAdmin):
-#    pass
-
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
     list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
-    fieldsets = (('Identity',
+    fieldsets = ((_('Identity'),
             { 'fields' : ('name', 'id_in_des', 'email_gas', 'logo', 'headquarter', 'description')
     }),
-    (_("Configuration"), {
-        'fields' : ('can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'use_headquarter_as_withdrawal', 'is_active', 'use_scheduler'),
-        'classes': ('collapse',)
-    }),
-    ("Economic", {
-        'fields' : ('membership_fee', 'account', 'liquidity'),
-        'classes': ('collapse',)
-    }),
+# COMMENT fero: Economic state is disabled right now
+#    (_("Economic"), {
+#        'fields' : ('membership_fee', 'account', 'liquidity'),
+#        'classes': ('collapse',)
+#    }),
     )
     inlines = [ GASMemberInline, ]
     search_fields = ('^name', '^id_in_des','email_gas', 'headquarter__city')
@@ -102,6 +96,14 @@ class GASAdmin(admin.ModelAdmin):
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
 
+class GASConfigAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    list_display = ('gas', 'show_order_by_supplier', 'default_delivery_day', 'is_active')
+    fieldsets = ((_("Configuration"), {
+        'fields' : ('gas', 'can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'default_delivery_place', 'default_withdrawal_place', 'is_active', 'use_scheduler'),
+    }),
+    )
 
 class GASMemberAdmin(admin.ModelAdmin):
 
@@ -320,7 +322,8 @@ admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
-admin.site.register(gas_models.GASConfig, GASAdmin)
+admin.site.register(gas_models.GAS, GASAdmin)
+admin.site.register(gas_models.GASConfig, GASConfigAdmin)
 admin.site.register(gas_models.base.GASSupplierSolidalPact)
 admin.site.register(gas_models.order.GASSupplierStock)
 admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
