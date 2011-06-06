@@ -179,6 +179,8 @@ class SupplierStock(models.Model, PermissionResource):
     supplier = models.ForeignKey(Supplier)
     product = models.ForeignKey(Product)
     price = models.FloatField() # FIXME: should be a `CurrencyField` ?
+
+    code = models.CharField(max_length=128, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
@@ -192,6 +194,9 @@ class SupplierStock(models.Model, PermissionResource):
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
 
     history = HistoricalRecords()
+
+    class Meta:
+        unique_together = (('code', 'supplier'),)
     
     def __unicode__(self):
         return "%s (by %s)" % (self.product, self.supplier)

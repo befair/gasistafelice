@@ -301,15 +301,10 @@ class GASMember(models.Model, PermissionResource):
               )     
         return rv  
     
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kw):
         # TODO: refactor as a validator (?)
         if not self.person.user: # GAS members must have an account on the system
             raise AttributeError('GAS Members must be registered users')     
-        super(GASMember, self).save(*args, **kwargs)
-       
-    def save(self, *args, **kw):
-        if self.membership_fee_payed is None:
-            self.membership_fee_payed = datetime.date.today()
         super(GASMember, self).save(*args, **kw)
 
 class GASSupplierStock(models.Model, PermissionResource):
