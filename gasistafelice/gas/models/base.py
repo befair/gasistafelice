@@ -14,11 +14,12 @@ from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.supplier.models import Supplier, Product, SupplierStock
 
-from gasistafelice.gas import managers
+from gasistafelice.gas.managers import GASMembersManager
 
 from gasistafelice.bank.models import Account
 
 from gasistafelice.base.fields import CurrencyField
+
 from decimal import Decimal
 import datetime
 
@@ -67,7 +68,6 @@ class GAS(models.Model, PermissionResource):
 
     #-- Managers --#
 
-    objects = managers.GASRolesManager()
     history = HistoricalRecords()
 
     #-- Meta --#
@@ -203,9 +203,10 @@ class GASMember(models.Model, PermissionResource):
     gas = models.ForeignKey(GAS)
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
-    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
+
+    objects = GASMembersManager()
 
     history = HistoricalRecords()
 
@@ -216,6 +217,13 @@ class GASMember(models.Model, PermissionResource):
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
     
+    @property
+    def roles(self):
+        # roles MUST BE a property because roles are bound to a User 
+        # with add_principal and not directly to a GAS Member
+        pprr = PrincipalParamRoleRelation.objects.filter(user=self.user)
+        return ParamRole.objects.filter(principal_param_role_set__in=pprr)
+        
     @property
     def verbose_name(self):
         """Return GASMember representation along with his own card number in GAS"""
@@ -397,22 +405,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     @property
-    def supplier_referrers(self):
-        '''Retrieve all the GAS supplier referrers associated with this solidal pact'''
-        # TODO: write unit tests for this method
-        # retrieve the right parametric role
-        # TODO: REFACTORING NEEDED
-        # NOTE: parametric_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
-        prs = ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER)
-        for pr in prs:
-            if pr.gas == self.gas and pr.supplier == self.supplier:
-                parametric_role = pr
-                break
+    def gas_supplier_referrers(self):
+        """Retrieve all GASMember who are GAS supplier referrers associated with this solidal pact"""
 
-        referrer_as_users = User.objects.filter(principal_param_role_relation=parametric_role)
-        referrers_as_members = self.gas.gas_member_set.filter(person__user_in=referrer_as_users)
-        
-        return referrers_as_members 
+        # TODO UNITTEST: write unit tests for this method
+        parametric_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        referrers = self.gas.gas_member_set.have_role(parametric_role)
+        return referrers
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
