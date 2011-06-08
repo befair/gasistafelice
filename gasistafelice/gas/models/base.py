@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 from permissions.models import Role
 from workflows.models import Workflow
@@ -269,8 +270,17 @@ class GASMember(models.Model, PermissionResource):
               )     
         return rv  
     
+    def clean(self, exclude=None):
+        # Clean method is for validation. Validation errors are meant to be
+        # catched in forms
+        if not self.person.user: # GAS members must have an account on the system
+            raise ValidationError(_("GAS Members must be registered users"))
+        return super(GASMember, self).clean(exclude=exclude)
+
     def save(self, *args, **kw):
-        # TODO: refactor as a validator (?)
+        # Save method is meant to do some trickery at saving time
+        # and to do some low-level checks raising low-level exceptions.
+        # These exceptions do not need to be translated.
         if not self.person.user: # GAS members must have an account on the system
             raise AttributeError('GAS Members must be registered users')     
         super(GASMember, self).save(*args, **kw)

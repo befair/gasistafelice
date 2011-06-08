@@ -114,13 +114,13 @@ class GASMemberAdmin(admin.ModelAdmin):
             { 'fields' : ('gas', 'person')
     }),
     ("Extra", {
-        'fields' : ('available_for_roles'),
+        'fields' : ('available_for_roles',),
         'classes': ('collapse',)
     }),
     )
-    filter_horizontal = ('roles',)
+    filter_horizontal = ('available_for_roles',)
     search_fields = ('person__name','person__surname')
-    list_filter = ('gas', 'roles')
+    list_filter = ('gas', )
 
     actions = ['say_hello']
     
