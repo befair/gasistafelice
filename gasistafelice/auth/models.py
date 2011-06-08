@@ -7,6 +7,8 @@ from django.contrib.contenttypes import generic
 from permissions.models import Permission, Role
 
 from gasistafelice.base.models import Resource
+from gasistafelice.auth.managers import RolesManager
+
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
@@ -90,6 +92,19 @@ class ParamRole(models.Model, Resource):
     # parameters for this Role
     param_set = models.ManyToManyField(Param)
     
+    ## we define few attributes providing easier access to allowed role parameters            
+    # note that access is read-only; parameter assignment is managed by the 
+    #`register_parametric_role()` factory function
+
+    # Use contribute_to_class django trickery
+    gas = ParamByName()
+    supplier = ParamByName()
+    order = ParamByName()
+    delivery = ParamByName()
+    withdrawal = ParamByName()
+
+    objects = RolesManager()
+
     def __unicode__(self):
         return u"%s on %s" % (self.role.name, ", ".join(self.param_set.all()))
 
@@ -142,17 +157,6 @@ class ParamRole(models.Model, Resource):
         return [prr.user for prr in prrs]
 
     
-    ## we define a few properties providing easier access to allowed role parameters            
-    # note that access is read-only; parameter assignment is managed by the 
-    #`register_parametric_role()` factory function
-
-    # Use contribute_to_class django trickery
-    gas = ParamByName()
-    supplier = ParamByName()
-    order = ParamByName()
-    delivery = ParamByName()
-    withdrawal = ParamByName()
-
 class PrincipalParamRoleRelation(models.Model):
     """This model is a relation describing the fact that a parametric role (`ParamRole`) 
     is assigned to a principal (i.e. a User or Group). If a content object is
