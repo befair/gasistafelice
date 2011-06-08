@@ -34,7 +34,7 @@ class GAS(models.Model, PermissionResource):
     name = models.CharField(max_length=128)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"))
+    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=True, blank=True)
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
@@ -111,7 +111,11 @@ class GAS(models.Model, PermissionResource):
         return rv  
 
     def save(self, *args, **kw):
+
+        if not self.id_in_des:
+            self.id_in_des = self.name[:3]
         self.id_in_des = self.id_in_des.upper()
+
         if not self.pk:
             self.account = Account.objects.create(balance=0)
             self.liquidity = Account.objects.create(balance=0)
@@ -330,56 +334,23 @@ class GASSupplierStock(models.Model, PermissionResource):
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
-    Each Supplier comes into relationship with a GAS by signing this pact,
+    Each Supplier comes into relationship with a GAS by signing a pact,
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
 
-    >>> from gasistafelice.gas.models.base import *
-    >>> from gasistafelice.supplier.models import *
-    >>> g1 = GAS.objects.all()[0]
-    >>> gname = g1.name
-    >>> s1 = Supplier.objects.all()[0]
-    >>> sname = s1.name
-
-    #If running fixtures we can do
-    >>> gname
-    u'Gas1'
-    >>> gname
-    u'Gas1sdfasgasga'
-    >>> sname
-    u'NameSupplier1'
+    >>> from gasistafelice.gas.models.base import GAS, GASSupplierSolidalPact
+    >>> from gasistafelice.supplier.models import Supplier
+    >>> g1 = GAS(name='GAS1')
+    >>> g1.save()
+    >>> s1 = Supplier(name='Supplier1')
+    >>> s1.save()
 
     >>> pds = GASSupplierSolidalPact()
-    >>> pds.save()
-    Traceback (most recent call last):
-        ...
-        if not isinstance(self.gas, GAS):
-        ...
-        raise self.field.rel.to.DoesNotExist
-    DoesNotExist
-    >>> pds = GASSupplierSolidalPact(gas=g1)
-    >>> pds.save()
-    Traceback (most recent call last):
-        ...
-        if not isinstance(self.supplier, Supplier):
-        ...
-        raise self.field.rel.to.DoesNotExist
-    DoesNotExist
-    >>> pds.supplier
-    Traceback (most recent call last):
-    ...
-        raise self.field.rel.to.DoesNotExist
-    DoesNotExist
+    >>> pds.gas = g1
     >>> pds.supplier = s1
     >>> pds.save()
-    Traceback (most recent call last):
-      File "<console>", line 1, in <module>
-        ...
-        super(GASMember, self).save(*args, **kw)
-    TypeError: super(type, obj): obj must be an instance or subtype of type
-    #TODO: resolve GASMember
-
-    #TODO: import GASSupplierStock in the GAS models see ticket#79
+    >>> print pds
+    Relation between GAS1 and Supplier1
 
     """
 
@@ -414,6 +385,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
+    def __unicode__(self):
+        return _("Relation between %(gas)s and %(supplier)s") % \
+                      { 'gas' : self.gas, 'supplier' : self.supplier}
+
     @property
     def gas_supplier_referrers(self):
         """Retrieve all GASMember who are GAS supplier referrers associated with this solidal pact"""
@@ -441,17 +416,3 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
 
-    history = HistoricalRecords()
-
-    #def set_default_product_set(self):
-    def save(self, *args, **kw):
-        if not isinstance(self.gas, GAS):
-            raise AttributeError("PDS gas cannot be null")
-        if not isinstance(self.supplier, Supplier):
-            raise AttributeError("PDS supplier cannot be null")
-        #TODO 
-        #if self.pk == None:
-        #    products = SupplierStock.objects.filter(supplier=self.supplier)
-        #    for p in products:
-        #        GASSupplierStock.objects.create(gas=self.gas, supplier_stock=p)
-        super(GASMember, self).save(*args, **kw)
