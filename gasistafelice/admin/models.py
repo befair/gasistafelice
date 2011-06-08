@@ -114,7 +114,7 @@ class GASMemberAdmin(admin.ModelAdmin):
             { 'fields' : ('gas', 'person')
     }),
     ("Extra", {
-        'fields' : ('available_for_roles','roles'),
+        'fields' : ('available_for_roles'),
         'classes': ('collapse',)
     }),
     )

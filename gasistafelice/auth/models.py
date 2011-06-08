@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User, Group 
 from django.contrib.contenttypes.models import ContentType
@@ -107,6 +108,14 @@ class ParamRole(models.Model, Resource):
 
     def __unicode__(self):
         return u"%s on %s" % (self.role.name, ", ".join(self.param_set.all()))
+
+    @classmethod
+    def get_role(cls, role_name, **params):
+        qs = cls.objects.get_param_roles(role_name, **params)
+        #TODO UNITTEST: write unit tests for this method
+        if len(qs) > 1:
+            raise MultipleObjectsReturned() 
+        return qs[0]
 
     def add_principal(self, principal, content=None):
         """

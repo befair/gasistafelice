@@ -1,25 +1,30 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-from gasistafelice.auth import GAS_REFERRER_CASH, GAS_REFERRER_DELIVERY, GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_WITHDRAWAL
+class GASMembersManager(models.Manager):
 
-class GASRolesManager(models.Manager):
+    def have_role(self, parametric_role):
+        referrer_as_users = User.objects.filter(principal_param_role_relation=parametric_role)
+        return self.get_query_set().filter(person__user_in=referrer_as_users)
 
-    def tech_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_TECH)
+    def have_roles(self, parametric_roles):
+        referrer_as_users = User.objects.filter(principal_param_role_relation__in=parametric_roles)
+        return self.get_query_set().filter(person__user_in=referrer_as_users)
+
+    def tech_referrers(self, **resource_kw):
+        parametric_roles = ParamRole.objects.gas_tech_referrers(**resource_kw)
+        return self.have_roles(parametric_roles)
 
     def cash_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_CASH)
+        parametric_roles = ParamRole.objects.gas_cash_referrers(**resource_kw)
+        return self.have_roles(parametric_roles)
 
     def supplier_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_SUPPLIER)
-
-    def order_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_ORDER)
-
-    def withdraw_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_WITHDRAWAL)
+        parametric_roles = ParamRole.objects.gas_supplier_referrers(**resource_kw)
+        return self.have_roles(parametric_roles)
 
     def delivery_referrers(self):
-        return self.get_query_set().filter(role_set__name__exact=GAS_REFERRER_DELIVERY)
+        parametric_roles = ParamRole.objects.gas_delivery_referrers(**resource_kw)
+        return self.have_roles(parametric_roles)
 
 

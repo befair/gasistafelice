@@ -13,12 +13,16 @@ class RolesManager(models.Manager):
 
         return self.get_query_set().filter(role__name__exact=role_name, **resource_kw)
         
-    def tech_referrers(self, **resource_kw):
+    def gas_tech_referrers(self, **resource_kw):
         return self.get_param_roles(GAS_REFERRER_TECH, **resource_kw)
 
-    def cash_referrers(self, **resource_kw):
+    def gas_cash_referrers(self, **resource_kw):
         return self.get_param_roles(GAS_REFERRER_CASH, **resource_kw)
 
-    def supplier_referrers(self, **resource_kw):
+    def gas_supplier_referrers(self, **resource_kw):
         return self.get_param_roles(GAS_REFERRER_SUPPLIER, **resource_kw)
 
+    def supplier_referrers(self, **resource_kw):
+        return self.get_param_roles(SUPPLIER_REFERRER, **resource_kw)
+
+    #TODO placeholder for other roles: seldon
