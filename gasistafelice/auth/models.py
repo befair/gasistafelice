@@ -90,9 +90,8 @@ class ParamRole(models.Model, Resource):
     # parameters for this Role
     param_set = models.ManyToManyField(Param)
     
-#TODO: write a more descriptive string representation             
     def __unicode__(self):
-        return self.role.name
+        return u"%s on %s" % (self.role.name, ", ".join(self.param_set.all()))
 
     def add_principal(self, principal, content=None):
         """
