@@ -195,6 +195,17 @@ class GASConfig(models.Model, PermissionResource):
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
 
+    def clean(self, exclude=None):
+        if (not exclude) or ('default_withdrawal_place' not in exclude):
+            #TODO placeholder domthu tell that default_withdrawal_place must not be None
+            # if headquarter is not specified
+            pass
+        if (not exclude) or ('default_delivery_place' not in exclude):
+            #TODO placeholder domthu tell that default_delivery_place must not be None
+            # if headquarter is not specified
+            pass
+        
+        return super(GASConfig, self).clean(exclude=exclude)
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
@@ -277,8 +288,9 @@ class GASMember(models.Model, PermissionResource):
     def clean(self, exclude=None):
         # Clean method is for validation. Validation errors are meant to be
         # catched in forms
-        if not self.person.user: # GAS members must have an account on the system
-            raise ValidationError(_("GAS Members must be registered users"))
+        if (not exclude) or ('person' not in exclude):
+            if not self.person.user: # GAS members must have an account on the system
+                raise ValidationError(_("GAS Members must be registered users"))
         return super(GASMember, self).clean(exclude=exclude)
 
     def save(self, *args, **kw):
