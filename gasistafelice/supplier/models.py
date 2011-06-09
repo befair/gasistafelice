@@ -178,9 +178,9 @@ class SupplierStock(models.Model, PermissionResource):
 
     supplier = models.ForeignKey(Supplier)
     product = models.ForeignKey(Product)
-    price = models.FloatField() # FIXME: should be a `CurrencyField` ?
+    price = models.FloatField() # TODO placeholder domthu: put a `CurrencyField`
 
-    code = models.CharField(max_length=128, blank=True, help_text=_("Product supplier identifier"))
+    code = models.CharField(max_length=128, blank=True, null=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
@@ -211,3 +211,9 @@ class SupplierStock(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv
+
+    def save(self, *args, **kw):
+        # If code is blank we set it to None
+        if not self.code:
+            self.code = None
+        return super(SupplierStock, self).save(*args, **kw)
