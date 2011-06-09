@@ -70,6 +70,17 @@ class Param(models.Model):
     object_id = models.PositiveIntegerField()
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
+    def __unicode__(self):
+        return u"%s: %s" % (self.name, self.value)
+
+    def __repr__(self):
+        return "<%s %s: %s>" % (self.__class__.__name__, self.name, self.value)
+
+    @property
+    def value(self):
+        #TODO placeholder seldon REFACTORY: change name of param attribute in value
+        return self.param
+
 class ParamRole(models.Model, Resource):
     """
     A custom role model class inspired from `django-permissions`'s `Role` model.
@@ -107,7 +118,8 @@ class ParamRole(models.Model, Resource):
     objects = RolesManager()
 
     def __unicode__(self):
-        return u"%s on %s" % (self.role.name, ", ".join(self.param_set.all()))
+        param_str_list = ["%s" % s for s in self.param_set.all()]
+        return u"%s on %s" % (self.role.name, ", ".join(param_str_list))
 
     @classmethod
     def get_role(cls, role_name, **params):
