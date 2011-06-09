@@ -32,7 +32,6 @@ class GASSupplierOrderProductInline(admin.TabularInline):
 ########################## ModelAdmin customizations ######
 
 class PersonAdmin(admin.ModelAdmin):
-    inlines = [GASMemberInline, ] 
 
     save_on_top = True
     

@@ -195,17 +195,15 @@ class GASConfig(models.Model, PermissionResource):
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
 
-    def clean(self, exclude=None):
-        if (not exclude) or ('default_withdrawal_place' not in exclude):
-            #TODO placeholder domthu tell that default_withdrawal_place must not be None
-            # if headquarter is not specified
-            pass
-        if (not exclude) or ('default_delivery_place' not in exclude):
-            #TODO placeholder domthu tell that default_delivery_place must not be None
-            # if headquarter is not specified
-            pass
+    def clean(self):
+        #TODO placeholder domthu code that default_withdrawal_place must not be None
+        # if headquarter is not specified
+        pass
+        #TODO placeholder domthu code that default_delivery_place must not be None
+        # if headquarter is not specified
+        pass
         
-        return super(GASConfig, self).clean(exclude=exclude)
+        return super(GASConfig, self).clean()
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
@@ -217,7 +215,7 @@ class GASMember(models.Model, PermissionResource):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, help_text=_("GAS card number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
@@ -285,13 +283,12 @@ class GASMember(models.Model, PermissionResource):
               )     
         return rv  
     
-    def clean(self, exclude=None):
+    def clean(self):
         # Clean method is for validation. Validation errors are meant to be
         # catched in forms
-        if (not exclude) or ('person' not in exclude):
-            if not self.person.user: # GAS members must have an account on the system
-                raise ValidationError(_("GAS Members must be registered users"))
-        return super(GASMember, self).clean(exclude=exclude)
+        if not self.person.user: # GAS members must have an account on the system
+            raise ValidationError(_("GAS Members must be registered users"))
+        return super(GASMember, self).clean()
 
     def save(self, *args, **kw):
         # Save method is meant to do some trickery at saving time
@@ -299,6 +296,8 @@ class GASMember(models.Model, PermissionResource):
         # These exceptions do not need to be translated.
         if not self.person.user: # GAS members must have an account on the system
             raise AttributeError('GAS Members must be registered users')     
+        if not self.id_in_gas:
+            self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
 
 class GASSupplierStock(models.Model, PermissionResource):
