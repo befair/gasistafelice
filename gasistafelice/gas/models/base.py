@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 from permissions.models import Role
 from workflows.models import Workflow
@@ -14,11 +15,12 @@ from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.supplier.models import Supplier, Product, SupplierStock
 
-from gasistafelice.gas import managers
+from gasistafelice.gas.managers import GASMembersManager
 
 from gasistafelice.bank.models import Account
 
 from gasistafelice.base.fields import CurrencyField
+
 from decimal import Decimal
 import datetime
 
@@ -32,7 +34,7 @@ class GAS(models.Model, PermissionResource):
     name = models.CharField(max_length=128)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))	
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"))
+    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=True, blank=True)
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
@@ -67,7 +69,6 @@ class GAS(models.Model, PermissionResource):
 
     #-- Managers --#
 
-    objects = managers.GASRolesManager()
     history = HistoricalRecords()
 
     #-- Meta --#
@@ -110,7 +111,11 @@ class GAS(models.Model, PermissionResource):
         return rv  
 
     def save(self, *args, **kw):
+
+        if not self.id_in_des:
+            self.id_in_des = self.name[:3]
         self.id_in_des = self.id_in_des.upper()
+
         if not self.pk:
             self.account = Account.objects.create(balance=0)
             self.liquidity = Account.objects.create(balance=0)
@@ -190,6 +195,15 @@ class GASConfig(models.Model, PermissionResource):
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
 
+    def clean(self):
+        #TODO placeholder domthu code that default_withdrawal_place must not be None
+        # if headquarter is not specified
+        pass
+        #TODO placeholder domthu code that default_delivery_place must not be None
+        # if headquarter is not specified
+        pass
+        
+        return super(GASConfig, self).clean()
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
@@ -201,11 +215,12 @@ class GASMember(models.Model, PermissionResource):
 
     person = models.ForeignKey(Person)
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, help_text=_("GAS card number"))	
+    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))	
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
-    roles = models.ManyToManyField(ParamRole, null=True, blank=True, related_name="gas_member_set")
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
+
+    objects = GASMembersManager()
 
     history = HistoricalRecords()
 
@@ -216,6 +231,13 @@ class GASMember(models.Model, PermissionResource):
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
     
+    @property
+    def roles(self):
+        # roles MUST BE a property because roles are bound to a User 
+        # with add_principal and not directly to a GAS Member
+        pprr = PrincipalParamRoleRelation.objects.filter(user=self.user)
+        return ParamRole.objects.filter(principal_param_role_set__in=pprr)
+        
     @property
     def verbose_name(self):
         """Return GASMember representation along with his own card number in GAS"""
@@ -261,10 +283,21 @@ class GASMember(models.Model, PermissionResource):
               )     
         return rv  
     
+    def clean(self):
+        # Clean method is for validation. Validation errors are meant to be
+        # catched in forms
+        if not self.person.user: # GAS members must have an account on the system
+            raise ValidationError(_("GAS Members must be registered users"))
+        return super(GASMember, self).clean()
+
     def save(self, *args, **kw):
-        # TODO: refactor as a validator (?)
+        # Save method is meant to do some trickery at saving time
+        # and to do some low-level checks raising low-level exceptions.
+        # These exceptions do not need to be translated.
         if not self.person.user: # GAS members must have an account on the system
             raise AttributeError('GAS Members must be registered users')     
+        if not self.id_in_gas:
+            self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
 
 class GASSupplierStock(models.Model, PermissionResource):
@@ -312,56 +345,23 @@ class GASSupplierStock(models.Model, PermissionResource):
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
-    Each Supplier comes into relationship with a GAS by signing this pact,
+    Each Supplier comes into relationship with a GAS by signing a pact,
     where are factorized behaviour agreements between these two entities.
     This pact acts as a configurator for order and delivery management with respect to the given Supplier.
 
-    >>> from gasistafelice.gas.models.base import *
-    >>> from gasistafelice.supplier.models import *
-    >>> g1 = GAS.objects.all()[0]
-    >>> gname = g1.name
-    >>> s1 = Supplier.objects.all()[0]
-    >>> sname = s1.name
-
-    #If running fixtures we can do
-    >>> gname
-    u'Gas1'
-    >>> gname
-    u'Gas1sdfasgasga'
-    >>> sname
-    u'NameSupplier1'
+    >>> from gasistafelice.gas.models.base import GAS, GASSupplierSolidalPact
+    >>> from gasistafelice.supplier.models import Supplier
+    >>> g1 = GAS(name='GAS1')
+    >>> g1.save()
+    >>> s1 = Supplier(name='Supplier1')
+    >>> s1.save()
 
     >>> pds = GASSupplierSolidalPact()
-    >>> pds.save()
-    Traceback (most recent call last):
-        ...
-        if not isinstance(self.gas, GAS):
-        ...
-        raise self.field.rel.to.DoesNotExist
-    DoesNotExist
-    >>> pds = GASSupplierSolidalPact(gas=g1)
-    >>> pds.save()
-    Traceback (most recent call last):
-        ...
-        if not isinstance(self.supplier, Supplier):
-        ...
-        raise self.field.rel.to.DoesNotExist
-    DoesNotExist
-    >>> pds.supplier
-    Traceback (most recent call last):
-    ...
-        raise self.field.rel.to.DoesNotExist
-    DoesNotExist
+    >>> pds.gas = g1
     >>> pds.supplier = s1
     >>> pds.save()
-    Traceback (most recent call last):
-      File "<console>", line 1, in <module>
-        ...
-        super(GASMember, self).save(*args, **kw)
-    TypeError: super(type, obj): obj must be an instance or subtype of type
-    #TODO: resolve GASMember
-
-    #TODO: import GASSupplierStock in the GAS models see ticket#79
+    >>> print pds
+    Relation between GAS1 and Supplier1
 
     """
 
@@ -396,23 +396,18 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
-    @property
-    def supplier_referrers(self):
-        '''Retrieve all the GAS supplier referrers associated with this solidal pact'''
-        # TODO: write unit tests for this method
-        # retrieve the right parametric role
-        # TODO: REFACTORING NEEDED
-        # NOTE: parametric_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
-        prs = ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER)
-        for pr in prs:
-            if pr.gas == self.gas and pr.supplier == self.supplier:
-                parametric_role = pr
-                break
+    def __unicode__(self):
+        return _("Relation between %(gas)s and %(supplier)s") % \
+                      { 'gas' : self.gas, 'supplier' : self.supplier}
 
-        referrer_as_users = User.objects.filter(principal_param_role_relation=parametric_role)
-        referrers_as_members = self.gas.gas_member_set.filter(person__user_in=referrer_as_users)
-        
-        return referrers_as_members 
+    @property
+    def gas_supplier_referrers(self):
+        """Retrieve all GASMember who are GAS supplier referrers associated with this solidal pact"""
+
+        # TODO UNITTEST: write unit tests for this method
+        parametric_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        referrers = self.gas.gas_member_set.have_role(parametric_role)
+        return referrers
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
@@ -432,17 +427,3 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
 
-    history = HistoricalRecords()
-
-    #def set_default_product_set(self):
-    def save(self, *args, **kw):
-        if not isinstance(self.gas, GAS):
-            raise AttributeError("PDS gas cannot be null")
-        if not isinstance(self.supplier, Supplier):
-            raise AttributeError("PDS supplier cannot be null")
-        #TODO 
-        #if self.pk == None:
-        #    products = SupplierStock.objects.filter(supplier=self.supplier)
-        #    for p in products:
-        #        GASSupplierStock.objects.create(gas=self.gas, supplier_stock=p)
-        super(GASMember, self).save(*args, **kw)

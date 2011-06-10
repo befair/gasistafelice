@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User, Group 
 from django.contrib.contenttypes.models import ContentType
@@ -7,6 +8,8 @@ from django.contrib.contenttypes import generic
 from permissions.models import Permission, Role
 
 from gasistafelice.base.models import Resource
+from gasistafelice.auth.managers import RolesManager
+
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
@@ -67,6 +70,17 @@ class Param(models.Model):
     object_id = models.PositiveIntegerField()
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
+    def __unicode__(self):
+        return u"%s: %s" % (self.name, self.value)
+
+    def __repr__(self):
+        return "<%s %s: %s>" % (self.__class__.__name__, self.name, self.value)
+
+    @property
+    def value(self):
+        #TODO placeholder seldon REFACTORY: change name of param attribute in value
+        return self.param
+
 class ParamRole(models.Model, Resource):
     """
     A custom role model class inspired from `django-permissions`'s `Role` model.
@@ -90,9 +104,30 @@ class ParamRole(models.Model, Resource):
     # parameters for this Role
     param_set = models.ManyToManyField(Param)
     
-#TODO: write a more descriptive string representation             
+    ## we define few attributes providing easier access to allowed role parameters            
+    # note that access is read-only; parameter assignment is managed by the 
+    #`register_parametric_role()` factory function
+
+    # Use contribute_to_class django trickery
+    gas = ParamByName()
+    supplier = ParamByName()
+    order = ParamByName()
+    delivery = ParamByName()
+    withdrawal = ParamByName()
+
+    objects = RolesManager()
+
     def __unicode__(self):
-        return self.role.name
+        param_str_list = ["%s" % s for s in self.param_set.all()]
+        return u"%s on %s" % (self.role.name, ", ".join(param_str_list))
+
+    @classmethod
+    def get_role(cls, role_name, **params):
+        qs = cls.objects.get_param_roles(role_name, **params)
+        #TODO UNITTEST: write unit tests for this method
+        if len(qs) > 1:
+            raise MultipleObjectsReturned() 
+        return qs[0]
 
     def add_principal(self, principal, content=None):
         """
@@ -143,17 +178,6 @@ class ParamRole(models.Model, Resource):
         return [prr.user for prr in prrs]
 
     
-    ## we define a few properties providing easier access to allowed role parameters            
-    # note that access is read-only; parameter assignment is managed by the 
-    #`register_parametric_role()` factory function
-
-    # Use contribute_to_class django trickery
-    gas = ParamByName()
-    supplier = ParamByName()
-    order = ParamByName()
-    delivery = ParamByName()
-    withdrawal = ParamByName()
-
 class PrincipalParamRoleRelation(models.Model):
     """This model is a relation describing the fact that a parametric role (`ParamRole`) 
     is assigned to a principal (i.e. a User or Group). If a content object is
