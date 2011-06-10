@@ -13,18 +13,19 @@ class GASSupplierStockTest(TestCase):
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')        
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         self.category = ProductCategory.objects.create(name='food') 
         self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
         
     def testSupplier(self):
         '''Verify if supplier is retrieved correctly'''
-        gss = GASSupplierStock.objects.create(gas=self.gas, supplier_stock=self.stock)
+        gss = GASSupplierStock.objects.create(pact=self.pact, supplier_stock=self.stock)
         self.assertEqual(gss.supplier, self.supplier)
                 
     def testPrice(self):
         '''Verify if price is computed correctly'''
-        gss = GASSupplierStock.objects.create(gas=self.gas, supplier_stock=self.stock)
+        gss = GASSupplierStock.objects.create(pact=self.pact, supplier_stock=self.stock)
         pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         pact.order_price_percent_update = 0.05
         pact.save()
@@ -40,11 +41,12 @@ class GASMemberOrderTest(TestCase):
         self.person = Person.objects.create(name='John', surname='Smith', user=user)
         self.member = GASMember.objects.create(person=self.person, gas=self.gas)
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         self.category = ProductCategory.objects.create(name='food') 
         self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
-        self.gas_stock = GASSupplierStock.objects.create(gas=self.gas, supplier_stock=self.stock)
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=self.now)
+        self.gas_stock = GASSupplierStock.objects.create(pact=self.pact, supplier_stock=self.stock)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=self.now)
         self.order_product = GASSupplierOrderProduct.objects.create(order=self.order, stock=self.gas_stock)
         
     def testActualPrice(self):
@@ -85,6 +87,10 @@ class GASSupplierOrderProductTest(TestCase):
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
         
+        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_1)
+        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_2)
+        self.pact_3 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier_1)
+        
         self.member_1 = GASMember.objects.create(person=self.person_1, gas=self.gas_1)
         self.member_2 = GASMember.objects.create(person=self.person_2, gas=self.gas_1)
         self.member_3 = GASMember.objects.create(person=self.person_3, gas=self.gas_2)
@@ -98,13 +104,13 @@ class GASSupplierOrderProductTest(TestCase):
         self.stock_2 = SupplierStock.objects.create(supplier=self.supplier_1, product=self.product_2, price=150)
         self.stock_3 = SupplierStock.objects.create(supplier=self.supplier_2, product=self.product_1, price=120)
         
-        self.gas_stock_1 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_1)
-        self.gas_stock_2 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_2)
-        self.gas_stock_3 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_3)
-        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.gas_2, supplier_stock=self.stock_1)
+        self.gas_stock_1 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_1)
+        self.gas_stock_2 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_2)
+        self.gas_stock_3 = GASSupplierStock.objects.create(pact=self.pact_2, supplier_stock=self.stock_3)
+        self.gas_stock_4 = GASSupplierStock.objects.create(pact=self.pact_3, supplier_stock=self.stock_1)
         
-        self.order_1 = GASSupplierOrder.objects.create(gas=self.gas_1, supplier=self.supplier_1, date_start=self.now)
-        self.order_2 = GASSupplierOrder.objects.create(gas=self.gas_2, supplier=self.supplier_1, date_start=self.now)
+        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=self.now)
+        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_3, date_start=self.now)
         
         self.product_1 = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_1)
         self.product_2 = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_2)
@@ -141,6 +147,10 @@ class GASSupplierOrderTest(TestCase):
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
         
+        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_1)
+        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_2)
+        self.pact_3 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier_1)
+        
         self.category = ProductCategory.objects.create(name='food') 
         
         self.product_1 = Product.objects.create(name='carrots', category=self.category, producer=self.supplier_1)
@@ -150,15 +160,15 @@ class GASSupplierOrderTest(TestCase):
         self.stock_2 = SupplierStock.objects.create(supplier=self.supplier_1, product=self.product_2, price=150)
         self.stock_3 = SupplierStock.objects.create(supplier=self.supplier_2, product=self.product_1, price=120)
         
-        self.gas_stock_1 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_1)
-        self.gas_stock_2 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_2)
-        self.gas_stock_3 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_3)
-        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.gas_2, supplier_stock=self.stock_1)
+        self.gas_stock_1 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_1)
+        self.gas_stock_2 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_2)
+        self.gas_stock_3 = GASSupplierStock.objects.create(pact=self.pact_2, supplier_stock=self.stock_3)
+        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.pact_3, supplier_stock=self.stock_1)
         
                 
     def testDefaultProductSet(self):
         '''Verify that the default product set is correctly generated'''
-        order = GASSupplierOrder.objects.create(gas=self.gas_1, supplier=self.supplier_1, date_start=self.now)
+        order = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=self.now)
         order.set_default_product_set()
         self.assertEqual(set(order.products.all()), set((self.gas_stock_1, self.gas_stock_2)))
         
