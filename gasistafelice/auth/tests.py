@@ -8,7 +8,7 @@ from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER, SUPPLIER_REFERRER 
-from gasistafelice.auth import valid_params_for_roles
+from gasistafelice.auth import VALID_PARAMS_FOR_ROLES
 from gasistafelice.auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from gasistafelice.auth.utils import register_parametric_role, _validate_parametric_role,\
 _parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
@@ -196,11 +196,12 @@ class ParamRoleValidationTest(TestCase):
         midnight = time(hour=0)
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=today)
         self.place = Place.objects.create(city='senigallia', province='AN')
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
-        self.constraints = valid_params_for_roles
+        self.constraints = VALID_PARAMS_FOR_ROLES
     def testValidationOK(self):
         '''Verify that validation of a parametric role succeeds if arguments are fine'''
         name = SUPPLIER_REFERRER
@@ -263,7 +264,8 @@ class ParamRoleRegistrationTest(TestCase):
         midnight = time(hour=0)
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=today)
         self.place = Place.objects.create(city='senigallia', province='AN')
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
@@ -384,7 +386,8 @@ class RoleAutoSetupTest(TestCase):
         midnight = time(hour=0)
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=today)
         self.place = Place.objects.create(city='senigallia', province='AN')
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)

@@ -25,8 +25,8 @@ class GASSupplierStockTest(TestCase):
                 
     def testPrice(self):
         '''Verify if price is computed correctly'''
-        gss = GASSupplierStock.objects.create(pact=self.pact, supplier_stock=self.stock)
         pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        gss = GASSupplierStock.objects.create(pact=pact, supplier_stock=self.stock)
         pact.order_price_percent_update = 0.05
         pact.save()
         self.assertEqual(gss.price, 105)
@@ -163,7 +163,8 @@ class GASSupplierOrderTest(TestCase):
         self.gas_stock_1 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_1)
         self.gas_stock_2 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_2)
         self.gas_stock_3 = GASSupplierStock.objects.create(pact=self.pact_2, supplier_stock=self.stock_3)
-        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.pact_3, supplier_stock=self.stock_1)
+
+        self.gas_stock_4 = GASSupplierStock.objects.create(pact=self.pact_3, supplier_stock=self.stock_1)
         
                 
     def testDefaultProductSet(self):
