@@ -48,7 +48,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this case, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
-        stocks = GASSupplierStock.objects.filter(gas=self.gas, supplier_stock__supplier=self.supplier)
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
             GASSupplierOrderProduct.objects.create(order=self, stock=s)
         
@@ -117,7 +117,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     
     @property
     def gas(self):
-        return self.order.gas    
+        return self.order.pact.gas    
     
     @property        
     def local_grants(self):
