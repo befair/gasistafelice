@@ -1,6 +1,7 @@
 from django.db import models
 
-from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, VALID_PARAMS_FOR_ROLES
+from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, VALID_PARAMS_FOR_ROLES,\
+SUPPLIER_REFERRER, GAS_REFERRER, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 from gasistafelice.auth.exceptions import RoleParameterNotAllowed
 
 class RolesManager(models.Manager):
@@ -12,7 +13,16 @@ class RolesManager(models.Manager):
                 raise RoleParameterNotAllowed(role_name, relatable_resources, k)
 
         return self.get_query_set().filter(role__name__exact=role_name, **resource_kw)
-        
+
+    def supplier_referrers(self, **resource_kw):
+        return self.get_param_roles(SUPPLIER_REFERRER, **resource_kw)
+    
+    def gas_members(self, **resource_kw):
+        return self.get_param_roles(GAS_MEMBER, **resource_kw)    
+    
+    def gas_referrers(self, **resource_kw):
+        return self.get_param_roles(GAS_REFERRER, **resource_kw)    
+    
     def gas_tech_referrers(self, **resource_kw):
         return self.get_param_roles(GAS_REFERRER_TECH, **resource_kw)
 
@@ -21,8 +31,15 @@ class RolesManager(models.Manager):
 
     def gas_supplier_referrers(self, **resource_kw):
         return self.get_param_roles(GAS_REFERRER_SUPPLIER, **resource_kw)
+    
+    def gas_order_referrers(self, **resource_kw):
+        return self.get_param_roles(GAS_REFERRER_ORDER, **resource_kw)
 
-    def supplier_referrers(self, **resource_kw):
-        return self.get_param_roles(SUPPLIER_REFERRER, **resource_kw)
 
-    #TODO placeholder for other roles: seldon
+    def gas_delivery_referrers(self, **resource_kw):
+        return self.get_param_roles(GAS_REFERRER_DELIVERY, **resource_kw)
+
+    def gas_withdrawal_referrers(self, **resource_kw):
+        return self.get_param_roles(GAS_REFERRER_WITHDRAWAL, **resource_kw)
+
+

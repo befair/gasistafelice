@@ -15,7 +15,7 @@ class RoleParameterNotAllowed(Exception):
         self.wrong_param = wrong_param
 
     def __str__(self):
-        return _("Wrong param %(wp)s provided for role %(r)s. Only %(pl)s are relatable to this role") % \
+        return _("Wrong param '%(wp)s' provided for role %(r)s. Only %(pl)s are relatable to this role") % \
                   { 'wp' : self.wrong_param, 'r' : self.role_name, 'pl' : ", ".join(self.allowed_params) }
 
 
