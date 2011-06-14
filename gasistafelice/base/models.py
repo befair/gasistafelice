@@ -65,7 +65,7 @@ class Person(models.Model, PermissionResource):
    
 class Contact(models.Model, PermissionResource):
 
-    contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
+    contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)Contact
     contact_value = models.CharField(max_length=32)
 
     history = HistoricalRecords()
