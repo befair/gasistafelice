@@ -120,12 +120,15 @@ class GAS(models.Model, PermissionResource):
         super(GAS, self).save(*args, **kw)
 
 class GASConfig(GAS):
+#class GASConfig(models.Model):
     """
     Encapsulate here gas settings and configuration facilities
     """
 
-    # Link to parent class
-    gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
+    # Link to parent class 
+    #COMMENT: multi-table inheritance models does not required attribute with OneToOneField. It will be created automaticaly
+    gas = models.OneToOneField(GAS, parent_link=True, primary_key=True, related_name="config")
+    #gas = models.OneToOneField(GAS, parent_link=True, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
         related_name="gasmember_order_set", null=True, blank=True
@@ -171,7 +174,7 @@ class GASConfig(GAS):
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)  
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
@@ -187,7 +190,10 @@ class GASConfig(GAS):
             self.default_close_time = datetime.datetime.now()
         if self.default_delivery_time is None:
             self.default_delivery_time = datetime.datetime.now()
-
+        #if self.default_delivery_place is None:
+        #    self.default_delivery_place =  '' #self.gas.headquarter;
+        #if self.default_withdrawal_place is None:
+        #    self.default_withdrawal_place = '' #self.gas.headquarter;
         return super(GASConfig, self).save(*args, **kw)
 
 class GASMember(models.Model, PermissionResource):
