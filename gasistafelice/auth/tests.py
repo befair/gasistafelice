@@ -595,234 +595,93 @@ class PrincipalRoleRelationTest(TestCase):
         """If neither a User nor a Group instance is passed, raise `TypeError`"""
         pass    
     
-class GASMemberManagerTest(TestCase):
-    """
-    Tests for the `GASMemberManager` manager class
-    """  
+    
+            
+class RolesManagerTest(TestCase):
+    """Tests for the `RolesManager` manager class"""  
 
     def setUp(self):
-        today = date.today()
-        now = datetime.now()        
-        midnight = time(hour=0)
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.gas_1 = GAS.objects.create(name='barGAS', id_in_des='2')
+        self.gas_2 = GAS.objects.create(name='bazGAS', id_in_des='3')
         
-        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
-        self.gas_2 = GAS.objects.create(name='barGAS', id_in_des='2')
+        self.supplier = Supplier.objects.create(name='SmallCompany', vat_number='111')
+        self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')  
         
-        self.person_1 = Person.objects.create(name='Mario', surname='Rossi')
-        self.person_2 = Person.objects.create(name='Carlo', surname='Bianchi')
-        self.person_3 = Person.objects.create(name='Antonio', surname='Verdi')
-        self.person_4 = Person.objects.create(name='Giorgio', surname='Rosi')
+        self.role_1, created = Role.objects.get_or_create(name=GAS_MEMBER)
+        self.role_2, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)
         
-        self.user_1 = User.objects.create(username='Foo')
-        self.user_2 = User.objects.create(username='Bar')
-        self.user_3 = User.objects.create(username='Baz')
-        self.user_4 = User.objects.create(username='Spam')
+        p1 = Param.objects.create(name='gas', param=self.gas_1)
+        p2 = Param.objects.create(name='gas', param=self.gas_2)
+        p3 = Param.objects.create(name='supplier', param=self.supplier_1)
+        p4 = Param.objects.create(name='supplier', param=self.supplier_2)
         
-        self.person_1.user=self.user_1
-        self.person_1.save()
-        self.person_2.user=self.user_2
-        self.person_2.save()
-        self.person_3.user=self.user_3
-        self.person_3.save()
-        self.person_4.user=self.user_4
-        self.person_4.save()
-        
-        
-        self.member_1 = GASMember.objects.create(gas=self.gas_1, person=self.person_1)
-        self.member_2 = GASMember.objects.create(gas=self.gas_2, person=self.person_2)
-        self.member_3 = GASMember.objects.create(gas=self.gas_1, person=self.person_3)
-        self.member_4 = GASMember.objects.create(gas=self.gas_2, person=self.person_3)
-        self.member_5 = GASMember.objects.create(gas=self.gas_1, person=self.person_4)
-        
-        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')  
-        
-        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier)
-        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier)
-        
-        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=today)
-        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, date_start=today)
-        
-        self.place = Place.objects.create(city='senigallia', province='AN')
-        
-        self.delivery = Delivery.objects.create(place=self.place, date=today)
-        
-        self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
-    
-    def testGasReferrersOK(self):
-        """
-        Only GAS members having a 'GAS Referrer' role in the GAS they belongs to should be returned.    
-        """
-        
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.gas_referrers()), set((self.member_1, self.member_2, self.member_3)))
-        
-    def testTechReferrersOK(self):
-        """
-        Only GAS members having a 'Tech Referrer' role in the GAS they belongs to should be returned.    
-        """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_TECH)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3)))
-    
-    def testCashReferrersOK(self):
-        """
-        Only GAS members having a 'Cash Referrer' role in the GAS they belongs to should be returned.    
-        """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_CASH)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3)))
-    
-    def testSupplierReferrersOK(self):
-        """
-        Only GAS members having a 'Supplier Referrer' role in the GAS they belongs to should be returned.    
-        """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p = Param.objects.create(name='supplier', param=self.supplier)
-        p_role.param_set.add(p)
+        # A member of GAS 1
+        p_role= ParamRole.objects.create(role=self.role_1)
+        p_role.param_set.add(p1)
         p_role.save()
         self.p_role_1 = p_role 
         
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p = Param.objects.create(name='supplier', param=self.supplier)
-        p_role.param_set.add(p)
+        # A member of GAS 2
+        p_role= ParamRole.objects.create(role=self.role_1)
+        p_role.param_set.add(p2)
         p_role.save()
         self.p_role_2 = p_role 
-    
         
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.supplier_referrers()), set((self.member_1, self.member_2, self.member_3)))
-    
-    def testOrderReferrersOK(self):
-        """
-        Only GAS members having a 'Order Referrer' role in the GAS they belongs to should be returned.    
-        """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_ORDER)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='order', param=self.order_1)
-        p_role.param_set.add(p)
+        # A supplier referrer for GAS 1 and supplier 1
+        p_role= ParamRole.objects.create(role=self.role_2)
+        p_role.param_set.add(p1)
+        p_role.param_set.add(p3)
         p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='order', param=self.order_2)
-        p_role.param_set.add(p)
+        self.p_role_3 = p_role 
+        
+        # A supplier referrer for GAS 1 and supplier 2
+        p_role= ParamRole.objects.create(role=self.role_2)
+        p_role.param_set.add(p1)
+        p_role.param_set.add(p4)
         p_role.save()
-        self.p_role_2 = p_role
+        self.p_role_4 = p_role 
         
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.order_referrers()), set((self.member_1, self.member_2, self.member_3)))
-    
-    def testDeliveryReferrersOK(self):
-        """
-        Only GAS members having a 'Delivery Referrer' role in the GAS they belongs to should be returned.    
-        """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_DELIVERY)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='delivery', param=self.delivery)
-        p_role.param_set.add(p)
+        # A supplier referrer for GAS 2 and supplier 1
+        p_role= ParamRole.objects.create(role=self.role_2)
+        p_role.param_set.add(p2)
+        p_role.param_set.add(p3)
         p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='delivery', param=self.delivery)
-        p_role.param_set.add(p)
+        self.p_role_5 = p_role 
+        
+        # A supplier referrer for GAS 2 and supplier 2
+        p_role= ParamRole.objects.create(role=self.role_2)
+        p_role.param_set.add(p2)
+        p_role.param_set.add(p4)
         p_role.save()
-        self.p_role_2 = p_role
+        self.p_role_6 = p_role 
         
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.delivery_referrers()), set((self.member_1, self.member_2, self.member_3)))
     
-    def testWithdrawalReferrersOK(self):
-        """
-        Only GAS members having a 'Withdrawal Referrer' role in the GAS they belongs to should be returned.    
-        """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_WITHDRAWAL)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='withdrawal', param=self.withdrawal)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
     
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='withdrawal', param=self.withdrawal)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
+    def testGetParamRolesOK(self):
+        """Check that `get_param_roles` returns the right set of parametric roles if input is valid"""  
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_MEMBER)), set((self.p_role_1, self.p_role_2))) 
+        self.assertEqual(ParamRole.objects.get_param_roles(role_name=GAS_MEMBER, gas=self.gas_1), self.p_role_1)
         
-        self.p_role_1.add_principal(self.user_1)
-        self.p_role_1.add_principal(self.user_3)
-        self.p_role_2.add_principal(self.user_2)
-        
-        self.assertEqual(set(GASMember.objects.withdrawal_referrers()), set((self.member_1, self.member_2, self.member_3)))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER)),\
+        set((self.p_role_3, self.p_role_4, self.p_role_5, self.p_role_6)))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, supplier=self.supplier_1)),\
+        set((self.p_role_3, self.p_role_5)))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, gas=self.gas_1)),\
+        set((self.p_role_3, self.p_role_4)))
+        self.assertEqual(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_1),\
+        self.p_role_3)
     
-            
-            
-
+    def testGetParamRolesFailIfInvalidRole(self):
+        """Check that `get_param_roles` fails as expected if given an invalid role name"""  
+        self.assertRaises(RoleNotAllowed, ParamRole.objects.get_param_roles, role_name='FOO', gas=self.gas)    
+    
+    def testGetParamRolesFailIfInvalidParamName(self):
+        """Check that `get_param_roles` fails as expected if the name of parameter is invalid"""  
+        self.assertRaises(RoleParameterNotAllowed, ParamRole.objects.get_param_roles, role_name=GAS_MEMBER, foo=self.gas)
+    
+    def testGetParamRolesFailIfInvalidParamType(self):
+        """Check that `get_param_roles` fails as expected if the value of parameter is of the wrong type"""  
+        self.assertRaises(RoleParameterWrongSpecsProvided, ParamRole.objects.get_param_roles, role_name=GAS_MEMBER, gas=self.supplier)
         
