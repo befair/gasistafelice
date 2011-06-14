@@ -148,9 +148,6 @@ class GASConfig(models.Model, PermissionResource):
     Encapsulate here gas settings and configuration facilities
     """
 
-    # Link to parent class
-    gas = models.OneToOneField(GAS, related_name="config")
-
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
         related_name="gasmember_order_set", null=True, blank=True
     )
@@ -200,7 +197,7 @@ class GASConfig(models.Model, PermissionResource):
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
@@ -222,10 +219,14 @@ class GASConfig(models.Model, PermissionResource):
     def clean(self):
         #TODO placeholder domthu code that default_withdrawal_place must not be None
         # if headquarter is not specified
-        pass
+        if self.default_delivery_place is None:
+            self.default_delivery_place =  self.gas.headquarter;
+        #pass
         #TODO placeholder domthu code that default_delivery_place must not be None
         # if headquarter is not specified
-        pass
+        if self.default_withdrawal_place is None:
+            self.default_withdrawal_place = self.gas.headquarter;
+        #pass
         
         return super(GASConfig, self).clean()
 
