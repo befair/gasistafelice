@@ -233,12 +233,17 @@ class GASMember(models.Model, PermissionResource):
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
     
-    @property
-    def roles(self):
-        # roles MUST BE a property because roles are bound to a User 
+    def _get_roles(self):
+        # Roles MUST BE a property because roles are bound to a User 
         # with add_principal and not directly to a GAS Member
-        pprr = PrincipalParamRoleRelation.objects.filter(user=self.user)
+        pprr = PrincipalParamRoleRelation.objects.filter(user=self.person.user)
         return ParamRole.objects.filter(principal_param_role_set__in=pprr)
+
+    def _set_roles(self, **params):
+        pass
+        #TODO placeholder seldon: for each role add principal self.person.user
+        #HERE WE MUST BE ABLE TO SET ONLY ROLES BELONGING TO THE SPECIFIC GAS FOR A USER.
+    roles = property(_get_roles, _set_roles)
         
     @property
     def verbose_name(self):
