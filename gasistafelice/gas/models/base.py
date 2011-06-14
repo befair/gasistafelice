@@ -191,7 +191,7 @@ class GASConfig(models.Model, PermissionResource):
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
