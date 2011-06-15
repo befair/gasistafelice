@@ -10,6 +10,7 @@ from gasistafelice.supplier.models import Supplier, SupplierStock, Product, Prod
 from gasistafelice.auth import GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER 
 from gasistafelice.auth.models import ParamRole, Param
+from gasistafelice.auth.utils import register_parametric_role
 
 from datetime import time, date, datetime
 
@@ -237,20 +238,9 @@ class GASMemberManagerTest(TestCase):
         Only GAS members having a 'GAS Referrer' role in the GAS they belongs to should be returned.    
         """
         
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER, gas=self.gas_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER, gas=self.gas_2)
+            
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
         self.p_role_2.add_principal(self.user_2)
@@ -261,20 +251,10 @@ class GASMemberManagerTest(TestCase):
         """
         Only GAS members having a 'Tech Referrer' role in the GAS they belongs to should be returned.    
         """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_TECH)   
         
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_TECH, gas=self.gas_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_TECH, gas=self.gas_2)
+            
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
         self.p_role_2.add_principal(self.user_2)
@@ -285,19 +265,9 @@ class GASMemberManagerTest(TestCase):
         """
         Only GAS members having a 'Cash Referrer' role in the GAS they belongs to should be returned.    
         """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_CASH)   
         
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_CASH, gas=self.gas_1)  
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_CASH, gas=self.gas_2)
         
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
@@ -311,23 +281,9 @@ class GASMemberManagerTest(TestCase):
         """
         self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)   
         
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_1)
-        p_role.param_set.add(p)
-        p = Param.objects.create(name='supplier', param=self.supplier)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='gas', param=self.gas_2)
-        p_role.param_set.add(p)
-        p = Param.objects.create(name='supplier', param=self.supplier)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role 
-    
-        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier)
+                
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
         self.p_role_2.add_principal(self.user_2)
@@ -338,20 +294,10 @@ class GASMemberManagerTest(TestCase):
         """
         Only GAS members having a 'Order Referrer' role in the GAS they belongs to should be returned.    
         """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_ORDER)   
         
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='order', param=self.order_1)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='order', param=self.order_2)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_ORDER, order=self.order_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_ORDER, order=self.order_2)
+              
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
         self.p_role_2.add_principal(self.user_2)
@@ -362,20 +308,10 @@ class GASMemberManagerTest(TestCase):
         """
         Only GAS members having a 'Delivery Referrer' role in the GAS they belongs to should be returned.    
         """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_DELIVERY)   
-        
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='delivery', param=self.delivery)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='delivery', param=self.delivery)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
-        
+      
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_DELIVERY, delivery=self.delivery)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_DELIVERY, delivery=self.delivery)
+           
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
         self.p_role_2.add_principal(self.user_2)
@@ -386,19 +322,9 @@ class GASMemberManagerTest(TestCase):
         """
         Only GAS members having a 'Withdrawal Referrer' role in the GAS they belongs to should be returned.    
         """
-        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_WITHDRAWAL)   
         
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='withdrawal', param=self.withdrawal)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_1 = p_role 
-    
-        p_role= ParamRole.objects.create(role=self.role)
-        p = Param.objects.create(name='withdrawal', param=self.withdrawal)
-        p_role.param_set.add(p)
-        p_role.save()
-        self.p_role_2 = p_role
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self.withdrawal)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self.withdrawal)
         
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
