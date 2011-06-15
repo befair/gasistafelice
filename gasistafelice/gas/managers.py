@@ -4,12 +4,10 @@ from django.contrib.auth.models import User
 class GASMembersManager(models.Manager):
 
     def have_role(self, parametric_role):
-        referrer_as_users = User.objects.filter(principal_param_role_relation=parametric_role)
-        return self.get_query_set().filter(person__user_in=referrer_as_users)
+        return self.get_query_set().filter(person__user_principal_param_role_set__in=[parametric_role])
 
     def have_roles(self, parametric_roles):
-        referrer_as_users = User.objects.filter(principal_param_role_relation__in=parametric_roles)
-        return self.get_query_set().filter(person__user_in=referrer_as_users)
+        return self.get_query_set().filter(person__user_principal_param_role_set__in=parametric_roles)
 
     def tech_referrers(self, **resource_kw):
         parametric_roles = ParamRole.objects.gas_tech_referrers(**resource_kw)
