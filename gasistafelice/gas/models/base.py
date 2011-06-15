@@ -154,6 +154,7 @@ class GASConfig(models.Model, PermissionResource):
     )  
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
+    #TODO placeholder domthu: Default time to be set to 00:00
     default_close_time = models.TimeField(blank=True, null=True,
         help_text=_("default order closing hour and minutes")
     )
@@ -173,6 +174,7 @@ class GASConfig(models.Model, PermissionResource):
     default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name='gas_default_withdrawal_set', help_text=_("to specify if different from headquarter"))
     default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name='gas_default_delivery_set', help_text=_("to specify if different from delivery place"))
 
+    auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=True)  
 
@@ -231,12 +233,17 @@ class GASMember(models.Model, PermissionResource):
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
     
-    @property
-    def roles(self):
-        # roles MUST BE a property because roles are bound to a User 
+    def _get_roles(self):
+        # Roles MUST BE a property because roles are bound to a User 
         # with add_principal and not directly to a GAS Member
-        pprr = PrincipalParamRoleRelation.objects.filter(user=self.user)
+        pprr = PrincipalParamRoleRelation.objects.filter(user=self.person.user)
         return ParamRole.objects.filter(principal_param_role_set__in=pprr)
+
+    def _set_roles(self, **params):
+        pass
+        #TODO placeholder seldon: for each role add principal self.person.user
+        #HERE WE MUST BE ABLE TO SET ONLY ROLES BELONGING TO THE SPECIFIC GAS FOR A USER.
+    roles = property(_get_roles, _set_roles)
         
     @property
     def verbose_name(self):
