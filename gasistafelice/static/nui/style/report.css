@@ -1,0 +1,196 @@
+		.resource_report_box {
+			padding: 10px;
+		}
+
+		.report_form_title {
+			font-size: 16px;
+		}
+
+		.report_list_table {
+			width: 100%;
+			border: 0px solid black;
+			border-spacing: 2;
+			border-collapsing: collapse;
+			table-layout:fixed;
+		}
+
+		.report_list_table tr {
+			border-bottom : 2px solid black;
+	
+		}
+
+		.report_list_table th {
+			border-bottom : 1px solid lightgrey;
+			background-color : #d7ecc7;
+			margin: 10px;
+			text-align : center;
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		/*
+		 * FORMS
+		 */
+
+
+
+		.new_report_box {
+			padding: 10px;
+			border: 1px solid #a0a0a0;
+		}
+	
+		.report_params_table {
+			border: 0px solid black;
+			border-spacing: 2;
+			border-collapsing: collapse;
+		}
+	
+		.report_params_table th {
+			border-bottom : 1px solid lightgrey;
+			background-color : #d7ecc7;
+			margin: 10px;
+			text-align : center;
+			font-size: 14px;
+			font-weight: bold;
+		}
+		
+
+
+
+
+
+
+
+		.img_cell {
+			width: 300px;
+		}
+
+
+
+		.report_errors * {
+			color: red;
+		}
+
+		/*
+		 *
+		 */
+		.report_table {
+			width: 30%;
+			font-size: 10px;
+		}
+		.report_table_header {
+			background-color : #d7ecc7;
+			font-weight: bold;
+			font-size: 10px;
+		}
+
+		.report_table_row_label {
+			font-weight: bold;	
+		}
+
+		.report_table_row_val {
+			align: right;
+		}
+
+		/*
+		* Grafici a torta
+		*/
+		.pie_chart {
+			vertical-align:top; 
+			display:inline-block; 
+			align:center;
+		}
+
+		.pie_chart_graph {
+		}
+
+		.pie_chart_info {
+		}
+
+		.pie_chart_legend {
+			font-size: 10px;
+			width: 50%;
+			valign: center;
+			padding: 2px;
+		}
+
+		.pie_chart_legend_header {
+			background-color : #d7ecc7;
+			font-weight: bold;
+			font-size: 10px;
+		}
+
+		.pie_chart_legend_entry_label {
+			font-weight: bold;	
+		}
+
+		.pie_chart_legend_entry_value {
+		}
+
+		/*
+		* Grafici a barre
+		*/
+		.bar_chart {
+			vertical-align:top; 
+			display:inline-block; 
+			align:center;
+		}
+
+		.bar_chart_graph {
+		}
+
+		.bar_chart_info {
+		}
+
+		.bar_chart_legend {
+
+			width: 50%;
+			valign: center;
+			padding: 2px;
+			spacing	: 1px;
+		}
+
+		.bar_chart_legend_header {
+			background-color : #d7ecc7;
+			font-weight: bold;
+			font-size: 10px;
+			width: 50px;
+		}
+
+		.bar_chart_legend_row {
+			font-size: 10px;
+			width: 50px;
+		}
+
+		/*
+		* Grafici a barre
+		*/
+		.line_chart {
+			//border: 1px solid #ff0000; 
+			vertical-align:top; 
+			display:inline-block; 
+			align:center;
+		}
+
+		.line_chart_graph {
+			//border: 1px solid #0000ff;
+		}
+
+		.line_chart_info {
+			//border: 1px solid #ff00ff;
+		}
+
+		.line_chart_title {
+			//border: 1px solid #00ffff;
+		}
+
+.report { list-style-image : url('/static/theme/img/resources/report16x16.png'); white-space: normal; }
+.report.inline { background : transparent url('/static/theme/img/resources/report16x16.png') no-repeat scroll left; }
+
+.report-C { list-style-image : url('/static/theme/img/resources/report16x16.png'); background-color: lightgrey; white-space: normal;}
+.report-C.inline { background : transparent url('/static/theme/img/resources/report16x16.png') no-repeat scroll left; background-color: grey;  }
+
+.periodicreport { list-style-image : url('/static/theme/img/resources/periodicreport16x16.png'); white-space: normal; }
+.periodicreport.inline { background : transparent url('/static/theme/img/resources/periodicreport16x16.png') no-repeat scroll left; }
+
+

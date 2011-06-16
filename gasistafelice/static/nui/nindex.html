@@ -1,0 +1,1384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" dir="ltr">
+	<head>
+
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="it" />
+		<!--<meta http-equiv="X-UA-Compatible" content="chrome=1" />-->
+		<meta name="robots" content="NONE,NOARCHIVE" />
+
+		<title>SANET</title>
+
+
+		<!--<link rel="stylesheet" type="text/css" href="style/wholestyle.css" />-->
+		<link rel="stylesheet" type="text/css" href="style/tango.css" />
+
+		<link rel="stylesheet" type="text/css" href="style/jquery-ui-1.7.2.custom.css" />
+
+		<!-- 2010-02-24 (dbilli) added for target state log calendar -->
+		<link href="/static/nui/style/fullcalendar/fullcalendar.css"   rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" type="text/css" href="style/report.css" />
+
+		<style type="text/css">
+			body{
+				font-family:verdana, arial, sans-serif;
+				font-size:10px;
+			}
+
+			#content{
+				
+			}
+		</style>
+
+		<script src="scripts/jquery.min.js"                 type="text/javascript"></script>
+
+		<!-- 2010-01-11 (dbilli) widgets for jQuery UI-->
+		<script src="scripts/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
+		<!--[if IE]><script language="javascript" type="text/javascript" src="scripts/excanvas.compiled.js"></script><![endif]-->
+
+		<script src="scripts/jquery.labs.js"                type="text/javascript"></script>
+		<script src="scripts/jquery.labs.tree.js"           type="text/javascript"></script>
+		<script src="scripts/jquery.labs.xmpprender.js"     type="text/javascript"></script>
+		<script src="scripts/jquery.flot.min.js"            type="text/javascript"></script>
+
+		<!-- 2010-01-11 (dbilli) form submit/post handling -->
+		<script src="scripts/jquery.form.js"                type="text/javascript"></script>
+
+		<!-- 2010-01-20 (dbilli) context menu -->
+		<script src="scripts/jquery.contextmenu.r2.js"      type="text/javascript"></script>
+		<!-- <script src="scripts/jquery.contextmenu.js"         type="text/javascript"></script> -->
+
+		<script src="scripts/jquery.cookie.js"              type="text/javascript"></script>
+
+		<!-- 2010-02-23 (dbilli) bridge for flash maps -->
+		<!-- <script src="/static/js/swfobject/swfobject.js" type="text/javascript"></script> -->
+		<script src="/static/js/swfobject/FABridge.js"  type="text/javascript"></script>
+
+		<script src="/static/nui/scripts/fullcalendar/fullcalendar.js"  type="text/javascript"></script>
+		<script src="/static/nui/scripts/fullcalendar/jquery.qtip-1.0.0-rc3.min.js"  type="text/javascript"></script>
+
+
+		<script type="text/javascript">
+
+			jQuery.context_menu_open = false;
+
+			jQuery.pre = window.location.toString();
+			jQuery.pre = jQuery.pre.split('/');
+			jQuery.pre = jQuery.pre[0]+"//"+jQuery.pre[2]+"/"+"sanet"+"/";
+			jQuery.labsglobals = new Array();
+
+			var openTimers = new Array();
+			var openGlobalTimers = new Array();
+			var oldhash;
+
+
+
+
+
+
+
+
+			function doUpdate(node_css_selector, block_type, pre, resource)
+			{
+				// Load visibility settings from cookie
+				var block = $(node_css_selector);
+				var visible     = get_block_attribute(block_type, 'show');
+
+				//alert('do Update( show ' + block_type + ' -> ' + visible );
+
+				if ( visible == null ) {
+					visible = "false";
+					if (block.attr('isopen') != "false") visible = "true";
+				}
+
+				// Load autorefresh settings from cookie
+				var autorefresh = get_block_attribute(block_type, 'autorefresh');
+				block.attr('autorefresh', autorefresh);
+
+
+				if (visible == "true") {
+					block.show();
+
+					//doUpdate(node_css_selector, block_type, jQuery.pre, resource);
+
+					$.ajax({
+						complete:function(r, s){
+
+							if (s == 'success') {
+								var data = r.responseText;
+							}
+							else {
+								var data = '<error />'
+							}
+							$.loadBlockScript(node_css_selector, block_type, data);
+
+							//alert(node_css_selector + " -- " +  + "--" + visible);
+
+							//init_drag_and_drop();
+						},
+						dataType:'text',
+						url:pre+resource,
+						type:'GET'
+					});
+
+				}
+				else {
+					block.hide();
+				}
+
+			}
+
+			function XMLupdate(resource, timeout, node_css_selector, base)
+			{
+				base =  (base==null ? "" : base );
+
+				var parts      = resource.split('/');
+				var block_type = parts[parts.length-2];
+
+				doUpdate(node_css_selector, block_type, jQuery.pre, resource);
+
+				if(timeout>0) {
+					openTimers.splice(0,0,setInterval(function() {
+
+						var block = $(node_css_selector);
+
+						autorefresh = "false";
+						if (block.attr('autorefresh') != "false")
+							autorefresh = "true";
+
+						if (autorefresh=="true") {
+							doUpdate(node_css_selector, block_type, jQuery.pre, resource, false);
+						}
+
+					},
+					timeout*1000));
+				}
+			}
+
+			function update(resource, timeout, node_css_selector, pre, post){
+				pre=pre==null?function(){}:pre;
+				post=post==null?function(){}:post;
+				$.ajax({
+					complete:function(r,s){
+						var t = r.responseText;
+						$(node_css_selector).html(t);
+						post();
+					},
+					dataType:'text',
+					url:jQuery.pre+resource,
+					type:'GET'
+				});
+				if(timeout>0) {
+					openGlobalTimers.splice(0,0,setInterval(function(){
+						pre();
+						$.ajax({
+							complete:function(r,s){
+								var t = r.responseText;
+								$(node_css_selector).html(t);
+								post();
+							},
+							dataType:'text',
+							url:jQuery.pre+resource,
+							type:'GET'
+						});
+					}, timeout*100));
+				}
+			}
+
+
+			//IE BUG ON XML
+			function parseXml(xml)
+			{
+				if (jQuery.browser.msie)
+				{
+					var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+					xmlDoc.loadXML(xml);
+					xml = xmlDoc;
+				}
+				return xml;
+			}
+
+
+
+
+
+			function createBox(name, resource, timeout, base, buttons, open){
+				var res = $('#block_template').clone(true).removeAttr('id');
+				res.attr('sanet_url', resource);
+				res.children('*').children('h1').text(name);
+
+				var rname = 'block_'+name.replace(/ /g, '_').replace(/\//g, '_')+"_"+resource.replace(/\//g, '_');
+				res.children('.block_body').attr('id', rname);
+
+				$('#body_content').append(res);
+				$('#'+rname).attr('isopen', open );
+
+				res.children('.block_body').attr('autorefresh', "false");
+
+				XMLupdate(resource, timeout, '#'+rname, base);
+			}
+
+			function createGenericBox(mode, name, resource, timeout, base, buttons, open){
+				switch(mode){
+					case "dynamic": createBox(name, resource, timeout, base, buttons, open);
+						break;
+					case "alternate":
+						break;
+					default: createBox(name, resource, timeout, base, buttons, open);
+						break;
+				}
+			}
+
+			function createAltBox(name, alternatives, base, buttons){
+				var res = $('#block_template').clone(true).removeAttr('id');
+				res.children('*').children('h1').text(name);
+				var rname = 'block_'+name.replace(/ /g, '_');
+				res.children('.block_body').attr('id', rname);
+				$('#body_content').append(res);
+			}
+
+
+			function refhash(){
+				if(oldhash != location.hash){
+					doRefHash();
+				}
+			}
+
+
+
+
+			//==============================================================================
+			// SANET COOKIES
+			//==============================================================================
+
+			var SANET_COOKIE_EXPIRATION_TIME = new Date(2038, 1, 1);
+
+			function save_block_attribute(block_name, attribute_name, value)
+			{
+				var cookie_name = block_name + "_" + attribute_name;
+				$.cookie(cookie_name, value, { path: '/', expires: SANET_COOKIE_EXPIRATION_TIME } );
+
+				//alert('saving ' + cookie_name + ' = ' + value);
+			}
+
+			function get_block_attribute(block_name, attribute_name)
+			{
+				var cookie_name = block_name + "_" + attribute_name;
+				//alert('loading cookie ' + cookie_name );
+				return $.cookie(cookie_name);//, { path: '/', expires: SANET_COOKIE_EXPIRATION_TIME } );
+			}
+
+			//
+			//
+			//
+
+			function doRefHash(){
+
+				fill_navigation_bar();
+
+				$('#resource_panel').show();
+
+				oldhash = location.hash;
+				$('#body_content').contents().remove();
+				$.each(openTimers, function(){
+					clearInterval(this);
+					if(oldhash.indexOf('#')>=0){
+						url = jQuery.pre + oldhash.split('#')[1]+"details/";
+						//clearTimeout(toolTips[url]);
+					}
+				});
+
+				$("#ctx_menu_placeholder").dialog('destroy');
+				$("#tooltip_placeholder").dialog('destroy');
+				openTimers = new Array();
+
+				var url ="";
+				var h = location.hash.replace(/#/g,"");
+				if (h=="" || h=="#") {
+					url=jQuery.pre+jQuery.labsglobals['startup'];
+				}
+				else{
+					var v = h.split('/');
+					url=jQuery.pre+v[0]+'/'+v[1]+'/'+v[2]+'/';
+				}
+
+				if (url.search('user') > 0) {
+					//$('.useronly').show();
+					$('.nouser').hide();
+				}
+				else {
+					//$('.useronly').hide();
+					$('.nouser').show();
+				}
+
+				$.ajax({
+					dataType:'xml',
+					url:url,
+					type:'GET',
+					complete:function(r,s){
+						var t = r.responseText;
+						//t = parseXml(t);
+						//$('box', t).filter('[loc="body"]').each(function() {
+						//	createGenericBox($(this).attr('type'), $(this).attr('name'),$(this).attr('resource'),$(this).attr('refresh'),h, h,$(this).attr('open'));
+						//});
+						create_page(h, t);
+					}
+				});
+
+			}
+
+			function create_page(page_urn, xmldata)
+			{
+				var t = parseXml(xmldata);
+
+
+				//
+				// Render navigation bar
+				//
+				reset_navigation_bar();
+
+
+				// Set first element in navigation history
+				var rtype  = "site";
+				var rid    = jQuery.labsglobals['site_id'];
+				var rdescr = jQuery.labsglobals['site_name'];
+
+				add_element_to_navigation_bar(rtype, rid, rdescr);
+
+				var parent       = $(t).find('parent');
+				var parent_urn   = parent.attr('sanet_urn');
+				if (parent_urn != undefined) {
+					if (parent_urn != '/') {
+						var parent_descr = parent.text();
+						parts = parent_urn.split('/');
+						var parent_type = parts[0];
+						var parent_id   = parts[1];
+						//alert('parent: ' + parent_urn + " " + parent_descr);
+						add_element_to_navigation_bar(parent_type, parent_id, parent_descr);
+					}
+				}
+
+				var resource       = $(t).find('resource');
+				var resource_urn   = resource.attr('sanet_urn');
+				if (resource_urn != undefined) {
+					if (resource_urn != '/') {
+						var resource_descr = resource.text();
+						parts = resource_urn.split('/');
+						var resource_type = parts[0];
+						var resource_id   = parts[1];
+						if (resource_type != 'site') {
+							//alert('resource: ' + resource_urn + " " + resource_descr);
+							add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
+						}
+					}
+				}
+
+				fill_navigation_bar();
+
+				//
+				// Render history block
+				//
+				fill_history();
+
+
+				//
+				// Render page's blocks
+				//
+				$('box', t).filter('[loc="body"]').each(function() {
+					createGenericBox($(this).attr('type'),
+					$(this).attr('name'),
+					$(this).attr('resource'),
+					$(this).attr('refresh'),
+					page_urn,
+					page_urn,
+					$(this).attr('open')
+				);
+				});
+			}
+
+
+
+			function setconfig(type, node){
+				switch(type){
+					default:
+						jQuery.labsglobals[type] = node.attr(type);
+						break;
+				}
+			}
+
+			//==============================================================================
+			// Navigation bar
+			//==============================================================================
+
+			var nav_bar_data = Array();
+
+			function reset_navigation_bar()
+			{
+				nav_bar_data = Array();
+				//$.cookie("rest_nav_bar", null);
+			}
+
+			function add_element_to_navigation_bar(resource_type, resource_id, descr)
+			{
+				var data = resource_type + "/" + resource_id + "/" + descr;
+				nav_bar_data.push( data );
+
+				//alert('adding navigation bar: ' + data );
+
+				return;
+
+				/*
+
+				nav_bar_data = $.cookie("rest_nav_bar");
+
+				if (nav_bar_data == null)
+					nav_bar_elements = Array();
+				else
+					nav_bar_elements = nav_bar_data.split("|");
+
+
+				nav_bar_data = "";
+				found = false;
+				for (i in nav_bar_elements) {
+					parts = nav_bar_elements[i].split('/',3);
+					rtype  = parts[0];
+					rid    = parts[1];
+					rdescr = parts[2];
+
+					if (nav_bar_data == "")
+						nav_bar_data =        rtype + "/" + rid + "/" + rdescr;
+					else
+						nav_bar_data += "|" + rtype + "/" + rid + "/" + rdescr;
+
+					if (rtype == resource_type && rid == resource_id) {
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					if (nav_bar_data == "")
+						nav_bar_data =       resource_type + "/" + resource_id + "/" +  descr;
+					else
+						nav_bar_data +="|" + resource_type + "/" + resource_id + "/" +  descr;
+				}
+
+				//alert( nav_bar_data );
+
+				$.cookie("rest_nav_bar", nav_bar_data);
+				 */
+			}
+
+
+			function fill_navigation_bar()
+			{
+				var nav_bar          = $('#navbar');
+				var nav_bar_elements = $('#navbar_elements');
+
+				nav_bar_elements.empty();
+
+				var element_template = "<li class='resource inline @@type@@'> <a class='ctx_enabled' href='@@sanet_link@@' sanet_urn='@@sanet_urn@@' >@@descr@@</a> @@sep@@</li>";
+
+				if (nav_bar_data == null)
+					return;
+
+				//nav_bar_elements = nav_bar_data.split('|');
+
+				for (i in nav_bar_data) {
+
+					parts = nav_bar_data[i].split('/',3);
+
+					rtype  = parts[0];
+					rid    = parts[1];
+					rdescr = parts[2];
+
+
+					sanet_urn = rtype + "/" + rid;
+
+					//alert("nav bar: " + i + " " + sanet_urn);
+
+					//var e = "<li class='resource inline @@type@@'> <a class='ctx_enabled' href='@@sanet_urn@@'>@@descr@@</a> </li>";
+					var e = element_template;
+
+					e = e.replace('@@type@@'      , rtype);
+					e = e.replace('@@sanet_link@@', '#rest/'+sanet_urn+'/');
+					e = e.replace('@@sanet_urn@@' , sanet_urn);
+					e = e.replace('@@descr@@'     , rdescr );
+
+					if (i < nav_bar_data.length-1)
+						e = e.replace('@@sep@@'     , '->' );
+					else
+						e = e.replace('@@sep@@'     , '' );
+
+					$(e).appendTo('#navbar_elements');
+				}
+			}
+
+			
+			//==============================================================================
+			// Search form functions
+			//==============================================================================
+
+			var SEARCH_FORM              = "#search_trueform";
+			var SEARCH_RESULTS_CONTAINER = "#search_results";
+
+			function init_search_form()
+			{
+				var options = {
+					target      : SEARCH_RESULTS_CONTAINER,
+					success     : function (result_data, result) {
+						//alert(result + " " + result_data);
+					}
+				}
+
+				$(SEARCH_FORM).ajaxForm(options);
+
+			}
+
+			function reset_search_form() {
+				$("#search_results").empty();
+			}
+
+			
+
+			
+
+			//==============================================================================
+			// Drag & Drop
+			//==============================================================================
+
+			jQuery.post_load_handler = init_drag_and_drop;
+
+			function init_drag_and_drop()
+			{
+				//$('.drag_element').draggable({
+				$('.ctx_enabled').draggable({
+					//start: function() { $(this).appendTo('body'); },
+					appendTo: 'body',
+					distance: 5,
+					//helper: 'clone', //function() { return $(this).clone(); },
+					helper: function(event) {
+						var element_copy = $(this).clone();
+						element_copy.css('visibility: hidden');
+						return element_copy;
+					},
+					zIndex:20000
+				});
+
+				//$('.drag_element').live('drag',
+				$('.ctx_enabled').live('drag',
+				function(event, ui) { window.status='start drag'; }
+			);
+
+				//$('.drop_element').droppable( {
+				$('.ctx_enabled').droppable( {
+					accept: function() { return true; },
+					//greedy: true,
+					//activeClass: 'drop_over',
+					hoverClass: 'drop_over', //'ui-state-active',
+					drop: on_drop,
+					tolerance: 'pointer',
+					/*
+					function (event, ui) {
+						alert('drop');
+						//var dragged   = $(this).attr('sanet_urn');
+						//var dropped   = $(e.target).attr('sanet_urn');
+						//alert( dragged + "->" + dropped);
+					}*/
+				});
+			}
+
+			function on_drop(event, ui)
+			{
+				var dragged   = ui.draggable.attr('sanet_urn');
+				var dropped   = $(this).attr('sanet_urn');
+
+				$('body').css('cursor','wait');
+
+				dropped_type   = dropped.split('/')[0];
+
+				//alert(dropped_type);
+				if (dropped_type == 'usercontainer') {
+					var url = jQuery.pre + 'users/' + dropped + '/add_resource/' + dragged;
+					//alert( dragged + "->" + dropped + ' -> ' + url);
+					jQuery.get(url,
+					function (response_data) {
+						$('body').css('cursor','default');
+						if (response_data.match('class="success"')) {
+							//alert(response_data);
+							alert("Risorsa aggiunta");
+						}
+					}
+				);
+				}
+			}
+
+			//==============================================================================
+			// Init ping graph
+			//==============================================================================
+
+
+			function init_timer()
+			{
+				var num_p = 0;
+				var APP_CLOCK_TIMEOUT = 10; // 30 seconds
+				var pings = new Array();
+
+				jQuery.updt = new Date().getTime();
+
+				update('hh_mm/', APP_CLOCK_TIMEOUT, '#app_clock',
+				function(){
+					jQuery.updt = new Date().getTime();
+				},
+				function(){
+
+					num_p++;
+
+					var delta = new Date().getTime()-jQuery.updt;
+
+					pings.push([num_p, delta]);
+					if(pings.length > 10)
+						pings.shift();
+
+					var x = $('#ping-graph');
+
+					//$.plot(x, [{ label:'ms', data: pings}]
+					$.plot(x, [pings]
+					,{
+						lines: { show: true },
+						points: { show: true },
+						xaxis: { tickDecimals: 0, tickSize: 1 },
+						yaxis: {  },
+						legend: {
+							show: true,
+							//noColumns: number
+							position: "ne",
+							width:"100px"
+							//container: null or jQuery object/DOM element/jQuery expression
+						}
+					});
+				}
+			);
+
+			}
+
+			//==============================================================================
+			// Resource Trees
+			//==============================================================================
+
+			function load_global_resource_tree()
+			{
+				$('#tree').labsTree(jQuery.pre, jQuery.labsglobals['startup']);
+			}
+
+			function load_usercontainer_tree()
+			{
+				$('#usertree').labsTree(jQuery.pre,"users/user/");
+			}
+
+			function reload_global_resource_tree()
+			{
+				$('#tree').reload();
+				return false;
+			}
+
+			function reload_usercontainer_tree()
+			{
+				$('#usertree').reload();
+				return false;
+			}
+
+			// ============================================================================
+			// DEFAULT DIALOGS
+			// ============================================================================
+
+			function ask_confirm(msg, confirm_callback, cancel_callback)
+			{
+				ret = confirm(msg);
+				if (ret)
+					confirm_callback();
+				else
+					cancel_callback();
+			}
+
+			// ============================================================================
+			// NOTES
+			// ============================================================================
+
+			function get_user_notes()
+			{
+				update('rest/list_comments/all', 0, '#all_notes',
+				function () {},
+
+				function () {
+
+					var count = $('#all_notes').find('li[class="note_entry"]').length;
+					//alert(count);
+
+					$('#notes-count').html( ""+count+"");
+				});
+
+
+				return false;
+			}
+
+			//
+			// ============================================================================
+			// LOAD SITE CONFIGURATION
+			// ============================================================================
+			//
+			//jQuery.show_login_form = 0;
+			function load_configuration(){
+				$.ajax({
+					dataType:'text',
+					url:jQuery.pre+'rest/site_settings',
+					type:'GET',
+					error: function(){
+						$('#resource_panel').hide();
+						$('#user_data_placeholder').hide();
+						$('#body_content').text('Caricamento della configurazione...');
+					},
+					success: function(data) {
+						var t = data;
+						t = parseXml(t);
+
+						var forms = $.browser.msie?$(t).find('form').length:$(t).filter('form').length
+						var settings = $.browser.msie?$(t).find('settings').length:$(t).filter('settings').length
+
+						if (settings > 0) {
+							// LOAD SETTINGS VARIABILES
+							$(t).find('config').each(function(){
+								var itm = $(this);
+								setconfig(itm.attr('type'), itm);
+								if(jQuery.labsglobals['debug']== 'False')
+									$('#debug_info').hide();
+							});
+
+
+							$('#login_form_placeholder').hide();	// hide
+							$('#user_data_placeholder').show();	// show
+							$('#resource_panel').show();		// show
+
+							$('#user_name').text(jQuery.labsglobals['user']);
+
+							$('#user_page').attr('href', '#users/userpage/1');
+
+							setInterval(refhash, 1);
+
+
+							load_usercontainer_tree();
+
+							load_global_resource_tree();
+
+							// Set first element in navigation history
+							//rtype  = "site";
+							//rid    = jQuery.labsglobals['site_id'];
+							///rdescr = jQuery.labsglobals['site_name'];
+							//add_element_to_navigation_bar(rtype, rid, rdescr);
+
+							//fill_navigation_bar();
+
+
+
+							init_timer();
+
+							init_search_form();
+
+							//update('rest/list_comments/all', 0, '#all_notes');
+							get_user_notes();
+
+						}
+						else if (forms > 0) {
+							//alert('not logged');
+							$('#login_form_placeholder').html(data);
+							$('#login_form_placeholder').show();
+						}
+						else
+							alert('other bug!');
+					}
+				});
+			}
+
+			//
+			// GLOBAL INITIALIZATION
+			//
+			jQuery.updt = new Date().getTime();
+
+			$(function(){
+
+				$('#log').ajaxStart(function(){
+					//alert("it begins");
+					$('html').css('cursor','wait');
+				})
+
+				$('#log').ajaxStop(function(){
+					//alert("it ends");
+					$('html').css('cursor','default');
+				})
+
+				$('.templates').hide();
+
+				// Hide everything before download
+				$('#resource_panel').hide();		// hide
+				$('#user_data_placeholder').hide();	// hide
+				$('#login_form_placeholder').hide();
+
+				$('#body_content').sortable({
+					handle: '.block_header' ,
+					placeholder: 'ui-state-highlight',
+					update: function(event, ui){
+						if(location.hash.indexOf('users')>=0) {
+							//alert('respoitioning user block!');
+						}
+						//TODO: Add post method for block management
+					}
+				});
+
+
+				load_configuration();
+
+				// ============================================================================
+				// SET EVENT HANDLERS
+				// ============================================================================
+
+
+				$('#login_form').live('submit', function(){
+					var formurl=jQuery.pre+"login/";
+					$(this).ajaxSubmit({
+						url:formurl,
+						success: function(){
+							//window.location= jQuery.pre + "static/nui/index.html"+"#users/user";
+							window.location= jQuery.pre + "sanet/rest";
+							window.location.reload(true);
+						}
+					});
+					return false;
+				});
+
+
+
+
+				$('#user_logout').click(function(){
+					$.get('/sanet/users/logout', function(){
+						load_configuration();
+						window.location.reload(true);
+
+					});
+					return false();
+				});
+
+
+				
+
+				$('.ctx_enabled').live('click', function(e){
+
+					//
+					// Add the clicked resource to the user history
+					//
+					var in_history = $(e.target).attr('in_history');
+					if (in_history == "true")
+						return;
+					var url = $(e.target).attr('href');
+					var descr = $(e.target).text();
+					parts = url.split('/', 3);
+					rtype = parts[1];
+					rid   = parts[2];
+
+					//add_element_to_navigation_bar( rtype, rid, descr );
+
+					add_element_to_history(rtype, rid, descr);
+				});
+
+
+				//
+				// Minimize button
+				//
+				$('.toggle_show').click(function(e){
+					var block = $(this).parent().parent().parent();
+
+
+					var bcontent = block.children('.block_body');
+					bcontent.toggle();
+					if(block.attr('sanet_url'))
+					{
+
+						// SAVE block visibility in my cookie
+						var parts = block.attr('sanet_url').split('/');
+
+						var block_name    = parts[3];
+						var is_visible = block.children('.block_body').is(':visible');
+
+						is_visible = ""+is_visible;
+						//alert('show ' + parts + ' ' + parts[3] + is_visible);
+
+						save_block_attribute(block_name, "show", is_visible);
+						if(bcontent.children().length<=0)
+							$(this).siblings('.toggle_refresh').click();
+						//aggiornamento
+
+						//doUpdate(node_css_selector, block_type,jQuery.pre,resource);
+					}
+				});
+				$('.toggle_show').attr('src', 'img/button-min.png');
+
+
+				//
+				// Add_to_profile  button
+				//
+				$('.add_to_profile').click(function(e){
+					var id = $(this).parent().parent().parent().attr('sanet_url');
+					$.ajax({
+						type:'OPTIONS',
+						dataType:'text',
+						url:jQuery.pre+id,
+						success: function(d,t){
+							d= jQuery.parseXml(d);
+							jQuery.labsAdd(d, id);
+						}
+					});
+				});
+				$('.add_to_profile').attr('src', 'img/plus.png');
+
+				//
+				// Configure button
+				//
+				$('.configure').click(function(e){
+					var id = $(this).parent().parent().parent().attr('sanet_url');
+					var url = jQuery.pre + id + 'options';
+
+
+					//alert(url);
+					//
+					// Downloads and block's configuration form.
+					//
+					$.ajax({
+						//type:'OPTIONS',
+						type:'GET',
+						dataType:'text',
+						url: url,
+						success: function(data, t){
+							data = jQuery.parseXml(data);
+							// Show the form
+							jQuery.labsConfigure(data, id);
+						}
+					});
+				});
+				$('.configure').attr('src', 'img/config.png');
+
+
+
+
+
+
+				//
+				// Fullscreen button
+				//
+				$('.toggle_fullscreen').attr('src', 'img/button-max.png');
+				$('.toggle_fullscreen').click( function(e){
+
+					if ($(this).attr('src') == 'img/button-max.png') {
+						$(this).attr('src', 'img/button-min.png');
+					}
+					else {
+						$(this).attr('src', 'img/button-max.png');
+					}
+
+					// Troviamo il blocco che ha triggerato l'azione
+					var block_element = $(this).parent().parent().parent();
+
+					//
+					$('#resource_panel').toggle();
+
+					// prendiamo tutti gli elementi con classe 'block'
+					$('.block').filter('[sanet_url]').each( function (bl) {
+						if ($(this).attr('sanet_url') != block_element.attr('sanet_url'))
+							$(this).toggle();
+					});
+
+					/*
+					if ( $('#resource_panel').is(':visible') ) {
+						alert('normale');
+						block_element.css('height', '10%');
+					}
+					else {
+						alert('tutto schermo');
+						block_element.css('height', '90%');
+					}
+					 */
+				});
+
+				//
+				// Refresh button
+				//
+				$('.toggle_refresh').attr('src', 'img/button-reload.png');
+				$('.toggle_refresh').click( function(e){
+					var block_element = $(this).parent().parent().parent();
+
+					var sanet_url = block_element.attr('sanet_url');
+					if (sanet_url == null)
+						return;
+
+					var parts = sanet_url.split('/');
+
+					var resource_type = parts[1];
+					var resource_id   = parts[2];
+					var block_type    = parts[3];
+					jQuery.refreshBlock(resource_type, resource_id, block_type);
+					//context_menu();
+
+				});
+
+				//
+				// Autorefresh
+				//
+				$('.toggle_autorefresh').attr('src', 'img/play.png');
+				$('.toggle_autorefresh').click( function(e){
+
+					var block = $(this).parent().parent().parent();
+
+					var autorefresh = block.children('.block_body').attr('autorefresh');
+
+					if (autorefresh == "true") {
+						$(this).attr('src', 'img/play.png');
+						block.children('.block_body').attr('autorefresh', false);
+					}
+					else {
+						$(this).attr('src', 'img/stop.png');
+						block.children('.block_body').attr('autorefresh', true);
+					}
+				});
+
+
+				
+
+
+				$('.vDateField').live('click', function() {
+					$(this).datepicker(
+					{
+						showOn: 'focus' ,
+						showAnim: '',
+						duration: 0,
+						dateFormat: 'dd-mm-yy'
+					}).focus();
+				});
+
+				$('#remove-all-block-button').click(function(){
+
+					ask_confirm("Sicuro di voler rimuovere tutti i blocchi selezionati dall'homepage?"
+					, function() {
+						$.get(jQuery.pre+"users/userpage/1/flush/");
+						doRefHash();
+					}
+					, function() {}
+				);
+				});
+				
+				$('.resource_button .top_header').click(function(){
+					elem = $(this).siblings('.top');
+					elem.css('left', $(this).css('left'));
+					elem.toggle();
+				});
+
+
+			});
+
+
+
+
+		</script>
+	</head>
+
+
+
+	<body>
+		<div id="container">
+
+			<div id="header">
+				<div id="header-content">
+					<!-- <span class="right" id="app_clock" style="padding:0.2em;"></span> -->
+					<div class="right" align="right">
+
+
+						<span id='user_data_placeholder'>
+
+							<span id="user_data">
+
+								<!-- <a id="user_logout" href="/sanet/login">Log In</a> -->
+								<!-- <a href="#" class="ui-corner-all top user">Sign In</a> -->
+
+								Utente: <span id="user_name" class="ui-corner-all user"></span>
+								|
+								<a id="user_page"   href="#" >Pagina personale</a>
+								|
+								<a id="user_logout" href="#">Log Out</a>
+
+
+							</span>
+						</span>
+
+						<br />
+
+						Ora: <span id="app_clock" style="padding:0.2em;"></span>
+
+					</div>
+
+					<h1 id="app_title">SANET</h1>
+					<div class="header-actions"></div>
+					<span id="navbar"
+					      history=""
+					      >
+					</span>
+				</div>
+			</div>
+
+			<!-- ===================== -->
+			<!-- Start of main content -->
+			<!-- ===================== -->
+
+			<div id="main_content">
+
+				<div id="resource_bar" >
+
+					<!-- =============================================== -->
+					<!-- SEARCH BOX                                      -->
+					<!-- =============================================== -->
+
+					<div class="resource_button" >
+
+						<div class="top_header">
+
+							<h1 class="top-title">Ricerca</h1>
+						</div>
+						<div class="top" id="search">
+
+							<div class="top_body" id="quick_search" is_open="1">
+
+								<div id="searchbox">
+									<div id="search_form" style="text-align : center;">
+										<form id="search_trueform"  name="search_form" action="/sanet/rest/quick_search/">
+											<input id="search_input"  name="resource_name" type="search" size="20" autocomplete="on" title="Scrivere qui una parte del nome della risorsa e premere &lt;Invio>" />
+										</form>
+									</div>
+									<div id="search_results"></div>
+								</div>
+							</div>
+						</div> <!-- blocco search -->
+					</div>
+
+					<!-- =============================================== -->
+					<!-- NOTES                                           -->
+					<!-- =============================================== -->
+					<div class="resource_button" >
+						<div class="top_header">
+
+							<h1 class="top-title" >Note (<span id="notes-count">0</span>)</h1>
+						</div>
+						<div class="top" id="notes">
+							<div class="top_body" id="all_notes">
+
+							</div>
+						</div> <!-- blocco note-->
+					</div>
+					<!-- =============================================== -->
+					<!-- NOTES                                           -->
+					<!-- =============================================== -->
+
+					<!--<div class="block" id="history">
+						<div class="block_header">
+							<div class="right toolbar">
+								<img class="header_button toggle_show"/>
+								<!--<img class="header_button toggle_refresh" src="" onclick='return get_user_notes()'/>-->
+					<!--</div>
+							<h1 class="block-title" >Cronologia</h1>
+						</div>
+						<div class="block_body" id="all_history">
+
+							<ul id="history_elements">
+							</ul>
+
+						</div>
+					</div>
+
+
+					<!-- =============================================== -->
+					<!-- USER ACTIONS                                    -->
+					<!-- =============================================== -->
+					<div class="resource_button" >
+						<div class="top_header">
+							<h1 class="top-title">Utente</h1>
+						</div>
+						<div class="top" id="user_box">
+
+							<div class="top_body" style="width:198px; height:100px; overflow:hidden; ">
+								<ul>
+									<li  style="padding:2px">
+										<button id="add-block-button" title="Aggiungi Blocco"><img src="img/add.png"> Nuovo blocco dati </button>
+									</li>
+									<li  style="padding:2px">
+										<button id="remove-all-block-button" title="Svuota pagina"><img src="img/remove.png"> Togli tutti i blocchi </button>
+									</li>
+								</ul>
+							</div>
+						</div> <!-- blocco rete -->
+
+						<!-- =============================================== -->
+						<!-- USER CONTAINERS                                    -->
+						<!-- =============================================== -->
+
+						<div class="top">
+							<div class="top_body" id="usercontiner_logical_tree" is_open="1">
+								<div id="usertree"></div>
+							</div>
+							<!-- Fine block_body -->
+						</div> <!-- blocco albero -->
+					</div>
+
+					<!-- =============================================== -->
+					<!-- RESOURCE TREE                                   -->
+					<!-- =============================================== -->
+					<!--<div class="block ">
+						<div class="block_header ">
+							<div class="right toolbar">
+								<img class="header_button toggle_show"/>
+								<img class="header_button toggle_refresh" src="" onclick='return reload_global_resource_tree()'/>
+							</div>
+							<h1>Esplora risorse</h1>
+						</div>
+						<div class="block_body" id="resource_logical_tree" is_open="1">
+							<div id="tree"></div>
+						</div>
+						<!-- Fine block_body -->
+					<!--</div> <!-- blocco albero -->
+
+					<!-- =============================================== -->
+					<!-- PING                                            -->
+					<!-- =============================================== -->
+					<div class="resource_button" >
+						<div class="top_header">
+							<div class="top_body" id="ping-graph" is_open="1" style="width:200px; height:50px; overflow:hidden; ">
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+
+			<div id="body">
+
+				<!--
+				<div id="body-top">&nbsp; </div>
+				-->
+
+				<!--
+				<div id="section_toolbar" class="toolbar menu">
+				</div>
+				-->
+
+				<ul id="body_content">
+
+					<div id='login_form_placeholder' >
+					</div>
+
+				</ul>
+
+
+				<!-- <div class="notice"> </div> -->
+				<div id="body-bottom">&nbsp;</div>
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<span id="app_title">SANET</span> v. <span id="app_version">2.0</span> - Copyright &copy; 2009 - <a href="http://www.labs.it">Laboratori Guglielmo Marconi</a>
+		</div>
+
+
+		<!-- *********************************************************** -->
+		<!-- PLACEHOLDER FOR CONTEXT MENU -->
+		<!-- *********************************************************** -->
+
+		<div class="contextMenu" id="ctx_menu_placeholder">
+			<!-- <ul>
+			</ul>-->
+		</div>
+		<div id="ctx_menu_placeholder2"></div>
+
+		<!-- *********************************************************** -->
+		<!-- PLACEHOLDER FOR TOOLTIP      -->
+		<!-- *********************************************************** -->
+
+		<div id="tooltip_placeholder"></div>
+
+
+		<!-- *********************************************************** -->
+		<!-- GENERIC PLACEHOLDER FOR SANET DIALOGS -->
+		<!-- *********************************************************** -->
+
+		<div id="global_dialog_placeholder"></div>
+
+
+
+		<!-- *********************************************************** -->
+		<!-- Templages for UI elements  -->
+		<!-- *********************************************************** -->
+
+		<div class="templates">
+
+			<li class="block ui-corner-all" id="block_template" sanet_url=''>
+
+				<div class="block_header ">
+					<div class="left toolbar">
+						<!--<img class="header_button toggle_run"></img>-->
+						<img class="nouser header_button add_to_profile" src="" height="10px" width="10px" title="aggiungi alla pagina personale" />
+						<img class="header_button configure" src="" height="10px" width="10px"  title="personalizza configurazione riquadro" />
+					</div>
+					<div class="right toolbar">
+						<img class="header_button toggle_autorefresh" src="" title="attiva auto-aggiornamento"/>
+
+						<!--<img class="header_button toggle_run"></img>-->
+						<img class="header_button toggle_show" src="" title="riduci riquadro"/>
+						<img class="header_button toggle_fullscreen" src="" title="riquadro a tutto schermo"/>
+						<img class="header_button toggle_refresh" src="" title="aggiorna riquadro adesso" />
+
+					</div>
+					<h1></h1><a class="resource_url"></a>
+				</div>
+
+				<div class="block_body">
+				</div>
+			</li>
+
+			<div id="blockaddwizard">
+				<ul>
+					<li class="blockwizardpage">
+							Seleziona il tipo di risorsa:<br/>
+						<select multiple="true" id="bwrt" name="resource_type">
+
+							<option value="site/">Globale (sito)</option>
+							<option value="container/">Contenitore</option>
+							<option value="node/">Nodo</option>
+							<option value="iface/">Interfacce</option>
+							<option value="target/">Target</option>
+							<option value="measure/">Misure</option>
+							<!-- <option value="usercontainer/">Contenitore Utente</option> -->
+						</select>
+					</li>
+					<li class="blockwizardpage">
+							Seleziona la risorsa specifica:<br/>
+						<select multiple="true" id="bwri" name="resource_id"></select>
+					</li>
+					<li class="blockwizardpage">
+							Seleziona il blocco che vuoi aggiungere:<br/>
+						<select multiple="true" id="bwbn" name="blockname"></select>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="log"></div>
+	</body>
+</html>

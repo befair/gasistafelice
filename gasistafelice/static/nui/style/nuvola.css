@@ -1,0 +1,24 @@
+
+
+
+.site                                        { list-style-image : url('/static/nui/img/nuvola/site.png'); }
+.site.inline                                 { background : transparent url('/static/nui/img/nuvola/site.png') no-repeat scroll left; }
+
+.container                                   { list-style-image : url('/static/nui/img/nuvola/container.png'); }
+.container.inline, .resource.tree.inline     { background : transparent url('/static/nui/img/nuvola/container.png') no-repeat scroll left; }
+
+.node                                        { list-style-image : url('/static/nui/img/nuvola/node.png'); }
+.node.inline                                 { background : transparent url('/static/nui/img/nuvola/node.png') no-repeat scroll left; }
+
+.iface                                       { list-style-image : url('/static/nui/img/nuvola/iface.png'); }
+.iface.inline                                { background : transparent url('/static/nui/img/nuvola/iface.png') no-repeat scroll left; }
+
+.target                                      { list-style-image : url('/static/nui/img/nuvola/target.png');  }
+.target.inline                               { background : transparent url('/static/nui/img/nuvola/target.png')  no-repeat scroll left; }
+
+.measure                                     { list-style-image : url('/static/nui/img/nuvola/measure.png'); }
+.measure.inline                              { background : transparent url('/static/nui/img/nuvola/measure.png') no-repeat scroll left; }
+
+.usercontainer                               { list-style-image : url('/static/nui/img/nuvola/container.png'); }
+.usercontainer.inline, .resource.tree.inline { background : transparent url('/static/nui/img/nuvola/container.png') no-repeat scroll left; }
+

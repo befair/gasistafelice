@@ -1,0 +1,416 @@
+
+/* ================================================================= */
+/* TREE                                                              */
+/* ================================================================= */
+
+
+resource_logical_tree {
+	font-size : 0.9em;
+	text-decoration: none;
+
+	min-height : 400px;
+	display : block;
+
+	overflow:scroll;
+}
+
+.tree-element {
+	list-style:none;
+}
+
+.treexpansion{
+	display:inline-block;
+	padding-right:4px;
+	background-repeat:no-repeat;
+	width:15px;
+	display:inline-block;
+}
+
+.xpand{
+	width:9px;
+	height:9px;
+	background-image:url('/static/nui/img/tree_open.gif');
+}
+
+.tree-element {
+	padding-left : 5px;
+	margin: 0px;
+}
+
+tree-element .resource {
+	height: 24px;
+}
+
+.collaps{
+	width:9px;
+	height:9px;
+	background-image:url('/static/nui/img/tree_close.gif');
+}
+
+li div.content {
+	white-space: nowrap;
+	margin-left: 20px;
+}
+
+/*
+li:tree_element div.content {
+	white-space: nowrap;
+}
+*/
+
+
+/* ================================================================= */
+/* SEARCH FORM                                                       */
+/* ================================================================= */
+
+
+
+
+/*
+.header_button{
+	margin-top:0px;
+	width:16px;
+	height:16px;
+	display:inline;
+}
+*/
+
+/* ================================================================= */
+/* TARGET STATE LOG                                                  */
+/* ================================================================= */
+
+.log-UP{
+	background-color:lightgreen;
+	//color:white;
+	color:black;
+}
+.log-UU{
+	background-color:lightgray;
+	//color:white;
+}
+.log-DN{
+	background-color:red;
+	//color:white;
+}
+.log-FA{
+	background-color:#FFFF90;
+	color:black;
+}
+
+/* ================================================================= */
+/* NOTES                                                             */
+/* ================================================================= */
+
+#all_notes  li {
+	white-spacE: nowrap;
+
+}
+
+.note_entry {
+	list-style-type: none;
+}
+
+
+
+
+
+#login_form *{
+	padding:2px 2px;
+}
+
+.user{
+	background-color:#D7ECC7;
+}
+#user_data{
+	display: inline;
+}
+#user_data a.top{
+	padding:3px 3px ;
+
+}
+
+#user_data_content{
+	padding: 3px;
+	text-align: right;
+	display:list-item;
+	list-style:none;
+	list-style-position:inside;
+
+}
+
+.blockwizardpage{
+	width:400px;
+	height:250px;
+}
+
+.ctx_enabled {
+}
+
+
+/* ================================================== */
+/* DRAG AND DROP                                      */
+/* ================================================== */
+.drop_over {
+	background-color: lightgreen;
+	padding: 5px;
+
+	outline: none;
+}
+
+.drop_element {
+	display: inline;
+}
+
+
+/* ================================================== */
+/* FULL CALENDAR                                      */
+/* ================================================== */
+
+.fc-event {
+	font-size: 0.9em;
+}
+.fc-event.normal a {
+	border-style: hidden;
+	background-color: white;
+	//border-width: 0px;
+	color:black;
+}
+.fc-event.normal {
+	border-style: hidden;
+	background-color: white;
+	//border-color: white;
+	//border-width: 0px;
+	
+}
+.fc-event.UP a, .tape-100, .small-100 {
+	background-color: lightgreen;
+}
+.fc-event.DN a, .tape-10, .small-10{
+	background-color: red;
+}
+.fc-event.FA a, .tape-20, .small-20 {
+	background-color: yellow;
+}
+
+.fc-event.IN a {
+	background-color: white;
+	color: black;
+}
+
+.fc-event.UD a {
+	background-color: white;
+	color: black;
+}
+
+.fc-event.TD a {
+	background-color: white;
+	color: black;
+}
+
+.fc-event.UU a {
+	background-color: gray;
+	color: white;
+}
+.fc-event.TU a {
+	background-color: gray;
+	color: white;
+}
+
+
+/* ================================================== */
+/* DATE PICKER                                        */
+/* ================================================== */
+
+/* FIX: Jquery datepicker() is shown under dialog()	*/
+.ui-datepicker,
+.ui-datepicker-div
+{
+	z-index: 10100; /* must be > than popup editor (1002) */
+}
+
+
+/* ERROR IN REPORTS DIALOG FORMS */
+.errorlist {
+	background-color: red;
+}
+
+/* ================================================== */
+/* HISTORY PANEL                                        */
+/* ================================================== */
+
+.collapse {
+	height: 0px;
+	display: none;
+	visibility: hidden;
+}
+
+.toolbar .trigger {
+
+
+}
+.toolbar ul{
+	background-color:white;
+	position:relative;
+	z-index: 1000;
+	/*display:block;*/
+	position: absolute; /*--Important - Keeps subnav from affecting main navigation flow--*/
+	left:0px;
+	border:#aaa solid 1px;
+}
+
+
+
+.ui-dialog .ui-dialog-content {
+	padding: 5px;
+}
+
+.ui-tabs .ui-tabs-panel {
+	padding: 3px;	
+}
+
+
+
+
+
+
+
+
+/*
+# TSTATE_DN=10
+# TSTATE_FA=20
+# TSTATE_UD=30
+TSTATE_UU=40
+# TSTATE_TD=50
+# TSTATE_TU=60
+# TSTATE_IN=70
+# TSTATE_UP=100
+*/
+
+/*
+.tape-100, .small-100 {
+	background-color: lightgreen;
+	height:50px;
+}
+.tape-10, .small-10{
+	background-color: red;
+}
+.tape-20, .small-20 {
+	background-color: yellow;
+}
+*/
+
+.ifstatus.DOWN {
+	color:red;
+}
+
+
+
+/* ================================================== */
+/* Advanced search panel                              */
+/* ================================================== */
+
+
+.advsearch_header {
+
+	background-image: url('/static/nui/img/sort_none.gif');
+	background-color:#D7ECC7;
+
+	cursor: pointer; 
+	font-weight: bold; 
+	background-repeat: no-repeat; 
+	background-position: center left; 
+	padding-left: 20px; 
+	border-right: 1px solid #dad9c7; 
+	margin-left: -1px; 
+}
+
+.advsearch_asc {
+	background-image: url('/static/nui/img/sort_up.gif');
+}
+.advsearch_desc {
+	background-image: url('/static/nui/img/sort_down.gif');
+}
+
+.ipmon_data_asc {
+	background-image: url('/static/nui/img/sort_up.gif');
+}
+.ipmon_data_desc {
+	background-image: url('/static/nui/img/sort_down.gif');
+}
+.ipmon_data_header {
+
+	background-color:#D7ECC7;
+
+	cursor: pointer; 
+	font-weight: bold; 
+	background-repeat: no-repeat; 
+	background-position: center left; 
+	padding-left: 20px; 
+	border-right: 1px solid #dad9c7; 
+	margin-left: -1px; 
+}
+
+
+
+
+
+
+
+#search_input {
+
+	width: 90%;
+	margin: 5px;
+	border-collapse: separate;
+	border: 2px solid black;
+}
+
+#moroptpanel {
+	border-collapse: separate;
+	border: 0px;
+	margin: 5px;
+}
+
+
+#search_results {
+
+	overflow:auto;
+	/*white-space :nowrap;*/
+
+}
+
+
+
+#all_history {
+	overflow   : auto;
+	white-space: nowrap;
+}
+
+
+
+
+
+#ctx_menu_placeholder {
+	background-color: white;
+	border: 1px #505050 solid;
+	padding: 0px;
+	//width: 150px;
+}
+
+#ctx_menu_placeholder li:hover {
+	background-color: darkblue;
+}
+#ctx_menu_placeholder li:hover a {
+	color: white;
+}
+
+
+
+#body {
+	min-height:10000px;
+}
+
+/*
+#resource_panel{
+	min-width: 240px;
+}
+*/

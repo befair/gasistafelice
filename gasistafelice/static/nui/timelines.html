@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" dir="ltr">
+        <head>
+
+                <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+                <meta http-equiv="Content-Language" content="it" />
+                <!--<meta http-equiv="X-UA-Compatible" content="chrome=1" />-->
+                <meta name="robots" content="NONE,NOARCHIVE" />
+
+                <title>SANET - Configurator</title>
+
+
+                <link rel="stylesheet" type="text/css" href="style/wholestyle.css" />
+                <link rel="stylesheet" type="text/css" href="style/tango.css" />
+
+                <link rel="stylesheet" type="text/css" href="style/jquery-ui-1.7.2.custom.css" />
+
+                <!-- 2010-02-24 (dbilli) added for target state log calendar -->
+                <link href="/static/nui/style/fullcalendar/fullcalendar.css"   rel="stylesheet" type="text/css" />
+
+                <link rel="stylesheet" type="text/css" href="style/report.css" />
+                <link rel="stylesheet" type="text/css" href="style/timeline-bundle.css" />
+
+                <style type="text/css">
+
+                        #body_content{
+                                width:90%;
+                                height:400px;
+                        }
+                </style>
+                <script src="http://www.simile-widgets.org/timeline/api/timeline-api.js"             type="text/javascript"></script>
+
+                <script src="scripts/jquery.min.js"                 type="text/javascript"></script>
+
+                <!-- 2010-01-11 (dbilli) widgets for jQuery UI-->
+                <script src="scripts/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
+                <!--[if IE]><script language="javascript" type="text/javascript" src="scripts/excanvas.compiled.js"></script><![endif]-->
+
+                <script src="scripts/jquery.labs.js"                type="text/javascript"></script>
+                <script src="scripts/jquery.labs.tree.js"           type="text/javascript"></script>
+                <script src="scripts/jquery.labs.xmpprender.js"     type="text/javascript"></script>
+                <script src="scripts/jquery.flot.min.js"            type="text/javascript"></script>
+
+                <!-- 2010-01-11 (dbilli) form submit/post handling -->
+                <script src="scripts/jquery.form.js"                type="text/javascript"></script>
+
+                <!-- 2010-01-20 (dbilli) context menu -->
+                <script src="scripts/jquery.contextmenu.r2.js"      type="text/javascript"></script>
+                <!-- <script src="scripts/jquery.contextmenu.js"         type="text/javascript"></script> -->
+
+                <script src="scripts/jquery.cookie.js"              type="text/javascript"></script>
+
+                <!-- 2010-02-23 (dbilli) bridge for flash maps -->
+                <!-- <script src="/static/js/swfobject/swfobject.js" type="text/javascript"></script> -->
+                <script src="/static/js/swfobject/FABridge.js"  type="text/javascript"></script>
+
+                <script src="/static/nui/scripts/fullcalendar/fullcalendar.js"  type="text/javascript"></script>
+                <script src="/static/nui/scripts/fullcalendar/jquery.qtip-1.0.0-rc3.min.js"  type="text/javascript"></script>
+
+
+                <script type="text/javascript">
+var timeLine;
+                        function getTwitterTimeline(userName) {
+                                var eventSource = new Timeline.DefaultEventSource();
+                                var url = 'http://twitter.com/status/user_timeline/' + userName + '.json?count=200&callback=?';
+                                $.getJSON(url, function(data) {
+                                        
+                                        var mostRecentTweetDate = new Date(1);
+                                        $.each(data, function(i, item) {
+                                                var dateEvent = Date.parse(item.created_at);
+                                                mostRecentTweetDate = (dateEvent > mostRecentTweetDate) ? dateEvent : mostRecentTweetDate;
+                                                var html = replaceUrlWithHtmlLinks(item.text);
+                                                var evt = new Timeline.DefaultEventSource.Event(
+                                                new Date(dateEvent), //start
+                                                null, //end
+                                                null, //latestStart
+                                                null, //earliestEnd
+                                                true, //instant
+                                                item.text.substr(0, 47) + '...', //text
+                                                html //description
+                                        );
+                                                eventSource.add(evt);
+                                        });
+
+                                        var bandInfos = [
+                                                Timeline.createBandInfo({
+                                                        trackGap: 0.2,
+                                                        width: "80%",
+                                                        intervalUnit: Timeline.DateTime.HOUR,
+                                                        intervalPixels: 500,
+                                                        eventSource: eventSource,
+                                                        timeZone: new Date().getTimezoneOffset() / 60,
+                                                        date: new Date(mostRecentTweetDate).toGMTString()
+                                                }),
+                                                Timeline.createBandInfo({
+                                                        showEventText:  false,
+                                                        trackHeight: 0.5,
+                                                        trackGap: 0.2,
+                                                        width: "20%",
+                                                        intervalUnit: Timeline.DateTime.DAY,
+                                                        intervalPixels: 300,
+                                                        eventSource: eventSource,
+                                                        timeZone: new Date().getTimezoneOffset() / 60,
+                                                        date: new Date(mostRecentTweetDate).toGMTString()
+                                                })
+                                        ];
+
+                                        bandInfos[1].syncWith = 0;
+                                        bandInfos[1].highlight = true;
+                                        timeLine = Timeline.create($("#body_content")[0], bandInfos);
+                                });
+
+                                var timeline_data = $.getJSON('sanet/rest/target/70/timeline');
+                                alert($(timeline_data));
+                                // references in the data
+                                eventSource1.loadJSON(timeline_data, url); // The data was stored into the
+                                // timeline_data variable.
+                                tl.layout(); // display the Timeline
+
+
+                        }
+			
+                        $(function(){
+
+
+                                
+                        });
+
+                        
+                </script>
+        </head>
+
+
+
+        <body>
+                <div id="container">
+
+                        <div id="header">
+                                <div id="header-content">
+                                        <h1 id="app_title">SANET - Timelines</h1>
+                                </div>
+                        </div>
+
+                        <!-- ===================== -->
+                        <!-- Start of main content -->
+                        <!-- ===================== -->
+
+                        <div id="main_content">
+
+                                <div id="resource_panel" >
+
+                                </div>
+
+                        </div>
+
+
+                        <div id="body_content">
+
+                        </div>
+
+
+                </div>
+                <div id="footer">
+                        <span id="app_title">SANET</span> v. <span id="app_version">2.0</span> - Copyright &copy; 2009 - <a href="http://www.labs.it">Laboratori Guglielmo Marconi</a>
+                </div>
+
+                <div class="templates">
+
+                        <li class="block ui-corner-all" id="node_template">
+
+                                <div class="block_header ">
+                                        <div class="left toolbar">
+                                        </div>
+                                        <div class="right toolbar">
+                                                <img class="header_button delete" src="img/stop.png" title="elimina" />
+
+                                        </div>
+                                        <h1 class="block-title">Node:</h1>
+                                </div>
+                                <table><tr>
+                                                <td width="128px"><img width="128px"  class="block_img"></td>
+                                                <td>
+                                                        <fieldset><label>Node Configuration:</label>
+                                                                <ul class="content">
+
+                                                                </ul>
+                                                        </fieldset>
+                                                </td>
+                                        </tr>
+                                </table>
+                                <fieldset class="node_services"><label>Services</label>
+                                        <ul >
+
+                                        </ul>
+                                </fieldset>
+
+                        </li>
+
+                        <li class="block ui-corner-all" id="appliance_template">
+
+                                <div class="block_header ">
+                                        <div class="left toolbar">
+                                        </div>
+                                        <div class="right toolbar">
+                                                <img class="header_button delete" src="img/stop.png" title="elimina" />
+
+                                        </div>
+                                        <h1 class="block-title">Appliance:</h1>
+                                </div>
+                                <table><tr>
+                                                <td width="128px"><img  width="128px" class="block_img"></td>
+                                                <td>
+                                                        <fieldset><label>Node Configuration:</label>
+                                                                <ul class="content">
+                                                                </ul>
+                                                        </fieldset>
+                                                </td>
+                                        </tr>
+                                </table>
+                        </li>
+
+                        <li class="block ui-corner-all" id="service_template">
+
+                                <div class="block_header ">
+                                        <div class="left toolbar">
+                                        </div>
+                                        <div class="right toolbar">
+                                                <img class="header_button delete" src="img/stop.png" title="elimina" />
+
+                                        </div>
+                                        <h1 class="block-title">Service:</h1>
+                                </div>
+                                <table><tr>
+                                                <td width="64px"><img width="64px" class="block_img"></td>
+                                                <td>
+                                                        <fieldset><label>Service Configuration:</label>
+                                                                <ul class="content">
+
+                                                                </ul>
+                                                        </fieldset>
+                                                </td>
+                                        </tr>
+                                </table>
+                        </li>
+                </div>
+        </body>
+</html>

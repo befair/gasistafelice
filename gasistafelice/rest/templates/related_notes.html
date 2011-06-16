@@ -1,0 +1,59 @@
+{% load basic_tags %}
+{% load i18n %}
+
+{% if target_notes %}
+	<h3>{% trans "Target's notes" %}</h3>
+
+	<ol>
+	{% for note in target_notes %}
+	<li id='note_{{ note.id }}'>	
+			{{forloop.counter}} )
+			
+			{% if note.content_object %}
+			<a 
+				class="ctx_enabled resource {{ note.content_object.resource_type }} inline ui-draggable ui-droppable" 
+				href="#rest/{{ note.content_object.resource_type }}/{{ note.content_object.id }}" 
+				sanet_urn="{{ note.content_object.resource_type }}/{{ note.content_object.id }}">
+				{{ note.content_object }}
+			</a>		
+			-
+			{% endif %}				
+			
+			<date>{{ note.submit_date|date:"d/m/Y h:i" }}</date> 
+			-
+			<author>{{ note.userinfo.name }}</author> 
+			-
+			<text>{{ note.comment }}</text>
+	</li>
+	{% endfor %}
+	</ol>
+{% endif %}
+
+{% if node_notes %}
+	<h3>{% trans "Node's notes" %}</h3>
+
+	<ol>
+	{% for note in node_notes %}
+	<li id='note_{{ note.id }}'>	
+			{{forloop.counter}} )
+			
+			{% if note.content_object %}
+			<a 
+				class="ctx_enabled resource {{ note.content_object.resource_type }} inline ui-draggable ui-droppable" 
+				href="#rest/{{ note.content_object.resource_type }}/{{ note.content_object.id }}" 
+				sanet_urn="{{ note.content_object.resource_type }}/{{ note.content_object.id }}">
+				{{ note.content_object }}
+			</a>		
+			-
+			{% endif %}				
+			
+			<date>{{ note.submit_date|date:"d/m/Y h:i" }}</date> 
+			-
+			<author>{{ note.userinfo.name }}</author> 
+			-
+			<text>{{ note.comment }}</text>
+	</li>
+	{% endfor %}
+	</ol>
+	
+{% endif %}

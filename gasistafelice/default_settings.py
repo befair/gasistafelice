@@ -83,9 +83,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'gasistafelice.urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+	PROJECT_ROOT + "/rest/templates",
+
 )
 
 INSTALLED_APPS = (
@@ -99,6 +98,7 @@ INSTALLED_APPS = (
     'gasistafelice.gas',
     'gasistafelice.admin',
     'gasistafelice.gas_admin',
+    'gasistafelice.rest',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -109,3 +109,31 @@ INSTALLED_APPS = (
     
 )
 
+URL_PREFIX = "gf/"
+
+RESOURCE_PAGE_BLOCKS = {
+    'site' : [{
+        'name' : 'info',
+        'descr' : 'Generale',
+        'blocks' : []
+    }],
+    'gas' : [{
+        'name' : 'open_orders',
+        'descr': 'Ordini aperti',
+        'blocks': [],
+    },{
+        'name' : 'ordered_products',
+        'descr': 'Prodotti ordinati',
+        'blocks': [],
+    }],
+    'supplier' : [{
+        'name' : 'products',
+        'descr': 'Prodotti',
+        'blocks': [],
+    },{
+        'name' : 'info',
+        'descr': 'Generale',
+        'blocks': [],
+    }],
+   
+}

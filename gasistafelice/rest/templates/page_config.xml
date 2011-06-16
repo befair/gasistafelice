@@ -1,0 +1,21 @@
+<page>
+	<resource  sanet_urn="{{resource.resource_type}}/{{resource.id}}">
+	{{ resource }}
+	</resource>
+
+        {% for parent in parents %}
+		<parent sanet_urn="{{parent.resource_type}}/{{parent.id}}">
+		{{parent}}
+		</parent>
+        {%endfor%}
+
+	{% for section in sections %}
+	<section name="{{section.name}}" descr="{{section.descr}}">
+
+		{% for block_signature in section.blocks_signature %}
+			{{ block_signature|safe }}
+		{% endfor %}
+	
+	</section>
+	{% endfor %}
+</page>

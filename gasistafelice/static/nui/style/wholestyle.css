@@ -1,0 +1,536 @@
+
+/* ================================================================= */
+/* "CONSTANTS"                                                       */
+/* ================================================================= */
+
+.smaller{
+	font-size:0.8em;
+}
+.hidden {
+	display:none;
+}
+
+.right { float: right; }
+
+.left { float: left; }
+
+/*
+a:link, a:visited {
+	color: #5B80B2;
+	text-decoration: none;
+}*/
+
+a:link, a:visited {
+	color: #0000EE;
+	text-decoration: none  ;
+}
+
+/* ================================================================= */
+/* HTML ELEMENTS                                                     */
+/* ================================================================= */
+
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td {
+	margin:0;
+	padding:0;
+}
+
+img, body, html {
+	border:0;
+}
+
+/*
+address,caption,cite,code,dfn,em,strong,th,var {
+	font-style:normal;
+	font-weight:normal;
+}
+*/
+
+ol,ul {
+	list-style:none;
+}
+
+/*
+caption,th {
+	text-align:left;
+}
+*/
+
+/*
+h1,h2,h3,h4,h5,h6 {
+	font-size:100%;
+}
+*/
+
+
+/*
+q:before, q:after {
+	content:'';
+}
+*/
+
+
+body {
+	font-family: verdana, arial, helvetica;
+	font-size : 12px;
+	
+	/*padding: 0 0 2px 0;*/
+
+	background-color : white;
+	color: black;
+}
+
+h1 { font-size: 26px; margin: 0px; padding: 0px; color: #005E31;  }
+h2 { font-size: 12px; padding-top: 12px; font-weight: bold; color: #004400 }
+h3 { font-weight: bold; color: #003300 }
+h4 { font-weight: bold; color: #002200 }
+
+
+/* 
+ * HTML FORMS
+ */
+
+input, textarea, select { 
+	font-size : 12px;
+	border : 2px groove green;
+} 
+
+
+
+button, img.plusminus:hover {
+	cursor : pointer;
+}
+
+button[disabled] {
+	cursor : default;
+	background-color : transparent;
+	border : 0;
+}
+
+input[readonly], input[disabled], textarea[disabled], textarea[readonly] { 
+	background-color : lightgrey;
+	color : grey;
+}
+
+select   { 
+	min-width:110px; 
+}
+
+table {
+	width:100%;
+	/*table-layout:auto;*/
+}
+
+select{
+	width:100%;
+	max-height:200px;
+}
+
+
+/* ================================================================= */
+/* COMMON GUI ELEMENTS                                               */
+/* ================================================================= */
+
+
+
+
+.title 	 {background: none; color: #000000; font-size: 13px; font-weight: bold; }
+
+
+#header {
+	height: 50px;
+	
+	background: lightgreen url('/static/logo_labs.jpg') left top no-repeat;
+	background: lightgreen url('/static/logo_cliente.jpg') right top no-repeat;
+	
+	
+	border-bottom: 1px solid #aaaaaa;
+	margin: 0 auto 0 auto;
+}
+
+#header-content {
+	padding : 0 0 5px 5px;
+	margin-right : 110px;
+	color:#005E31;
+}
+
+#navbar a:link, #navbar a:visited, #header a:link, #header a:visited { 
+	color: #5b80b2; 
+	text-decoration:none; 
+}
+
+/*
+.header-actions {
+	float:right;
+}
+*/
+
+
+#footer {
+	border-top: 1px solid #aaa;
+	color: #999;
+	background-color : white;
+	padding: 0.2em;
+	font-size: 90%;
+	text-align: center;
+	clear : both;
+	position:fixed;
+	bottom:0px;
+	width:100%;
+}
+
+
+#resource_panel {
+	background-color: #eee;
+	/* padding: 10px; */
+	/*margin: 10px;*/
+	width  : 220px;
+	min-width  : 220px;
+	max-width  : 500px;
+	float : left;
+	
+}
+
+.resource_panel_expand_button_visible {
+	/*
+	position: relative;
+	z-index: 10000;
+	*/
+}
+
+.resource_panel_expand_button_hidden {
+	/*position: relative;
+	z-index: 10000;
+	display:none;*/
+}
+
+#section_tabs {
+border:0px;
+}
+
+#separator_button {
+}
+
+#separator {
+	background-color: #eee;
+}
+
+
+#body {
+	overflow : hidden;
+	/*border-left: 1px solid #aaa;*/
+}
+
+
+#body_content {
+}
+
+
+
+.block { 
+	background: white;
+	
+	list-style-type:none;
+	
+	position : relative;
+	/* margin : 10px 1px 0 1px; */
+	/*margin : 0px 0px 0px 0px;*/
+	margin: 10px;
+	
+	border : 1px solid #ccc;
+	border-collapse : collapse;
+	min-width : 200px;
+}
+.block_header {
+	background-color : #d7ecc7;
+
+	border-bottom : 1px solid lightgrey;
+	
+
+	/*clear : both;*/
+
+	height : 17px;
+}
+
+.block-title {
+	text-align : left;
+	font-size: 14px;
+	padding : 0;
+	margin-left:18px;
+	position:absolute;
+	border : 0;
+}
+
+.block-title a{
+	font-weight:lighter;
+	font-size:0.8em;
+	vertical-align:middle;
+}
+
+.block-title span{
+	font-weight: bold;
+}
+
+/* Icona di identificazione */
+.block_icon {
+	background: transparent;
+	margin : 0px 0 0 0px;
+}
+
+/*
+.block .block_body#details {
+	max-height : 1024px;
+}
+*/
+
+.block_body {
+	display : block;
+	width : 100%;
+	overflow : auto;
+	/*padding-top: 2px;
+	padding-bottom: 2px;*/
+}
+
+.block_menu_entries li {
+	list-style-type: none;
+	list-style-position: inside;
+	list-style-image: none;
+}
+
+.header_button {
+	cursor : pointer;
+	margin : 0pt 0pt 0 0pt;
+}
+
+
+
+
+/**************************
+ ******** Risorse  ********
+ **************************/
+
+.resource { 
+	display : list-item;
+	
+	/*list-style-position : inside;*/
+	
+	/*background-color : transparent;
+	min-height:20px;
+	*/
+	list-style-type : none;
+	list-style-image : none;
+	
+}
+
+.resource.inline {
+	display : inline-block;
+	padding-left : 20px;
+}
+
+
+
+
+.suspended { 
+	text-decoration : line-through !important; 
+}
+
+.deleted { 
+	background-color : lightgrey; 
+}
+
+.target_table .odd {
+	border-bottom: 1px solid #999999;
+}
+
+.target_table td {
+	border-right: 1px solid  #999999;
+}
+
+.row.UP {
+	 background-color : #ABFFA1;
+}
+.row.DN {
+	background-color : #FFAAAA; 
+}
+.row.FA {
+	background-color : #FFFF90; 
+}
+.row.UU, .row.UD {
+	 background-color : #E0E0E0; 
+}
+
+/* TARGETS */
+
+.target.UP {
+	list-style-image : url('/static/theme/img/resources/target_UP.png');
+	/*color : #005E31;*/
+}
+
+.target.DN {
+	list-style-image : url('/static/theme/img/resources/target_DN.png');
+	/*color : red;*/
+}
+.target.FA {
+	list-style-image : url('/static/theme/img/resources/target_FA.png');
+	/*color : yellow;*/
+}
+
+.target.UU, .target.UD {
+	list-style-image : url('/static/theme/img/resources/target_UU.png');
+	/*color : grey;*/
+}
+
+
+
+
+
+/*************************
+ **** Blocco target ****
+ *************************/
+
+.box-UP { margin: 2px; background-color : lightgreen; }
+.box-DN { margin: 2px; background-color : red;        }
+.box-IN { margin: 2px; background-color : white;      }
+.box-FA { margin: 2px; background-color : yellow;     }
+.box-UU { margin: 2px; background-color : lightgrey;  }
+.box-UD { margin: 2px; background-color : lightgrey;  }
+
+.box-TD { margin: 2px; background-color : white;  }
+.box-TU { margin: 2px; background-color : white;  }
+
+.target_times {
+	float : right;
+	position:relative;
+	
+	/*border: 1px;
+	border-style: dashed;*/
+}
+
+.bar_element {
+	float : right;
+	position:relative;
+	//min-width: 90px;
+	padding : 0px 0px 0px 0px;
+	border: 1px dashed black;
+	/*
+	border-top : 1px solid black;
+	border-bottom : 1px solid black;
+	border-left : 1px dashed black;
+	border-right : 1px dashed black;
+	*/
+}
+
+/*************************
+ **** Blocco misure ****
+ *************************/
+
+.measure_time {
+	float : right;
+	position:relative;
+	
+	border: 1px;
+	border-style: dashed;
+}
+
+
+/*************************
+ **** Log degli stati ****
+ *************************/
+
+.target_states_log_header, .target_states_log_body {
+	border : 1px solid black;
+}
+
+.target_state_row {
+	border : 1px solid black;
+}
+
+.target_states_log_header span, .target_state_row span {
+	padding : 5px;
+	border-left : 1px dashed grey;
+}
+
+
+
+
+
+.log_sort.up   { 
+	padding-left: 12px;	
+	background : transparent url('/static/nui/img/sort_up.gif') no-repeat scroll left; 
+}
+.log_sort.down { 
+	padding-left: 12px;	
+	background : transparent url('/static/nui/img/sort_down.gif') no-repeat scroll left; 
+}
+
+.log_sort.none   { 
+	padding-left: 12px;	
+	background : transparent url('/static/nui/img/sort_none.gif') no-repeat scroll left; 
+}
+
+
+
+.log-UP.log_selected   { 
+	background-color: #0000FF;
+}
+.log-TU.log_selected   { 
+	background-color: #0000FF;
+}
+.log-UU.log_selected   { 
+	background-color: #0000FF;
+}
+.log-DN.log_selected   { 
+	background-color: #0000FF;
+}
+.log-TD.log_selected   { 
+	background-color: #0000FF;
+}
+.log-UD.log_selected   { 
+	background-color: #0000FF;
+}
+.log-FA .log_selected   { 
+	background-color: #0000FF;
+}
+
+
+.log_table th {
+	font-size:0.9em; 
+	font-weight:bold; 
+}
+
+.log_legend td {
+	font-size: 0.8em;
+}
+.log_legend th {
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+
+.ui-dialog-title {
+	color: #2E9E3B;
+
+}
+
+
+
+.measure-OK   { 
+	background-color : #ABFFA1;
+}
+.measure-IN {
+	background-color: white;
+}
+.measure-DO   { 
+	background-color: white; 
+}
+.measure-SV   { 
+	background-color : #ABFFD1; 
+}
+
+.measure-UN   { 
+	background-color: lightgrey; 
+}
+
+.measure-ER   { 
+	background-color : #FFAAAA; 
+}
+

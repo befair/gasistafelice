@@ -1,0 +1,2 @@
+{% for url in urls %}
+    <option value="rest/{{resource_type}}/{{resource_id}}/{{url.address}}">{{url.address}}: {{url.description}}</option>{% endfor %}

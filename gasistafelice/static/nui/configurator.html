@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" dir="ltr">
+	<head>
+
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="it" />
+		<!--<meta http-equiv="X-UA-Compatible" content="chrome=1" />-->
+		<meta name="robots" content="NONE,NOARCHIVE" />
+
+		<title>SANET - Configurator</title>
+
+
+		<link rel="stylesheet" type="text/css" href="style/wholestyle.css" />
+		<link rel="stylesheet" type="text/css" href="style/tango.css" />
+
+		<link rel="stylesheet" type="text/css" href="style/jquery-ui-1.7.2.custom.css" />
+
+		<!-- 2010-02-24 (dbilli) added for target state log calendar -->
+		<link href="/static/nui/style/fullcalendar/fullcalendar.css"   rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" type="text/css" href="style/report.css" />
+
+		<style type="text/css">
+
+			.treexpansion{
+				display:inline-block;
+				padding-right:4px;
+				background-repeat:no-repeat;
+			}
+			.xpand{
+				width:9px;
+				height:9px;
+				background-image:url('img/tree_open.gif');
+			}
+			.collaps{
+				width:9px;
+				height:9px;
+				background-image:url('img/tree_close.gif');
+			}
+			.smaller{
+				font-size:0.8em;
+			}
+
+			#header {
+				height: 50px;
+				background:lightgreen url(/static/logo_cliente.jpg) no-repeat scroll right top ;
+			}
+
+			#user_data_content {
+				font-size: 0.9em;
+			}
+
+			.header_button{
+				margin-top:0px;
+				width:16px;
+				height:16px;
+				display:inline;
+			}
+
+
+			.block{
+				background-color:white;
+			}
+			.hidden {
+				display:none;
+			}
+			table {
+				width:100%;
+				table-layout:auto;
+			}
+			#resource_logical_tree ul li{
+				padding-left:5px;
+			}
+			.treexpansion{
+				width:15px;
+				display:inline-block;
+			}
+
+			#resource_logical_tree{
+				min-height:400px;
+				font-size:0.9em;
+				text-decoration:none;
+				display:block;
+			}
+
+			resource_logical_tree {
+				overflow:scroll;
+			}
+
+			#all_notes  li {
+				white-spacE: nowrap;
+
+			}
+
+			li div.content {
+				white-space: nowrap;
+				margin-left: 20px;
+			}
+
+
+			#login_form *{
+				padding:2px 2px;
+			}
+
+			.user{
+				background-color:#D7ECC7;
+			}
+			#user_data{
+				display: inline;
+			}
+			#user_data a.top{
+				padding:3px 3px ;
+
+			}
+
+			#user_data_content{
+				padding: 3px;
+				text-align: right;
+				display:list-item;
+				list-style:none;
+				list-style-position:inside;
+
+			}
+			.blockwizardpage{
+				width:400px;
+				height:250px;
+			}
+			select{
+				width:100%;
+				max-height:200px;
+			}
+
+
+
+
+			/* ================================================== */
+			/* DRAG AND DROP                                      */
+			/* ================================================== */
+			.drop_over {
+				background-color: lightgreen;
+				padding: 5px;
+
+				outline: none;
+			}
+
+			.drop_element {
+				display: inline;
+			}
+
+
+
+			#body_content{
+				float:right;
+				width:80%;
+			}
+
+		</style>
+
+		<script src="scripts/jquery.min.js"                 type="text/javascript"></script>
+
+		<!-- 2010-01-11 (dbilli) widgets for jQuery UI-->
+		<script src="scripts/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
+		<!--[if IE]><script language="javascript" type="text/javascript" src="scripts/excanvas.compiled.js"></script><![endif]-->
+
+		<script src="scripts/jquery.labs.js"                type="text/javascript"></script>
+		<script src="scripts/jquery.labs.tree.js"           type="text/javascript"></script>
+		<script src="scripts/jquery.labs.xmpprender.js"     type="text/javascript"></script>
+		<script src="scripts/jquery.flot.min.js"            type="text/javascript"></script>
+
+		<!-- 2010-01-11 (dbilli) form submit/post handling -->
+		<script src="scripts/jquery.form.js"                type="text/javascript"></script>
+
+		<!-- 2010-01-20 (dbilli) context menu -->
+		<script src="scripts/jquery.contextmenu.r2.js"      type="text/javascript"></script>
+		<!-- <script src="scripts/jquery.contextmenu.js"         type="text/javascript"></script> -->
+
+		<script src="scripts/jquery.cookie.js"              type="text/javascript"></script>
+
+		<!-- 2010-02-23 (dbilli) bridge for flash maps -->
+		<!-- <script src="/static/js/swfobject/swfobject.js" type="text/javascript"></script> -->
+		<script src="/static/js/swfobject/FABridge.js"  type="text/javascript"></script>
+
+		<script src="/static/nui/scripts/fullcalendar/fullcalendar.js"  type="text/javascript"></script>
+		<script src="/static/nui/scripts/fullcalendar/jquery.qtip-1.0.0-rc3.min.js"  type="text/javascript"></script>
+
+
+		<script type="text/javascript">
+
+			jQuery.context_menu_open = false;
+
+			jQuery.pre = window.location.toString();
+			jQuery.pre = jQuery.pre.split('/');
+			jQuery.pre = jQuery.pre[0]+"//"+jQuery.pre[2]+"/"+"sanet"+"/";
+			jQuery.labsglobals = new Array();
+
+			function transform(data){
+				data.replace('field', 'input')
+			}
+
+			function create_appliance(){}
+			function create_node(){}
+			
+			function create_service(){}
+
+			$(function(){
+				//hide templates
+				$('.templates').hide();
+				//close button
+				$('.delete').live('click',function(){
+					$(this).parent().parent().parent().remove();
+				});
+				//set draggables
+				$('.node').draggable({
+					opacity: 0.7,
+					helper: 'clone',
+					zIndex: 2700,
+					start:function(){
+						$.delement = $(this);
+					}
+				});
+				$('.service').draggable({
+					opacity: 0.7,
+					helper: 'clone',
+					zIndex: 2700,
+					start:function(){
+						$.delement = $(this);
+					}
+				});
+				$('.appliance').draggable({
+					opacity: 0.7,
+					helper: 'clone',
+					zIndex: 2700,
+					start:function(){
+						$.delement = $(this);
+					}
+				});
+				//set droppables
+				$('.node_services').droppable({
+					accept:'.service',
+					greedy:true
+					//tolerance:'touch'
+				});
+				$('.node_services').live('dropactivate', function(){
+					$('.node_services').addClass('ui-state-highlight');
+					$('.node_services').removeClass('ui-state-error');
+				});
+				$('.node_services').live('dropover', function(){
+					$(this).removeClass('ui-state-highlight');
+					$(this).addClass('ui-state-error');
+				});
+				$('.node_services').live('dropout', function(){
+					$(this).addClass('ui-state-highlight');
+					$(this).removeClass('ui-state-error');
+				});
+				$('.node_services').live('dropdeactivate', function(){
+					$('.node_services').removeClass('ui-state-error');
+					$('.node_services').removeClass('ui-state-highlight');
+				});
+				$('.node_services').live('drop', function(){
+					var a=$('#service_template').clone();
+					a=a.removeAttr('id');
+					var content = a.find('.content');
+					var title = a.find('.block-title');
+					var att = $.delement.attr('data');
+					var url = jQuery.pre + "configurator/" + att;
+					var parent = $(this);
+					jQuery.ajax({
+						url:url,
+						dataType:'text',
+						complete:function(res,d){
+							t = res.responseText;
+							t = jQuery.parseXml(t);
+							t = $(t);
+							a.find('.block-title').text(t.find('ctitle').text());
+							a.find('.block_img').attr('src', jQuery.pre+'static/nui/img/'+ t.find('cimage').attr('url'));
+							c = t.find('cform').contents();
+							a.find('.content').append(c);
+							parent.append(a);
+						}
+					});
+					
+				});
+
+				$('#body_content').droppable({
+					accept:'.node, .appliance',
+					tolerance:'pointer',
+					activeClass: 'ui-state-highlight',
+					hover:function(){
+					},
+					drop:function(e, ui){
+						a = null;
+						if(ui.draggable.is('.node')){
+							a = $('#node_template').clone(true);
+						} else {
+							a = $('#appliance_template').clone(true);
+						}
+
+						a.children('.node_services').droppable({
+							accept:'.service'
+							//tolerance:'touch'
+						});
+
+						a=a.removeAttr('id');
+						var content = a.find('.content');
+						var title = a.find('.block-title');
+						var att = $.delement.attr('data');
+						var url = jQuery.pre + "configurator/" + att;
+						var parent = $(this);
+						jQuery.ajax({
+							url:url,
+							dataType:'text',
+							complete:function(res,d){
+								t = res.responseText;
+								t = jQuery.parseXml(t);
+								t = $(t);
+								a.find('.block-title').text(t.find('ctitle').text());
+								a.find('.block_img').attr('src', jQuery.pre+'static/nui/img/'+ t.find('cimage').attr('url'));
+								c = t.find('cform').contents();
+								a.find('.content').append(c);
+								parent.append(a);
+							}
+						});
+
+						a.appendTo($(this));
+					}
+				});
+				$("ul, li").disableSelection();
+
+				//setup the bar
+
+				
+			});
+		</script>
+	</head>
+
+
+
+	<body>
+		<div id="container">
+
+			<div id="header">
+				<div id="header-content">
+					<h1 id="app_title">SANET - Configurator</h1>
+				</div>
+			</div>
+
+			<!-- ===================== -->
+			<!-- Start of main content -->
+			<!-- ===================== -->
+
+			<div id="main_content">
+
+				<div id="resource_panel" >
+
+					<!-- =============================================== -->
+					<!-- SEARCH BOX                                      -->
+					<!-- =============================================== -->
+
+					<div class="block" id="search">
+						<div class="block_header">
+							<h1 class="block-title">Ricerca</h1>
+						</div>
+
+						<div class="block_body" id="quick_search" is_open="1">
+
+							<div id="searchbox">
+								<div id="search_form" style="text-align : center;">
+									<form id="search_trueform"  name="search_form" action="/sanet/rest/quick_search/">
+										<input id="search_input"  name="resource_name" type="search" size="20" autocomplete="on" title="Scrivere qui una parte del nome della risorsa e premere &lt;Invio>" />
+										<input id="search_reset"  name="reset"         type="reset" title="Reset" onclick="reset_search_form()" />
+									</form>
+								</div>
+								<div id="search_results"></div>
+							</div>
+						</div>
+					</div> <!-- blocco search -->
+
+
+					<!-- =============================================== -->
+					<!-- NODES                                           -->
+					<!-- =============================================== -->
+
+					<div class="block">
+						<div class="block_header">
+							<h1 class="block-title" >Nodi</h1>
+						</div>
+						<div class="block_body" >
+							<ul id="nodes">
+								<li class="node" id="windows_node" data="node/windows"><img src="img/configurator/win.png" width="32px"><span>Windows</span></li>
+								<li class="node" id="linux_node" data="node/linux"><img src="img/configurator/tux.jpg" width="32px"><span>Linux</span></li>
+								<li class="node" id="mac_node" data="node/osx"><img src="img/configurator/mac.png" width="32px"><span>Mac</span></li>
+							</ul>
+
+						</div>
+					</div> <!-- blocco note-->
+
+					<!-- =============================================== -->
+					<!-- NOTES                                           -->
+					<!-- =============================================== -->
+
+					<div class="block">
+						<div class="block_header">
+							<h1 class="block-title" >Servizi</h1>
+						</div>
+						<div class="block_body" >
+
+							<ul id="services">
+								<li class="service" id="windows_node"  data="service/web-apache" >Apache Web Server</li>
+								<li class="service" id="linux_node" data="service/web-apache-dav">Apache WebDav</li>
+								<li class="service" id="mac_node" data="service/web-iis">IIS</li>
+								<li class="service" id="mac_node" data="service/web-ftp">FTP</li>
+								<li class="service" id="mac_node" data="service/util-dns">DNS</li>
+								<li class="service" id="mac_node" data="service/mail-sendmail">Sendmail</li>
+								<li class="service" id="mac_node" data="service/mail-exchange">Exchange</li>
+								<li class="service" id="mac_node" data="service/db-mysql">MySQL</li>
+								<li class="service" id="mac_node" data="service/db-pgsql">PostGreSQL</li>
+								<li class="service" id="mac_node" data="service/db-sqls">SQL Server</li>
+								<li class="service" id="mac_node" data="service/db-oracle">Oracle</li>
+								<li class="service" id="mac_node" data="service/db-db2">DB2</li>
+								<li class="service" id="mac_node" data="service/util-fw">Firewall</li>
+								<li class="service" id="mac_node" data="service/util-proxy">Proxy</li>
+							</ul>
+
+						</div>
+					</div>
+
+
+					<!-- =============================================== -->
+					<!-- USER ACTIONS                                    -->
+					<!-- =============================================== -->
+					<div class="block">
+						<div class="block_header">
+							<h1 class="block-title">Apparati</h1>
+						</div>
+
+						<div class="block_body" >
+
+							<ul id="appliances">
+								<li class="appliance" id="mac_node" data="appliance/router">Router</li>
+
+								<li class="appliance" id="mac_node" data="appliance/firewall">Firewall</li>
+								<li class="appliance" id="mac_node" data="appliance/switch">Switch</li>
+							</ul>
+
+						</div>
+					</div> <!-- blocco rete -->
+
+				</div>
+
+			</div>
+
+
+			<ul id="body_content">
+
+			Insert the Items to be monitored here!
+			</ul>
+
+
+		</div>
+		<div id="footer">
+			<span id="app_title">SANET</span> v. <span id="app_version">2.0</span> - Copyright &copy; 2009 - <a href="http://www.labs.it">Laboratori Guglielmo Marconi</a>
+		</div>
+
+		<div class="templates">
+
+			<li class="block ui-corner-all" id="node_template">
+
+				<div class="block_header ">
+					<div class="left toolbar">
+					</div>
+					<div class="right toolbar">
+						<img class="header_button delete" src="img/stop.png" title="elimina" />
+
+					</div>
+					<h1 class="block-title">Node:</h1>
+				</div>
+				<table><tr>
+						<td width="128px"><img width="128px"  class="block_img"></td>
+						<td>
+							<fieldset><label>Node Configuration:</label>
+								<ul class="content">
+
+								</ul>
+							</fieldset>
+						</td>
+					</tr>
+				</table>
+				<fieldset class="node_services"><label>Services</label>
+					<ul >
+
+					</ul>
+				</fieldset>
+
+			</li>
+
+			<li class="block ui-corner-all" id="appliance_template">
+
+				<div class="block_header ">
+					<div class="left toolbar">
+					</div>
+					<div class="right toolbar">
+						<img class="header_button delete" src="img/stop.png" title="elimina" />
+
+					</div>
+					<h1 class="block-title">Appliance:</h1>
+				</div>
+				<table><tr>
+						<td width="128px"><img  width="128px" class="block_img"></td>
+						<td>
+							<fieldset><label>Node Configuration:</label>
+								<ul class="content">
+								</ul>
+							</fieldset>
+						</td>
+					</tr>
+				</table>
+			</li>
+
+			<li class="block ui-corner-all" id="service_template">
+
+				<div class="block_header ">
+					<div class="left toolbar">
+					</div>
+					<div class="right toolbar">
+						<img class="header_button delete" src="img/stop.png" title="elimina" />
+
+					</div>
+					<h1 class="block-title">Service:</h1>
+				</div>
+				<table><tr>
+						<td width="64px"><img width="64px" class="block_img"></td>
+						<td>
+							<fieldset><label>Service Configuration:</label>
+								<ul class="content">
+
+								</ul>
+							</fieldset>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</div>
+	</body>
+</html>
