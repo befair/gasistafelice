@@ -223,6 +223,13 @@ class Delivery(models.Model, PermissionResource):
         
     def __unicode__(self):
         return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
+    
+    def gas_set(self):
+        """
+        Return a QuerySet containing all GAS sharing this delivery appointment. 
+        """
+        pass
+    
         
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
@@ -256,6 +263,15 @@ class Withdrawal(models.Model, PermissionResource):
         app_label = 'gas'
         verbose_name = _('wihtdrawal')
         verbose_name_plural = _('wihtdrawals')
+    
+    def __unicode__(self):
+        return "%From (start_time)s to (end_time)s of (date)s at %(place)s" % {'start_time':self.start_time, 'end_time':self.end_time, 'date':self.date, 'place':self.place}
+        
+    def gas_set(self):
+        """
+        Return a QuerySet containing all GAS sharing this withdrawal appointment. 
+        """
+        pass
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
