@@ -7,6 +7,7 @@ from gasistafelice.base import models as base_models
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
+from gasistafelice.auth import models as auth_models
 
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
@@ -28,6 +29,16 @@ class SupplierStockInline(admin.TabularInline):
 class GASSupplierOrderProductInline(admin.TabularInline):
     model = gas_models.GASSupplierOrderProduct
     extra = 10
+
+from django.forms.models import BaseInlineFormSet
+class GASMemberRoleFormset(BaseInlineFormSet):
+    pass
+
+class GASMemberRoleInline(admin.TabularInline):
+
+    model = auth_models.ParamRole
+    formset = GASMemberRoleFormset
+    extra = 3
 
 ########################## ModelAdmin customizations ######
 
@@ -105,6 +116,8 @@ class GASConfigAdmin(admin.ModelAdmin):
     )
 
 class GASMemberAdmin(admin.ModelAdmin):
+
+    inlines = [GASMemberRoleInline]
 
     save_on_top = True
     

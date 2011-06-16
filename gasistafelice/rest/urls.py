@@ -25,6 +25,8 @@ urlpatterns = patterns('',
 	
 	(r'hh_mm',                               'rest.views.hh_mm'),
 
+	(r'^site_settings$',                     'rest.views.site_settings'),
+
 	# Global methods
 	(r'^quick_search/$',                     'rest.views.quick_search'),
 

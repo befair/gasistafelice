@@ -8,16 +8,19 @@ from gasistafelice.rest.utils import load_block_handler
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GAS, GASSupplierOrder
+from gasistafelice.des.models import Siteattr, Site
 
 resource_classes = {
-      'supplier'     : Supplier
+      'site'         : Site
+    , 'supplier'     : Supplier
     , 'gas'          : GAS
     , 'gas_order'    : GASSupplierOrder
 }
 
 #TODO: factorize a method in base.Resource model
 resource_key = {
-      'supplier'     : 'name'
+      'des'          : 'name'
+    ,  'supplier'     : 'name'
     , 'gas'          : 'name'
     , 'gas_order'    : 'name'
 }
@@ -36,6 +39,35 @@ def index(request):
     }
     return render_to_response("html/index.html", ctx)
     
+#---------------------------------------------------------------------#
+#                                                                     #
+#---------------------------------------------------------------------#
+
+@login_required()
+def site_settings(request):
+    """ main entrance page (following index ;))"""
+
+    site = Siteattr.get_site()
+    
+    user = request.user
+    base_usercontainer_id = None
+    
+    if not user.is_anonymous():
+        base_usercontainer_id = UserContainer.objects.filter(creator=user, parent=None)    [0].id
+    
+    ctx = {
+        'user'                 : request.user.username,
+        'base_usercontainer_id': base_usercontainer_id,
+        'url_prefix'           : settings.URL_PREFIX,
+        'type'                 : 'site',
+        'id'                   : site.id,
+        'site_id'              : site.id,
+        'site_name'            : unicode(site),
+        'isdebug'              : settings.DEBUG,
+    }
+    return render_to_response("settings.xml", ctx)
+
+
 #---------------------------------------------------------------------#
 #                                                                     #
 #---------------------------------------------------------------------#
@@ -246,7 +278,7 @@ def parts(request, resource_type, resource_id):
 #------------------------------------------------------------------------------#
 
 def quick_search(request):
-    from state.models import Siteattr
+
     site = Siteattr.get_site()
     if not request.user.is_superuser:
             site = site.filter(request.user)
@@ -271,7 +303,6 @@ def list_comments(request):
     # FIX: GESTIRE LA VISIBILITA' DELLE NOTE DEGLI ALTRI UTENTI
     #
     user = request.user
-    from state.models import Siteattr
     res = Siteattr.get_site()
     
     if not user.is_superuser:
@@ -316,7 +347,7 @@ def list_comments(request):
 #
 #from django.utils import simplejson
 #
-#from state.models import Site, Siteattr, Container, Node, Iface, Target, Measure, TargetStateLog
+#from state.models import Site, Container, Node, Iface, Target, Measure, TargetStateLog
 #
 #from state.models.manager import VisibleMeasureManager
 #from state.models.manager import VisibleTargetManager
@@ -337,37 +368,6 @@ def list_comments(request):
 #from users.models import UserContainer
 #
 #from rest.utils import *
-##---------------------------------------------------------------------#
-##                                                                     #
-##---------------------------------------------------------------------#
-#
-#@login_required()
-#def site_settings(request):
-#    """ main entrance page """
-#
-#    from state.models import Siteattr
-#    
-#    site = Siteattr.get_site()
-#    
-#    user = request.user
-#    base_usercontainer_id = None
-#    
-#    if not user.is_anonymous():
-#        base_usercontainer_id = UserContainer.objects.filter(creator=user, parent=None)    [0].id
-#    
-#    ctx = {
-#        'user'                 : request.user.username,
-#        'base_usercontainer_id': base_usercontainer_id,
-#        'url_prefix'           : settings.URL_PREFIX,
-#        'type'                 : 'site',
-#        'id'                   : site.id,
-#        'site_id'              : site.id,
-#        'site_name'            : str(site),
-#        'isdebug'              : settings.DEBUG,
-#    }
-#    return render_to_response("settings.xml", ctx)
-#
-#
 ##---------------------------------------------------------------------#
 ##                                                                     #
 ##---------------------------------------------------------------------#

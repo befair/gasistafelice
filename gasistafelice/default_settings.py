@@ -99,6 +99,7 @@ INSTALLED_APPS = (
     'gasistafelice.admin',
     'gasistafelice.gas_admin',
     'gasistafelice.rest',
+    'gasistafelice.des',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -109,7 +110,7 @@ INSTALLED_APPS = (
     
 )
 
-URL_PREFIX = "gf/"
+URL_PREFIX = "gasistafelice/"
 
 RESOURCE_PAGE_BLOCKS = {
     'site' : [{

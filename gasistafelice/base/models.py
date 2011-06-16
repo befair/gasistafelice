@@ -14,7 +14,6 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.const import CONTACT_CHOICES
 
-
 class Resource(object):
     """
     A basic mix-in class used to factor out data/behaviours common
