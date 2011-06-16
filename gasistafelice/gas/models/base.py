@@ -117,8 +117,11 @@ class GAS(models.Model, PermissionResource):
         self.id_in_des = self.id_in_des.upper()
 
         if not self.pk:
+
+            self.config = GASConfig()
             self.account = Account.objects.create(balance=0)
             self.liquidity = Account.objects.create(balance=0)
+
         super(GAS, self).save(*args, **kw)
 
 class GASConfig(models.Model, PermissionResource):
@@ -403,6 +406,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
+    class Meta:
+        app_label = 'gas'
+     
     def __unicode__(self):
         return _("Relation between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
@@ -427,10 +433,21 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
               )     
         return rv
 
-    class Meta:
-        app_label = 'gas'
-     
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
 
+    def save(self, *args, **kw):
+
+        created = False
+        if not self.pk:
+            created = True
+      
+        super(GASSupplierSolidalPact, self).save(*args, **kw)
+
+        if created and self.gas.config.auto_select_all_products:
+            for p in self.supplier.supplierstock_set.all():
+                p.gassupplierstock_set.add(gas=self.gas)
+
+        
+        
