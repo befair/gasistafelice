@@ -11,9 +11,9 @@ from gasistafelice.base.const import DAY_CHOICES
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
 from gasistafelice.auth.utils import register_parametric_role 
-from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
+from gasistafelice.auth.models import ParamRole
 
-from gasistafelice.supplier.models import Supplier, Product, SupplierStock
+from gasistafelice.supplier.models import Supplier, SupplierStock
 
 from gasistafelice.gas.managers import GASMembersManager
 
@@ -22,7 +22,7 @@ from gasistafelice.bank.models import Account
 from gasistafelice.base.fields import CurrencyField
 
 from decimal import Decimal
-import datetime
+
 
 class GAS(models.Model, PermissionResource):
 
@@ -237,15 +237,37 @@ class GASMember(models.Model, PermissionResource):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
     
     def _get_roles(self):
+        """
+        Return a QuerySet containing all the parametric roles which have been assigned
+        to the User associated with this GAS member.
+        
+        Only roles which make sense for the GAS the GAS member belongs to are returned 
+        (excluding roles the User may have been assigned with respect to other GAS).
+        """
         # Roles MUST BE a property because roles are bound to a User 
-        # with add_principal and not directly to a GAS Member
-        pprr = PrincipalParamRoleRelation.objects.filter(user=self.person.user)
-        return ParamRole.objects.filter(principal_param_role_set__in=pprr)
+        # with `add_principal()` and not directly to a GAS member
+        # costruct the result set by joining partial QuerySets
+        roles = []
+        # get all parametric roles assigned to the User associated with this GAS member;
+        # note that "spurious" roles can be included, since a User can be a member of more
+        # than one GAS, while here we're interested only in roles bound to the GAS this 
+        # GAS member belongs to
+        qs = ParamRole.objects.filter(principal_param_role_set__user = self.person.user)
+        # add  `GAS_REFERRER`, `GAS_REFERRER_CASH`, `GAS_REFERRER_TECH`, `GAS_REFERRER_SUPPLIER` and `GAS_MEMBER` roles
+        roles += [pr for pr in qs if pr.gas == self.gas]
+        # add  `GAS_REFERRER_ORDER` roles
+        roles += [pr for pr in qs if pr.order.pact.gas == self.gas]
+        # add  `GAS_REFERRER_DELIVERY` roles
+        roles += [pr for pr in qs if self.gas in pr.delivery.gas_set]
+        # add  `GAS_REFERRER_WITHDRAWAL` roles
+        roles += [pr for pr in qs if self.gas in pr.withdrawal.gas_set]
+        # HACK: convert a list of model instances to a QuerySet by filtering on instance's primary keys
+        qs = ParamRole.objects.filter(pk__in=[obj.pk for obj in roles]) 
+        return qs 
 
-    def _set_roles(self, **params):
-        pass
-        #TODO placeholder seldon: for each role add principal self.person.user
-        #HERE WE MUST BE ABLE TO SET ONLY ROLES BELONGING TO THE SPECIFIC GAS FOR A USER.
+    def _set_roles(self, list):
+        raise NotImplementedError
+        
     roles = property(_get_roles, _set_roles)
         
     @property
