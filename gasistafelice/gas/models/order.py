@@ -224,6 +224,7 @@ class Delivery(models.Model, PermissionResource):
     def __unicode__(self):
         return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
     
+    @property
     def gas_set(self):
         """
         Return a QuerySet containing all GAS sharing this delivery appointment. 
@@ -266,7 +267,8 @@ class Withdrawal(models.Model, PermissionResource):
     
     def __unicode__(self):
         return "%From (start_time)s to (end_time)s of (date)s at %(place)s" % {'start_time':self.start_time, 'end_time':self.end_time, 'date':self.date, 'place':self.place}
-        
+    
+    @property
     def gas_set(self):
         """
         Return a QuerySet containing all GAS sharing this withdrawal appointment. 
