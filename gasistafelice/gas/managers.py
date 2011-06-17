@@ -2,135 +2,143 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from gasistafelice.auth.models import ParamRole
-from gasistafelice.gas.models.base import GASMember
+from gasistafelice.gas.models import GASMember
 
 class GASMembersManager(models.Manager):
 
     def gas_referrers(self, gas=None):
         """
-        Return a list containing all GAS members who have been assigned the 'GAS Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'GAS Referrer'
         role for the GAS they belong to.
         
         If a `gas` argument is provided, the result set is filtered accordingly.      
         """
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_referrers(gas)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas == pr.gas]
-        # FIXME: should be a QuesySet ?
-        return members
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in=pr.get_users(), gas=pr.gas)
+
+        return qs
 
 
     def tech_referrers(self, gas=None):
         """
-        Return a list containing all GAS members who have been assigned the 'Tech Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'Tech Referrer'
         role for the GAS they belong to.    
         
         If a `gas` argument is provided, the result set is filtered accordingly.
         """
-        
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_tech_referrers(gas)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas == pr.gas]
-        # FIXME: should be a QuesySet ?
-        return members
-      
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
+
+        return qs
+        
 
     def cash_referrers(self, gas=None):
         """
-        Return a list containing all GAS members who have been assigned the 'Cash Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'Cash Referrer'
         role for the GAS they belong to.    
         
         If a `gas` argument is provided, the result set is filtered accordingly.
         """
-        
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_cash_referrers(gas)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas == pr.gas]
-        # FIXME: should be a QuesySet ?
-        return members
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
+
+        return qs
 
     def supplier_referrers(self, gas=None, supplier=None):
         """
-        Return a list containing all GAS members who have been assigned the 'Supplier Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'Supplier Referrer'
         role for the GAS they belong to.    
         
         If a `gas` and/or a 'supplier' arguments are provided, the result set is filtered accordingly.
         """
-        
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_supplier_referrers(gas, supplier)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas == pr.gas]
-        # FIXME: should be a QuesySet ?
-        return members
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
+
+        return qs
 
 
     def order_referrers(self, order=None):
         """
-        Return a list containing all GAS members who have been assigned the 'Order Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'Order Referrer'
         role for the GAS they belong to.    
         
         If a `order` argument is provided, the result set is filtered accordingly.
         """
-        
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_order_referrers(order)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas == pr.order.pact.gas]
-        # FIXME: should be a QuesySet ?
-        return members
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.order.pact.gas)
+
+        return qs
 
     def delivery_referrers(self, delivery=None):
         """
-        Return a list containing all GAS members who have been assigned the 'Delivery Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'Delivery Referrer'
         role for the GAS they belong to.    
         
         If a `delivery` argument is provided, the result set is filtered accordingly.
         """
-        
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_order_referrers(delivery)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas in pr.delivery.gas_set()]
-        # FIXME: should be a QuesySet ?
-        return members
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas__in=pr.delivery.gas_set)
+
+        return qs
 
     def withdrawal_referrers(self, withdrawal=None):
         """
-        Return a list containing all GAS members who have been assigned the 'Withdrawal Referrer'
+        Return a QuerySet containing all GAS members who have been assigned the 'Withdrawal Referrer'
         role for the GAS they belong to.
         
         If a `withdrawal` argument is provided, the result set is filtered accordingly.    
         """
-        
+        # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_order_referrers(withdrawal)
-        members = []
+        # initialize the return QuesrySet to an EmptyQuerySet
+        qs = GASMember.objects.none()
+        # costruct the result set by joining partial QuerySets
+        # (one for each parametric role of interest)
         for pr in p_roles:
-            for user in pr.get_users():
-                # filter out spurious GAS members
-                # arising when a Person belongs to multiple GAS
-                members += [m for m in GASMember.objects.filter(person__user=user) if m.gas in pr.withdrawal.gas_set()]
-        # FIXME: should be a QuesySet ?
-        return members
+            # filter out spurious GAS members arising when a Person belongs to multiple GAS
+            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas__in=pr.withdrawal.gas_set)
+
+        return qs
 
