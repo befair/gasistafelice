@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 from gasistafelice.auth.models import ParamRole
-from gasistafelice.gas.models import GASMember
 
 class GASMembersManager(models.Manager):
 
@@ -16,12 +14,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_referrers(gas)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in=pr.get_users(), gas=pr.gas)
+            qs = qs | self.model.objects.filter(person__user__in=pr.get_users(), gas=pr.gas)
 
         return qs
 
@@ -36,12 +34,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_tech_referrers(gas)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
+            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
 
         return qs
         
@@ -56,12 +54,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_cash_referrers(gas)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
+            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
 
         return qs
 
@@ -75,12 +73,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_supplier_referrers(gas, supplier)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
+            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas=pr.gas)
 
         return qs
 
@@ -95,12 +93,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_order_referrers(order)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas=pr.order.pact.gas)
+            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas=pr.order.pact.gas)
 
         return qs
 
@@ -114,12 +112,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_order_referrers(delivery)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas__in=pr.delivery.gas_set)
+            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas__in=pr.delivery.gas_set)
 
         return qs
 
@@ -133,12 +131,12 @@ class GASMembersManager(models.Manager):
         # TODO: UNITTEST needed !
         p_roles = ParamRole.objects.gas_order_referrers(withdrawal)
         # initialize the return QuesrySet to an EmptyQuerySet
-        qs = GASMember.objects.none()
+        qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
         for pr in p_roles:
             # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | GASMember.objects.filter(person__user__in= pr.get_users(), gas__in=pr.withdrawal.gas_set)
+            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas__in=pr.withdrawal.gas_set)
 
         return qs
 
