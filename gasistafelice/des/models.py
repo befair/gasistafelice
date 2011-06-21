@@ -17,18 +17,14 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.base.models import Resource
-from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder
+from gasistafelice.base.models import Resource, Person
+from gasistafelice.supplier.models import Supplier, Product
+from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
 from gasistafelice.supplier.models import Supplier
 
 from django.contrib.comments.models import Comment
 
 import time
-
-#NOTE: this is just a memo
-RESOURCES_LIST = [
-    'gas', 'supplier', 'product', 'order', 'pact', 'gasmember', 'person'
-]
 
 #------------------------------------------------------------------------------
 # Basic Site object: configuration registry
@@ -82,7 +78,7 @@ class Site(models.Model, Resource):
 
     bound_resource = None
 
-    #TODO placeholder domthu define other properties for all resources in RESOURCES_LIST
+    #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
 
     @property
     def gasmembers(self):
@@ -275,3 +271,27 @@ class Siteattr(models.Model):
                 cfg_time.descr='Last site modification timestamp'
             cfg_time.save()
             
+
+type_model_d = {
+	'site' : Site,
+	'gas' : GAS,
+	'gasmember' : GASMember,
+	'person' : Person,
+	'supplier' : Supplier,
+	'product' : Product,
+	'order' : GASSupplierOrder,
+	'pact' : GASSupplierSolidalPact,
+    'delivery' : Delivery,
+    'withdrawal' : Withdrawal,
+	
+}
+
+RESOURCE_LIST = type_model_d.keys()
+
+#TODO fero TOCHECK
+#from reports.models import PeriodicReport
+#from users.models import UserContainer
+#type_model_d.update( { 'periodicreport': PeriodicReport } )
+#type_model_d.update( { 'usercontainer' : UserContainer } )
+
+
