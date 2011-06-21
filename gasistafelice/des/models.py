@@ -16,13 +16,14 @@
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib.comments.models import Comment
 
+from gasistafelice.lib.urns import URN
 from gasistafelice.base.models import Resource, Person
 from gasistafelice.supplier.models import Supplier, Product
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
 from gasistafelice.supplier.models import Supplier
 
-from django.contrib.comments.models import Comment
 
 import time
 

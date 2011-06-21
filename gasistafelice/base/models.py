@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models import permalink
 
 from permissions import PermissionBase # mix-in class for permissions management
 from workflows.models import Workflow, Transition, State
@@ -20,6 +21,21 @@ class Resource(object):
     to the majority of model classes in the project's applications.
     """
 
+    @property
+    def resource_type(self):
+        return self.__class__.__name__.lower()
+
+    @property
+    def uID(self):
+        """Unique string identifier"""
+        return "%s-%s" % (self.resource_type, self.pk)
+
+    @permalink
+    def get_absolute_url(self):
+        return ('rest.views.resource_page', (), { 
+                'resource_type' : self.resource_type, 'resource_id' : self.pk 
+        })
+		
 class PermissionResource(Resource, PermissionBase):
     """
     Just a convenience for classes inheriting both from Resource and PermissionBase

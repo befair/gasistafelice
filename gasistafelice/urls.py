@@ -13,12 +13,7 @@ urlpatterns = patterns('',
 	(r'^%s$'     % settings.URL_PREFIX , 'base.views.index'  ),
 	(r'^%srest/' % settings.URL_PREFIX, include('rest.urls')),
 
-	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'django.contrib.auth.views.login'), #  , {'template_name':'login.html'} ),
-    # Example:
-    # (r'^gasistafelice/', include('gasistafelice.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'django.contrib.auth.views.login'),
 
     (r'^gas/$', 'gas.views.index'),
 

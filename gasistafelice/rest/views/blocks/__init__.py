@@ -1,6 +1,6 @@
 import re
 
-from djlabs.shortcuts import render_to_response
+from django.shortcuts import render_to_response
 
 from django.contrib.auth.models import User
 
