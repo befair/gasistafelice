@@ -97,8 +97,7 @@ class AbstractBlock(object):
     def create_block_signature(self, resource_type, resource_id):
         
         resource_class = type_model_d[resource_type]
-        
-        resource = resource_class.objects.get(id=int(resource_id))
+        resource = resource_class.objects.get(pk=int(resource_id))
         
         return self.create_block_signature_from_resource(resource)
         

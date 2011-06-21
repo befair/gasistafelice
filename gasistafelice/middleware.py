@@ -28,10 +28,11 @@ from gasistafelice.des.models import type_model_d
 class URNMiddleware(AppMiddleware):
 	"""Process the view and inject the environment in the request object.
     
-    Url pattern is /<resource_type>/<resource_id>/<app_name>/<view_binding> 
+    Url pattern is /<resource_type>/<resource_id>/<app_name>/<view_binding>/
 	
     """
-    #TODO fero: CHECK url pattern
+    #TODO fero: CHECK url pattern. URL pattern is ok like this, but it should be
+    #TODO fero: implemented :) now it is app_name/resource_type/resource_id/view_binding
 
 	def __init__(self):
 

@@ -47,7 +47,7 @@ class URN(list):
 		# Each element is in the form $res_type-$res_id
 		rv = ""
 		for resource in self:
-			rv += "/" + resource.__class__.__name__.lower() + "-" + str(resource.id) 
+			rv += "/" + resource.resource_type + "-" + str(resource.id) 
 		return rv
 
 	def __unicode__(self):
