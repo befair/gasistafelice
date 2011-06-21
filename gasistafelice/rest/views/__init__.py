@@ -65,8 +65,8 @@ def site_settings(request):
         'base_usercontainer_id': base_usercontainer_id,
         'url_prefix'           : settings.URL_PREFIX,
         'type'                 : 'site',
-        'id'                   : site.id,
-        'site_id'              : site.id,
+        'id'                   : site.pk,
+        'site_id'              : site.pk,
         'site_name'            : unicode(site),
         'isdebug'              : settings.DEBUG,
     }

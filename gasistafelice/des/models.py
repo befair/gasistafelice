@@ -44,11 +44,6 @@ class Site(models.Model, Resource):
 
     cfg_time = models.PositiveIntegerField()
     
-    display_fields = (
-        models.PositiveIntegerField(name='example_numeric_field', blank=False, null=False, verbose_name=_("Example numeric field")),
-        models.CharField(name='example_site_email', blank=True, verbose_name=_("Example site email address")),
-    )
-
     class Meta:
         verbose_name = _("site")
         verbose_name_plural = _("sites")
