@@ -84,7 +84,7 @@ ROOT_URLCONF = 'gasistafelice.urls'
 
 TEMPLATE_DIRS = (
 	PROJECT_ROOT + "/rest/templates",
-
+	PROJECT_ROOT + "/templates",
 )
 
 INSTALLED_APPS = (
@@ -136,5 +136,6 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Generale',
         'blocks': [],
     }],
-   
 }
+   
+LOGIN_URL = "/%saccounts/login/" % URL_PREFIX

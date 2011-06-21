@@ -1,0 +1,25 @@
+{% load basic_tags %}
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" dir="ltr">
+<head>
+
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="it" />
+	<meta name="robots" content="NONE,NOARCHIVE" />
+
+	<title>GASISTA FELICE</title>
+
+	<link rel="stylesheet" type="text/css" href="/static/nui/style/wholestyle.css" />
+	<link rel="stylesheet" type="text/css" href="/static/nui/style/nuvola.css" title="nuvola" />
+	<link rel="alternate stylesheet" type="text/css" href="/static/nui/style/tango.css" title="tango" />
+
+	<link rel="stylesheet" type="text/css" href="/static/nui/style/jquery-ui-1.7.2.custom.css" />
+</head>
+<body>
+{% block content %} {% endblock %}
+{% block footer %}<div style="text-align: center; font-style: italic; font-size: 10px; margin-bottom: 20px;">Gasista Felice - v{% des_version %}</div>{% endblock %}
+</body>
+</html>
+
+
