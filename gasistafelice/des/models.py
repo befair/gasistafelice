@@ -23,6 +23,8 @@ from gasistafelice.supplier.models import Supplier
 
 from django.contrib.comments.models import Comment
 
+import time
+
 #NOTE: this is just a memo
 RESOURCES_LIST = [
     'gas', 'supplier', 'product', 'order', 'pact', 'gasmember', 'person'

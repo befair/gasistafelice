@@ -1566,13 +1566,13 @@
 
 						//load_global_resource_tree();
 
-						init_webping_timer();
+						//TODO: fero TOCHECK init_webping_timer();
 
 						init_search_form();
 
 						init_context_menu();
 
-						start_user_notes_timer();
+						//TODO: fero TOCHECK start_user_notes_timer();
 					}
 
 					else
@@ -2109,6 +2109,8 @@
 					</div>
 				</div> <!-- blocco search -->
 
+                {% comment %}
+                ##### TODO fero #####
 
 				<!-- =============================================== -->
 				<!-- NOTES                                           -->
@@ -2130,6 +2132,7 @@
 
 					</div>
 				</div> <!-- blocco note-->
+                {% endcomment %}
 
 				<!-- =============================================== -->
 				<!-- HISTORY                                         -->
@@ -2151,6 +2154,9 @@
 					</div>
 				</div>
 
+
+                {% comment %}
+                ##### TODO fero #####
 
 				<!-- =============================================== -->
 				<!-- USER ACTIONS                                    -->
@@ -2196,6 +2202,7 @@
 					</div>
 					<!-- Fine block_body -->
 				</div> <!-- blocco albero -->
+                {% endcomment %}
 
 
 				<!-- =============================================== -->
@@ -2216,28 +2223,6 @@
 				</div> <!-- blocco albero -->
 
 			
-				<!-- =============================================== -->
-				<!-- PING                                            -->
-				<!-- =============================================== -->
-				
-				<!-- 
-				<div class="block" id="ping">
-					<div class="block_header">
-						<div class="right toolbar">
-							<span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/></span> 
-						</div>
-						<h1 class="block-title">Web RTT</h1>
-					</div>
-
-					<div class="block_body" id="ping-graph" is_open="1" style="width:200px; height:100px; overflow:hidden; ">
-
-					</div>
-
-				</div> 
-				-->
-				<!-- blocco rete -->
-
-
 			</div>
 
 			<div id="separator" style='float:left'>

@@ -10,6 +10,11 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GAS, GASSupplierOrder
 from gasistafelice.des.models import Siteattr, Site
 
+from comments.views import get_all_notes
+from comments.views import get_notes_for
+
+import time
+
 resource_classes = {
       'site'         : Site
     , 'supplier'     : Supplier
@@ -52,8 +57,8 @@ def site_settings(request):
     user = request.user
     base_usercontainer_id = None
     
-    if not user.is_anonymous():
-        base_usercontainer_id = UserContainer.objects.filter(creator=user, parent=None)    [0].id
+#    if not user.is_anonymous():
+#        base_usercontainer_id = UserContainer.objects.filter(creator=user, parent=None)    [0].id
     
     ctx = {
         'user'                 : request.user.username,
@@ -310,6 +315,7 @@ def list_comments(request):
 
     rnotes = []
     if not request.user.is_superuser:
+        #TODO fero: check if required
         rnotes.extend(get_notes_for([res]))
         rnotes.extend(get_notes_for(res.containers))
         rnotes.extend(get_notes_for(res.nodes))
@@ -327,7 +333,6 @@ def list_comments(request):
 
 
 
-#import time
 #import sys
 #import traceback
 #import pprint
@@ -361,9 +366,6 @@ def list_comments(request):
 #
 #from users.decorators import sanet_login_required
 #from users.decorators import authorized_on_resource
-#
-#from comments.views import get_all_notes
-#from comments.views import get_notes_for
 #
 #from users.models import UserContainer
 #
