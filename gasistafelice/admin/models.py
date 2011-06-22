@@ -111,7 +111,7 @@ class GASConfigAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('gas', 'show_order_by_supplier', 'default_delivery_day', 'is_active')
     fieldsets = ((_("Configuration"), {
-        'fields' : ('gas', 'can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'use_single_delivery', 'default_delivery_place', 'default_withdrawal_place', 'is_active', 'use_scheduler'),
+        'fields' : ('gas', 'can_change_price', 'show_order_by_supplier', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active', 'use_scheduler'),
     }),
     )
 
