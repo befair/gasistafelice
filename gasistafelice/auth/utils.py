@@ -11,7 +11,7 @@ from gasistafelice.base.utils import get_ctype_from_model_label
 
 from gasistafelice.auth import PermissionsRegister, VALID_PARAMS_FOR_ROLES
 from gasistafelice.auth.models import Param, ParamRole, PrincipalParamRoleRelation, GlobalPermission
-from gasistafelice.auth.exceptions import RoleParameterNotAllowed
+from gasistafelice.auth.exceptions import RoleParameterNotAllowed, RoleNotAllowed, RoleParameterWrongSpecsProvided
 
 # Roles ######################################################################
 # CREDITS: inspired by `django-permissions`
@@ -19,7 +19,15 @@ from gasistafelice.auth.exceptions import RoleParameterNotAllowed
 def _validate_parametric_role(name, params, constraints=None):
     """
     Check if the parameters passed on registration of a new (parametric) role
-    are allowed in the current application domain.  
+    are allowed in the current application domain.
+    
+    If the validation succeeds, return True.  
+    
+    If `name` is not a valid role name, raises  `RoleNotAllowed`.
+    
+    If the name of a passed parameter is invalid (given the constraints), raises `RoleParameterNotAllowed`.
+    
+    If anything else goes wrong with respect to passed parameters, raises `RoleParameterWrongSpecsProvided`.
     
     **Parameters:**
     name
@@ -35,17 +43,19 @@ def _validate_parametric_role(name, params, constraints=None):
         of allowed (non-parametric) roles; values must be dictionaries where each key-value pair
         consists of the name (as as string) and content type (as a 'model label') of an
         allowed parameter (here, the 'model label' is  a string of the type 'app_name.model_name').  
-         
+    
+    
+        
     """
-    # construct a dictionary holding ContentTypes of passed parameters
+    
     if constraints: # if no constraints are specified, any parametric role is valid
 
-        # Suddendly check if a valid role_name is provided
+        # First of all, check if a valid role_name is provided
         role_name = name
         if role_name not in constraints.keys():
             raise RoleNotAllowed(role_name)
 
-
+        # construct a dictionary holding ContentTypes of passed parameters
         param_specs = {}
         for (k,v) in params.items():
             if k not in constraints[role_name].keys():
@@ -74,7 +84,14 @@ def register_parametric_role(name, **kwargs):
     checks that name, type and number of provided parameters is suitable for 
     the application domain, and prevents duplication of parametric roles in the DB.     
     
-    Returns the new parametric role if the registration was successfully, otherwise False.    
+    Returns the new parametric role if the registration was successfully. 
+    
+    If `name` is not a valid role name, raises  `RoleNotAllowed`.
+    
+    If the name of a passed parameter is invalid (given the domain constraints), raises `RoleParameterNotAllowed`.
+    
+    If anything else goes wrong with respect to passed parameters, raises `RoleParameterWrongSpecsProvided`.
+       
     
     **Parameters:**
 

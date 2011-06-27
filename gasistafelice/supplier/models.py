@@ -14,6 +14,7 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import Resource, PermissionResource, Person, Place
+from gasistafelice.base.fields import CurrencyField
 
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
@@ -178,9 +179,8 @@ class SupplierStock(models.Model, PermissionResource):
 
     supplier = models.ForeignKey(Supplier)
     product = models.ForeignKey(Product)
-    price = models.FloatField() # TODO placeholder domthu: put a `CurrencyField`
-
-    code = models.CharField(max_length=128, blank=True, null=True, help_text=_("Product supplier identifier"))
+    price = CurrencyField() 
+    code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
@@ -212,8 +212,9 @@ class SupplierStock(models.Model, PermissionResource):
               )     
         return rv
 
-    def save(self, *args, **kw):
-        # If code is blank we set it to None
+    def save(self, *args, **kwargs):
+        # if `code` is set to an empty string, set it to `None`, instead, before saving,
+        # so it's stored as NULL in the DB, avoiding integrity issues.
         if not self.code:
             self.code = None
-        return super(SupplierStock, self).save(*args, **kw)
+        super(SupplierStock, self).save(*args, **kwargs)

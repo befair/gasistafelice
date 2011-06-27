@@ -80,6 +80,10 @@ class Param(models.Model):
     def value(self):
         #TODO placeholder seldon REFACTORY: change name of param attribute in value
         return self.param
+    
+    class Meta:
+        # forbid duplicated `Param` entries in the DB
+        unique_together = ('name', 'content_type', 'object_id')
 
 class ParamRole(models.Model, Resource):
     """

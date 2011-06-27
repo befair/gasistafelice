@@ -48,7 +48,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this case, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
-        stocks = GASSupplierStock.objects.filter(gas=self.gas, supplier_stock__supplier=self.supplier)
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
             GASSupplierOrderProduct.objects.create(order=self, stock=s)
         
@@ -117,7 +117,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     
     @property
     def gas(self):
-        return self.order.gas    
+        return self.order.pact.gas    
     
     @property        
     def local_grants(self):
@@ -223,6 +223,14 @@ class Delivery(models.Model, PermissionResource):
         
     def __unicode__(self):
         return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
+    
+    @property
+    def gas_set(self):
+        """
+        Return a QuerySet containing all GAS sharing this delivery appointment. 
+        """
+        pass
+    
         
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
@@ -256,6 +264,16 @@ class Withdrawal(models.Model, PermissionResource):
         app_label = 'gas'
         verbose_name = _('wihtdrawal')
         verbose_name_plural = _('wihtdrawals')
+    
+    def __unicode__(self):
+        return "%From (start_time)s to (end_time)s of (date)s at %(place)s" % {'start_time':self.start_time, 'end_time':self.end_time, 'date':self.date, 'place':self.place}
+    
+    @property
+    def gas_set(self):
+        """
+        Return a QuerySet containing all GAS sharing this withdrawal appointment. 
+        """
+        pass
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS

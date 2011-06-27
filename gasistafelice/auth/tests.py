@@ -3,24 +3,30 @@ from django.contrib.auth.models import User, Group
 
 from permissions.models import Role
 
-from gasistafelice.base.models import Place
-from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal, GASSupplierSolidalPact
+from gasistafelice.base.models import Place, Person
+from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, Delivery, Withdrawal, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
+
 from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER, SUPPLIER_REFERRER 
-from gasistafelice.auth import valid_params_for_roles
+from gasistafelice.auth import VALID_PARAMS_FOR_ROLES
 from gasistafelice.auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from gasistafelice.auth.utils import register_parametric_role, _validate_parametric_role,\
 _parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
     _compare_parametric_roles
+from gasistafelice.auth.exceptions import RoleNotAllowed, RoleParameterNotAllowed, RoleParameterWrongSpecsProvided
 
 from datetime import time, date, datetime
 
 class ParamByNameTest(TestCase):
-    '''Tests if parameters of a parametric role can be accessed by name'''
+    """Tests if parameters of a parametric role can be accessed by name"""
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
         
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
@@ -29,31 +35,36 @@ class ParamByNameTest(TestCase):
         p2 = Param.objects.create(name='supplier', param=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
-        self.p_role = p_role        
-    
+        self.p_role = p_role 
+            
     def testGetOK(self):
-        '''Verify that an existing parameter can be retrieved by its name'''
+        """Verify that an existing parameter can be retrieved by its name"""
         p_role = self.p_role
         self.assertEqual(p_role.gas, self.gas)
         self.assertEqual(p_role.supplier, self.supplier) 
     
     def testGetFailIfParameterNotSet(self):
-        '''When trying to retrieve an unset parameter, `None` should be returned'''
+        """When trying to retrieve an unset parameter, `None` should be returned"""
         p_role = self.p_role
         self.assertIsNone(p_role.order)
     
     def testGetErrorIfInvalidParameter(self):
-        '''When trying to retrieve a non-allowed parameter, AttributeError should be raised'''
+        """When trying to retrieve a non-allowed parameter, AttributeError should be raised"""
         p_role = self.p_role
         self.assertRaises(AttributeError, getattr, p_role, 'foo')
     
 
 class ParamRoleAsDictTest(TestCase):
-    '''Tests for the `_parametric_role_as_dict()` helper function'''
+    """Tests for the `_parametric_role_as_dict()` helper function"""
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.role = Role.objects.create(name='FOO')
+        
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
+        
         p_role= ParamRole.objects.create(role=self.role)
         p1 = Param.objects.create(name='gas', param=self.gas)
         p_role.param_set.add(p1)
@@ -64,31 +75,31 @@ class ParamRoleAsDictTest(TestCase):
         self.p_role = p_role
         
     def testConversionOK(self):
-        '''If a ParamRole instance is passed, return a dictionary representing it'''
+        """If a ParamRole instance is passed, return a dictionary representing it"""
         expected_dict = {'role':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
         self.assertEqual(_parametric_role_as_dict(self.p_role), expected_dict)
         
     def testConversionFail(self):
-        '''If the argument isn't a ParamRole instance, raise a TypeError'''
+        """If the argument isn't a ParamRole instance, raise a TypeError"""
         self.assertRaises(TypeError, _parametric_role_as_dict, None)
         self.assertRaises(TypeError, _parametric_role_as_dict, 1)
         self.assertRaises(TypeError, _parametric_role_as_dict, self.role)
     
     
 class ParamRoleAsDictValidationTest(TestCase):
-    '''Tests for the `_is_valid_parametric_role_dict_repr()` helper function'''
+    """Tests for the `_is_valid_parametric_role_dict_repr()` helper function"""
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.role = Role.objects.create(name='FOO')        
         
     def testValidationOK(self):
-        '''If a dictionary has the right structure to represent a parametric role, return True'''
+        """If a dictionary has the right structure to represent a parametric role, return True"""
         p_role_dict = {'role':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
         self.assertTrue(_is_valid_parametric_role_dict_repr(p_role_dict))
     
     def testValidationFailIfNotDict(self):
-        '''If passed dictionary hasn't expected keys, return False'''
+        """If passed dictionary hasn't expected keys, return False"""
         p_role_dict = {'foo':self.role, 'params':{'gas':self.gas, 'supplier':self.supplier}}
         self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))
         p_role_dict = {'role':self.role, 'foo':{'gas':self.gas, 'supplier':self.supplier}}
@@ -97,17 +108,17 @@ class ParamRoleAsDictValidationTest(TestCase):
         self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))
         
     def testValidationFailIfNotRole(self):
-        '''If `role` key is not a `Role` model instance, return False'''
+        """If `role` key is not a `Role` model instance, return False"""
         p_role_dict = {'role':1, 'params':{'gas':self.gas, 'supplier':self.supplier}}
         self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))        
     
     def testValidationFailIfNotParams(self):
-        '''If `params` key is not a dictionary, return False'''
+        """If `params` key is not a dictionary, return False"""
         p_role_dict = {'role':self.role, 'params':1}
         self.assertFalse(_is_valid_parametric_role_dict_repr(p_role_dict))  
 
 class ParamRoleComparisonTest(TestCase):
-    '''Tests for the `_compare_parametric_roles()` helper function'''
+    """Tests for the `_compare_parametric_roles()` helper function"""
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.gas_1 = GAS.objects.create(name='barGAS', id_in_des='2')
@@ -116,6 +127,10 @@ class ParamRoleComparisonTest(TestCase):
         self.role = Role.objects.create(name='FOO')
         self.role_1 = Role.objects.create(name='BAR')
         
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
+                
         self.p1 = Param.objects.create(name='gas', param=self.gas)
         self.p2 = Param.objects.create(name='supplier', param=self.supplier)
         self.p3 = Param.objects.create(name='gas', param=self.gas_1)
@@ -146,7 +161,7 @@ class ParamRoleComparisonTest(TestCase):
             
         
     def testComparisonOK(self):
-        '''If arguments describe the same parametric role, return True'''         
+        """If arguments describe the same parametric role, return True"""         
         # compare two ParamRole instances
         self.assertTrue(_compare_parametric_roles(self.p_role_1, self.p_role_2))
                 
@@ -160,27 +175,27 @@ class ParamRoleComparisonTest(TestCase):
         self.assertTrue(_compare_parametric_roles(p_role_dict_2, self.p_role_1))
         
     def testFailIfNotSameKind(self):
-        '''If arguments describe parametric roles of different kind, return False'''
+        """If arguments describe parametric roles of different kind, return False"""
         
         self.assertFalse(_compare_parametric_roles(self.p_role_1, self.p_role_3))
     
     def testFailIfNotSameParameters(self):
-        '''If arguments describe parametric roles with different parameters, return False'''
+        """If arguments describe parametric roles with different parameters, return False"""
         self.assertFalse(_compare_parametric_roles(self.p_role_1, self.p_role_4))        
     
     def testErrorIfTooManyArguments(self):
-        '''If more than two arguments are given, raise TypeError'''
+        """If more than two arguments are given, raise TypeError"""
         self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, self.p_role_2, self.p_role_2)
         self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, self.p_role_2, None)
 
     def testErrorIfNotEnoughArguments(self):
-        '''If less than two arguments are given, raise TypeError'''
+        """If less than two arguments are given, raise TypeError"""
         
         self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1)
         self.assertRaises(TypeError, _compare_parametric_roles)
 
     def testErrorIfInvalidArguments(self):
-        '''If an argument is neither a ParamRole instance nor a valid dictionary representation for it, raise TypeError'''
+        """If an argument is neither a ParamRole instance nor a valid dictionary representation for it, raise TypeError"""
         
         self.assertRaises(TypeError, _compare_parametric_roles, self.p_role_1, None)
         self.assertRaises(TypeError, _compare_parametric_roles, None, self.p_role_1)
@@ -189,20 +204,21 @@ class ParamRoleComparisonTest(TestCase):
 
 
 class ParamRoleValidationTest(TestCase):
-    '''Tests for the `_validate_parametric_role` function'''
+    """Tests for the `_validate_parametric_role` function"""
     def setUp(self):
         now = datetime.now()
         today = date.today()        
         midnight = time(hour=0)
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=today)
         self.place = Place.objects.create(city='senigallia', province='AN')
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
-        self.constraints = valid_params_for_roles
+        self.constraints = VALID_PARAMS_FOR_ROLES
     def testValidationOK(self):
-        '''Verify that validation of a parametric role succeeds if arguments are fine'''
+        """Verify that validation of a parametric role succeeds if arguments are fine"""
         name = SUPPLIER_REFERRER
         params = {'supplier':self.supplier}
         self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
@@ -231,24 +247,24 @@ class ParamRoleValidationTest(TestCase):
         params = {'delivery':self.delivery}
         self.assertTrue(_validate_parametric_role(name, params, constraints=self.constraints))
     def testValidationFailIfRoleNotAllowed(self):
-        '''Verify that validation of a parametric role fails if basic role isn't allowed'''
+        """Verify that validation of a parametric role fails if basic role isn't allowed"""
         name = 'FOO'
         params = {'gas':self.gas}
-        self.assertFalse(_validate_parametric_role(name, params, constraints=self.constraints))
+        self.assertRaises(RoleNotAllowed, _validate_parametric_role, name, params, constraints=self.constraints)
     def testValidationFailIfParamNameNotAllowed(self):
-        '''Verify that validation of a parametric role fails if a param's name isn't allowed'''
+        """Verify that validation of a parametric role fails if a param's name isn't allowed"""
         name = 'GAS_MEMBER'
         params = {'foo':self.gas}
-        self.assertFalse(_validate_parametric_role(name, params, constraints=self.constraints))
+        self.assertRaises(RoleParameterNotAllowed, _validate_parametric_role, name, params, constraints=self.constraints)
     
     def testValidationFailIfParamTypeNotAllowed(self):
-        '''Verify that validation of a parametric role fails if a param's type isn't allowed'''
+        """Verify that validation of a parametric role fails if a param's type isn't allowed"""
         name = 'GAS_MEMBER'
         params = {'gas':self.supplier}
-        self.assertFalse(_validate_parametric_role(name, params, constraints=self.constraints))    
+        self.assertRaises(RoleParameterWrongSpecsProvided, _validate_parametric_role, name, params, constraints=self.constraints)    
         
     def testValidationOKIfNoConstraints(self):
-        '''Verify that validation of any parametric role succeeds if no costraints are specified'''
+        """Verify that validation of any parametric role succeeds if no costraints are specified"""
         name = 'FOO'
         params = {'foo':None}
         self.assertTrue(_validate_parametric_role(name, params))        
@@ -256,20 +272,21 @@ class ParamRoleValidationTest(TestCase):
 
 
 class ParamRoleRegistrationTest(TestCase):
-    '''Tests for the `register_parametric_role` function'''
+    """Tests for the `register_parametric_role` function"""
     def setUp(self):
         now = datetime.now()
         today = date.today()        
         midnight = time(hour=0)
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=today)
         self.place = Place.objects.create(city='senigallia', province='AN')
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
             
     def testRegistrationOK(self):
-        '''Verify that registration of a parametric role succeeds if arguments are fine'''
+        """Verify that registration of a parametric role succeeds if arguments are fine"""
         # register a parametric GAS member
         register_parametric_role(GAS_MEMBER, gas=self.gas)
         # check that Role object has been created in the db
@@ -359,39 +376,40 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(param_values, [self.delivery,])
         
     def testRegistrationFailIfRoleNotAllowed(self):
-        '''Verify that registration of a parametric role fails if basic role isn't allowed'''
-        self.assertFalse(register_parametric_role(name='FOO', gas=self.gas))
+        """Verify that registration of a parametric role fails if basic role isn't allowed"""
+        self.assertRaises(RoleNotAllowed, register_parametric_role, name='FOO', gas=self.gas)
         
     def testRegistrationFailIfParamNameNotAllowed(self):
-        '''Verify that registration of a parametric role fails if a param's name isn't allowed'''
-        self.assertFalse(register_parametric_role(name=GAS_MEMBER, foo=self.gas))
+        """Verify that registration of a parametric role fails if a param's name isn't allowed"""
+        self.assertRaises(RoleParameterNotAllowed, register_parametric_role, name=GAS_MEMBER, foo=self.gas)
     
     def testRegistrationFailIfParamTypeNotAllowed(self):
-        '''Verify that registration of a parametric role fails if a param's type isn't allowed'''
-        self.assertFalse(register_parametric_role(name=GAS_MEMBER, gas=self.supplier))
+        """Verify that registration of a parametric role fails if a param's type isn't allowed"""
+        self.assertRaises(RoleParameterWrongSpecsProvided, register_parametric_role, name=GAS_MEMBER, gas=self.supplier)
         
     def testAvoidDuplicateParamRoles(self):
-        '''If a given parametric role already exists in the DB, don't duplicate it'''
+        """If a given parametric role already exists in the DB, don't duplicate it"""
         register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
         register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
         self.assertEqual(ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER).count(), 1)
         
 class RoleAutoSetupTest(TestCase):
-    '''Tests automatic role-setup operations happening at instance-creation time'''
+    """Tests automatic role-setup operations happening at instance-creation time"""
     def setUp(self):
         now = datetime.now()
         today = date.today()        
         midnight = time(hour=0)
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=today)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=today)
         self.place = Place.objects.create(city='senigallia', province='AN')
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
         self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
     
     def testGASRoleSetup(self):
-        '''Verify that GAS-specific parametric roles are created when a new GAS is created'''
+        """Verify that GAS-specific parametric roles are created when a new GAS is created"""
         # GAS_REFERRER_TECH, GAS_REFERRER_CASH
         
 
@@ -412,12 +430,12 @@ class RoleAutoSetupTest(TestCase):
      
 
     def testGASMemberRoleSetup(self):
-        '''Verify that role-related setup tasks are executed when a new GAS member is created'''
+        """Verify that role-related setup tasks are executed when a new GAS member is created"""
         # TODO
         pass
         
     def testGASSupplierSolidalPactRoleSetup(self):
-        '''Verify that a parametric GAS_REFERRER_SUPPLIER is created when a new solidal pact is created'''
+        """Verify that a parametric GAS_REFERRER_SUPPLIER is created when a new solidal pact is created"""
         # GAS_REFERRER_SUPPLIER
         
         role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)
@@ -426,7 +444,7 @@ class RoleAutoSetupTest(TestCase):
         self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
 
     def testGASSupplierOrderRoleSetup(self):
-        '''Verify that a parametric GAS_REFERRER_ORDER is created when a new GAS supplier order is created'''
+        """Verify that a parametric GAS_REFERRER_ORDER is created when a new GAS supplier order is created"""
         role, created = Role.objects.get_or_create(name=GAS_REFERRER_ORDER)
         p_role = ParamRole.objects.get(role__name=GAS_REFERRER_ORDER)
         expected_dict = {'role':role, 'params': {'order':self.order}}
@@ -434,7 +452,7 @@ class RoleAutoSetupTest(TestCase):
 
         
     def testDeliveryRoleSetup(self):
-        '''Verify that a parametric GAS_REFERRER_DELIVERY is created when a new delivery appointment is created'''
+        """Verify that a parametric GAS_REFERRER_DELIVERY is created when a new delivery appointment is created"""
         role, created = Role.objects.get_or_create(name=GAS_REFERRER_DELIVERY)
         p_role = ParamRole.objects.get(role__name=GAS_REFERRER_DELIVERY)
         expected_dict = {'role':role, 'params': {'delivery':self.delivery}}
@@ -442,14 +460,14 @@ class RoleAutoSetupTest(TestCase):
 
     
     def testWithdrawalRoleSetup(self):
-        '''Verify that a parametric GAS_REFERRER_WITHDRAWAL is created when a new withdrawal appointment is created'''
+        """Verify that a parametric GAS_REFERRER_WITHDRAWAL is created when a new withdrawal appointment is created"""
         role, created = Role.objects.get_or_create(name=GAS_REFERRER_WITHDRAWAL)
         p_role = ParamRole.objects.get(role__name=GAS_REFERRER_WITHDRAWAL)
         expected_dict = {'role':role, 'params': {'withdrawal':self.withdrawal}}
         self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
 
 class AddParamRoleToPrincipalTest(TestCase):
-    '''Tests `ParamRole.add_principal()` method'''
+    """Tests `ParamRole.add_principal()` method"""
     
     def setUp(self):
         self.user = User.objects.create(username='Foo')
@@ -458,33 +476,38 @@ class AddParamRoleToPrincipalTest(TestCase):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         
-        self.role = Role.objects.create(name='FOO')   
-        p_role= ParamRole.objects.create(role=self.role)
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
+        
+        self.role = Role.objects.create(name='FOO')
+        p_role = ParamRole.objects.create(role=self.role)
         p1 = Param.objects.create(name='gas', param=self.gas)
         p_role.param_set.add(p1)
         p2 = Param.objects.create(name='supplier', param=self.supplier)
-        p_role.param_set.add(p2)
+        p_role.param_set.add(p2)        
         p_role.save()
-        self.p_role = p_role       
+        self.p_role = p_role
+                       
     
     def testAddToUserOK(self):
-        '''Verify that if a User instance is passed, the parametric role gets assigned to that user'''
+        """Verify that if a User instance is passed, the parametric role gets assigned to that user"""
         self.p_role.add_principal(self.user)
         self.assertEqual(PrincipalParamRoleRelation.objects.filter(user=self.user, role=self.p_role).count(), 1) 
     
     def testAddToGroupOK(self):
-        '''Verify that if a Group instance is passed, the parametric role gets assigned to that group'''
+        """Verify that if a Group instance is passed, the parametric role gets assigned to that group"""
         self.p_role.add_principal(self.group)
         self.assertEqual(PrincipalParamRoleRelation.objects.filter(group=self.group, role=self.p_role).count(), 1) 
     
     def testAddFail(self):
-        '''If neither a User nor a Group instance is passed, raise `TypeError`'''
+        """If neither a User nor a Group instance is passed, raise `TypeError`"""
         self.assertRaises(TypeError, self.p_role.add_principal)
         self.assertRaises(TypeError, self.p_role.add_principal, 1)
         self.assertRaises(TypeError, self.p_role.add_principal, self.gas)
         
 class ParamRoleGetUsersTest(TestCase):
-    '''Tests `ParamRole.get_users()` method'''
+    """Tests `ParamRole.get_users()` method"""
     
     def setUp(self):
         self.user1 = User.objects.create(username='Foo')
@@ -494,6 +517,10 @@ class ParamRoleGetUsersTest(TestCase):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
+                
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
         p1 = Param.objects.create(name='gas', param=self.gas)
@@ -501,10 +528,10 @@ class ParamRoleGetUsersTest(TestCase):
         p2 = Param.objects.create(name='supplier', param=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
-        self.p_role = p_role       
-    
+        self.p_role = p_role 
+        
     def testGetUsersOK(self):
-        '''Verify that all the users this parametric role was assigned to are returned'''
+        """Verify that all the users this parametric role was assigned to are returned"""
         self.p_role.add_principal(self.user1)
         self.p_role.add_principal(self.user2)
         prrs = PrincipalParamRoleRelation.objects.filter(role=self.p_role)
@@ -514,7 +541,7 @@ class ParamRoleGetUsersTest(TestCase):
     # TODO: add tests for local roles
         
 class ParamRoleGetGroupsTest(TestCase):
-    '''Tests `ParamRole.get_groups()` method'''
+    """Tests `ParamRole.get_groups()` method"""
     
     def setUp(self):
         self.group1 = Group.objects.create(name='Foo')
@@ -523,7 +550,11 @@ class ParamRoleGetGroupsTest(TestCase):
         
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        
+
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
+                
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
         p1 = Param.objects.create(name='gas', param=self.gas)
@@ -531,10 +562,12 @@ class ParamRoleGetGroupsTest(TestCase):
         p2 = Param.objects.create(name='supplier', param=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
-        self.p_role = p_role       
+        self.p_role = p_role 
     
+        
+        
     def testGetGroupsOK(self):
-        '''Verify that all the groups this parametric role was assigned to are returned'''
+        """Verify that all the groups this parametric role was assigned to are returned"""
         self.p_role.add_principal(self.group1)
         self.p_role.add_principal(self.group2)
         prrs = PrincipalParamRoleRelation.objects.filter(role=self.p_role)
@@ -543,7 +576,7 @@ class ParamRoleGetGroupsTest(TestCase):
         
     # TODO: add tests for local roles
 class PrincipalRoleRelationTest(TestCase):
-    '''Tests for the `PrincipalRoleRelation` methods'''  
+    """Tests for the `PrincipalRoleRelation` methods"""  
     def setUp(self):
         self.user = User.objects.create(username='Foo')
         self.user1 = User.objects.create(username='Bar')
@@ -551,6 +584,10 @@ class PrincipalRoleRelationTest(TestCase):
         self.group1 = Group.objects.create(name='Bar')
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        Param.objects.all().delete()
+        ParamRole.objects.all().delete()        
         
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
@@ -562,14 +599,14 @@ class PrincipalRoleRelationTest(TestCase):
         self.p_role = p_role 
     
     def testGetPrincipalOK(self):
-        '''Tests if the principal (user or group) is correctly retrieved'''
+        """Tests if the principal (user or group) is correctly retrieved"""
         prr = PrincipalParamRoleRelation.objects.create(user=self.user, role=self.p_role)
         self.assertEqual(prr.get_principal(), self.user)
         prr = PrincipalParamRoleRelation.objects.create(group=self.group, role=self.p_role)
         self.assertEqual(prr.get_principal(), self.group)        
         
     def testSetPrincipalOK(self):
-        '''Tests if the principal (user or group) is correctly set'''
+        """Tests if the principal (user or group) is correctly set"""
         prr = PrincipalParamRoleRelation.objects.create(user=self.user, role=self.p_role)
         prr.set_principal(self.user1)
         self.assertEqual(prr.user, self.user1)
@@ -588,6 +625,63 @@ class PrincipalRoleRelationTest(TestCase):
         
         
     def testSetPrincipalError(self):
-        '''If neither a User nor a Group instance is passed, raise `TypeError`'''
+        """If neither a User nor a Group instance is passed, raise `TypeError`"""
         pass    
+    
+    
+            
+class RolesManagerTest(TestCase):
+    """Tests for the `RolesManager` manager class"""  
+
+    def setUp(self):
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.gas_1 = GAS.objects.create(name='barGAS', id_in_des='2')
+        self.gas_2 = GAS.objects.create(name='bazGAS', id_in_des='3')
+        
+        self.supplier = Supplier.objects.create(name='SmallCompany', vat_number='111')
+        self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')  
+              
+        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        ParamRole.objects.all().delete()
+        
+        # A member of GAS 1
+        self.p_role_1 = register_parametric_role(GAS_MEMBER, gas=self.gas_1) 
+        # A member of GAS 2
+        self.p_role_2 = register_parametric_role(GAS_MEMBER, gas=self.gas_2)
+        # A supplier referrer for GAS 1 and supplier 1
+        self.p_role_3 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_1)
+        # A supplier referrer for GAS 1 and supplier 2
+        self.p_role_4 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_2)
+        # A supplier referrer for GAS 2 and supplier 1
+        self.p_role_5 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier_1)
+        # A supplier referrer for GAS 2 and supplier 2
+        self.p_role_6 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier_2)
+                    
+    def testGetParamRolesOK(self):
+        """Check that `get_param_roles` returns the right set of parametric roles if input is valid"""  
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_MEMBER)), set((self.p_role_1, self.p_role_2))) 
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_MEMBER, gas=self.gas_1)), set((self.p_role_1, )))
+        
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER)),\
+        set((self.p_role_3, self.p_role_4, self.p_role_5, self.p_role_6)))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, supplier=self.supplier_1)),\
+        set((self.p_role_3, self.p_role_5)))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, gas=self.gas_1)),\
+        set((self.p_role_3, self.p_role_4)))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_1)),\
+        set((self.p_role_3, )))
+    
+    def testGetParamRolesFailIfInvalidRole(self):
+        """Check that `get_param_roles` fails as expected if given an invalid role name"""  
+        self.assertRaises(RoleNotAllowed, ParamRole.objects.get_param_roles, role_name='FOO', gas=self.gas)    
+    
+    def testGetParamRolesFailIfInvalidParamName(self):
+        """Check that `get_param_roles` fails as expected if the name of parameter is invalid"""  
+        self.assertRaises(RoleParameterNotAllowed, ParamRole.objects.get_param_roles, role_name=GAS_MEMBER, foo=self.gas)
+    
+    def testGetParamRolesFailIfInvalidParamType(self):
+        """Check that `get_param_roles` fails as expected if the value of parameter is of the wrong type"""  
+        self.assertRaises(RoleParameterWrongSpecsProvided, ParamRole.objects.get_param_roles, role_name=GAS_MEMBER, gas=self.supplier)
+        
     

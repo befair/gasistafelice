@@ -1,11 +1,18 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from gasistafelice.base.models import Person
-from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact, GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct
-from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
+from permissions.models import Role
 
-from datetime import time, date
+from gasistafelice.base.models import Person, Place
+from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact,\
+GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct, Delivery, Withdrawal
+from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
+from gasistafelice.auth import GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
+GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER 
+from gasistafelice.auth.models import ParamRole, Param
+from gasistafelice.auth.utils import register_parametric_role
+
+from datetime import time, date, datetime
 
 class GASSupplierStockTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierStock'''
@@ -13,19 +20,20 @@ class GASSupplierStockTest(TestCase):
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')        
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         self.category = ProductCategory.objects.create(name='food') 
         self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
         
     def testSupplier(self):
         '''Verify if supplier is retrieved correctly'''
-        gss = GASSupplierStock.objects.create(gas=self.gas, supplier_stock=self.stock)
+        gss = GASSupplierStock.objects.create(pact=self.pact, supplier_stock=self.stock)
         self.assertEqual(gss.supplier, self.supplier)
                 
     def testPrice(self):
         '''Verify if price is computed correctly'''
-        gss = GASSupplierStock.objects.create(gas=self.gas, supplier_stock=self.stock)
         pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        gss = GASSupplierStock.objects.create(pact=pact, supplier_stock=self.stock)
         pact.order_price_percent_update = 0.05
         pact.save()
         self.assertEqual(gss.price, 105)
@@ -40,11 +48,12 @@ class GASMemberOrderTest(TestCase):
         self.person = Person.objects.create(name='John', surname='Smith', user=user)
         self.member = GASMember.objects.create(person=self.person, gas=self.gas)
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         self.category = ProductCategory.objects.create(name='food') 
         self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
-        self.gas_stock = GASSupplierStock.objects.create(gas=self.gas, supplier_stock=self.stock)
-        self.order = GASSupplierOrder.objects.create(gas=self.gas, supplier=self.supplier, date_start=self.now)
+        self.gas_stock = GASSupplierStock.objects.create(pact=self.pact, supplier_stock=self.stock)
+        self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=self.now)
         self.order_product = GASSupplierOrderProduct.objects.create(order=self.order, stock=self.gas_stock)
         
     def testActualPrice(self):
@@ -85,6 +94,10 @@ class GASSupplierOrderProductTest(TestCase):
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
         
+        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_1)
+        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_2)
+        self.pact_3 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier_1)
+        
         self.member_1 = GASMember.objects.create(person=self.person_1, gas=self.gas_1)
         self.member_2 = GASMember.objects.create(person=self.person_2, gas=self.gas_1)
         self.member_3 = GASMember.objects.create(person=self.person_3, gas=self.gas_2)
@@ -98,13 +111,13 @@ class GASSupplierOrderProductTest(TestCase):
         self.stock_2 = SupplierStock.objects.create(supplier=self.supplier_1, product=self.product_2, price=150)
         self.stock_3 = SupplierStock.objects.create(supplier=self.supplier_2, product=self.product_1, price=120)
         
-        self.gas_stock_1 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_1)
-        self.gas_stock_2 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_2)
-        self.gas_stock_3 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_3)
-        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.gas_2, supplier_stock=self.stock_1)
+        self.gas_stock_1 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_1)
+        self.gas_stock_2 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_2)
+        self.gas_stock_3 = GASSupplierStock.objects.create(pact=self.pact_2, supplier_stock=self.stock_3)
+        self.gas_stock_4 = GASSupplierStock.objects.create(pact=self.pact_3, supplier_stock=self.stock_1)
         
-        self.order_1 = GASSupplierOrder.objects.create(gas=self.gas_1, supplier=self.supplier_1, date_start=self.now)
-        self.order_2 = GASSupplierOrder.objects.create(gas=self.gas_2, supplier=self.supplier_1, date_start=self.now)
+        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=self.now)
+        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_3, date_start=self.now)
         
         self.product_1 = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_1)
         self.product_2 = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_2)
@@ -141,6 +154,10 @@ class GASSupplierOrderTest(TestCase):
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
         
+        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_1)
+        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_2)
+        self.pact_3 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier_1)
+        
         self.category = ProductCategory.objects.create(name='food') 
         
         self.product_1 = Product.objects.create(name='carrots', category=self.category, producer=self.supplier_1)
@@ -150,18 +167,170 @@ class GASSupplierOrderTest(TestCase):
         self.stock_2 = SupplierStock.objects.create(supplier=self.supplier_1, product=self.product_2, price=150)
         self.stock_3 = SupplierStock.objects.create(supplier=self.supplier_2, product=self.product_1, price=120)
         
-        self.gas_stock_1 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_1)
-        self.gas_stock_2 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_2)
-        self.gas_stock_3 = GASSupplierStock.objects.create(gas=self.gas_1, supplier_stock=self.stock_3)
-        self.gas_stock_4 = GASSupplierStock.objects.create(gas=self.gas_2, supplier_stock=self.stock_1)
+        self.gas_stock_1 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_1)
+        self.gas_stock_2 = GASSupplierStock.objects.create(pact=self.pact_1, supplier_stock=self.stock_2)
+        self.gas_stock_3 = GASSupplierStock.objects.create(pact=self.pact_2, supplier_stock=self.stock_3)
+
+        self.gas_stock_4 = GASSupplierStock.objects.create(pact=self.pact_3, supplier_stock=self.stock_1)
         
                 
     def testDefaultProductSet(self):
         '''Verify that the default product set is correctly generated'''
-        order = GASSupplierOrder.objects.create(gas=self.gas_1, supplier=self.supplier_1, date_start=self.now)
+        order = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=self.now)
         order.set_default_product_set()
         self.assertEqual(set(order.products.all()), set((self.gas_stock_1, self.gas_stock_2)))
         
+class GASMemberManagerTest(TestCase):
+    """
+    Tests for the `GASMemberManager` manager class
+    """  
+
+    def setUp(self):
+        today = date.today()
+        now = datetime.now()        
+        midnight = time(hour=0)
+        
+        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.gas_2 = GAS.objects.create(name='barGAS', id_in_des='2')
+        
+        self.person_1 = Person.objects.create(name='Mario', surname='Rossi')
+        self.person_2 = Person.objects.create(name='Carlo', surname='Bianchi')
+        self.person_3 = Person.objects.create(name='Antonio', surname='Verdi')
+        self.person_4 = Person.objects.create(name='Giorgio', surname='Rosi')
+        
+        self.user_1 = User.objects.create(username='Foo')
+        self.user_2 = User.objects.create(username='Bar')
+        self.user_3 = User.objects.create(username='Baz')
+        self.user_4 = User.objects.create(username='Spam')
+        
+        self.person_1.user=self.user_1
+        self.person_1.save()
+        self.person_2.user=self.user_2
+        self.person_2.save()
+        self.person_3.user=self.user_3
+        self.person_3.save()
+        self.person_4.user=self.user_4
+        self.person_4.save()
+        
+        
+        self.member_1 = GASMember.objects.create(gas=self.gas_1, person=self.person_1)
+        self.member_2 = GASMember.objects.create(gas=self.gas_2, person=self.person_2)
+        self.member_3 = GASMember.objects.create(gas=self.gas_1, person=self.person_3)
+        self.member_4 = GASMember.objects.create(gas=self.gas_2, person=self.person_3)
+        self.member_5 = GASMember.objects.create(gas=self.gas_1, person=self.person_4)
+        
+        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')  
+        
+        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier)
+        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier)
+        
+        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=today)
+        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, date_start=today)
+        
+        self.place = Place.objects.create(city='senigallia', province='AN')
+        
+        self.delivery = Delivery.objects.create(place=self.place, date=today)
+        
+        self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
+    
+    def testGasReferrersOK(self):
+        """
+        Only GAS members having a 'GAS Referrer' role in the GAS they belongs to should be returned.    
+        """
+        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER, gas=self.gas_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER, gas=self.gas_2)
+            
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.gas_referrers()), set((self.member_1, self.member_2, self.member_3)))
+        
+    def testTechReferrersOK(self):
+        """
+        Only GAS members having a 'Tech Referrer' role in the GAS they belongs to should be returned.    
+        """
+        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_TECH, gas=self.gas_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_TECH, gas=self.gas_2)
+            
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3)))
+    
+    def testCashReferrersOK(self):
+        """
+        Only GAS members having a 'Cash Referrer' role in the GAS they belongs to should be returned.    
+        """
+        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_CASH, gas=self.gas_1)  
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_CASH, gas=self.gas_2)
+        
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3)))
+    
+    def testSupplierReferrersOK(self):
+        """
+        Only GAS members having a 'Supplier Referrer' role in the GAS they belongs to should be returned.    
+        """
+        self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)   
+        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier)
+                
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.supplier_referrers()), set((self.member_1, self.member_2, self.member_3)))
+    
+    def testOrderReferrersOK(self):
+        """
+        Only GAS members having a 'Order Referrer' role in the GAS they belongs to should be returned.    
+        """
+        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_ORDER, order=self.order_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_ORDER, order=self.order_2)
+              
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.order_referrers()), set((self.member_1, self.member_2, self.member_3)))
+    
+    def testDeliveryReferrersOK(self):
+        """
+        Only GAS members having a 'Delivery Referrer' role in the GAS they belongs to should be returned.    
+        """
+      
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_DELIVERY, delivery=self.delivery)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_DELIVERY, delivery=self.delivery)
+           
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.delivery_referrers()), set((self.member_1, self.member_2, self.member_3)))
+    
+    def testWithdrawalReferrersOK(self):
+        """
+        Only GAS members having a 'Withdrawal Referrer' role in the GAS they belongs to should be returned.    
+        """
+        
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self.withdrawal)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self.withdrawal)
+        
+        self.p_role_1.add_principal(self.user_1)
+        self.p_role_1.add_principal(self.user_3)
+        self.p_role_2.add_principal(self.user_2)
+        
+        self.assertEqual(set(GASMember.objects.withdrawal_referrers()), set((self.member_1, self.member_2, self.member_3)))
 
 
 #__test__ = {"doctest": """
