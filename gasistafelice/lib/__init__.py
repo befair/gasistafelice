@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with GASISTA FELICE. If not, see <http://www.gnu.org/licenses/>.
 
+class ClassProperty(property):
+    def __get__(self, cls, owner):
+        return self.fget.__get__(None, owner)()
+
 def load_symbol(path):
 
 	# Split path in 'module' and 'class'

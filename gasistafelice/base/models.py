@@ -13,6 +13,7 @@ from permissions import PermissionBase # mix-in class for permissions management
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
+from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
 class Resource(object):
@@ -24,6 +25,7 @@ class Resource(object):
     #COMMENT fero: used to cache data
     volatile_fields = []
 
+    @ClassProperty
     @classmethod
     def resource_type(cls):
         return cls.__name__.lower()
