@@ -1,0 +1,74 @@
+{% load basic_tags %}
+
+<block type="details" 
+       resource_id="{{ resource.id }}" 
+       resource_type="{{ resource.resource_type }}" 
+       resource_fullname=""
+       sanet_urn="{{ resource.resource_type }}/{{ resource.id }}" 
+>
+	<descr>
+	{{ resource }}
+	</descr>
+
+	<content type="image">
+		<img src="{{rimage}}" />
+	</content >
+	
+	
+	<content type="info">
+		{% for detail in display_fields %}
+			<info id="{{detail.name}}">
+				<text>{{detail.text}}</text>
+				<warning>{{detail.warning}}</warning>
+				<value type='{{ detail.type }}'>{% render_xml_detail detail %}</value>
+
+				
+			</info>
+		{% endfor %}
+	</content>
+	
+	<content type="more_details">
+	{% if more_details %}
+		{{ more_details }}
+	{% endif %}
+	</content>
+	
+{% comment %}	
+	<content type="notes">
+		{% for note in notes %}
+			<note id="{{ note.id }}">
+				<date>{{ note.submit_date|date:"d/m/Y h:i" }}</date>
+				<author>{{ note.userinfo.name }}</author>
+				<text>{{ note.comment }}</text>
+				
+								
+				{% if note.content_object %}
+				<resource sanet_urn="{{ note.content_object.resource_type }}/{{ note.content_object.id }}">
+					{{ note.content_object }}
+				</resource>
+				{% endif %}				
+			</note>
+		{% endfor %}
+	</content>
+	
+	<content type="user_actions">
+		{% for a in user_actions %}
+		<action>{{a}}</action>
+		{% endfor %}
+	</content>
+
+	<content type="olap_data">
+		<url> {{ olap_url }} </url>
+		<session_user> {{ olap_user }} </session_user>
+	</content>
+{% endcomment %}	
+
+
+	{% if config %}
+	<content type="info">
+		{% for item in config.items %}
+			<item name="{{item.0}}">{{ item.1 }}</item>
+		{% endfor %}
+	</content>
+	{% endif %}  
+</block>

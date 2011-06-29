@@ -25,7 +25,7 @@ resource_classes = {
 #TODO: factorize a method in base.Resource model
 resource_key = {
       'des'          : 'name'
-    ,  'supplier'     : 'name'
+    , 'supplier'     : 'name'
     , 'gas'          : 'name'
     , 'gas_order'    : 'name'
 }

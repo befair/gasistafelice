@@ -44,6 +44,8 @@ class Site(models.Model, Resource):
 
     cfg_time = models.PositiveIntegerField()
     
+    display_fields = ()
+
     class Meta:
         verbose_name = _("site")
         verbose_name_plural = _("sites")
@@ -187,7 +189,7 @@ class Siteattr(models.Model):
         'descr':'varchar',
         'details':'text',
         'banner':'varchar',
-        #TODO placeholder fero: what is it, a kind of versioning? 'schema':'integer',
+        #TODO placeholder fero: db schema versioning needed? 'schema':'integer',
     }
 
     known_names_def_descriptions = {

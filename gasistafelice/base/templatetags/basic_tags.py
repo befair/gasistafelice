@@ -11,14 +11,45 @@ register = template.Library()
 
 @register.simple_tag
 def des_media_url():
-	return settings.MEDIA_URL
+    return settings.MEDIA_URL
 
 @register.simple_tag
 def des_debug():
-	return settings.DEBUG
+    return settings.DEBUG
 
 @register.simple_tag
 def des_version():
-	return settings.VERSION
+    return settings.VERSION
 
 
+class RenderXmlDetail(template.Node):
+
+    def __init__(self, field):
+        self.field = field
+    
+    def render(self, context):
+
+        try:
+            field = resolve_variable(self.field, context)
+        except template.VariableDoesNotExist:
+            raise template.VariableDoesNotExist, "Variable %s has not been found in the context" % self.field
+
+        data_type = field.type
+        pt_list = ["values/"+data_type+".xml", "data/str.xml"]
+        context['value'] = value
+
+        t = select_template(pt_list)
+        rendered_data = t.render(context)
+
+        return rendered_data
+
+@register.tag
+def render_xml_detail(parser, token):
+    # Split arguments 
+    try:
+        arguments = token.split_contents()
+        field = arguments[1]
+    except:
+        raise template.TemplateSyntaxError, "%r tag requires field as argument" % arguments[0]
+
+    return RenderXmlDetail(field)

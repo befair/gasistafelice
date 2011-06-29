@@ -117,7 +117,7 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details']
+        'blocks' : ['details', 'gas_list', 'supplier_list']
     },{
         'name' : 'gas',
         'descr' : 'GAS',
@@ -149,3 +149,4 @@ RESOURCE_PAGE_BLOCKS = {
    
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
+ENABLE_OLAP_REPORTS = False

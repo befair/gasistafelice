@@ -123,7 +123,6 @@ class Block(AbstractBlock):
         # Retrieve resource's cached informations
         res.load_checkdata_from_cache()
         
-        
         #
         # Calculate visible informations
         #
@@ -143,26 +142,14 @@ class Block(AbstractBlock):
             element_value = getattr(res, display_field.name)
             if element_value != None:
 
-    
-                if   display_field.name == 'problems'     and show_problems == False: 
-                    element_value = element_value.count()
-                    element_type = 'str'
-                    if element_value > 0:
-                        element_warning = 'on'
-                elif display_field.name == 'uncheckables' and show_uncheckables == False: 
-                    element_value = element_value.count()
-                    element_type = 'str'
-                    if element_value > 0:
-                        element_warning = 'on'
-                else:
-                    if isinstance(display_field, ResourceList):
-                        element_type  = 'resourcelist'
-                    elif isinstance(element_value, Resource):
-                        element_type = str(element_value.__class__.__name__).lower()
-                    elif isinstance(display_field, models.EmailField):
-                        element_type  = 'email'
-                    else:    
-                        element_type  = 'str'
+                if isinstance(display_field, ResourceList):
+                    element_type  = 'resourcelist'
+                elif isinstance(element_value, Resource):
+                    element_type = str(element_value.resource_type)
+                elif isinstance(display_field, models.EmailField):
+                    element_type  = 'email'
+                else:    
+                    element_type  = 'str'
             else:
                 element_type = 'none'
                 element_value = ''

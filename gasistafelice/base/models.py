@@ -40,39 +40,39 @@ class Resource(object):
         return ('rest.views.resource_page', (), { 
                 'resource_type' : self.resource_type, 'resource_id' : self.pk 
         })
-		
-	#
-	# Cache check data
-	#
-	def save_checkdata_in_cache(self):
-		key = Resource.cache_key(self.pk)
-		data_to_cache = {}
-		for n in self.volatile_fields:
-			data_to_cache[n] = getattr(self, n)
-		
-		if not data_to_cache:
-			return False
-					
-		try:
-			pstore.savedata(key, data_to_cache)
-		except Exception, e:
-			raise
-		return True
+        
+    #
+    # Cache check data
+    #
+    def save_checkdata_in_cache(self):
+        key = Resource.cache_key(self.pk)
+        data_to_cache = {}
+        for n in self.volatile_fields:
+            data_to_cache[n] = getattr(self, n)
+        
+        if not data_to_cache:
+            return False
+                    
+        try:
+            pstore.savedata(key, data_to_cache)
+        except Exception, e:
+            raise
+        return True
 
-	def load_checkdata_from_cache(self):
-		if not self.volatile_fields:
-			return False
-		key = Resource.cache_key(self.pk)
-		data = pstore.getalldata(key, self.volatile_fields)
-		for n in self.volatile_fields:
-			if data.has_key(n):
-				setattr(self, n,  data[n])
-		return True
+    def load_checkdata_from_cache(self):
+        if not self.volatile_fields:
+            return False
+        key = Resource.cache_key(self.pk)
+        data = pstore.getalldata(key, self.volatile_fields)
+        for n in self.volatile_fields:
+            if data.has_key(n):
+                setattr(self, n,  data[n])
+        return True
 
-	@classmethod
-	def cache_key(cls, resource_id):
-		return "%s/%s" % (cls.resource_type, resource_id)
-		
+    @classmethod
+    def cache_key(cls, resource_id):
+        return "%s/%s" % (cls.resource_type, resource_id)
+        
 class PermissionResource(Resource, PermissionBase):
     """
     Just a convenience for classes inheriting both from Resource and PermissionBase
