@@ -71,6 +71,8 @@ class Resource(object):
 
     @classmethod
     def cache_key(cls, resource_id):
+        #TODO fero CHECK: it should be self.uID !
+        #Pay attention because it is connected to class
         return "%s/%s" % (cls.resource_type, resource_id)
         
 class PermissionResource(Resource, PermissionBase):

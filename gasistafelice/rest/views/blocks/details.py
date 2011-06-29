@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.db import models #fields types
 
 # Notes (Comment)
@@ -18,6 +17,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
+from gasistafelice.lib.shortcuts import render_to_xml_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -82,7 +82,7 @@ class Block(AbstractBlock):
                 {'field_type':'checkbox', 'field_label':_('Show unchechables'), 'field_name':'show_uncheckables', 'field_values':[ options['show_uncheckables'] ]},
             ]
         }
-        return render_to_response('options.xml', ctx)
+        return render_to_xml_response('options.xml', ctx)
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     
@@ -238,7 +238,7 @@ class Block(AbstractBlock):
         #
         # RENDER 
         #
-        return render_to_response('blocks/details.xml', ctx)
+        return render_to_xml_response('blocks/details.xml', ctx)
         
 
 

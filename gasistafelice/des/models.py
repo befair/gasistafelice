@@ -18,19 +18,20 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.comments.models import Comment
 
-from gasistafelice.lib.urns import URN
+from django.contrib.sites.models import Site
+
+from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import Resource, Person
 from gasistafelice.supplier.models import Supplier, Product
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
 from gasistafelice.supplier.models import Supplier
 
-
 import time
 
 #------------------------------------------------------------------------------
-# Basic Site object: configuration registry
+# Basic DES object: configuration registry
 
-class Site(models.Model, Resource):
+class DES(Site, Resource):
     """Facade for Siteattr object. It's an orthogonal representation for it.
     It proxies get attribute operations. 
     It is a Model instance since there are foreign key for it (i.e. comments)
@@ -38,7 +39,7 @@ class Site(models.Model, Resource):
     TODO: cache attributes in order to avoid database operations.
     (stub for validity already done)
 
-    >>> Siteattr.get_attribute_or_empty('name') == Site.name
+    >>> Siteattr.get_attribute_or_empty('name') == DES.name
     True
     """
 
@@ -50,8 +51,13 @@ class Site(models.Model, Resource):
         verbose_name = _("site")
         verbose_name_plural = _("sites")
 
+    @ClassProperty
+    @classmethod
+    def resource_type(cls):
+        return "site" #avoid to change custom js and html with "des"
+
     def __init__(self, *args, **kw):
-        super(Site, self).__init__(*args, **kw)
+        super(DES, self).__init__(*args, **kw)
 
         self.isfiltered = False
 
@@ -60,10 +66,6 @@ class Site(models.Model, Resource):
             setattr(self, attr, Siteattr.get_attribute_or_empty(attr))
         self.cfg_time = Siteattr.get_site_config_timestamp()
         
-    @property
-    def urn(self):
-        return URN([self])
-
     @property
     def icon(self):
         if hasattr(self, 'icon_id'):
@@ -83,7 +85,6 @@ class Site(models.Model, Resource):
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
         return GASMember.objects.all()
-
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
@@ -144,7 +145,7 @@ class Site(models.Model, Resource):
         # Deeply select notes only from visible root_containers
         if  hasattr(self, 'isfiltered') and self.isfiltered:
             
-            notes = [ n for n in super(Site, self).allnotes ]
+            notes = [ n for n in super(DES, self).allnotes ]
             
             if recursive_queries:
                 
@@ -210,8 +211,10 @@ class Siteattr(models.Model):
 
     @classmethod
     def get_site(cls):
-        # Get the one and only one Site object that exists
-        rv = Site.objects.order_by('id').all()[0]
+        # Get the one and only one DES object that exists
+        # FUTURE TODO: in a multi-site environment, current site can be retrieved in views
+        # https://docs.djangoproject.com/en/1.3/ref/contrib/sites/
+        rv = DES.objects.order_by('id').all()[0]
         return rv
     
     @staticmethod
@@ -271,7 +274,7 @@ class Siteattr(models.Model):
             
 
 type_model_d = {
-	'site' : Site,
+	'site' : DES,
 	'gas' : GAS,
 	'gasmember' : GASMember,
 	'person' : Person,

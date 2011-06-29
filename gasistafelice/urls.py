@@ -15,10 +15,7 @@ urlpatterns = patterns('',
 
 	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'django.contrib.auth.views.login'),
 
-    (r'^gas/$', 'gas.views.index'),
-
     (r'^gas-admin/', include(gas_admin.urls)),
-
     (r'^admin/', include(admin.site.urls)),
 
 )
