@@ -15,6 +15,8 @@ from gasistafelice.auth.utils import register_parametric_role, _validate_paramet
 _parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
     _compare_parametric_roles
 from gasistafelice.auth.exceptions import RoleNotAllowed, RoleParameterNotAllowed, RoleParameterWrongSpecsProvided
+from gasistafelice.auth.managers import RolesManager
+
 
 from datetime import time, date, datetime
 
@@ -657,6 +659,15 @@ class RolesManagerTest(TestCase):
         self.p_role_5 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier_1)
         # A supplier referrer for GAS 2 and supplier 2
         self.p_role_6 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier_2)
+        
+    def testShallowCopyOk(self):
+        """It should be possible to make a shallow copy of a manager instance"""
+        # see https://docs.djangoproject.com/en/1.3/topics/db/managers/#implementation-concerns
+        import copy
+        manager = RolesManager()
+        my_copy = copy.copy(manager)
+        self.assertEqual(manager, my_copy)
+    
                     
     def testGetParamRolesOK(self):
         """Check that `get_param_roles` returns the right set of parametric roles if input is valid"""  

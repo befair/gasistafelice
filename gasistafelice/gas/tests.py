@@ -4,9 +4,13 @@ from django.contrib.auth.models import User
 from permissions.models import Role
 
 from gasistafelice.base.models import Person, Place
+
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact,\
 GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct, Delivery, Withdrawal
+from gasistafelice.gas.managers import GASMembersManager
+
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
+
 from gasistafelice.auth import GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
 GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER 
 from gasistafelice.auth.models import ParamRole, Param
@@ -232,6 +236,14 @@ class GASMemberManagerTest(TestCase):
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
+    
+    def testShallowCopyOk(self):
+        """It should be possible to make a shallow copy of a manager instance"""
+        # see https://docs.djangoproject.com/en/1.3/topics/db/managers/#implementation-concerns
+        import copy
+        manager = GASMembersManager()
+        my_copy = copy.copy(manager)
+        self.assertEqual(manager, my_copy)
     
     def testGasReferrersOK(self):
         """
