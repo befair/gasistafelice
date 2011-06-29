@@ -23,7 +23,7 @@ from django.http import HttpResponse
 
 from django.conf import settings
 
-from gasistafelice.des.models import type_model_d
+from gasistafelice.globals import type_model_d
 
 class ResourceMiddleware(AppMiddleware):
 

@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 
 from django.contrib.auth.models import User
 
-from gasistafelice.des.models import type_model_d
+from gasistafelice.globals import type_model_d
 
 #------------------------------------------------------------------------------#
 #                                                                              #
