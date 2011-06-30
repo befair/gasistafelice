@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 
+from gasistafelice.lib.shortcuts import render_to_xml_response
 
 from gasistafelice.rest.utils import load_block_handler
 
@@ -25,7 +26,7 @@ resource_classes = {
 #TODO: factorize a method in base.Resource model
 resource_key = {
       'des'          : 'name'
-    ,  'supplier'     : 'name'
+    , 'supplier'     : 'name'
     , 'gas'          : 'name'
     , 'gas_order'    : 'name'
 }
@@ -70,7 +71,7 @@ def site_settings(request):
         'site_name'            : unicode(site),
         'isdebug'              : settings.DEBUG,
     }
-    return render_to_response("settings.xml", ctx)
+    return render_to_xml_response("settings.xml", ctx)
 
 
 #---------------------------------------------------------------------#
@@ -110,27 +111,27 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
 
 @login_required
 #@authorized_on_resource TODO placeholder seldon replace with has_perm
-def rest_resource_page(request, resource_type, resource_id):
+def resource_page(request, resource_type, resource_id):
         
     resource = request.resource
     
     parent = []
-    page_config = get_resource_page_content_config(resource_type)
+    page_config = get_resource_page_content_config(resource.resource_type)
 
-    return create_page_settings_from_config(page_config, resource, resource_type, resource_id, parent)
+    return create_page_settings_from_config(page_config, resource, parent)
 
 
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
 
-def create_page_settings_from_config(page_config, resource, resource_type, resource_id, parent=None):
+def create_page_settings_from_config(page_config, resource, parent=None):
 
     for section in page_config:
 
         blocks = []
         for block_type in section['blocks']:
-            a = create_block_signature(block_type, resource_type, resource_id)
+            a = create_block_signature(block_type, resource.resource_type, resource.pk)
             blocks.append(a)
             
         section['blocks_signature'] = blocks
@@ -138,16 +139,13 @@ def create_page_settings_from_config(page_config, resource, resource_type, resou
     pt = ['page_config.xml']
 
     ctx = {
-        'type':resource_type,
-        'id'  :resource_id,
         
         'resource': resource,
         'parents': parent,
-        
         'sections': page_config,
     }
     
-    return render_to_response(pt, ctx)
+    return render_to_xml_response(pt, ctx)
 
 
 def get_resource_page_content_config(resource_type):
@@ -204,7 +202,7 @@ def list(request, resource_type):
         'resource_type':resource_type,
         'ids':ids
     }
-    return render_to_response("resource_list.xml", context)
+    return render_to_xml_response("resource_list.xml", context)
     
 #    if resource_type == 'usercontainer':
 #        
@@ -275,7 +273,7 @@ def parts(request, resource_type, resource_id):
             print(e)
             continue
 
-    return render_to_response("resource_urls.xml", {"resource_id":resource_id, "resource_type":resource_type, "urls":urls})
+    return render_to_xml_response("resource_urls.xml", {"resource_id":resource_id, "resource_type":resource_type, "urls":urls})
 #
 
 #------------------------------------------------------------------------------#
@@ -296,7 +294,7 @@ def quick_search(request):
     context = {
         'search_result': search_result 
     }
-    return render_to_response("quick_search_result.xml", context)
+    return render_to_xml_response("quick_search_result.xml", context)
     
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -328,7 +326,7 @@ def list_comments(request):
     context = {
         'notes': rnotes
     }
-    return render_to_response("comments_result.xml", context)
+    return render_to_xml_response("comments_result.xml", context)
 
 
 

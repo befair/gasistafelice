@@ -23,61 +23,59 @@ from django.http import HttpResponse
 
 from django.conf import settings
 
-from gasistafelice.des.models import type_model_d
+from gasistafelice.globals import type_model_d
 
-class URNMiddleware(AppMiddleware):
-	"""Process the view and inject the environment in the request object.
+class ResourceMiddleware(AppMiddleware):
+
+    """Process the view and inject the environment in the request object.
     
-    Url pattern is /<resource_type>/<resource_id>/<app_name>/<view_binding>/
-	
+    Url pattern is /<app_name>/<resource_type>/<resource_id>/<view_binding>/
+    
     """
-    #TODO fero: CHECK url pattern. URL pattern is ok like this, but it should be
-    #TODO fero: implemented :) now it is app_name/resource_type/resource_id/view_binding
 
-	def __init__(self):
+    def __init__(self):
 
-		super(URNMiddleware, self).__init__()
+        super(ResourceMiddleware, self).__init__()
 
-		self.app_settings.update({
-			# add here application settings.
-		})
+        self.app_settings.update({
+            # add here application settings.
+        })
 
-	def __get_resource_by_path(self, request, **kw):
-		# Valid path is: .../<resource_type>/<resource_id>/...others params...
-		
-		try:
-			resource_type = kw['resource_type']
-			resource_id   = kw['resource_id']
-			
-			model = type_model_d[resource_type]
-			
-			return get_object_or_404(model, pk=resource_id)
-		except KeyError, k:
-			#raise ValueError(_("URL does not identify a GASISTA FELICE resource"))
-			pass
-			
-		#return get_object_or_404(model, pk=resource_id)
-		return None
-		
-	def process_view(self, request, view_func, view_args, view_kwargs):
+    def __get_resource_by_path(self, request, **kw):
+        # Valid path is: .../<resource_type>/<resource_id>/...others params...
+        
+        try:
+            resource_type = kw['resource_type']
+            resource_id   = kw['resource_id']
+            
+            model = type_model_d[resource_type]
+            
+            return get_object_or_404(model, pk=resource_id)
 
-		kw = view_kwargs
-		
-		if kw.has_key('url'):
-			
-			#RSS Feeds
-			path = kw['url'].split('/')[1:] #The first fields is the feed name
-			
-			kw = {
-				'resource_type' : path[0],
-				'resource_id' : path[1],
-			}
-			
-		if kw.has_key('resource_type') and kw.has_key('resource_id'):
-			
-			if kw['resource_type'] != 'blocks':
-			
-				request.resource = self.__get_resource_by_path(request, **kw)
-				
-		return 
+        except KeyError, k:
+            #raise ValueError(_("URL does not identify a GASISTA FELICE resource"))
+            pass
+            
+        #return get_object_or_404(model, pk=resource_id)
+        return None
+        
+    def process_view(self, request, view_func, view_args, view_kwargs):
+
+        kw = view_kwargs
+        
+        if kw.has_key('url'):
+            
+            #RSS Feeds
+            path = kw['url'].split('/')[1:] #The first fields is the feed name
+            
+            kw = {
+                'resource_type' : path[0],
+                'resource_id' : path[1],
+            }
+            
+        if kw.has_key('resource_type') and kw.has_key('resource_id'):
+            
+            request.resource = self.__get_resource_by_path(request, **kw)
+                
+        return 
 

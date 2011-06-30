@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.db import models #fields types
 
 # Notes (Comment)
@@ -18,6 +17,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
+from gasistafelice.lib.shortcuts import render_to_xml_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -82,7 +82,7 @@ class Block(AbstractBlock):
                 {'field_type':'checkbox', 'field_label':_('Show unchechables'), 'field_name':'show_uncheckables', 'field_values':[ options['show_uncheckables'] ]},
             ]
         }
-        return render_to_response('options.xml', ctx)
+        return render_to_xml_response('options.xml', ctx)
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     
@@ -123,7 +123,6 @@ class Block(AbstractBlock):
         # Retrieve resource's cached informations
         res.load_checkdata_from_cache()
         
-        
         #
         # Calculate visible informations
         #
@@ -143,26 +142,14 @@ class Block(AbstractBlock):
             element_value = getattr(res, display_field.name)
             if element_value != None:
 
-    
-                if   display_field.name == 'problems'     and show_problems == False: 
-                    element_value = element_value.count()
-                    element_type = 'str'
-                    if element_value > 0:
-                        element_warning = 'on'
-                elif display_field.name == 'uncheckables' and show_uncheckables == False: 
-                    element_value = element_value.count()
-                    element_type = 'str'
-                    if element_value > 0:
-                        element_warning = 'on'
-                else:
-                    if isinstance(display_field, ResourceList):
-                        element_type  = 'resourcelist'
-                    elif isinstance(element_value, Resource):
-                        element_type = str(element_value.__class__.__name__).lower()
-                    elif isinstance(display_field, models.EmailField):
-                        element_type  = 'email'
-                    else:    
-                        element_type  = 'str'
+                if isinstance(display_field, ResourceList):
+                    element_type  = 'resourcelist'
+                elif isinstance(element_value, Resource):
+                    element_type = str(element_value.resource_type)
+                elif isinstance(display_field, models.EmailField):
+                    element_type  = 'email'
+                else:    
+                    element_type  = 'str'
             else:
                 element_type = 'none'
                 element_value = ''
@@ -251,7 +238,7 @@ class Block(AbstractBlock):
         #
         # RENDER 
         #
-        return render_to_response('blocks/details.xml', ctx)
+        return render_to_xml_response('blocks/details.xml', ctx)
         
 
 

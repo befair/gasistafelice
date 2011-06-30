@@ -22,8 +22,12 @@ This module offer a unique class for managing resource context
 
 #-------------------------------------------------------------------------------
 
+# COMMENT fero: at this time this class is DEPRECATED.
+# COMMENT fero: it is reduntant. Just keep in mind that a resource is represented by 
+# <resource_type>/<resource_id> when alone or <resource_type>-<resource_id> in list
+
 class URN(list):
-    #TODO placeholder seldon: translate
+    #NOT NEEDED TODO placeholder seldon: translate
 	"""Questa classe e' utile per generalizzare la gestione del percorso di un oggetto.
 	Una istanza e' rappresentata da una gerarchia che parte dall'oggetto sito
 
@@ -44,10 +48,10 @@ class URN(list):
 
 	def __str__(self):
 		# Represent the URN path. 
-		# Each element is in the form $res_type-$res_id
+		# Each element is in the form $res_type/$res_id
 		rv = ""
 		for resource in self:
-			rv += "/" + resource.resource_type + "-" + str(resource.id) 
+			rv += "/" + resource.resource_type + "/" + str(resource.pk) 
 		return rv
 
 	def __unicode__(self):

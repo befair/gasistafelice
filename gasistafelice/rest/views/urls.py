@@ -22,9 +22,8 @@ from actions import *
 
 urlpatterns = patterns('rest.views',
 
-    (r'^$',                     'rest_resource_page'), # done
-
-    (r'^related_notes/$',                   'related_notes'),
+    (r'^$',                'resource_page'),
+    (r'^related_notes/$',  'related_notes'),
 
 
     # Suspend a resource (POST)

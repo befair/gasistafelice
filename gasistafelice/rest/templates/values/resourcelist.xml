@@ -1,0 +1,9 @@
+{% for res in value %}
+    {% if res %}
+        <resource type="{{res.resource_type}}" id="{{res.id}}"> 
+            {{res}}
+        </resource>
+    {% else %}
+        <resource></resource>
+    {% endif %}
+{% endfor %}

@@ -78,7 +78,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'gasistafelice.middleware.URNMiddleware',
+    'gasistafelice.middleware.ResourceMiddleware',
 )
 
 ROOT_URLCONF = 'gasistafelice.urls'
@@ -100,13 +100,14 @@ INSTALLED_APPS = (
     'gasistafelice.admin',
     'gasistafelice.gas_admin',
     'gasistafelice.rest',
-    'gasistafelice.des',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'gasistafelice.des',
     'django.contrib.messages',
     'django.contrib.admin',
+    'django.contrib.comments',
     #'south',
     
 )
@@ -117,7 +118,7 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details']
+        'blocks' : ['details', 'gas_list', 'supplier_list']
     },{
         'name' : 'gas',
         'descr' : 'GAS',
@@ -149,3 +150,4 @@ RESOURCE_PAGE_BLOCKS = {
    
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
+ENABLE_OLAP_REPORTS = False

@@ -6,6 +6,7 @@ from permissions.models import Role
 from workflows.models import Workflow
 from history.models import HistoricalRecords
 
+from gasistafelice.base.fields import CurrencyField
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
@@ -14,12 +15,11 @@ from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth.models import ParamRole
 
 from gasistafelice.supplier.models import Supplier, SupplierStock
-
 from gasistafelice.gas.managers import GASMembersManager
-
 from gasistafelice.bank.models import Account
 
-from gasistafelice.base.fields import CurrencyField
+from gasistafelice.des.models import DES
+
 
 from decimal import Decimal
 
@@ -63,6 +63,8 @@ class GAS(models.Model, PermissionResource):
     intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
 
     note = models.TextField(blank=True)
+
+    des = models.ForeignKey(DES)
 
     #COMMENT fero: photogallery and attachments does not go here
     #they should be managed elsewhere in Wordpress (now, at least)
@@ -121,6 +123,14 @@ class GAS(models.Model, PermissionResource):
             self.config = GASConfig()
             self.account = Account.objects.create(balance=0)
             self.liquidity = Account.objects.create(balance=0)
+
+        # This should never happen, but is it reasonable
+        # that an installation has only one DES
+        if not self.des:
+            if DES.objects.count() > 1:
+                raise AttributeError(_("You have to bind GAS %s to a DES") % self.name)
+            else:
+                self.des = DES.objects.all()[0]
 
         super(GAS, self).save(*args, **kw)
 

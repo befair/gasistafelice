@@ -4,7 +4,8 @@ from django.shortcuts import render_to_response
 
 from django.contrib.auth.models import User
 
-from gasistafelice.des.models import type_model_d
+from gasistafelice.globals import type_model_d
+from rest.models import BlockConfiguration
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -131,8 +132,6 @@ class AbstractBlock(object):
 
     def load_user_configuration(self, user, resource_type, resource_id):
     
-        from rest.models import BlockConfiguration
-        
         config = None
         
         try:
