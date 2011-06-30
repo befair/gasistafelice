@@ -21,6 +21,14 @@ def des_debug():
 def des_version():
     return settings.VERSION
 
+#--------------------------------------------------------------------------------
+
+@register.simple_tag
+def urn(resource):
+    #TODO placeholder domthu. Use it in every templates following sanet_urn="
+    raise NotImplementedError
+
+#--------------------------------------------------------------------------------
 
 class RenderXmlDetail(template.Node):
 

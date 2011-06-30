@@ -40,6 +40,12 @@ class Resource(object):
         return ('rest.views.resource_page', (), { 
                 'resource_type' : self.resource_type, 'resource_id' : self.pk 
         })
+
+    @property
+    def preferred_contact_email(self):
+        #TODO placeholder domthu
+        return "a@example.com"
+        #raise NotImplementedError
         
     #
     # Cache check data

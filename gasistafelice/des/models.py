@@ -76,6 +76,10 @@ class DES(Site, Resource):
     bound_resource = None
 
     @property
+    def site(self):
+        return self
+
+    @property
     def gas_list(self):
         return GAS.objects.all()
         #TODO: enable the following when database is updated with des attribute for GAS
