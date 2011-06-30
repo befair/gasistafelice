@@ -10,7 +10,7 @@ from history.models import HistoricalRecords
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
-from gasistafelice.gas.managers import ActiveDeliveryManager, ActiveWithdrawalManager, ArchivedDeliveryManager, ArchivedWithdrawalManager 
+from gasistafelice.gas.managers import ActiveAppointmentManager, ArchivedAppointmentManager 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
@@ -201,7 +201,26 @@ class GASMemberOrder(models.Model, PermissionResource):
 #
 #        return super(GASMemberOrder, self).save()
 
-class Delivery(models.Model, PermissionResource):
+
+
+class Appointment(models.Model):
+    """
+    A base, abstract model class meant to factor out fields common to appointment-like models
+    (i.e.  meetings, events, ..)
+    """
+    
+    # active (future) appointments
+    active = ActiveAppointmentManager()
+    # archived (past) appointments
+    archived = ArchivedAppointmentManager()     
+
+    
+    class Meta:
+        abstract = True
+        
+ 
+
+class Delivery(Appointment, PermissionResource):
 
     """
     A delivery appointment, i.e. an event where one or more Suppliers deliver goods 
@@ -213,11 +232,6 @@ class Delivery(models.Model, PermissionResource):
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
     
-    # active delivery appointments
-    active = ActiveDeliveryManager()
-    # archived delivery appointments
-    archived = ArchivedDeliveryManager()    
-
     # COSTO DI QUESTA CONSEGNA SPECIFICA?
     
     history = HistoricalRecords()
@@ -248,9 +262,10 @@ class Delivery(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv
+
     
 
-class Withdrawal(models.Model, PermissionResource):
+class Withdrawal(Appointment, PermissionResource):
     """
     A wihtdrawal appointment, i.e. an event where a GAS (or Retina of GAS) distribute 
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
@@ -263,11 +278,6 @@ class Withdrawal(models.Model, PermissionResource):
     end_time = models.TimeField(help_text=_("when the withdrawal will end"))
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
-    
-    # active withdrawal appointments
-    active = ActiveWithdrawalManager()
-    # archived withdrawal appointments
-    archived = ArchivedWithdrawalManager()
     
     history = HistoricalRecords()
 

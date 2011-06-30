@@ -145,53 +145,29 @@ class GASMembersManager(models.Manager):
 
         return qs
 
-class ActiveDeliveryManager(models.Manager):
+class ActiveAppointmentManager(models.Manager):
     # TODO UNITTEST
     """
-    A custom manager class for the `Delivery` model, 
-    meant to retrieve only active delivery appointments.
+    A custom manager class for the `Appointment` model, 
+    meant to retrieve only active appointments.
     """
     
     def get_query_set(self):
         """
-        Return a QuerySet containing all delivery appointments scheduled for a future date.
+        Return a QuerySet containing all appointments scheduled for a future date.
         """
-        return super(ActiveDeliveryManager, self).get_query_set.filter(date__gt=date.today())
-    
-class ArchivedDeliveryManager(models.Manager):
-    # TODO UNITTEST
-    """
-    A custom manager class for the `Delivery` model, 
-    meant to retrieve only archived (past) delivery appointments.
-    """
-    
-    def get_query_set(self):
-        """
-        Return a QuerySet containing all past delivery appointments.
-        """
-        return super(ArchivedDeliveryManager, self).get_query_set.filter(date__lt=date.today())
-    
-    
-class ActiveWithdrawalManager(models.Manager):
-    # TODO UNITTEST
-    """
-    A custom manager class for the `Withdrawal` model,
-    meant to retrieve only active withdrawal appointments.
-    """
-    def get_query_set(self):
-        """
-        Return a QuerySet containing all withdrawal appointments scheduled for a future date.
-        """
-        return super(ActiveWithdrawalManager, self).get_query_set.filter(date__gt=date.today())
+        return super(ActiveAppointmentManager, self).get_query_set.filter(date__gt=date.today())
 
-class ArchivedWithdrawalManager(models.Manager):
+class ArchivedAppointmentManager(models.Manager):
     # TODO UNITTEST
     """
-    A custom manager class for the `Withdrawal` model,
-    meant to retrieve only archived (past) withdrawal appointments.
+    A custom manager class for the `Appointment` model, 
+    meant to retrieve only archived (past) appointments.
     """
+    
     def get_query_set(self):
         """
-        Return a QuerySet containing all past withdrawal appointments.
+        Return a QuerySet containing all past appointments.
         """
-        return super(ArchivedWithdrawalManager, self).get_query_set.filter(date__lt=date.today())
+        return super(ArchivedAppointmentManager, self).get_query_set.filter(date__lt=date.today())
+
