@@ -1,0 +1,26 @@
+<div class='block_header' style="padding: 5px">
+<a class="resource inline {{ resource.resource_type}}" href="#rest/{{resource.resource_type}}/{{resource.id}}" sanet_urn="{{resource.resource_type}}/{{resource.pk}}">{{resource}}</a>
+</div>
+<ul style="padding: 5px">  
+
+	<li  id="quickinfo"> 
+		<img src="{{ media_url }}/theme/img/actions/info.png" />		
+		<a onclick="return showQuickInfo('{{resource.resource_type}}/{{resource.id}}')" href='' alt=""> Quick Info </a>
+	</li>
+
+
+	{% for entry in menu_entries %}
+	
+		{% ifequal entry.type "url" %}
+		<li  id="{{ entry.id }}" type="{{ entry.type }}"> 
+			<img src="{{ media_url }}/theme/img/actions/{{ entry.icon }}" />
+			
+			<a target="_blank" href="{{ entry.data }}" alt=""> {{ entry.descr }} </a>
+		</li>
+		{% endifequal %}
+
+		
+	{% endfor %}
+</ul>	
+
+
