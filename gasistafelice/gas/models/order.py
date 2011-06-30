@@ -10,6 +10,7 @@ from history.models import HistoricalRecords
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
+from gasistafelice.gas.managers import ActiveDeliveryManager, ActiveWithdrawalManager, ArchivedDeliveryManager, ArchivedWithdrawalManager 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
@@ -211,6 +212,11 @@ class Delivery(models.Model, PermissionResource):
     date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
     # GAS referrers for this Delivery appointment (if any) 
     referrers = models.ManyToManyField(GASMember, null=True, blank=True)
+    
+    # active delivery appointments
+    active = ActiveDeliveryManager()
+    # archived delivery appointments
+    archived = ArchivedDeliveryManager()    
 
     # COSTO DI QUESTA CONSEGNA SPECIFICA?
     
@@ -257,6 +263,11 @@ class Withdrawal(models.Model, PermissionResource):
     end_time = models.TimeField(help_text=_("when the withdrawal will end"))
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
+    
+    # active withdrawal appointments
+    active = ActiveWithdrawalManager()
+    # archived withdrawal appointments
+    archived = ArchivedWithdrawalManager()
     
     history = HistoricalRecords()
 
