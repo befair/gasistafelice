@@ -15,6 +15,7 @@ from history.models import HistoricalRecords
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import Resource, PermissionResource, Person, Place
 from gasistafelice.base.fields import CurrencyField
+from gasistafelice.des.models import DES
 
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
@@ -30,6 +31,8 @@ class Supplier(models.Model, PermissionResource):
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
+    des = models.ManyToManyField(DES, null=True, blank=True)
+    
     history = HistoricalRecords()
 
     # the set of products provided by this Supplier to every GAS
@@ -50,7 +53,7 @@ class Supplier(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv   
-        
+
     
 class SupplierReferrer(models.Model, PermissionResource):
     supplier = models.ForeignKey(Supplier)
