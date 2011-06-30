@@ -1,0 +1,17 @@
+
+<block type="{{ block_type }}" 
+       resource_type="{{ resource.resource_type }}" 
+       resource_id="{{ resource.id }}">
+       
+	<content type="list">
+	
+		{% for res in resource_list %}
+            {% block display_resource_entry %}
+			<info type="{{ res.resource_type }}" sanet_urn="{{ res.resource_type }}/{{res.resource_id}}" name="{{res}}" />
+            {% endblock %}
+		{% endfor %} 
+		
+	</content>
+    
+</block>
+
