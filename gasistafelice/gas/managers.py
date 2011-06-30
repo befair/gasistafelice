@@ -156,7 +156,7 @@ class ActiveAppointmentManager(models.Manager):
         """
         Return a QuerySet containing all appointments scheduled for a future date.
         """
-        return super(ActiveAppointmentManager, self).get_query_set.filter(date__gt=date.today())
+        return super(ActiveAppointmentManager, self).get_query_set().filter(date__gt=date.today())
 
 class ArchivedAppointmentManager(models.Manager):
     # TODO UNITTEST
@@ -169,5 +169,5 @@ class ArchivedAppointmentManager(models.Manager):
         """
         Return a QuerySet containing all past appointments.
         """
-        return super(ArchivedAppointmentManager, self).get_query_set.filter(date__lt=date.today())
+        return super(ArchivedAppointmentManager, self).get_query_set().filter(date__lt=date.today())
 
