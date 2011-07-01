@@ -4,7 +4,7 @@
        resource_id="{{ resource.id }}" 
        resource_type="{{ resource.resource_type }}" 
        resource_fullname=""
-       sanet_urn="{{ resource.resource_type }}/{{ resource.id }}" 
+       sanet_urn="{{ resource.urn }}" 
 >
 	<descr>
 	{{ resource }}

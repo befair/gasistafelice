@@ -17,39 +17,67 @@ from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
 class Resource(object):
-    """
-    A basic mix-in class used to factor out data/behaviours common
+    """Base class for project fundamental objects.
+
+    This is a basic mix-in class used to factor out data/behaviours common
     to the majority of model classes in the project's applications.
+    
+    Resource API is composed of:
+    * Basic methods and properties: 
+     * basic type and resource string representation
+     * caching operations
+    * Relational properties:
+     * how the resource relates to other resources
     """
 
-    #COMMENT fero: used to cache data
+    # Attribute used to cache data
     volatile_fields = []
+
+    #-----------------------------------------
+    # Basic properites
+    #-----------------------------------------
 
     @ClassProperty
     @classmethod
     def resource_type(cls):
+        """String representation of resource type"""
+        
         return cls.__name__.lower()
 
     @property
-    def uID(self):
-        """Unique string identifier"""
-        return "%s-%s" % (self.resource_type, self.pk)
+    def urn(self):
+        """Unique resource name"""
+        return "%s/%s" % (self.resource_type, self.pk)
+    
+    # DEPRECATED
+    # @property
+    # def uID(self):
+    #   """Unique string identifier"""
+    #   return "%s-%s" % (self.resource_type, self.pk)
 
     @permalink
     def get_absolute_url(self):
         return ('rest.views.resource_page', (), { 
-                'resource_type' : self.resource_type, 'resource_id' : self.pk 
+                'resource_type' : self.resource_type, 
+                'resource_id' : self.pk 
         })
 
     @property
     def preferred_contact_email(self):
-        #TODO placeholder domthu
-        return "a@example.com"
-        #raise NotImplementedError
+        """The email address, we should write if we would know more info on the resource.
+
+        It is not necessarily bound to a person. 
+
+        NOTE that it could be even a list of addresses following syntax in RFC 5322 and RFC 5321,
+        or simply http://en.wikipedia.org/wiki/Email_address#Syntax :)
+        """
+
+        raise NotImplementedError
+
+    #------------------------------------
+    # Basic properties: cache management
+    #------------------------------------
         
-    #
-    # Cache check data
-    #
     def save_checkdata_in_cache(self):
         key = Resource.cache_key(self.pk)
         data_to_cache = {}
@@ -77,10 +105,117 @@ class Resource(object):
 
     @classmethod
     def cache_key(cls, resource_id):
-        #TODO fero CHECK: it should be self.uID !
+        #TODO fero CHECK
         #Pay attention because it is connected to class
         return "%s/%s" % (cls.resource_type, resource_id)
         
+    #---------------------------------------------
+    # Relational properties: 
+    # not all must be implemented by Resource subclasses
+    # but just only that makes sense
+    #---------------------------------------------
+
+    @property
+    def sites(self):
+        """Return DES instances bound to the resource"""
+        raise NotImplementedError
+
+    @property
+    def site(self):
+        """Return the DES instance bound to the resource"""
+        raise NotImplementedError
+
+    @property
+    def gas_list(self):
+        """Return gas list bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def gas(self):
+        """Return gas bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def persons(self):
+        """Return persons bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def person(self):
+        """Return person bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def gasmembers(self):
+        """Return gas members bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def gasmember(self):
+        """Return gas member to resource"""
+        raise NotImplementedError
+        
+    @property
+    def pacts(self):
+        """Return pacts bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def pact(self):
+        """Return gas bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def suppliers(self):
+        """Return suppliers bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def supplier(self):
+        """Return gas bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def orders(self):
+        """Return orders bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def order(self):
+        """Return order bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def deliveries(self):
+        """Return deliveries bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def delivery(self):
+        """Return delivery bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def withdrawals(self):
+        """Return withdrawal bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def withdrawal(self):
+        """Return withdrawal bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def products(self):
+        """Return products bound to resource"""
+        raise NotImplementedError
+        
+    @property
+    def product(self):
+        """Return product bound to resource"""
+        raise NotImplementedError
+        
+
 class PermissionResource(Resource, PermissionBase):
     """
     Just a convenience for classes inheriting both from Resource and PermissionBase
