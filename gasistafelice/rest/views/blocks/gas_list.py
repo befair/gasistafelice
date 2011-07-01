@@ -42,14 +42,14 @@ class Block(AbstractBlock):
         self.refresh_rate = (60 * 2)
         
         self.start_open  = True
-    
         
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
 
     def is_valid(self, resource_type):
-        # This block is only valid for DES, Supplier and User
+
+        # This block is valid for DES, Supplier and User
         # When related to DES it shows GAS available in DES
         # When related to Supplier it show GAS bound to the Supplier through a pact
         # When related to User it show GAS for which the User is a GASMember
@@ -75,12 +75,11 @@ class Block(AbstractBlock):
         resource = request.resource
 
         if args == "":
-            gas_list = resource.gas_list
 
             context = {
                 'block_type' : self.name,
                 'resource'   : resource,
-                'resource_list' : gas_list
+                'resource_list'   : resource.gas_list
             }
             return render_to_xml_response('blocks/resource_list.xml', context)
 
