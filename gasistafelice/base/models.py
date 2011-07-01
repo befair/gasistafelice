@@ -116,12 +116,12 @@ class Resource(object):
     #---------------------------------------------
 
     @property
-    def sites(self):
+    def des_list(self):
         """Return DES instances bound to the resource"""
         raise NotImplementedError
 
     @property
-    def site(self):
+    def des(self):
         """Return the DES instance bound to the resource"""
         raise NotImplementedError
 
