@@ -358,8 +358,8 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        if user is None:
-            return ""
+        #if user is None:
+        #    return ""
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
         #TODO: fixtures create user foreach person
