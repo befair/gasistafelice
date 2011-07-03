@@ -6,7 +6,7 @@ class CurrencyField(models.DecimalField):
     """Subclass of DecimalField.
     It must be positive.
 
-    We do not wanto to round up to second decimal here.
+    We do not want to round up to second decimal here.
     We will do it in a place suitable for views.
     """
 
