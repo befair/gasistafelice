@@ -161,16 +161,16 @@ class GASConfig(models.Model, PermissionResource):
 
     show_order_by_supplier = models.BooleanField(default=True, 
         help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-    )  
+    )
 
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default closing order day of the week")
-    )  
+    )
     #TODO: see ticket #65
     default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default delivery day of the week")
-    )  
+    )
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
     #TODO placeholder domthu: Default time to be set to 00:00
@@ -180,11 +180,14 @@ class GASConfig(models.Model, PermissionResource):
   
     default_delivery_time = models.TimeField(blank=True, null=True,
         help_text=_("default delivery closing hour and minutes")
-    )  
+    )
 
-    
-    use_single_delivery = models.BooleanField(default=True, 
-        help_text=_("GAS uses only one delivery place")
+    can_change_withdrawal_place_on_each_order = models.BooleanField(default=False, 
+        help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
+    )
+
+    can_change_delivery_place_on_each_order = models.BooleanField(default=False, 
+        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
@@ -202,7 +205,7 @@ class GASConfig(models.Model, PermissionResource):
     #-- Meta --#
     class Meta:
         verbose_name = _('GAS options')
-        verbose_name_plural = _('GAS options')
+        verbose_name_plural = _('GAS options')in add_principal
         app_label = 'gas'
 
     def __unicode__(self):
@@ -358,11 +361,11 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        #if user is None:
-        #    return ""
-        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
+        if user is None:
+           return ""
         #TODO: fixtures create user foreach person
+        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
     
     @property        

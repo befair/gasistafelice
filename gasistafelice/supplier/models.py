@@ -182,7 +182,7 @@ class SupplierStock(models.Model, PermissionResource):
 
     supplier = models.ForeignKey(Supplier)
     product = models.ForeignKey(Product)
-    price = CurrencyField() 
+    price = CurrencyField()
     code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
