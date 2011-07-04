@@ -203,12 +203,12 @@ class GASConfig(models.Model, PermissionResource):
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
 
-    #history = HistoricalRecords()
+    history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
         verbose_name = _('GAS options')
-        verbose_name_plural = _('GAS options')in add_principal
+        verbose_name_plural = _('GAS options')
         app_label = 'gas'
 
     def __unicode__(self):
