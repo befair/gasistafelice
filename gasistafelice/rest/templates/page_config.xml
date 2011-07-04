@@ -1,10 +1,10 @@
 <page>
-	<resource  sanet_urn="{{resource.resource_type}}/{{resource.id}}">
+	<resource  sanet_urn="{{resource.urn}}">
 	{{ resource }}
 	</resource>
 
         {% for parent in parents %}
-		<parent sanet_urn="{{parent.resource_type}}/{{parent.id}}">
+		<parent sanet_urn="{{parent.urn}}">
 		{{parent}}
 		</parent>
         {%endfor%}
