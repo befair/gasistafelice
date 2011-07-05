@@ -76,45 +76,45 @@ def delete(request, comment_id, next=None):
 
 class NoteList(list):
 
-	def __init__(self, items, count):
-		self.count = count
-		super(NoteList, self).__init__(items)
+    def __init__(self, items, count):
+        self.count = count
+        super(NoteList, self).__init__(items)
 
 
 def get_all_notes( ignore_resources = None):
 
-	all_comments = Comment.objects.filter(is_removed=False).select_related() 
-	notes_d = { }
-	for comment in all_comments:
-		obj = comment.content_object
-		
-		if obj != None:
-			if ignore_resources:
-				if obj.__class__.__name__.lower() in ignore_resources:
-					continue
-		
-		#print "NOTES: " , obj, type(obj)
-		notes_d[obj] = notes_d.get(obj, []) + [comment]
+    all_comments = Comment.objects.filter(is_removed=False).select_related() 
+    notes_d = { }
+    for comment in all_comments:
+        obj = comment.content_object
+        
+        if obj != None:
+            if ignore_resources:
+                if obj.__class__.__name__.lower() in ignore_resources:
+                    continue
+        
+        #print "NOTES: " , obj, type(obj)
+        notes_d[obj] = notes_d.get(obj, []) + [comment]
 
-	notes = NoteList(notes_d.items(), all_comments.count())
-	notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))
-	
-	return notes
+    notes = NoteList(notes_d.items(), all_comments.count())
+    notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))
+    
+    return notes
 
 
 def get_notes_for( resources ):
-	all_comments = Comment.objects.filter(is_removed=False).select_related().all()
-	notes_d = { }
-	for comment in all_comments:
-		obj = comment.content_object
-		if obj != None:
-			if obj in resources:
+    all_comments = Comment.objects.filter(is_removed=False).select_related().all()
+    notes_d = { }
+    for comment in all_comments:
+        obj = comment.content_object
+        if obj != None:
+            if obj in resources:
                                 notes_d[obj] = notes_d.get(obj, []) + [comment]
 
-	notes = NoteList(notes_d.items(), all_comments.count())
-	notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))
+    notes = NoteList(notes_d.items(), all_comments.count())
+    notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))
 
-	return notes
+    return notes
 
 #---------------------------------------------------------------------#
 #                                                                     #
@@ -123,5 +123,4 @@ def get_notes_for( resources ):
 #@login_required #to filter notes according to user
 #def show_all(request):
 #context = { 'notes' : get_all_notes() }
-#	return render_to_response('comments/show_all.html', context)
-
+#    return render_to_response('comments/show_all.html', context)

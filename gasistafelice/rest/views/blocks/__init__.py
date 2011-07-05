@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
 
 from gasistafelice.globals import type_model_d
-from rest.models import BlockConfiguration
+from gasistafelice.rest.models import BlockConfiguration
 
 #------------------------------------------------------------------------------#
 #                                                                              #

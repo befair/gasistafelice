@@ -41,4 +41,3 @@ urlpatterns = patterns('rest.views',
 
 )
 
-

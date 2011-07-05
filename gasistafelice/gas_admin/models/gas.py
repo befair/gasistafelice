@@ -1,6 +1,6 @@
 
 from gasistafelice.base.models import Person
-from gasistafelice.admin.models import *
+from gasistafelice.admin.models import GASAdmin, GASSupplierOrderAdmin, gas_models, supplier_models
 
 from gasistafelice.auth import EDIT, CREATE
 
@@ -55,5 +55,4 @@ class GASAdmin_GASSupplierOrder(GASSupplierOrderAdmin):
         p = Person.objects.get(user=request.user)
         rv = qs.filter(gas__in=p.gasmember_set.all())
         return rv
-
 

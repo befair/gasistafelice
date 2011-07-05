@@ -5,14 +5,13 @@ from django.contrib.auth.decorators import login_required
 
 from gasistafelice.lib.shortcuts import render_to_xml_response
 
-from gasistafelice.rest.utils import load_block_handler
+from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GAS, GASSupplierOrder
 from gasistafelice.des.models import Siteattr, Site
 
-from comments.views import get_all_notes
-from comments.views import get_notes_for
+from gasistafelice.comments.views import get_all_notes, get_notes_for
 
 import time
 

@@ -15,11 +15,11 @@ from gasistafelice.lib.shortcuts import render_to_response
 DEFAULT_CONTEXTMENU_ENTRIES = [
     # This entry points to the resource page
     {
-    	'id'   : 'page',
-    	'icon' : 'info.png', 
-    	'descr': _('Resource page'), 
-    	'type' : 'url',
-    	'data'  : '#rest/%(resource_type)s/%(resource_id)s/',
+        'id'   : 'page',
+        'icon' : 'info.png', 
+        'descr': _('Resource page'), 
+        'type' : 'url',
+        'data'  : '#rest/%(resource_type)s/%(resource_id)s/',
     },
 ]
 
@@ -36,7 +36,7 @@ def get_default_menu_entries(resource, user=None):
     entries = copy.deepcopy(DEFAULT_CONTEXTMENU_ENTRIES)
 
     for entry in entries:
-    	entry['data'] = entry['data'] % {
+        entry['data'] = entry['data'] % {
                                 'resource_type': resource.resource_type, 
                                 'resource_id'  : resource.pk
         }
@@ -74,13 +74,13 @@ def get_default_menu_entries(resource, user=None):
     
 def __calculate_node_url(node):
     try:
-    	vname = "state.views.node_by_path"
-    	kwargs = { 'path': node.name }
-    	url = reverse(vname, args=[], kwargs=kwargs)
-    	return url			
+        vname = "state.views.node_by_path"
+        kwargs = { 'path': node.name }
+        url = reverse(vname, args=[], kwargs=kwargs)
+        return url            
     except Exception, e:
-    	return ''
-    		
+        return ''
+            
 #---------------------------------------------------------------------#
 #                                                                     #
 #---------------------------------------------------------------------#
@@ -105,9 +105,9 @@ def get_context_menu(request):
     entries += get_external_menu_entries(resource, user)
     
     context = {
-    	  'media_url': settings.MEDIA_URL
-    	, 'resource': request.resource
-    	, 'menu_entries': entries
+          'media_url': settings.MEDIA_URL
+        , 'resource': request.resource
+        , 'menu_entries': entries
     }
 
     pt = ['blocks/menu.xml']

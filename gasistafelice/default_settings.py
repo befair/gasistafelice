@@ -84,8 +84,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'gasistafelice.urls'
 
 TEMPLATE_DIRS = (
-	PROJECT_ROOT + "/rest/templates",
-	PROJECT_ROOT + "/templates",
+    PROJECT_ROOT + "/rest/templates",
+    PROJECT_ROOT + "/templates",
 )
 
 INSTALLED_APPS = (

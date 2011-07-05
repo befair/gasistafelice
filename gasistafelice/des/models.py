@@ -22,6 +22,7 @@ from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import Resource
+from gasistafelice.gas.models import GAS, GASMember
 
 import time
 
@@ -83,7 +84,7 @@ class DES(Site, Resource):
     def gas_list(self):
         return GAS.objects.all()
         #TODO: enable the following when database is updated with des attribute for GAS
-        return self.gas_set.all()
+        # return self.gas_set.all()
 
     #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
 

@@ -80,7 +80,7 @@ class Block(AbstractBlock):
             context = {
                 'block_type' : self.name,
                 'resource'   : resource,
-                'resource_list'   : gas_list
+                'resource_list' : gas_list
             }
             return render_to_xml_response('blocks/resource_list.xml', context)
 

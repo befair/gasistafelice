@@ -1,4 +1,3 @@
- 
 # Copyright (C) 2008 Laboratori Guglielmo Marconi S.p.A. <http://www.labs.it>
 #
 # This file is part of SANET
@@ -28,46 +27,45 @@ from django.utils import simplejson
 # Json Facilities
 
 class MyJSONEncoder(DjangoJSONEncoder):
-	def default(self, o):
-		if isinstance(o, models.Model):
-			return o.toJson()
-		else:
-			return super(MyJSONEncoder, self).default(o)
+    def default(self, o):
+        if isinstance(o, models.Model):
+            return o.toJson()
+        else:
+            return super(MyJSONEncoder, self).default(o)
 
 class JsonResponse(HttpResponse):
-	def __init__(self, object):
-		if isinstance(object, QuerySet):
-			try:
-				object = map(lambda x : x.toJson() , object)
-				content = simplejson.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
-			except:
-				content = serialize('json', object)
-		else:
-			content = simplejson.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
-		super(JsonResponse, self).__init__(content, mimetype='application/json')
+    def __init__(self, object):
+        if isinstance(object, QuerySet):
+            try:
+                object = map(lambda x : x.toJson() , object)
+                content = simplejson.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
+            except:
+                content = serialize('json', object)
+        else:
+            content = simplejson.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
+        super(JsonResponse, self).__init__(content, mimetype='application/json')
 
 #------------------------------------------------------------------------------
 
 class SVGHttpResponse(HttpResponse):
-	def __init__(self, *args, **kw):
-		kw['mimetype']="image/svg+xml"
-		HttpResponse.__init__(self, *args, **kw)
+    def __init__(self, *args, **kw):
+        kw['mimetype']="image/svg+xml"
+        HttpResponse.__init__(self, *args, **kw)
 
 #------------------------------------------------------------------------------
 
 class XMLHttpResponse(HttpResponse):
-	def __init__(self, *args, **kw):
-		kw['mimetype']="text/xml"
-		HttpResponse.__init__(self, *args, **kw)
+    def __init__(self, *args, **kw):
+        kw['mimetype']="text/xml"
+        HttpResponse.__init__(self, *args, **kw)
 
 #------------------------------------------------------------------------------
 
 class HttpResponseWithXJSONMessages(HttpResponse):
-	def __init__(self, request, *args, **kw):
-		HttpResponse.__init__(self, *args, **kw)
-		messages = request.user.get_and_delete_messages()
-		jsoned = simplejson.dumps({ 'user_messages' : messages })
-		#TODO: Javascription X-JSON evaluation does not support quoting, support it !!!
-		#jsoned = str(Header(jsoned, 'iso-8859-1'))
-		self['X-JSON'] = jsoned
-
+    def __init__(self, request, *args, **kw):
+        HttpResponse.__init__(self, *args, **kw)
+        messages = request.user.get_and_delete_messages()
+        jsoned = simplejson.dumps({ 'user_messages' : messages })
+        #TODO: Javascription X-JSON evaluation does not support quoting, support it !!!
+        #jsoned = str(Header(jsoned, 'iso-8859-1'))
+        self['X-JSON'] = jsoned

@@ -19,13 +19,13 @@
 from django.db import models
 
 class ResourceList(models.CharField):
-	"""A fake field class to correctly display resource list vertically"""
-	pass
+    """A fake field class to correctly display resource list vertically"""
+    pass
 
 class ResourceListInline(models.CharField):
-	"""A fake field class to correctly display resource list horizontally"""
-	pass
+    """A fake field class to correctly display resource list horizontally"""
+    pass
 
 class HTMLField(models.TextField):
-	"""A fake field class to include HTML content"""
-	pass
+    """A fake field class to include HTML content"""
+    pass

@@ -127,12 +127,12 @@ class Resource(object):
 
     @property
     def gas_list(self):
-        """Return gas list bound to resource"""
+        """Return GAS list bound to resource"""
         raise NotImplementedError
         
     @property
     def gas(self):
-        """Return gas bound to resource"""
+        """Return GAS bound to resource"""
         raise NotImplementedError
         
     @property
@@ -147,12 +147,12 @@ class Resource(object):
         
     @property
     def gasmembers(self):
-        """Return gas members bound to resource"""
+        """Return GAS members bound to resource"""
         raise NotImplementedError
         
     @property
     def gasmember(self):
-        """Return gas member to resource"""
+        """Return GAS member bound to resource"""
         raise NotImplementedError
         
     @property
@@ -162,7 +162,7 @@ class Resource(object):
         
     @property
     def pact(self):
-        """Return gas bound to resource"""
+        """Return pact bound to resource"""
         raise NotImplementedError
         
     @property
@@ -172,7 +172,7 @@ class Resource(object):
         
     @property
     def supplier(self):
-        """Return gas bound to resource"""
+        """Return supplier bound to resource"""
         raise NotImplementedError
         
     @property
@@ -197,7 +197,7 @@ class Resource(object):
         
     @property
     def withdrawals(self):
-        """Return withdrawal bound to resource"""
+        """Return withdrawals bound to resource"""
         raise NotImplementedError
         
     @property

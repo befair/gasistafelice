@@ -28,42 +28,41 @@ This module offer a unique class for managing resource context
 
 class URN(list):
     #NOT NEEDED TODO placeholder seldon: translate
-	"""Questa classe e' utile per generalizzare la gestione del percorso di un oggetto.
-	Una istanza e' rappresentata da una gerarchia che parte dall'oggetto sito
+    """Questa classe e' utile per generalizzare la gestione del percorso di un oggetto.
+    Una istanza e' rappresentata da una gerarchia che parte dall'oggetto sito
 
-	La classe e' una lista i cui elementi sono il percorso dell'oggetto 
-	L'oggetto che rappresenta il contesto e' l'elemento in coda allo stack
+    La classe e' una lista i cui elementi sono il percorso dell'oggetto 
+    L'oggetto che rappresenta il contesto e' l'elemento in coda allo stack
 
-	Prende in input
-	@param resource_list = lista di risorse istanziate appartenenti all'urn
-	"""
+    Prende in input
+    @param resource_list = lista di risorse istanziate appartenenti all'urn
+    """
 
-	def __init__(self, resource_list):
+    def __init__(self, resource_list):
 
-		super(URN, self).__init__(resource_list)
-		self.name_list = [] #convenient name cache
-		for el in self:
-			self.name_list.append(el.name)
-		self.resource = self[-1]
+        super(URN, self).__init__(resource_list)
+        self.name_list = [] #convenient name cache
+        for el in self:
+            self.name_list.append(el.name)
+        self.resource = self[-1]
 
-	def __str__(self):
-		# Represent the URN path. 
-		# Each element is in the form $res_type/$res_id
-		rv = ""
-		for resource in self:
-			rv += "/" + resource.resource_type + "/" + str(resource.pk) 
-		return rv
+    def __str__(self):
+        # Represent the URN path. 
+        # Each element is in the form $res_type/$res_id
+        rv = ""
+        for resource in self:
+            rv += "/" + resource.resource_type + "/" + str(resource.pk) 
+        return rv
 
-	def __unicode__(self):
-		return str(self)
+    def __unicode__(self):
+        return str(self)
 
-	def __repr__(self):
-		return "/".join(self.name_list) + "/"
+    def __repr__(self):
+        return "/".join(self.name_list) + "/"
 
-	def __nonzero__(self):
-		# This object evaluates to False only if every value resource is empty
-		rv = False
-		for v in self:
-			if v : rv = True
-		return rv 
-
+    def __nonzero__(self):
+        # This object evaluates to False only if every value resource is empty
+        rv = False
+        for v in self:
+            if v : rv = True
+        return rv 

@@ -28,5 +28,4 @@ def render_to_xml_response(*args, **kwargs):
     return XMLHttpResponse(loader.render_to_string(*args, **kwargs))
 
 def render_to_context_response(request, template, context={}):
-	return render_to_response(template, context, context_instance=RequestContext(request))
-
+    return render_to_response(template, context, context_instance=RequestContext(request))

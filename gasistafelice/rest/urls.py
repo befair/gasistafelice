@@ -20,30 +20,30 @@ from django.conf.urls.defaults import *
 # Entry point for SANET url identification
 urlpatterns = patterns('',
 
-	# Welcome page
-	(r'^$',                                  'rest.views.index'),
-	
+    # Welcome page
+    (r'^$',                                  'rest.views.index'),
+    
     ### FUTURE TODO: these views do not follow the standard URL pattern 
     ### bind them to a site, or move them to another global application
     ### used to perform operation on the whole installation (even if it is multi-site)
-	(r'hh_mm',                               'rest.views.hh_mm'),
+    (r'hh_mm',                               'rest.views.hh_mm'),
 
-	(r'^site_settings$',                     'rest.views.site_settings'),
+    (r'^site_settings$',                     'rest.views.site_settings'),
 
-	# Global methods
-	(r'^quick_search/$',                     'rest.views.quick_search'),
+    # Global methods
+    (r'^quick_search/$',                     'rest.views.quick_search'),
 
-	# Global methods
-	(r'^list_comments',                      'rest.views.list_comments'),
+    # Global methods
+    (r'^list_comments',                      'rest.views.list_comments'),
 
-	(r'^blocks/(?P<resource_type>\w+)/$'                     , 'rest.views.list'),  
-	(r'^blocks/(?P<resource_type>\w+)/(?P<resource_id>\d+)/$', 'rest.views.parts'), 
+    (r'^blocks/(?P<resource_type>\w+)/$'                     , 'rest.views.list'),  
+    (r'^blocks/(?P<resource_type>\w+)/(?P<resource_id>\d+)/$', 'rest.views.parts'), 
     # END FUTURE TODO
 
-	# Generic
-	(r'^(?P<resource_type>\w+)/(?P<resource_id>\d+)/', include('rest.views.urls')), 
+    # Generic
+    (r'^(?P<resource_type>\w+)/(?P<resource_id>\d+)/', include('rest.views.urls')), 
 
-	#TODO fero CHECK: the following is needed anymore? ... maybe for permalink or 'natural keys'?
+    #TODO fero CHECK: the following is needed anymore? ... maybe for permalink or 'natural keys'?
     #TODO (r'^(?P<resource_type>\w+)/(?P<resource_id>\w+)/', include('rest.views.urls')), 
 
 )

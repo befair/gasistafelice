@@ -15,43 +15,41 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with GASISTA FELICE. If not, see <http://www.gnu.org/licenses/>.
 
+
 class ClassProperty(property):
     def __get__(self, cls, owner):
         return self.fget.__get__(None, owner)()
 
 def load_symbol(path):
 
-	# Split path in 'module' and 'class'
-	path = str(path) # avoid unicode
-	i = path.rfind('.')
-	module, attr = path[:i], path[i + 1:]
+    # Split path in 'module' and 'class'
+    path = str(path) # avoid unicode
+    i = path.rfind('.')
+    module, attr = path[:i], path[i + 1:]
 
-	#print ("loading " + module + " attr: " + attr)
-	# Load module (dlopen())
-	try:
-		mod = __import__(module, {}, {}, [attr])
-	except ImportError, e:
-		raise Exception('Error importing handler %s: "%s"' % (module, e))
-	except ValueError, e:
-		raise Exception('Error importing handler! Invalid Value')
+    #print ("loading " + module + " attr: " + attr)
+    # Load module (dlopen())
+    try:
+        mod = __import__(module, {}, {}, [attr])
+    except ImportError, e:
+        raise Exception('Error importing handler %s: "%s"' % (module, e))
+    except ValueError, e:
+        raise Exception('Error importing handler! Invalid Value')
 
-	# get symbol (dlsym())
-	try:
-		symbol = getattr(mod, attr)
-	except AttributeError:
-		raise Exception('Module "%s" does not define a "%s" table! ' % (module, attr))
+    # get symbol (dlsym())
+    try:
+        symbol = getattr(mod, attr)
+    except AttributeError:
+        raise Exception('Module "%s" does not define a "%s" table! ' % (module, attr))
 
-	return symbol
+    return symbol
 
 
 #Is it provided by default python lib?
 # def mkpath(path):
-#	current_dir = ''
-#	for dir_name in path.split('/'):
-#		current_dir = current_dir + "/" + dir_name
-#		if not os.path.exists(current_dir):
-#			os.mkdir(current_dir, 0755)
-		
-
-
-
+#    current_dir = ''
+#    for dir_name in path.split('/'):
+#        current_dir = current_dir + "/" + dir_name
+#        if not os.path.exists(current_dir):
+#            os.mkdir(current_dir, 0755)
+        
