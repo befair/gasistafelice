@@ -4,6 +4,7 @@ It includes common data on which all (or almost all) other applications rely on.
 """
 
 from django.db import models
+from django.db.models import get_model
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
@@ -246,6 +247,99 @@ class Person(models.Model, PermissionResource):
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname) 
 
+    ## START Resource API
+    # Note that all the following methods return a QuerySet
+    
+    @property
+    def gasmembers(self):
+        #TODO UNITTEST
+        """
+        GAS members associated to this person;
+        to each of them corresponds a membership of this person in a GAS.        
+        """
+        return self.gasmember_set.all()
+    
+    
+    @property
+    def gas_list(self):
+        #TODO UNITTEST
+        """
+        All GAS this person belongs to
+        (remember that a person may be a member of more than one GAS).
+        """
+        # needed to avoid stumbling upon circular imports
+        # `gasistafelice.base` app shouldn't depend on `gasistafelice.gas` 
+        GAS = get_model('gas', 'GAS')
+        gas_set = set([member.gas for member in self.gasmembers])
+        return GAS.objects.filter(pk__in=[obj.pk for obj in gas_set])
+    
+    @property
+    def des_list(self):
+        #TODO UNITTEST
+        """
+        All DESs this person belongs to 
+        (either as a member of one or more GAS or as a referrer for one or more suppliers in the DES).         
+        """
+        # needed to avoid stumbling upon circular imports
+        # `gasistafelice.base` app shouldn't depend on `gasistafelice.des` 
+        DES = get_model('des', 'DES')
+        des_set = set([gas.des for gas in self.gas_list])
+        return DES.objects.filter(pk__in=[obj.pk for obj in des_set])
+    
+    
+    @property
+    def pacts(self):
+        # TODO: what pacts are associated to a Person ?
+        pass
+    
+    @property
+    def suppliers(self):
+        #TODO UNITTEST
+        """Suppliers for which this person is a referrer."""
+        Supplier = get_model('supplier', 'Supplier')
+        supplier_set = set([sr.supplier for sr  in self.supplierreferrer_set])
+        return Supplier.objects.filter(pk__in=[obj.pk for obj in supplier_set])
+        
+    
+    @property
+    def orders(self):
+        #TODO UNITTEST
+        """
+        Supplier orders for which this person is a referrer.
+        """
+        raise NotImplementedError
+    
+    @property
+    def deliveries(self):
+        #TODO UNITTEST
+        """
+        Delivery appointments for which this person is a referrer.
+        """
+        Delivery = get_model('gas', 'Delivery')
+        qs = Delivery.objects.none()        
+        for member in self.gasmembers:
+            qs = qs | member.delivery_set.all()        
+        return qs
+    
+    @property
+    def withdrawals(self):
+        #TODO UNITTEST
+        """
+        Withdrawal appointments for which this person is a referrer.
+        """
+        Withdrawal = get_model('gas', 'Withdrawal')
+        qs = Withdrawal.objects.none()        
+        for member in self.gasmembers:
+            qs = qs | member.withdrawal_set.all()        
+        return qs
+    
+    
+    
+    ## END Resource API
+    
+    
+    
+    
     @property
     def city(self):
         return self.address.city 
