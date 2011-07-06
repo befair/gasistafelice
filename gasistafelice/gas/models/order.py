@@ -41,6 +41,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     history = HistoricalRecords()
+
+  def gas(self):
+        """Return the GAS issuing this order."""
+        return self.pact.gas
+  
+    def supplier(self):
+        """Return the supplier this order is placed against."""
+        return self.pact.supplier        
     
     def set_default_product_set(self):
         '''
