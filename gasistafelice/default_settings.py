@@ -119,14 +119,6 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr' : 'Generale',
         'blocks' : ['details', 'gas_list', 'supplier_list']
-    },{
-        'name' : 'gas',
-        'descr' : 'GAS',
-        'blocks' : ['gas_list']
-    },{
-        'name' : 'supplier',
-        'descr' : 'Fornitori',
-        'blocks' : ['supplier_list']
     }],
     'gas' : [{
         'name' : 'open_orders',
