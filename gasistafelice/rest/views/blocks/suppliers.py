@@ -7,12 +7,12 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 class Block(BlockWithList):
 
-    BLOCK_NAME = "gas_list"
-    BLOCK_DESCRIPTION = _("GAS")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "user"] 
+    BLOCK_NAME = "suppliers"
+    BLOCK_DESCRIPTION = _("Suppliers")
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"] 
 
     def _get_resource_list(self, request):
-        return request.resource.gas_list
+        return request.resource.suppliers
 
 # TODO fero CHECK
 # THIS IS USEFUL FOR USER ACTIONS: add/update/delete

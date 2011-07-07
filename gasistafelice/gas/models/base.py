@@ -116,6 +116,13 @@ class GAS(models.Model, PermissionResource):
 
         if not self.id_in_des:
             self.id_in_des = self.name[:3]
+            while True:
+                try:
+                    GAS.objects.get(id_in_des=self.id_in_des)
+                    self.id_in_des = self.id_in_des[:2] + chr(ord(self.id_in_des[2]) + 1)
+                except: #DoesNotExist or MultipleObjectsReturned
+                    break
+                    
         self.id_in_des = self.id_in_des.upper()
 
         if not self.pk:
@@ -126,7 +133,9 @@ class GAS(models.Model, PermissionResource):
 
         # This should never happen, but is it reasonable
         # that an installation has only one DES
-        if not self.des:
+        try:
+            self.des
+        except DES.DoesNotExist:
             if DES.objects.count() > 1:
                 raise AttributeError(_("You have to bind GAS %s to a DES") % self.name)
             else:
@@ -452,8 +461,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     """
 
-    gas = models.ForeignKey(GAS)
-    supplier = models.ForeignKey(Supplier)
+    gas = models.ForeignKey(GAS, related_name="pacts_set")
+    supplier = models.ForeignKey(Supplier, related_name="pacts_set")
     date_signed = models.DateField(blank=True, null=True, default=None)
 
     # which Products GAS members can order from Supplier

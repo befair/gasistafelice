@@ -22,7 +22,6 @@ from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import Resource
-from gasistafelice.gas.models import GAS, GASMember
 
 import time
 
@@ -82,6 +81,7 @@ class DES(Site, Resource):
 
     @property
     def gas_list(self):
+        from gasistafelice.gas.models import GAS, GASMember
         return GAS.objects.all()
         #TODO: enable the following when database is updated with des attribute for GAS
         # return self.gas_set.all()
@@ -90,6 +90,7 @@ class DES(Site, Resource):
 
     @property
     def gasmembers(self):
+        from gasistafelice.gas.models import GAS, GASMember
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
         return GASMember.objects.all()

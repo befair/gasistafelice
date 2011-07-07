@@ -1,5 +1,5 @@
-import re
 
+from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.shortcuts import render_to_response
 
 from django.contrib.auth.models import User
@@ -7,11 +7,17 @@ from django.contrib.auth.models import User
 from gasistafelice.globals import type_model_d
 from gasistafelice.rest.models import BlockConfiguration
 
+import re
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
 
 class AbstractBlock(object):
+    
+    BLOCK_NAME = "default name"
+    BLOCK_DESCRIPTION = _("default description")
+    BLOCK_VALID_RESOURCE_TYPES = None
     
     #------------------------------------------------------------------------------#
     #                                                                              #
@@ -23,8 +29,8 @@ class AbstractBlock(object):
         
         self.loc          = 'body'
 
-        self.name         = ''
-        self.description  = ''
+        self.name         = self.BLOCK_NAME
+        self.description  = self.BLOCK_DESCRIPTION
         
         self.auto_refresh = False
         self.refresh_rate = 0
@@ -45,9 +51,17 @@ class AbstractBlock(object):
     
     def is_valid(self, resource_type):
         """
-        Returns true if the block is valid for the given resource_type
+        Returns true if the block is valid for the given resource_type.
+
+        If class attribute BLOCK_VALID_RESOURCE_TYPES is None
+        it means that it is valid for ALL KIND OF RESOURCES
         """
-        return True
+
+        if self.BLOCK_VALID_RESOURCE_TYPES is None:
+            rv = True
+        else:
+            rv = resource_type in self.BLOCK_VALID_RESOURCE_TYPES
+        return rv
         
     #------------------------------------------------------------------------------#
     #                                                                              #
