@@ -32,7 +32,7 @@ class GAS(models.Model, PermissionResource):
     """
 
     name = models.CharField(max_length=128)
-    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))    
+    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=True, blank=True)
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
@@ -47,8 +47,8 @@ class GAS(models.Model, PermissionResource):
 
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
-    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))    
-    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))    
+    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
+    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))
 
     email_gas = models.EmailField(null=True, blank=True)
 
@@ -56,7 +56,7 @@ class GAS(models.Model, PermissionResource):
     #that retrieve email contact from GAS_REFERRER (role just added). GAS REFERRER usually is GAS President
     #COMMENT domthu: The president 
     email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
-    phone = models.CharField(max_length=50, blank=True)    
+    phone = models.CharField(max_length=50, blank=True)
     website = models.URLField(verify_exists=True, null=True, blank=True) 
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
