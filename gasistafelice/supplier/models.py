@@ -32,8 +32,16 @@ class Supplier(models.Model, PermissionResource):
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
     des = models.ManyToManyField(DES, null=True, blank=True)
-    
+        
     history = HistoricalRecords()
+    
+    display_fields = (
+            models.CharField(max_length=128, name="name", blank=False, null=False),
+            models.ForeignKey(Place, name="seat", null=True, blank=True),
+            models.CharField(name="vat_number", max_length=128, unique=True, null=True),
+            models.URLField(name="website", verify_exists=True, blank=True),
+            models.CharField(name="flavour", max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0]),      
+                   )
 
     # the set of products provided by this Supplier to every GAS
     @property
@@ -45,7 +53,7 @@ class Supplier(models.Model, PermissionResource):
     
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
-         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
+        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
     
     @property        
     def local_grants(self):
