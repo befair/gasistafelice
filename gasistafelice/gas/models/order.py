@@ -42,7 +42,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
-  def gas(self):
+    def gas(self):
         """Return the GAS issuing this order."""
         return self.pact.gas
   

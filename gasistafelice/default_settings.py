@@ -118,7 +118,7 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'suppliers']
+        'blocks' : ['details', 'gas_list', 'supplier_list']
     }],
     'gas' : [{
         'name' : 'open_orders',

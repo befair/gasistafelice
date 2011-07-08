@@ -15,7 +15,6 @@ from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
-from gasistafelice.auth.utils import get_parametric_roles
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
@@ -328,6 +327,8 @@ class Person(models.Model, PermissionResource):
         3) order to suppliers for which he/she is a referrer
         
         """
+        from gasistafelice.auth.utils import get_parametric_roles
+        
         GASSupplierOrder = get_model('gas', 'GASSupplierOrder')
         
         # initialize the return QuerySet 
