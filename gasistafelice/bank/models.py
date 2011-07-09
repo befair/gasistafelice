@@ -29,6 +29,11 @@ class Account(models.Model):
         #return self.balance
         return _("%(balance)s") % {'balance' : self.balance}
 
+    @property
+    def account_state(self):
+        #return _("%(balance)s") % {'balance' : self.balance}
+        return Account.objects.all()
+
 class Movement(models.Model):
     """Economic movement
 

@@ -131,6 +131,11 @@ class Resource(object):
         raise NotImplementedError
         
     @property
+    def account_state(self):
+        """Return GASMember economic state bound to resource"""
+        raise NotImplementedError
+        
+    @property
     def gas(self):
         """Return GAS bound to resource"""
         raise NotImplementedError

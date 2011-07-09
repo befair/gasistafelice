@@ -9,8 +9,9 @@ type_model_d = {
 	'product' : Product,
 	'order' : GASSupplierOrder,
 	'pact' : GASSupplierSolidalPact,
-    'delivery' : Delivery,
-    'withdrawal' : Withdrawal,
+	'delivery' : Delivery,
+	'withdrawal' : Withdrawal,
+	'account_state' : Account,
 	
 }
 
