@@ -2,6 +2,7 @@ from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import Supplier, Product
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
 from gasistafelice.des.models import DES
+from gasistafelice.bank.models import Account
 
 type_model_d = {
 	'site' : DES,
@@ -12,8 +13,9 @@ type_model_d = {
 	'product' : Product,
 	'order' : GASSupplierOrder,
 	'pact' : GASSupplierSolidalPact,
-    'delivery' : Delivery,
-    'withdrawal' : Withdrawal,
+	'delivery' : Delivery,
+	'withdrawal' : Withdrawal,
+	'account_state' : Account,
 	
 }
 

@@ -118,12 +118,24 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'suppliers']
+        'blocks' : ['account_state', 'details', 'gas_list', 'supplier_list']
+    },{
+        'name' : 'action',
+        'descr' : 'Ordina',
+        'blocks' : []
+    },{
+        'name' : 'gas',
+        'descr' : 'GAS',
+        'blocks' : ['gas_list']
+    },{
+        'name' : 'supplier',
+        'descr' : 'Fornitori',
+        'blocks' : ['supplier_list']
     }],
     'gas' : [{
         'name' : 'open_orders',
         'descr': 'Ordini aperti',
-        'blocks': ['open_orders'],
+        'blocks': [],
     },{
         'name' : 'ordered_products',
         'descr': 'Prodotti ordinati',
