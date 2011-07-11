@@ -129,17 +129,25 @@ class Resource(object):
     def gas_list(self):
         """Return GAS list bound to resource"""
         raise NotImplementedError
-        
-    @property
-    def account_state(self):
-        """Return GASMember economic state bound to resource"""
-        raise NotImplementedError
-        
+
     @property
     def gas(self):
         """Return GAS bound to resource"""
         raise NotImplementedError
-        
+
+    @property
+    def account_list(self):
+        """Return GASMember economic state bound to resource"""
+        raise NotImplementedError
+
+    def categories(self):
+        """Return GASMembers bound to resource"""
+        raise NotImplementedError
+
+    def category(self):
+        """Return GASMembers bound to resource"""
+        raise NotImplementedError
+
     @property
     def persons(self):
         """Return persons bound to resource"""

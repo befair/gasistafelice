@@ -7,12 +7,13 @@ type_model_d = {
 	'person' : Person,
 	'supplier' : Supplier,
 	'product' : Product,
+	'category' : ProductCategory,
 	'order' : GASSupplierOrder,
 	'pact' : GASSupplierSolidalPact,
 	'delivery' : Delivery,
 	'withdrawal' : Withdrawal,
-	'account_state' : Account,
-	
+	'account' : Account,
+	'user' : Resource,
 }
 
 RESOURCE_LIST = type_model_d.keys()
