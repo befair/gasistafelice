@@ -26,7 +26,12 @@ def des_version():
 @register.simple_tag
 def urn(resource):
     #TODO placeholder domthu. Use it in every templates following sanet_urn="
-    raise NotImplementedError
+    #Template tag urn not yet used because it a ressource property now
+    if resource.pk
+        return "%s/%s" % (resource.resource_type, resource.pk)  #sanet_urn=
+    else
+        return "%s" % (resource.resource_type)
+    #raise NotImplementedError
 
 #--------------------------------------------------------------------------------
 

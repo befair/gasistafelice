@@ -1,5 +1,5 @@
-from gasistafelice.base.models import Person
-from gasistafelice.supplier.models import Supplier, Product
+from gasistafelice.base.models import Person, Resource
+from gasistafelice.supplier.models import Supplier, Product, ProductCategory
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
 from gasistafelice.des.models import DES
 from gasistafelice.bank.models import Account
@@ -11,12 +11,13 @@ type_model_d = {
 	'person' : Person,
 	'supplier' : Supplier,
 	'product' : Product,
+	'category' : ProductCategory,
 	'order' : GASSupplierOrder,
 	'pact' : GASSupplierSolidalPact,
 	'delivery' : Delivery,
 	'withdrawal' : Withdrawal,
-	'account_state' : Account,
-	
+	'account' : Account,
+	'user' : Resource,
 }
 
 RESOURCE_LIST = type_model_d.keys()

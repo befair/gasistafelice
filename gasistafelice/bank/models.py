@@ -29,9 +29,9 @@ class Account(models.Model):
         #return self.balance
         return _("%(balance)s") % {'balance' : self.balance}
 
+    # Resource API
     @property
-    def account_state(self):
-        #return _("%(balance)s") % {'balance' : self.balance}
+    def account_list(self):
         return Account.objects.all()
 
 class Movement(models.Model):

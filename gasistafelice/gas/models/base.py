@@ -64,6 +64,7 @@ class GAS(models.Model, PermissionResource):
 
     note = models.TextField(blank=True)
 
+    # Resource API
     des = models.ForeignKey(DES)
 
     #COMMENT fero: photogallery and attachments does not go here
@@ -97,7 +98,29 @@ class GAS(models.Model, PermissionResource):
     @property
     def economic_state(self):
         return u"%s - %s" % (self.account, self.liquidity)
-    
+
+    # Resource API
+    @property
+    def account_list(self):
+        return Account.objects.all()
+
+    # Resource API
+    @property
+    def gasmembers(self):
+        return GASMember.objects.all()
+
+    # Resource API
+    @property
+    def suppliers(self):
+        return Supplier.objects.all()
+
+    # Resource API
+    def categories(self):
+        from gasistafelice.supplier.models import ProductCategory
+        #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
+        return ProductCategory.objects.all()
+
+
     #-- Methods --#
 
     def setup_roles(self):

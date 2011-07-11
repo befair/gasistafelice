@@ -32,7 +32,7 @@ class Supplier(models.Model, PermissionResource):
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
     des = models.ManyToManyField(DES, null=True, blank=True)
-    
+
     history = HistoricalRecords()
 
     # the set of products provided by this Supplier to every GAS
@@ -42,11 +42,11 @@ class Supplier(models.Model, PermissionResource):
     
     def __unicode__(self):
         return self.name
-    
+
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
          register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
-    
+
     @property        
     def local_grants(self):
         rv = (
@@ -54,7 +54,17 @@ class Supplier(models.Model, PermissionResource):
               )     
         return rv   
 
-    
+    # Resource API
+    def categories(self):
+        # All categories for one supplier for associated products
+        #TODO: domthu filter
+        return ProductCategory.objects.all()
+
+    # Resource API
+    #@property
+    #def suppliers(self):
+
+
 class SupplierReferrer(models.Model, PermissionResource):
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
@@ -147,6 +157,7 @@ class Product(models.Model, PermissionResource):
     # That's why uuid could be blank AND false. See save() method
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
     producer = models.ForeignKey(Supplier)
+    # Resource API
     category = models.ForeignKey(ProductCategory, null=True, blank=True)
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
     name = models.CharField(max_length=128)
@@ -174,13 +185,24 @@ class Product(models.Model, PermissionResource):
             self.uuid = None
         return super(Product, self).save(*args, **kw)
 
+    # Resource API
+    #def categories(self):
+    #    # A product belongs to one category
+    #    return self.category
+
+    # Resource API
+    #@property
+    #def suppliers(self):
+
 class SupplierStock(models.Model, PermissionResource):
     """A Product that a Supplier offers in the DES marketplace.
         
        Includes price, order constraints and availability information.          
     """
 
+    # Resource API
     supplier = models.ForeignKey(Supplier)
+    # Resource API
     product = models.ForeignKey(Product)
     price = CurrencyField()
     code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
@@ -221,3 +243,9 @@ class SupplierStock(models.Model, PermissionResource):
         if not self.code:
             self.code = None
         super(SupplierStock, self).save(*args, **kwargs)
+
+
+    # Resource API
+    #@property
+    #def suppliers(self):
+

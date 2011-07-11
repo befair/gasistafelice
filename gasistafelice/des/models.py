@@ -87,13 +87,39 @@ class DES(Site, Resource):
         # return self.gas_set.all()
 
     #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
+    # Resource API
+    @property
+    def account_list(self):
+        from gasistafelice.bank.models import Account
+        return Account.objects.all()
 
+    # Resource API
     @property
     def gasmembers(self):
         from gasistafelice.gas.models import GAS, GASMember
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
         return GASMember.objects.all()
+
+    # Resource API
+    @property
+    def gasmembers(self):
+        from gasistafelice.gas.models import GASMember
+        #if hasattr(self, 'isfiltered') and self.isfiltered:
+        #    return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
+        return GASMember.objects.all()
+
+    # Resource API
+    def categories(self):
+        from gasistafelice.supplier.models import ProductCategory
+        # All categories 
+        return ProductCategory.objects.all()
+
+    # Resource API
+    @property
+    def suppliers(self):
+        from gasistafelice.supplier.models import Supplier
+        return Supplier.objects.all()
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
