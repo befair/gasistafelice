@@ -743,10 +743,21 @@
 			
 			if (elements.length > 10)
 				elements.shift();
+
+            var new_elements = [];
+            var element_to_add = resource_type + "/" + resource_id + "/" + descr;
+
+            for (var i=0; i<=10; i++) {
+
+                if ((elements[i]) && (elements[i] != element_to_add))
+                    new_elements.push(elements[i]);
+            }
+                    
+
+			new_elements.push(element_to_add);
+            new_elements.reverse();
 			
-			elements.push(resource_type + "/" + resource_id + "/" +  descr);
-			
-			history_data = elements.join('|');
+			history_data = new_elements.join('|');
 				
 			$.cookie("rest_history", history_data);
 		}
@@ -1716,7 +1727,7 @@
 				if (in_history == "true")
 					return;
 				var url = $(e.target).attr('href');
-				var descr = $(e.target).text();
+				var descr = $(e.target).text().trim();
 				parts = url.split('/', 3);
 				rtype = parts[1];
 				rid   = parts[2];
