@@ -182,12 +182,6 @@ jQuery.resource_list_block_update = function(block_box_id) {
 	});	}
 
 
-var GLOBAL_FORM   = '#global_form';
-var GLOBAL_FORM_TEMPLATE = "\
-		<form name='global_form' id='global_form' method='POST' action='@@form_action@@'>\
-            @@form_content@@ \
-		</form>\
-"
 
 //------------------------------------------------------------------------------//
 //                                                                              //
@@ -198,7 +192,7 @@ jQuery.retrieve_form = function (action_el) {
     var action_name = action_el.html()
     var action_url = action_el.attr("href");
 	
-    var form_html = GLOBAL_FORM_TEMPLATE.replace("@@form_action@@", action_url);
+    var form_html = "";
     var form_script = "";
 
     var url = action_url;
@@ -206,9 +200,10 @@ jQuery.retrieve_form = function (action_el) {
     $.ajax({
         url : action_url, 
         success : function(d){
-            form_html = form_html.replace("@@form_content@@", $(d).find('fieldset').html());
-            //AAA: try the admin
-            form_html = $(d).find('form')
+
+            //AAA TODO: do we need to decouple from admin?
+            form_html = $(d).find('form');
+            form_html.attr('action', action_url);
             form_html.find('.submit-row').each( function () { $(this).remove();});
             form_script = $(d).find('script');
         },
@@ -220,15 +215,32 @@ jQuery.retrieve_form = function (action_el) {
 	// Initialize dialog component
 	//
 	var options = { 
-		success     : function (responseText, statusText)  { 
-			if (responseText.match('class="success"')) {
-				response = jQuery.parseXml(responseText);
-				var resource_type = $(response).attr('resource_type');
-				var resource_id   = $(response).attr('resource_id');
+		success : function (responseText, statusText)  { 
+            if (responseText.match('class="errorlist"')) {
+                form_html = $(responseText).find('form');
+                form_html.attr('action', action_url);
+                form_html.find('.submit-row').each( function () { $(this).remove();});
+                form_script = $(responseText).find('script');
+                $(NEW_NOTE_DIALOG).html(form_html);
+                eval(form_script);
+            } 
+            else {
+                //
+                // "hide"/close the dialog
+                //
+                $(NEW_NOTE_DIALOG).dialog('destroy');
+                $(NEW_NOTE_DIALOG).dialog('close');
+
+                window.location.reload();
+				// response = jQuery.parseXml(responseText);
+				// var resource_type = $(response).attr('resource_type');
+				// var resource_id   = $(response).attr('resource_id');
 				
-                var block_box_el = $(action_el).parentsUntil('li[block_name]');
-                var block_name = block_box_el.attr('block_name');
-                jQuery.GET_BLOCK_UPDATE_HANDLER(block_name)(block_box_id);
+                // var block_box_el = $(action_el).parentsUntil('li[block_name]');
+                // if (block_box_el) {
+                //     var block_name = block_box_el.attr('block_name');
+                //     jQuery.GET_BLOCK_UPDATE_HANDLER(block_name)(block_box_id);
+                // }
 			}			
 		}
 	}		
@@ -246,12 +258,7 @@ jQuery.retrieve_form = function (action_el) {
 	
 	var buttons = new Object();
 	buttons[gettext('Confirm')] = function() {
-		//
-		// "hide"/close the dialog
-		//
-		$(NEW_NOTE_DIALOG).dialog('destroy');
-		$(NEW_NOTE_DIALOG).dialog('close');
-		$(GLOBAL_FORM).ajaxSubmit(options);
+		$(form_html).ajaxSubmit(options);
 	};
 	
 //TODO fero gettext(action_name),
