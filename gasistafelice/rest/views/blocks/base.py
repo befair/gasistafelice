@@ -107,7 +107,7 @@ class BlockWithList(AbstractBlock):
 
         for action in user_actions:
             if action.url is None:
-                action.url = "rest/%s/%s/%s" % (resource.urn, self.name, action.name)
+                action.url = "%srest/%s/%s/%s" % (settings.URL_PREFIX, resource.urn, self.name, action.name)
 
         if args == "":
 

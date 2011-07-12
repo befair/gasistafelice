@@ -10,17 +10,19 @@ from gasistafelice.gas.forms import GASForm
 #                                                                              #
 #------------------------------------------------------------------------------#
 
-ACTION_CREATE_GAS = Action(
-    name=CREATE, 
-    verbose_name=_("Add GAS"), 
-    url=urlresolvers.reverse('admin:gas_gas_add')
-)
-
 class Block(BlockWithList):
+    """Render GAS list block with the ability to create a new GAS"""
 
     BLOCK_NAME = "gas_list"
     BLOCK_DESCRIPTION = _("GAS")
     BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "user"] 
+
+    # Actions
+    ACTION_CREATE_GAS = Action(
+        name=CREATE, 
+        verbose_name=_("Add GAS"), 
+        url=urlresolvers.reverse('admin:gas_gas_add')
+    )
 
     def _get_resource_list(self, request):
         return request.resource.gas_list
@@ -30,25 +32,25 @@ class Block(BlockWithList):
         user_actions = []
         # TODO seldon placeholder: check if a user can create a GAS
         if request.user.has_perm(CREATE, obj=request.resource):
-            user_actions.append(ACTION_CREATE_GAS)
+            user_actions.append(self.ACTION_CREATE_GAS)
 
         return user_actions
         
     def _get_add_form_class(self):
-        return GASForm
+        raise NotImplementedError("The add form page in use now is the admin interface page.")
 
+    #------------------------------------------------------------------------------#    
+    #                                                                              #     
+    #------------------------------------------------------------------------------#
+
+# Unuseful code below        
 
 # TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
 #        elif args == "new_note":
 #            return self.add_new_note(request, resource_type, resource_id)
 #        elif args == "remove_note":
 #            return self.remove_note(request, resource_type, resource_id)
 
-    #------------------------------------------------------------------------------#    
-    #                                                                              #     
-    #------------------------------------------------------------------------------#
-        
 #    #------------------------------------------------------------------------------#    
 #    #                                                                              #     
 #    #------------------------------------------------------------------------------#

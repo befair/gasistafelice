@@ -170,9 +170,7 @@ jQuery.resource_list_block_update = function(block_box_id) {
                 
                 // Set click handlers for actions
                 block_el.find('.block_action').each(function () { 
-                    $(this).click(function () { 
-                        return jQuery.retrieve_form(block_box_id, $(this)); 
-                    }) 
+                    $(this).click(function () { return jQuery.retrieve_form($(this))});
                 });
                 
 				jQuery.post_load_handler(); // Update GUI event handlers
@@ -195,7 +193,7 @@ var GLOBAL_FORM_TEMPLATE = "\
 //                                                                              //
 //------------------------------------------------------------------------------//
 
-jQuery.retrieve_form = function (block_box_id, action_el) {
+jQuery.retrieve_form = function (action_el) {
 
     var action_name = action_el.html()
     var action_url = action_el.attr("href");
@@ -203,11 +201,10 @@ jQuery.retrieve_form = function (block_box_id, action_el) {
     var form_html = GLOBAL_FORM_TEMPLATE.replace("@@form_action@@", action_url);
     var form_script = "";
 
-    var url = jQuery.pre+action_url;
-    //AAA: try the admin
-    var url = "/admin/gas/gas/add/";
+    var url = action_url;
+
     $.ajax({
-        url : url, 
+        url : action_url, 
         success : function(d){
             form_html = form_html.replace("@@form_content@@", $(d).find('fieldset').html());
             //AAA: try the admin
@@ -229,7 +226,7 @@ jQuery.retrieve_form = function (block_box_id, action_el) {
 				var resource_type = $(response).attr('resource_type');
 				var resource_id   = $(response).attr('resource_id');
 				
-                var block_box_el = $('#' + block_box_id);
+                var block_box_el = $(action_el).parentsUntil('li[block_name]');
                 var block_name = block_box_el.attr('block_name');
                 jQuery.GET_BLOCK_UPDATE_HANDLER(block_name)(block_box_id);
 			}			
