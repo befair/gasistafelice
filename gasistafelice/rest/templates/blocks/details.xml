@@ -51,12 +51,6 @@
 		{% endfor %}
 	</content>
 	
-	<content type="user_actions">
-		{% for a in user_actions %}
-		<action>{{a}}</action>
-		{% endfor %}
-	</content>
-
 	<content type="olap_data">
 		<url> {{ olap_url }} </url>
 		<session_user> {{ olap_user }} </session_user>

@@ -1,9 +1,20 @@
-from gasistafelice.rest.views.blocks.base import BlockWithList
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+from django.core import urlresolvers
+
+from gasistafelice.rest.views.blocks.base import BlockWithList, Action
+			
+from gasistafelice.auth import CREATE
+from gasistafelice.gas.forms import GASForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
+
+ACTION_CREATE_GAS = Action(
+    name=CREATE, 
+    verbose_name=_("Add GAS"), 
+    url=urlresolvers.reverse('admin:gas_gas_add')
+)
 
 class Block(BlockWithList):
 
@@ -14,25 +25,18 @@ class Block(BlockWithList):
     def _get_resource_list(self, request):
         return request.resource.gas_list
 
-# TODO fero CHECK
-# THIS IS USEFUL FOR USER ACTIONS: add/update/delete
-#        # Calculate allowed user actions
-#        #    
-#        user_actions = []
-#        
-#        if settings.CAN_CHANGE_CONFIGURATION_VIA_WEB == True:
-#            user = request.user
-#            if can_write_to_resource(user,res):
-#                if resource_type in ['container', 'node', 'target', 'measure']:
-#                    
-#                    if (resource_type in ['target', 'measure']):
-#                        if res.suspended:
-#                            user_actions.append('resume')
-#                        else:
-#                            user_actions.append('suspend')
-#                    else:
-#                        user_actions.append('resume')
-#                        user_actions.append('suspend')
+    def _get_user_actions(self, request):
+
+        user_actions = []
+        # TODO seldon placeholder: check if a user can create a GAS
+        if request.user.has_perm(CREATE, obj=request.resource):
+            user_actions.append(ACTION_CREATE_GAS)
+
+        return user_actions
+        
+    def _get_add_form_class(self):
+        return GASForm
+
 
 # TODO fero CHECK
 # THIS IS USEFUL FOR ADD/REMOVE NEW GAS
@@ -45,34 +49,6 @@ class Block(BlockWithList):
     #                                                                              #     
     #------------------------------------------------------------------------------#
         
-# TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
-#    def add_new_note(self,request, resource_type, resource_id):
-#        resource = request.resource
-#        
-#        if request.POST:
-#            
-#            #title = request.REQUEST.get('title');
-#            body  = request.REQUEST.get('body');
-#            
-#            new_comment = Comment(content_object = resource
-#                             ,site = DjangoSite.objects.all()[0]
-#                             ,user = request.user
-#                             ,user_name = request.user.username
-#                             ,user_email = request.user.email
-#                             ,user_url = ''
-#                             ,comment = body
-#                             ,ip_address = None
-#                             ,is_public = True
-#                             ,is_removed = False                       
-#                             )
-#                        
-#            new_comment.save()
-#
-#            return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
-#            
-#        return HttpResponse('')
-#            
 #    #------------------------------------------------------------------------------#    
 #    #                                                                              #     
 #    #------------------------------------------------------------------------------#

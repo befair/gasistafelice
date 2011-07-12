@@ -23,13 +23,6 @@ def des_version():
 
 #--------------------------------------------------------------------------------
 
-@register.simple_tag
-def urn(resource):
-    #TODO placeholder domthu. Use it in every templates following sanet_urn="
-    raise NotImplementedError
-
-#--------------------------------------------------------------------------------
-
 class RenderXmlDetail(template.Node):
 
     def __init__(self, field):
