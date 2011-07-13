@@ -54,6 +54,14 @@
 
 	<!-- Django's i18n for javascript -->
 	{# TODO fero <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script> #}
+	<script type="text/javascript">
+    
+        //FIXME: gettext workaround
+        function gettext(t) {
+            return t;
+        }
+    </script>
+
 
 	<script src="/static/nui/scripts/json.js"  type="text/javascript"></script>
 
@@ -110,11 +118,6 @@
 		var oldhash;
 
 		var generic_timers = new Array();
-
-        //FIXME: gettext workaround
-        function gettext(t) {
-            return t;
-        }
 
 		//==============================================================================
 		// BLOCK HANDLING

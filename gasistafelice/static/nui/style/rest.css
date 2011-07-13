@@ -386,9 +386,6 @@ TSTATE_UU=40
 }
 
 
-
-
-
 #ctx_menu_placeholder {
 	background-color: white;
 	border: 1px #505050 solid;
@@ -404,13 +401,10 @@ TSTATE_UU=40
 }
 
 
-
-/*
 #body {
-	min-height:10000px;
+	min-height:800px;
 }
 
 #resource_panel{
 	min-width: 240px;
 }
-*/
