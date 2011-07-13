@@ -12,6 +12,17 @@ class GAS(GAS):
     class Meta:
         proxy = True
 
+    @property
+    def orders(self):
+        """Return orders bound to resource"""
+        return GASSupplierOrder.objects.filter(pact__in=self.pacts)
+        
+    @property
+    def pacts(self):
+        """Return pacts bound to a GAS"""
+        return self.pacts_set.all()
+        
+
 #-------------------------------------------------------------------------------
 
 class GASMember(GASMember):

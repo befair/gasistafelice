@@ -10,7 +10,7 @@ from history.models import HistoricalRecords
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
-from gasistafelice.gas.managers import ActiveAppointmentManager, ArchivedAppointmentManager 
+from gasistafelice.gas.managers import AppointmentManager, AppointmentManager, OrderManager
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
@@ -40,6 +40,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
+    objects = OrderManager()
     history = HistoricalRecords()
     
     def set_default_product_set(self):
@@ -209,16 +210,10 @@ class Appointment(models.Model):
     (i.e.  meetings, events, ..)
     """
     
-    # active (future) appointments
-    active = ActiveAppointmentManager()
-    # archived (past) appointments
-    archived = ArchivedAppointmentManager()     
-
+    objects = AppointmentManager()
     
     class Meta:
         abstract = True
-        
- 
 
 class Delivery(Appointment, PermissionResource):
 

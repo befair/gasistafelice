@@ -2,9 +2,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import BlockWithList, Action
-			
 from gasistafelice.auth import CREATE
-from gasistafelice.gas.forms import GASForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #

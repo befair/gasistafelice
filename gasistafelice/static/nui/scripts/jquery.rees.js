@@ -113,7 +113,7 @@ jQuery.resource_list = function (block_box_id, element) {
 		res = res.replace('@@inforow@@', '');	
 	}
 	else {
-		res = gettext('There are no elements related to this resource.');
+		res = res.replace('@@inforow@@', gettext('There are no elements related to this resource.'));
 	}
 
 	return res;
