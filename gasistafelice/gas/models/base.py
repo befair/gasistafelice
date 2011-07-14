@@ -171,6 +171,9 @@ class GASConfig(models.Model, PermissionResource):
     Encapsulate here gas settings and configuration facilities
     """
 
+    # Link to parent class
+    gas = models.OneToOneField(GAS, related_name="config")
+
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
         related_name="gasmember_order_set", null=True, blank=True
     )
