@@ -29,7 +29,7 @@ jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME = {}
 jQuery.render_actions = function (block_box_id, contents) {
 
     // Block actions
-    var block_action_template = "<a href=\"@@action_url@@\" class=\"block_action\">@@action_verbose_name@@</a>";
+    var block_action_template = "<a href=\"#rest/@@action_url@@\" class=\"block_action\">@@action_verbose_name@@</a>";
     var block_actions = '';
 
 	if (contents.find('action').length > 0) {

@@ -3,6 +3,7 @@ from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import BlockWithList, Action
 from gasistafelice.auth import CREATE
+from gasistafelice.gas.forms import GASSupplierOrderForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -17,9 +18,11 @@ class Block(BlockWithList):
     # Actions
     ACTION_CREATE = Action(
         name=CREATE, 
-        verbose_name=_("Add Order"), 
-        url=urlresolvers.reverse('admin:gas_gassupplierorder_add')
+        verbose_name=_("Open a new order"), 
     )
+
+    def _get_add_form_class(self):
+        return GASSupplierOrderForm
 
     def _get_resource_list(self, request):
         return request.resource.orders.open()
@@ -32,4 +35,4 @@ class Block(BlockWithList):
             user_actions.append(self.ACTION_CREATE)
 
         return user_actions
-        
+

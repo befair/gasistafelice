@@ -22,6 +22,11 @@ class GAS(GAS):
         """Return pacts bound to a GAS"""
         return self.pacts_set.all()
         
+    @property
+    def suppliers(self):
+        """Return suppliers bound to a GAS"""
+        return self.supplier_set.all()
+        
 
 #-------------------------------------------------------------------------------
 

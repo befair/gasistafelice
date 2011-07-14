@@ -3,6 +3,7 @@ import types
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.contrib.admin import helpers
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import models #fields types
@@ -18,7 +19,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_response
+from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -33,7 +34,7 @@ from gasistafelice.auth import CREATE
 
 class BlockWithList(AbstractBlock):
 
-    ADD_FORM_TEMPLATE = None
+    ADD_FORM_TEMPLATE = "html/admin_form.html"
 
     #TODO fero
     #def options_response(self, request, resource_type, resource_id):
@@ -46,7 +47,7 @@ class BlockWithList(AbstractBlock):
         """Return resource list to be rendered"""
         raise NotImplementedError
 
-    def _get_add_form_class(self, request):
+    def _get_add_form_class(self):
         """Return add form class. Usually a FormFromModel"""
         raise NotImplementedError
 
@@ -59,15 +60,35 @@ class BlockWithList(AbstractBlock):
 
         form_class = self._get_add_form_class()
         if request.method == 'POST':
-            form = form_class(request.POST)
+
+            form = form_class(request, request.POST)
             if form.is_valid():
                 self._process_valid_form(form)
                 return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
                 
         else:
-            form = self._get_add_form_class()
+            form = form_class(request)
 
-        return render_to_response(self.ADD_FORM_TEMPLATE or 'html/form.html', { 'form' : form })
+        fields = form.base_fields.keys()
+        fieldsets = form_class.Meta.gf_fieldsets
+        adminForm = helpers.AdminForm(form, fieldsets, {}) 
+
+        context = {
+            'form' : form,
+            'adminform' : adminForm,
+            'opts' : form._meta.model._meta,
+            'add'  : True,
+            'change' : False,
+            'is_popup': False,
+            'save_as' : False,
+            'save_on_top': False,
+            'has_add_permission': True,
+            'has_delete_permission': True,
+            'has_change_permission': False,
+            'show_delete' : False,
+        }
+
+        return render_to_context_response(request, self.ADD_FORM_TEMPLATE, context)
 
 # TODO fero CHECK
 # THIS IS USEFUL FOR ADD/REMOVE NEW GAS
@@ -107,7 +128,7 @@ class BlockWithList(AbstractBlock):
 
         for action in user_actions:
             if action.url is None:
-                action.url = "%srest/%s/%s/%s" % (settings.URL_PREFIX, resource.urn, self.name, action.name)
+                action.url = "%s/%s/%s" % (resource.urn, self.name, action.name)
 
         if args == "":
 
