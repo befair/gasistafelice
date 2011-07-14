@@ -155,7 +155,7 @@ class GASMemberAdmin(admin.ModelAdmin):
 
 
 class SupplierAdmin(admin.ModelAdmin):
-    inlines = [SupplierStockInline, ]
+    # Disabled inlines = [SupplierStockInline, ]
 
     save_on_top = True
     

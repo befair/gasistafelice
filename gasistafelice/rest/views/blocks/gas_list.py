@@ -16,7 +16,7 @@ class Block(BlockWithList):
     BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "user"] 
 
     # Actions
-    ACTION_CREATE_GAS = Action(
+    ACTION_CREATE = Action(
         name=CREATE, 
         verbose_name=_("Add GAS"), 
         url=urlresolvers.reverse('admin:gas_gas_add')
@@ -30,7 +30,7 @@ class Block(BlockWithList):
         user_actions = []
         # TODO seldon placeholder: check if a user can create a GAS
         if request.user.has_perm(CREATE, obj=request.resource):
-            user_actions.append(self.ACTION_CREATE_GAS)
+            user_actions.append(self.ACTION_CREATE)
 
         return user_actions
         

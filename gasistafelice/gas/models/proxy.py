@@ -89,6 +89,11 @@ class DES(DES):
         #TODO: enable the following when database is updated with des attribute for GAS
         # return self.gas_set.all()
 
+    @property
+    def suppliers(self):
+        """Return suppliers bound to the DES"""
+        return Supplier.objects.all()
+
     #TODO placeholder domthu define Resource API
 
     @property
