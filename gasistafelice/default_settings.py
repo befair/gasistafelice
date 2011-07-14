@@ -123,7 +123,7 @@ RESOURCE_PAGE_BLOCKS = {
     'gas' : [{
         'name' : 'open_orders',
         'descr': 'Ordini aperti',
-        'blocks': ['open_orders'],
+        'blocks': ['suppliers', 'open_orders'],
     },{
         'name' : 'ordered_products',
         'descr': 'Prodotti ordinati',
