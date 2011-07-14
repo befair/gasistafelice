@@ -99,28 +99,6 @@ class GAS(models.Model, PermissionResource):
     def economic_state(self):
         return u"%s - %s" % (self.account, self.liquidity)
 
-    # Resource API
-    @property
-    def account_list(self):
-        return Account.objects.all()
-
-    # Resource API
-    @property
-    def gasmembers(self):
-        return GASMember.objects.all()
-
-    # Resource API
-    @property
-    def suppliers(self):
-        return Supplier.objects.all()
-
-    # Resource API
-    def categories(self):
-        from gasistafelice.supplier.models import ProductCategory
-        #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
-        return ProductCategory.objects.all()
-
-
     #-- Methods --#
 
     def setup_roles(self):
@@ -450,8 +428,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     """
 
-    gas = models.ForeignKey(GAS, related_name="pacts_set")
-    supplier = models.ForeignKey(Supplier, related_name="pacts_set")
+    gas = models.ForeignKey(GAS, related_name="pacts_gas_set")
+    supplier = models.ForeignKey(Supplier, related_name="pacts_supplier_set")
     date_signed = models.DateField(blank=True, null=True, default=None)
 
     # which Products GAS members can order from Supplier

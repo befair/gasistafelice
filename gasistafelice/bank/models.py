@@ -31,8 +31,8 @@ class Account(models.Model):
 
     # Resource API
     @property
-    def account_list(self):
-        return Account.objects.all()
+    def accounts(self):
+        return self
 
 class Movement(models.Model):
     """Economic movement

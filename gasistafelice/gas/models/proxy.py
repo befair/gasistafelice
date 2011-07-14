@@ -17,12 +17,40 @@ class GAS(GAS):
     def orders(self):
         """Return orders bound to resource"""
         return GASSupplierOrder.objects.filter(pact__in=self.pacts)
-        
+
     @property
     def pacts(self):
         """Return pacts bound to a GAS"""
-        return self.pacts_set.all()
-        
+        #return self.pacts_set.all()
+        return self.pacts_gas_set.all()
+
+    @property
+    def solidal_pacts(self):
+        """Return pacts bound to a GAS"""
+        #return GASSupplierSolidalPact.objects.filter(gas=self)
+        return GASSupplierSolidalPact.objects.all()
+
+    @property
+    def accounts(self):
+        #return Account.objects.filter(pk=self.account.pk | pk=self.liquidity.pk).order_by('balance')
+        result = []
+        result.append(Account.objects.get(pk=self.account.pk))
+        result.append(Account.objects.get(pk=self.liquidity.pk))
+        return result
+
+    @property
+    def gasmembers(self):
+        return GASMember.objects.filter(gas=self)
+
+    @property
+    def suppliers(self):
+        p = GASSupplierSolidalPact.objects.filter(gas=self)
+        return Supplier.objects.filter(pk__in=[obj.supplier.pk for obj in p])
+        #return Supplier.objects.all()
+
+    def categories(self):
+        #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
+        return ProductCategory.objects.all()
 
 #-------------------------------------------------------------------------------
 
@@ -39,7 +67,7 @@ class GASMember(GASMember):
     @property
     def pacts(self):
         # A GAS member is interested primarily in those pacts (`SupplierSolidalPact` instances) subscribed by its GAS
-        return self.gas.pacts
+        return self.gas.pacts 
     
     @property
     def suppliers(self):
@@ -95,7 +123,7 @@ class DES(DES):
 
     # Resource API
     @property
-    def account_list(self):
+    def accounts(self):
         return Account.objects.all()
 
     # Resource API
@@ -121,6 +149,18 @@ class DES(DES):
     @property
     def suppliers(self):
         return Supplier.objects.all()
+
+    @property
+    def pacts(self):
+        """Return pacts bound to all GAS in DES"""
+        return self.pacts_gas_set.all()
+
+    @property
+    def solidal_pacts(self):
+        """Return pacts bound to all GAS in DES"""
+        #g = self.gas_list
+        #return GASSupplierSolidalPact.objects.filter(gas__in=g)
+        return GASSupplierSolidalPact.objects.all()
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
@@ -162,3 +202,16 @@ class DES(DES):
         return ll
 
 #-------------------------------------------------------------------------------
+
+class Account(Account):
+
+    class Meta:
+        proxy = True
+
+    @property
+    def accounts(self):
+        return self
+
+#-------------------------------------------------------------------------------
+
+

@@ -136,16 +136,16 @@ class Resource(object):
         raise NotImplementedError
 
     @property
-    def account_list(self):
+    def accounts(self):
         """Return GASMember economic state bound to resource"""
         raise NotImplementedError
 
     def categories(self):
-        """Return GASMembers bound to resource"""
+        """Return ProductCategory bound to resource"""
         raise NotImplementedError
 
     def category(self):
-        """Return GASMembers bound to resource"""
+        """Return ProductCategory bound to resource"""
         raise NotImplementedError
 
     @property
@@ -172,7 +172,12 @@ class Resource(object):
     def pacts(self):
         """Return pacts bound to resource"""
         raise NotImplementedError
-        
+
+    @property
+    def solidal_pacts(self):
+        """Return solidal_pacts bound to resource"""
+        raise NotImplementedError
+
     @property
     def pact(self):
         """Return pact bound to resource"""
