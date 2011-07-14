@@ -53,8 +53,7 @@ class BlockWithList(AbstractBlock):
 
     def _process_valid_form(self, form):
         """Process form which passed is_valid() check"""
-        return True
-        raise NotImplementedError
+        form.save()
 
     def _add_resource(self, request):
 
@@ -64,7 +63,7 @@ class BlockWithList(AbstractBlock):
             form = form_class(request, request.POST)
             if form.is_valid():
                 self._process_valid_form(form)
-                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
+                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
                 
         else:
             form = form_class(request)
@@ -128,7 +127,7 @@ class BlockWithList(AbstractBlock):
 
         for action in user_actions:
             if action.url is None:
-                action.url = "#rest/%s/%s/%s" % (resource.urn, self.name, action.name)
+                action.url = "%s/%s/%s" % (resource.urn, self.name, action.name)
 
         if args == "":
 
