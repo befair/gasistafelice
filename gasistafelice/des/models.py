@@ -75,48 +75,6 @@ class DES(Site, Resource):
 
     bound_resource = None
 
-    @property
-    def gas_list(self):
-        from gasistafelice.gas.models import GAS, GASMember
-        return GAS.objects.all()
-        #TODO: enable the following when database is updated with des attribute for GAS
-        # return self.gas_set.all()
-
-    #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
-    # Resource API
-    @property
-    def account_list(self):
-        from gasistafelice.bank.models import Account
-        return Account.objects.all()
-
-    # Resource API
-    @property
-    def gasmembers(self):
-        from gasistafelice.gas.models import GAS, GASMember
-        if hasattr(self, 'isfiltered') and self.isfiltered:
-            return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
-        return GASMember.objects.all()
-
-    # Resource API
-    @property
-    def gasmembers(self):
-        from gasistafelice.gas.models import GASMember
-        #if hasattr(self, 'isfiltered') and self.isfiltered:
-        #    return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
-        return GASMember.objects.all()
-
-    # Resource API
-    def categories(self):
-        from gasistafelice.supplier.models import ProductCategory
-        # All categories 
-        return ProductCategory.objects.all()
-
-    # Resource API
-    @property
-    def suppliers(self):
-        from gasistafelice.supplier.models import Supplier
-        return Supplier.objects.all()
-
     def is_configured(self):
         name = Siteattr.get_attribute_or_none('name')
         if name == None:

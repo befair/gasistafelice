@@ -13,7 +13,6 @@ type_model_d = {
 	'delivery' : Delivery,
 	'withdrawal' : Withdrawal,
 	'account' : Account,
-	'user' : Resource,
 }
 
 RESOURCE_LIST = type_model_d.keys()

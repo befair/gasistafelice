@@ -1,9 +1,10 @@
 from django.db import models
 
 from gasistafelice.base.models import Person
-from gasistafelice.supplier.models import Supplier, Product
+from gasistafelice.supplier.models import Supplier, Product, ProductCategory
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
 from gasistafelice.des.models import DES
+from gasistafelice.bank.models import Account
 
 #-------------------------------------------------------------------------------
 
@@ -85,12 +86,41 @@ class DES(DES):
         # return self.gas_set.all()
 
     #TODO placeholder domthu define Resource API
+    #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
+    @property
+    def gas_list(self):
+        return GAS.objects.all()
+        #TODO: enable the following when database is updated with des attribute for GAS
+        # return self.gas_set.all()
 
+    # Resource API
+    @property
+    def account_list(self):
+        return Account.objects.all()
+
+    # Resource API
     @property
     def gasmembers(self):
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
         return GASMember.objects.all()
+
+    # Resource API
+    @property
+    def gasmembers(self):
+        if hasattr(self, 'isfiltered') and self.isfiltered:
+            return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
+        return GASMember.objects.all()
+
+    # Resource API
+    def categories(self):
+        # All categories 
+        return ProductCategory.objects.all()
+
+    # Resource API
+    @property
+    def suppliers(self):
+        return Supplier.objects.all()
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
