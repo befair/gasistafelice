@@ -125,11 +125,9 @@ class GAS(models.Model, PermissionResource):
                     
         self.id_in_des = self.id_in_des.upper()
 
+        created = False
         if not self.pk:
-
-            self.config = GASConfig()
-            self.account = Account.objects.create(balance=0)
-            self.liquidity = Account.objects.create(balance=0)
+            created = True
 
         # This should never happen, but is it reasonable
         # that an installation has only one DES
@@ -142,6 +140,12 @@ class GAS(models.Model, PermissionResource):
                 self.des = DES.objects.all()[0]
 
         super(GAS, self).save(*args, **kw)
+
+        if created:
+
+            self.config = GASConfig.objects.create(gas=self)
+            #TODO self.account = Account.objects.create()
+            #TODO self.liquidity = Account.objects.create()
 
 class GASConfig(models.Model, PermissionResource):
     """
