@@ -154,7 +154,11 @@ class ProductMU(models.Model, PermissionResource):
 class Product(models.Model, PermissionResource):
 
     # COMMENT: some producer don't have product codification. 
+<<<<<<< HEAD
     # That's why uuid could be blank AND null. See save() method
+=======
+    # That's why uuid could be blank AND false. See save() method
+>>>>>>> origin/domthu-dev
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
     producer = models.ForeignKey(Supplier)
     # Resource API
