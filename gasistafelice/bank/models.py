@@ -29,11 +29,6 @@ class Account(models.Model):
         #return self.balance
         return _("%(balance)s") % {'balance' : self.balance}
 
-    # Resource API
-    @property
-    def accounts(self):
-        return self
-
 class Movement(models.Model):
     """Economic movement
 

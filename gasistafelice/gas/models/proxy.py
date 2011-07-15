@@ -21,22 +21,12 @@ class GAS(GAS):
     @property
     def pacts(self):
         """Return pacts bound to a GAS"""
-        #return self.pacts_set.all()
-        return self.pacts_gas_set.all()
-
-    @property
-    def solidal_pacts(self):
-        """Return pacts bound to a GAS"""
-        #return GASSupplierSolidalPact.objects.filter(gas=self)
-        return GASSupplierSolidalPact.objects.all()
+        return self.pacts_set.all()
 
     @property
     def accounts(self):
-        #return Account.objects.filter(pk=self.account.pk | pk=self.liquidity.pk).order_by('balance')
-        result = []
-        result.append(Account.objects.get(pk=self.account.pk))
-        result.append(Account.objects.get(pk=self.liquidity.pk))
-        return result
+        return (Account.objects.filter(pk=self.account.pk) | Account.objects.filter(pk=self.liquidity.pk)).order_by('balance')
+        #raise NotImplementedError
 
     @property
     def gasmembers(self):
@@ -63,39 +53,37 @@ class GASMember(GASMember):
     def des(self):
         # A GAS member belongs to the DES its GAS belongs to.
         return self.gas.des
-    
+
     @property
     def pacts(self):
         # A GAS member is interested primarily in those pacts (`SupplierSolidalPact` instances) subscribed by its GAS
         return self.gas.pacts 
-    
+
     @property
     def suppliers(self):
         # A GAS member is interested primarily in those suppliers dealing with its GAS
         return self.gas.suppliers
-    
+
     @property
     def orders(self):
         # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
         return self.gas.orders
-    
+
     @property
     def deliveries(self):
         # A GAS member is interested primarily in delivery appointments scheduled for its GAS
         return self.gas.deliveries
-    
+
     @property
     def withdrawals(self):
         # A GAS member is interested primarily in withdrawal appointments scheduled for its GAS
         return self.gas.withdrawals
-    
+
     @property
     def products(self):
         # A GAS member is interested primarily in those products he/she can order
         return self.gas.products
-    
 
-    
 #-------------------------------------------------------------------------------
 
 class DES(DES):
@@ -124,7 +112,8 @@ class DES(DES):
     # Resource API
     @property
     def accounts(self):
-        return Account.objects.all()
+        #return Account.objects.all()
+        raise NotImplementedError
 
     # Resource API
     @property
@@ -153,14 +142,9 @@ class DES(DES):
     @property
     def pacts(self):
         """Return pacts bound to all GAS in DES"""
-        return self.pacts_gas_set.all()
-
-    @property
-    def solidal_pacts(self):
-        """Return pacts bound to all GAS in DES"""
+        return self.pacts_set.all()
         #g = self.gas_list
         #return GASSupplierSolidalPact.objects.filter(gas__in=g)
-        return GASSupplierSolidalPact.objects.all()
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
@@ -210,7 +194,7 @@ class Account(Account):
 
     @property
     def accounts(self):
-        return self
+        return Account.objects.filter(pk=self.pk)
 
 #-------------------------------------------------------------------------------
 

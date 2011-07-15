@@ -12,8 +12,7 @@ class Block(BlockWithList):
     BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"]
 
     def _get_resource_list(self, request):
-        return request.resource.solidal_pacts
-        #return request.resource.pacts
+        return request.resource.pacts
 
 # TODO fero CHECK
 # THIS IS USEFUL FOR USER ACTIONS: add/update/delete

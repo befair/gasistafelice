@@ -174,11 +174,6 @@ class Resource(object):
         raise NotImplementedError
 
     @property
-    def solidal_pacts(self):
-        """Return solidal_pacts bound to resource"""
-        raise NotImplementedError
-
-    @property
     def pact(self):
         """Return pact bound to resource"""
         raise NotImplementedError
