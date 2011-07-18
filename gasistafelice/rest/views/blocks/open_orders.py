@@ -12,7 +12,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "open_orders"
     BLOCK_DESCRIPTION = _("Open orders")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"]
 
     # Actions
     ACTION_CREATE = Action(

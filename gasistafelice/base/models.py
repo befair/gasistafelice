@@ -137,7 +137,12 @@ class Resource(object):
 
     @property
     def accounts(self):
-        """Return GASMember economic state bound to resource"""
+        """Return economic state bound to resource  (DES, GASMember, GAS or Supplier through )"""
+        raise NotImplementedError
+
+    @property
+    def account(self):
+        """Return an economic state bound to resource (DES, GASMember, GAS or Supplier through )"""
         raise NotImplementedError
 
     def categories(self):
@@ -229,33 +234,33 @@ class Resource(object):
         raise NotImplementedError
 
     @property
-    def product2s(self):
-        """Return products bound to resource"""
+    def stocks(self):
+        """Return SupplierStock list bound to resource"""
         raise NotImplementedError
 
     @property
-    def product2(self):
-        """Return product bound to resource"""
+    def stock(self):
+        """Return SupplierStock bound to resource"""
         raise NotImplementedError
 
     @property
-    def product3s(self):
-        """Return products bound to resource"""
+    def gasstocks(self):
+        """Return GASSupplierStock list bound to resource"""
         raise NotImplementedError
 
     @property
-    def product3(self):
-        """Return product bound to resource"""
+    def gasstock(self):
+        """Return GASSupplierStock bound to resource"""
         raise NotImplementedError
 
     @property
-    def product4s(self):
-        """Return products bound to resource"""
+    def catalogs(self):
+        """Return GASSupplierOrderProduct list bound to resource"""
         raise NotImplementedError
 
     @property
-    def product4(self):
-        """Return product bound to resource"""
+    def catalog(self):
+        """Return GASSupplierOrderProduct bound to resource"""
         raise NotImplementedError
 
     @property

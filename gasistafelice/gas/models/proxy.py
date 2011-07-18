@@ -35,13 +35,37 @@ class GAS(GAS):
 
     @property
     def suppliers(self):
+        #return Supplier.objects.filter(pk__in=self.pacts.supplier.pk)
         p = GASSupplierSolidalPact.objects.filter(gas=self)
+        #p = self.pacts
         return Supplier.objects.filter(pk__in=[obj.supplier.pk for obj in p])
         #return Supplier.objects.all()
 
+    @property
+    def stocks(self):
+        return SupplierStock.objects.filter(supplier=self.suppliers)
+        return SupplierStock.objects.all()
+
+    @property
+    def products(self):
+        return Product.objects.filter(pk__in=[obj.product.pk for obj in self.stocks])
+        return Product.objects.all()
+
+    @property
     def categories(self):
         #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
+        return ProductCategory.filter(pk__in=[obj.category.pk for obj in self.Products])
         return ProductCategory.objects.all()
+
+    @property
+    def gasstocks(self):
+        return GASSupplierStock.objects.filter(gas=self)
+        #return GASSupplierStock.objects.all()
+
+    @property
+    def catalogs(self):
+        #return GASSupplierOrderProduct.objects.filter(order__in=self.orders)
+        return GASSupplierOrderProduct.objects.all()
 
 #-------------------------------------------------------------------------------
 
@@ -82,8 +106,24 @@ class GASMember(GASMember):
 
     @property
     def products(self):
-        # A GAS member is interested primarily in those products he/she can order
+        # A GAS member is interested primarily to show products
         return self.gas.products
+
+    @property
+    def stocks(self):
+        # A GAS member is interested primarily to show products and price 
+        return self.gas.stocks
+
+    @property
+    def gasstocks(self):
+        # A GAS member is interested primarily in those products and price per GAS 
+        return self.gas.gasstocks
+
+    @property
+    def catalogs(self):
+        # A GAS member is interested primarily in those products and price per GAS  he/she can order
+        return self.gas.catalogs
+
 
 #-------------------------------------------------------------------------------
 
@@ -110,32 +150,28 @@ class DES(DES):
         #TODO: enable the following when database is updated with des attribute for GAS
         # return self.gas_set.all()
 
-    # Resource API
     @property
     def accounts(self):
         #return Account.objects.all()
         raise NotImplementedError
 
-    # Resource API
     @property
     def gasmembers(self):
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
         return GASMember.objects.all()
 
-    # Resource API
     @property
     def gasmembers(self):
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
         return GASMember.objects.all()
 
-    # Resource API
+    @property
     def categories(self):
         # All categories 
         return ProductCategory.objects.all()
 
-    # Resource API
     @property
     def suppliers(self):
         return Supplier.objects.all()
@@ -146,6 +182,22 @@ class DES(DES):
         return self.pacts_set.all()
         #g = self.gas_list
         #return GASSupplierSolidalPact.objects.filter(gas__in=g)
+
+    @property
+    def products(self):
+        return Product.objects.all()
+
+    @property
+    def stocks(self):
+        return SupplierStock.objects.all()
+
+    @property
+    def gasstocks(self):
+        return GASSupplierStock.objects.all()
+
+    @property
+    def catalogs(self):
+        return GASSupplierOrderProduct.objects.all()
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
@@ -312,7 +364,7 @@ class SupplierStock(SupplierStock):
         proxy = True
 
     @property
-    def product2s(self):
+    def stocks(self):
         return SupplierStock.objects.filter(pk=self.pk)
 
 #TODO: des, gas, supplier, product
@@ -325,10 +377,10 @@ class GASSupplierStock(GASSupplierStock):
         proxy = True
 
     @property
-    def product3s(self):
+    def catalog_gass(self):
         return GASSupplierStock.objects.filter(pk=self.pk)
 
-#TODO: des, gas, supplier, product, product2
+#TODO: des, gas, supplier, product, catalog
 
 #-------------------------------------------------------------------------------
 
@@ -338,7 +390,7 @@ class GASSupplierOrderProduct(GASSupplierOrderProduct):
         proxy = True
 
     @property
-    def product4s(self):
+    def catalogs(self):
         return GASSupplierOrderProduct.objects.filter(pk=self.pk)
 
 #TODO: des, gas, supplier, person, gasmember

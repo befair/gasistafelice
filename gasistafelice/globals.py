@@ -7,9 +7,9 @@ type_model_d = {
 	'person' : Person,
 	'supplier' : Supplier,
 	'product' : Product,
-	'product2' : SupplierStock,
-	'product3' : GASSupplierStock,
-	'product4' : GASSupplierOrderProduct,
+	'stock' : SupplierStock,
+	'gasstock' : GASSupplierStock,
+	'catalog' : GASSupplierOrderProduct,
 	'category' : ProductCategory,
 	'unit' : ProductMU,
 	'order' : GASSupplierOrder,
@@ -24,7 +24,6 @@ type_model_d = {
 	'basket' : GASMemberOrder,
 }
 
-#FIXME: find better name for catalogs of products: product, product2 , product3 and product4
 #TODO domthu TOCHECK
 # catalogs filtered by available & unavailable for view (blocks) product availability. how to? wich catalogs? 
 #FIXME: list of orders filtered by worflow state: How to? Filter in views or each workflow_state = one resource?

@@ -13,7 +13,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "gas_list"
     BLOCK_DESCRIPTION = _("GAS")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "user"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "user"]
 
     # Actions
     ACTION_CREATE_GAS = Action(

@@ -201,9 +201,9 @@ class SupplierStock(models.Model, PermissionResource):
     """
 
     # Resource API
-    supplier = models.ForeignKey(Supplier)
+    supplier = models.ForeignKey(Supplier, related_name="supplierstock_set")
     # Resource API
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey(Product, related_name="supplierstock_set")
     price = CurrencyField()
     code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)

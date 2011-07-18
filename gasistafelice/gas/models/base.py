@@ -32,7 +32,7 @@ class GAS(models.Model, PermissionResource):
     """
 
     name = models.CharField(max_length=128, unique=True)
-    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))    
+    id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
     headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=True, blank=True)
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
@@ -41,9 +41,9 @@ class GAS(models.Model, PermissionResource):
     suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
     #, editable=False: admin validation refers to field 'account_state' that is missing from the form
-    account = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
+    account = models.ForeignKey(Account, null=True, blank=True, related_name="bank_acc_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
     #TODO: change name
-    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="gas_set2", help_text=_("GAS have is own bank account. "))
+    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="bank_liq_set", help_text=_("GAS have is own bank account. "))
 
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
@@ -84,12 +84,12 @@ class GAS(models.Model, PermissionResource):
         return self.name
 
     #-- Properties --#
-    @property        
+    @property
     def local_grants(self):
         rv = (
               # permission specs go here
-              )     
-        return rv  
+              )
+        return rv
 
     @property
     def city(self):
@@ -110,8 +110,8 @@ class GAS(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
               # initial roles setup goes here
-              )     
-        return rv  
+              )
+        return rv
 
     def save(self, *args, **kw):
 
@@ -197,8 +197,8 @@ class GASConfig(models.Model, PermissionResource):
     # Do not set default to both places because we want to have the ability
     # to follow headquarter value if it changes.
     # Provide delivery place and withdrawal place properties to get the right value
-    default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name='gas_default_withdrawal_set', help_text=_("to specify if different from headquarter"))
-    default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name='gas_default_delivery_set', help_text=_("to specify if different from delivery place"))
+    default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
+    default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
 
     auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
@@ -248,7 +248,7 @@ class GASMember(models.Model, PermissionResource):
     person = models.ForeignKey(Person)
     # Resource API
     gas = models.ForeignKey(GAS)
-    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))    
+    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
@@ -335,7 +335,7 @@ class GASMember(models.Model, PermissionResource):
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
     
-    @property        
+    @property
     def local_grants(self):
         rv = (
             # GAS tech referrers have full access to members of their own GAS 
@@ -343,8 +343,8 @@ class GASMember(models.Model, PermissionResource):
             # GAS members can see list and details of their fellow members
             ('LIST', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
             ('VIEW', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
-              )     
-        return rv  
+              )
+        return rv
     
     def clean(self):
         # Clean method is for validation. Validation errors are meant to be
@@ -358,7 +358,7 @@ class GASMember(models.Model, PermissionResource):
         # and to do some low-level checks raising low-level exceptions.
         # These exceptions do not need to be translated.
         if not self.person.user: # GAS members must have an account on the system
-            raise AttributeError('GAS Members must be registered users')     
+            raise AttributeError('GAS Members must be registered users')
         if not self.id_in_gas:
             self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
@@ -369,12 +369,12 @@ class GASSupplierStock(models.Model, PermissionResource):
     pact = models.ForeignKey("GASSupplierSolidalPact")
     supplier_stock = models.ForeignKey(SupplierStock)
     # if a Product is available to GAS Members; policy is GAS-specific
-    enabled = models.BooleanField()    
+    enabled = models.BooleanField()
     ## constraints on what a single GAS Member is able to order
-    # minimun amount of Product units a GAS Member is able to order 
+    # minimun amount of Product units a GAS Member is able to order
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
-    # increment step (in Product units) for amounts exceeding minimum; 
-    # useful when a Product ships in packages containing multiple units. 
+    # increment step (in Product units) for amounts exceeding minimum;
+    # useful when a Product ships in packages containing multiple units.
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
     
     history = HistoricalRecords()
@@ -392,11 +392,11 @@ class GASSupplierStock(models.Model, PermissionResource):
         price_percent_update = self.pact.order_price_percent_update or 0
         return self.supplier_stock.price*(1 + price_percent_update)
     
-    @property        
+    @property
     def local_grants(self):
         rv = (
               # permission specs go here
-              )     
+              )
         return rv
     
     class Meta:
@@ -430,7 +430,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     gas = models.ForeignKey(GAS, related_name="pacts_set")
     supplier = models.ForeignKey(Supplier, related_name="pacts_set")
-    date_signed = models.DateField(blank=True, null=True, default=None)
+    date_signed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("date of first meeting GAS-Producer"))
 
     # which Products GAS members can order from Supplier
     # COMMENT fero: I think the solution proposed by domthu in ticket #80 respect
@@ -440,8 +440,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     order_minimum_amount = CurrencyField(null=True, blank=True)
     order_delivery_cost = CurrencyField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
-    order_deliver_interval = models.TimeField(null=True, blank=True)  
-    # how much (in percentage) base prices from the Supplier are modified for the GAS  
+    order_deliver_interval = models.TimeField(null=True, blank=True)
+    # how much (in percentage) base prices from the Supplier are modified for the GAS
     order_price_percent_update = models.FloatField(null=True, blank=True)
     
     #domthu: if GAS's configuration use only one 
@@ -451,7 +451,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     )
     default_withdrawal_time = models.TimeField(null= True, blank=True, \
         help_text=_("withdrawal time agreement")
-    )    
+    )
 
     default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
@@ -477,13 +477,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
     
     @property        
     def local_grants(self):
         rv = (
               # permission specs go here
-              )     
+              )
         return rv
 
     def elabore_report(self):
@@ -495,12 +495,15 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         created = False
         if not self.pk:
             created = True
-      
+
         super(GASSupplierSolidalPact, self).save(*args, **kw)
+
+        if created and self.account is None:
+            self.account = Account.objects.create()
 
         if created and self.gas.config.auto_select_all_products:
             for p in self.supplier.supplierstock_set.all():
-                p.gassupplierstock_set.add(gas=self.gas)
+            #    p.gassupplierstock_set.add(gas=self.gas)
+                self.supplier_stock.add(p)
 
-        
-        
+
