@@ -40,7 +40,8 @@ class GAS(GAS):
 
     def categories(self):
         #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
-        return ProductCategory.objects.all()
+        raise NotImplementedError
+        #TODO return ProductCategory.objects.all()
 
 #-------------------------------------------------------------------------------
 
@@ -204,6 +205,7 @@ class Person(Person):
 #-------------------------------------------------------------------------------
 
 class Account(Account):
+    #TODO
 
     class Meta:
         proxy = True
@@ -220,6 +222,7 @@ class Account(Account):
 #TODO: des, gas, gasmember, supplier
 
 class Movement(Movement):
+    #TODO
 
     class Meta:
         proxy = True
@@ -303,8 +306,12 @@ class Certification(Certification):
         proxy = True
 
     @property
-    def bios(self):
+    def certs(self):
         return Certification.objects.filter(pk=self.pk)
+
+    @property
+    def cert(self):
+        return self
 
 #TODO: des, gas, supplier, person, gasmember
 
@@ -316,8 +323,12 @@ class SupplierStock(SupplierStock):
         proxy = True
 
     @property
-    def product2s(self):
+    def stocks(self):
         return SupplierStock.objects.filter(pk=self.pk)
+
+    @property
+    def stock(self):
+        return self
 
 #TODO: des, gas, supplier, product
 
@@ -329,8 +340,12 @@ class GASSupplierStock(GASSupplierStock):
         proxy = True
 
     @property
-    def product3s(self):
+    def gasstocks(self):
         return GASSupplierStock.objects.filter(pk=self.pk)
+
+    @property
+    def gasstock(self):
+        return self
 
 #TODO: des, gas, supplier, product, product2
 
@@ -342,8 +357,12 @@ class GASSupplierOrderProduct(GASSupplierOrderProduct):
         proxy = True
 
     @property
-    def product4s(self):
+    def stocks_in_order(self):
         return GASSupplierOrderProduct.objects.filter(pk=self.pk)
+
+    @property
+    def stock_in_order(self):
+        return self
 
 #TODO: des, gas, supplier, person, gasmember
 
@@ -358,9 +377,14 @@ class GASSupplierOrder(GASSupplierOrder):
     def orders(self):
         return GASSupplierOrder.objects.filter(pk=self.pk)
 
-#TODO: des, gas, supplier, person, gasmember, product, category, order
+    @property
+    def order(self):
+        return self
+
+#TODO: des, gas, supplier, person, gasmember, product, category
 
 #-------------------------------------------------------------------------------
+
 class GASMemberOrder(GASMemberOrder):
 
     class Meta:
@@ -369,6 +393,10 @@ class GASMemberOrder(GASMemberOrder):
     @property
     def baskets(self):
         return GASMemberOrder.objects.filter(pk=self.pk)
+
+    @property
+    def basket(self):
+        return self
 
 #TODO: des, gas, supplier, person, gasmember, product, category, order
 
