@@ -47,8 +47,8 @@ class GAS(models.Model, PermissionResource):
 
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
-    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))    
-    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))    
+    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
+    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))
 
     email_gas = models.EmailField(null=True, blank=True)
 
@@ -56,7 +56,7 @@ class GAS(models.Model, PermissionResource):
     #that retrieve email contact from GAS_REFERRER (role just added). GAS REFERRER usually is GAS President
     #COMMENT domthu: The president 
     email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
-    phone = models.CharField(max_length=50, blank=True)    
+    phone = models.CharField(max_length=50, blank=True)
     website = models.URLField(verify_exists=True, null=True, blank=True) 
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
@@ -64,6 +64,7 @@ class GAS(models.Model, PermissionResource):
 
     note = models.TextField(blank=True)
 
+    # Resource API
     des = models.ForeignKey(DES)
 
     #COMMENT fero: photogallery and attachments does not go here
@@ -97,7 +98,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def economic_state(self):
         return u"%s - %s" % (self.account, self.liquidity)
-    
+
     #-- Methods --#
 
     def setup_roles(self):
@@ -168,16 +169,16 @@ class GASConfig(models.Model, PermissionResource):
 
     show_order_by_supplier = models.BooleanField(default=True, 
         help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-    )  
+    )
 
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default closing order day of the week")
-    )  
+    )
     #TODO: see ticket #65
     default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default delivery day of the week")
-    )  
+    )
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
     #TODO placeholder domthu: Default time to be set to 00:00
@@ -187,11 +188,14 @@ class GASConfig(models.Model, PermissionResource):
   
     default_delivery_time = models.TimeField(blank=True, null=True,
         help_text=_("default delivery closing hour and minutes")
-    )  
+    )
 
-    
-    use_single_delivery = models.BooleanField(default=True, 
-        help_text=_("GAS uses only one delivery place")
+    can_change_withdrawal_place_on_each_order = models.BooleanField(default=False, 
+        help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
+    )
+
+    can_change_delivery_place_on_each_order = models.BooleanField(default=False, 
+        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
@@ -202,7 +206,7 @@ class GASConfig(models.Model, PermissionResource):
 
     auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
-    use_scheduler = models.BooleanField(default=True)  
+    use_scheduler = models.BooleanField(default=False)
 
     history = HistoricalRecords()
 
@@ -226,10 +230,14 @@ class GASConfig(models.Model, PermissionResource):
     def clean(self):
         #TODO placeholder domthu code that default_withdrawal_place must not be None
         # if headquarter is not specified
-        pass
+        if self.default_delivery_place is None:
+            self.default_delivery_place =  self.gas.headquarter;
+        #pass
         #TODO placeholder domthu code that default_delivery_place must not be None
         # if headquarter is not specified
-        pass
+        if self.default_withdrawal_place is None:
+            self.default_withdrawal_place = self.gas.headquarter;
+        #pass
         
         return super(GASConfig, self).clean()
 
@@ -324,7 +332,10 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
         user = self.person.user
-        #COMMENT: issue #2 In my local database i've seen that roles are empty: needed fixtures?
+        #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
+        if user is None:
+           return ""
+        #TODO: fixtures create user foreach person
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
     

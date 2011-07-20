@@ -118,9 +118,25 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'suppliers']
+        'blocks' : ['details', 'gas_list', 'supplier_list', 'gas_members_list', 'account_state', 'category_list']
+    },{
+        'name' : 'action',
+        'descr' : 'Ordina',
+        'blocks' : []
+    },{
+        'name' : 'gas',
+        'descr' : 'GAS',
+        'blocks' : ['gas_list', 'category_list']
+    },{
+        'name' : 'supplier',
+        'descr' : 'Fornitori',
+        'blocks' : ['supplier_list', 'category_list']
     }],
     'gas' : [{
+        'name' : 'info',
+        'descr' : 'Generale',
+        'blocks' : ['supplier_list', 'gas_members_list', 'account_state', 'category_list']
+    },{
         'name' : 'open_orders',
         'descr': 'Ordini aperti',
         'blocks': ['suppliers', 'open_orders'],
@@ -132,14 +148,15 @@ RESOURCE_PAGE_BLOCKS = {
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': [],
+        'blocks': ['category_list'],
     },{
         'name' : 'info',
         'descr': 'Generale',
         'blocks': [],
     }],
 }
-   
+
+
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False

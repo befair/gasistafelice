@@ -564,3 +564,13 @@ msgstr "Contenuto sconosciuto"
 #: supplier/models.py:102
 msgid "Product categories"
 msgstr "Categorie di prodotti"
+
+#: rest/views/blocks/account_state.py:11
+msgid "Economic state"
+msgstr "Stato economico"
+
+#: rest/views/blocks/pact_list.py:11
+msgid "Solidal list pacts"
+msgstr "Patti di solidarietà"
+
+
