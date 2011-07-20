@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import MultipleObjectsReturned
 
 from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock, SupplierReferrer, Certification
@@ -22,7 +23,7 @@ class GAS(GAS):
     @property
     def pacts(self):
         """Return pacts bound to a GAS"""
-        return self.pacts_set.all()
+        return self.pact_set.all()
         
     @property
     def suppliers(self):
@@ -36,7 +37,7 @@ class GAS(GAS):
 
     @property
     def gasmembers(self):
-        return GASMember.objects.filter(gas=self)
+        return self.gasmember_set.all()
 
     def categories(self):
         #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
@@ -148,7 +149,7 @@ class DES(DES):
     @property
     def pacts(self):
         """Return pacts bound to all GAS in DES"""
-        return self.pacts_set.all()
+        return self.pact_set.all()
         #g = self.gas_list
         #return GASSupplierSolidalPact.objects.filter(gas__in=g)
 
@@ -202,36 +203,52 @@ class Person(Person):
     def persons(self):
         return Person.objects.filter(pk=self.pk)
 
-#-------------------------------------------------------------------------------
-
-class Account(Account):
-    #TODO
-
-    class Meta:
-        proxy = True
+    @property
+    def person(self):
+        return self
 
     @property
-    def accounts(self):
-        return Account.objects.filter(pk=self.pk)
+    def gasmembers(self):
+        return self.gasmember_set.all()
 
     @property
-    def transacts(self):
-        #return Movement.objects.filter(account=self)
+    def gasmember(self):
+        """GAS member bound to this person.
+
+        @raises DoesNotExist if person is not a GASMember
+        @raises MultipleObjectsReturned if more than one GAS found
+        """
+        return GASMember.objects.get(person=self)
+        
+    @property
+    def gas_list(self):
+        gas_pks = [obj.gas.pk for obj in self.gasmembers]
+        return GAS.objects.filter(pk__in=gas_pks)
+
+    @property
+    def gas(self):
+        """GAS bound to this person.
+
+        @raises DoesNotExist if person is not a GASMember
+        @raises MultipleObjectsReturned if more than one GAS found
+        """
+        return self.gasmember.gas
+
+    @property
+    def suppliers(self):
+        rv = Supplier.objects.none()
+        for gas in self.gas_list:
+            rv |= gas.suppliers
+        return rv
+
+    @property
+    def orders(self):
+        return GASSupplierOrder.objects.filter(gas__in=self.gas_list)
+
+    @property
+    def order(self):
+        """This is not needed because a Person which is a GAS Member will have many orders"""
         raise NotImplementedError
-
-#TODO: des, gas, gasmember, supplier
-
-class Movement(Movement):
-    #TODO
-
-    class Meta:
-        proxy = True
-
-    @property
-    def transacts(self):
-        return Movement.objects.filter(pk=self.pk)
-
-#TODO: des, gas, gasmember, supplier, account
 
 #-------------------------------------------------------------------------------
 
@@ -241,10 +258,68 @@ class Supplier(Supplier):
         proxy = True
 
     @property
-    def suppliers(self):
-        return Supplier.objects.filter(pk=self.pk)
+    def pacts(self):
+        return self.pact_set.all()
 
-#TODO: des, gas, referrers, order, categories, unit measures
+    @property
+    def pact(self):
+        return GASSupplierSolidalPact.objects.get(supplier=self)
+        
+    @property
+    def orders(self):
+        return GASSupplierOrder.objects.filter(pact__in=self.pacts)
+
+    @property
+    def order(self):
+        raise NotImplementedError
+
+    @property
+    def gas_list(self):
+        return GAS.objects.filter(pact_set__in=self.pacts)
+
+    @property
+    def gas(self):
+        c = self.gas_list.count()
+        if c == 0:
+            raise DoesNotExist()
+        elif c == 1:
+            rv =  self.gas_list[0]
+        else:
+            raise MultipleObjectsReturned()
+        return rv
+
+
+    @property
+    def des_list(self):
+        return DES.objects.filter(gas_set__in=self.gas_list)
+
+    @property
+    def des(self):
+        c = self.des_list.count()
+        if c == 0:
+            raise DoesNotExist()
+        elif c == 1:
+            rv =  self.des_list[0]
+        else:
+            raise MultipleObjectsReturned()
+        return rv
+
+    @property
+    def stocks(self):
+        return self.stock_set.all()
+
+    @property
+    def products(self):
+        """All products _supplied_ by this supplier"""
+        #TODO: we have to differentiate a wey to see all products produced by this supplier
+        return Product.objects.filter(stock_set__in=self.stocks)
+
+    @property
+    def categories(self):
+        """All categories _supplied_ by this supplier"""
+        #TODO: we have to differentiate a wey to see all categories produced by this supplier
+        return ProductCategory.objects.filter(product_set__in=self.products)
+
 
 #-------------------------------------------------------------------------------
 
@@ -257,8 +332,22 @@ class Product(Product):
     def products(self):
         return Product.objects.filter(pk=self.pk)
 
-#TODO: order, categories, unit measures, supplier
+    @property
+    def stocks(self):
+        return self.stock_set.all()
 
+    @property
+    def categories(self):
+        return ProductCategory.objects.filter(product_set__in=[self])
+
+    @property
+    def suppliers(self):
+        return Supplier.objects.filter(stock_set__in=self.stocks)
+
+    @property
+    def orders(self):
+        return GASSupplierOrder.objects.filter(stock_set__in=self.stocks)
+    
 #-------------------------------------------------------------------------------
 
 class SupplierReferrer(SupplierReferrer):
@@ -269,49 +358,6 @@ class SupplierReferrer(SupplierReferrer):
     @property
     def referrers(self):
         return SupplierReferrer.objects.filter(pk=self.pk)
-
-#TODO: des, gas, supplier, person, gasmember
-
-#-------------------------------------------------------------------------------
-
-class ProductCategory(ProductCategory):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def categories(self):
-        return ProductCategory.objects.filter(pk=self.pk)
-
-#TODO: des, gas, supplier, product, order
-
-#-------------------------------------------------------------------------------
-
-class ProductMU(ProductMU):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def units(self):
-        return ProductMU.objects.filter(pk=self.pk)
-
-#TODO: des, gas, supplier, product, order
-
-#-------------------------------------------------------------------------------
-
-class Certification(Certification):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def certs(self):
-        return Certification.objects.filter(pk=self.pk)
-
-    @property
-    def cert(self):
-        return self
 
 #TODO: des, gas, supplier, person, gasmember
 
@@ -399,4 +445,78 @@ class GASMemberOrder(GASMemberOrder):
         return self
 
 #TODO: des, gas, supplier, person, gasmember, product, category, order
+
+#-------------------------------------------------------------------------------
+
+class ProductCategory(ProductCategory):
+
+    class Meta:
+        proxy = True
+
+    @property
+    def categories(self):
+        return ProductCategory.objects.filter(pk=self.pk)
+
+#TODO: des, gas, supplier, product, order
+
+#-------------------------------------------------------------------------------
+
+class Account(Account):
+    #TODO
+
+    class Meta:
+        proxy = True
+
+    @property
+    def accounts(self):
+        return Account.objects.filter(pk=self.pk)
+
+    @property
+    def transacts(self):
+        #return Movement.objects.filter(account=self)
+        raise NotImplementedError
+
+#TODO: des, gas, gasmember, supplier
+
+class Movement(Movement):
+    #TODO
+
+    class Meta:
+        proxy = True
+
+    @property
+    def transacts(self):
+        return Movement.objects.filter(pk=self.pk)
+
+#TODO: des, gas, gasmember, supplier, account
+
+#-------------------------------------------------------------------------------
+
+class ProductMU(ProductMU):
+
+    class Meta:
+        proxy = True
+
+    @property
+    def units(self):
+        return ProductMU.objects.filter(pk=self.pk)
+
+#TODO: des, gas, supplier, product, order
+
+#-------------------------------------------------------------------------------
+
+class Certification(Certification):
+
+    class Meta:
+        proxy = True
+
+    @property
+    def certs(self):
+        return Certification.objects.filter(pk=self.pk)
+
+    @property
+    def cert(self):
+        return self
+
+#TODO: des, gas, supplier, person, gasmember
 

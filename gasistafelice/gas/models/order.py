@@ -22,7 +22,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
     * status is a meaningful parameter... TODO
-    * product_set references specified products available for the specific order \
+    * stock_set references specified products available for the specific order \
       (they can be a subset of all available products from that Supplier for the order);
 
     """
@@ -38,12 +38,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
     withdrawal = models.ForeignKey('Withdrawal', related_name="supplier_order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
-    products = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    stock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     objects = OrderManager()
     history = HistoricalRecords()
     
-    def set_default_product_set(self):
+    def set_default_stock_set(self):
         '''
         A helper function associating a default set of products to a GASSupplierOrder.
         

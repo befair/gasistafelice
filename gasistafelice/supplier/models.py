@@ -27,7 +27,7 @@ class Supplier(models.Model, PermissionResource):
     seat =  models.ForeignKey(Place, null=True, blank=True)
     vat_number =  models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website =  models.URLField(verify_exists=True, blank=True)
-    referrers = models.ManyToManyField(Person, through="SupplierReferrer") 
+    referrer_set = models.ManyToManyField(Person, through="SupplierReferrer") 
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
@@ -35,14 +35,26 @@ class Supplier(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
+    def __unicode__(self):
+        return self.name
+
+    @property
+    def suppliers(self):
+        return Supplier.objects.filter(pk=self.pk)
+
+    @property
+    def supplier(self):
+        return self
+
+    @property
+    def referrers(self):
+        return self.referrer_set.all()
+
     # the set of products provided by this Supplier to every GAS
     @property
     def product_catalog(self):
         return [s.product for s in SupplierStock.objects.filter(supplier=self)]
     
-    def __unicode__(self):
-        return self.name
-
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
          register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
@@ -53,16 +65,6 @@ class Supplier(models.Model, PermissionResource):
               # permission specs go here
               )     
         return rv   
-
-    # Resource API
-    def categories(self):
-        # All categories for one supplier for associated products
-        #TODO: domthu filter
-        return ProductCategory.objects.all()
-
-    # Resource API
-    #@property
-    #def suppliers(self):
 
 
 class SupplierReferrer(models.Model, PermissionResource):
@@ -156,7 +158,7 @@ class Product(models.Model, PermissionResource):
     # COMMENT: some producer don't have product codification. 
     # That's why uuid could be blank AND null. See save() method
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
-    producer = models.ForeignKey(Supplier)
+    producer = models.ForeignKey(Supplier, related_name="produced_product_set")
     # Resource API
     category = models.ForeignKey(ProductCategory, null=True, blank=True)
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
@@ -170,7 +172,7 @@ class Product(models.Model, PermissionResource):
 
     @property
     def referrers(self):
-        return self.producer.referrers.all()
+        return self.producer.referrers
     
     @property        
     def local_grants(self):
@@ -201,9 +203,9 @@ class SupplierStock(models.Model, PermissionResource):
     """
 
     # Resource API
-    supplier = models.ForeignKey(Supplier)
+    supplier = models.ForeignKey(Supplier, related_name="stock_set")
     # Resource API
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey(Product, related_name="stock_set")
     price = CurrencyField()
     code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)

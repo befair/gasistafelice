@@ -432,8 +432,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     """
 
-    gas = models.ForeignKey(GAS, related_name="pacts_set")
-    supplier = models.ForeignKey(Supplier, related_name="pacts_set")
+    gas = models.ForeignKey(GAS, related_name="pact_set")
+    supplier = models.ForeignKey(Supplier, related_name="pact_set")
     date_signed = models.DateField(blank=True, null=True, default=None)
 
     # which Products GAS members can order from Supplier
