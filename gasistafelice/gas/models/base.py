@@ -82,15 +82,59 @@ class GAS(models.Model, PermissionResource):
     #-- Overriding built-in methods --#
     def __unicode__(self):
         return self.name
+     
 
+    #-- Permission management --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, **kwargs):
+        ## only DES administrators can create a new GAS in a DES
+        try:
+            des = kwargs['des']
+        except KeyError:
+            raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
+        return user in des.admins
+    
+    # Row-level VIEW permission
+    def can_view(self, user, **kwargs):
+        # only GAS members and DES administrators can view GAS details 
+        return (user in self.members) or (user in self.des.admins) 
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, **kwargs):
+        # only GAS tech referrers and DES administrators can edit GAS details
+        return (user in self.tech_referrers) or (user in self.des.admins) 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, **kwargs):
+        # only DES administrators can delete a GAS in a DES
+        return user in self.des.admins
+    
     #-- Properties --#
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv  
+        
+    @property
+    def members(self):
+        # retrieve 'GAS member' parametric role for this GAS
+        pr = ParamRole.objects.gas_members(gas=self)[0]
+        # retrieve all Users having this role
+        return pr.get_users()       
+    
+    @property
+    def tech_referrers(self):
+        # retrieve 'tech referrer' parametric role for this GAS
+        pr = ParamRole.objects.gas_tech_referrers(gas=self)[0]
+        # retrieve all Users having this role
+        return pr.get_users()       
 
+    @property
+    def cash_referrers(self):
+        # retrieve 'cash referrer' parametric role for this GAS
+        pr = ParamRole.objects.gas_cash_referrers(gas=self)[0]
+        # retrieve all Users having this role
+        return pr.get_users()       
+    
+    
     @property
     def city(self):
         return self.headquarter.city 
