@@ -267,48 +267,7 @@ class GASMember(models.Model, PermissionResource):
 
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
-    
-    # Resource API
-    @property
-    def des(self):
-        # A GAS member belongs to the DES its GAS belongs to.
-        return self.gas.des
-    
-    # Resource API
-    @property
-    def pacts(self):
-        # A GAS member is interested primarily in those pacts (`SupplierSolidalPact` instances) subscribed by its GAS
-        return self.gas.pacts
-    
-    # Resource API
-    @property
-    def suppliers(self):
-        # A GAS member is interested primarily in those suppliers dealing with its GAS
-        return self.gas.suppliers
-    
-    # Resource API
-    @property
-    def orders(self):
-        # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
-        return self.gas.orders
-    
-    # Resource API
-    @property
-    def deliveries(self):
-        # A GAS member is interested primarily in delivery appointments scheduled for its GAS
-        return self.gas.deliveries
-    
-    # Resource API
-    @property
-    def withdrawals(self):
-        # A GAS member is interested primarily in withdrawal appointments scheduled for its GAS
-        return self.gas.withdrawals
-    
-    # Resource API
-    @property
-    def products(self):
-        # A GAS member is interested primarily in those products he/she can order
-        return self.gas.products
+   
 
     def _get_roles(self):
         """

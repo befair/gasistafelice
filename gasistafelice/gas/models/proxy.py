@@ -38,7 +38,8 @@ class GAS(GAS):
     @property
     def gasmembers(self):
         return self.gasmember_set.all()
-
+    
+    @property
     def categories(self):
         #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
         raise NotImplementedError
@@ -98,12 +99,6 @@ class DES(DES):
         return self
 
     @property
-    def gas_list(self):
-        return GAS.objects.all()
-        #TODO: enable the following when database is updated with des attribute for GAS
-        # return self.gas_set.all()
-
-    @property
     def suppliers(self):
         """Return suppliers bound to the DES"""
         return Supplier.objects.all()
@@ -131,21 +126,11 @@ class DES(DES):
 
     # Resource API
     @property
-    def gasmembers(self):
-        if hasattr(self, 'isfiltered') and self.isfiltered:
-            return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
-        return GASMember.objects.all()
-
-    # Resource API
     def categories(self):
         # All categories 
         return ProductCategory.objects.all()
-
+    
     # Resource API
-    @property
-    def suppliers(self):
-        return Supplier.objects.all()
-
     @property
     def pacts(self):
         """Return pacts bound to all GAS in DES"""
@@ -281,7 +266,7 @@ class Supplier(Supplier):
     def gas(self):
         c = self.gas_list.count()
         if c == 0:
-            raise DoesNotExist()
+            raise GAS.DoesNotExist()
         elif c == 1:
             rv =  self.gas_list[0]
         else:
@@ -297,7 +282,7 @@ class Supplier(Supplier):
     def des(self):
         c = self.des_list.count()
         if c == 0:
-            raise DoesNotExist()
+            raise DES.DoesNotExist()
         elif c == 1:
             rv =  self.des_list[0]
         else:
