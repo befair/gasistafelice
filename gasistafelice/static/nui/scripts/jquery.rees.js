@@ -1,4 +1,19 @@
 
+/* GLOBAL DEFINITIONS */
+
+String.prototype.trim = function() { return this.replace(/(^\s+)/, '').replace(/(\s+$)/, ''); };
+
+var NEW_NOTE_DIALOG = '#global_dialog_placeholder';
+
+var NEW_NOTE_FORM   = '#new_note_form';
+
+var NEW_NOTE_FORM_TEXT= "\
+		<form name='new_note_form' id='new_note_form' method='post' action='@@new_note_action@@'>\
+			" + gettext('Text') + ":  <br /> \
+			<textarea id='' name='body'  cols='65' row='10' /> \
+		</form>\
+		";
+
 /* BLOCK_REGISTER_DISPLAY and BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME 
    are meant to store representation of blocks
 
@@ -11,11 +26,31 @@
 jQuery.BLOCK_REGISTER_DISPLAY = {}
 jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME = {}
 
+jQuery.render_actions = function (block_box_id, contents) {
+
+    // Block actions
+    var block_action_template = "<a href=\"@@action_url@@\" class=\"block_action\">@@action_verbose_name@@</a>";
+    var block_actions = '';
+
+	if (contents.find('action').length > 0) {
+	
+		contents.find('action').each(function(){
+            var block_action = block_action_template.replace(/@@action_name@@/g, $(this).attr("name"));
+            block_action = block_action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
+            block_action = block_action.replace(/@@action_url@@/g, $(this).attr("url"));
+            block_actions += block_action;
+        });
+    }
+    return block_actions;
+    
+}
+
 /* Display resource list */
 /* This function is inspired by blocks specific code of SANET by Laboratori Guglielmo Marconi */
-jQuery.resource_list = function (element) {
+jQuery.resource_list = function (block_box_id, element) {
 
 	var res = "		\
+    <div class='list_actions'>@@list_actions@@</div> \
 	<table> 		\
 		@@inforow@@	\
 	</table> 		\
@@ -48,12 +83,16 @@ jQuery.resource_list = function (element) {
 	var resource_type =  jQel.attr('resource_type');
 	var resource_id   =  jQel.attr('resource_id');
 	
-	// nodes
-	infos = jQel.find('content');
+    // Block content
+	var contents = jQel.find('content');
+
+    res = res.replace('@@list_actions@@', jQuery.render_actions(block_box_id, contents));
+
+    // Resources
 	
-	if (infos.find('info').length > 0) {
+	if (contents.find('info').length > 0) {
 	
-		infos.find('info').each(function(){
+		contents.find('info').each(function(){
 			
 			var urn = $(this).attr('sanet_urn');
 			var name = $(this).attr('name');
@@ -69,9 +108,9 @@ jQuery.resource_list = function (element) {
 			a = a.replace(/@@urn@@/g,urn);
 			a = a.replace(/@@link@@/g,link);
 			
-			
 			var actions = ''
-//TODO fero: user actions
+
+//TODO fero: row_actions
 //			if (resource_type == 'usercontainer') {
 //				actions = user_actions
 //				
@@ -82,7 +121,6 @@ jQuery.resource_list = function (element) {
 //				
 //			}
 			a = a.replace(/@@actions@@/g, actions);		
-			
 
 			res = res.replace('@@inforow@@', a);
 		});
@@ -90,19 +128,19 @@ jQuery.resource_list = function (element) {
 		res = res.replace('@@inforow@@', '');	
 	}
 	else {
-		res = gettext('There are no elements related to this resource.');
+		res = res.replace('@@inforow@@', gettext('There are no elements related to this resource.'));
 	}
 
 	return res;
 }
 
 /* Display resource list with details */
-jQuery.resource_list_with_details = function (element) {
+jQuery.resource_list_with_details = function (block_box_id, element) {
     /* TODO */
 }
 
 /* Display resource list as icons */
-jQuery.resource_list_as_icons = function (element) {
+jQuery.resource_list_as_icons = function (block_box_id, element) {
     /* TODO */
 }
 
@@ -136,8 +174,20 @@ jQuery.resource_list_block_update = function(block_box_id) {
 			
 			if (s == "success") {
                 
-				var content = jQuery[jQuery.BLOCK_REGISTER_DISPLAY[block_box_id]]( r.responseXML );
+                // Invoke content rendering functions
+                // * resource_list
+                // * resource_list_with_details
+                // * resource_list_as_icons
+				var content = jQuery[jQuery.BLOCK_REGISTER_DISPLAY[block_box_id]]( block_box_id, r.responseXML );
+
+                // Push html content in page
 				block_el.html( content );
+                
+                // Set click handlers for actions
+                block_el.find('.block_action').each(function () { 
+                    $(this).click(function () { return jQuery.retrieve_form($(this))});
+                });
+                
 				jQuery.post_load_handler(); // Update GUI event handlers
 			}
 			else {
@@ -146,3 +196,98 @@ jQuery.resource_list_block_update = function(block_box_id) {
 		}
 	});	}
 
+
+
+//------------------------------------------------------------------------------//
+//                                                                              //
+//------------------------------------------------------------------------------//
+
+jQuery.retrieve_form = function (action_el) {
+
+    var action_name = action_el.html()
+    var action_url = action_el.attr("href");
+	
+    var form_html = "";
+    var form_script = "";
+
+    var url = action_url;
+
+    $.ajax({
+        url : action_url, 
+        success : function(d){
+
+            //AAA TODO: do we need to decouple from admin?
+            form_html = $(d).find('form');
+            form_html.attr('action', action_url);
+            form_html.find('.submit-row').each( function () { $(this).remove();});
+            form_script = $(d).find('script');
+        },
+        async : false,
+        dataType : "html"
+    });
+
+	//
+	// Initialize dialog component
+	//
+	var options = { 
+		success : function (responseText, statusText)  { 
+            if (responseText.match('class="errorlist"')) {
+                form_html = $(responseText).find('form');
+                form_html.attr('action', action_url);
+                form_html.find('.submit-row').each( function () { $(this).remove();});
+                form_script = $(responseText).find('script');
+                $(NEW_NOTE_DIALOG).html(form_html);
+                eval(form_script);
+            } 
+            else {
+                //
+                // "hide"/close the dialog
+                //
+                $(NEW_NOTE_DIALOG).dialog('destroy');
+                $(NEW_NOTE_DIALOG).dialog('close');
+
+                window.location.reload();
+				// response = jQuery.parseXml(responseText);
+				// var resource_type = $(response).attr('resource_type');
+				// var resource_id   = $(response).attr('resource_id');
+				
+                // var block_box_el = $(action_el).parentsUntil('li[block_name]');
+                // if (block_box_el) {
+                //     var block_name = block_box_el.attr('block_name');
+                //     jQuery.GET_BLOCK_UPDATE_HANDLER(block_name)(block_box_id);
+                // }
+			}			
+		}
+	}		
+	
+	//
+	// CREATE THE DIALOG
+	//
+    // Comment fero: use the same as global new_note form dialog
+	$(NEW_NOTE_DIALOG).dialog('close');
+	$(NEW_NOTE_DIALOG).dialog('destroy');
+	
+	$(NEW_NOTE_DIALOG).empty();
+	$(NEW_NOTE_DIALOG).append(form_html);
+    eval(form_script);
+	
+	var buttons = new Object();
+	buttons[gettext('Confirm')] = function() {
+		$(form_html).ajaxSubmit(options);
+	};
+	
+//TODO fero gettext(action_name),
+	$(NEW_NOTE_DIALOG).dialog({
+		title: action_name,
+		bgiframe: true,
+		autoOpen: false,
+		width: 600,
+		height: "auto",
+		modal: true,
+		buttons: buttons,
+		close: function() { }
+	});
+	
+	$(NEW_NOTE_DIALOG).dialog('open');
+	return false;
+};

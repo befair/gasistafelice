@@ -3,6 +3,7 @@ from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import BlockWithList, Action
 from gasistafelice.auth import CREATE
+from gasistafelice.gas.forms import GASSupplierOrderForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -10,33 +11,28 @@ from gasistafelice.auth import CREATE
 
 class Block(BlockWithList):
 
-    BLOCK_NAME = "suppliers"
-    BLOCK_DESCRIPTION = _("Suppliers")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"] 
+    BLOCK_NAME = "open_orders"
+    BLOCK_DESCRIPTION = _("Open orders")
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"] 
 
     # Actions
     ACTION_CREATE = Action(
         name=CREATE, 
-        verbose_name=_("Add Supplier"), 
-        url=urlresolvers.reverse('admin:supplier_supplier_add')
+        verbose_name=_("Open a new order"), 
     )
 
+    def _get_add_form_class(self):
+        return GASSupplierOrderForm
+
     def _get_resource_list(self, request):
-        return request.resource.suppliers
+        return request.resource.orders.open()
 
     def _get_user_actions(self, request):
 
         user_actions = []
-        # TODO seldon placeholder: check if a user can create a GAS
+        # TODO seldon placeholder: check if a user can create an Order
         if request.user.has_perm(CREATE, obj=request.resource):
             user_actions.append(self.ACTION_CREATE)
 
         return user_actions
-        
-    def _get_add_form_class(self):
-        raise NotImplementedError("The add form page in use now is the admin interface page.")
-
-    #------------------------------------------------------------------------------#    
-    #                                                                              #     
-    #------------------------------------------------------------------------------#
 

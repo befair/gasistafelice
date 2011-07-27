@@ -21,10 +21,12 @@
 
 	<link rel="stylesheet" type="text/css" href="/static/nui/style/jquery-ui-1.7.2.custom.css" />
 
+    <!-- Admin stylesheets -->
+	<link rel="stylesheet" type="text/css" href="/media/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="/media/css/forms.css" />
+
 	<!-- 2010-02-24 (dbilli) added for target state log calendar -->
 	<link href="/static/nui/style/fullcalendar/fullcalendar.css"   rel="stylesheet" type="text/css" />
-
-
 
 	<link rel="stylesheet" type="text/css" href="/static/nui/style/wholestyle.css" />
 
@@ -35,16 +37,31 @@
 	<link rel="stylesheet" type="text/css" href="/static/nui/style/report.css" />
 	<link rel="stylesheet" type="text/css" href="/static/nui/style/rest.css" />
 	
-
 	<style type="text/css">
 	</style>
 
 	<!-- *********** -->
 	<!-- JAVASCRIPTS -->
 	<!-- *********** -->
+    <!-- Admin Javascripts -->
+<script src="/media/js/core.js" type="text/javascript"> </script>
+<script src="/media/js/admin/RelatedObjectLookups.js" type="text/javascript"> </script>
+<script src="/media/js/jquery.min.js" type="text/javascript"> </script>
+<script src="/media/js/jquery.init.js" type="text/javascript"> </script>
+<script src="/media/js/actions.min.js" type="text/javascript"> </script>
+<script src="/media/js/inlines.min.js" type="text/javascript"> </script>
+
 
 	<!-- Django's i18n for javascript -->
 	{# TODO fero <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script> #}
+	<script type="text/javascript">
+    
+        //FIXME: gettext workaround
+        function gettext(t) {
+            return t;
+        }
+    </script>
+
 
 	<script src="/static/nui/scripts/json.js"  type="text/javascript"></script>
 
@@ -80,7 +97,6 @@
 	<!-- <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script> -->
 	{% endif %}
 	
-	
 	<script type="text/javascript">
                 
 		//==============================================================================
@@ -102,11 +118,6 @@
 		var oldhash;
 
 		var generic_timers = new Array();
-
-        //FIXME: gettext workaround
-        function gettext(t) {
-            return t;
-        }
 
 		//==============================================================================
 		// BLOCK HANDLING
@@ -735,10 +746,21 @@
 			
 			if (elements.length > 10)
 				elements.shift();
+
+            var new_elements = [];
+            var element_to_add = resource_type + "/" + resource_id + "/" + descr;
+
+            for (var i=0; i<=10; i++) {
+
+                if ((elements[i]) && (elements[i] != element_to_add))
+                    new_elements.push(elements[i]);
+            }
+                    
+
+			new_elements.push(element_to_add);
+            new_elements.reverse();
 			
-			elements.push(resource_type + "/" + resource_id + "/" +  descr);
-			
-			history_data = elements.join('|');
+			history_data = new_elements.join('|');
 				
 			$.cookie("rest_history", history_data);
 		}
@@ -1708,7 +1730,7 @@
 				if (in_history == "true")
 					return;
 				var url = $(e.target).attr('href');
-				var descr = $(e.target).text();
+				var descr = $(e.target).text().trim();
 				parts = url.split('/', 3);
 				rtype = parts[1];
 				rid   = parts[2];
@@ -2263,11 +2285,9 @@
 
 	</div>
 
-	<!--
 	<div id="footer">
-		<span id="app_title">GASISTA FELICE</span> v. <span id="app_version">{{ VERSION }}</span> - Copyright &copy; 2009 - <a href="http://www.labs.it">Laboratori Guglielmo Marconi</a>-->
+		<span id="app_title">GASISTA FELICE</span> v. <span id="app_version">{{ VERSION }}</span> - Copyright &copy; 2011 - <a href="http://www.reesmarche.org">REES Marche</a>
 	</div>
-	-->
 
 
 	<!-- *********************************************************** -->

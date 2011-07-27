@@ -1,7 +1,4 @@
-from gasistafelice.base.models import Person
-from gasistafelice.supplier.models import Supplier, Product
-from gasistafelice.gas.models import GAS, GASMember, GASSupplierOrder, GASSupplierSolidalPact, Delivery, Withdrawal
-from gasistafelice.des.models import DES
+from gasistafelice.gas.models.proxy import *
 
 type_model_d = {
 	'site' : DES,
@@ -10,12 +7,27 @@ type_model_d = {
 	'person' : Person,
 	'supplier' : Supplier,
 	'product' : Product,
+	'stock' : SupplierStock,
+	'gasstock' : GASSupplierStock,
+	'stock_in_order' : GASSupplierOrderProduct,
+	'category' : ProductCategory,
+	'unit' : ProductMU,
 	'order' : GASSupplierOrder,
 	'pact' : GASSupplierSolidalPact,
-    'delivery' : Delivery,
-    'withdrawal' : Withdrawal,
-	
+	'delivery' : Delivery,
+	'withdrawal' : Withdrawal,
+	'account' : Account,
+	'transact' : Movement,
+	'referrer' : SupplierReferrer,
+	'cert' : Certification,
+	'order' : GASSupplierOrder,
+	'basket' : GASMemberOrder,
 }
+
+#TODO domthu TOCHECK
+# catalogs filtered by available & unavailable for view (blocks) product availability. how to? wich catalogs? 
+#FIXME: list of orders filtered by worflow state: How to? Filter in views or each workflow_state = one resource?
+#FIXME: Account: when viewing GAS we would like to show 3 blocks of Accounts (GAS, GASMember, Supplier). How can be done (filter in views/block or independant resources)?
 
 RESOURCE_LIST = type_model_d.keys()
 

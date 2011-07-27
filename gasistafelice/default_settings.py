@@ -123,7 +123,7 @@ RESOURCE_PAGE_BLOCKS = {
     'gas' : [{
         'name' : 'open_orders',
         'descr': 'Ordini aperti',
-        'blocks': ['open_orders'],
+        'blocks': ['suppliers', 'open_orders'],
     },{
         'name' : 'ordered_products',
         'descr': 'Prodotti ordinati',
@@ -132,14 +132,15 @@ RESOURCE_PAGE_BLOCKS = {
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': [],
+        'blocks': ['categories'],
     },{
         'name' : 'info',
         'descr': 'Generale',
         'blocks': [],
     }],
 }
-   
+
+
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False

@@ -75,65 +75,6 @@ class DES(Site, Resource):
 
     bound_resource = None
 
-    @property
-    def site(self):
-        return self
-
-    @property
-    def gas_list(self):
-        from gasistafelice.gas.models import GAS, GASMember
-        return GAS.objects.all()
-        #TODO: enable the following when database is updated with des attribute for GAS
-        # return self.gas_set.all()
-
-    #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
-
-    @property
-    def gasmembers(self):
-        from gasistafelice.gas.models import GAS, GASMember
-        if hasattr(self, 'isfiltered') and self.isfiltered:
-            return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
-        return GASMember.objects.all()
-
-    #TODO placeholder domthu update limits abbreviations with resource abbreviations
-    def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
-
-        l = []
-        for i in limits:
-            if i.lower() == 'cn':
-                l += self.containers.filter(name__icontains=name)
-            elif i.lower() == 'cd':
-                l += self.containers.filter(descr__icontains=name)
-            elif i.lower() == 'nn':
-                l += self.nodes.filter(name__icontains=name)
-            elif i.lower() == 'nd':
-                l += self.nodes.filter(descr__icontains=name)
-            elif i.lower() == 'in':
-                l += self.ifaces.filter(name__icontains=name)
-            elif i.lower() == 'id':
-                l += self.ifaces.filter(descr__icontains=name)
-            elif i.lower() == 'ii':
-                l += self.ifaces.filter(instance__icontains=name)
-            elif i.lower() == 'tp':
-                l += self.targets.filter(path__icontains=name)
-            elif i.lower() == 'tt':
-                l += self.targets.filter(title__icontains=name)
-            elif i.lower() == 'td':
-                l += self.targets.filter(descr__icontains=name)
-            elif i.lower() == 'mp':
-                l += self.measures.filter(path__icontains=name)
-            elif i.lower() == 'mt':
-                l += self.measures.filter(title__icontains=name)
-            elif i.lower() == 'md':
-                l += self.measures.filter(descr__icontains=name)
-            else:
-                pass
-        ll = []
-        for x in l:
-            if x not in ll:
-                ll.append(x)
-        return ll
-
     def is_configured(self):
         name = Siteattr.get_attribute_or_none('name')
         if name == None:

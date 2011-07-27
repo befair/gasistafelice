@@ -1,8 +1,7 @@
 from django.db import models
 
 from gasistafelice.auth.models import ParamRole
-
-from datetime import date
+from gasistafelice.gas.query import OrderQuerySet, AppointmentQuerySet
 
 class GASMembersManager(models.Manager):
     """
@@ -145,29 +144,44 @@ class GASMembersManager(models.Manager):
 
         return qs
 
-class ActiveAppointmentManager(models.Manager):
-    # TODO UNITTEST
-    """
-    A custom manager class for the `Appointment` model, 
-    meant to retrieve only active appointments.
-    """
-    
-    def get_query_set(self):
-        """
-        Return a QuerySet containing all appointments scheduled for a future date.
-        """
-        return super(ActiveAppointmentManager, self).get_query_set().filter(date__gt=date.today())
+#-------------------------------------------------------------------------------
 
-class ArchivedAppointmentManager(models.Manager):
+class AppointmentManager(models.Manager):
     # TODO UNITTEST
-    """
-    A custom manager class for the `Appointment` model, 
-    meant to retrieve only archived (past) appointments.
+    """Extends default manager with methods useful for appointments.
+
+    * future()
+    * past()
+    
     """
     
     def get_query_set(self):
+        return AppointmentQuerySet(self.model)
+
+    def future(self):
+        """
+        Return a QuerySet containing all appointments scheduled for today or for a future date.
+        """
+        return super(AppointmentManager, self).get_query_set().future()
+
+    def past(self):
         """
         Return a QuerySet containing all past appointments.
         """
-        return super(ArchivedAppointmentManager, self).get_query_set().filter(date__lt=date.today())
+        return super(AppointmentManager, self).get_query_set().past()
+
+#-------------------------------------------------------------------------------
+
+class OrderManager(models.Manager):
+    # TODO UNITTEST DOC
+
+    def get_query_set(self):
+        return OrderQuerySet(self.model)
+
+    def open(self):
+        return super(OrderManager, self).get_query_set().open()
+
+    def closed(self):
+        return super(OrderManager, self).get_query_set().closed()
+
 

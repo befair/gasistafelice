@@ -110,7 +110,7 @@ class Resource(object):
         #TODO fero CHECK
         #Pay attention because it is connected to class
         return "%s/%s" % (cls.resource_type, resource_id)
-        
+
     #---------------------------------------------
     # Relational properties: 
     # not all must be implemented by Resource subclasses
@@ -131,92 +131,195 @@ class Resource(object):
     def gas_list(self):
         """Return GAS list bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def gas(self):
         """Return GAS bound to resource"""
         raise NotImplementedError
-        
+
+    @property
+    def accounts(self):
+        """Return GASMember economic state bound to resource"""
+        raise NotImplementedError
+
+    def categories(self):
+        """Return ProductCategory bound to resource"""
+        raise NotImplementedError
+
+    def category(self):
+        """Return ProductCategory bound to resource"""
+        raise NotImplementedError
+
     @property
     def persons(self):
         """Return persons bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def person(self):
         """Return person bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def gasmembers(self):
         """Return GAS members bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def gasmember(self):
         """Return GAS member bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def pacts(self):
         """Return pacts bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def pact(self):
         """Return pact bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def suppliers(self):
         """Return suppliers bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def supplier(self):
         """Return supplier bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def orders(self):
         """Return orders bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def order(self):
         """Return order bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def deliveries(self):
         """Return deliveries bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def delivery(self):
         """Return delivery bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def withdrawals(self):
         """Return withdrawals bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def withdrawal(self):
         """Return withdrawal bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def products(self):
         """Return products bound to resource"""
         raise NotImplementedError
-        
+
     @property
     def product(self):
         """Return product bound to resource"""
         raise NotImplementedError
-        
+
+    @property
+    def product2s(self):
+        """Return products bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def product2(self):
+        """Return product bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def product3s(self):
+        """Return products bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def product3(self):
+        """Return product bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def product4s(self):
+        """Return products bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def product4(self):
+        """Return product bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def units(self):
+        """Return unit measure list bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def unit(self):
+        """Return unit measure bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def transacts(self):
+        """Return transact list bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def transact(self):
+        """Return transact bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def referrers(self):
+        """Return Referrer list bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def referrer(self):
+        """Return Referrer bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def bios(self):
+        """Return Certification list bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def bio(self):
+        """Return Certification bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def orders(self):
+        """Return gasmember ordered product list bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def order(self):
+        """Return one gasmember ordered product bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def baskets(self):
+        """Return gasmember ordered product list bound to resource"""
+        raise NotImplementedError
+
+    @property
+    def basket(self):
+        """Return one gasmember ordered product bound to resource"""
+        raise NotImplementedError
+
 
 class PermissionResource(Resource, PermissionBase):
     """

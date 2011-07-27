@@ -24,6 +24,7 @@ Import
 * Poi i moduli di applicazioni Django non incluse nel progetto
 * Poi le librerie di sistema
 * Infine i moduli delle applicazioni incluse nel progetto
+* Settings. Non usare 'import settings' ma 'from django.conf import settings'. Cosi l'importazione non adviene dal file ma da un oggetto lazy che puo essere cambiato a runtime.
 
 Naming
 ------
@@ -44,8 +45,16 @@ Il file models.py
 
 * Le classi del models.py vengono scritte nel modo più intuitivo possibile. Ad esempio: se la persona ha vari contatti, si scrive prima la classe Person e il riferimento alla classe Contact nel campo ManyToManyField dei contatti viene messa tra apici
 * Cercare di massimizzare i campi ``blank=True``. Lo specifico perché è importante non ragionare su `cosa l'utente dovrebbe scrivere di un determinato oggetto, ma qual è il minimo sforzo con cui può farlo`. Ad esempio: ha senso inserire il nome della categoria di prodotto e non la descrizione? Secondo me sì. Per appuntare un "reminder" sulla nuova categoria ad esempio. Poi il software si occuperà di mostrare un messaggio "non hai inserito la descrizione della categoria del prodotto" all'utente amministratore del programma.
-* i nomi campi BooleanField o NullBooleanField devo iniziare con un verbo. Ad esempio: "is_active", "use_single_delivery", "can_change_price", ...
+* i nomi campi BooleanField o NullBooleanField devo iniziare con un verbo. Ad esempio: "is_active", "use_scheduler", "can_change_price", ...
 * i nomi campi prediposti per memorizzare valori di default da usare in altri contesti, devono iniziare con "default_"
+* usare funzione save() per codice che non rappresenta un estensione al modello. Usare signal (handler) per codice che rappresenta un estensione.
+* Validazione nei modelli. save() e clean(). Tenere separato il concetto di salvattagio e di validazione.
+Esempio: 
+ 2 campi nullable nel modello. 
+ Verificare che uno dei 2 non è nullo = controllo di validazione clean(). lanciare ValidationError in questo caso
+ Va salvato nella save() use AttributeError
+* Uso di full_clean() nella save() ? Da verificare. Forzare la validazione. Chiamare Validazione prima del salvataggio
+
 
 .. _ManyToManyField:
 
@@ -64,17 +73,17 @@ Esempio:
 
 .. sourcecode:: python
 
-    related_name="solidal_pact_set"
-    related_name="gas_members_set"
-    related_name="gas_members_available_set"
+    related_name="pact_set"
+    related_name="gasmember_set"
+    related_name="gasmember_available_set"
 
     @property
-    def solidal_pacts(self):
-        return self.solidal_pact_set.all()
+    def pacts(self):
+        return self.pact_set.all()
 
     @property
-    def solidal_pact(self):
-        return self.gas.solidal_pacts.get(supplier=self.supplier)
+    def pact(self):
+        return self.gas.pacts.get(supplier=self.supplier)
 
 Struttura classi del modello
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
