@@ -22,6 +22,9 @@ from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import Resource
+from gasistafelice.auth import DES_ADMIN
+from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth.utils import register_parametric_role
 
 import time
 
@@ -72,6 +75,24 @@ class DES(Site, Resource):
             
     def __unicode__(self):
         return self.name
+    
+    # authorization API
+    
+    @property
+    def admins(self):
+        """
+        Return all users being administrators for this DES.
+        """
+        # retrieve 'DES administrator' parametric role for this DES
+        pr = ParamRole.objects.des_admins(des=self)[0]
+        # retrieve all Users having this role
+        return pr.get_users()       
+    
+        
+    def setup_roles(self):
+        # register a new `DES_ADMIN` role for this DES
+        register_parametric_role(name=DES_ADMIN, des=self)
+    
 
     bound_resource = None
 

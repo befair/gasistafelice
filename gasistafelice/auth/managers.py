@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from gasistafelice.base.utils import get_ctype_from_model_label
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, VALID_PARAMS_FOR_ROLES,\
-SUPPLIER_REFERRER, GAS_REFERRER, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
+SUPPLIER_REFERRER, GAS_REFERRER, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL, DES_ADMIN
 from gasistafelice.auth.exceptions import RoleNotAllowed, RoleParameterNotAllowed, RoleParameterWrongSpecsProvided
 
 class RolesManager(models.Manager):
@@ -58,7 +58,7 @@ class RolesManager(models.Manager):
             if expected_ctype != actual_ctype:
                 raise RoleParameterWrongSpecsProvided(role_name, params)                 
         
-        # FIXME should be a QuesrySet, not a list
+        # FIXME should be a QuerySet, not a list
         rv = []
         # filter out parametric roles of the right type
         p_roles = self.get_query_set().filter(role__name__exact=role_name)
@@ -80,8 +80,11 @@ class RolesManager(models.Manager):
                 
         return rv
          
-        
-
+    
+    
+    def des_admins(self, **params):
+        return self.get_param_roles(DES_ADMIN, **params)   
+    
     def supplier_referrers(self, **params):
         return self.get_param_roles(SUPPLIER_REFERRER, **params)
     
@@ -102,7 +105,6 @@ class RolesManager(models.Manager):
     
     def gas_order_referrers(self, **params):
         return self.get_param_roles(GAS_REFERRER_ORDER, **params)
-
 
     def gas_delivery_referrers(self, **params):
         return self.get_param_roles(GAS_REFERRER_DELIVERY, **params)

@@ -15,6 +15,7 @@ GAS_REFERRER_DELIVERY = 'GAS_REFERRER_DELIVERY'
 GAS_REFERRER_CASH = 'GAS_REFERRER_CASH'
 GAS_REFERRER_TECH = 'GAS_REFERRER_TECH'
 SUPPLIER_REFERRER = 'SUPPLIER_REFERRER'
+DES_ADMIN = 'DES_ADMIN'
 
 ROLES_LIST = [
     (NOBODY, _('Nobody')),
@@ -27,6 +28,7 @@ ROLES_LIST = [
     (GAS_REFERRER_DELIVERY, _('GAS delivery referrer')),
     (GAS_REFERRER_CASH, _('GAS cash referrer')),
     (GAS_REFERRER_TECH, _('GAS technical referrer')),
+    (DES_ADMIN, _('DES administrator')),
 ]
 
 VALID_PARAMS_FOR_ROLES = {
@@ -41,7 +43,8 @@ VALID_PARAMS_FOR_ROLES = {
     GAS_REFERRER_SUPPLIER : {'gas':'gas.GAS', 'supplier':'supplier.Supplier'},
     GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
     GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
-    GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},                         
+    GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
+    DES_ADMIN: {'des':'des.DES'},                         
 }
 
 
