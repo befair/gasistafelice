@@ -13,6 +13,38 @@ from gasistafelice.auth.managers import RolesManager
 #from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
 #from gasistafelice.supplier.models import Supplier
 
+class PermissionBase(object):
+    """
+    Just a mix-in class for permission management.
+    
+    Permission-checking methods defined here all return `True`,
+    so if a permission-enabled model class (one inheriting from
+    `PermissionBase`) doesn't override some of them, every User 
+    is automatically grant the corresponding permissions.
+    """
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, **kwargs):
+        return True
+
+    # Row-level LIST permission
+    def can_list(self, user, **kwargs):
+        return True
+    
+    # Row-level VIEW permission
+    def can_view(self, user, **kwargs):
+        return True
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, **kwargs):
+        return True
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, **kwargs):
+        return True
+    
+    
 class ParamByName(object):
     """Helper class used to set ParamRole properties by name """
 

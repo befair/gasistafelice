@@ -10,11 +10,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import permalink
 
-from permissions import PermissionBase # mix-in class for permissions management
+
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
+from gasistafelice.auth.models import PermissionBase # mix-in class for permissions management
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
@@ -323,7 +324,7 @@ class Resource(object):
 
 class PermissionResource(Resource, PermissionBase):
     """
-    Just a convenience for classes inheriting both from Resource and PermissionBase
+    Just a convenience for classes inheriting both from `Resource` and `PermissionBase`
     """
     pass
 
@@ -498,10 +499,7 @@ class Person(models.Model, PermissionResource):
         return qs  
     
     
-    ## END Resource API
-    
-    
-    
+    ## END Resource API    
     
     @property
     def city(self):
