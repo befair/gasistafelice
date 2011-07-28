@@ -160,7 +160,7 @@ class Product(models.Model, PermissionResource):
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
     producer = models.ForeignKey(Supplier, related_name="produced_product_set")
     # Resource API
-    category = models.ForeignKey(ProductCategory, null=True, blank=True)
+    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set")
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)

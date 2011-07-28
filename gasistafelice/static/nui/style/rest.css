@@ -400,6 +400,7 @@ TSTATE_UU=40
 	color: white;
 }
 
+/* ADDED by fero */
 
 #body {
 	min-height:800px;
@@ -408,3 +409,23 @@ TSTATE_UU=40
 #resource_panel{
 	min-width: 240px;
 }
+
+.dataTables_wrapper {
+    width : 70%;
+    margin : 0 auto;
+}
+.dataTables_length {
+    float: left;
+    width: 40%;
+}
+
+.dataTables_filter {
+    float: right;
+    text-align: right;
+    width: 50%;
+}
+
+.dataTable {
+    clear: both;
+}
+

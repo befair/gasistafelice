@@ -210,8 +210,9 @@ class SupplierStockAdmin(admin.ModelAdmin):
          })
         )
 
-    list_display = ('product','supplier', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
-    list_display_links = ('product',)
+    list_display = ('supplier', 'product', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_editable = ('product',)
+    #list_display_links = ('product',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
     

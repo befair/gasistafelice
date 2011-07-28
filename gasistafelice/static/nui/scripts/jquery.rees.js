@@ -84,11 +84,12 @@ jQuery.resource_list = function (block_box_id, element) {
 	var resource_id   =  jQel.attr('resource_id');
 	
     // Block content
-	var contents = jQel.find('content');
+	var contents = jQel.find('content[type="user_actions"]');
 
     res = res.replace('@@list_actions@@', jQuery.render_actions(block_box_id, contents));
 
     // Resources
+	var contents = jQel.find('content[type="list"]');
 	
 	if (contents.find('info').length > 0) {
 	
@@ -136,7 +137,34 @@ jQuery.resource_list = function (block_box_id, element) {
 
 /* Display resource list with details */
 jQuery.resource_list_with_details = function (block_box_id, element) {
-    /* TODO */
+
+	var res = "		\
+    <div class='list_actions'>@@list_actions@@</div> \
+		@@table@@	\
+	";
+	
+	element = jQuery.parseXml(element);	
+	
+	//code
+	var jQel = jQuery(element);
+	
+	if (jQel.children('error').length > 0)
+		return jQel.text()
+	
+	// Resource ID
+	var resource_type =  jQel.attr('resource_type');
+	var resource_id   =  jQel.attr('resource_id');
+	
+    // Block content
+	var contents = jQel.find('content[type="user_actions"]');
+
+    res = res.replace('@@list_actions@@', jQuery.render_actions(block_box_id, contents));
+
+    // Resources
+	var contents = jQel.find('content[type="table"]');
+	
+    res = res.replace('@@table@@', contents.html());
+	return res;
 }
 
 /* Display resource list as icons */
@@ -170,6 +198,7 @@ jQuery.resource_list_block_update = function(block_box_id) {
 		type:'GET',
 		url:url,
         dataType: 'application/xml',
+        data : { display : jQuery.BLOCK_REGISTER_DISPLAY[block_box_id] },
 		complete: function(r, s){
 			
 			if (s == "success") {
@@ -178,11 +207,14 @@ jQuery.resource_list_block_update = function(block_box_id) {
                 // * resource_list
                 // * resource_list_with_details
                 // * resource_list_as_icons
-				var content = jQuery[jQuery.BLOCK_REGISTER_DISPLAY[block_box_id]]( block_box_id, r.responseXML );
+				var content = jQuery[jQuery.BLOCK_REGISTER_DISPLAY[block_box_id]]( block_box_id, r.responseText );
 
                 // Push html content in page
 				block_el.html( content );
                 
+                // Init dataTables
+                $('.dataTable').each(function() { $(this).dataTable(); });
+ 
                 // Set click handlers for actions
                 block_el.find('.block_action').each(function () { 
                     $(this).click(function () { return jQuery.retrieve_form($(this))});
@@ -194,7 +226,8 @@ jQuery.resource_list_block_update = function(block_box_id) {
 				block_el.html( gettext("An error occurred while retrieving the data from server") );
 			}
 		}
-	});	}
+	});	
+}
 
 
 

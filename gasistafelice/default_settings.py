@@ -132,15 +132,14 @@ RESOURCE_PAGE_BLOCKS = {
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': ['categories'],
+        'blocks': ['categories','stocks'],
     },{
         'name' : 'info',
         'descr': 'Generale',
         'blocks': [],
     }],
 }
-
-
+   
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False

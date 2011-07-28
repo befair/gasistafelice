@@ -19,7 +19,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -34,7 +34,8 @@ from gasistafelice.auth import CREATE
 
 class BlockWithList(AbstractBlock):
 
-    ADD_FORM_TEMPLATE = "html/admin_form.html"
+    TEMPLATE_ADD_FORM = "html/admin_form.html"
+    TEMPLATE_RESOURCE_LIST = "blocks/resource_list.xml"
 
     #TODO fero
     #def options_response(self, request, resource_type, resource_id):
@@ -87,7 +88,7 @@ class BlockWithList(AbstractBlock):
             'show_delete' : False,
         }
 
-        return render_to_context_response(request, self.ADD_FORM_TEMPLATE, context)
+        return render_to_context_response(request, self.TEMPLATE_ADD_FORM, context)
 
 # TODO fero CHECK
 # THIS IS USEFUL FOR ADD/REMOVE NEW GAS
@@ -137,7 +138,13 @@ class BlockWithList(AbstractBlock):
                 'resource_list'   : self._get_resource_list(request),
                 'user_actions'    : user_actions
             }
-            return render_to_xml_response('blocks/resource_list.xml', context)
+
+            if request.GET.get('display') == 'resource_list_with_details':
+                template = self.TEMPLATE_RESOURCE_LIST_WITH_DETAILS
+            else:
+                template = self.TEMPLATE_RESOURCE_LIST
+                
+            return render_to_xml_response(template, context)
 
         elif args == CREATE:
 

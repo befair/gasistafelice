@@ -1,0 +1,38 @@
+{% load i18n %}
+<block type="{{ block_type }}" 
+       resource_type="{{ resource.resource_type }}" 
+       resource_id="{{ resource.id }}">
+       
+	<content type="table">
+        <table class="dataTable">
+        <thead>
+            <tr>
+                <th>{% trans "Code" %}</th>
+                <th>{% trans "Product" %}</th>
+                <th>{% trans "Description" %}</th>
+                <th>{% trans "Price" %}</th>
+                <th>{% trans "Availability" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for res in resource_list %}
+            <tr>
+                <td>{{ res.code|default:"" }}</td>
+                <td class="resource" sanet_urn="{{ res.product.urn}}">{{ res.product }}</td>
+                <td>{{ res.product.description }}</td>
+                <td>{{ res.price }}</td>
+                <td>{{ res.amount_available }}</td>
+            </tr>
+		{% endfor %} 
+        </tbody>
+        </table>
+	</content>
+    
+	<content type="user_actions">
+		{% for a in user_actions %}
+		<action verbose_name="{{ a.verbose_name }}" name="{{ a.name }}" url="{{ a.url }}" has_form="{{ a.has_form|yesno:"1,0" }}" />
+		{% endfor %}
+	</content>
+
+</block>
+
