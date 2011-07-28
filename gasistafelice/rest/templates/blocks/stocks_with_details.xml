@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n basic_tags %}
 <block type="{{ block_type }}" 
        resource_type="{{ resource.resource_type }}" 
        resource_id="{{ resource.id }}">
@@ -20,8 +20,8 @@
                 <td>{{ res.code|default:"" }}</td>
                 <td class="resource" sanet_urn="{{ res.product.urn}}">{{ res.product }}</td>
                 <td>{{ res.product.description }}</td>
-                <td>{{ res.price }}</td>
-                <td>{{ res.amount_available }}</td>
+                <td class="align-right">&#8364; {{ res.price|floatformat:2 }}</td>
+                <td class="align-right">{% bool_img res.amount_available %}</td>
             </tr>
 		{% endfor %} 
         </tbody>
