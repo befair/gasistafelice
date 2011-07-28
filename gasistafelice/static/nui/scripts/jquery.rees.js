@@ -213,7 +213,17 @@ jQuery.resource_list_block_update = function(block_box_id) {
 				block_el.html( content );
                 
                 // Init dataTables
-                $('.dataTable').each(function() { $(this).dataTable(); });
+                // FIXME: currency ordering - must be shifted outside this generic function
+                $('.dataTable').each(function() { $(this).dataTable({
+                        "aoColumns": [
+                            null,
+                            null,
+                            null,
+                            { "sType": "currency" },
+                            null
+                        ]
+                    }); 
+                });
  
                 // Set click handlers for actions
                 block_el.find('.block_action').each(function () { 

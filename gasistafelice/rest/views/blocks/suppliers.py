@@ -4,6 +4,8 @@ from django.core import urlresolvers
 from gasistafelice.rest.views.blocks.base import BlockWithList, Action
 from gasistafelice.auth import CREATE
 
+from gasistafelice.supplier.models import Supplier
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -27,8 +29,7 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
-        # TODO seldon placeholder: check if a user can create a GAS
-        if request.user.has_perm(CREATE, obj=request.resource):
+        if request.user.has_perm(CREATE, obj=Supplier):
             user_actions.append(self.ACTION_CREATE)
 
         return user_actions
