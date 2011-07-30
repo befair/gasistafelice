@@ -1,8 +1,9 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, Action
+from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.auth import CREATE
+from gasistafelice.gas.models import GAS
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -15,22 +16,22 @@ class Block(BlockWithList):
     BLOCK_DESCRIPTION = _("GAS")
     BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "user"] 
 
-    # Actions
-    ACTION_CREATE = Action(
-        name=CREATE, 
-        verbose_name=_("Add GAS"), 
-        url=urlresolvers.reverse('admin:gas_gas_add')
-    )
-
     def _get_resource_list(self, request):
         return request.resource.gas_list
 
     def _get_user_actions(self, request):
 
         user_actions = []
-        # TODO seldon placeholder: check if a user can create a GAS
-        if request.user.has_perm(CREATE, obj=request.resource):
-            user_actions.append(self.ACTION_CREATE)
+
+        if request.user.has_perm(CREATE, obj=GAS):
+            user_actions.append( 
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE, verbose_name=_("Add GAS"), 
+                    url=urlresolvers.reverse('admin:gas_gas_add')
+                )
+            )
 
         return user_actions
         

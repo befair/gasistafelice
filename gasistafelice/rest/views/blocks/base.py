@@ -29,6 +29,32 @@ from gasistafelice.auth import CREATE
 #from users.models import can_write_to_resource
 
 #------------------------------------------------------------------------------#
+# Actions                                                                      #
+#------------------------------------------------------------------------------#
+
+class Action(object):
+
+    def __init__(self, name, verbose_name, url, has_form=True):
+
+        self.name = name
+        self.verbose_name = verbose_name
+        self.url = url
+        self.has_form = has_form
+
+class ResourceBlockAction(Action):
+    """Action included in a resource block.
+
+    Usually you should use this class"""
+
+    def __init__(self, resource, block_name, name, verbose_name, url=None, has_form=True):
+
+        self.resource = resource
+        self.block_name = block_name
+        if not url:
+            url = "%s/%s/%s" % (resource.urn, block_name, name)
+        super(ResourceBlockAction, self).__init__(name, verbose_name, url, has_form)
+
+#------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
 
@@ -90,33 +116,6 @@ class BlockWithList(AbstractBlock):
 
         return render_to_context_response(request, self.TEMPLATE_ADD_FORM, context)
 
-# TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
-#    def add_new_note(self,request, resource_type, resource_id):
-#        resource = request.resource
-#        
-#        if request.POST:
-#            
-#            #title = request.REQUEST.get('title');
-#            body  = request.REQUEST.get('body');
-#            
-#            new_comment = Comment(content_object = resource
-#                             ,site = DjangoSite.objects.all()[0]
-#                             ,user = request.user
-#                             ,user_name = request.user.username
-#                             ,user_email = request.user.email
-#                             ,user_url = ''
-#                             ,comment = body
-#                             ,ip_address = None
-#                             ,is_public = True
-#                             ,is_removed = False                       
-#                             )
-#                        
-#            new_comment.save()
-#
-#            
-#        return HttpResponse('')
-#            
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
@@ -124,11 +123,6 @@ class BlockWithList(AbstractBlock):
     def get_response(self, request, resource_type, resource_id, args):
 
         resource = request.resource
-        user_actions = self._get_user_actions(request)
-
-        for action in user_actions:
-            if action.url is None:
-                action.url = "%s/%s/%s" % (resource.urn, self.name, action.name)
 
         if args == "":
 
@@ -136,7 +130,7 @@ class BlockWithList(AbstractBlock):
                 'block_type' : self.name,
                 'resource'   : resource,
                 'resource_list'   : self._get_resource_list(request),
-                'user_actions'    : user_actions
+                'user_actions'    : self._get_user_actions(request),
             }
 
             if request.GET.get('display') == 'resource_list_with_details':
@@ -153,15 +147,4 @@ class BlockWithList(AbstractBlock):
         else:
             raise NotImplementedError
 
-#------------------------------------------------------------------------------#
-#                                                                              #
-#------------------------------------------------------------------------------#
 
-class Action(object):
-
-    def __init__(self, name, verbose_name, has_form=True, url=None):
-
-        self.name = name
-        self.has_form = has_form
-        self.verbose_name = verbose_name
-        self.url = url
