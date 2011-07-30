@@ -20,6 +20,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from gasistafelice.lib.views_support import get_datatables_records
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -147,4 +148,61 @@ class BlockWithList(AbstractBlock):
         else:
             raise NotImplementedError
 
+
+class BlockSSDataTables(BlockWithList):
+    """Block with list suitable for jQuery.dataTables http://datatables.net).
+
+    This class helps in building blocks with list in which data representation
+    is prepared for "server side processing" by jQuery.dataTables.
+
+    Server side steps needed:
+
+    1. return block content which holds table structure
+    2. provide methods for dataTables API:
+        - input: objects to retrieve, keywords to search, offset, ...
+        - output: json rendering
+    
+    Client side use dataTables to deal with the block
+
+    For a full example see: http://www.assembla.com/spaces/datatables_demo/wiki
+    """
+
+    KW_DATA = "data"
+
+    #------------------------------------------------------------------------------#    
+    #                                                                              #     
+    #------------------------------------------------------------------------------#
+
+    def get_response(self, request, resource_type, resource_id, args):
+
+        resource = request.resource
+
+        if args == "":
+
+            context = {
+                'block_type' : self.name,
+                'resource'   : resource,
+                'user_actions'    : self._get_user_actions(request),
+            }
+
+            template_name = "blocks/%s/block.xml" % self.BLOCK_NAME
+            return render_to_xml_response(template_name, context)
+
+        elif args == self.KW_DATA:
+
+            querySet = self._get_resource_list(request) 
+            #columnIndexNameMap is required for correct sorting behavior
+            columnIndexNameMap = { 0: 'code', 1 : 'product', 2: 'description', 3: 'price', 4: 'availability' }
+            #path to template used to generate json (optional)
+            jsonTemplatePath = 'blocks/%s/data.json' % self.BLOCK_NAME
+
+            #call to generic function from utils
+            return get_datatables_records(request, querySet, columnIndexNameMap, jsonTemplatePath)
+
+        elif args == CREATE:
+
+            return self._add_resource(request)
+
+        else:
+            raise NotImplementedError("args = %s" % args)
 

@@ -215,6 +215,9 @@ jQuery.resource_list_block_update = function(block_box_id) {
                 // Init dataTables
                 // FIXME: currency ordering - must be shifted outside this generic function
                 $('.dataTable').each(function() { $(this).dataTable({
+                        'sPaginationType': 'full_numbers', 
+                        "bServerSide": true,
+                        "sAjaxSource": url + "data",
                         "aoColumns": [
                             null,
                             null,

@@ -195,7 +195,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ('producer', 'category')
     search_fields = ['name', 'producer__name', 'description']
 
-
 class SupplierStockAdmin(admin.ModelAdmin):
 
     save_on_top = True
@@ -213,6 +212,50 @@ class SupplierStockAdmin(admin.ModelAdmin):
     list_display = ('supplier', 'product', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
     list_editable = ('product',)
     #list_display_links = ('product',)
+    list_filter = ('supplier',)
+    search_fields = ['product', 'supplier__name',]
+    
+    # FIXME: try to make it more generic !
+    def order_min_amount_pretty(self, obj):
+        return obj.order_minimum_amount or '--'
+    order_min_amount_pretty.short_description = "minimum amount"
+    
+    # FIXME: try to make it more generic !
+    def order_step_pretty(self, obj):
+        return obj.order_step or '--'
+    order_step_pretty.short_description = "increment step"
+    
+    def amount_avail_pretty(self, obj):
+        if obj.amount_available == ALWAYS_AVAILABLE:
+            return 'infinity'
+    amount_avail_pretty.short_description = 'amount available'
+    
+    # FIXME: try to make it more generic !
+    # TODO: 'euro' should be rendered as a currency symbol 
+    def price_pretty(self, obj):
+        return str(obj.price) + ' euro'
+    price_pretty.short_description = "price"
+
+from gasistafelice.supplier.forms import SupplierStockForm
+
+class SupplierStockAdmin(admin.ModelAdmin):
+
+    form = SupplierStockForm
+    save_on_top = True
+    
+    fieldsets = (
+        (None, {
+            'fields': ('product', 'price', 'amount_available',)
+        }),
+        ('Constraints', {
+            'classes': ('collapse',),
+            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
+         })
+        )
+
+    list_display = ('supplier', 'product', 'price', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_editable = ('product', 'price')
+    list_display_links = ('supplier',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
     
