@@ -23,27 +23,197 @@ var NEW_NOTE_FORM_TEXT= "\
      This acts as default display_type for block_box_id display type
 */
 
-jQuery.BLOCK_REGISTER_DISPLAY = {}
-jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME = {}
+jQuery.BLOCKS = {};
 
-jQuery.render_actions = function (block_box_id, contents) {
+/*******************************
+ * User Interface Block class
+ *******************************/
 
-    // Block actions
-    var block_action_template = "<a href=\"@@action_url@@\" class=\"block_action\">@@action_verbose_name@@</a>";
-    var block_actions = '';
+jQuery.UIBlock = Class.extend({
 
-	if (contents.find('action').length > 0) {
-	
-		contents.find('action').each(function(){
-            var block_action = block_action_template.replace(/@@action_name@@/g, $(this).attr("name"));
-            block_action = block_action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
-            block_action = block_action.replace(/@@action_url@@/g, $(this).attr("url"));
-            block_actions += block_action;
+    init: function(block_name) {
+        this.block_name = block_name;
+        this.active_view = "show";
+
+        //HACK to be compatible with SANET block management
+        //TODO: blocks handler calls as pure objects
+        //(i.e. check block registered in jQuery.BLOCKS and call update_handler)
+        jQuery.REGISTER_BLOCK_UPDATE_HANDLER(block_name, function (block_box_id) {
+            var block_instance = jQuery.BLOCKS[block_name];
+            return block_instance.update_handler(block_box_id);
         });
-    }
-    return block_actions;
+
+    },
+
+    set_parsed_data: function(data) {
+        var jQel = jQuery(jQuery.parseXml(data));
+        if (jQel.children('error').length > 0)
+            return jQel.text()
+        this.parsed_data = jQel;
+    },
+
+    update_handler: function(block_box_id) {
+
+        this.block_box_id = block_box_id;
+
+        var block_box_el = $('#' + block_box_id);
+        this.block_el = block_box_el.children('.block_body');
+        this.block_el.empty();
+        
+        var block_urn = block_box_el.attr('block_urn');
+        this.url = jQuery.pre + jQuery.app + '/' + block_urn;
+
+        var block_obj = this;
+        
+        $.ajax({
+            type:'GET',
+            url: block_obj.url,
+            dataType: 'application/xml',
+            data : { render_as : block_obj.rendering },
+            complete: function(r, s){
+                
+                if (s == "success") {
+                    
+                    block_obj.update_content(r.responseText);
+                    block_obj.post_load_handler(); // Update GUI event handlers
+                }
+                else {
+                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server") );
+                }
+            }
+        });	
+    },  
+
+    update_content: function(data) {
+
+        var errors = this.set_parsed_data(data);
+
+        if (errors) {
+            this.block_el.html(content);
+            return;
+        }
+
+        //Render block content
+        var content = this.render_actions(data);
+        content += this.render_content(data);
+
+        // Push HTML content in page
+        // After this moment is possible to update event handlers
+        this.block_el.html(content);
+
+        // Set click handlers for actions
+        var block_obj = this;
+        this.block_el.find('.block_action').each(function () { 
+            $(this).click(function () { return block_obj.action_handler($(this))});
+        });
+    },
+
+    post_load_handler : function() {
+        jQuery.post_load_handler();
+    },
+
+    action_handler : function(action_el) {
+
+        this.active_view = action_el.attr('name');
+        if (action_el.attr('popup_form') == "1") {
+            return jQuery.retrieve_form(action_el);
+        }
+        this.update_handler(this.block_box_id);
+        return false;
+    },
+
+    render_actions : function(data) {
+
+        var res = "<div class='list_actions'>@@list_actions@@</div>";
+        
+        var jQel = this.parsed_data;
+        
+        // Resource ID
+        var resource_type =  jQel.attr('resource_type');
+        var resource_id   =  jQel.attr('resource_id');
+        
+        //Render block actions
+        var contents = jQel.find('content[type="user_actions"]');
+        var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
+        var actions = '';
+
+        if (contents.find('action').length > 0) {
+        
+            contents.find('action').each(function(){
+                var action = action_template.replace(/@@action_name@@/g, $(this).attr("name"));
+                action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
+                action = action.replace(/@@action_url@@/g, $(this).attr("url"));
+                action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
+                actions += action;
+            });
+        }
+
+        res = res.replace('@@list_actions@@', actions);
+        return res;
     
-}
+    },
+    
+    render_content : function(data) {
+        //TODO fero: To be filled with ... details block?!?
+    }
+
+});
+
+
+/***************************
+ * Block with list class
+ **************************/
+
+jQuery.UIBlockWithList = jQuery.UIBlock.extend({
+
+    init: function(block_name, default_rendering) {
+
+        if (!default_rendering)
+            default_rendering = "list";
+
+        this.default_rendering = default_rendering;
+        this.rendering = default_rendering;
+        this._super(block_name);
+    },
+
+    update_content: function(data) {
+        this._super(data);
+        
+    },
+
+    post_load_handler: function() {
+        this["rendering_"+this.rendering+"_post_load_handler"]();
+        this._super();
+    },
+
+    rendering_list_post_load_handler: function () {},
+    rendering_icons_post_load_handler: function () {},
+    rendering_table_post_load_handler: function () {},
+
+    render_content: function(data) {
+        return this["render_content_as_"+this.rendering](data);
+    },
+
+    render_content_as_table: function(data) {
+        // Render block content as table
+
+        var jQel = this.parsed_data;
+
+        // Resource ID... we could need them later... TODO fero TOCHECK
+        var resource_type =  jQel.attr('resource_type');
+        var resource_id   =  jQel.attr('resource_id');
+        
+        // Find table and render
+        return jQel.find('content[type="table"]').html();
+        
+    },
+
+    render_content_as_icons: function(data) {
+
+    },
+
+});
+
 
 /* Display resource list */
 /* This function is inspired by blocks specific code of SANET by Laboratori Guglielmo Marconi */
@@ -134,115 +304,6 @@ jQuery.resource_list = function (block_box_id, element) {
 
 	return res;
 }
-
-/* Display resource list with details */
-jQuery.resource_list_with_details = function (block_box_id, element) {
-
-	var res = "		\
-    <div class='list_actions'>@@list_actions@@</div> \
-		@@table@@	\
-	";
-	
-	element = jQuery.parseXml(element);	
-	
-	//code
-	var jQel = jQuery(element);
-	
-	if (jQel.children('error').length > 0)
-		return jQel.text()
-	
-	// Resource ID
-	var resource_type =  jQel.attr('resource_type');
-	var resource_id   =  jQel.attr('resource_id');
-	
-    // Block content
-	var contents = jQel.find('content[type="user_actions"]');
-
-    res = res.replace('@@list_actions@@', jQuery.render_actions(block_box_id, contents));
-
-    // Resources
-	var contents = jQel.find('content[type="table"]');
-	
-    res = res.replace('@@table@@', contents.html());
-	return res;
-}
-
-/* Display resource list as icons */
-jQuery.resource_list_as_icons = function (block_box_id, element) {
-    /* TODO */
-}
-
-/* Retrieve and update blocks that include resource list */
-jQuery.resource_list_block_update = function(block_box_id) {
-
-	var block_box_el = $('#' + block_box_id);
-	var block_el  = block_box_el.children('.block_body');
-	
-	block_el.empty();
-	
-	var block_urn = block_box_el.attr('block_urn');
-	var block_name = block_box_el.attr('block_name');
-	
-	var url = jQuery.pre + jQuery.app + '/' + block_urn;
-	
-    /* Set default display type for block */
-    if (!jQuery.BLOCK_REGISTER_DISPLAY[block_box_id]) {
-        if (jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME[block_name]) {
-            jQuery.BLOCK_REGISTER_DISPLAY[block_box_id] = jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME[block_name];
-        } else {
-            jQuery.BLOCK_REGISTER_DISPLAY[block_box_id] = "resource_list";
-        }
-    }
-
-	$.ajax({
-		type:'GET',
-		url:url,
-        dataType: 'application/xml',
-        data : { display : jQuery.BLOCK_REGISTER_DISPLAY[block_box_id] },
-		complete: function(r, s){
-			
-			if (s == "success") {
-                
-                // Invoke content rendering functions
-                // * resource_list
-                // * resource_list_with_details
-                // * resource_list_as_icons
-				var content = jQuery[jQuery.BLOCK_REGISTER_DISPLAY[block_box_id]]( block_box_id, r.responseText );
-
-                // Push html content in page
-				block_el.html( content );
-                
-                // Init dataTables
-                // FIXME: currency ordering - must be shifted outside this generic function
-                $('.dataTable').each(function() { $(this).dataTable({
-                        'sPaginationType': 'full_numbers', 
-                        "bServerSide": true,
-                        "bStateSave": true,
-                        "sAjaxSource": url + "edit_multiple",
-                        "aoColumns": [
-                            null,
-                            null,
-                            null,
-                            { "sType": "currency" },
-                            null
-                        ]
-                    }); 
-                });
- 
-                // Set click handlers for actions
-                block_el.find('.block_action').each(function () { 
-                    $(this).click(function () { return jQuery.retrieve_form($(this))});
-                });
-                
-				jQuery.post_load_handler(); // Update GUI event handlers
-			}
-			else {
-				block_el.html( gettext("An error occurred while retrieving the data from server") );
-			}
-		}
-	});	
-}
-
 
 
 //------------------------------------------------------------------------------//
@@ -338,3 +399,13 @@ jQuery.retrieve_form = function (action_el) {
 	$(NEW_NOTE_DIALOG).dialog('open');
 	return false;
 };
+
+
+
+
+
+/* Retrieve and update blocks that include resource list */
+jQuery.resource_list_block_update = function(block_box_id) {
+
+}
+

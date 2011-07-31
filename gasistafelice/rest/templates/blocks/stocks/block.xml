@@ -23,7 +23,7 @@
     
 	<content type="user_actions">
 		{% for a in user_actions %}
-		<action verbose_name="{{ a.verbose_name }}" name="{{ a.name }}" url="{{ a.url }}" has_form="{{ a.has_form|yesno:"1,0" }}" />
+		<action verbose_name="{{ a.verbose_name }}" name="{{ a.name }}" url="{{ a.url }}" popup_form="{{ a.popup_form|yesno:"1,0" }}" />
 		{% endfor %}
 	</content>
 

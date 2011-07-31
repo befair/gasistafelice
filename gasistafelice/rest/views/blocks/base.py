@@ -34,25 +34,25 @@ from gasistafelice.auth import CREATE, EDIT_MULTIPLE
 
 class Action(object):
 
-    def __init__(self, name, verbose_name, url, has_form=True):
+    def __init__(self, name, verbose_name, url, popup_form=True):
 
         self.name = name
         self.verbose_name = verbose_name
         self.url = url
-        self.has_form = has_form
+        self.popup_form = popup_form
 
 class ResourceBlockAction(Action):
     """Action included in a resource block.
 
     Usually you should use this class"""
 
-    def __init__(self, resource, block_name, name, verbose_name, url=None, has_form=True):
+    def __init__(self, resource, block_name, name, verbose_name, url=None, popup_form=True):
 
         self.resource = resource
         self.block_name = block_name
         if not url:
             url = "%s/%s/%s" % (resource.urn, block_name, name)
-        super(ResourceBlockAction, self).__init__(name, verbose_name, url, has_form)
+        super(ResourceBlockAction, self).__init__(name, verbose_name, url, popup_form)
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -133,7 +133,8 @@ class BlockWithList(AbstractBlock):
                 'user_actions'    : self._get_user_actions(request),
             }
 
-            if request.GET.get('display') == 'resource_list_with_details':
+            # Not used now
+            if request.GET.get('render_as') == 'resource_list_with_details':
                 template = self.TEMPLATE_RESOURCE_LIST_WITH_DETAILS
             else:
                 template = self.TEMPLATE_RESOURCE_LIST
@@ -166,7 +167,7 @@ class BlockSSDataTables(BlockWithList):
     For a full example see: http://www.assembla.com/spaces/datatables_demo/wiki
     """
 
-    KW_DATA = "data"
+    KW_DATA = "show"
 
     # To be overridden in subclass. Required for correct sorting behaviour
     COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'description', 3: 'price', 4: 'availability' }

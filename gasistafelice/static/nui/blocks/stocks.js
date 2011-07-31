@@ -1,5 +1,32 @@
 
+jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
-jQuery.REGISTER_BLOCK_UPDATE_HANDLER('stocks', jQuery.resource_list_block_update);
-jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME = { 'stocks' : 'resource_list_with_details' } 
+    init: function() {
+        this._super("stocks", "table");
+    },
+
+    rendering_table_post_load_handler: function() {
+
+        // Init dataTables
+        var ajaxSource = this.url + this.active_view;
+        
+        this.block_el.find('.dataTable').each(function() { $(this).dataTable({
+                'sPaginationType': 'full_numbers', 
+                "bServerSide": true,
+                "bStateSave": true,
+                "sAjaxSource": ajaxSource,
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    { "sType": "currency" },
+                    null
+                ]
+            }); 
+        });
+    },
+    
+});
+
+jQuery.BLOCKS["stocks"] = new jQuery.UIBlockStockList();
 

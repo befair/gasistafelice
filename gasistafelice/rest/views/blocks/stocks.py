@@ -30,6 +30,7 @@ class Block(BlockSSDataTables):
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=EDIT_MULTIPLE, verbose_name=_("Edit stock"), 
+                    popup_form=False,
                 )
             )
 
