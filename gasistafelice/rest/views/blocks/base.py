@@ -20,15 +20,14 @@ from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
-from gasistafelice.lib.views_support import get_datatables_records
+from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
 
-from gasistafelice.auth import CREATE
+from gasistafelice.auth import CREATE, EDIT_MULTIPLE
 
 #from users.models import can_write_to_resource
-
 #------------------------------------------------------------------------------#
 # Actions                                                                      #
 #------------------------------------------------------------------------------#
@@ -169,6 +168,12 @@ class BlockSSDataTables(BlockWithList):
 
     KW_DATA = "data"
 
+    # To be overridden in subclass. Required for correct sorting behaviour
+    COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'description', 3: 'price', 4: 'availability' }
+
+    def _get_edit_multiple_form_record(self, request, el):
+        raise NotImplementedError("To be implemented in subclass")
+
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
@@ -192,13 +197,31 @@ class BlockSSDataTables(BlockWithList):
 
             querySet = self._get_resource_list(request) 
             #columnIndexNameMap is required for correct sorting behavior
-            columnIndexNameMap = { 0: 'code', 1 : 'product', 2: 'description', 3: 'price', 4: 'availability' }
+            columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
             #path to template used to generate json (optional)
             jsonTemplatePath = 'blocks/%s/data.json' % self.BLOCK_NAME
 
-            #call to generic function from utils
-            return get_datatables_records(request, querySet, columnIndexNameMap, jsonTemplatePath)
+            querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
+            return render_datatables(request, querySet, dt_params, jsonTemplatePath)
 
+        elif args == EDIT_MULTIPLE:
+
+            querySet = self._get_resource_list(request) 
+            #columnIndexNameMap is required for correct sorting behavior
+            columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
+            #path to template used to generate json (optional)
+            jsonTemplatePath = 'blocks/%s/edit_multiple.json' % self.BLOCK_NAME
+
+            querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
+
+            records = []
+            for el in querySet:
+                records.append(
+                    self._get_edit_multiple_form_record(request, el)
+                )
+
+            return render_datatables(request, records, dt_params, jsonTemplatePath)
+            
         elif args == CREATE:
 
             return self._add_resource(request)

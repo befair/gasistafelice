@@ -236,11 +236,9 @@ class SupplierStockAdmin(admin.ModelAdmin):
         return str(obj.price) + ' euro'
     price_pretty.short_description = "price"
 
-from gasistafelice.supplier.forms import SupplierStockForm
 
 class SupplierStockAdmin(admin.ModelAdmin):
 
-    form = SupplierStockForm
     save_on_top = True
     
     fieldsets = (

@@ -7,11 +7,11 @@
     {% for stock in records %}
     [
         
-        "{{stock.code|default:''|escapejs}}",
+        "{{stock.code|escapejs}}",
         "{{stock.product|escapejs}}",
-        "{{stock.product.description|escapejs}}",
-        "&#8364; {{ stock.price|floatformat:2|escapejs }}",
-        "{% filter escapejs %}{% bool_img stock.amount_available %}{% endfilter %}",
+        "{{stock.description|escapejs}}",
+        "&#8364; {{ stock.price|escapejs }}",
+        "{% filter escapejs %}{{ stock.availability }}{% endfilter %}",
     ]
     {% if not forloop.last %}
     ,

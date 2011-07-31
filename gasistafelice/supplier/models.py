@@ -232,6 +232,10 @@ class SupplierStock(models.Model, PermissionResource):
     def producer(self):
         return self.product.producer
     
+    @property
+    def availability(self):
+        return bool(self.amount_available)
+
     @property        
     def local_grants(self):
         rv = (

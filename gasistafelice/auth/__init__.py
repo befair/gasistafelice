@@ -51,14 +51,17 @@ VIEW = 'view'
 LIST = 'list'
 CREATE = 'create'
 EDIT = 'edit'
+EDIT_MULTIPLE = 'edit_multiple'
 DELETE = 'delete'
 ALL = 'all' # catchall
+
 
 PERMISSIONS_LIST = [
 (VIEW, _('View')),
 (LIST, _('List')),
 (CREATE, _('Create')),
 (EDIT, _('Edit')),
+(EDIT_MULTIPLE, _('Edit multiple')),
 (DELETE, _('Delete')),
 (ALL, _('All')), # catchall
 ]

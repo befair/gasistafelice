@@ -217,7 +217,8 @@ jQuery.resource_list_block_update = function(block_box_id) {
                 $('.dataTable').each(function() { $(this).dataTable({
                         'sPaginationType': 'full_numbers', 
                         "bServerSide": true,
-                        "sAjaxSource": url + "data",
+                        "bStateSave": true,
+                        "sAjaxSource": url + "edit_multiple",
                         "aoColumns": [
                             null,
                             null,
