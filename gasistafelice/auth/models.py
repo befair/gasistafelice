@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.db.models import signals
 from django.contrib.auth.models import User, Group 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -232,4 +233,22 @@ class PrincipalParamRoleRelation(models.Model):
             raise AttributeError("The principal must be either a User instance or a Group instance.")
 
     principal = property(get_principal, set_principal)    
+    
+def setup_roles(sender, instance, created, **kwargs):
+    """
+    Setup proper Roles after a model instance is saved to the DB for the first time.
+    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
+    actual role-creation/setup logic is encapsulated there.
+    """
+    if created: # Automatic role-setup should happen only at instance-creation time 
+        try:
+            # `instance` is the model instance that has just been created
+            instance.setup_roles()
+                                                
+        except AttributeError:
+            # sender model doesn't specify any role-related setup operations, so just ignore the signal
+            pass
+
+# add `setup_roles` function as a listener to the `post_save` signal
+signals.post_save.connect(setup_roles)
      

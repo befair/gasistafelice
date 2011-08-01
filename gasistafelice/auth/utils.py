@@ -1,7 +1,4 @@
-from django.db import IntegrityError
-from django.db.models import signals
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.loading import cache
 
 from django.contrib.auth.models import User, Group
 
@@ -9,7 +6,7 @@ from permissions.models import Role
 
 from gasistafelice.base.utils import get_ctype_from_model_label 
 
-from gasistafelice.auth import PermissionsRegister, VALID_PARAMS_FOR_ROLES
+from gasistafelice.auth import VALID_PARAMS_FOR_ROLES
 from gasistafelice.auth.models import Param, ParamRole, PrincipalParamRoleRelation
 from gasistafelice.auth.exceptions import RoleParameterNotAllowed, RoleNotAllowed, RoleParameterWrongSpecsProvided
 
@@ -348,24 +345,3 @@ def get_all_parametric_roles(principal):
         for group in principal.groups.all():
             roles.extend(get_parametric_roles(group))
     return roles
-
-# Role setup utilities ################################################################
-def setup_roles(sender, instance, created, **kwargs):
-    """
-    Setup proper Roles after a model instance is saved to the DB for the first time.
-    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
-    actual role-creation/setup logic is encapsulated there.
-    """
-    if created: # Automatic role-setup should happen only at instance-creation time 
-        try:
-            # `instance` is the model instance that has just been created
-            instance.setup_roles()
-                                                
-        except AttributeError:
-            # sender model doesn't specify any role-related setup operations, so just ignore the signal
-            pass
-
-# add `setup_roles` function as a listener to the `post_save` signal
-signals.post_save.connect(setup_roles)
-      
-
