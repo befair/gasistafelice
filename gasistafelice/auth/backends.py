@@ -92,7 +92,7 @@ class ParamRoleBackend(object):
         return None
     
     
-    def has_perm(self, user_obj, perm, obj, **kwargs):
+    def has_perm(self, user_obj, perm, obj=None, **kwargs):
         """Checks whether a user has a table-level/row-level permission on a model class/instance.
 
         This should be the primary method to check wether a User has a certain permission.
@@ -112,6 +112,10 @@ class ParamRoleBackend(object):
             If `obj` is a model instance, the permission is a row-level one.
         """
         
+        # delegate non-object permission check to Django's default backend (`ModelBackend`) - or whatever
+        if obj is None:
+                return False
+                    
         # if User is not authenticated or inactive, (s)he has no permissions 
         if user_obj.is_anonymous() or not user_obj.is_active():
             return False
