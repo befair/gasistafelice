@@ -4,6 +4,8 @@ from django.db.models.signals import post_syncdb
 import permissions
 from permissions.utils import register_role, register_permission
 
+from gasistafelice.lib import ClassProperty
+
 ## role-related constants
 NOBODY = 'NOBODY'
 GAS_MEMBER = 'GAS_MEMBER'
@@ -66,52 +68,8 @@ PERMISSIONS_LIST = [
 (ALL, _('All')), # catchall
 ]
 
-class PermissionsRegister(object):
-    """Support global register to hold Role and Permissions dicts"""
-
-    # a dictionary holding Roles model instances, keyed by name
-    roles_dict = {}
-
-    # a dictionary holding Permission model instances, keyed by Permission's codename
-    perms_dict = {}
-
-    @property
-    def roles(cls):
-        return cls.roles_dict.values()
-
-    @property
-    def perms(cls):
-        return cls.perms_dict.values()
-
-    @property
-    def role_names(cls):
-        return cls.roles_dict.keys()
-
-    @property
-    def perm_names(cls):
-        return cls.perms_dict.keys()
-    
-    @classmethod
-    def get_role(cls, code):
-        return cls.roles_dict[code]
-    
-    @classmethod
-    def get_perm(cls, code):
-        return cls.perms_dict[code]
 
 
-def init_permissions(sender, **kwargs):
 
-    ## register project-level Roles
-    for (name, description) in ROLES_LIST:
-        PermissionsRegister.roles_dict[name] = register_role(name)
-
-    ## register project-level Permissions
-    for (codename, name) in PERMISSIONS_LIST:    
-        PermissionsRegister.perms_dict[codename] = register_permission(name, codename)
-
-    return
-
-post_syncdb.connect(init_permissions, sender=permissions.models)
 
     
