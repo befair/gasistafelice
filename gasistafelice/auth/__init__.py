@@ -1,10 +1,4 @@
 from django.utils.translation import ugettext as _, ugettext_lazy 
-from django.db.models.signals import post_syncdb
-
-import permissions
-from permissions.utils import register_role, register_permission
-
-from gasistafelice.lib import ClassProperty
 
 ## role-related constants
 NOBODY = 'NOBODY'

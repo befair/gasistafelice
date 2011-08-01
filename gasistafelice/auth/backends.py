@@ -1,11 +1,3 @@
-from django.db.models import Model
-from django.contrib.contenttypes.models import ContentType
-
-import permissions.utils
-from permissions.models import ObjectPermission
-
-from gasistafelice.auth.models import GlobalPermission
-
 class DummyBackend(object):
     """A dummy authorization backend intended only for development purposes.
     
