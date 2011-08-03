@@ -167,12 +167,12 @@ class BlockSSDataTables(BlockWithList):
     For a full example see: http://www.assembla.com/spaces/datatables_demo/wiki
     """
 
-    KW_DATA = "show"
+    KW_DATA = "view"
 
     # To be overridden in subclass. Required for correct sorting behaviour
     COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'description', 3: 'price', 4: 'availability' }
 
-    def _get_edit_multiple_form_record(self, request, el):
+    def _get_records(self, request, querySet):
         raise NotImplementedError("To be implemented in subclass")
 
     #------------------------------------------------------------------------------#    
@@ -214,12 +214,7 @@ class BlockSSDataTables(BlockWithList):
             jsonTemplatePath = 'blocks/%s/edit_multiple.json' % self.BLOCK_NAME
 
             querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
-
-            records = []
-            for el in querySet:
-                records.append(
-                    self._get_edit_multiple_form_record(request, el)
-                )
+            records = self._get_records(request, querySet)
 
             return render_datatables(request, records, dt_params, jsonTemplatePath)
             

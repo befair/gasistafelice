@@ -14,14 +14,9 @@ var NEW_NOTE_FORM_TEXT= "\
 		</form>\
 		";
 
-/* BLOCK_REGISTER_DISPLAY and BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME 
-   are meant to store representation of blocks
-
-   * BLOCK_REGISTER_DISPLAY is like block_box_id => display_type
-   * BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME is like block_name => display_type 
-     (block_name are keys registered in settings.RESOURCE_PAGE_BLOCKS)
-     This acts as default display_type for block_box_id display type
-*/
+/* jQuery.BLOCKS are used to store Block instances.
+   They will be retrieved by the update procedure
+ */
 
 jQuery.BLOCKS = {};
 
@@ -33,7 +28,7 @@ jQuery.UIBlock = Class.extend({
 
     init: function(block_name) {
         this.block_name = block_name;
-        this.active_view = "show";
+        this.active_view = "view";
 
         //HACK to be compatible with SANET block management
         //TODO: blocks handler calls as pure objects
@@ -204,7 +199,20 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         var resource_id   =  jQel.attr('resource_id');
         
         // Find table and render
-        return jQel.find('content[type="table"]').html();
+        var html_table = jQel.find('content[type="table"]').html();
+
+        //Prepare form
+        var res = html_table;
+
+        if (this.active_view == "edit_multiple") {
+            var action_url = this.url + this.active_view;
+            res = "<form id=\"" + this.block_box_id + "-form\" method=\"POST\" action=\""+action_url+"\">";
+            res += "<input type=\"submit\" name=\"" + gettext('Submit') + "\" />";
+            res += html_table;
+            res += "</form>";
+        }
+
+        return res;
         
     },
 

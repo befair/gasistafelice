@@ -10,7 +10,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
         // Init dataTables
         var ajaxSource = this.url + this.active_view;
         
-        this.block_el.find('.dataTable').each(function() { $(this).dataTable({
+        var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
@@ -23,8 +23,17 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                     null
                 ]
             }); 
-        });
-    },
+
+        if (this.active_view = "edit_multiple") {
+            $('#' + this.block_box_id + '-form').submit( function() {
+                var sData = $(this).serialize();
+                alert( "The following data would have been submitted to the server: \n\n"+sData );
+                this.active_view = "view";
+                return false;
+            });
+       }
+
+    }
     
 });
 

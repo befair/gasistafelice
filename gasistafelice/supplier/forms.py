@@ -16,5 +16,5 @@ class SingleSupplierStockForm(forms.Form):
     availability = forms.BooleanField()
 
 
-SupplierStockFormSet = formset_factory(SingleSupplierStockForm, extra=10)
+SingleSupplierStockFormSet = formset_factory(SingleSupplierStockForm, extra=5)
 
