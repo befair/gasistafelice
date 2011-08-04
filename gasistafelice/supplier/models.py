@@ -255,3 +255,20 @@ class SupplierStock(models.Model, PermissionResource):
     #@property
     #def suppliers(self):
 
+class SupplierProductCategory(models.Model):
+    """Map supplier categories to product categories with an optional alias.
+
+    This is useful to know WHICH categories a suppplier CAN sell,
+    and so limiting the choice in product selections."""
+    
+    category = models.ForeignKey(ProductCategory)
+    supplier = models.ForeignKey(Supplier)
+    alias = models.CharField(verbose_name=_('Alternative name'), blank=True)
+
+    @property
+    def name(self):
+        return self.alias or self.category.name
+ 
+    def __unicode__(self):
+        return self.name
+
