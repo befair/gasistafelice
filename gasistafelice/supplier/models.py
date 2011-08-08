@@ -263,7 +263,7 @@ class SupplierProductCategory(models.Model):
     
     category = models.ForeignKey(ProductCategory)
     supplier = models.ForeignKey(Supplier)
-    alias = models.CharField(verbose_name=_('Alternative name'), blank=True)
+    alias = models.CharField(verbose_name=_('Alternative name'), max_length=128, blank=True)
 
     @property
     def name(self):
