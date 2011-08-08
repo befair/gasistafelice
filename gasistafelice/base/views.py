@@ -1,15 +1,15 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
+from gasistafelice.rest.models.pages import HomePage
 #---------------------------------------------------------------------#
 #                                                                     #
 #---------------------------------------------------------------------#
 
+@login_required
 def index(request):
-		
-	vname = "rest.views.index"
-	kwargs = {}
-	url = reverse(vname, args=[], kwargs=kwargs)
 
-	return HttpResponseRedirect(url)
-
+    role = None
+    url = HomePage.get_user_url(request.user, role)
+    return HttpResponseRedirect(url)

@@ -90,6 +90,7 @@ class AbstractBlock(object):
     #------------------------------------------------------------------------------#        
     
     def options_response(self, request, resource_type, resource_id):
+        # Return options for each block (like filtering contents...)
         #
         # No options by default
         #
@@ -150,6 +151,7 @@ class AbstractBlock(object):
     #------------------------------------------------------------------------------#        
 
     def load_user_configuration(self, user, resource_type, resource_id):
+        # Retrieve block configuration stored by a user
     
         config = None
         

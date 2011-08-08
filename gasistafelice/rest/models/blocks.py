@@ -33,6 +33,9 @@ class BlockConfiguration(Model):
     
     #-----------------------------------------------------------------------------#
     
+    class Meta:
+        app_label = "rest"
+
     def __unicode__(self):
         return "[%s]%s/%s/%s/%s/%s" % (self.user.username, self.page, self.resource_type, self.resource_id, self.blocktype, self.get_configuration())
     
@@ -111,3 +114,6 @@ def remove_displayed_blocks_from_userpage_by_resource(resource, printout=None):
             if printout:
                 printout("removing block %s from %s's userpage" % (b, user))
             b.delete()
+
+
+

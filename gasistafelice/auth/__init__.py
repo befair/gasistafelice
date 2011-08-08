@@ -31,7 +31,7 @@ ROLES_LIST = [
 
 VALID_PARAMS_FOR_ROLES = {
     ## format
-    # {Role' codename: {parameter name: parameter type, ..}}
+    # {Role's codename: {parameter name: parameter type, ..}}
     # where the parameter type is expressed as a string of the format 'app_label.model_name'
     SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
     GAS_MEMBER : {'gas':'gas.GAS'},
