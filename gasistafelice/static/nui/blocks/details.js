@@ -729,12 +729,10 @@ jQuery.update_details_block = function(block_box_id)
 	var url = jQuery.pre + jQuery.app + '/' + block_urn;
 	
 	$.ajax({
-		dataType:'plain/text',
+		dataType:'xml',
 		url:url,
 		type:'GET',
 		complete: function(r, s){
-			
-			
 			
 			if (s == "success") {
 				var data = r.responseText;

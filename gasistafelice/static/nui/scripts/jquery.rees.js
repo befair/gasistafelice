@@ -57,13 +57,14 @@ jQuery.UIBlock = Class.extend({
         
         var block_urn = block_box_el.attr('block_urn');
         this.url = jQuery.pre + jQuery.app + '/' + block_urn;
+        this.dataSource = this.url + this.active_view;
 
         var block_obj = this;
         
         $.ajax({
             type:'GET',
             url: block_obj.url,
-            dataType: 'application/xml',
+            dataType: 'xml',
             data : { render_as : block_obj.rendering },
             complete: function(r, s){
                 
@@ -73,7 +74,7 @@ jQuery.UIBlock = Class.extend({
                     block_obj.post_load_handler(); // Update GUI event handlers
                 }
                 else {
-                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server") );
+                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
                 }
             }
         });	
@@ -181,9 +182,47 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         this._super();
     },
 
+    form_success_process_json : function(form_el, data) {
+            //JSON data answered by server side code. The dict holds errors.
+            //If no errors found: reset active_view and reload.
+            //If errors found: write down errors in form
+
+            //TODO: In any case #user_notifications should be filled with appropriate message
+            alert("Questi dati rappresentano gli errori. Se il dizionario è vuoto bene! In questo momento lato server non è ancora accaduto nulla"); 
+
+            //FIXME: 
+            this.active_view = "view";
+            this.update_handler(this.block_box_id);
+    },
+
     rendering_list_post_load_handler: function () {},
     rendering_icons_post_load_handler: function () {},
-    rendering_table_post_load_handler: function () {},
+    rendering_table_post_load_handler: function () {
+
+        var block_el = this;
+        if (this.active_view == "edit_multiple") {
+            $('#' + this.block_box_id + '-form').submit( function() {
+
+                var form_el = this;
+                var options = {
+                    dataType:  'json',
+                    success : function(data) {
+                        return block_el.form_success_process_json(form_el, data);
+                    }
+                }
+
+                $(this).ajaxSubmit(options);
+
+                return false;
+
+//                //FIXME: this serialize MUST be applied to form widgets of all table nodes:
+//                //get them with oTable.fnGetNodes() 
+//                var sData = $(this).serialize();
+//                alert( "The following data would have been submitted to the server: \n\n"+sData );
+                
+            });
+        }
+    },
 
     render_content: function(data) {
         return this["render_content_as_"+this.rendering](data);
