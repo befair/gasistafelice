@@ -352,7 +352,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 jQuery.retrieve_form = function (action_el) {
 
     var action_name = action_el.html()
-    var action_url = action_el.attr("href");
+    var action_url = action_el.attr("url");
 	
     var form_html = "";
     var form_script = "";
