@@ -190,7 +190,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
             //TODO: In any case #user_notifications should be filled with appropriate message
             alert("Questi dati rappresentano gli errori. Se il dizionario è vuoto bene! In questo momento lato server non è ancora accaduto nulla"); 
 
-            //FIXME: 
+            //TODO: check that errors are empty
             this.active_view = "view";
             this.update_handler(this.block_box_id);
     },
@@ -259,98 +259,90 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
     },
 
+    render_content_as_list: function(data) {
+        // Display resource list
+
+        /* This method is inspired by blocks specific code of SANET by Laboratori Guglielmo Marconi */
+
+        var res = "		\
+        <table> 		\
+            @@inforow@@	\
+        </table> 		\
+        ";
+        
+        var inforow = " \
+            <tr id='@@row_id@@' > 			\
+                <td width='100%'>   			\
+                    <span class='resource row' > \
+                        <a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@link@@'> @@name@@ </a> 			\
+                    </span> \
+                </td>		     			\
+                <td>		     			\
+                @@actions@@ \
+                </td>		     			\
+            </tr>	 			\
+            @@inforow@@ \
+        ";
+
+        var jQel = this.parsed_data;
+        
+        if (jQel.children('error').length > 0)
+            return jQel.text()
+        
+        // Resource ID
+        var resource_type =  jQel.attr('resource_type');
+        var resource_id   =  jQel.attr('resource_id');
+        
+        // Resources
+        var contents = jQel.find('content[type="list"]');
+        
+        if (contents.find('info').length > 0) {
+        
+            contents.find('info').each(function(){
+                
+                var urn = $(this).attr('sanet_urn');
+                var name = $(this).attr('name');
+                var type = $(this).attr('type');
+                var link = "#rest/"+urn;
+
+                var row_id = resource_type + '_row_' + urn.split('/').join('_');
+
+                var a = inforow
+                
+                a = a.replace(/@@resource_type@@/g, type);
+                a = a.replace(/@@row_id@@/g, row_id);
+                a = a.replace(/@@name@@/g, name);
+                a = a.replace(/@@urn@@/g,urn);
+                a = a.replace(/@@link@@/g,link);
+                
+                var actions = ''
+
+    //TODO fero: row_actions
+    //			if (resource_type == 'usercontainer') {
+    //				actions = user_actions
+    //				
+    //				usercontainer_urn = resource_type + '/' + resource_id;
+    //				
+    //				actions = actions.replace(/@@usercontainer_urn@@/, usercontainer_urn);
+    //				actions = actions.replace(/@@node_urn@@/       , urn);
+    //				
+    //			}
+                a = a.replace(/@@actions@@/g, actions);		
+
+                res = res.replace('@@inforow@@', a);
+            });
+            
+            res = res.replace('@@inforow@@', '');	
+        }
+        else {
+            res = res.replace('@@inforow@@', gettext('There are no elements related to this resource.'));
+        }
+
+        return res;
+    },
 });
 
 
-/* Display resource list */
-/* This function is inspired by blocks specific code of SANET by Laboratori Guglielmo Marconi */
-jQuery.resource_list = function (block_box_id, element) {
-
-	var res = "		\
-    <div class='list_actions'>@@list_actions@@</div> \
-	<table> 		\
-		@@inforow@@	\
-	</table> 		\
-	";
-	
-		
-	var inforow = " \
-		<tr id='@@row_id@@' > 			\
-			<td width='100%'>   			\
-				<span class='resource row' > \
-					<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@link@@'> @@name@@ </a> 			\
-				</span> \
-			</td>		     			\
-			<td>		     			\
-			@@actions@@ \
-			</td>		     			\
-		</tr>	 			\
-		@@inforow@@ \
-	";
-
-	element = jQuery.parseXml(element);	
-	
-	//code
-	var jQel = jQuery(element);
-	
-	if (jQel.children('error').length > 0)
-		return jQel.text()
-	
-	// Resource ID
-	var resource_type =  jQel.attr('resource_type');
-	var resource_id   =  jQel.attr('resource_id');
-	
-    // Block content
-	var contents = jQel.find('content[type="user_actions"]');
-
-    res = res.replace('@@list_actions@@', jQuery.render_actions(block_box_id, contents));
-
-    // Resources
-	var contents = jQel.find('content[type="list"]');
-	
-	if (contents.find('info').length > 0) {
-	
-		contents.find('info').each(function(){
-			
-			var urn = $(this).attr('sanet_urn');
-			var name = $(this).attr('name');
-			var link = "#rest/"+urn;
-
-			var row_id = resource_type + '_row_' + urn.split('/').join('_');
-
-			var a = inforow
-			
-			a = a.replace(/@@resource_type@@/g, resource_type);
-			a = a.replace(/@@row_id@@/g, row_id);
-			a = a.replace(/@@name@@/g, name);
-			a = a.replace(/@@urn@@/g,urn);
-			a = a.replace(/@@link@@/g,link);
-			
-			var actions = ''
-
-//TODO fero: row_actions
-//			if (resource_type == 'usercontainer') {
-//				actions = user_actions
-//				
-//				usercontainer_urn = resource_type + '/' + resource_id;
-//				
-//				actions = actions.replace(/@@usercontainer_urn@@/, usercontainer_urn);
-//				actions = actions.replace(/@@node_urn@@/       , urn);
-//				
-//			}
-			a = a.replace(/@@actions@@/g, actions);		
-
-			res = res.replace('@@inforow@@', a);
-		});
-		
-		res = res.replace('@@inforow@@', '');	
-	}
-	else {
-		res = res.replace('@@inforow@@', gettext('There are no elements related to this resource.'));
-	}
-
-	return res;
-}
 
 
 //------------------------------------------------------------------------------//
@@ -453,6 +445,6 @@ jQuery.retrieve_form = function (action_el) {
 
 /* Retrieve and update blocks that include resource list */
 jQuery.resource_list_block_update = function(block_box_id) {
-
+    alert("vecchia gestione blocco "+block_box_id); 
 }
 
