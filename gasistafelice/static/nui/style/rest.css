@@ -429,3 +429,9 @@ TSTATE_UU=40
     clear: both;
 }
 
+#user_notifications {
+    float : right;
+    padding-right: 1em;
+    background: lightyellow;
+    border: 1px solid orange;
+}
