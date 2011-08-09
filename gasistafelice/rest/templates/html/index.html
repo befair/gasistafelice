@@ -1425,6 +1425,51 @@
         
         }                      
 
+        function init_user_roles_box() {    
+            $.get('{% url rest.views.user_roles %}', function(data) {
+                var user_roles = $.JSON.parse(data);
+                if (user_roles.length == 0) {
+                    alert('BUG: user with no role cannot be logged in!');
+                } else if (user_roles.length == 1) {
+                    var res = user_roles[0]["role_name"];
+                    if (user_roles[0]["role_resources"].length > 0) {
+                        res += " " + gettext("on") + " ";
+                        for (var i in user_roles[0]["role_resources"]) {
+                            var resource_dict = user_roles[0]["role_resources"][i];
+                            var r = new jQuery.Resource(resource_dict["name"], resource_dict["urn"]);
+                            res += " " + r;
+                        }
+                    }
+                    $('#user_role').append(res);
+                } else {
+                    //Prepare a SELECT box to make the user able to switch role
+                    var res = '<select name="active_role">@@options@@</select>';
+
+                    var opt_tmpl = '<option value="@@opt_value@@">@@opt_name@@</option>';
+
+                    for (var j in user_roles) {
+                        user_role = user_roles[j];
+                        opt_name = user_role["role_name"];
+
+                        if (user_role["role_resources"].length > 0) {
+                            opt_name += " " + gettext("on") + " ";
+                            for (var i in user_role["role_resources"]) {
+                                opt_name += user_role["role_resources"][i]["name"];
+                            }
+                        }
+
+                        var opt = opt_tmpl.replace(/@@opt_value@@/, user_role["role_pk"]);
+                        opt = opt.replace(/@@opt_name@@/, opt_name);
+                        res = res.replace(/@@options@@/, opt + "@@options@@");
+
+                    }
+
+                    res = res.replace(/@@options@@/, "");
+                    $('#user_role').append(res);
+                }
+                
+            });
+        }
         //
         // ============================================================================
         // LOAD SITE CONFIGURATION
@@ -1470,26 +1515,8 @@
 
                         $('#user_name').text(jQuery.labsglobals['user']);
 
-                        $.get('{% url rest.views.user_roles %}', function(data) {
-                            var user_roles = $.JSON.parse(data);
-                            if (user_roles.length == 0) {
-                                alert('BUG: user with no role cannot be logged in!');
-                            } else if (user_roles.length == 1) {
-                                var res = user_roles[0]["role_name"];
-                                if (user_roles[0]["role_resources"].length > 0) {
-                                    res += " " + gettext("on") + " ";
-                                    for (var i in user_roles[0]["role_resources"]) {
-                                        var resource_dict = user_roles[0]["role_resources"][i];
-                                        var r = new jQuery.Resource(resource_dict["name"], resource_dict["urn"]);
-                                        res += " " + r;
-                                    }
-                                }
-                                $('#user_role').append(res);
-                            } else {
-                                //Prepare a SELECT box to make the user able to switch role
-                            }
-                            
-                        });
+                        init_user_roles_box();
+
 
                         setInterval(refhash, 1);
 
