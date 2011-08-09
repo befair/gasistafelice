@@ -147,3 +147,6 @@ LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
 LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
+
+import locale
+locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')

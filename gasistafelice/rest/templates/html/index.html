@@ -1068,60 +1068,17 @@
 		}
 			
 		//==============================================================================
-		// Init ping graph
+		// Init clock
 		//==============================================================================
 
-		var SANET_CLOCK_URL = jQuery.pre + 'rest/hh_mm/';
+		var SANET_CLOCK_URL = '{% url rest.views.now %}';
 		
 		var APP_CLOCK_TIMEOUT = 30; // 30 seconds
 		
-		function init_webping_timer()
-		{
-			var num_p = 0;
-			var pings = new Array();
-			
-			jQuery.updt = new Date().getTime();
-			
+        function init_clock_timer() {
 			start_generic_update_timer(
 				generic_timers, SANET_CLOCK_URL, APP_CLOCK_TIMEOUT, 
-				'#app_clock',
-				
-				function(){
-					jQuery.updt = new Date().getTime();
-				},
-				
-				function(){
-					/*	
-					num_p++;
-
-					var delta = new Date().getTime()-jQuery.updt;
-					
-					pings.push([num_p, delta]);
-					if(pings.length > 10)
-						pings.shift();
-						
-											
-					var x = $('#ping-graph');
-					
-					//$.plot(x, [{ label:'ms', data: pings}]
-					$.plot(x, [pings]
-					,{
-						lines: { show: true },
-						points: { show: true },
-						xaxis: { tickDecimals: 0, tickSize: 1 },
-						yaxis: {  },
-						legend: {
-							show: true,
-							//noColumns: number
-							position: "ne",
-							width:"100px"
-							//container: null or jQuery object/DOM element/jQuery expression
-						}
-					});
-					*/
-				}
-			);
-		
+				'#app_clock')
 		}
 		
 		//==============================================================================
@@ -1606,7 +1563,7 @@
 
 						//load_global_resource_tree();
 
-						//TODO: fero TOCHECK init_webping_timer();
+						init_clock_timer();
 
 						init_search_form();
 
@@ -2032,13 +1989,11 @@
 						</span>
 					</span>
 
-					<br />
-
-					Ora: <span id="app_clock" style="padding:0.2em;"></span>
+					<div id="app_clock" style="padding:0.2em;"></div>
 				</div>
 
 				<h1 id="app_title">
-					<a href="/{{ URL_PREFIX }}">GASISTA FELICE</a>
+					<a href="{% url base.views.index %}">GASISTA FELICE</a>
 				</h1>
 				<div class="header-actions"></div>
 				<span id="navbar"

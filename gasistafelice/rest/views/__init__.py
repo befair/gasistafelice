@@ -13,7 +13,7 @@ from gasistafelice.des.models import Siteattr, Site
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 
-import time
+import time, datetime
 
 resource_classes = {
       'site'         : Site
@@ -38,7 +38,6 @@ resource_key = {
 def index(request):
     """ main entrance page """
     ctx = {
-        'URL_PREFIX': settings.URL_PREFIX,
         'VERSION': settings.VERSION,
         'INSTALLED_APPS': settings.INSTALLED_APPS,
         'LOGOUT_URL' : settings.LOGOUT_URL,
@@ -81,6 +80,13 @@ def site_settings(request):
 def hh_mm(request):
     """Get current time hh:mm"""
     return HttpResponse(time.strftime("%H:%M"))
+
+def now(request):
+    """Get current datetime in format: dow dom mon year - hh:mm"""
+    dt = datetime.datetime.now()
+
+    return HttpResponse(dt.strftime("%c")[:-7])
+    return HttpResponse(dt.strftime("%A, %d %B %Y - %H:%M"))
 
 #------------------------------------------------------------------------------#
 #                                                                              #
