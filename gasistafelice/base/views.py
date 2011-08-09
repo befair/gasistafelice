@@ -10,6 +10,6 @@ from gasistafelice.rest.models.pages import HomePage
 @login_required
 def index(request):
 
-    role = None
-    url = HomePage.get_user_url(request.user, role)
+    role = request.user.get_profile().default_role
+    url = HomePage.get_user_home(request.user, role)
     return HttpResponseRedirect(url)

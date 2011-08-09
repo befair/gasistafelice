@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'gasistafelice.des',
+    'gasistafelice.users',
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.comments',
@@ -112,6 +113,7 @@ INSTALLED_APPS = (
     
 )
 
+AUTH_PROFILE_MODULE = 'users.UserProfile'
 URL_PREFIX = "gasistafelice/"
 
 RESOURCE_PAGE_BLOCKS = {

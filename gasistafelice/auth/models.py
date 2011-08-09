@@ -10,9 +10,6 @@ from permissions.models import Permission, Role
 from gasistafelice.base.models import Resource
 from gasistafelice.auth.managers import RolesManager
 
-#from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
-#from gasistafelice.supplier.models import Supplier
-
 class ParamByName(object):
     """Helper class used to set ParamRole properties by name """
 
@@ -181,7 +178,6 @@ class ParamRole(models.Model, Resource):
 
         return [prr.user for prr in prrs]
 
-    
 class PrincipalParamRoleRelation(models.Model):
     """This model is a relation describing the fact that a parametric role (`ParamRole`) 
     is assigned to a principal (i.e. a User or Group). If a content object is
@@ -213,6 +209,9 @@ class PrincipalParamRoleRelation(models.Model):
     content_id = models.PositiveIntegerField(blank=True, null=True)
     content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
+    def __unicode__(self):
+        return _("%(user)s is %(role)s") % { 'user' : self.user, 'role' : self.role }
+
     def get_principal(self):
         """Returns the principal.
         """
@@ -226,7 +225,7 @@ class PrincipalParamRoleRelation(models.Model):
         elif isinstance(principal, Group):
             self.group = principal
         else:
-            raise AttributeError("The principal must be either a User instance or a Group instance.")
+            raise TypeError("The principal must be either a User instance or a Group instance.")
 
     principal = property(get_principal, set_principal)
         

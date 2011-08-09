@@ -8,6 +8,7 @@ from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
 from gasistafelice.auth import models as auth_models
+from gasistafelice.rest.models import pages as rest_models
 
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
@@ -385,4 +386,7 @@ admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderPr
 admin.site.register(gas_models.order.GASMemberOrder, GASMemberOrderAdmin)
 admin.site.register(gas_models.order.Delivery, DeliveryAdmin)
 admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
+admin.site.register(rest_models.HomePage)
+
+admin.site.register(auth_models.PrincipalParamRoleRelation)
 

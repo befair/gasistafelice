@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from gasistafelice.auth.models import Role
+from gasistafelice.auth.models import ParamRole
 from gasistafelice.des.models import Siteattr
 from django.core.urlresolvers import reverse
 
@@ -21,11 +21,11 @@ class Page(models.Model):
     * ...
     """
 
-    role = models.ForeignKey(Role)
-    user = models.ForeignKey(User, null=True)
+    role = models.ForeignKey(ParamRole)
+    user = models.ForeignKey(User, null=True, blank=True)
 
     resource_ctype = models.ForeignKey(ContentType)
-    resource_id = models.PositiveIntegerField(null=True)
+    resource_id = models.PositiveIntegerField(null=True, blank=True)
     # AAA: be careful that resource_id can be null!
     resource = generic.GenericForeignKey(ct_field="resource_ctype", fk_field="resource_id")
 
@@ -50,46 +50,47 @@ class HomePage(models.Model):
 
     This model is used to get the starting page of a user considering that he could
     have more than one role
+
+    It works like this: a user with a specific role can point to a specific resource.
+    If no record with the couple (user, role) is found in this model, then default algorithm
+    is applied in order to retrieve the default bound resource.
+
     """
 
-    role = models.ForeignKey(Role)
-    user = models.ForeignKey(User, null=True)
+    role = models.ForeignKey(ParamRole)
+    user = models.ForeignKey(User)
 
-    class Meta:
-        app_label = "rest"
-
-    # Home page bindings
+    # Custom home page binding
     resource_ctype = models.ForeignKey(ContentType)
     resource_id = models.PositiveIntegerField()
     resource = generic.GenericForeignKey(ct_field="resource_ctype", fk_field="resource_id")
 
-    def get_absolute_url(self):
-        rest_part = reverse("rest.views.resource_page", kwargs={
-            'resource_type': self.resource.resource_type,
-            'resource_id': self.resource.resource_id
-        })
-
-        base_url = reverse("base.views.index")
-        rest_ui_url = reverse("rest.views.index", args=[], kwargs={})
-
-        return "%s#%s" % (rest_ui_url, rest_part[len(base_url):])
-
+    class Meta:
+        app_label = "rest"
 
     @classmethod
-    def get_user_url(cls, user, role):
+    def get_user_home(cls, user, role):
+
         try:
-           instance = HomePage.objects.get(user=user, role=role)
+            instance = HomePage.objects.get(user=user, role=role)
+            resource = instance.resource
+           
         except HomePage.DoesNotExist:
-            try:
-                instance = HomePage.objects.get(role=role)
-            except HomePage.DoesNotExist:
-                instance = None
+            # Default algorithm
+            # TODO: to be tuned?
 
-        if instance:
-            rv = instance.get_absolute_url()
-        else:
-            rv = reverse("rest.views.index")
+            resource = role.param_set.all()[0].value
 
-        return rv
+        return get_absolute_page_url_for_resource(resource)
 
+def get_absolute_page_url_for_resource(resource):
+
+    rest_part = reverse("rest.views.resource_page", kwargs={
+        'resource_type': resource.resource_type,
+        'resource_id': resource.pk
+    })
+
+    base_url = reverse("base.views.index")
+    rest_ui_url = reverse("rest.views.index", args=[], kwargs={})
+    return "%s#%s" % (rest_ui_url, rest_part[len(base_url):])
 
