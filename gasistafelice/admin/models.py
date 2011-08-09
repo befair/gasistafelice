@@ -9,6 +9,7 @@ from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
 from gasistafelice.auth import models as auth_models
 from gasistafelice.rest.models import pages as rest_models
+from gasistafelice.users import models as user_models
 
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
@@ -367,6 +368,12 @@ class DeliveryAdmin(admin.ModelAdmin):
 class WithdrawalAdmin(admin.ModelAdmin):
     pass
     
+class UserProfileAdmin(admin.ModelAdmin):
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        #TODO placeholder domthu: limit choices to ParamRole bound to user with PrincipalParamRoleRelation
+        #see up GASSupplierOrderAdmin class
+        pass
     
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
@@ -389,4 +396,5 @@ admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
 admin.site.register(rest_models.HomePage)
 
 admin.site.register(auth_models.PrincipalParamRoleRelation)
+admin.site.register(user_models.UserProfile, UserProfileAdmin)
 
