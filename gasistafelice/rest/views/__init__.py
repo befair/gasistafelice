@@ -40,7 +40,8 @@ def index(request):
     ctx = {
         'URL_PREFIX': settings.URL_PREFIX,
         'VERSION': settings.VERSION,
-        'INSTALLED_APPS': settings.INSTALLED_APPS
+        'INSTALLED_APPS': settings.INSTALLED_APPS,
+        'LOGOUT_URL' : settings.LOGOUT_URL,
     }
     return render_to_response("html/index.html", ctx)
     

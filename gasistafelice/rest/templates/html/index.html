@@ -1713,18 +1713,7 @@
 			// ============================================================================
 		
 			$('#user_logout').click(function(){
-				
-				window.location = '/sanet/users/logout';
-				
-				/*
-				$.get('/sanet/users/logout', function(){
-					load_configuration();
-					//window.location.reload(true);
-
-				});
-				*/
-				
-				return false;
+                //Do something before logging out...
 			});
 	
 		
@@ -2039,7 +2028,7 @@
 							|
 							<a id="user_page"   href="#" >{% trans "User page" %}</a>
 							|
-							<a id="user_logout" href="#">{% trans "Logout" %} </a>
+							<a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
 						</span>
 					</span>
 

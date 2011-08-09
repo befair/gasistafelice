@@ -13,3 +13,4 @@ def index(request):
     role = request.user.get_profile().default_role
     url = HomePage.get_user_home(request.user, role)
     return HttpResponseRedirect(url)
+
