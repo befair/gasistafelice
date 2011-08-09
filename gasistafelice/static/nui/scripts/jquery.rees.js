@@ -14,6 +14,32 @@ var NEW_NOTE_FORM_TEXT= "\
 		</form>\
 		";
 
+/* Resource management facitilies */
+jQuery.Resource = Class.extend({
+
+    init : function(name, urn) {
+        this.name = name;
+        this.urn = urn;
+        this.type = urn.split('/')[0];
+        this.id = urn.split('/')[1];
+        this.link = "#rest/"+urn;
+    },
+
+    render : function() {
+        var res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@link@@'> @@name@@ </a>";
+
+        res = res.replace(/@@resource_type@@/g, this.type);
+        res = res.replace(/@@name@@/g, this.name);
+        res = res.replace(/@@urn@@/g,  this.urn);
+        res = res.replace(/@@link@@/g, this.link);
+        return res
+    },
+
+    toString : function() {
+        return this.render();
+    }
+});
+    
 /* jQuery.BLOCKS are used to store Block instances.
    They will be retrieved by the update procedure
  */
@@ -273,9 +299,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         var inforow = " \
             <tr id='@@row_id@@' > 			\
                 <td width='100%'>   			\
-                    <span class='resource row' > \
-                        <a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@link@@'> @@name@@ </a> 			\
-                    </span> \
+                    <span class='resource row' >@@resource@@</span> \
                 </td>		     			\
                 <td>		     			\
                 @@actions@@ \
@@ -300,21 +324,14 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         
             contents.find('info').each(function(){
                 
-                var urn = $(this).attr('sanet_urn');
                 var name = $(this).attr('name');
-                var type = $(this).attr('type');
-                var link = "#rest/"+urn;
-
+                var urn = $(this).attr('sanet_urn');
                 var row_id = resource_type + '_row_' + urn.split('/').join('_');
 
                 var a = inforow
-                
-                a = a.replace(/@@resource_type@@/g, type);
                 a = a.replace(/@@row_id@@/g, row_id);
-                a = a.replace(/@@name@@/g, name);
-                a = a.replace(/@@urn@@/g,urn);
-                a = a.replace(/@@link@@/g,link);
-                
+                a = a.replace(/@@resource@@/g, new jQuery.Resource(name, urn).render());
+
                 var actions = ''
 
     //TODO fero: row_actions

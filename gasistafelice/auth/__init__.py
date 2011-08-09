@@ -18,7 +18,7 @@ SUPPLIER_REFERRER = 'SUPPLIER_REFERRER'
 
 ROLES_LIST = [
     (NOBODY, _('Nobody')),
-    (SUPPLIER_REFERRER, _('Supplier referrer')),
+    (SUPPLIER_REFERRER, _('Supplier')),
     (GAS_MEMBER, _('GAS member')),
     (GAS_REFERRER, _('GAS referrer')),
     (GAS_REFERRER_SUPPLIER, _('GAS supplier referrer')),
@@ -28,6 +28,10 @@ ROLES_LIST = [
     (GAS_REFERRER_CASH, _('GAS cash referrer')),
     (GAS_REFERRER_TECH, _('GAS technical referrer')),
 ]
+
+ROLES_DICT = {}
+for r in ROLES_LIST:
+    ROLES_DICT[r[0]] = r[1]
 
 VALID_PARAMS_FOR_ROLES = {
     ## format

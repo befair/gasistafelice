@@ -2,6 +2,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
+from django.utils import simplejson
 
 from gasistafelice.lib.shortcuts import render_to_xml_response
 
@@ -12,23 +13,9 @@ from gasistafelice.gas.models import GAS, GASSupplierOrder
 from gasistafelice.des.models import Siteattr, Site
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
+from gasistafelice.auth import ROLES_DICT
 
 import time, datetime
-
-resource_classes = {
-      'site'         : Site
-    , 'supplier'     : Supplier
-    , 'gas'          : GAS
-    , 'gas_order'    : GASSupplierOrder
-}
-
-#TODO: factorize a method in base.Resource model
-resource_key = {
-      'des'          : 'name'
-    , 'supplier'     : 'name'
-    , 'gas'          : 'name'
-    , 'gas_order'    : 'name'
-}
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -72,6 +59,22 @@ def site_settings(request):
     }
     return render_to_xml_response("settings.xml", ctx)
 
+#---------------------------------------------------------------------#
+#                                                                     #
+#---------------------------------------------------------------------#
+
+@login_required()
+def user_roles(request):
+    
+    rv = []
+    for prr in request.user.principal_param_role_set.all():
+        rv.append( {
+            'role_name': ROLES_DICT[prr.role.role.name],
+            'role_pk': prr.role.pk,
+            'role_resources': [ r.value.as_dict() for r in prr.role.param_set.all() ],
+        })
+
+    return HttpResponse(simplejson.dumps(rv));
 
 #---------------------------------------------------------------------#
 #                                                                     #
@@ -86,7 +89,7 @@ def now(request):
     dt = datetime.datetime.now()
 
     return HttpResponse(dt.strftime("%c")[:-7])
-    return HttpResponse(dt.strftime("%A, %d %B %Y - %H:%M"))
+    #return HttpResponse(dt.strftime("%A, %d %B %Y - %H:%M"))
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -353,8 +356,6 @@ def list_comments(request):
 #
 #from django.contrib.comments.models import Comment
 #from django.contrib.auth.models import User
-#
-#from django.utils import simplejson
 #
 #from state.models import Site, Container, Node, Iface, Target, Measure, TargetStateLog
 #

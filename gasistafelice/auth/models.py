@@ -9,6 +9,7 @@ from permissions.models import Permission, Role
 
 from gasistafelice.base.models import Resource
 from gasistafelice.auth.managers import RolesManager
+from gasistafelice.auth import ROLES_DICT
 
 class ParamByName(object):
     """Helper class used to set ParamRole properties by name """
@@ -68,7 +69,8 @@ class Param(models.Model):
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
     def __unicode__(self):
-        return u"%s: %s" % (self.name, self.value)
+        return u"%s" % self.value
+        #return u"%s: %s" % (self.name, self.value)
 
     def __repr__(self):
         return "<%s %s: %s>" % (self.__class__.__name__, self.name, self.value)
@@ -82,7 +84,7 @@ class Param(models.Model):
         # forbid duplicated `Param` entries in the DB
         unique_together = ('name', 'content_type', 'object_id')
 
-class ParamRole(models.Model, Resource):
+class ParamRole(models.Model):
     """
     A custom role model class inspired from `django-permissions`'s `Role` model.
     
@@ -120,7 +122,7 @@ class ParamRole(models.Model, Resource):
 
     def __unicode__(self):
         param_str_list = ["%s" % s for s in self.param_set.all()]
-        return u"%s on %s" % (self.role.name, ", ".join(param_str_list))
+        return u"%(role)s on %(params)s" % { 'role' : ROLES_DICT[self.role.name], 'params':  ", ".join(param_str_list)}
 
     @classmethod
     def get_role(cls, role_name, **params):

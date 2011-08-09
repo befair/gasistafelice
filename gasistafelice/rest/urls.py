@@ -23,9 +23,10 @@ urlpatterns = patterns('',
     # Welcome page
     (r'^$',                                  'rest.views.index'),
     
-    (r'hh_mm',                               'rest.views.hh_mm'),
-    (r'now',                                 'rest.views.now'),
+    (r'^hh_mm',                               'rest.views.hh_mm'),
+    (r'^now',                                 'rest.views.now'),
 
+    (r'^user_roles$',                         'rest.views.user_roles'),
     ### FUTURE TODO: these views do not follow the standard URL pattern 
     ### bind them to a site, or move them to another global application
     ### used to perform operation on the whole installation (even if it is multi-site)
