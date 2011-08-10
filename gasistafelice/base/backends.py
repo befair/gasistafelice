@@ -116,9 +116,12 @@ class ObjectPermissionsBackend(object):
             The Object (either a model or model instance) for which the Permission should be checked.
         """
         
+        if user_obj.is_superuser:
+            return True        
         # if User is not authenticated or inactive, he has no Permissions 
-        if user_obj.is_anonymous() or not user_obj.is_active():
+        elif user_obj.is_anonymous() or not user_obj.is_active:
             return False        
+
         if isinstance(obj, ContentType): # `obj` is a model class, so check for global Permissions for this model
             return perm in self.get_all_permissions(user_obj, obj)        
         elif isinstance(obj, Model) : # `obj` is a model instance, so check for local Permissions for this instance

@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
@@ -67,6 +68,10 @@ def site_settings(request):
 @login_required
 def user_roles(request):
     
+    if request.user.is_superuser:
+        rv = [{ 'role_name' : _("Master of the Universe"), 'role_resources' : [] }]
+        return HttpResponse(simplejson.dumps(rv))
+
     rv = []
     for prr in request.user.principal_param_role_set.all():
         rv.append( {
@@ -75,7 +80,7 @@ def user_roles(request):
             'role_resources': [ r.value.as_dict() for r in prr.role.param_set.all() ],
         })
 
-    return HttpResponse(simplejson.dumps(rv));
+    return HttpResponse(simplejson.dumps(rv))
 
 @login_required
 def switch_role(request):
@@ -365,7 +370,6 @@ def list_comments(request):
 #from django.core.servers.basehttp import FileWrapper
 #from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 #from django.template import Context, loader, RequestContext
-#from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 #
 #from django.contrib.comments.models import Comment
 #from django.contrib.auth.models import User
