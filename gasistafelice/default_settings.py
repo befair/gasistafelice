@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'gasistafelice.des',
+    'gasistafelice.users',
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.comments',
@@ -112,13 +113,14 @@ INSTALLED_APPS = (
     
 )
 
+AUTH_PROFILE_MODULE = 'users.UserProfile'
 URL_PREFIX = "gasistafelice/"
 
 RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'supplier_list', 'gas_members_list', 'account_state', 'category_list']
+        'blocks' : ['details', 'gas_list', 'suppliers', 'gasmembers', 'product_list', 'stock_list', 'gasstock_list', 'catalog_list', 'account_state', 'categories']
     },{
         'name' : 'action',
         'descr' : 'Ordina',
@@ -126,20 +128,20 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'gas',
         'descr' : 'GAS',
-        'blocks' : ['gas_list', 'category_list']
+        'blocks' : ['gas_list', 'categories']
     },{
         'name' : 'supplier',
         'descr' : 'Fornitori',
-        'blocks' : ['supplier_list', 'category_list']
+        'blocks' : ['suppliers', 'categories']
     }],
     'gas' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['supplier_list', 'gas_members_list', 'account_state', 'category_list']
+        'blocks' : ['suppliers', 'gasmembers', 'account_state', 'product_list', 'stock_list', 'gasstock_list', 'catalog_list', 'categories']
     },{
         'name' : 'open_orders',
         'descr': 'Ordini aperti',
-        'blocks': [],
+        'blocks': ['suppliers', 'open_orders'],
     },{
         'name' : 'ordered_products',
         'descr': 'Prodotti ordinati',
@@ -148,7 +150,7 @@ RESOURCE_PAGE_BLOCKS = {
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': ['category_list'],
+        'blocks': ['categories','stocks'],
     },{
         'name' : 'info',
         'descr': 'Generale',
@@ -156,7 +158,11 @@ RESOURCE_PAGE_BLOCKS = {
     }],
 }
 
-
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
+LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
+LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
+
+import locale
+locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')

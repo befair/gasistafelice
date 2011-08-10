@@ -1,5 +1,10 @@
-from gasistafelice.rest.views.blocks.base import BlockWithList
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+from django.core import urlresolvers
+
+from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from gasistafelice.auth import CREATE
+
+from gasistafelice.supplier.models import Supplier
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -14,77 +19,26 @@ class Block(BlockWithList):
     def _get_resource_list(self, request):
         return request.resource.suppliers
 
-# TODO fero CHECK
-# THIS IS USEFUL FOR USER ACTIONS: add/update/delete
-#        # Calculate allowed user actions
-#        #    
-#        user_actions = []
-#        
-#        if settings.CAN_CHANGE_CONFIGURATION_VIA_WEB == True:
-#            user = request.user
-#            if can_write_to_resource(user,res):
-#                if resource_type in ['container', 'node', 'target', 'measure']:
-#                    
-#                    if (resource_type in ['target', 'measure']):
-#                        if res.suspended:
-#                            user_actions.append('resume')
-#                        else:
-#                            user_actions.append('suspend')
-#                    else:
-#                        user_actions.append('resume')
-#                        user_actions.append('suspend')
+    def _get_user_actions(self, request):
 
-# TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
-#        elif args == "new_note":
-#            return self.add_new_note(request, resource_type, resource_id)
-#        elif args == "remove_note":
-#            return self.remove_note(request, resource_type, resource_id)
+        user_actions = []
+
+        if request.user.has_perm(CREATE, obj=Supplier):
+            user_actions.append( 
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE, verbose_name=_("Add supplier"), 
+                    url=urlresolvers.reverse('admin:supplier_supplier_add')
+                )
+            )
+
+        return user_actions
+        
+    def _get_add_form_class(self):
+        raise NotImplementedError("The add form page in use now is the admin interface page.")
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
-        
-# TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
-#    def add_new_note(self,request, resource_type, resource_id):
-#        resource = request.resource
-#        
-#        if request.POST:
-#            
-#            #title = request.REQUEST.get('title');
-#            body  = request.REQUEST.get('body');
-#            
-#            new_comment = Comment(content_object = resource
-#                             ,site = DjangoSite.objects.all()[0]
-#                             ,user = request.user
-#                             ,user_name = request.user.username
-#                             ,user_email = request.user.email
-#                             ,user_url = ''
-#                             ,comment = body
-#                             ,ip_address = None
-#                             ,is_public = True
-#                             ,is_removed = False                       
-#                             )
-#                        
-#            new_comment.save()
-#
-#            return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
-#            
-#        return HttpResponse('')
-#            
-#    #------------------------------------------------------------------------------#    
-#    #                                                                              #     
-#    #------------------------------------------------------------------------------#
-#            
-#    def remove_note(self, request, resource_type, resource_id):
-#        
-#        resource = request.resource
-#        
-#        note_id = request.REQUEST.get('note_id')
-#        
-#        note = Comment.objects.get(id=note_id)
-#        note.delete()
-#
-#        return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
-        
+

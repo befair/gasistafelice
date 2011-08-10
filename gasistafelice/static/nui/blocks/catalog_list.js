@@ -1,4 +1,1 @@
-
-
-jQuery.REGISTER_BLOCK_UPDATE_HANDLER('catalog_list', jQuery.resource_list_block_update);
-/* TODO jQuery.BLOCK_REGISTER_DISPLAY_DEFAULT_BY_NAME = { 'catalog_list' : 'resource_list_as_icons' } */
+jQuery.BLOCKS["catalog_list"] = new jQuery.UIBlockWithList("catalog_list", "list");

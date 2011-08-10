@@ -223,7 +223,7 @@
 {"pk": 190,"model": "gas.gasmember","fields": {"person": 270,"gas":7,"id_in_gas": "GAS7-21","available_for_roles": [3], "account" : 260, "membership_fee_payed": "2011-04-28" }},
 {"pk": 191,"model": "gas.gasmember","fields": {"person": 271,"gas":8,"id_in_gas": "GAS8-1","available_for_roles": [3], "account" : 261, "membership_fee_payed": "2011-04-28" }},
 {"pk": 192,"model": "gas.gasmember","fields": {"person": 272,"gas":8,"id_in_gas": "GAS8-2","available_for_roles": [3], "account" : 262, "membership_fee_payed": "2011-04-28" }},
-{"pk": 193,"model": "gas.gasmember","fields": {"person": 273,"gas":8,"id_in_gas": "GAS8-3","available_for_roles": [3], "account" : 263, "membership_fee_payed": "e2011-04-28" }},
+{"pk": 193,"model": "gas.gasmember","fields": {"person": 273,"gas":8,"id_in_gas": "GAS8-3","available_for_roles": [3], "account" : 263, "membership_fee_payed": "2011-04-28" }},
 {"pk": 194,"model": "gas.gasmember","fields": {"person": 274,"gas":8,"id_in_gas": "GAS8-4","available_for_roles": [3, 4, 5, 6, 7, 8, 2, 9, 10], "account" : 264, "membership_fee_payed": "2011-04-28" }},
 {"pk": 195,"model": "gas.gasmember","fields": {"person": 275,"gas":9,"id_in_gas": "GAS9-1","available_for_roles": [3, 4, 5, 6, 7, 8, 2, 9, 10], "account" : 265, "membership_fee_payed": "2011-04-28" }},
 {"pk": 196,"model": "gas.gasmember","fields": {"person": 276,"gas":9,"id_in_gas": "GAS9-2","available_for_roles": [3, 9], "account" : 266, "membership_fee_payed": "2011-04-28" }},

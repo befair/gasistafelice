@@ -9,7 +9,7 @@ type_model_d = {
 	'product' : Product,
 	'stock' : SupplierStock,
 	'gasstock' : GASSupplierStock,
-	'catalog' : GASSupplierOrderProduct,
+	'stock_in_order' : GASSupplierOrderProduct,
 	'category' : ProductCategory,
 	'unit' : ProductMU,
 	'order' : GASSupplierOrder,
@@ -19,7 +19,7 @@ type_model_d = {
 	'account' : Account,
 	'transact' : Movement,
 	'referrer' : SupplierReferrer,
-	'bio' : Certification,
+	'cert' : Certification,
 	'order' : GASSupplierOrder,
 	'basket' : GASMemberOrder,
 }

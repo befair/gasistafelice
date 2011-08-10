@@ -38,7 +38,7 @@ class GAS(models.Model, PermissionResource):
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
-    suppliers = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
+    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
 
     #, editable=False: admin validation refers to field 'account_state' that is missing from the form
     account = models.ForeignKey(Account, null=True, blank=True, related_name="bank_acc_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
@@ -126,11 +126,9 @@ class GAS(models.Model, PermissionResource):
                     
         self.id_in_des = self.id_in_des.upper()
 
+        created = False
         if not self.pk:
-
-            self.config = GASConfig()
-            self.account = Account.objects.create(balance=0)
-            self.liquidity = Account.objects.create(balance=0)
+            created = True
 
         # This should never happen, but is it reasonable
         # that an installation has only one DES
@@ -143,6 +141,12 @@ class GAS(models.Model, PermissionResource):
                 self.des = DES.objects.all()[0]
 
         super(GAS, self).save(*args, **kw)
+
+        if created:
+
+            self.config = GASConfig.objects.create(gas=self)
+            #TODO self.account = Account.objects.create()
+            #TODO self.liquidity = Account.objects.create()
 
 class GASConfig(models.Model, PermissionResource):
     """
@@ -428,9 +432,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     """
 
-    gas = models.ForeignKey(GAS, related_name="pacts_set")
-    supplier = models.ForeignKey(Supplier, related_name="pacts_set")
-    date_signed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("date of first meeting GAS-Producer"))
+    gas = models.ForeignKey(GAS, related_name="pact_set")
+    supplier = models.ForeignKey(Supplier, related_name="pact_set")
+    date_signed = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True, default=None, help_text=_("date of first meeting GAS-Producer"))
 
     # which Products GAS members can order from Supplier
     # COMMENT fero: I think the solution proposed by domthu in ticket #80 respect

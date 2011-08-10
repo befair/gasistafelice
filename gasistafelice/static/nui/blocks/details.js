@@ -1,18 +1,4 @@
 
-
-String.prototype.trim = function() { return this.replace(/(^\s+)/, '').replace(/(\s+$)/, ''); };
-
-var NEW_NOTE_DIALOG = '#global_dialog_placeholder';
-
-var NEW_NOTE_FORM   = '#new_note_form';
-
-var NEW_NOTE_FORM_TEXT= "\
-		<form name='new_note_form' id='new_note_form' method='post' action='@@new_note_action@@'>\
-			" + gettext('Text') + ":  <br /> \
-			<textarea id='' name='body'  cols='65' row='10' /> \
-		</form>\
-		";
-
 //------------------------------------------------------------------------------//
 //                                                                              //
 //------------------------------------------------------------------------------//
@@ -743,12 +729,10 @@ jQuery.update_details_block = function(block_box_id)
 	var url = jQuery.pre + jQuery.app + '/' + block_urn;
 	
 	$.ajax({
-		dataType:'plain/text',
+		dataType:'xml',
 		url:url,
 		type:'GET',
 		complete: function(r, s){
-			
-			
 			
 			if (s == "success") {
 				var data = r.responseText;

@@ -181,8 +181,8 @@ class GASSupplierOrderTest(TestCase):
     def testDefaultProductSet(self):
         '''Verify that the default product set is correctly generated'''
         order = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=self.now)
-        order.set_default_product_set()
-        self.assertEqual(set(order.products.all()), set((self.gas_stock_1, self.gas_stock_2)))
+        order.set_default_stock_set()
+        self.assertEqual(set(order.stock_set.all()), set((self.gas_stock_1, self.gas_stock_2)))
         
 class GASMemberManagerTest(TestCase):
     """

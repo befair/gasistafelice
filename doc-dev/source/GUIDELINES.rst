@@ -73,17 +73,17 @@ Esempio:
 
 .. sourcecode:: python
 
-    related_name="solidal_pact_set"
-    related_name="gas_members_set"
-    related_name="gas_members_available_set"
+    related_name="pact_set"
+    related_name="gasmember_set"
+    related_name="gasmember_available_set"
 
     @property
-    def solidal_pacts(self):
-        return self.solidal_pact_set.all()
+    def pacts(self):
+        return self.pact_set.all()
 
     @property
-    def solidal_pact(self):
-        return self.gas.solidal_pacts.get(supplier=self.supplier)
+    def pact(self):
+        return self.gas.pacts.get(supplier=self.supplier)
 
 Struttura classi del modello
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,27 @@
+{% load i18n %}
+<block type="{{ block_type }}" 
+       resource_type="{{ resource.resource_type }}" 
+       resource_id="{{ resource.id }}">
+       
+	<content type="table">
+
+        <table class="dataTable">
+        <thead>
+            <tr>
+                <th>{% trans "Code" %}</th>
+                <th>{% trans "Product" %}</th>
+                <th>{% trans "Description" %}</th>
+                <th>{% trans "Price" %}</th>
+                <th>{% trans "Availability" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+
+	</content>
+    
+    {% include "blocks/user_actions.xml" %}
+
+</block>
+

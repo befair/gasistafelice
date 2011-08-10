@@ -25,6 +25,12 @@ from django.conf import settings
 
 from gasistafelice.globals import type_model_d
 
+def get_resource_by_path(resource_type, resource_id):
+    # Valid path is: .../<resource_type>/<resource_id>/...others params...
+
+    model = type_model_d[resource_type]
+    return get_object_or_404(model, pk=resource_id)
+        
 class ResourceMiddleware(AppMiddleware):
 
     """Process the view and inject the environment in the request object.
@@ -41,31 +47,13 @@ class ResourceMiddleware(AppMiddleware):
             # add here application settings.
         })
 
-    def __get_resource_by_path(self, request, **kw):
-        # Valid path is: .../<resource_type>/<resource_id>/...others params...
-        
-        try:
-            resource_type = kw['resource_type']
-            resource_id   = kw['resource_id']
-            
-            model = type_model_d[resource_type]
-            
-            return get_object_or_404(model, pk=resource_id)
-
-        except KeyError, k:
-            #raise ValueError(_("URL does not identify a GASISTA FELICE resource"))
-            pass
-            
-        #return get_object_or_404(model, pk=resource_id)
-        return None
-        
     def process_view(self, request, view_func, view_args, view_kwargs):
 
         kw = view_kwargs
         
+        #Special behaviour for RSS Feeds
         if kw.has_key('url'):
             
-            #RSS Feeds
             path = kw['url'].split('/')[1:] #The first fields is the feed name
             
             kw = {
@@ -74,8 +62,7 @@ class ResourceMiddleware(AppMiddleware):
             }
             
         if kw.has_key('resource_type') and kw.has_key('resource_id'):
-            
-            request.resource = self.__get_resource_by_path(request, **kw)
+            request.resource = get_resource_by_path(kw['resource_type'], kw['resource_id'])
                 
         return 
 
