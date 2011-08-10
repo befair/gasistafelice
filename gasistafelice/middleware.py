@@ -62,7 +62,7 @@ class ResourceMiddleware(AppMiddleware):
             }
             
         if kw.has_key('resource_type') and kw.has_key('resource_id'):
-            request.resource = get_resource_by_path(**kw)
+            request.resource = get_resource_by_path(kw['resource_type'], kw['resource_id'])
                 
         return 
 
