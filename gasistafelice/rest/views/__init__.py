@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.utils import simplejson
@@ -14,6 +14,7 @@ from gasistafelice.des.models import Siteattr, Site
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 from gasistafelice.auth import ROLES_DICT
+from gasistafelice.auth.models import ParamRole
 
 import time, datetime
 
@@ -35,7 +36,7 @@ def index(request):
 #                                                                     #
 #---------------------------------------------------------------------#
 
-@login_required()
+@login_required
 def site_settings(request):
     """ main entrance page (following index ;))"""
 
@@ -60,10 +61,10 @@ def site_settings(request):
     return render_to_xml_response("settings.xml", ctx)
 
 #---------------------------------------------------------------------#
-#                                                                     #
+# Roles management                                                    #
 #---------------------------------------------------------------------#
 
-@login_required()
+@login_required
 def user_roles(request):
     
     rv = []
@@ -76,8 +77,20 @@ def user_roles(request):
 
     return HttpResponse(simplejson.dumps(rv));
 
+@login_required
+def switch_role(request):
+
+    if request.method == 'POST':
+        
+        role = get_object_or_404(ParamRole, pk=int(request.POST["active_role"]))
+        request.session["app_settings"]["active_role"] = role
+        request.session.modified = True
+        return redirect("base.views.index")
+    else:
+        raise ValueError("Only POST is allowed for this view")
+
 #---------------------------------------------------------------------#
-#                                                                     #
+# Timestamps                                                          #
 #---------------------------------------------------------------------#
 
 def hh_mm(request):

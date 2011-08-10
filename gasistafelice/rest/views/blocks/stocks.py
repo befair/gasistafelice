@@ -24,7 +24,7 @@ class Block(BlockSSDataTables):
 
         user_actions = []
 
-        if request.user.has_perm(EDIT, obj=Supplier):
+        if request.user.has_perm(EDIT, obj=request.resource):
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

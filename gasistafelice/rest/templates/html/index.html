@@ -1443,9 +1443,14 @@
                     $('#user_role').append(res);
                 } else {
                     //Prepare a SELECT box to make the user able to switch role
-                    var res = '<select name="active_role">@@options@@</select>';
+                    var SWITCH_ROLE_FORM              = "switch-role-form";
+                    var res = ' \
+                        <form action="{% url rest.views.switch_role %}" name="' + SWITCH_ROLE_FORM + '" id="' + SWITCH_ROLE_FORM + '" style="display:inline" method="POST"> \
+                            <select name="active_role" onchange="$(this.form).submit()">@@options@@</select> \
+                        </form> \
+                    ';
 
-                    var opt_tmpl = '<option value="@@opt_value@@">@@opt_name@@</option>';
+                    var opt_tmpl = '<option value="@@opt_value@@" @@selected@@>@@opt_name@@</option>';
 
                     for (var j in user_roles) {
                         user_role = user_roles[j];
@@ -1458,18 +1463,34 @@
                             }
                         }
 
+                        var selected = "";
                         var opt = opt_tmpl.replace(/@@opt_value@@/, user_role["role_pk"]);
+                        if (user_role["role_pk"] == $.cookie('active_role')) {
+                            selected = "selected";
+                        }
                         opt = opt.replace(/@@opt_name@@/, opt_name);
+                        opt = opt.replace(/@@selected@@/, selected);
                         res = res.replace(/@@options@@/, opt + "@@options@@");
 
                     }
 
                     res = res.replace(/@@options@@/, "");
                     $('#user_role').append(res);
+
+                    $('#' + SWITCH_ROLE_FORM).submit( function() {
+                        $(this).ajaxSubmit({ success: function () {
+                            var value = $("#" + SWITCH_ROLE_FORM + " select option:selected").val();
+                            $.cookie('active_role', value, { path: '/', expires: SANET_COOKIE_EXPIRATION_TIME } );
+                            window.location.href = '{% url base.views.index %}';
+                        }});
+                        return false;
+                    });
+                    
                 }
                 
             });
         }
+
         //
         // ============================================================================
         // LOAD SITE CONFIGURATION

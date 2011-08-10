@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 
 	(r'^$'       , 'base.views.index'  ),
 	(r'^%s$'     % settings.URL_PREFIX , 'base.views.index'  ),
+
 	(r'^%srest/' % settings.URL_PREFIX, include('rest.urls')),
 
 	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'django.contrib.auth.views.login'),

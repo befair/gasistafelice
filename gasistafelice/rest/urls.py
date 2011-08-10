@@ -27,6 +27,8 @@ urlpatterns = patterns('',
     (r'^now',                                 'rest.views.now'),
 
     (r'^user_roles$',                         'rest.views.user_roles'),
+    (r'^switch_role$',                        'rest.views.switch_role'),
+
     ### FUTURE TODO: these views do not follow the standard URL pattern 
     ### bind them to a site, or move them to another global application
     ### used to perform operation on the whole installation (even if it is multi-site)
