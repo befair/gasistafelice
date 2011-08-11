@@ -167,7 +167,7 @@ class Product(models.Model, PermissionResource):
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
     producer = models.ForeignKey(Supplier, related_name="produced_product_set")
     # Resource API
-    category = models.ForeignKey(ProductCategory, null=True, blank=True)
+    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set")
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
@@ -239,6 +239,10 @@ class SupplierStock(models.Model, PermissionResource):
     def producer(self):
         return self.product.producer
     
+    @property
+    def availability(self):
+        return bool(self.amount_available)
+
     @property        
     def local_grants(self):
         rv = (
@@ -257,4 +261,21 @@ class SupplierStock(models.Model, PermissionResource):
     # Resource API
     #@property
     #def suppliers(self):
+
+class SupplierProductCategory(models.Model):
+    """Map supplier categories to product categories with an optional alias.
+
+    This is useful to know WHICH categories a suppplier CAN sell,
+    and so limiting the choice in product selections."""
+    
+    category = models.ForeignKey(ProductCategory)
+    supplier = models.ForeignKey(Supplier)
+    alias = models.CharField(verbose_name=_('Alternative name'), max_length=128, blank=True)
+
+    @property
+    def name(self):
+        return self.alias or self.category.name
+ 
+    def __unicode__(self):
+        return self.name
 

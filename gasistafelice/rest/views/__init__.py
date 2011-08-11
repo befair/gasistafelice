@@ -1,7 +1,9 @@
+from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
+from django.utils import simplejson
 
 from gasistafelice.lib.shortcuts import render_to_xml_response
 
@@ -12,23 +14,10 @@ from gasistafelice.gas.models import GAS, GASSupplierOrder
 from gasistafelice.des.models import Siteattr, Site
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
+from gasistafelice.auth import ROLES_DICT
+from gasistafelice.auth.models import ParamRole
 
-import time
-
-resource_classes = {
-      'site'         : Site
-    , 'supplier'     : Supplier
-    , 'gas'          : GAS
-    , 'gas_order'    : GASSupplierOrder
-}
-
-#TODO: factorize a method in base.Resource model
-resource_key = {
-      'des'          : 'name'
-    , 'supplier'     : 'name'
-    , 'gas'          : 'name'
-    , 'gas_order'    : 'name'
-}
+import time, datetime
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -38,9 +27,9 @@ resource_key = {
 def index(request):
     """ main entrance page """
     ctx = {
-        'URL_PREFIX': settings.URL_PREFIX,
         'VERSION': settings.VERSION,
-        'INSTALLED_APPS': settings.INSTALLED_APPS
+        'INSTALLED_APPS': settings.INSTALLED_APPS,
+        'LOGOUT_URL' : settings.LOGOUT_URL,
     }
     return render_to_response("html/index.html", ctx)
     
@@ -48,7 +37,7 @@ def index(request):
 #                                                                     #
 #---------------------------------------------------------------------#
 
-@login_required()
+@login_required
 def site_settings(request):
     """ main entrance page (following index ;))"""
 
@@ -72,14 +61,53 @@ def site_settings(request):
     }
     return render_to_xml_response("settings.xml", ctx)
 
+#---------------------------------------------------------------------#
+# Roles management                                                    #
+#---------------------------------------------------------------------#
+
+@login_required
+def user_roles(request):
+    
+    if request.user.is_superuser:
+        rv = [{ 'role_name' : _("Master of the Universe"), 'role_resources' : [] }]
+        return HttpResponse(simplejson.dumps(rv))
+
+    rv = []
+    for prr in request.user.principal_param_role_set.all():
+        rv.append( {
+            'role_name': ROLES_DICT[prr.role.role.name],
+            'role_pk': prr.role.pk,
+            'role_resources': [ r.value.as_dict() for r in prr.role.param_set.all() ],
+        })
+
+    return HttpResponse(simplejson.dumps(rv))
+
+@login_required
+def switch_role(request):
+
+    if request.method == 'POST':
+        
+        role = get_object_or_404(ParamRole, pk=int(request.POST["active_role"]))
+        request.session["app_settings"]["active_role"] = role
+        request.session.modified = True
+        return redirect("base.views.index")
+    else:
+        raise ValueError("Only POST is allowed for this view")
 
 #---------------------------------------------------------------------#
-#                                                                     #
+# Timestamps                                                          #
 #---------------------------------------------------------------------#
 
 def hh_mm(request):
     """Get current time hh:mm"""
     return HttpResponse(time.strftime("%H:%M"))
+
+def now(request):
+    """Get current datetime in format: dow dom mon year - hh:mm"""
+    dt = datetime.datetime.now()
+
+    return HttpResponse(dt.strftime("%c")[:-7])
+    #return HttpResponse(dt.strftime("%A, %d %B %Y - %H:%M"))
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -342,12 +370,9 @@ def list_comments(request):
 #from django.core.servers.basehttp import FileWrapper
 #from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 #from django.template import Context, loader, RequestContext
-#from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 #
 #from django.contrib.comments.models import Comment
 #from django.contrib.auth.models import User
-#
-#from django.utils import simplejson
 #
 #from state.models import Site, Container, Node, Iface, Target, Measure, TargetStateLog
 #

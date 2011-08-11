@@ -1,0 +1,28 @@
+{% load basic_tags %}
+{
+    "sEcho": {{sEcho}},
+    "iTotalRecords": {{iTotalRecords}},
+    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
+    "aaData":[
+    {% for stock in records %}
+    [
+        
+        "{{stock.code|escapejs}}",
+        "{{stock.product|escapejs}}",
+        "{{stock.description|escapejs}}",
+        "&#8364; {{ stock.price|escapejs }}",
+        "{% filter escapejs %}{{ stock.availability }}{% endfilter %}",
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+    ]
+}
+
+{% comment %}
+TODO fero: td classes?!?
+    <td class="resource" sanet_urn="{{ res.product.urn}}">{{ res.product }}</td>
+    <td class="align-right"></td>
+    <td class="align-right"></td>
+{% endcomment %}

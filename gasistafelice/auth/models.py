@@ -8,11 +8,8 @@ from django.contrib.contenttypes import generic
 
 from permissions.models import Role
 
-from gasistafelice.base.models import Resource
 from gasistafelice.auth.managers import RolesManager
-
-#from gasistafelice.gas.models import GAS, GASSupplierOrder, Delivery, Withdrawal 
-#from gasistafelice.supplier.models import Supplier
+from gasistafelice.auth import ROLES_DICT
 
 class PermissionBase(object):
     """
@@ -106,7 +103,8 @@ class Param(models.Model):
     param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
     def __unicode__(self):
-        return u"%s: %s" % (self.name, self.value)
+        return u"%s" % self.value
+        #return u"%s: %s" % (self.name, self.value)
 
     def __repr__(self):
         return "<%s %s: %s>" % (self.__class__.__name__, self.name, self.value)
@@ -120,7 +118,7 @@ class Param(models.Model):
         # forbid duplicated `Param` entries in the DB
         unique_together = ('name', 'content_type', 'object_id')
 
-class ParamRole(models.Model, Resource):
+class ParamRole(models.Model):
     """
     A custom role model class inspired by `django-permissions`'s `Role` model.
     
@@ -160,7 +158,7 @@ class ParamRole(models.Model, Resource):
 
     def __unicode__(self):
         param_str_list = ["%s" % s for s in self.param_set.all()]
-        return u"%s on %s" % (self.role.name, ", ".join(param_str_list))
+        return u"%(role)s on %(params)s" % { 'role' : ROLES_DICT[self.role.name], 'params':  ", ".join(param_str_list)}
 
     @classmethod
     def get_role(cls, role_name, **params):
@@ -196,7 +194,6 @@ class ParamRole(models.Model, Resource):
         prrs = PrincipalParamRoleRelation.objects.filter(role=self).exclude(user=None)
         return [prr.user for prr in prrs]
 
-    
 class PrincipalParamRoleRelation(models.Model):
     """
     This model is a relation describing the fact that a parametric role (`ParamRole`) 
@@ -219,6 +216,9 @@ class PrincipalParamRoleRelation(models.Model):
     group = models.ForeignKey(Group, blank=True, null=True, related_name="principal_param_role_set")
     role = models.ForeignKey(ParamRole, related_name="principal_param_role_set")
 
+    def __unicode__(self):
+        return _("%(user)s is %(role)s") % { 'user' : self.user, 'role' : self.role }
+
     def get_principal(self):
         """Returns the principal."""
         return self.user or self.group
@@ -230,7 +230,7 @@ class PrincipalParamRoleRelation(models.Model):
         elif isinstance(principal, Group):
             self.group = principal
         else:
-            raise AttributeError("The principal must be either a User instance or a Group instance.")
+            raise TypeError("The principal must be either a User instance or a Group instance.")
 
     principal = property(get_principal, set_principal)    
     
@@ -250,5 +250,4 @@ def setup_roles(sender, instance, created, **kwargs):
             pass
 
 # add `setup_roles` function as a listener to the `post_save` signal
-signals.post_save.connect(setup_roles)
-     
+signals.post_save.connect(setup_roles)     

@@ -8,6 +8,8 @@ from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
 from gasistafelice.auth import models as auth_models
+from gasistafelice.rest.models import pages as rest_models
+from gasistafelice.users import models as user_models
 
 ########################## Inlines #######################
 class GASMemberInline(admin.TabularInline):
@@ -195,7 +197,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ('producer', 'category')
     search_fields = ['name', 'producer__name', 'description']
 
-
 class SupplierStockAdmin(admin.ModelAdmin):
 
     save_on_top = True
@@ -210,8 +211,51 @@ class SupplierStockAdmin(admin.ModelAdmin):
          })
         )
 
-    list_display = ('product','supplier', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
-    list_display_links = ('product',)
+    list_display = ('supplier', 'product', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_editable = ('product',)
+    #list_display_links = ('product',)
+    list_filter = ('supplier',)
+    search_fields = ['product', 'supplier__name',]
+    
+    # FIXME: try to make it more generic !
+    def order_min_amount_pretty(self, obj):
+        return obj.order_minimum_amount or '--'
+    order_min_amount_pretty.short_description = "minimum amount"
+    
+    # FIXME: try to make it more generic !
+    def order_step_pretty(self, obj):
+        return obj.order_step or '--'
+    order_step_pretty.short_description = "increment step"
+    
+    def amount_avail_pretty(self, obj):
+        if obj.amount_available == ALWAYS_AVAILABLE:
+            return 'infinity'
+    amount_avail_pretty.short_description = 'amount available'
+    
+    # FIXME: try to make it more generic !
+    # TODO: 'euro' should be rendered as a currency symbol 
+    def price_pretty(self, obj):
+        return str(obj.price) + ' euro'
+    price_pretty.short_description = "price"
+
+
+class SupplierStockAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    
+    fieldsets = (
+        (None, {
+            'fields': ('product', 'price', 'amount_available',)
+        }),
+        ('Constraints', {
+            'classes': ('collapse',),
+            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
+         })
+        )
+
+    list_display = ('supplier', 'product', 'price', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_editable = ('product', 'price')
+    list_display_links = ('supplier',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
     
@@ -324,6 +368,12 @@ class DeliveryAdmin(admin.ModelAdmin):
 class WithdrawalAdmin(admin.ModelAdmin):
     pass
     
+class UserProfileAdmin(admin.ModelAdmin):
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        #TODO placeholder domthu: limit choices to ParamRole bound to user with PrincipalParamRoleRelation
+        #see up GASSupplierOrderAdmin class
+        pass
     
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
@@ -343,4 +393,8 @@ admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderPr
 admin.site.register(gas_models.order.GASMemberOrder, GASMemberOrderAdmin)
 admin.site.register(gas_models.order.Delivery, DeliveryAdmin)
 admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
+admin.site.register(rest_models.HomePage)
+
+admin.site.register(auth_models.PrincipalParamRoleRelation)
+admin.site.register(user_models.UserProfile, UserProfileAdmin)
 

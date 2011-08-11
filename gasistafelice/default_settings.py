@@ -110,6 +110,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'gasistafelice.des',
+    'gasistafelice.users',
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.comments',
@@ -117,6 +118,7 @@ INSTALLED_APPS = (
     
 )
 
+AUTH_PROFILE_MODULE = 'users.UserProfile'
 URL_PREFIX = "gasistafelice/"
 
 RESOURCE_PAGE_BLOCKS = {
@@ -137,15 +139,19 @@ RESOURCE_PAGE_BLOCKS = {
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': ['categories'],
+        'blocks': ['categories','stocks'],
     },{
         'name' : 'info',
         'descr': 'Generale',
         'blocks': [],
     }],
 }
-
-
+   
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
+LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
+LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
+
+import locale
+locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')

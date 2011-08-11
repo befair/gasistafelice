@@ -296,13 +296,13 @@ class Supplier(Supplier):
     @property
     def products(self):
         """All products _supplied_ by this supplier"""
-        #TODO: we have to differentiate a wey to see all products produced by this supplier
+        #TODO: we have to differentiate a way to see all products __produced__ by this supplier
         return Product.objects.filter(stock_set__in=self.stocks)
 
     @property
     def categories(self):
         """All categories _supplied_ by this supplier"""
-        #TODO: we have to differentiate a wey to see all categories produced by this supplier
+        #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
         return ProductCategory.objects.filter(product_set__in=self.products)
 
 

@@ -77,6 +77,12 @@ class Resource(object):
 
         raise NotImplementedError
 
+    def as_dict(self):
+        return {
+            'name': self.name,
+            'urn' : self.urn,
+        }
+
     #------------------------------------
     # Basic properties: cache management
     #------------------------------------
