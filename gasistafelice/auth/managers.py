@@ -7,6 +7,7 @@ from gasistafelice.base.utils import get_ctype_from_model_label
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, VALID_PARAMS_FOR_ROLES,\
 SUPPLIER_REFERRER, GAS_REFERRER, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL, DES_ADMIN
 from gasistafelice.auth.exceptions import RoleNotAllowed, RoleParameterNotAllowed, RoleParameterWrongSpecsProvided
+from gasistafelice.auth.query import RoleQuerySet 
 
 class RolesManager(models.Manager):
     """ 
@@ -19,6 +20,14 @@ class RolesManager(models.Manager):
     is also provided.        
     
     """
+    
+    def get_query_set(self):
+        """
+        Return a custom subclass of the standard `QuerySet` object, 
+        augmented with methods usefulfor managing  parametric roles.
+        """
+        return RoleQuerySet(self.model)
+    
     def get_param_roles(self, role_name, **params):
         """
         This method retrieves the parametric roles satisfying the criteria provided as input.
@@ -42,8 +51,8 @@ class RolesManager(models.Manager):
         If `params` contains an invalid parameter name, raises `RoleParameterNotAllowed`.
         
         If provided parameter names are valid, but one of them is assigned to a wrong type,
-        (based on domain constraints) raises  `RoleParameterWrongSpecsProvided`.  
-          
+        (based on domain constraints) raises  `RoleParameterWrongSpecsProvided`.
+                  
         """
         # sanity checks
         try: 
@@ -58,8 +67,7 @@ class RolesManager(models.Manager):
             if expected_ctype != actual_ctype:
                 raise RoleParameterWrongSpecsProvided(role_name, params)                 
         
-        # FIXME should be a QuerySet, not a list
-        rv = []
+        pr_list = []
         # filter out parametric roles of the right type
         p_roles = self.get_query_set().filter(role__name__exact=role_name)
         # select only parametric roles whose parameters are compatible with those specified as input
@@ -76,10 +84,29 @@ class RolesManager(models.Manager):
                     raise RoleParameterWrongSpecsProvided(role_name, params)
             # all tests were passed, so this parametric role matches with the query
             if match:
-                rv.append(pr)
+                pr_list.append(pr)
                 
-        return rv
+        qs = self.filter(pk__in=[obj.pk for obj in pr_list])
+        return qs
          
+    def active(self, role_name, **params):
+        """
+        Return all **active** parametric roles satisfying the criteria provided as input.
+        
+        Signature and behaviour are the same as those of the `get_param_roles()` method above.      
+        
+        """
+        return self.get_param_roles(self, role_name, **params).active()
+    
+    def archived(self, role_name, **params):
+        """
+        Return all **archived** parametric roles satisfying the criteria provided as input.
+        
+        Signature and behaviour are the same as those of the `get_param_roles()` method above.      
+        
+        """
+        return self.get_param_roles(self, role_name, **params).archived()
+    
     
     # FIXME: defining role-specific access methods introduces a coupling
     # of this Django app with a specific application domain

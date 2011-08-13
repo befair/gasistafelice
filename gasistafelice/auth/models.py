@@ -193,6 +193,54 @@ class ParamRole(models.Model):
         """
         prrs = PrincipalParamRoleRelation.objects.filter(role=self).exclude(user=None)
         return [prr.user for prr in prrs]
+    
+    def is_active(self):
+        """
+        Return `True` if this parametric role is considered to be 'active'; `False` otherwise.
+        
+        What 'active' means may vary on a per-role basis; in general, a parametric role
+        is considered to be 'active' iff **all** its parameters are active 
+        (as model instances).
+        
+        In turn, to specify the relevant semantic for a model 
+        (i.e. define when an instance of it is to be considered as 'active'),
+        you need to implement an `is_active()` instance method on the model class.
+                
+        """
+        # A role is active iff **all** its parameters are active
+        is_active = True
+        for p in self.param_set.all():
+            # delegate the "activity" check to parameter's model instance
+            try:
+                if not p.value.is_active():
+                    is_active = False
+                    break
+            except NameError: 
+                # Archive API is not implemented by that model, so assume that 
+                # every instance is active by convention
+                return True                
+        return is_active             
+    
+    
+    def is_archived(self):
+        """
+        Return `True` if this parametric role is considered to be 'archived'; `False` otherwise.
+        
+        What 'archived' means may vary on a per-role basis; in general, a parametric role
+        is considered to be 'archived' iff **at least** one of its parameters is archived 
+        (as a model instance).
+        
+        In turn, to specify the relevant semantic for a model 
+        (i.e. define when an instance of it is to be considered as 'archived'),
+        you need to implement an `is_archived()` instance method on the model class.
+                
+        """
+        # This implementation assumes that 'active' and 'archived' are the only two  
+        # allowed states for a parametric role; if this assumption is invalid,
+        # a more general implementation may be needed (such as that of the `is_active()`
+        # method above).   
+        return not self.is_active()
+    
 
 class PrincipalParamRoleRelation(models.Model):
     """

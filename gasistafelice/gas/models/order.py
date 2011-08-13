@@ -50,6 +50,23 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """Return the supplier this order is placed against."""
         return self.pact.supplier        
     
+#-------------------------------------------------------------------------------#
+# Model Archive API
+
+    def is_active(self):
+        """
+        Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.
+        """
+        return self in GASSupplierOrder.objects.open()
+    
+    def is_archived(self):
+        """
+        Return `True` if the GAS supplier order is to be considered as 'archived'; `False` otherwise.
+        """
+        return not self.is_active()
+    
+#-------------------------------------------------------------------------------#    
+    
     def set_default_stock_set(self):
         '''
         A helper function associating a default set of products to a GASSupplierOrder.
@@ -201,6 +218,24 @@ class Appointment(models.Model):
     
     class Meta:
         abstract = True
+
+#-------------------------------------------------------------------------------#
+# Model Archive API
+        
+    def is_active(self):
+        """
+        Return `True` if the Appointment is to be considered as 'active'; `False` otherwise.
+        """
+        return self in Appointment.objects.future()
+    
+    def is_archived(self):
+        """
+        Return `True` if the Appointment is to be considered as 'archived'; `False` otherwise.
+        """
+        return not self.is_active()
+    
+#-------------------------------------------------------------------------------#    
+
 
 class Delivery(Appointment, PermissionResource):
 
