@@ -9,9 +9,7 @@ from gasistafelice.lib.shortcuts import render_to_xml_response
 
 from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.models import GAS, GASSupplierOrder
-from gasistafelice.des.models import Siteattr, Site
+from gasistafelice.gas.models.proxy import Siteattr
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 from gasistafelice.auth import ROLES_DICT
@@ -310,18 +308,19 @@ def parts(request, resource_type, resource_id):
 def quick_search(request):
 
     site = Siteattr.get_site()
-    if not request.user.is_superuser:
-            site = site.filter(request.user)
-    name = request.GET['resource_name']
+    #TODO: fero TOCHECK, no filter needed for "VIEW" permission
+    #if not request.user.is_superuser:
+    #   site = site.filter(request.user)
+    q = request.GET['q']
     limits = request.REQUEST.getlist('l')
     if len(limits) == 0:
-        search_result = site.quick_search(name = name)
+        search_result = site.quick_search(q = q)
     else:
-        search_result = site.quick_search(name = name, limits = limits)
+        search_result = site.quick_search(q = q, limits = limits)
     context = {
         'search_result': search_result 
     }
-    return render_to_xml_response("quick_search_result.xml", context)
+    return render_to_response("html/quick_search_result.html", context)
     
 #------------------------------------------------------------------------------#
 #                                                                              #

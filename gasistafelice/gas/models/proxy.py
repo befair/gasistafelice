@@ -5,7 +5,7 @@ from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock, SupplierReferrer, Certification
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.models.order import GASSupplierOrder, Delivery, Withdrawal, GASSupplierOrderProduct, GASMemberOrder
-from gasistafelice.des.models import DES
+from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.bank.models import Account, Movement
 
 #-------------------------------------------------------------------------------
@@ -98,18 +98,11 @@ class DES(DES):
         return self
 
     @property
-    def gas_list(self):
-        return GAS.objects.all()
-        #TODO: enable the following when database is updated with des attribute for GAS
-        # return self.gas_set.all()
-
-    @property
     def suppliers(self):
         """Return suppliers bound to the DES"""
         return Supplier.objects.all()
 
     #TODO placeholder domthu define Resource API
-    #TODO placeholder domthu define other properties for all resources in RESOURCE_LIST
     @property
     def gas_list(self):
         return GAS.objects.all()
@@ -130,21 +123,9 @@ class DES(DES):
         return GASMember.objects.all()
 
     # Resource API
-    @property
-    def gasmembers(self):
-        if hasattr(self, 'isfiltered') and self.isfiltered:
-            return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
-        return GASMember.objects.all()
-
-    # Resource API
     def categories(self):
         # All categories 
         return ProductCategory.objects.all()
-
-    # Resource API
-    @property
-    def suppliers(self):
-        return Supplier.objects.all()
 
     @property
     def pacts(self):
@@ -153,45 +134,55 @@ class DES(DES):
         #g = self.gas_list
         #return GASSupplierSolidalPact.objects.filter(gas__in=g)
 
+    @property
+    def orders(self):
+        return GASSupplierOrder.objects.all()
+
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
-    def quick_search(self, name, limits=['cn','cd','nn','nd','in','id','ii','tp','tt','td','mp','mt','md']):
+    def quick_search(self, q, limits=['gn','sn','ogn','osn']):
+        """Search with limit.
+
+        @param q: search query
+        @param limits: limit of search.
+            * gn: GAS name
+            * sn: Supplier name
+            * ogn: Order GAS name
+            * osn: Order Supplier name
+        """
 
         l = []
         for i in limits:
-            if i.lower() == 'cn':
-                l += self.containers.filter(name__icontains=name)
-            elif i.lower() == 'cd':
-                l += self.containers.filter(descr__icontains=name)
-            elif i.lower() == 'nn':
-                l += self.nodes.filter(name__icontains=name)
-            elif i.lower() == 'nd':
-                l += self.nodes.filter(descr__icontains=name)
-            elif i.lower() == 'in':
-                l += self.ifaces.filter(name__icontains=name)
-            elif i.lower() == 'id':
-                l += self.ifaces.filter(descr__icontains=name)
-            elif i.lower() == 'ii':
-                l += self.ifaces.filter(instance__icontains=name)
-            elif i.lower() == 'tp':
-                l += self.targets.filter(path__icontains=name)
-            elif i.lower() == 'tt':
-                l += self.targets.filter(title__icontains=name)
-            elif i.lower() == 'td':
-                l += self.targets.filter(descr__icontains=name)
-            elif i.lower() == 'mp':
-                l += self.measures.filter(path__icontains=name)
-            elif i.lower() == 'mt':
-                l += self.measures.filter(title__icontains=name)
-            elif i.lower() == 'md':
-                l += self.measures.filter(descr__icontains=name)
+            i = i.lower()
+            if i == 'gn':
+                l += self.gas_list.filter(name__icontains=q)
+            if i == 'sn':
+                l += self.suppliers.filter(name__icontains=q)
+            elif i == 'ogn':
+                l += self.orders.open().filter(pact__gas__name=q)
+            elif i == 'osn':
+                l += self.orders.open().filter(pact__supplier__name=q)
             else:
                 pass
+
         ll = []
         for x in l:
             if x not in ll:
                 ll.append(x)
         return ll
 
+class Siteattr(Siteattr):
+
+    class Meta:
+        proxy = True
+
+    @classmethod
+    def get_site(cls):
+        # Get the one and only one DES object that exists
+        # FUTURE TODO: in a multi-site environment, current site can be retrieved in views
+        # https://docs.djangoproject.com/en/1.3/ref/contrib/sites/
+        rv = DES.objects.order_by('id').all()[0]
+        return rv
+    
 #-------------------------------------------------------------------------------
 
 class Person(Person):

@@ -2009,16 +2009,16 @@
                         <div class="right toolbar">
                             <span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/></span>
                         </div>
-                        <h1 class="block-title">{% trans "Search" %}</h1> <!-- Ricerca -->
+                        <h1 class="block-title">{% trans "Search" %}</h1> <!-- Ricerca --> {# title should be "Search in resource(DES)" #}
                     </div>
 
                     <div class="block_body" id="quick_search" is_open="1">
 
                         <div id="searchbox">
                             <div id="search_form" style="text-align : center;">
-                                <form id="search_trueform"  name="search_form" action="/sanet/rest/quick_search/">
+                                <form id="search_trueform"  name="search_form" action="{% url rest.views.quick_search %}">
                                     <input id="search_input"
-                                           name="resource_name"
+                                           name="q"
                                            type="search"
                                            size="20"
                                            autocomplete="on"
@@ -2032,43 +2032,27 @@
                                            onclick="reset_search_form()" /> <br />
 
                                     <a id="moropt" type="button" value="{% trans "Options" %}" name="advanced_research" href="">{% trans "Options" %}</a> <!-- Options -->
-                                    |
-                                    <a href="#rest/advanced-search-page">{% trans "Advanced" %}</a>
+                                    {% comment %}| <a href="#rest/advanced-search-page">{% trans "Advanced" %}</a> {% endcomment %}
 
                                     <fieldset id="moroptpanel" style="text-align:left; font-size:0.8em">
 
                                         <fieldset style="text-align:left;">
-                                            <legend>Container</legend>
-                                            <input type="checkbox" name="l" value="cn" checked="checked" /><label>{% trans "Path/ID" %}</label> <br/>
-                                            <input type="checkbox" name="l" value="cd" checked="checked" /><label>{% trans "Description" %}</label> <br/>
+                                            <legend>GAS</legend>
+                                            <input type="checkbox" name="l" value="gn" checked="checked" /><label>{% trans "Name" %}</label> <br/>
                                         </fieldset>
                                         <fieldset style="text-align:left;">
-                                            <legend>Nodo</legend>
-                                            <input type="checkbox" name="l" value="nn" checked="checked" /><label>{% trans "Path/ID" %}</label><br/>
-                                            <input type="checkbox" name="l" value="nd" checked="checked" /><label>{% trans "Description" %}</label><br/>
+                                            <legend>{% trans "Supplier" %}</legend>
+                                            <input type="checkbox" name="l" value="sn" checked="checked" /><label>{% trans "Name" %}</label> <br/>
                                         </fieldset>
                                         <fieldset style="text-align:left;">
-                                            <legend>Interfaccia</legend>
-                                            <input type="checkbox" name="l" value="in" checked="checked" /><label>{% trans "Name" %}</label> <br/>
-                                            <input type="checkbox" name="l" value="id" checked="checked" /><label>{% trans "Description" %}</label><br/>
-                                            <input type="checkbox" name="l" value="ii" checked="checked" /><label>{% trans "Instance" %}</label><br/>
+                                            <legend>{% trans "Order" %}</legend>
+                                            <input type="checkbox" name="l" value="ogn" checked="checked" /><label>{% trans "GAS name" %}</label><br/>
+                                            <input type="checkbox" name="l" value="osn" checked="checked" /><label>{% trans "Supplier name" %}</label><br/>
                                         </fieldset>
-                                        <fieldset style="text-align:left;">
-                                            <legend>Target</legend>
-                                            <input type="checkbox" name="l" value="tp" checked="checked" /><label>{% trans "Path/ID" %}</label> <br/>
-                                            <input type="checkbox" name="l" value="tt" checked="checked" /><label>{% trans "Title" %}</label> <br/>
-                                            <input type="checkbox" name="l" value="td" checked="checked" /><label>{% trans "Description" %}</label><br/>
-                                        </fieldset>
-                                        <fieldset style="text-align:left;">
-                                            <legend>Misura</legend>
-                                            <input type="checkbox" name="l" value="mp" checked="checked" /><label>{% trans "Path/ID" %}</label><br/> <!-- Path -->
-                                            <input type="checkbox" name="l" value="mt" checked="checked" /><label>{% trans "Title" %}</label><br/>
-                                            <input type="checkbox" name="l" value="md" checked="checked" /><label>{% trans "Description" %}</label><br/> <!-- Descrizione -->
-                                        </fieldset>
-
+                                    </fieldset>
                                 </form>
                             </div>
-                            <div id="search_results"></div>
+                            <div id="search_results"> </div>
                         </div>
                     </div>
                 </div> <!-- blocco search -->
