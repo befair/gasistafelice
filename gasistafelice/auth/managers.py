@@ -81,7 +81,8 @@ class RolesManager(models.Manager):
         return rv
          
     
-    
+    # FIXME: defining role-specific access methods introduces a coupling
+    # of this Django app with a specific application domain
     def des_admins(self, **params):
         return self.get_param_roles(DES_ADMIN, **params)   
     
