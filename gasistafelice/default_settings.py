@@ -123,22 +123,43 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks' : ['details', 'gas_list', 'suppliers']
     }],
     'gas' : [{
-        'name' : 'open_orders',
-        'descr': 'Ordini aperti',
-        'blocks': ['suppliers', 'open_orders'],
+        'name' : 'orders',
+        'descr': 'Ordini',
+        'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery
     },{
+        'name' : 'suppliers',
+        'descr': 'Fornitori',
+        'blocks': ['suppliers', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
+    },{
+        'name' : 'info',
+        'descr' : 'Scheda del GAS',
+        'blocks' : ['details']
+    }],
+    'gasmember': [{
         'name' : 'ordered_products',
-        'descr': 'Prodotti ordinati',
-        'blocks': [],
+        'descr': 'Paniere',
+        'blocks': ['basket'],
+    },{
+        'name' : 'info',
+        'descr' : 'Scheda del gasista',
+        'blocks' : ['details']
     }],
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': ['categories','stocks'],
+        'blocks': ['stocks'],
     },{
         'name' : 'info',
         'descr': 'Generale',
-        'blocks': [],
+        'blocks': ['categories', 'gas_list', 'defails'],
+    }],
+# 'order' resource and page are needed in order to make gasmember able to choose products.
+# Useful until we have "expandable list of orders" (like targets with timeline in SANET)
+# I think this should be even more user-friendly than the "expandable list of orders" block
+    'order' : [{ 
+        'name' : 'products',
+        'descr': 'Prodotti da ordinare',
+        'blocks': ['order_products'],
     }],
 }
    
