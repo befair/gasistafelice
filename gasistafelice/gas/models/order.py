@@ -66,13 +66,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
         register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
         
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
     @property
     def report_name(self):
         # Clean file order name
@@ -127,13 +120,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def gas(self):
         return self.order.pact.gas    
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
+
     
 class GASMemberOrder(models.Model, PermissionResource):
 
@@ -192,14 +179,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         state = get_state(self)
         transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
-        
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
+ 
 ## FIXME: commented out model's save override waiting for issue #1 (on GitHub) to be resolved
 #    def save(self):
 #        if not self.workflow:
@@ -256,14 +236,7 @@ class Delivery(Appointment, PermissionResource):
         
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
+        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)          
 
     
 
@@ -302,10 +275,3 @@ class Withdrawal(Appointment, PermissionResource):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
         
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv 
-    
