@@ -73,7 +73,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
     
     def __unicode__(self):
-        return "Order from gas %s to supplier %s" % (self.gas, self.supplier)
+        return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, self.date_end)
     
     class Meta:
         app_label = 'gas'

@@ -5,7 +5,7 @@ from datetime import date
 class OrderQuerySet(QuerySet):
 
     def open(self):
-        return self.filter(date_end__gte=date.today())
+        return self.filter(date_end__gte=date.today()) | self.filter(date_end__isnull=True)
 
     def closed(self):
         return self.filter(date_end__lt=date.today())

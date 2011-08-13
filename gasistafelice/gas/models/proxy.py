@@ -16,6 +16,10 @@ class GAS(GAS):
         proxy = True
 
     @property
+    def gas(self):
+        return self
+
+    @property
     def orders(self):
         """Return orders bound to resource"""
         return GASSupplierOrder.objects.filter(pact__in=self.pacts)
@@ -418,7 +422,15 @@ class GASSupplierOrder(GASSupplierOrder):
     def order(self):
         return self
 
-#TODO: des, gas, supplier, person, gasmember, product, category
+    @property
+    def gas(self):
+        return self.pact.gas
+
+    @property
+    def supplier(self):
+        return self.pact.supplier
+
+#TODO: des, person, gasmember, product, category
 
 #-------------------------------------------------------------------------------
 
