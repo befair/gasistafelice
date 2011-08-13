@@ -9,9 +9,8 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
-from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
-from gasistafelice.gas.managers import AppointmentManager, AppointmentManager, OrderManager
-from gasistafelice.supplier.models import Supplier
+from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
+from gasistafelice.gas.managers import AppointmentManager, OrderManager
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
