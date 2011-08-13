@@ -15,7 +15,7 @@ from gasistafelice.auth.utils import register_parametric_role, _validate_paramet
 _parametric_role_as_dict, _is_valid_parametric_role_dict_repr,\
     _compare_parametric_roles
 from gasistafelice.auth.exceptions import RoleNotAllowed, RoleParameterNotAllowed, RoleParameterWrongSpecsProvided
-from gasistafelice.auth.managers import RolesManager
+from gasistafelice.auth.managers import RoleManager
 
 
 from datetime import time, date, datetime
@@ -632,8 +632,8 @@ class PrincipalRoleRelationTest(TestCase):
     
     
             
-class RolesManagerTest(TestCase):
-    """Tests for the `RolesManager` manager class"""  
+class RoleManagerTest(TestCase):
+    """Tests for the `RoleManager` manager class"""  
 
     def setUp(self):
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
@@ -664,7 +664,7 @@ class RolesManagerTest(TestCase):
         """It should be possible to make a shallow copy of a manager instance"""
         # see https://docs.djangoproject.com/en/1.3/topics/db/managers/#implementation-concerns
         import copy
-        manager = RolesManager()
+        manager = RoleManager()
         my_copy = copy.copy(manager)
         self.assertEqual(manager, my_copy)
     

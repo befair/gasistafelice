@@ -7,7 +7,7 @@ from gasistafelice.base.models import Person, Place
 
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact,\
 GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct, Delivery, Withdrawal
-from gasistafelice.gas.managers import GASMembersManager
+from gasistafelice.gas.managers import GASMemberManager
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 
@@ -241,7 +241,7 @@ class GASMemberManagerTest(TestCase):
         """It should be possible to make a shallow copy of a manager instance"""
         # see https://docs.djangoproject.com/en/1.3/topics/db/managers/#implementation-concerns
         import copy
-        manager = GASMembersManager()
+        manager = GASMemberManager()
         my_copy = copy.copy(manager)
         self.assertEqual(manager, my_copy)
     

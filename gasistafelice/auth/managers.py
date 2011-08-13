@@ -9,7 +9,7 @@ SUPPLIER_REFERRER, GAS_REFERRER, GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_
 from gasistafelice.auth.exceptions import RoleNotAllowed, RoleParameterNotAllowed, RoleParameterWrongSpecsProvided
 from gasistafelice.auth.query import RoleQuerySet 
 
-class RolesManager(models.Manager):
+class RoleManager(models.Manager):
     """ 
     A custom Manager class for the `ParamRole` model.
     

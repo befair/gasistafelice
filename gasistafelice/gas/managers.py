@@ -3,7 +3,7 @@ from django.db import models
 from gasistafelice.auth.models import ParamRole
 from gasistafelice.gas.query import OrderQuerySet, AppointmentQuerySet
 
-class GASMembersManager(models.Manager):
+class GASMemberManager(models.Manager):
     """
     A custom manager class for the `GASMember` model.
     """

@@ -8,7 +8,7 @@ from django.contrib.contenttypes import generic
 
 from permissions.models import Role
 
-from gasistafelice.auth.managers import RolesManager
+from gasistafelice.auth.managers import RoleManager
 from gasistafelice.auth import ROLES_DICT
 
 class PermissionBase(object):
@@ -154,7 +154,7 @@ class ParamRole(models.Model):
     delivery = ParamByName()
     withdrawal = ParamByName()
 
-    objects = RolesManager()
+    objects = RoleManager()
 
     def __unicode__(self):
         param_str_list = ["%s" % s for s in self.param_set.all()]

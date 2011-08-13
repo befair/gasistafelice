@@ -15,7 +15,7 @@ from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth.models import ParamRole
 
 from gasistafelice.supplier.models import Supplier, SupplierStock
-from gasistafelice.gas.managers import GASMembersManager
+from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.bank.models import Account
 
 from gasistafelice.des.models import DES
@@ -301,7 +301,7 @@ class GASMember(models.Model, PermissionResource):
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
-    objects = GASMembersManager()
+    objects = GASMemberManager()
 
     history = HistoricalRecords()
 
