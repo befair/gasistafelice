@@ -1,6 +1,6 @@
 from django import forms
 
-from gasistafelice.gas.models.proxy import GASSupplierOrder
+from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
 class BaseGASSupplierOrderForm(forms.ModelForm):
@@ -10,6 +10,15 @@ class BaseGASSupplierOrderForm(forms.ModelForm):
     def __init__(self, request, *args, **kw):
         super(BaseGASSupplierOrderForm, self).__init__(*args, **kw)
         self.fields['supplier'].queryset = request.resource.suppliers
+        self.__gas = request.resource.gas
+
+    def save(self):
+        pact = GASSupplierSolidalPact.objects.get( \
+            supplier=self.cleaned_data['supplier'],
+            gas=self.__gas
+        )
+        self.instance.pact = pact
+        return super(BaseGASSupplierOrderForm, self).save()
 
     class Meta:
         model = GASSupplierOrder

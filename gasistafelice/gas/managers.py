@@ -162,13 +162,13 @@ class AppointmentManager(models.Manager):
         """
         Return a QuerySet containing all appointments scheduled for today or for a future date.
         """
-        return super(AppointmentManager, self).get_query_set().future()
+        return self.get_query_set().future()
 
     def past(self):
         """
         Return a QuerySet containing all past appointments.
         """
-        return super(AppointmentManager, self).get_query_set().past()
+        return self.get_query_set().past()
 
 #-------------------------------------------------------------------------------
 
@@ -179,9 +179,9 @@ class OrderManager(models.Manager):
         return OrderQuerySet(self.model)
 
     def open(self):
-        return super(OrderManager, self).get_query_set().open()
+        return self.get_query_set().open()
 
     def closed(self):
-        return super(OrderManager, self).get_query_set().closed()
+        return self.get_query_set().closed()
 
 

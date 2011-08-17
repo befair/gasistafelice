@@ -430,6 +430,18 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     >>> print pds
     Relation between GAS1 and Supplier1
 
+    >>> from gasistafelice.gas.models.base import *
+    >>> from gasistafelice.gas.models.order import *
+    >>> from gasistafelice.supplier.models import *
+    >>> p = GASSupplierSolidalPact(gas=GAS.objects.get(id=1), supplier=Supplier.objects.get(id=1))
+    >>> p.save()
+    >>> st = SupplierStock.objects.filter(supplier__id=3).count()
+    >>> gst = GASSupplierStock.objects.filter(pact__id=p.pk).count()
+    >>> st==gst
+    True
+    >>> p.account_id>0
+    True
+
     """
 
     gas = models.ForeignKey(GAS, related_name="pact_set")
@@ -462,10 +474,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     account = models.ForeignKey(Account, null=True, blank=True)
 
     history = HistoricalRecords()
-    
+
     class Meta:
         app_label = 'gas'
-     
+        unique_together = (('gas', 'supplier'),)
+
     def __unicode__(self):
         return _("Relation between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
@@ -483,7 +496,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
     
-    @property        
+    @property
     def local_grants(self):
         rv = (
               # permission specs go here
@@ -506,8 +519,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             self.account = Account.objects.create()
 
         if created and self.gas.config.auto_select_all_products:
-            for p in self.supplier.supplierstock_set.all():
-            #    p.gassupplierstock_set.add(gas=self.gas)
-                self.supplier_stock.add(p)
+            for st in self.supplier.stock_set.all():
+                GASSupplierStock.objects.create(pact=self, supplier_stock=st, enabled=True)
 
 

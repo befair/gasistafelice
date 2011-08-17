@@ -54,7 +54,7 @@ class Supplier(models.Model, PermissionResource):
     @property
     def product_catalog(self):
         return [s.product for s in SupplierStock.objects.filter(supplier=self)]
-    
+
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
          register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
@@ -260,7 +260,7 @@ class SupplierProductCategory(models.Model):
 
     This is useful to know WHICH categories a suppplier CAN sell,
     and so limiting the choice in product selections."""
-    
+
     category = models.ForeignKey(ProductCategory)
     supplier = models.ForeignKey(Supplier)
     alias = models.CharField(verbose_name=_('Alternative name'), max_length=128, blank=True)
