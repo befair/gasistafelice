@@ -520,13 +520,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         """Retrieve all GASMember who are GAS supplier referrers associated with this solidal pact"""
 
         # TODO UNITTEST: write unit tests for this method
-        parametric_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        parametric_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
         referrers = self.gas.gas_member_set.have_role(parametric_role)
         return referrers
 
     def setup_roles(self):
-        # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)     
+        # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)     
     
     @property        
     def local_grants(self):

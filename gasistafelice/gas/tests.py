@@ -293,8 +293,8 @@ class GASMemberManagerTest(TestCase):
         """
         self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)   
         
-        self.p_role_1 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier)
-        self.p_role_2 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier)
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_2)
                 
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)

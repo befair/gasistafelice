@@ -334,7 +334,7 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(param_values, [self.gas,])
         
         # register a parametric GAS supplier referrer
-        register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact)
         # check that Role object has been created in the db
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_SUPPLIER).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
@@ -391,8 +391,8 @@ class ParamRoleRegistrationTest(TestCase):
         
     def testAvoidDuplicateParamRoles(self):
         """If a given parametric role already exists in the DB, don't duplicate it"""
-        register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
-        register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
+        register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact)
+        register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact)
         self.assertEqual(ParamRole.objects.filter(role__name=GAS_REFERRER_SUPPLIER).count(), 1)
         
 class RoleAutoSetupTest(TestCase):
@@ -442,7 +442,7 @@ class RoleAutoSetupTest(TestCase):
         
         role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)
         p_role = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER)
-        expected_dict = {'role':role, 'params': {'gas':self.gas, 'supplier':self.supplier}}
+        expected_dict = {'role':role, 'params': {'pact':self.pact}}
         self.assertEqual(_parametric_role_as_dict(p_role), expected_dict)
 
     def testGASSupplierOrderRoleSetup(self):
@@ -642,7 +642,13 @@ class RoleManagerTest(TestCase):
         
         self.supplier = Supplier.objects.create(name='SmallCompany', vat_number='111')
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')  
+        self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
+        
+        self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_1)
+        self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier_2)
+        self.pact_3 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier_1)
+        self.pact_4 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier_2)
+        
               
         # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
         ParamRole.objects.all().delete()
@@ -652,13 +658,13 @@ class RoleManagerTest(TestCase):
         # A member of GAS 2
         self.p_role_2 = register_parametric_role(GAS_MEMBER, gas=self.gas_2)
         # A supplier referrer for GAS 1 and supplier 1
-        self.p_role_3 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_1)
+        self.p_role_3 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_1)
         # A supplier referrer for GAS 1 and supplier 2
-        self.p_role_4 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_2)
+        self.p_role_4 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_2)
         # A supplier referrer for GAS 2 and supplier 1
-        self.p_role_5 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier_1)
+        self.p_role_5 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_3)
         # A supplier referrer for GAS 2 and supplier 2
-        self.p_role_6 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier_2)
+        self.p_role_6 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_4)
         
     def testShallowCopyOk(self):
         """It should be possible to make a shallow copy of a manager instance"""
@@ -676,12 +682,9 @@ class RoleManagerTest(TestCase):
         
         self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER)),\
         set((self.p_role_3, self.p_role_4, self.p_role_5, self.p_role_6)))
-        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, supplier=self.supplier_1)),\
-        set((self.p_role_3, self.p_role_5)))
-        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, gas=self.gas_1)),\
-        set((self.p_role_3, self.p_role_4)))
-        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier_1)),\
-        set((self.p_role_3, )))
+        self.assertEqual(set(ParamRole.objects.get_param_roles(role_name=GAS_REFERRER_SUPPLIER, pact=self.pact_1)),\
+        set((self.p_role_3)))
+        
     
     def testGetParamRolesFailIfInvalidRole(self):
         """Check that `get_param_roles` fails as expected if given an invalid role name"""  

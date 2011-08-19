@@ -160,6 +160,20 @@ class ParamRole(models.Model):
         param_str_list = ["%s" % s for s in self.param_set.all()]
         return u"%(role)s on %(params)s" % { 'role' : ROLES_DICT[self.role.name], 'params':  ", ".join(param_str_list)}
 
+    @property
+    def param(self):
+        """
+        If this role has only one parameter, return it; else raise a `MultipleObjectsReturned` exception.
+        
+        This is just a convenience method, useful when dealing with simple parametric roles 
+        depending only on one parameter (which is a common situation).      
+        
+        """
+        params = self.param_set.all()
+        if len(params) > 1:
+            raise Param.MultipleObjectsReturned("This parametric role has more than one parameter: %s" % params)
+        return params[0]   
+    
     @classmethod
     def get_role(cls, role_name, **params):
         qs = cls.objects.get_param_roles(role_name, **params)

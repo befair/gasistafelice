@@ -41,7 +41,7 @@ VALID_PARAMS_FOR_ROLES = {
     GAS_REFERRER : {'gas':'gas.GAS'},
     GAS_REFERRER_CASH : {'gas':'gas.GAS'},
     GAS_REFERRER_TECH : {'gas':'gas.GAS'},
-    GAS_REFERRER_SUPPLIER : {'gas':'gas.GAS', 'supplier':'supplier.Supplier'}, #FIXME!!!? this should be bound to a GASSupplierSolidalPact
+    GAS_REFERRER_SUPPLIER : {'pact':'gas.GASSupplierSolidalPact'}, 
     GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
     GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
     GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
