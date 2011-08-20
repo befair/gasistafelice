@@ -399,22 +399,11 @@ class GASMember(models.Model, PermissionResource):
         user = self.person.user
         #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
         if user is None:
-           return ""
+            return ""
         #TODO: fixtures create user foreach person
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
-    
-    @property        
-    def local_grants(self):
-        rv = (
-            # GAS tech referrers have full access to members of their own GAS 
-            ('ALL', ParamRole.objects.filter(role=GAS_REFERRER_TECH, param1=self.gas)),
-            # GAS members can see list and details of their fellow members
-            ('LIST', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
-            ('VIEW', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
-              )     
-        return rv  
-    
+   
     def clean(self):
         # Clean method is for validation. Validation errors are meant to be
         # catched in forms
@@ -460,14 +449,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
         return self.supplier_stock.price*(1 + price_percent_update)
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-    
+  
     class Meta:
         app_label = 'gas'
         verbose_name = _("GAS supplier stock")
@@ -551,13 +533,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)     
     
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 

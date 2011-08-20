@@ -13,7 +13,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from history.models import HistoricalRecords
 
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
-from gasistafelice.base.models import Resource, PermissionResource, Person, Place
+from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.fields import CurrencyField
 from gasistafelice.des.models import DES
 
@@ -64,14 +64,7 @@ class Supplier(models.Model, PermissionResource):
     
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
-        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self)
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv   
+        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
 
 
 class SupplierReferrer(models.Model, PermissionResource):
@@ -90,14 +83,7 @@ class SupplierReferrer(models.Model, PermissionResource):
         #role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
         #role.add_principal(user)     
     
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-    
-    
+  
 class Certification(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)
@@ -107,12 +93,6 @@ class Certification(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
     
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
 
 class ProductCategory(models.Model, PermissionResource):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
@@ -127,13 +107,6 @@ class ProductCategory(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
 
 class ProductMU(models.Model, PermissionResource):
     """Measurement unit for a Product."""
@@ -153,13 +126,7 @@ class ProductMU(models.Model, PermissionResource):
         verbose_name="measurement unit"
         verbose_name_plural="measurement units"
     
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-    
+
 class Product(models.Model, PermissionResource):
 
     # COMMENT: some producer don't have product codification. 
@@ -180,14 +147,7 @@ class Product(models.Model, PermissionResource):
     @property
     def referrers(self):
         return self.producer.referrers
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
+  
     def save(self, *args, **kw):
         # If uuid is blank, make it NULL
         if not self.uuid:
@@ -242,13 +202,6 @@ class SupplierStock(models.Model, PermissionResource):
     @property
     def availability(self):
         return bool(self.amount_available)
-
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
 
     def save(self, *args, **kwargs):
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
