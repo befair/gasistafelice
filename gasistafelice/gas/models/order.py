@@ -11,6 +11,7 @@ from gasistafelice.base.models import PermissionResource, Place, DefaultTransiti
 from gasistafelice.base.fields import CurrencyField
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
+from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
@@ -68,6 +69,21 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return not self.is_active()
     
 #-------------------------------------------------------------------------------#    
+# Authorization API
+
+    @property
+    def referrers(self):
+        """
+        Return all users being referrers for this order.
+        """
+        # retrieve 'order referrer' parametric role for this order
+        pr = ParamRole.get_role(GAS_REFERRER_ORDER, order=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+    
+
+#-------------------------------------------------------------------------------#
+
     
     def set_default_stock_set(self):
         '''
@@ -270,11 +286,25 @@ class Delivery(Appointment, PermissionResource):
         """
         pass
     
+#-------------------------------------------------------------------------------#   
+# Authorization API
+
+    @property
+    def referrers_users(self):
+        """
+        Return all users being referrers for this delivery appointment.
+        """
+        # retrieve 'delivery referrer' parametric role for this order
+        pr = ParamRole.get_role(GAS_REFERRER_DELIVERY, delivery=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+ 
         
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)          
-
+        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)      
+    
+#-------------------------------------------------------------------------------#
     
 
 class Withdrawal(Appointment, PermissionResource):
@@ -308,7 +338,22 @@ class Withdrawal(Appointment, PermissionResource):
         """
         pass
 
+#-------------------------------------------------------------------------------#   
+# Authorization API
+
+    @property
+    def referrers_users(self):
+        """
+        Return all users being referrers for this wihtdrawal appointment.
+        """
+        # retrieve 'wihtdrawal referrer' parametric role for this order
+        pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, wihtdrawal=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+
+
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
-        
+        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)  
+         
+#-------------------------------------------------------------------------------#

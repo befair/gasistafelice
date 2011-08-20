@@ -10,7 +10,7 @@ from gasistafelice.base.fields import CurrencyField
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
-from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 from gasistafelice.auth.utils import register_parametric_role 
 from gasistafelice.auth.models import ParamRole
 
@@ -112,27 +112,47 @@ class GAS(models.Model, PermissionResource):
         return user in self.des.admins
     
     #-- Properties --#
+
+    @property
+    def referrers(self):
+        """
+        Return all users being referrers for this GAS.
+        """
+        # retrieve 'GAS referrer' parametric role for this GAS
+        pr = ParamRole.get_role(GAS_REFERRER, gas=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
         
+
     @property
     def members(self):
+        """
+        Return all users being members of this GAS.
+        """
         # retrieve 'GAS member' parametric role for this GAS
-        pr = ParamRole.objects.gas_members(gas=self)[0]
+        pr = ParamRole.get_role(GAS_MEMBER, gas=self)
         # retrieve all Users having this role
         return pr.get_users()       
     
     @property
     def tech_referrers(self):
+        """
+        Return all users being technical referrers for this GAS.
+        """
         # retrieve 'tech referrer' parametric role for this GAS
-        pr = ParamRole.objects.gas_tech_referrers(gas=self)[0]
+        pr = ParamRole.get_role(GAS_REFERRER_TECH, gas=self)
         # retrieve all Users having this role
         return pr.get_users()       
 
     @property
     def cash_referrers(self):
+        """
+        Return all users being accounting referrers for this GAS.
+        """
         # retrieve 'cash referrer' parametric role for this GAS
-        pr = ParamRole.objects.gas_cash_referrers(gas=self)[0]
+        pr = ParamRole.get_role(GAS_REFERRER_CASH, gas=self)
         # retrieve all Users having this role
-        return pr.get_users()       
+        return pr.get_users()  
     
     
     @property
@@ -515,15 +535,18 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return _("Relation between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
 
+
     @property
     def gas_supplier_referrers(self):
-        """Retrieve all GASMember who are GAS supplier referrers associated with this solidal pact"""
+        """
+        Return all users being referrers for this solidal pact (GAS-to-Supplier interface).
+        """
+        # retrieve 'GAS supplier referrer' parametric role for this pact
+        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
+        # retrieve all Users having this role
+        return pr.get_users()    
 
-        # TODO UNITTEST: write unit tests for this method
-        parametric_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
-        referrers = self.gas.gas_member_set.have_role(parametric_role)
-        return referrers
-
+    
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)     

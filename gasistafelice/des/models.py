@@ -84,7 +84,7 @@ class DES(Site, Resource):
         Return all users being administrators for this DES.
         """
         # retrieve 'DES administrator' parametric role for this DES
-        pr = ParamRole.objects.des_admins(des=self)[0]
+        pr = ParamRole.get_role(DES_ADMIN, des=self)
         # retrieve all Users having this role
         return pr.get_users()       
     
