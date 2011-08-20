@@ -98,8 +98,7 @@ class Param(models.Model):
     name = models.CharField(max_length=20, choices=PARAM_CHOICES)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    # TODO: refactoring: `value` should be a better name than `param`
-    param = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
+    value = generic.GenericForeignKey(ct_field="content_type", fk_field="object_id")
 
     def __unicode__(self):
         return u"%s" % self.value
@@ -107,11 +106,6 @@ class Param(models.Model):
 
     def __repr__(self):
         return "<%s %s: %s>" % (self.__class__.__name__, self.name, self.value)
-
-    @property
-    def value(self):
-        #TODO placeholder seldon REFACTORY: change name of param attribute in value
-        return self.param
     
     class Meta:
         # forbid duplicated `Param` entries in the DB

@@ -32,9 +32,9 @@ class ParamByNameTest(TestCase):
         
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', param=self.gas)
+        p1 = Param.objects.create(name='gas', value=self.gas)
         p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p2 = Param.objects.create(name='supplier', value=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
         self.p_role = p_role 
@@ -68,9 +68,9 @@ class ParamRoleAsDictTest(TestCase):
         ParamRole.objects.all().delete()        
         
         p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', param=self.gas)
+        p1 = Param.objects.create(name='gas', value=self.gas)
         p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p2 = Param.objects.create(name='supplier', value=self.supplier)
         p_role.param_set.add(p2)
         
         p_role.save()
@@ -133,9 +133,9 @@ class ParamRoleComparisonTest(TestCase):
         Param.objects.all().delete()
         ParamRole.objects.all().delete()        
                 
-        self.p1 = Param.objects.create(name='gas', param=self.gas)
-        self.p2 = Param.objects.create(name='supplier', param=self.supplier)
-        self.p3 = Param.objects.create(name='gas', param=self.gas_1)
+        self.p1 = Param.objects.create(name='gas', value=self.gas)
+        self.p2 = Param.objects.create(name='supplier', value=self.supplier)
+        self.p3 = Param.objects.create(name='gas', value=self.gas_1)
         
         p_role_1 = ParamRole.objects.create(role=self.role)
         p_role_1.param_set.add(self.p1)
@@ -484,9 +484,9 @@ class AddParamRoleToPrincipalTest(TestCase):
         
         self.role = Role.objects.create(name='FOO')
         p_role = ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', param=self.gas)
+        p1 = Param.objects.create(name='gas', value=self.gas)
         p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p2 = Param.objects.create(name='supplier', value=self.supplier)
         p_role.param_set.add(p2)        
         p_role.save()
         self.p_role = p_role
@@ -525,9 +525,9 @@ class ParamRoleGetUsersTest(TestCase):
                 
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', param=self.gas)
+        p1 = Param.objects.create(name='gas', value=self.gas)
         p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p2 = Param.objects.create(name='supplier', value=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
         self.p_role = p_role 
@@ -559,9 +559,9 @@ class ParamRoleGetGroupsTest(TestCase):
                 
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', param=self.gas)
+        p1 = Param.objects.create(name='gas', value=self.gas)
         p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p2 = Param.objects.create(name='supplier', value=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
         self.p_role = p_role 
@@ -593,9 +593,9 @@ class PrincipalRoleRelationTest(TestCase):
         
         self.role = Role.objects.create(name='FOO')   
         p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', param=self.gas)
+        p1 = Param.objects.create(name='gas', value=self.gas)
         p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', param=self.supplier)
+        p2 = Param.objects.create(name='supplier', value=self.supplier)
         p_role.param_set.add(p2)
         p_role.save()
         self.p_role = p_role 
