@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.db.models import signals
 from django.contrib.auth.models import User, Group 
