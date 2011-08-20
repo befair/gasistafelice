@@ -179,7 +179,7 @@ class ParamRole(models.Model):
         qs = cls.objects.get_param_roles(role_name, **params)
         # TODO UNITTEST: write unit tests for this method
         if len(qs) > 1:
-            raise MultipleObjectsReturned() 
+            raise cls.MultipleObjectsReturned("Warning: duplicate parametric role instances in the DB: %s with params %s" % role_name, params) 
         return qs[0]
 
     def add_principal(self, principal):
