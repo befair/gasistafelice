@@ -73,8 +73,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
     
     def __unicode__(self):
-        return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, self.date_end)
-    
+        if not self.date_end is None:
+            return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, '{0:%Y%m%d}'.format(self.date_end))
+        else:
+            return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
+
     class Meta:
         app_label = 'gas'
         

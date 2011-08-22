@@ -25,6 +25,22 @@ class GAS(GAS):
         return GASSupplierOrder.objects.filter(pact__in=self.pacts)
 
     @property
+    def order(self):
+        """a GASSupplierOrder bound to this GAS. Using Filtering
+
+        @raises DoesNotExist if no order for a GAS
+        @raises MultipleObjectsReturned if more than one orders found
+        """
+        c = self.orders.count()
+        if c == 0:
+            raise DoesNotExist()
+        elif c == 1:
+            rv = self.orders[0]
+        else:
+            raise MultipleObjectsReturned()
+        return rv
+
+    @property
     def pacts(self):
         """Return pacts bound to a GAS"""
         return self.pact_set.all()
@@ -54,12 +70,10 @@ class GAS(GAS):
     @property
     def stocks(self):
         return SupplierStock.objects.filter(supplier=self.suppliers)
-        return SupplierStock.objects.all()
 
     @property
     def products(self):
         return Product.objects.filter(pk__in=[obj.product.pk for obj in self.stocks])
-        return Product.objects.all()
 
     @property
     def categories(self):
@@ -92,7 +106,7 @@ class GASMember(GASMember):
     @property
     def pacts(self):
         # A GAS member is interested primarily in those pacts (`SupplierSolidalPact` instances) subscribed by its GAS
-        return self.gas.pacts 
+        return self.gas.pacts
 
     @property
     def suppliers(self):
@@ -121,19 +135,18 @@ class GASMember(GASMember):
 
     @property
     def stocks(self):
-        # A GAS member is interested primarily to show products and price 
+        # A GAS member is interested primarily to show products and price
         return self.gas.stocks
 
     @property
     def gasstocks(self):
-        # A GAS member is interested primarily in those products and price per GAS 
+        # A GAS member is interested primarily in those products and price per GAS
         return self.gas.gasstocks
 
     @property
     def catalogs(self):
-        # A GAS member is interested primarily in those products and price per GAS  he/she can order
+        # A GAS member is interested primarily in those products and price per GAS he/she can order
         return self.gas.catalogs
-
 
 #-------------------------------------------------------------------------------
 
@@ -171,7 +184,7 @@ class DES(DES):
 
     @property
     def categories(self):
-        # All categories 
+        # All categories
         return ProductCategory.objects.all()
 
     @property
@@ -208,7 +221,6 @@ class DES(DES):
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, q, limits=['gn','sn','ogn','osn']):
         """Search with limit.
-
         @param q: search query
         @param limits: limit of search.
             * gn: GAS name
@@ -277,7 +289,7 @@ class Person(Person):
         @raises MultipleObjectsReturned if more than one GAS found
         """
         return GASMember.objects.get(person=self)
-        
+
     @property
     def gas_list(self):
         gas_pks = [obj.gas.pk for obj in self.gasmembers]
@@ -329,7 +341,19 @@ class Supplier(Supplier):
 
     @property
     def order(self):
-        raise NotImplementedError
+        """a GASSupplierOrder bound to this Supplier. Using Filtering
+
+        @raises DoesNotExist if no order for a Supplier
+        @raises MultipleObjectsReturned if more than one orders found
+        """
+        c = self.orders.count()
+        if c == 0:
+            raise DoesNotExist()
+        elif c == 1:
+            rv = self.orders[0]
+        else:
+            raise MultipleObjectsReturned()
+        return rv
 
     @property
     def gas_list(self):
@@ -341,11 +365,10 @@ class Supplier(Supplier):
         if c == 0:
             raise DoesNotExist()
         elif c == 1:
-            rv =  self.gas_list[0]
+            rv = self.gas_list[0]
         else:
             raise MultipleObjectsReturned()
         return rv
-
 
     @property
     def des_list(self):
@@ -357,7 +380,7 @@ class Supplier(Supplier):
         if c == 0:
             raise DoesNotExist()
         elif c == 1:
-            rv =  self.des_list[0]
+            rv = self.des_list[0]
         else:
             raise MultipleObjectsReturned()
         return rv
@@ -405,7 +428,7 @@ class Product(Product):
     @property
     def orders(self):
         return GASSupplierOrder.objects.filter(stock_set__in=self.stocks)
-    
+
 #-------------------------------------------------------------------------------
 
 class SupplierReferrer(SupplierReferrer):
@@ -593,4 +616,3 @@ class Certification(Certification):
         return self
 
 #TODO: des, gas, supplier, person, gasmember
-
