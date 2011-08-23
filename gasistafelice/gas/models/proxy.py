@@ -26,8 +26,8 @@ class GAS(GAS):
 
     @property
     def order(self):
-        """a GASSupplierOrder bound to this GAS. Using Filtering
-
+        """a GASSupplierOrder bound to this GAS.
+        TODO Using Filtering on Supplier parameter attribute
         @raises DoesNotExist if no order for a GAS
         @raises MultipleObjectsReturned if more than one orders found
         """
@@ -41,15 +41,48 @@ class GAS(GAS):
         return rv
 
     @property
+    def deliveries(self):
+        # The GAS deliveries appointments take from orders. Do distinct operation. 
+        rv = self.delivery
+        for obj in self.orders:
+            if not obj.delivery is None: 
+                rv |= obj.delivery
+        return rv
+
+    @property
+    def delivery(self):
+        # The GAS default delivery appointment 
+        return self.config.default_delivery_place
+
+
+    @property
+    def withdrawals(self):
+        # The GAS withdrawal appointments. Do distinct operation.
+        rv = self.withdrawal
+        for obj in self.pacts:
+            if not obj.default_withdrawal_place is None: 
+                rv |= obj.default_withdrawal_place
+        for obj in self.orders:
+            if not obj.withdrawal is None: 
+                rv |= obj.withdrawal
+        return rv
+        #return Place.objects.filter(pk__in=[obj.default_withdrawal_place.pk for obj in self.pacts])
+
+    @property
+    def withdrawal(self):
+        # The GAS default withdrawal appointment 
+        return self.config.default_withdrawal_place
+
+    @property
     def pacts(self):
-        """Return pacts bound to a GAS"""
+        # Return pacts bound to a GAS
         return self.pact_set.all()
-        
+
     @property
     def suppliers(self):
         """Return suppliers bound to a GAS"""
         return self.supplier_set.all()
-        
+
     @property
     def accounts(self):
         #return (Account.objects.filter(pk=self.account.pk) | Account.objects.filter(pk=self.liquidity.pk)).order_by('balance')
@@ -58,14 +91,6 @@ class GAS(GAS):
     @property
     def gasmembers(self):
         return self.gasmember_set.all()
-
-    @property
-    def suppliers(self):
-        #return Supplier.objects.filter(pk__in=self.pacts.supplier.pk)
-        p = GASSupplierSolidalPact.objects.filter(gas=self)
-        #p = self.pacts
-        return Supplier.objects.filter(pk__in=[obj.supplier.pk for obj in p])
-        #return Supplier.objects.all()
 
     @property
     def stocks(self):
@@ -79,17 +104,14 @@ class GAS(GAS):
     def categories(self):
         #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
         return ProductCategory.filter(pk__in=[obj.category.pk for obj in self.Products])
-        return ProductCategory.objects.all()
 
     @property
     def gasstocks(self):
         return GASSupplierStock.objects.filter(gas=self)
-        #return GASSupplierStock.objects.all()
 
     @property
     def catalogs(self):
-        #return GASSupplierOrderProduct.objects.filter(order__in=self.orders)
-        return GASSupplierOrderProduct.objects.all()
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders)
 
 #-------------------------------------------------------------------------------
 
@@ -160,16 +182,8 @@ class DES(DES):
         return self
 
     @property
-    def suppliers(self):
-        """Return suppliers bound to the DES"""
-        return Supplier.objects.all()
-
-    #TODO placeholder domthu define Resource API
-    @property
     def gas_list(self):
-        return GAS.objects.all()
-        #TODO: enable the following when database is updated with des attribute for GAS
-        # return self.gas_set.all()
+        return self.gas_set.all()
 
     @property
     def accounts(self):
@@ -180,7 +194,8 @@ class DES(DES):
     def gasmembers(self):
         if hasattr(self, 'isfiltered') and self.isfiltered:
             return GASMember.objects.filter(pk__in=[obj.pk for obj in self.all_gasmembers])
-        return GASMember.objects.all()
+        tmp = self.gas_list
+        return GASMember.objects.filter(gas__in=tmp)
 
     @property
     def categories(self):
@@ -188,35 +203,45 @@ class DES(DES):
         return ProductCategory.objects.all()
 
     @property
-    def suppliers(self):
-        return Supplier.objects.all()
-
-    @property
     def pacts(self):
         """Return pacts bound to all GAS in DES"""
-        return self.pact_set.all()
-        #g = self.gas_list
-        #return GASSupplierSolidalPact.objects.filter(gas__in=g)
+        tmp = self.gas_list
+        return GASSupplierSolidalPact.objects.filter(gas__in=tmp)
 
     @property
-    def products(self):
-        return Product.objects.all()
-
-    @property
-    def stocks(self):
-        return SupplierStock.objects.all()
-
-    @property
-    def gasstocks(self):
-        return GASSupplierStock.objects.all()
-
-    @property
-    def catalogs(self):
-        return GASSupplierOrderProduct.objects.all()
+    def suppliers(self):
+        tmp = self.pacts
+        return Supplier.objects.filter(pk__in=[obj.supplier.pk for obj in tmp])
 
     @property
     def orders(self):
-        return GASSupplierOrder.objects.all()
+        tmp = self.pacts
+        return GASSupplierOrder.objects.filter(pact__in=tmp)
+
+    @property
+    def order(self):
+        #Return one order for one GAS for one supplier in this des using filtering
+        raise NotImplementedError
+
+    @property
+    def products(self):
+        tmp = self.suppliers
+        return Product.objects.filter(producer.pk__in=[obj.pk for obj in tmp])
+
+    @property
+    def stocks(self):
+        tmp = self.suppliers
+        return SupplierStock.objects.filter(supplier.pk__in=[obj.pk for obj in tmp])
+
+    @property
+    def gasstocks(self):
+        tmp = self.gas_list
+        return GASSupplierStock.objects.filter(gas__in=tmp)
+
+    @property
+    def catalogs(self):
+        tmp = self.orders
+        return GASSupplierOrderProduct.objects.filter(order__in=tmp)
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, q, limits=['gn','sn','ogn','osn']):
@@ -341,8 +366,8 @@ class Supplier(Supplier):
 
     @property
     def order(self):
-        """a GASSupplierOrder bound to this Supplier. Using Filtering
-
+        """a GASSupplierOrder bound to this Supplier. 
+        TODO: Using Filtering for one GAS
         @raises DoesNotExist if no order for a Supplier
         @raises MultipleObjectsReturned if more than one orders found
         """
