@@ -77,7 +77,7 @@ def user_roles(request):
         rv.append( {
             'role_name': ROLES_DICT[prr.role.role.name],
             'role_pk': prr.role.pk,
-            'role_resources': [ r.value.as_dict() for r in prr.role.param_set.all() ],
+            'role_resources': [ r.value.as_dict() for r in prr.role.params ],
         })
 
     return HttpResponse(simplejson.dumps(rv))

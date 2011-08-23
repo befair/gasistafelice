@@ -295,9 +295,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_MEMBER).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_MEMBER) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(param_names, ['gas',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.gas,])
         
         # register a parametric GAS referrer
@@ -306,9 +306,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(param_names, ['gas',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.gas,])
         
         # register a parametric GAS cash referrer
@@ -317,9 +317,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_CASH).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_CASH) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(param_names, ['gas',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.gas,])
         
         # register a parametric GAS tech referrer
@@ -328,9 +328,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_TECH).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_TECH) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(param_names, ['gas',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.gas,])
         
         # register a parametric GAS supplier referrer
@@ -339,9 +339,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_SUPPLIER).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_SUPPLIER) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(set(param_names), set(['gas','supplier']))
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(set(param_values), set([self.gas,self.supplier]))
         
         # register a parametric GAS order referrer
@@ -350,9 +350,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_ORDER).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_ORDER) 
-        param_names = [p.name for p in pr.param_set.all()]        
+        param_names = [p.name for p in pr.params]        
         self.assertEqual(param_names, ['order',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.order,])
         
         # register a parametric GAS withdrawal referrer
@@ -361,9 +361,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_WITHDRAWAL).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_WITHDRAWAL) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(param_names, ['withdrawal',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.withdrawal,])
         
         # register a parametric GAS delivery referrer
@@ -372,9 +372,9 @@ class ParamRoleRegistrationTest(TestCase):
         self.assertEqual(Role.objects.filter(name=GAS_REFERRER_DELIVERY).count(), 1)
         # check that a ParamRole with the right parameters has been created in the db
         pr = ParamRole.objects.get(role__name=GAS_REFERRER_DELIVERY) 
-        param_names = [p.name for p in pr.param_set.all()]
+        param_names = [p.name for p in pr.params]
         self.assertEqual(param_names, ['delivery',])
-        param_values = [p.param for p in pr.param_set.all()]
+        param_values = [p.param for p in pr.params]
         self.assertEqual(param_values, [self.delivery,])
         
     def testRegistrationFailIfRoleNotAllowed(self):

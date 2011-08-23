@@ -150,9 +150,13 @@ class ParamRole(models.Model):
     objects = RoleManager()
 
     def __unicode__(self):
-        param_str_list = ["%s" % s for s in self.param_set.all()]
+        param_str_list = ["%s" % s for s in self.params]
         return u"%(role)s on %(params)s" % { 'role' : ROLES_DICT[self.role.name], 'params':  ", ".join(param_str_list)}
-
+    
+    @property
+    def params(self):
+        return self.param_set.all()
+    
     @property
     def param(self):
         """
@@ -162,7 +166,7 @@ class ParamRole(models.Model):
         depending only on one parameter (which is a common situation).      
         
         """
-        params = self.param_set.all()
+        params = self.params
         if len(params) > 1:
             raise Param.MultipleObjectsReturned("This parametric role has more than one parameter: %s" % params)
         return params[0]   
@@ -216,7 +220,7 @@ class ParamRole(models.Model):
         """
         # A role is active iff **all** its parameters are active
         is_active = True
-        for p in self.param_set.all():
+        for p in self.params:
             # delegate the "activity" check to parameter's model instance
             try:
                 if not p.value.is_active():

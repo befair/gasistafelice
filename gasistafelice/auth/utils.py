@@ -158,7 +158,7 @@ def _parametric_role_as_dict(p_role):
         role = p_role.role
         dict_repr['role'] = role
         dict_repr['params'] = {}
-        params = p_role.param_set.all()
+        params = p_role.params
         for p in params:
             name = p.name
             value = p.value

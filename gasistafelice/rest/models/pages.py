@@ -79,7 +79,7 @@ class HomePage(models.Model):
             # Default algorithm
             # TODO: to be tuned?
 
-            resource = role.param_set.all()[0].value
+            resource = role.params[0].value
 
         return get_absolute_page_url_for_resource(resource)
 
