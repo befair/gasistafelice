@@ -120,25 +120,9 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'suppliers', 'gasmembers', 'product_list', 'stock_list', 'gasstock_list', 'catalog_list', 'account_state', 'categories']
-    },{
-        'name' : 'action',
-        'descr' : 'Ordina',
-        'blocks' : []
-    },{
-        'name' : 'gas',
-        'descr' : 'GAS',
-        'blocks' : ['gas_list', 'categories']
-    },{
-        'name' : 'supplier',
-        'descr' : 'Fornitori',
-        'blocks' : ['suppliers', 'categories']
+        'blocks' : ['details', 'gas_list', 'suppliers']
     }],
     'gas' : [{
-        'name' : 'info',
-        'descr' : 'Generale',
-        'blocks' : ['suppliers', 'gasmembers', 'account_state', 'product_list', 'stock_list', 'gasstock_list', 'catalog_list', 'categories']
-    },{
         'name' : 'orders',
         'descr': 'Ordini',
         'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery
@@ -178,7 +162,7 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks': ['order_products'],
     }],
 }
-
+   
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
 LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
