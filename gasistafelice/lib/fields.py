@@ -17,24 +17,15 @@
 
 #TODO placeholder domthu: they must be imported from Django forms
 from django.db import models
-from django.forms import ModelForm, Textarea
 
 class ResourceList(models.CharField):
     """A fake field class to correctly display resource list vertically"""
-    #return forms.CharField(max_length=?)
     pass
 
 class ResourceListInline(models.CharField):
     """A fake field class to correctly display resource list horizontally"""
-    #return forms.CharField(max_length=?)
     pass
 
 class HTMLField(models.TextField):
     """A fake field class to include HTML content"""
-    #return forms.CharField(widgets = {Textarea(attrs={'cols': 80, 'rows': 20}),})
-    #def formfield(self, **kwargs):
-    #     kwargs.update(
-    #        "widget": forms.Textarea(attrs={'cols': 80, 'rows': 20})
-    #     )
-    #     return super(HTMLField, self).formfield(**kwargs)
     pass

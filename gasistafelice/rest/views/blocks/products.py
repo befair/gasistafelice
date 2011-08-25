@@ -5,12 +5,15 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 #                                                                              #
 #------------------------------------------------------------------------------#
 
+# COMMENT fero: Who cares about products? I think we only care about stocks!
+# COMMENT fero: See default_settings.py we have no products_block in there
+
 class Block(BlockWithList):
 
-    BLOCK_NAME = "gasmembers"
-    BLOCK_DESCRIPTION = _("GAS members")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"] 
+    BLOCK_NAME = "products"
+    BLOCK_DESCRIPTION = _("Products")
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier"] 
 
     def _get_resource_list(self, request):
-        return request.resource.gasmembers
+        return request.resource.products
 

@@ -14,7 +14,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "open_orders"
     BLOCK_DESCRIPTION = _("Open orders")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"]
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"] 
 
     def _get_add_form_class(self):
         return GASSupplierOrderForm
