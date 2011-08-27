@@ -20,6 +20,8 @@ from gasistafelice.bank.models import Account
 
 from gasistafelice.des.models import DES
 
+from gasistafelice.lib import fields
+
 
 from decimal import Decimal
 
@@ -30,7 +32,6 @@ class GAS(models.Model, PermissionResource):
 
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
     """
-
     name = models.CharField(max_length=128, unique=True)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
@@ -74,6 +75,10 @@ class GAS(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
+    display_fields = (
+        name,
+		fields.Resource(verbose_name=_("parent"), name="parent"),
+    )
     #-- Meta --#
     class Meta:
         verbose_name_plural = _('GAS')
@@ -82,6 +87,14 @@ class GAS(models.Model, PermissionResource):
     #-- Overriding built-in methods --#
     def __unicode__(self):
         return self.name
+
+    @property
+    def allnotes(self):
+        return []
+
+    @property
+    def parent(self):
+        return self.des
 
     #-- Properties --#
     @property

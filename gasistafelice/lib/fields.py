@@ -15,8 +15,11 @@
 # along with SANET. If not, see <http://www.gnu.org/licenses/>.
 
 
-#TODO placeholder domthu: they must be imported from Django forms
 from django.db import models
+
+class Resource(models.CharField):
+    """A fake field class to correctly display resource vertically"""
+    pass
 
 class ResourceList(models.CharField):
     """A fake field class to correctly display resource list vertically"""

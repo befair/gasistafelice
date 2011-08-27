@@ -151,7 +151,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr': 'Generale',
-        'blocks': ['categories', 'gas_list', 'defails'],
+        'blocks': ['categories', 'gas_list', 'details'],
     }],
 # 'order' resource and page are needed in order to make gasmember able to choose products.
 # Useful until we have "expandable list of orders" (like targets with timeline in SANET)

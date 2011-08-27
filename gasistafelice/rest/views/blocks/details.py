@@ -233,8 +233,8 @@ class Block(AbstractBlock):
                 olap_data['olap_url'] = url
             
                 ctx.update(olap_data)
-        
-        
+
+
         #
         # RENDER 
         #
