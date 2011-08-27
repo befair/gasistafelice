@@ -176,9 +176,9 @@ class GASMemberOrder(models.Model, PermissionResource):
     ordered_amount = models.PositiveIntegerField(null=True, blank=True)
     # how many Product units were withdrawn by the GAS member 
     withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
+    # gasmember order have to be confirm if GAS configuration allowed it
+    is_confirmed = models.BooleanField(default=False)
 
-    is_confirmed = False #TODO domthu placeholder: replace this line with the appropriate field
-    
     history = HistoricalRecords()
 
     class Meta:
@@ -228,13 +228,14 @@ class GASMemberOrder(models.Model, PermissionResource):
         do_transition(self, transition, user)
  
 ## FIXME: commented out model's save override waiting for issue #1 (on GitHub) to be resolved
-#    def save(self):
+    def save(self):
 #        if not self.workflow:
 #            # Set default workflow
 #            w = self.gas.config.default_workflow_gasmember_order
 #            set_workflow(self, w)
-#
-#        return super(GASMemberOrder, self).save()
+        if not self.purchaser.gas.config.use_confirm_on_basket:
+            self.is_confirmed = True
+        return super(GASMemberOrder, self).save()
 
 
 
