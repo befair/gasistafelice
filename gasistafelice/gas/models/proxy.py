@@ -371,10 +371,6 @@ class Supplier(Supplier):
         return rv
 
     @property
-    def stocks(self):
-        return self.stock_set.all()
-
-    @property
     def products(self):
         """All products _supplied_ by this supplier"""
         #TODO: we have to differentiate a way to see all products __produced__ by this supplier

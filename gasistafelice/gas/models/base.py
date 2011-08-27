@@ -379,7 +379,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     pact = models.ForeignKey("GASSupplierSolidalPact")
     supplier_stock = models.ForeignKey(SupplierStock)
     # if a Product is available to GAS Members; policy is GAS-specific
-    enabled = models.BooleanField()
+    enabled = models.BooleanField(default=True)
     ## constraints on what a single GAS Member is able to order
     # minimun amount of Product units a GAS Member is able to order
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
@@ -525,7 +525,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             self.account = Account.objects.create()
 
         if created and self.gas.config.auto_select_all_products:
-            for st in self.supplier.stock_set.all():
+            for st in self.supplier.stocks:
                 GASSupplierStock.objects.create(pact=self, supplier_stock=st, enabled=True)
 
-
+#-------------------------------------------------------------------------------

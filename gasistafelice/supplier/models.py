@@ -50,6 +50,10 @@ class Supplier(models.Model, PermissionResource):
     def referrers(self):
         return self.referrer_set.all()
 
+    @property
+    def stocks(self):
+        return self.stock_set.all()
+
     # the set of products provided by this Supplier to every GAS
     @property
     def product_catalog(self):
