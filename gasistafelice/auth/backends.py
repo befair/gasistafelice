@@ -109,7 +109,7 @@ class ParamRoleBackend(object):
                 return False
                     
         # if User is not authenticated or inactive, (s)he has no permissions 
-        if user_obj.is_anonymous() or not user_obj.is_active():
+        if user_obj.is_anonymous or not user_obj.is_active:
             return False
         # retrieve the function implementing the permission check for the given model
         # if `obj` is a model instance, that function should be a (bound) instance method;
