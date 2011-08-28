@@ -120,12 +120,12 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'info',
         'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'suppliers']
+        'blocks' : ['details', 'gas_list', 'suppliers', 'gasmembers']
     }],
     'gas' : [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery
+        'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery?
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
@@ -133,7 +133,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
-        'blocks' : ['details']
+        'blocks' : ['details', 'gasmembers']
     }],
     'gasmember': [{
         'name' : 'ordered_products',
