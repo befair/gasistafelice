@@ -56,10 +56,11 @@ VIEW = 'view'
 LIST = 'list'
 CREATE = 'create'
 EDIT = 'edit'
-EDIT_MULTIPLE = 'edit_multiple'
 DELETE = 'delete'
 ALL = 'all' # catchall
 
+EDIT_MULTIPLE = 'edit_multiple'
+CONFIRM = 'confirm'
 
 PERMISSIONS_LIST = [
 (VIEW, _('View')),

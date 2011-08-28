@@ -147,6 +147,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     ordered_amount = models.PositiveIntegerField(null=True, blank=True)
     # how many Product units were withdrawn by the GAS member 
     withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
+
+    is_confirmed = False #TODO domthu placeholder: replace this line with the appropriate field
     
     history = HistoricalRecords()
 
@@ -158,6 +160,9 @@ class GASMemberOrder(models.Model, PermissionResource):
     def __unicode__(self):
         return unicode(self.product)
     
+    def confirm(self):
+        self.is_confirmed = True
+
     # how much the GAS member actually payed for this Product (as resulting from the invoice)   
     @property
     def actual_price(self):
@@ -304,4 +309,3 @@ class Withdrawal(Appointment, PermissionResource):
               # permission specs go here
               )     
         return rv 
-    

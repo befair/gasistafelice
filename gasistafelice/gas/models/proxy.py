@@ -121,7 +121,9 @@ class GASMember(GASMember):
     @property
     def orders(self):
         # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
-        return self.gas.orders
+        # WARNING: get GAS proxy instance!
+        g = GAS.objects.get(pk=self.gas.pk)
+        return g.orders
 
     @property
     def deliveries(self):
@@ -148,10 +150,8 @@ class GASMember(GASMember):
         # A GAS member is interested primarily in those products and price per GAS
         return self.gas.gasstocks
 
-    @property
-    def catalogs(self):
-        # A GAS member is interested primarily in those products and price per GAS he/she can order
-        return self.gas.catalogs
+    def basket(self):
+        return GASMemberOrder.objects.filter(product__order__in=self.orders.open())
 
 #-------------------------------------------------------------------------------
 

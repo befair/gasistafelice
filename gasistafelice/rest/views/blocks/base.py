@@ -170,7 +170,7 @@ class BlockSSDataTables(BlockWithList):
     KW_DATA = "view"
 
     # To be overridden in subclass. Required for correct sorting behaviour
-    COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'description', 3: 'price', 4: 'availability' }
+    COLUMN_INDEX_NAME_MAP = {} 
 
     def _get_records(self, request, querySet):
         raise NotImplementedError("To be implemented in subclass")

@@ -221,6 +221,8 @@ class GASConfig(models.Model, PermissionResource):
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
 
+    gasmember_auto_confirm_order = False #TODO domthu placeholder: replace this line with the appropriate field
+
     history = HistoricalRecords()
 
     #-- Meta --#
@@ -331,15 +333,6 @@ class GASMember(models.Model, PermissionResource):
         # return self.person.id_in_des
         # or
         # return something
-        raise NotImplementedError
-
-    #COMMENT domthu: fero added id_in_retina for GASMember. That it not required: ask to community if necesary.
-    @property
-    def id_in_retina(self):
-        #TODO: Should we provide also and id for retina?
-        #TODO: is it dependent by person or by membership?
-        #TODO: should we provide a "retina" parameter and make this a function
-        """Some algorhythm to return unique GAS member "card number" in Retina"""
         raise NotImplementedError
 
     def setup_roles(self):
