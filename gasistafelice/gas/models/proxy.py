@@ -158,6 +158,7 @@ class GASMember(GASMember):
         # A GAS member is interested primarily in those products and price per GAS
         return self.gas.gasstocks
 
+    @property
     def basket(self):
         return GASMemberOrder.objects.filter(product__order__in=self.orders.open())
 
@@ -428,19 +429,6 @@ class Product(Product):
 
 #-------------------------------------------------------------------------------
 
-class SupplierReferrer(SupplierReferrer):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def referrers(self):
-        return SupplierReferrer.objects.filter(pk=self.pk)
-
-#TODO: des, gas, supplier, person, gasmember
-
-#-------------------------------------------------------------------------------
-
 class SupplierStock(SupplierStock):
 
     class Meta:
@@ -500,27 +488,6 @@ class GASSupplierOrder(GASSupplierOrder):
 
 #-------------------------------------------------------------------------------
 
-class GASMemberOrder(GASMemberOrder):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def catalogs(self):
-        return GASSupplierStock.objects.filter(pk=self.pk)
-
-    @property
-    def baskets(self):
-        return GASMemberOrder.objects.filter(pk=self.pk)
-
-    @property
-    def basket(self):
-        return self
-
-#TODO: des, gas, supplier, person, gasmember, product, category, order
-
-#-------------------------------------------------------------------------------
-
 class ProductCategory(ProductCategory):
 
     class Meta:
@@ -551,19 +518,3 @@ class Account(Account):
 
 #TODO: des, gas, gasmember, supplier
 
-#-------------------------------------------------------------------------------
-
-class Certification(Certification):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def certs(self):
-        return Certification.objects.filter(pk=self.pk)
-
-    @property
-    def cert(self):
-        return self
-
-#TODO: des, gas, supplier, person, gasmember

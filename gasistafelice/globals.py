@@ -17,8 +17,6 @@ type_model_d = {
 	'withdrawal' : Withdrawal,
 	'account' : Account,
 	'transact' : Movement,
-	'referrer' : SupplierReferrer,
-	'cert' : Certification,
 }
 
 #TODO domthu TOCHECK
