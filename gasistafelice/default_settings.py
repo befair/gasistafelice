@@ -136,14 +136,14 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks' : ['details', 'gasmembers']
     }],
     'gasmember': [{
-        'name' : 'ordered_products',
-        'descr': 'Paniere',
-        'blocks': ['basket'],
+        'name' : 'orders',
+        'descr': 'Ordini',
+        'blocks': ['open_orders','closed_orders','basket'],
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
         'blocks' : ['details']
-    }],
+    }], #must be extended with economic section
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
@@ -152,14 +152,24 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr': 'Generale',
         'blocks': ['categories', 'gas_list', 'details'],
-    }],
+    }], #must be extended with economic section
+
 # 'order' resource and page are needed in order to make gasmember able to choose products.
 # Useful until we have "expandable list of orders" (like targets with timeline in SANET)
 # I think this should be even more user-friendly than the "expandable list of orders" block
+
     'order' : [{ 
-        'name' : 'products',
-        'descr': 'Prodotti da ordinare',
-        'blocks': ['order_products'],
+        'name' : 'info',
+        'descr': 'Ordine',
+        'blocks': ['details', 'order_report'],
+    },{ 
+        'name' : 'stock',
+        'descr': 'Prodotti',
+        'blocks': ['order_stocks'],
+    },{ 
+        'name' : 'delivery',
+        'descr': 'Consegna',
+        'blocks': [],
     }],
 }
    
