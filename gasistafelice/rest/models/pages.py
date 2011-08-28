@@ -7,7 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth import GAS_MEMBER
 from gasistafelice.des.models import Siteattr
+from gasistafelice.gas.models import GASMember
 from django.core.urlresolvers import reverse
 
 class Page(models.Model):
@@ -76,10 +78,13 @@ class HomePage(models.Model):
             resource = instance.resource
            
         except HomePage.DoesNotExist:
-            # Default algorithm
-            # TODO: to be tuned?
 
-            resource = role.params[0].value
+            # Default algorithm to identify default resource for a user
+
+            if role.role.name == GAS_MEMBER:
+                resource = GASMember.objects.get(gas=role.gas, person__user=user)
+            else:
+                resource = role.params[0].value
 
         return get_absolute_page_url_for_resource(resource)
 

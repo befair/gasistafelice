@@ -52,7 +52,7 @@ class ParamByName(object):
         # Retrieve the value of parameter named `name`; if it's not set, return None
         # Duck typing
         try: 
-            rv = param_role.param_set.get(name=name).param
+            rv = param_role.param_set.get(name=name).value
         except Param.DoesNotExist:
             rv = None
 
