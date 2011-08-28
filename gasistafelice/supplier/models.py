@@ -32,6 +32,7 @@ class Supplier(models.Model, PermissionResource):
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
     #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
+
     history = HistoricalRecords()
     
     display_fields = (
@@ -44,6 +45,12 @@ class Supplier(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+
+    def setup_roles(self):
+    #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
+        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
+
+    #-- Resource API --#
 
     @property
     def des(self):
@@ -69,15 +76,43 @@ class Supplier(models.Model, PermissionResource):
     def stocks(self):
         return self.stock_set.all()
 
-    # the set of products provided by this Supplier to every GAS
     @property
-    def product_catalog(self):
-        return [s.product for s in SupplierStock.objects.filter(supplier=self)]
+    def pacts(self):
+        return self.pact_set.all()
 
-    def setup_roles(self):
-    #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
-        register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
+    @property
+    def pact(self):
+        raise NoSenseException("calling supplier.pact is a no-sense. Supplier is related to more than one pact")
+        
+    @property
+    def orders(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        return GASSupplierOrder.objects.filter(pact__in=self.pacts)
 
+    @property
+    def order(self):
+        raise NoSenseException("calling supplier.order is a no-sense. Supplier is related to more than one order")
+
+    @property
+    def gas_list(self):
+        from gasistafelice.gas.models.base import GAS
+        return GAS.objects.filter(pact_set__in=self.pacts)
+
+    @property
+    def gas(self):
+        raise NoSenseException("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
+
+    @property
+    def products(self):
+        """All products _supplied_ by this supplier"""
+        #TODO: we have to differentiate a way to see all products __produced__ by this supplier
+        return Product.objects.filter(stock_set__in=self.stocks)
+
+    @property
+    def categories(self):
+        """All categories _supplied_ by this supplier"""
+        #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
+        return ProductCategory.objects.filter(product_set__in=self.products)
 
 class SupplierReferrer(models.Model, PermissionResource):
 

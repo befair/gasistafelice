@@ -232,6 +232,100 @@ class GAS(models.Model, PermissionResource):
             #TODO self.account = Account.objects.create()
             #TODO self.liquidity = Account.objects.create()
 
+    #-- Resource API --#
+
+    @property
+    def gas(self):
+        return self
+
+    @property
+    def orders(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        """Return orders bound to resource"""
+        return GASSupplierOrder.objects.filter(pact__in=self.pacts)
+
+    @property
+    def order(self):
+        raise NoSenseException("calling gas.order is a no-sense. GAS is related to more than one order")
+
+    @property
+    def deliveries(self):
+        from gasistafelice.gas.models.order import Delivery
+        # The GAS deliveries appointments take from orders. Do distinct operation. 
+        rv = Delivery.objects.none()
+        for obj in self.orders:
+            if obj.delivery: 
+                rv |= obj.delivery
+        return rv
+
+    @property
+    def delivery(self):
+        raise NoSenseException("calling gas.delivery is a no-sense. GAS is related to more than one delivery")
+
+    @property
+    def withdrawals(self):
+        from gasistafelice.gas.models.order import Withdrawal
+        # The GAS withdrawal appointments. Do distinct operation.
+        rv = Withdrawal.objects.none()
+        for obj in self.orders:
+            if obj.withdrawal: 
+                rv |= obj.withdrawal
+        return rv
+
+    @property
+    def withdrawal(self):
+        raise NoSenseException("calling gas.withdrawal is a no-sense. GAS is related to more than one withdrawal")
+
+    @property
+    def pacts(self):
+        # Return pacts bound to a GAS
+        return self.pact_set.all()
+
+    @property
+    def suppliers(self):
+        """Return suppliers bound to a GAS"""
+        return self.supplier_set.all()
+
+    @property
+    def accounts(self):
+        #return (Account.objects.filter(pk=self.account.pk) | Account.objects.filter(pk=self.liquidity.pk)).order_by('balance')
+        raise NotImplementedError
+
+    @property
+    def gasmembers(self):
+        return self.gasmember_set.all()
+
+    @property
+    def stocks(self):
+        return SupplierStock.objects.filter(supplier__in=self.suppliers)
+
+    @property
+    def products(self):
+        #TODO OPTIMIZE
+        return Product.objects.filter(pk__in=[obj.product.pk for obj in self.stocks])
+
+    @property
+    def categories(self):
+        #TODO All disctinct categories for all suppliers with solidal pact with the gas
+        #distinct(pk__in=[obj.category.pk for obj in self.Products])
+        return ProductCategory.objects.all()
+
+    @property
+    def gasstocks(self):
+        return GASSupplierStock.objects.filter(gas=self)
+
+    @property
+    def orderable_products(self):
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+
+    @property
+    def ordered_products(self):
+        return GASMemberOrder.objects.filter(order__in=self.orders)
+
+    @property
+    def basket(self):
+        return GASMemberOrder.objects.filter(order__in=self.orders.open())
+
 class GASConfig(models.Model, PermissionResource):
     """
     Encapsulate here gas settings and configuration facilities
@@ -437,6 +531,59 @@ class GASMember(models.Model, PermissionResource):
         if not self.id_in_gas:
             self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
+
+    #-- Resource API --#
+
+    @property
+    def des(self):
+        # A GAS member belongs to the DES its GAS belongs to.
+        return self.gas.des
+
+    @property
+    def pacts(self):
+        # A GAS member is interested primarily in those pacts (`SupplierSolidalPact` instances) subscribed by its GAS
+        return self.gas.pacts
+
+    @property
+    def suppliers(self):
+        # A GAS member is interested primarily in those suppliers dealing with its GAS
+        return self.gas.suppliers
+
+    @property
+    def orders(self):
+        # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
+        # WARNING: get GAS proxy instance!
+        g = GAS.objects.get(pk=self.gas.pk)
+        return g.orders
+
+    @property
+    def deliveries(self):
+        # A GAS member is interested primarily in delivery appointments scheduled for its GAS
+        return self.gas.deliveries
+
+    @property
+    def withdrawals(self):
+        # A GAS member is interested primarily in withdrawal appointments scheduled for its GAS
+        return self.gas.withdrawals
+
+    @property
+    def products(self):
+        # A GAS member is interested primarily to show products
+        return self.gas.products
+
+    @property
+    def stocks(self):
+        # A GAS member is interested primarily to show products and price
+        return self.gas.stocks
+
+    @property
+    def gasstocks(self):
+        # A GAS member is interested primarily in those products and price per GAS
+        return self.gas.gasstocks
+
+    @property
+    def basket(self):
+        return GASMemberOrder.objects.filter(product__order__in=self.orders.open())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
