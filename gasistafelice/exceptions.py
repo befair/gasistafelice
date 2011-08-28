@@ -1,0 +1,4 @@
+
+class NoSenseException(Exception):
+    pass
+

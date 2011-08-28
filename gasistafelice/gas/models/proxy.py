@@ -8,6 +8,7 @@ from gasistafelice.gas.models.order import GASSupplierOrder, Delivery, Withdrawa
 from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.bank.models import Account, Movement
 
+from gasistafelice.exceptions import NoSenseException
 #-------------------------------------------------------------------------------
 
 class GAS(GAS):
@@ -26,52 +27,33 @@ class GAS(GAS):
 
     @property
     def order(self):
-        """a GASSupplierOrder bound to this GAS.
-        TODO Using Filtering on Supplier parameter attribute
-        @raises DoesNotExist if no order for a GAS
-        @raises MultipleObjectsReturned if more than one orders found
-        """
-        c = self.orders.count()
-        if c == 0:
-            raise DoesNotExist()
-        elif c == 1:
-            rv = self.orders[0]
-        else:
-            raise MultipleObjectsReturned()
-        return rv
+        raise NoSenseException("calling gas.order is a no-sense. GAS is related to more than one order")
 
     @property
     def deliveries(self):
         # The GAS deliveries appointments take from orders. Do distinct operation. 
-        rv = self.delivery
+        rv = Delivery.objects.none()
         for obj in self.orders:
-            if not obj.delivery is None: 
+            if obj.delivery: 
                 rv |= obj.delivery
         return rv
 
     @property
     def delivery(self):
-        # The GAS default delivery appointment 
-        return self.config.default_delivery_place
-
+        raise NoSenseException("calling gas.delivery is a no-sense. GAS is related to more than one delivery")
 
     @property
     def withdrawals(self):
         # The GAS withdrawal appointments. Do distinct operation.
-        rv = self.withdrawal
-        for obj in self.pacts:
-            if not obj.default_withdrawal_place is None: 
-                rv |= obj.default_withdrawal_place
+        rv = Withdrawal.objects.none()
         for obj in self.orders:
-            if not obj.withdrawal is None: 
+            if obj.withdrawal: 
                 rv |= obj.withdrawal
         return rv
-        #return Place.objects.filter(pk__in=[obj.default_withdrawal_place.pk for obj in self.pacts])
 
     @property
     def withdrawal(self):
-        # The GAS default withdrawal appointment 
-        return self.config.default_withdrawal_place
+        raise NoSenseException("calling gas.withdrawal is a no-sense. GAS is related to more than one withdrawal")
 
     @property
     def pacts(self):
@@ -94,7 +76,7 @@ class GAS(GAS):
 
     @property
     def stocks(self):
-        return SupplierStock.objects.filter(supplier=self.suppliers)
+        return SupplierStock.objects.filter(supplier__in=self.suppliers)
 
     @property
     def products(self):
@@ -102,15 +84,16 @@ class GAS(GAS):
 
     @property
     def categories(self):
-        #TODO All disctinct categories for all suppliers with solidal pact for associated list of products
-        return ProductCategory.filter(pk__in=[obj.category.pk for obj in self.Products])
+        #TODO All disctinct categories for all suppliers with solidal pact with the gas
+        #distinct(pk__in=[obj.category.pk for obj in self.Products])
+        return ProductCategory.objects.all()
 
     @property
     def gasstocks(self):
         return GASSupplierStock.objects.filter(gas=self)
 
     @property
-    def catalogs(self):
+    def ordered_products(self):
         return GASSupplierOrderProduct.objects.filter(order__in=self.orders)
 
 #-------------------------------------------------------------------------------
@@ -225,23 +208,19 @@ class DES(DES):
 
     @property
     def products(self):
-        tmp = self.suppliers
-        return Product.objects.filter(producer.pk__in=[obj.pk for obj in tmp])
+        return Product.objects.all()
 
     @property
     def stocks(self):
-        tmp = self.suppliers
-        return SupplierStock.objects.filter(supplier.pk__in=[obj.pk for obj in tmp])
+        return SupplierStock.objects.all()
 
     @property
     def gasstocks(self):
-        tmp = self.gas_list
-        return GASSupplierStock.objects.filter(gas__in=tmp)
+        return GASSupplierStock.objects.all()
 
     @property
-    def catalogs(self):
-        tmp = self.orders
-        return GASSupplierOrderProduct.objects.filter(order__in=tmp)
+    def ordered_products(self):
+        return GASSupplierOrderProduct.objects.all()
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, q, limits=['gn','sn','ogn','osn']):
@@ -366,19 +345,7 @@ class Supplier(Supplier):
 
     @property
     def order(self):
-        """a GASSupplierOrder bound to this Supplier. 
-        TODO: Using Filtering for one GAS
-        @raises DoesNotExist if no order for a Supplier
-        @raises MultipleObjectsReturned if more than one orders found
-        """
-        c = self.orders.count()
-        if c == 0:
-            raise DoesNotExist()
-        elif c == 1:
-            rv = self.orders[0]
-        else:
-            raise MultipleObjectsReturned()
-        return rv
+        raise NoSenseException("calling supplier.order is a no-sense. Supplier is related to more than one order")
 
     @property
     def gas_list(self):
@@ -386,14 +353,7 @@ class Supplier(Supplier):
 
     @property
     def gas(self):
-        c = self.gas_list.count()
-        if c == 0:
-            raise DoesNotExist()
-        elif c == 1:
-            rv = self.gas_list[0]
-        else:
-            raise MultipleObjectsReturned()
-        return rv
+        raise NoSenseException("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
 
     @property
     def des_list(self):
@@ -503,23 +463,6 @@ class GASSupplierStock(GASSupplierStock):
 
 #-------------------------------------------------------------------------------
 
-class GASSupplierOrderProduct(GASSupplierOrderProduct):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def stocks_in_order(self):
-        return GASSupplierOrderProduct.objects.filter(pk=self.pk)
-
-    @property
-    def stock_in_order(self):
-        return self
-
-#TODO: des, gas, supplier, person, gasmember
-
-#-------------------------------------------------------------------------------
-
 class GASSupplierOrder(GASSupplierOrder):
 
     class Meta:
@@ -572,10 +515,6 @@ class ProductCategory(ProductCategory):
         proxy = True
 
     @property
-    def catalogs(self):
-        return GASSupplierOrderProduct.objects.filter(pk=self.pk)
-
-    @property
     def categories(self):
         return ProductCategory.objects.filter(pk=self.pk)
 
@@ -599,31 +538,6 @@ class Account(Account):
         raise NotImplementedError
 
 #TODO: des, gas, gasmember, supplier
-
-class Movement(Movement):
-    #TODO
-
-    class Meta:
-        proxy = True
-
-    @property
-    def transacts(self):
-        return Movement.objects.filter(pk=self.pk)
-
-#TODO: des, gas, gasmember, supplier, account
-
-#-------------------------------------------------------------------------------
-
-class ProductMU(ProductMU):
-
-    class Meta:
-        proxy = True
-
-    @property
-    def units(self):
-        return ProductMU.objects.filter(pk=self.pk)
-
-#TODO: des, gas, supplier, product, order
 
 #-------------------------------------------------------------------------------
 
