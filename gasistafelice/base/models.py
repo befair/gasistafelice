@@ -250,43 +250,8 @@ class Resource(object):
         raise NotImplementedError
 
     @property
-    def gasstocks(self):
-        """Return GASSupplierStock list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def gasstock(self):
-        """Return GASSupplierStock bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def catalogs(self):
+    def ordered_products(self):
         """Return GASSupplierOrderProduct list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def catalog(self):
-        """Return GASSupplierOrderProduct bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def units(self):
-        """Return unit measure list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def unit(self):
-        """Return unit measure bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def transacts(self):
-        """Return transact list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def transact(self):
-        """Return transact bound to resource"""
         raise NotImplementedError
 
     @property
@@ -299,36 +264,39 @@ class Resource(object):
         """Return Referrer bound to resource"""
         raise NotImplementedError
 
-    @property
-    def bios(self):
-        """Return Certification list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def bio(self):
-        """Return Certification bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def orders(self):
-        """Return gasmember ordered product list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def order(self):
-        """Return one gasmember ordered product bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def baskets(self):
-        """Return gasmember ordered product list bound to resource"""
-        raise NotImplementedError
-
-    @property
-    def basket(self):
-        """Return one gasmember ordered product bound to resource"""
-        raise NotImplementedError
-
+#TODO CHECK if these methods SHOULD be removed from Resource API
+# because they are tied only to a specific resource. Leave commented now.
+# If you need them in a specific resource, implement in it
+#    @property
+#    def gasstocks(self):
+#        """Return GASSupplierStock list bound to resource"""
+#        raise NotImplementedError
+#
+#    @property
+#    def gasstock(self):
+#        """Return GASSupplierStock bound to resource"""
+#        raise NotImplementedError
+#
+#    @property
+#    def units(self):
+#        """Return unit measure list bound to resource"""
+#        raise NotImplementedError
+#
+#    @property
+#    def unit(self):
+#        """Return unit measure bound to resource"""
+#        raise NotImplementedError
+#
+#    @property
+#    def transacts(self):
+#        """Return transact list bound to resource"""
+#        raise NotImplementedError
+#
+#    @property
+#    def transact(self):
+#        """Return transact bound to resource"""
+#        raise NotImplementedError
+#
 
 class PermissionResource(Resource, PermissionBase):
     """
