@@ -57,33 +57,6 @@ class Block(AbstractBlock):
     def visible_in_page(self):
         return True
         
-    #------------------------------------------------------------------------------#
-    #                                                                              #
-    #------------------------------------------------------------------------------#
-
-    def options_response(self, request, resource_type, resource_id):
-        
-        user = request.user
-
-        options = self.load_user_configuration(user, resource_type, resource_id)
-        
-        if not options:
-            options = DETAILS_DEFAULT_OPTIONS
-                    
-        #paranoic programming
-        if not isinstance(options, types.DictType): options = DETAILS_DEFAULT_OPTIONS
-        options['show_problems']     = options.get('show_problems'    , 'True')
-        options['show_uncheckables'] = options.get('show_uncheckables', 'True')
-        
-        ctx = {
-            'block_name': 'Dettagli',
-            'fields': [
-                {'field_type':'checkbox', 'field_label':_('Show problems')    , 'field_name':'show_problems'    , 'field_values':[ options['show_problems']     ]},
-                {'field_type':'checkbox', 'field_label':_('Show unchechables'), 'field_name':'show_uncheckables', 'field_values':[ options['show_uncheckables'] ]},
-            ]
-        }
-        return render_to_xml_response('options.xml', ctx)
-
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
@@ -116,8 +89,6 @@ class Block(AbstractBlock):
         #
         options = self.load_user_configuration (user, resource_type, resource_id)
         if not options:    options = DETAILS_DEFAULT_OPTIONS 
-        show_problems     = True if options.get('show_problems'    , 'False') == 'True' else False
-        show_uncheckables = True if options.get('show_uncheckables', 'False') == 'True' else False
 
 
         # Retrieve resource's cached informations
@@ -145,11 +116,15 @@ class Block(AbstractBlock):
                 if isinstance(display_field, ResourceList):
                     element_type  = 'resourcelist'
                 elif isinstance(element_value, Resource):
-                    element_type = str(element_value.resource_type)
+                    element_type = 'resource'
                 elif isinstance(display_field, models.EmailField):
                     element_type  = 'email'
-                else:    
+                else: 
                     element_type  = 'str'
+                    if display_field.choices:
+                        #TODO: set value to display value. 
+                        # element_value = 
+                        pass 
             else:
                 element_type = 'none'
                 element_value = ''

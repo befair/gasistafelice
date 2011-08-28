@@ -22,7 +22,6 @@ from gasistafelice.des.models import DES
 
 from gasistafelice.lib import fields
 
-
 from decimal import Decimal
 
 
@@ -76,9 +75,12 @@ class GAS(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
-        name,
-		fields.ResourceList(verbose_name=_("parent"), name="ancestors"),
+        website, city, headquarter, birthday, description, 
+        membership_fee, vat, fcc,
+		#fields.ResourceList(verbose_name=_("referrers"), name="referrers"),
+        association_act,
     )
+
     #-- Meta --#
     class Meta:
         verbose_name_plural = _('GAS')
@@ -695,10 +697,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
                       { 'gas' : self.gas, 'supplier' : self.supplier}
 
     @property
-    def ancestors(self):
-        return [self.des, self.gas]
-
-    @property
     def gas_supplier_referrers(self):
         """
         Return all users being referrers for this solidal pact (GAS-to-Supplier interface).
@@ -731,5 +729,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         if created and self.gas.config.auto_select_all_products:
             for st in self.supplier.stocks:
                 GASSupplierStock.objects.create(pact=self, supplier_stock=st, enabled=True)
+
+    @property
+    def ancestors(self):
+        return [self.des, self.gas]
 
 #-------------------------------------------------------------------------------

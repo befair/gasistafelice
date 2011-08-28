@@ -44,7 +44,7 @@ class RenderXmlDetail(template.Node):
             raise template.VariableDoesNotExist, "Variable %s has not been found in the context" % self.field
 
         data_type = field['type']
-        pt_list = ["values/"+data_type+".xml", "data/str.xml"]
+        pt_list = ["values/"+data_type+".xml", "values/str.xml"]
         context['value'] = field['value']
 
         t = select_template(pt_list)

@@ -20,13 +20,15 @@ from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
 
+from gasistafelice.lib import fields
+
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
 
     name = models.CharField(max_length=128) 
-    seat =  models.ForeignKey(Place, null=True, blank=True)
-    vat_number =  models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
-    website =  models.URLField(verify_exists=True, blank=True)
+    seat = models.ForeignKey(Place, null=True, blank=True)
+    vat_number = models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
+    website = models.URLField(verify_exists=True, blank=True)
     referrer_set = models.ManyToManyField(Person, through="SupplierReferrer") 
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
@@ -36,12 +38,10 @@ class Supplier(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     display_fields = (
-            models.CharField(max_length=128, name="name", blank=False, null=False),
-            models.ForeignKey(Place, name="seat", null=True, blank=True),
-            models.CharField(name="vat_number", max_length=128, unique=True, null=True),
-            models.URLField(name="website", verify_exists=True, blank=True),
-            models.CharField(name="flavour", max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0]),      
-                   )
+        seat, vat_number, website, flavour, 
+        fields.ResourceList(name="referrers", verbose_name=_("People")),
+        fields.ResourceList(name="pacts", verbose_name=_("Pacts")),
+    )
 
     def __unicode__(self):
         return self.name

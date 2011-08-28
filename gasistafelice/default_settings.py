@@ -159,8 +159,8 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks': ['stocks'],
     },{
         'name' : 'info',
-        'descr': 'Generale',
-        'blocks': ['categories', 'gas_list', 'details'],
+        'descr': 'Scheda del fornitore',
+        'blocks': ['details', 'categories', 'gas_list'],
     }], #must be extended with economic section
 
 # 'order' resource and page are needed in order to make gasmember able to choose products.

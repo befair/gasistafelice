@@ -63,6 +63,10 @@ class Resource(object):
         except IndexError:
             return None
 
+    @property
+    def allnotes(self):
+        return []
+
     # DEPRECATED
     # @property
     # def uID(self):
