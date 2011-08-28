@@ -9,7 +9,6 @@ type_model_d = {
 	'product' : Product,
 	'stock' : SupplierStock,
 	'gasstock' : GASSupplierStock,
-	'stock_in_order' : GASSupplierOrderProduct,
 	'category' : ProductCategory,
 	'unit' : ProductMU,
 	'order' : GASSupplierOrder,
@@ -20,8 +19,6 @@ type_model_d = {
 	'transact' : Movement,
 	'referrer' : SupplierReferrer,
 	'cert' : Certification,
-	'order' : GASSupplierOrder,
-	'basket' : GASMemberOrder,
 }
 
 #TODO domthu TOCHECK
