@@ -237,34 +237,43 @@ class Resource(object):
     @property
     def product(self):
         """Return product bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: product" % self.__class__.__name__)
 
     @property
     def stocks(self):
         """Return SupplierStock list bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: stocks" % self.__class__.__name__)
 
     @property
     def stock(self):
         """Return SupplierStock bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: stock" % self.__class__.__name__)
+
+    @property
+    def orderable_products(self):
+        """Return GASSupplierOrderProduct querySet for orders bound to resource"""
+        raise NotImplementedError("class: %s method: orderable_products" % self.__class__.__name__)
 
     @property
     def ordered_products(self):
-        """Return GASSupplierOrderProduct list bound to resource"""
-        raise NotImplementedError
+        """Return GASMemberOrder querySet for orders bound to resource"""
+        raise NotImplementedError("class: %s method: ordered_products" % self.__class__.__name__)
+
+    @property
+    def basket(self):
+        """Return GASMemberOrder querySet for open orders bound to resource"""
+        raise NotImplementedError("class: %s method: basket" % self.__class__.__name__)
 
     @property
     def referrers(self):
         """Return Referrer list bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: referrers" % self.__class__.__name__)
 
     @property
     def referrer(self):
         """Return Referrer bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: referrer" % self.__class__.__name__)
 
-<<<<<<< HEAD
 #TODO CHECK if these methods SHOULD be removed from Resource API
 # because they are tied only to a specific resource. Leave commented now.
 # If you need them in a specific resource, implement in it

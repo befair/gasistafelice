@@ -93,8 +93,16 @@ class GAS(GAS):
         return GASSupplierStock.objects.filter(gas=self)
 
     @property
+    def orderable_products(self):
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+
+    @property
     def ordered_products(self):
-        return GASSupplierOrderProduct.objects.filter(order__in=self.orders)
+        return GASMemberOrder.objects.filter(order__in=self.orders)
+
+    @property
+    def basket(self):
+        return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
 #-------------------------------------------------------------------------------
 
@@ -219,8 +227,16 @@ class DES(DES):
         return GASSupplierStock.objects.all()
 
     @property
-    def ordered_products(self):
+    def orderable_products(self):
         return GASSupplierOrderProduct.objects.all()
+
+    @property
+    def ordered_products(self):
+        return GASMemberOrder.objects.all()
+
+    @property
+    def basket(self):
+        return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
     #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, q, limits=['gn','sn','ogn','osn']):
