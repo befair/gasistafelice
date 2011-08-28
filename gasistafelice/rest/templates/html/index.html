@@ -2229,11 +2229,12 @@
                     
                     <ul class='block_menu_entries'>
                         <li class="toggle_refresh"       ><img class="header_button" src=""                            title="{% trans "Refresh block now"          %}" ><span class="item">{% trans "Refresh block now"          %}</span></li>
-                        <li class="toggle_autorefresh"   ><img class="header_button" src=""                            title="{% trans "Start auto refresh"         %}" ><span class="item">{% trans "Start auto refresh"         %}</span></li> 
-                        <li> <hr/> </li>
+{% comment %}
+TODO fero TOCHECK
                         <li class="add_to_profile nouser"><img class="header_button" src="" height="10px" width="10px" title="{% trans "Add to my page"             %}" ><span class="item">{% trans "Add to my page"             %}</span></li>
                         <li class="configure"            ><img class="header_button" src="" height="10px" width="10px" title="{% trans "Customize block's settings" %}" ><span class="item">{% trans "Customize block's settings" %}</span></li>
                         <li> <hr/> </li>
+{% endcomment %}
                         <li class="toggle_fullscreen"    ><img class="header_button" src=""                            title="{% trans "Set to full screen"         %}" ><span class="item">{% trans "Set to full screen"         %}</span></li>
                         <li class="toggle_show"          ><img class="header_button" src=""                            title="{% trans "Minimize block"             %}" ><span class="item">{% trans "Minimize block"             %}</span></li>
                     </ul>
@@ -2241,7 +2242,6 @@
                 </div>
                 
                 <div name='right_toolbar'  class="right toolbar">
-                    <span class="toggle_autorefresh hide_on_toggle"><img class="header_button" src="" title="{% trans 'Start auto refresh' %}" ></span>
                     <span class="toggle_fullscreen hide_on_toggle" ><img class="header_button" src="" title="{% trans 'Set to full screen' %}" ></span>
                     <span class="toggle_refresh hide_on_toggle"    ><img class="header_button" src="" title="{% trans 'Refresh block now'  %}" ></span>
                     <span class="toggle_show"                      ><img class="header_button" src="" title="{% trans 'Minimize block'     %}" ></span>

@@ -119,8 +119,6 @@ class GASConfigAdmin(admin.ModelAdmin):
 
 class GASMemberAdmin(admin.ModelAdmin):
 
-    inlines = [GASMemberRoleInline]
-
     save_on_top = True
     
     list_display = ('__unicode__', 'gas_with_link')
