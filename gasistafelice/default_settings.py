@@ -123,9 +123,13 @@ URL_PREFIX = "gasistafelice/"
 
 RESOURCE_PAGE_BLOCKS = {
     'site' : [{
+        'name' : 'people',
+        'descr' : 'Partecipanti',
+        'blocks' : ['gas_list', 'suppliers', 'gasmembers']
+    },{
         'name' : 'info',
-        'descr' : 'Generale',
-        'blocks' : ['details', 'gas_list', 'suppliers', 'gasmembers']
+        'descr' : 'Scheda del DES',
+        'blocks' : ['details']
     }],
     'gas' : [{
         'name' : 'orders',

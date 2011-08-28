@@ -77,7 +77,7 @@ class GAS(models.Model, PermissionResource):
 
     display_fields = (
         name,
-		fields.Resource(verbose_name=_("parent"), name="parent"),
+		fields.ResourceList(verbose_name=_("parent"), name="ancestors"),
     )
     #-- Meta --#
     class Meta:
@@ -93,8 +93,8 @@ class GAS(models.Model, PermissionResource):
         return []
 
     @property
-    def parent(self):
-        return self.des
+    def ancestors(self):
+        return [self.des]
 
     #-- Properties --#
     @property
@@ -395,6 +395,10 @@ class GASMember(models.Model, PermissionResource):
         #See ticket #54
         return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
+    @property
+    def ancestors(self):
+        return [self.des, self.gas]
+
     #COMMENT domthu: fero added id_in_des (or id_in_gas ) for GASMember. That it not required: ask to community if necesary.
     @property
     def id_in_des(self):
@@ -543,6 +547,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return _("Relation between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
 
+    @property
+    def ancestors(self):
+        return [self.des, self.gas]
 
     @property
     def gas_supplier_referrers(self):

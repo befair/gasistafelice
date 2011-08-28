@@ -374,21 +374,6 @@ class Supplier(Supplier):
         raise NoSenseException("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
 
     @property
-    def des_list(self):
-        return DES.objects.filter(gas_set__in=self.gas_list)
-
-    @property
-    def des(self):
-        c = self.des_list.count()
-        if c == 0:
-            raise DES.DoesNotExist()
-        elif c == 1:
-            rv = self.des_list[0]
-        else:
-            raise MultipleObjectsReturned()
-        return rv
-
-    @property
     def products(self):
         """All products _supplied_ by this supplier"""
         #TODO: we have to differentiate a way to see all products __produced__ by this supplier

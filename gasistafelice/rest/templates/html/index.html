@@ -449,14 +449,6 @@
             //
             reset_navigation_bar();
             
-            
-            // Set first element in navigation history
-            var rtype  = "site";
-            var rid    = jQuery.labsglobals['site_id'];
-            var rdescr = jQuery.labsglobals['site_name'];
-            
-            add_element_to_navigation_bar(rtype, rid, rdescr);
-            
             var parent       = $(t).find('parent');
             parent.each(function(){
                 var parent_urn   = $(this).attr('sanet_urn');
@@ -486,7 +478,7 @@
                         add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
                     }
                     
-                    document.title = "GASISTA FELICE - " + resource_descr;
+                    document.title = "GF - " + resource_descr;
                 }
             }
                             

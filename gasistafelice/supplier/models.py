@@ -15,7 +15,7 @@ from history.models import HistoricalRecords
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.fields import CurrencyField
-from gasistafelice.des.models import DES
+from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
@@ -31,7 +31,7 @@ class Supplier(models.Model, PermissionResource):
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
-    des = models.ManyToManyField(DES, null=True, blank=True)
+    #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
     history = HistoricalRecords()
     
     display_fields = (
@@ -44,6 +44,14 @@ class Supplier(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def des(self):
+        return Siteattr.get_site()
+
+    @property
+    def ancestors(self):
+        return [self.des]
 
     @property
     def suppliers(self):
@@ -72,6 +80,7 @@ class Supplier(models.Model, PermissionResource):
 
 
 class SupplierReferrer(models.Model, PermissionResource):
+
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
@@ -79,6 +88,9 @@ class SupplierReferrer(models.Model, PermissionResource):
     
     history = HistoricalRecords()
 
+    @property
+    def ancestors(self):
+        return [self.des, self.supplier]
     
     def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role

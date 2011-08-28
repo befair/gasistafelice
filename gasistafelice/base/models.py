@@ -52,6 +52,17 @@ class Resource(object):
         """Unique resource name"""
         return "%s/%s" % (self.resource_type, self.pk)
     
+    @property
+    def ancestors(self):
+        return []
+
+    @property
+    def parent(self):
+        try:
+            return self.ancestors[-1]
+        except IndexError:
+            return None
+
     # DEPRECATED
     # @property
     # def uID(self):
