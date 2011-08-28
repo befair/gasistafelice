@@ -9,9 +9,9 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
-from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
-from gasistafelice.gas.managers import AppointmentManager, AppointmentManager, OrderManager
-from gasistafelice.supplier.models import Supplier
+from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
+from gasistafelice.gas.managers import AppointmentManager, OrderManager
+from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
@@ -42,6 +42,48 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     objects = OrderManager()
     history = HistoricalRecords()
+
+    @property
+    def gas(self):
+        """Return the GAS issuing this order."""
+        return self.pact.gas
+    
+    @property
+    def supplier(self):
+        """Return the supplier this order is placed against."""
+        return self.pact.supplier        
+    
+#-------------------------------------------------------------------------------#
+# Model Archive API
+
+    def is_active(self):
+        """
+        Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.
+        """
+        return self in GASSupplierOrder.objects.open()
+    
+    def is_archived(self):
+        """
+        Return `True` if the GAS supplier order is to be considered as 'archived'; `False` otherwise.
+        """
+        return not self.is_active()
+    
+#-------------------------------------------------------------------------------#    
+# Authorization API
+
+    @property
+    def referrers(self):
+        """
+        Return all users being referrers for this order.
+        """
+        # retrieve 'order referrer' parametric role for this order
+        pr = ParamRole.get_role(GAS_REFERRER_ORDER, order=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+    
+
+#-------------------------------------------------------------------------------#
+
     
     def set_default_stock_set(self):
         '''
@@ -59,13 +101,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
         register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
         
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
     @property
     def report_name(self):
         # Clean file order name
@@ -123,13 +158,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def gas(self):
         return self.order.pact.gas    
-    
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
+
     
 class GASMemberOrder(models.Model, PermissionResource):
 
@@ -193,14 +222,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         state = get_state(self)
         transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
-        
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
+ 
 ## FIXME: commented out model's save override waiting for issue #1 (on GitHub) to be resolved
 #    def save(self):
 #        if not self.workflow:
@@ -222,6 +244,24 @@ class Appointment(models.Model):
     
     class Meta:
         abstract = True
+
+#-------------------------------------------------------------------------------#
+# Model Archive API
+        
+    def is_active(self):
+        """
+        Return `True` if the Appointment is to be considered as 'active'; `False` otherwise.
+        """
+        return self in Appointment.objects.future()
+    
+    def is_archived(self):
+        """
+        Return `True` if the Appointment is to be considered as 'archived'; `False` otherwise.
+        """
+        return not self.is_active()
+    
+#-------------------------------------------------------------------------------#    
+
 
 class Delivery(Appointment, PermissionResource):
 
@@ -254,18 +294,25 @@ class Delivery(Appointment, PermissionResource):
         """
         pass
     
+#-------------------------------------------------------------------------------#   
+# Authorization API
+
+    @property
+    def referrers_users(self):
+        """
+        Return all users being referrers for this delivery appointment.
+        """
+        # retrieve 'delivery referrer' parametric role for this order
+        pr = ParamRole.get_role(GAS_REFERRER_DELIVERY, delivery=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+ 
         
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)            
+        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)      
     
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv
-
+#-------------------------------------------------------------------------------#
     
 
 class Withdrawal(Appointment, PermissionResource):
@@ -299,13 +346,22 @@ class Withdrawal(Appointment, PermissionResource):
         """
         pass
 
+#-------------------------------------------------------------------------------#   
+# Authorization API
+
+    @property
+    def referrers_users(self):
+        """
+        Return all users being referrers for this wihtdrawal appointment.
+        """
+        # retrieve 'wihtdrawal referrer' parametric role for this order
+        pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, wihtdrawal=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+
+
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)   
-        
-    @property        
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )     
-        return rv 
+        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)  
+         
+#-------------------------------------------------------------------------------#

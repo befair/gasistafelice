@@ -4,15 +4,18 @@ It includes common data on which all (or almost all) other applications rely on.
 """
 
 from django.db import models
+from django.db.models import get_model
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import permalink
 
-from permissions import PermissionBase # mix-in class for permissions management
+
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
+from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
+from gasistafelice.auth.models import PermissionBase # mix-in class for permissions management
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
@@ -310,7 +313,7 @@ class Resource(object):
 
 class PermissionResource(Resource, PermissionBase):
     """
-    Just a convenience for classes inheriting both from Resource and PermissionBase
+    Just a convenience for classes inheriting both from `Resource` and `PermissionBase`
     """
     pass
 
@@ -338,6 +341,155 @@ class Person(models.Model, PermissionResource):
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname) 
 
+    ## START Resource API
+    # Note that all the following methods return a QuerySet
+    
+    @property
+    def gasmembers(self):
+        #TODO UNITTEST
+        """
+        GAS members associated to this person;
+        to each of them corresponds a membership of this person in a GAS.        
+        """
+        return self.gasmember_set.all()
+    
+    
+    @property
+    def gas_list(self):
+        #TODO UNITTEST
+        """
+        All GAS this person belongs to
+        (remember that a person may be a member of more than one GAS).
+        """
+        # needed to avoid stumbling upon circular imports
+        # `gasistafelice.base` app shouldn't depend on `gasistafelice.gas` 
+        GAS = get_model('gas', 'GAS')
+        gas_set = set([member.gas for member in self.gasmembers])
+        return GAS.objects.filter(pk__in=[obj.pk for obj in gas_set])
+    
+    @property
+    def des_list(self):
+        #TODO UNITTEST
+        """
+        All DESs this person belongs to 
+        (either as a member of one or more GAS or as a referrer for one or more suppliers in the DES).         
+        """
+        # needed to avoid stumbling upon circular imports
+        # `gasistafelice.base` app shouldn't depend on `gasistafelice.des` 
+        DES = get_model('des', 'DES')
+        des_set = set([gas.des for gas in self.gas_list])
+        return DES.objects.filter(pk__in=[obj.pk for obj in des_set])
+    
+    
+    @property
+    def pacts(self):
+        # TODO: what pacts are associated to a Person ?
+        pass
+    
+    @property
+    def suppliers(self):
+        #TODO UNITTEST
+        """
+        A person is related to:
+        1) suppliers for which he/she is a referrer
+        2) suppliers who have signed a pact with a GAS he/she belongs to
+        """
+        Supplier = get_model('supplier', 'Supplier')
+        
+        # initialize the return QuerySet 
+        qs = Supplier.object.none()
+        
+        #add the suppliers who have signed a pact with a GAS this person belongs to
+        for gas in self.gas_list:
+            qs = qs | gas.suppliers
+        
+        # add the suppliers for which this person is a referrer
+        referred_set = set([sr.supplier for sr  in self.supplierreferrer_set])
+        qs = qs | Supplier.objects.filter(pk__in=[obj.pk for obj in referred_set])
+        
+        return qs
+        
+    
+    @property
+    def orders(self):
+        #TODO UNITTEST
+        """
+        A person is related to:
+        1) supplier orders opened by a GAS he/she belongs to
+        2) supplier orders for which he/she is a referrer
+        3) order to suppliers for which he/she is a referrer
+        
+        """
+        from gasistafelice.auth.utils import get_parametric_roles
+        
+        GASSupplierOrder = get_model('gas', 'GASSupplierOrder')
+        
+        # initialize the return QuerySet 
+        qs = GASSupplierOrder.object.none()
+        
+        #add the supplier orders opened by a GAS he/she belongs to
+        for gas in self.gas_list:
+            qs = qs | gas.orders
+        
+        if self.user: #if a Person has not an account, he can't have any role in the system
+            # retrieve all parametric roles assigned to this person
+            roles = get_parametric_roles(self.user)
+            for pr in roles:
+                # add the supplier orders for which this person is a referrer
+                if pr.role.name == GAS_REFERRER_ORDER:
+                    qs = qs | GASSupplierOrder.objects.get(pk=pr.order.pk)
+                # add orders to suppliers for which this person is a referrer
+                if pr.role.name == GAS_REFERRER_SUPPLIER:
+                    GASSupplierOrder.objects.filter(pact__gas=pr.gas, pact__supplier=pr.supplier)
+                
+        return qs
+        
+     
+    
+    @property
+    def deliveries(self):
+        #TODO UNITTEST
+        """
+        A person is related to:
+        1) delivery appointments for which this person is a referrer
+        2) delivery appointments associated with a GAS he/she belongs to
+        """
+        Delivery = get_model('gas', 'Delivery')
+        # initialize the return QuerySet
+        qs = Delivery.objects.none()    
+        # add  delivery appointments for which this person is a referrer   
+        for member in self.gasmembers:
+            qs = qs | member.delivery_set.all()
+        # add  delivery appointments associated with a GAS he/she belongs to
+        for gas in self.gas_list:
+            qs = qs | gas.deliveries
+                                
+        return qs
+    
+    @property
+    def withdrawals(self):
+        #TODO UNITTEST
+        """
+        A person is related to:
+        1) withdrawal appointments for which this person is a referrer
+        2) withdrawal appointments associated with a GAS he/she belongs to
+        """
+        
+        Withdrawal = get_model('gas', 'Withdrawal')
+        # initialize the return QuerySet
+        qs = Withdrawal.objects.none()    
+        # add  withdrawal appointments for which this person is a referrer   
+        for member in self.gasmembers:
+            qs = qs | member.withdrawal_set.all()
+        # add  withdrawal appointments associated with a GAS he/she belongs to
+        for gas in self.gas_list:
+            qs = qs | gas.withdrawals
+                                
+        return qs  
+    
+    
+    ## END Resource API    
+    
     @property
     def city(self):
         return self.address.city 

@@ -10,12 +10,12 @@ from gasistafelice.base.fields import CurrencyField
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
-from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER
+from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 from gasistafelice.auth.utils import register_parametric_role 
 from gasistafelice.auth.models import ParamRole
 
 from gasistafelice.supplier.models import Supplier, SupplierStock
-from gasistafelice.gas.managers import GASMembersManager
+from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.bank.models import Account
 
 from gasistafelice.des.models import DES
@@ -87,7 +87,7 @@ class GAS(models.Model, PermissionResource):
     #-- Overriding built-in methods --#
     def __unicode__(self):
         return self.name
-
+     
     @property
     def allnotes(self):
         return []
@@ -104,6 +104,77 @@ class GAS(models.Model, PermissionResource):
               )
         return rv
 
+    #-- Permission management --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, **kwargs):
+        ## only DES administrators can create a new GAS in a DES
+        try:
+            des = kwargs['des']
+        except KeyError:
+            raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
+        return user in des.admins
+    
+    # Row-level VIEW permission
+    def can_view(self, user, **kwargs):
+        # only GAS members and DES administrators can view GAS details 
+        return (user in self.members) or (user in self.des.admins) 
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, **kwargs):
+        # only GAS tech referrers and DES administrators can edit GAS details
+        return (user in self.tech_referrers) or (user in self.des.admins) 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, **kwargs):
+        # only DES administrators can delete a GAS in a DES
+        return user in self.des.admins
+    
+    #-- Properties --#
+
+    @property
+    def referrers(self):
+        """
+        Return all users being referrers for this GAS.
+        """
+        # retrieve 'GAS referrer' parametric role for this GAS
+        pr = ParamRole.get_role(GAS_REFERRER, gas=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+        
+
+    @property
+    def members(self):
+        """
+        Return all users being members of this GAS.
+        """
+        # retrieve 'GAS member' parametric role for this GAS
+        pr = ParamRole.get_role(GAS_MEMBER, gas=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+    
+    @property
+    def tech_referrers(self):
+        """
+        Return all users being technical referrers for this GAS.
+        """
+        # retrieve 'tech referrer' parametric role for this GAS
+        pr = ParamRole.get_role(GAS_REFERRER_TECH, gas=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+
+    @property
+    def cash_referrers(self):
+        """
+        Return all users being accounting referrers for this GAS.
+        """
+        # retrieve 'cash referrer' parametric role for this GAS
+        pr = ParamRole.get_role(GAS_REFERRER_CASH, gas=self)
+        # retrieve all Users having this role
+        return pr.get_users()  
+    
+    
     @property
     def city(self):
         return self.headquarter.city 
@@ -272,7 +343,7 @@ class GASMember(models.Model, PermissionResource):
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
-    objects = GASMembersManager()
+    objects = GASMemberManager()
 
     history = HistoricalRecords()
 
@@ -282,7 +353,8 @@ class GASMember(models.Model, PermissionResource):
 
     def __unicode__(self):
         return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
-    
+   
+
     def _get_roles(self):
         """
         Return a QuerySet containing all the parametric roles which have been assigned
@@ -340,22 +412,11 @@ class GASMember(models.Model, PermissionResource):
         user = self.person.user
         #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
         if user is None:
-           return ""
+            return ""
         #TODO: fixtures create user foreach person
         role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
-    
-    @property
-    def local_grants(self):
-        rv = (
-            # GAS tech referrers have full access to members of their own GAS 
-            ('ALL', ParamRole.objects.filter(role=GAS_REFERRER_TECH, param1=self.gas)),
-            # GAS members can see list and details of their fellow members
-            ('LIST', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
-            ('VIEW', ParamRole.objects.filter(role=GAS_MEMBER, param1=self.gas)),
-              )
-        return rv
-    
+
     def clean(self):
         # Clean method is for validation. Validation errors are meant to be
         # catched in forms
@@ -401,14 +462,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
         return self.supplier_stock.price*(1 + price_percent_update)
-    
-    @property
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )
-        return rv
-    
+
     class Meta:
         app_label = 'gas'
         verbose_name = _("GAS supplier stock")
@@ -489,26 +543,22 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return _("Relation between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
 
+
     @property
     def gas_supplier_referrers(self):
-        """Retrieve all GASMember who are GAS supplier referrers associated with this solidal pact"""
+        """
+        Return all users being referrers for this solidal pact (GAS-to-Supplier interface).
+        """
+        # retrieve 'GAS supplier referrer' parametric role for this pact
+        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
+        # retrieve all Users having this role
+        return pr.get_users()    
 
-        # TODO UNITTEST: write unit tests for this method
-        parametric_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
-        referrers = self.gas.gas_member_set.have_role(parametric_role)
-        return referrers
-
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_SUPPLIER` Role for this GAS/Supplier pair
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, gas=self.gas, supplier=self.supplier)
     
-    @property
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )
-        return rv
-
+    def setup_roles(self):
+        # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)     
+    
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 

@@ -80,6 +80,7 @@ class GAS(GAS):
 
     @property
     def products(self):
+        #TODO OPTIMIZE
         return Product.objects.filter(pk__in=[obj.product.pk for obj in self.stocks])
 
     @property
@@ -380,7 +381,7 @@ class Supplier(Supplier):
     def des(self):
         c = self.des_list.count()
         if c == 0:
-            raise DoesNotExist()
+            raise DES.DoesNotExist()
         elif c == 1:
             rv = self.des_list[0]
         else:

@@ -7,7 +7,7 @@ from gasistafelice.base.models import Person, Place
 
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact,\
 GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct, Delivery, Withdrawal
-from gasistafelice.gas.managers import GASMembersManager
+from gasistafelice.gas.managers import GASMemberManager
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 
@@ -241,7 +241,7 @@ class GASMemberManagerTest(TestCase):
         """It should be possible to make a shallow copy of a manager instance"""
         # see https://docs.djangoproject.com/en/1.3/topics/db/managers/#implementation-concerns
         import copy
-        manager = GASMembersManager()
+        manager = GASMemberManager()
         my_copy = copy.copy(manager)
         self.assertEqual(manager, my_copy)
     
@@ -293,8 +293,8 @@ class GASMemberManagerTest(TestCase):
         """
         self.role, created = Role.objects.get_or_create(name=GAS_REFERRER_SUPPLIER)   
         
-        self.p_role_1 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_1, supplier=self.supplier)
-        self.p_role_2 = register_parametric_role(GAS_REFERRER_SUPPLIER, gas=self.gas_2, supplier=self.supplier)
+        self.p_role_1 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_1)
+        self.p_role_2 = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact_2)
                 
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
