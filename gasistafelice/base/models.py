@@ -124,115 +124,115 @@ class Resource(object):
     @property
     def des_list(self):
         """Return DES instances bound to the resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: des_list" % self.__class__.__name__)
 
     @property
     def des(self):
         """Return the DES instance bound to the resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: des" % self.__class__.__name__)
 
     @property
     def gas_list(self):
         """Return GAS list bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: gas_list" % self.__class__.__name__)
 
     @property
     def gas(self):
         """Return GAS bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: gas" % self.__class__.__name__)
 
     @property
     def accounts(self):
         """Return economic state bound to resource  (DES, GASMember, GAS or Supplier through )"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: accounts" % self.__class__.__name__)
 
     @property
     def account(self):
         """Return an economic state bound to resource (DES, GASMember, GAS or Supplier through )"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: account" % self.__class__.__name__)
 
     def categories(self):
         """Return ProductCategory bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: categories" % self.__class__.__name__)
 
     def category(self):
         """Return ProductCategory bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: category" % self.__class__.__name__)
 
     @property
     def persons(self):
         """Return persons bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: persons" % self.__class__.__name__)
 
     @property
     def person(self):
         """Return person bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: person" % self.__class__.__name__)
 
     @property
     def gasmembers(self):
         """Return GAS members bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: gasmembers" % self.__class__.__name__)
 
     @property
     def gasmember(self):
         """Return GAS member bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: gasmember" % self.__class__.__name__)
 
     @property
     def pacts(self):
         """Return pacts bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: pacts" % self.__class__.__name__)
 
     @property
     def pact(self):
         """Return pact bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: pact" % self.__class__.__name__)
 
     @property
     def suppliers(self):
         """Return suppliers bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: suppliers" % self.__class__.__name__)
 
     @property
     def supplier(self):
         """Return supplier bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: supplier" % self.__class__.__name__)
 
     @property
     def orders(self):
         """Return orders bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: orders" % self.__class__.__name__)
 
     @property
     def order(self):
         """Return order bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: order" % self.__class__.__name__)
 
     @property
     def deliveries(self):
         """Return deliveries bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: deliveries" % self.__class__.__name__)
 
     @property
     def delivery(self):
         """Return delivery bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: delivery" % self.__class__.__name__)
 
     @property
     def withdrawals(self):
         """Return withdrawals bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: withdrawals" % self.__class__.__name__)
 
     @property
     def withdrawal(self):
         """Return withdrawal bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: withdrawal" % self.__class__.__name__)
 
     @property
     def products(self):
         """Return products bound to resource"""
-        raise NotImplementedError
+        raise NotImplementedError("class: %s method: products" % self.__class__.__name__)
 
     @property
     def product(self):
@@ -264,6 +264,7 @@ class Resource(object):
         """Return Referrer bound to resource"""
         raise NotImplementedError
 
+<<<<<<< HEAD
 #TODO CHECK if these methods SHOULD be removed from Resource API
 # because they are tied only to a specific resource. Leave commented now.
 # If you need them in a specific resource, implement in it
