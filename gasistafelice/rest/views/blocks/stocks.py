@@ -20,6 +20,8 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Stocks")
     BLOCK_VALID_RESOURCE_TYPES = ["supplier"] 
 
+    COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability' }
+
     def _get_user_actions(self, request):
 
         user_actions = []
