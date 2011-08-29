@@ -37,12 +37,6 @@ class Supplier(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
-    display_fields = (
-        seat, vat_number, website, flavour, 
-        fields.ResourceList(name="referrers", verbose_name=_("People")),
-        fields.ResourceList(name="pacts", verbose_name=_("Pacts")),
-    )
-
     def __unicode__(self):
         return self.name
 
@@ -114,6 +108,13 @@ class Supplier(models.Model, PermissionResource):
         #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
         return ProductCategory.objects.filter(product_set__in=self.products)
 
+    display_fields = (
+        seat, vat_number, website, flavour, 
+        fields.ResourceList(name="referrers", verbose_name=_("People")),
+        fields.ResourceList(name="pacts", verbose_name=_("Pacts")),
+    )
+
+  
 class SupplierReferrer(models.Model, PermissionResource):
 
     supplier = models.ForeignKey(Supplier)
@@ -134,7 +135,6 @@ class SupplierReferrer(models.Model, PermissionResource):
         #role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
         #role.add_principal(user)     
     
-  
 class Certification(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)

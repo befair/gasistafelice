@@ -74,13 +74,6 @@ class GAS(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
-    display_fields = (
-        website, city, headquarter, birthday, description, 
-        membership_fee, vat, fcc,
-		#fields.ResourceList(verbose_name=_("referrers"), name="referrers"),
-        association_act,
-    )
-
     #-- Meta --#
     class Meta:
         verbose_name_plural = _('GAS')
@@ -327,6 +320,13 @@ class GAS(models.Model, PermissionResource):
     @property
     def basket(self):
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
+
+    display_fields = (
+        website, city, headquarter, birthday, description, 
+        membership_fee, vat, fcc,
+		#fields.ResourceList(verbose_name=_("referrers"), name="referrers"),
+        association_act,
+    )
 
 class GASConfig(models.Model, PermissionResource):
     """
