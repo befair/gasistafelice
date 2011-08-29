@@ -176,7 +176,7 @@ jQuery.UIBlock = Class.extend({
     },
     
     render_content : function(data) {
-        //TODO fero: To be filled with ... details block?!?
+        // to be defined in subclasses (see: blocks/details.js
     }
 
 });

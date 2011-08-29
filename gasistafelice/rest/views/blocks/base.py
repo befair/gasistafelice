@@ -79,10 +79,6 @@ class BlockWithList(AbstractBlock):
         """Return add form class. Usually a FormFromModel"""
         raise NotImplementedError
 
-    def _process_valid_form(self, form):
-        """Process form which passed is_valid() check"""
-        form.save()
-
     def _add_resource(self, request):
 
         form_class = self._get_add_form_class()
@@ -90,7 +86,7 @@ class BlockWithList(AbstractBlock):
 
             form = form_class(request, request.POST)
             if form.is_valid():
-                self._process_valid_form(form)
+                form.save()
                 return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
                 
         else:

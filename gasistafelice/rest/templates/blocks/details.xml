@@ -12,7 +12,7 @@
 
 	<content type="image">
 		<img src="{{rimage}}" />
-	</content >
+	</content>
 	
 	
 	<content type="info">
@@ -33,7 +33,6 @@
 	{% endif %}
 	</content>
 	
-{% comment %}	
 	<content type="notes">
 		{% for note in notes %}
 			<note id="{{ note.id }}">
@@ -51,12 +50,14 @@
 		{% endfor %}
 	</content>
 	
+    {% include "blocks/user_actions.xml" %}
+
+{% comment %}	
 	<content type="olap_data">
 		<url> {{ olap_url }} </url>
 		<session_user> {{ olap_user }} </session_user>
 	</content>
 {% endcomment %}	
-
 
 	{% if config %}
 	<content type="info">

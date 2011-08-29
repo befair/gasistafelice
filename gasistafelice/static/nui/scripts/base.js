@@ -110,3 +110,20 @@ $(document).ajaxSend(function(event, xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
     }
 });
+
+/* Date and time formatting facilities */
+
+function format_date(d)
+{
+	return d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear();
+}
+
+function format_time(d)
+{
+	var m = d.getMinutes();
+	var s = d.getSeconds();
+	if (m < 10)  m = '0'+m;
+	if (s < 10)  s = '0'+s;
+	return d.getHours() + ":" + m + ":" + s;
+}
+		

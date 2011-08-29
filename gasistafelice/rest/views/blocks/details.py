@@ -3,6 +3,7 @@ import types
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.contrib.admin import helpers
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse, HttpResponseRedirect
@@ -17,10 +18,15 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
 from gasistafelice.lib.fields import ResourceList
-from gasistafelice.lib.shortcuts import render_to_xml_response
+from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
+from gasistafelice.rest.views.blocks.base import ResourceBlockAction
+
+from gasistafelice.auth import EDIT
+
+from gas.forms import GASSupplierOrderForm, EDIT_PactForm
 
 #from users.models import can_write_to_resource
 
@@ -35,6 +41,8 @@ DETAILS_DEFAULT_OPTIONS = {
 
 class Block(AbstractBlock):
 
+    BLOCK_NAME = "details"
+
     def __init__(self):
         super(Block, self).__init__()
 
@@ -46,7 +54,6 @@ class Block(AbstractBlock):
         
         self.start_open  = True
     
-        
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
@@ -61,10 +68,77 @@ class Block(AbstractBlock):
     #                                                                              #     
     #------------------------------------------------------------------------------#
 
+    def _get_user_actions(self, request):
+
+        user_actions = []
+
+        if request.user.has_perm(EDIT, obj=request.resource):
+            
+            user_actions.append( 
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=EDIT, verbose_name=_("Edit pact"), 
+                    popup_form=True
+                )
+            )
+
+        return user_actions
+
+    def _get_edit_form_class(self):
+        """Return edit form class. Usually a FormFromModel"""
+        klass_name = self.resource.__class__.__name__
+        if klass_name == "GASSupplierSolidalPact":
+            return EDIT_PactForm 
+
+        else:
+            raise NotImplementedError("no edit_form_class for a %s" % klass_name)
+
+    def _edit_resource(self, request):
+
+        form_class = self._get_edit_form_class()
+        if request.method == 'POST':
+
+            form = form_class(request, request.POST, instance=request.resource)
+            if form.is_valid():
+                form.save()
+                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
+                
+        else:
+            form = form_class(request, instance=request.resource)
+
+        fields = form.base_fields.keys()
+        fieldsets = form_class.Meta.gf_fieldsets
+        adminForm = helpers.AdminForm(form, fieldsets, {}) 
+
+        context = {
+            'form' : form,
+            'adminform' : adminForm,
+            'opts' : form._meta.model._meta,
+            'add'  : False,
+            'change' : True,
+            'is_popup': False,
+            'save_as' : False,
+            'save_on_top': False,
+            'has_add_permission': False,
+            'has_delete_permission': True,
+            'has_change_permission': True,
+            'show_delete' : False,
+            'errors': helpers.AdminErrorList(form, []),
+        }
+
+        return render_to_context_response(request, "html/admin_form.html", context)
+
     def get_response(self, request, resource_type, resource_id, args):
+
+        self.resource = request.resource
 
         if args == "":
             return self.render_details_block(request, resource_type, resource_id)
+        elif args == EDIT:
+            # Server-side check for permission on this view
+            if request.user.has_perm(EDIT, obj=request.resource):
+                return self._edit_resource(request)
         elif args == "new_note":
             return self.add_new_note(request, resource_type, resource_id)
         elif args == "remove_note":
@@ -147,21 +221,7 @@ class Block(AbstractBlock):
         #
         # Calculate allowed user actions
         #    
-        user_actions = []
-        
-        if settings.CAN_CHANGE_CONFIGURATION_VIA_WEB == True:
-            user = request.user
-            if can_write_to_resource(user,res):
-                if resource_type in ['container', 'node', 'target', 'measure']:
-                    
-                    if (resource_type in ['target', 'measure']):
-                        if res.suspended:
-                            user_actions.append('resume')
-                        else:
-                            user_actions.append('suspend')
-                    else:
-                        user_actions.append('resume')
-                        user_actions.append('suspend')
+        user_actions = self._get_user_actions(request)
             
         #
         # Prepere data for the templage
@@ -177,39 +237,6 @@ class Block(AbstractBlock):
             'config'        : options,
         }
         
-        #
-        # Addidional link to the BIRT report page
-        #
-        if settings.ENABLE_OLAP_REPORTS:
-
-            if resource_type in ['node','container']:
-
-            
-                """
-                url = settings.OLAP_URL_STRING % { 'resource_type' : resource_type , 'resource_id':resource_id}
-                
-                olap_data = {
-                     'olap_url' : '%s://%s:%s/%s' % (settings.OLAP_PROTOCOL, settings.OLAP_SERVER_ADDRESS, settings.OLAP_SERVER_PORT, url) 
-                    ,'olap_user_id': request.user.id
-                    ,'olap_session_id': request.COOKIES['sessionid'] 
-                    ,'olap_report_type': 'sanet_olap_no_cube/%s' % res.resource_type
-                    ,'olap_resource_type': res.resource_type
-                    ,'olap_resource_name': res.name
-                }
-                olap_data['olap_url'] = "%(olap_url)s?%(olap_resource_type)s=%(olap_resource_name)s&__report=%(olap_report_type)s.rptdesign&user_id=%(olap_user_id)s&session_id=%(olap_session_id)s" % olap_data
-                """
-            
-                olap_data = {}
-                
-                vname = "rest.views.actions.olap_reports_redirect"
-                kwargs = {'resource_type': resource_type, 'resource_id': resource_id }
-                url = reverse(vname, args=[], kwargs=kwargs)            
-            
-                olap_data['olap_url'] = url
-            
-                ctx.update(olap_data)
-
-
         #
         # RENDER 
         #
