@@ -13,9 +13,11 @@ from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 class Base_PactForm(forms.ModelForm):
         pass
 
+#-------------------------------------------------------------------------------
+
 class GAS_PactForm(Base_PactForm):
     """Form for pact management by a GAS resource"""
-    supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none())
+    supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
         super(GAS_PactForm, self).__init__(*args, **kw)
@@ -60,6 +62,8 @@ class GAS_PactForm(Base_PactForm):
         )})]
 
 
+#-------------------------------------------------------------------------------
+
 class Supplier_PactForm(Base_PactForm):
     """Form for pact management by a Supplier resource"""
 
@@ -98,4 +102,44 @@ class Supplier_PactForm(Base_PactForm):
                 'order_deliver_interval',        
         )})]
     
+#-------------------------------------------------------------------------------
+
+class EDIT_PactForm(Base_PactForm):
+    """Form for pact editing.
+
+    Support one GAS_REFERRER_SUPPLIER for each pact"""
+
+    supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
+
+    def __init__(self, request, *args, **kw):
+        self.__param_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=kw['instance'])
+        #TODO placeholder seldon-dev DEBUG!
+        raise ValueError(self.__param_role.get_users())
+        if self.__param_role.get_users():
+            kw['initial'] = kw.get('initial', {}).update({
+                'supplier_referrer' : self.__param_role.get_users()[0].person
+            })
+        super(EDIT_PactForm, self).__init__(*args, **kw)
+        self.fields['supplier_referrer'].queryset = self.__gas.persons
+
+    def save(self):
+        super(EDIT_PactForm, self).save()
+        
+        #TODO placeholder seldon-dev. Replace GAS_SUPPLIER_REFERRER
+        #In add stage was: PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['supplier_referrer'].user)
+
+    class Meta:
+
+        model = GASSupplierSolidalPact
+        fields = ('date_signed', 
+            'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval'
+        )
+
+        gf_fieldsets = [(None, { 
+            'fields' : (
+                'date_signed', 
+                ('order_minimum_amount', 'order_delivery_cost'),
+                'order_deliver_interval',        
+                'supplier_referrer',
+        )})]
 
