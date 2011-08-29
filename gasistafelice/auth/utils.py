@@ -131,8 +131,8 @@ def register_parametric_role(name, **kwargs):
     p_role = ParamRole.objects.create(role=role)
     for (k,v) in params.items():
         ct = ContentType.objects.get_for_model(v)
-        obj_id = v.id
-        p, created = Param.objects.get_or_create(name=k, content_type=ct, object_id=obj_id)
+        obj_pk = v.pk
+        p, created = Param.objects.get_or_create(name=k, content_type=ct, object_id=obj_pk)
         p_role.param_set.add(p)
         p.save()
     return p_role           
