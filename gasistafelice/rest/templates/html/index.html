@@ -459,7 +459,6 @@
                         var parent_type = parts[0];
                         var parent_id   = parts[1];
                         add_element_to_navigation_bar(parent_type, parent_id, parent_descr);
-
                     }
                 }
             });
@@ -475,6 +474,7 @@
                     var resource_id   = parts[1];
                     //alert('resource: ' + resource_urn + " " + resource_descr);
                     add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
+                    $('#page_resource').html(resource_descr);
                     document.title = "GF - " + resource_descr;
                 }
             }
@@ -1961,9 +1961,8 @@
                     <div id="app_clock" style="padding:0.2em;"></div>
                 </div>
 
-                <h1 id="app_title">
-                    <a href="{% url base.views.index %}">GASISTA FELICE</a>
-                </h1>
+                <h1 id="page_resource"> </h1>
+
                 <div class="header-actions"></div>
                 <span id="navbar"
                       history=""
