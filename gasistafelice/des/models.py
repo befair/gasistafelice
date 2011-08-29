@@ -185,8 +185,7 @@ class DES(Site, Resource):
     @property
     def suppliers(self):
         from gasistafelice.supplier.models import Supplier
-        tmp = self.pacts
-        return Supplier.objects.filter(pk__in=[obj.supplier.pk for obj in tmp])
+        return Supplier.objects.all()
 
     @property
     def orders(self):
