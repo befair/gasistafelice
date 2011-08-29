@@ -395,7 +395,7 @@ class GASConfig(models.Model, PermissionResource):
     auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
-    gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("enable auto confirmation on gasmember orders"))
+    gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if True gasmember's orders are automatically confirmed. If False each  gasmember must confirm by himself his own orders"))
 
     history = HistoricalRecords()
 
