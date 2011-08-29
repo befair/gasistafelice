@@ -50,7 +50,6 @@ class Block(AbstractBlock):
         self.description = _("Details")
         
         self.auto_refresh = False
-        self.refresh_rate = (60 * 2)
         
         self.start_open  = True
     
@@ -73,13 +72,18 @@ class Block(AbstractBlock):
         user_actions = []
 
         if request.user.has_perm(EDIT, obj=request.resource):
+            klass_name = self.resource.__class__.__name__
+            url = None
+            if klass_name == "GAS":
+                url = reverse('admin:gas_gas_change', args=(request.resource.pk,))
             
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=EDIT, verbose_name=_("Edit pact"), 
-                    popup_form=True
+                    name=EDIT, verbose_name=_("Edit"), 
+                    popup_form=True,
+                    url=url
                 )
             )
 
@@ -90,7 +94,6 @@ class Block(AbstractBlock):
         klass_name = self.resource.__class__.__name__
         if klass_name == "GASSupplierSolidalPact":
             return EDIT_PactForm 
-
         else:
             raise NotImplementedError("no edit_form_class for a %s" % klass_name)
 
