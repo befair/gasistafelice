@@ -332,18 +332,18 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 a = a.replace(/@@row_id@@/g, row_id);
                 a = a.replace(/@@resource@@/g, new jQuery.Resource(name, urn).render());
 
-                var actions = ''
+                var actions = '';
+                var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
 
-    //TODO fero: row_actions
-    //			if (resource_type == 'usercontainer') {
-    //				actions = user_actions
-    //				
-    //				usercontainer_urn = resource_type + '/' + resource_id;
-    //				
-    //				actions = actions.replace(/@@usercontainer_urn@@/, usercontainer_urn);
-    //				actions = actions.replace(/@@node_urn@@/       , urn);
-    //				
-    //			}
+                $(this).find('info_action').each(function() {
+
+                    var action = action_template.replace(/@@action_name@@/g, $(this).attr("name"));
+                    action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
+                    action = action.replace(/@@action_url@@/g, $(this).attr("url"));
+                    action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
+                    actions += action;
+                });
+
                 a = a.replace(/@@actions@@/g, actions);		
 
                 res = res.replace('@@inforow@@', a);

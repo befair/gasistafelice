@@ -16,6 +16,8 @@ class Block(BlockWithList):
     BLOCK_DESCRIPTION = _("Open orders")
     BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"] 
 
+    TEMPLATE_RESOURCE_LIST = "blocks/open_orders.xml"
+
     def _get_add_form_class(self):
         return GASSupplierOrderForm
 
