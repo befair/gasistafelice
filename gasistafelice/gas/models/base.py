@@ -686,6 +686,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
+    document = models.FileField(upload_to="/pacts/", null=True, blank=True)
+
     history = HistoricalRecords()
 
     display_fields = ()

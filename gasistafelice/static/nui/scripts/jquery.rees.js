@@ -380,14 +380,13 @@ jQuery.retrieve_form = function (action_el) {
         url : action_url, 
         success : function(d){
 
-            //AAA TODO: do we need to decouple from admin?
             form_html = $(d).find('form');
             form_html.attr('action', action_url);
             form_html.find('.submit-row').each( function () { $(this).remove();});
             form_script = $(d).find('script');
         },
         async : false,
-        dataType : "html"
+        dataType : "xml", //xml needed to evaluate script by hand later
     });
 
 	//

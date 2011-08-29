@@ -113,6 +113,7 @@ class BlockWithList(AbstractBlock):
             'has_delete_permission': True,
             'has_change_permission': False,
             'show_delete' : False,
+            'errors': helpers.AdminErrorList(form, []),
         }
 
         return render_to_context_response(request, self.TEMPLATE_ADD_FORM, context)
