@@ -473,11 +473,8 @@
                     parts = resource_urn.split('/');
                     var resource_type = parts[0];
                     var resource_id   = parts[1];
-                    if (resource_type != 'site') {
-                        //alert('resource: ' + resource_urn + " " + resource_descr);
-                        add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
-                    }
-                    
+                    //alert('resource: ' + resource_urn + " " + resource_descr);
+                    add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
                     document.title = "GF - " + resource_descr;
                 }
             }

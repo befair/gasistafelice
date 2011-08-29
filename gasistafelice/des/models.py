@@ -145,6 +145,120 @@ class DES(Site, Resource):
         else:
             return Comment.objects.filter(is_removed=False).order_by('-submit_date').all()
 
+    #-- Resource API --#
+    @property
+    def ancestors(self):
+        return []
+
+    @property
+    def site(self):
+        return self
+
+    @property
+    def gas_list(self):
+        return self.gas_set.all()
+
+    @property
+    def accounts(self):
+        #return Account.objects.all()
+        raise NotImplementedError
+
+    @property
+    def gasmembers(self):
+        from gasistafelice.gas.models.base import GASMember
+        tmp = self.gas_list
+        return GASMember.objects.filter(gas__in=tmp)
+
+    @property
+    def categories(self):
+        from gasistafelice.supplier.models import ProductCategory
+        # All categories
+        return ProductCategory.objects.all()
+
+    @property
+    def pacts(self):
+        """Return pacts bound to all GAS in DES"""
+        from gasistafelice.gas.models.base import GASSupplierSolidalPact
+        tmp = self.gas_list
+        return GASSupplierSolidalPact.objects.filter(gas__in=tmp)
+
+    @property
+    def suppliers(self):
+        from gasistafelice.supplier.models import Supplier
+        tmp = self.pacts
+        return Supplier.objects.filter(pk__in=[obj.supplier.pk for obj in tmp])
+
+    @property
+    def orders(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        tmp = self.pacts
+        return GASSupplierOrder.objects.filter(pact__in=tmp)
+
+    @property
+    def order(self):
+        #Return one order for one GAS for one supplier in this des using filtering
+        raise NotImplementedError
+
+    @property
+    def products(self):
+        from gasistafelice.supplier.models import Product
+        return Product.objects.all()
+
+    @property
+    def stocks(self):
+        from gasistafelice.supplier.models import SupplierStock
+        return SupplierStock.objects.all()
+
+    @property
+    def gasstocks(self):
+        from gasistafelice.gas.models.order import GASSupplierStock
+        return GASSupplierStock.objects.all()
+
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models.order import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.all()
+
+    @property
+    def ordered_products(self):
+        from gasistafelice.gas.models.order import GASMemberOrder
+        return GASMemberOrder.objects.all()
+
+    @property
+    def basket(self):
+        from gasistafelice.gas.models.order import GASMemberOrder
+        return GASMemberOrder.objects.filter(order__in=self.orders.open())
+
+    #TODO placeholder domthu update limits abbreviations with resource abbreviations
+    def quick_search(self, q, limits=['gn','sn','ogn','osn']):
+        """Search with limit.
+        @param q: search query
+        @param limits: limit of search.
+            * gn: GAS name
+            * sn: Supplier name
+            * ogn: Order GAS name
+            * osn: Order Supplier name
+        """
+
+        l = []
+        for i in limits:
+            i = i.lower()
+            if i == 'gn':
+                l += self.gas_list.filter(name__icontains=q)
+            if i == 'sn':
+                l += self.suppliers.filter(name__icontains=q)
+            elif i == 'ogn':
+                l += self.orders.open().filter(pact__gas__name=q)
+            elif i == 'osn':
+                l += self.orders.open().filter(pact__supplier__name=q)
+            else:
+                pass
+
+        ll = []
+        for x in l:
+            if x not in ll:
+                ll.append(x)
+        return ll
 class Siteattr(models.Model):
 
     name = models.CharField(verbose_name=_('name'), max_length=63, null=False, blank=False, db_index=True, unique=True)
