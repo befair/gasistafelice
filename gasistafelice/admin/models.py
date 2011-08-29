@@ -351,7 +351,7 @@ class GASMemberOrderAdmin(admin.ModelAdmin):
     fieldsets = ((None,
             { 'fields' : (
             'purchaser',
-            'product',
+            'order_product',
             'ordered_price',
             'ordered_amount',
             'withdrawn_amount',          

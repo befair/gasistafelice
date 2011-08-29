@@ -149,7 +149,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def ordered_amount(self):
         # grab all GASMemberOrders related to this product and issued by members of the right GAS
-        orders = self.gas_member_order_set.filter(purchaser__gas=self.gas)
+        orders = self.gasmember_order_set.filter(purchaser__gas=self.gas)
         amount = 0 
         for order in orders:         
             amount += order.ordered_amount
@@ -169,7 +169,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     """
 
     purchaser = models.ForeignKey(GASMember)
-    product = models.ForeignKey(GASSupplierOrderProduct, related_name="gas_member_order_set")
+    order_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set")
     # price of the Product at order time
     ordered_price = CurrencyField(null=True, blank=True)
     # how many Product units were ordered by the GAS member
@@ -192,15 +192,19 @@ class GASMemberOrder(models.Model, PermissionResource):
     def confirm(self):
         self.is_confirmed = True
 
+    @property
+    def product(self):
+        return self.order_product.stock.product
+
     # how much the GAS member actually payed for this Product (as resulting from the invoice)   
     @property
     def actual_price(self):
-        return self.product.delivered_price
+        return self.order_product.delivered_price
     
     # GASSupplierOrder this GASMemberOrder belongs to
     @property
     def order(self):
-        return self.product.order 
+        return self.order_product.order 
 
     # which GAS this order was issued to ? 
     @property
