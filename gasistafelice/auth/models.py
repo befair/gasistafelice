@@ -194,16 +194,16 @@ class ParamRole(models.Model):
 
             
     def get_groups(self):
-        """Returns all Groups to which this parametric role is assigned."""    
-        prrs = PrincipalParamRoleRelation.objects.filter(role=self).exclude(group=None)
-        return [prr.group for prr in prrs]
-
-    def get_users(self, content=None):
+        """Returns all Groups to which this parametric role is assigned."""
+        qs = Group.objects.filter(principal_param_role_set__role=self)
+        return qs    
+        
+    def get_users(self):
         """
         Returns all Users to which this parametric role was assigned. 
         """
-        prrs = PrincipalParamRoleRelation.objects.filter(role=self).exclude(user=None)
-        return [prr.user for prr in prrs]
+        qs = User.objects.filter(principal_param_role_set__role=self)
+        return qs
     
     def is_active(self):
         """
