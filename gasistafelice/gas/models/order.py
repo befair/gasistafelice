@@ -233,7 +233,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 #            # Set default workflow
 #            w = self.gas.config.default_workflow_gasmember_order
 #            set_workflow(self, w)
-        if not self.purchaser.gas.gasmember_auto_confirm_order:
+        if self.purchaser.gas.config.gasmember_auto_confirm_order:
             self.is_confirmed = True
         return super(GASMemberOrder, self).save()
 
