@@ -20,7 +20,7 @@ from gasistafelice.bank.models import Account
 
 from gasistafelice.des.models import DES
 
-from gasistafelice.lib import fields
+from gasistafelice.lib import fields, ClassProperty
 
 from decimal import Decimal
 
@@ -73,6 +73,15 @@ class GAS(models.Model, PermissionResource):
     #-- Managers --#
 
     history = HistoricalRecords()
+
+    display_fields = (
+        website, 
+        models.CharField(max_length=32, name="city", verbose_name=_("City")),
+        headquarter, birthday, description, 
+        membership_fee, vat, fcc,
+		#fields.ResourceList(verbose_name=_("referrers"), name="referrers"),
+        association_act,
+    )
 
     #-- Meta --#
     class Meta:
@@ -320,13 +329,6 @@ class GAS(models.Model, PermissionResource):
     @property
     def basket(self):
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
-
-    display_fields = (
-        website, city, headquarter, birthday, description, 
-        membership_fee, vat, fcc,
-		#fields.ResourceList(verbose_name=_("referrers"), name="referrers"),
-        association_act,
-    )
 
 class GASConfig(models.Model, PermissionResource):
     """
@@ -684,9 +686,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
-    account = models.ForeignKey(Account, null=True, blank=True)
-
     history = HistoricalRecords()
+
+    display_fields = ()
 
     class Meta:
         app_label = 'gas'
@@ -695,6 +697,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def __unicode__(self):
         return _("Relation between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
+    @ClassProperty
+    @classmethod
+    def resource_type(cls):
+        return "pact"
 
     @property
     def gas_supplier_referrers(self):
@@ -723,8 +729,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
         super(GASSupplierSolidalPact, self).save(*args, **kw)
 
-        if created and self.account is None:
-            self.account = Account.objects.create()
+        #if created and self.account is None:
+        #    self.account = Account.objects.create()
 
         if created and self.gas.config.auto_select_all_products:
             for st in self.supplier.stocks:
@@ -733,5 +739,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def ancestors(self):
         return [self.des, self.gas]
+
+    @property
+    def des(self):
+        return self.gas.des
 
 #-------------------------------------------------------------------------------

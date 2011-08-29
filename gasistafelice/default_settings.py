@@ -125,7 +125,11 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'people',
         'descr' : 'Partecipanti',
-        'blocks' : ['gas_list', 'suppliers', 'gasmembers']
+        'blocks' : ['gas_list', 'suppliers', 'persons']
+    },{
+        'name' : 'order',
+        'descr' : 'Ordini',
+        'blocks' : ['open_orders']
     },{
         'name' : 'info',
         'descr' : 'Scheda del DES',
@@ -138,7 +142,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
-        'blocks': ['suppliers', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
+        'blocks': ['pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
@@ -160,7 +164,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
-        'blocks': ['details', 'categories', 'gas_list'],
+        'blocks': ['details', 'categories', 'pacts'],
     }], #must be extended with economic section
 
 # 'order' resource and page are needed in order to make gasmember able to choose products.
@@ -179,6 +183,16 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'delivery',
         'descr': 'Consegna',
         'blocks': [],
+    }],
+
+    'pact' : [{
+        'name': 'info',
+        'descr': 'Info',
+        'blocks' : ['details'],
+    },{ 
+        'name' : 'stock',
+        'descr': 'Prodotti',
+        'blocks': ['gasstocks'],
     }],
 }
    

@@ -91,7 +91,7 @@ class GASAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
     fieldsets = ((_('Identity'),
-            { 'fields' : ('name', 'id_in_des', 'email_gas', 'logo', 'headquarter', 'description')
+            { 'fields' : ('name', 'id_in_des', 'email_gas', 'phone', 'logo', 'headquarter', 'description')
     }),
 # COMMENT fero: Economic state is disabled right now
 #    (_("Economic"), {
@@ -374,6 +374,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         pass
     
 admin.site.register(base_models.Person, PersonAdmin)
+admin.site.register(base_models.Contact)
 admin.site.register(base_models.Place, PlaceAdmin)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)

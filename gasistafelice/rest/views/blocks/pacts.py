@@ -1,5 +1,10 @@
-from gasistafelice.rest.views.blocks.base import BlockWithList
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+from django.core import urlresolvers
+
+from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from gasistafelice.auth import CREATE
+from gasistafelice.gas.models.base import GASSupplierSolidalPact
+from gasistafelice.gas.forms import GAS_PactForm, Supplier_PactForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -8,83 +13,36 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 class Block(BlockWithList):
 
     BLOCK_NAME = "pacts"
-    BLOCK_DESCRIPTION = _("Solidal pact list")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"]
+    BLOCK_DESCRIPTION = _("Solidal pacts")
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier"]
 
     def _get_resource_list(self, request):
         return request.resource.pacts
 
-# TODO fero CHECK
-# THIS IS USEFUL FOR USER ACTIONS: add/update/delete
-#        # Calculate allowed user actions
-#        #    
-#        user_actions = []
-#        
-#        if settings.CAN_CHANGE_CONFIGURATION_VIA_WEB == True:
-#            user = request.user
-#            if can_write_to_resource(user,res):
-#                if resource_type in ['container', 'node', 'target', 'measure']:
-#                    
-#                    if (resource_type in ['target', 'measure']):
-#                        if res.suspended:
-#                            user_actions.append('resume')
-#                        else:
-#                            user_actions.append('suspend')
-#                    else:
-#                        user_actions.append('resume')
-#                        user_actions.append('suspend')
+    def _get_user_actions(self, request):
 
-# TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
-#        elif args == "new_note":
-#            return self.add_new_note(request, resource_type, resource_id)
-#        elif args == "remove_note":
-#            return self.remove_note(request, resource_type, resource_id)
+        user_actions = []
 
-    #------------------------------------------------------------------------------#    
-    #                                                                              #     
-    #------------------------------------------------------------------------------#
+        if request.user.has_perm(CREATE, obj=GASSupplierSolidalPact):
+            user_actions.append( 
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE, verbose_name=_("Add pact"), 
+                    popup_form=True
+                )
+            )
+
+        return user_actions
         
-# TODO fero CHECK
-# THIS IS USEFUL FOR ADD/REMOVE NEW GAS
-#    def add_new_note(self,request, resource_type, resource_id):
-#        resource = request.resource
-#        
-#        if request.POST:
-#            
-#            #title = request.REQUEST.get('title');
-#            body  = request.REQUEST.get('body');
-#            
-#            new_comment = Comment(content_object = resource
-#                             ,site = DjangoSite.objects.all()[0]
-#                             ,user = request.user
-#                             ,user_name = request.user.username
-#                             ,user_email = request.user.email
-#                             ,user_url = ''
-#                             ,comment = body
-#                             ,ip_address = None
-#                             ,is_public = True
-#                             ,is_removed = False                       
-#                             )
-#                        
-#            new_comment.save()
-#
-#            return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
-#            
-#        return HttpResponse('')
-#            
-#    #------------------------------------------------------------------------------#    
-#    #                                                                              #     
-#    #------------------------------------------------------------------------------#
-#            
-#    def remove_note(self, request, resource_type, resource_id):
-#        
-#        resource = request.resource
-#        
-#        note_id = request.REQUEST.get('note_id')
-#        
-#        note = Comment.objects.get(id=note_id)
-#        note.delete()
-#
-#        return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
-        
+    def _get_add_form_class(self):
+
+        #TODO use content type framework
+        ct_name = self.resource.__class__.__name__
+        if ct_name == "GAS":
+            return GAS_PactForm
+        elif ct_name == "Supplier":
+            return Supplier_PactForm
+        else:
+            raise NotImplementedError("No add form for GASSupplierSolidalPact within a %s" % ct_name)
+

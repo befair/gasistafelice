@@ -39,30 +39,3 @@ class Block(BlockWithList):
              ]
         return user_actions
 
-#            user_actions.append(self.ACTION_CREATE)
-#
-#        if request.user.has_perm(EDIT, obj=Supplier):
-#            user_actions += [
-#                ResourceBlockAction( 
-#                    block_name = self.BLOCK_NAME,
-#                    resource = request.resource,
-#                    name=VIEW, verbose_name=_("Show stock"), 
-#                    popup_form=False,
-#                ),
-#                ResourceBlockAction( 
-#                    block_name = self.BLOCK_NAME,
-#                    resource = request.resource,
-#                    name=EDIT_MULTIPLE, verbose_name=_("Edit stock"), 
-#                    popup_form=False,
-#                ),
-#            ]
-#
-#
-#        # Actions
-#        ACTION_CREATE = Action(
-#            name=CREATE, 
-#            verbose_name=_("Open a new order"), 
-#        )
-
-        return user_actions
-

@@ -145,6 +145,37 @@ class DES(Site, Resource):
         else:
             return Comment.objects.filter(is_removed=False).order_by('-submit_date').all()
 
+    #TODO placeholder domthu update limits abbreviations with resource abbreviations
+    def quick_search(self, q, limits=['gn','sn','ogn','osn']):
+        """Search with limit.
+        @param q: search query
+        @param limits: limit of search.
+            * gn: GAS name
+            * sn: Supplier name
+            * ogn: Order GAS name
+            * osn: Order Supplier name
+        """
+
+        l = []
+        for i in limits:
+            i = i.lower()
+            if i == 'gn':
+                l += self.gas_list.filter(name__icontains=q)
+            if i == 'sn':
+                l += self.suppliers.filter(name__icontains=q)
+            elif i == 'ogn':
+                l += self.orders.open().filter(pact__gas__name=q)
+            elif i == 'osn':
+                l += self.orders.open().filter(pact__supplier__name=q)
+            else:
+                pass
+
+        ll = []
+        for x in l:
+            if x not in ll:
+                ll.append(x)
+        return ll
+
     #-- Resource API --#
     @property
     def ancestors(self):
@@ -157,6 +188,11 @@ class DES(Site, Resource):
     @property
     def gas_list(self):
         return self.gas_set.all()
+
+    @property
+    def persons(self):
+        from gasistafelice.base.models import Person
+        return Person.objects.all()
 
     @property
     def accounts(self):
@@ -228,36 +264,6 @@ class DES(Site, Resource):
         from gasistafelice.gas.models.order import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
-    #TODO placeholder domthu update limits abbreviations with resource abbreviations
-    def quick_search(self, q, limits=['gn','sn','ogn','osn']):
-        """Search with limit.
-        @param q: search query
-        @param limits: limit of search.
-            * gn: GAS name
-            * sn: Supplier name
-            * ogn: Order GAS name
-            * osn: Order Supplier name
-        """
-
-        l = []
-        for i in limits:
-            i = i.lower()
-            if i == 'gn':
-                l += self.gas_list.filter(name__icontains=q)
-            if i == 'sn':
-                l += self.suppliers.filter(name__icontains=q)
-            elif i == 'ogn':
-                l += self.orders.open().filter(pact__gas__name=q)
-            elif i == 'osn':
-                l += self.orders.open().filter(pact__supplier__name=q)
-            else:
-                pass
-
-        ll = []
-        for x in l:
-            if x not in ll:
-                ll.append(x)
-        return ll
 class Siteattr(models.Model):
 
     name = models.CharField(verbose_name=_('name'), max_length=63, null=False, blank=False, db_index=True, unique=True)

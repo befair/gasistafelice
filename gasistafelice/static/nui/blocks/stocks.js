@@ -12,7 +12,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
-                "sAjaxSource": this.dataSource,
+                "sAjaxSource": this.dataSource + "?render_as=table",
                 "aoColumns": [
                     null,
                     null,

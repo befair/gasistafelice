@@ -62,6 +62,7 @@ class BlockWithList(AbstractBlock):
 
     TEMPLATE_ADD_FORM = "html/admin_form.html"
     TEMPLATE_RESOURCE_LIST = "blocks/resource_list.xml"
+    TEMPLATE_RESOURCE_LIST_WITH_DETAILS = "blocks/resource_list_with_details.xml"
 
     #TODO fero
     #def options_response(self, request, resource_type, resource_id):
@@ -122,7 +123,7 @@ class BlockWithList(AbstractBlock):
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        resource = request.resource
+        self.resource = resource = request.resource
 
         if args == "":
 
