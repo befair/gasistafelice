@@ -300,6 +300,10 @@ class GAS(models.Model, PermissionResource):
         return self.gasmember_set.all()
 
     @property
+    def persons(self):
+        return Person.objects.filter(gasmember__in=self.gasmembers)
+
+    @property
     def stocks(self):
         return SupplierStock.objects.filter(supplier__in=self.suppliers)
 
@@ -643,7 +647,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     >>> pds.supplier = s1
     >>> pds.save()
     >>> print pds
-    Relation between GAS1 and Supplier1
+    Pact between GAS1 and Supplier1
 
     >>> from gasistafelice.gas.models.base import *
     >>> from gasistafelice.gas.models.order import *
@@ -686,7 +690,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
-    document = models.FileField(upload_to="/pacts/", null=True, blank=True)
+    #document = models.FileField(upload_to="/pacts/", null=True, blank=True)
 
     history = HistoricalRecords()
 
@@ -697,7 +701,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         unique_together = (('gas', 'supplier'),)
 
     def __unicode__(self):
-        return _("Relation between %(gas)s and %(supplier)s") % \
+        return _("Pact between %(gas)s and %(supplier)s") % \
                       { 'gas' : self.gas, 'supplier' : self.supplier}
     @ClassProperty
     @classmethod

@@ -94,7 +94,7 @@ class Resource(object):
 
     def as_dict(self):
         return {
-            'name': self.name,
+            'name': unicode(self),
             'urn' : self.urn,
         }
 
