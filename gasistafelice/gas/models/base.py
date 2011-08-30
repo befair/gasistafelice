@@ -759,4 +759,27 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def des(self):
         return self.gas.des
 
+    #-- Permission management --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, **kwargs):
+        ## only GAS administrators can create a new pact for their GAS
+        try:
+            gas = kwargs['gas']
+        except KeyError:
+            raise SyntaxError("You need to specify a 'gas' argument to perform this permission check.")
+        return user in gas.tech_referrers
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, **kwargs):
+        # only GAS technical referrers and referrers for this pact can edit pact details
+        return (user in self.gas.tech_referrers) or (user in self.gas_supplier_referrers) 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, **kwargs):
+        # only GAS technical referrers can delete a pact in a GAS
+        return user in self.gas.tech_referrers       
+
+
 #-------------------------------------------------------------------------------
