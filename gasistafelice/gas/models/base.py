@@ -194,7 +194,7 @@ class GAS(models.Model, PermissionResource):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
@@ -521,12 +521,11 @@ class GASMember(models.Model, PermissionResource):
 
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
+        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         user = self.person.user
         #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
         if user is None:
             return ""
-        #TODO: fixtures create user foreach person
-        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
 
     def clean(self):
@@ -727,8 +726,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)     
-    
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
+
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
