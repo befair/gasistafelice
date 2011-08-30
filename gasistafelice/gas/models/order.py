@@ -9,6 +9,8 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
+from gasistafelice.lib import fields, ClassProperty
+from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
 from gasistafelice.auth.models import ParamRole
@@ -43,6 +45,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
     objects = OrderManager()
     history = HistoricalRecords()
 
+    display_fields = (
+        date_start, date_end, order_minimum_amount, delivery, withdrawal
+    )
+    @ClassProperty
+    @classmethod
+    def resource_type(cls):
+        return "order"
+    
     @property
     def gas(self):
         """Return the GAS issuing this order."""
@@ -52,6 +62,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def supplier(self):
         """Return the supplier this order is placed against."""
         return self.pact.supplier        
+    
+    @property
+    def suppliers(self):
+        return Supplier.objects.filter(pk=self.supplier.pk)
     
 #-------------------------------------------------------------------------------#
 # Model Archive API

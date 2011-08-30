@@ -26,7 +26,7 @@ from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 
 from gasistafelice.auth import EDIT
 
-from gas.forms import GASSupplierOrderForm, EDIT_PactForm
+from gas.forms import order, EDIT_PactForm
 
 #from users.models import can_write_to_resource
 
@@ -94,6 +94,8 @@ class Block(AbstractBlock):
         klass_name = self.resource.__class__.__name__
         if klass_name == "GASSupplierSolidalPact":
             return EDIT_PactForm 
+        if klass_name == "GASSupplierOrder":
+            return order.form_class_factory_for_request(self.request)
         else:
             raise NotImplementedError("no edit_form_class for a %s" % klass_name)
 
@@ -134,6 +136,7 @@ class Block(AbstractBlock):
 
     def get_response(self, request, resource_type, resource_id, args):
 
+        self.request = request
         self.resource = request.resource
 
         if args == "":
