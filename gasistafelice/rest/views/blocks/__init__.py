@@ -138,7 +138,7 @@ class AbstractBlock(object):
                      start_open="%s" \
                 />' % (
             self.block_name,
-            '%s' % (str(self.get_description())),
+            '%s' % (self.get_description()),
             block_urn,
             str(resource),
             self.refresh_rate,
