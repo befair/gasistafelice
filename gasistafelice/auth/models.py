@@ -186,9 +186,11 @@ class ParamRole(models.Model):
         Raise `TypeError` if the principal is neither a User nor a Group instance.
         """
         if isinstance(principal, User):
-            PrincipalParamRoleRelation.objects.create(user=principal, role=self)
+            #PrincipalParamRoleRelation.objects.create(user=principal, role=self)
+            xobj, xcreated = PrincipalParamRoleRelation.objects.get_or_create(user=principal, role=self)
         elif isinstance(principal, Group):
-            PrincipalParamRoleRelation.objects.create(group=principal, role=self)
+            #PrincipalParamRoleRelation.objects.create(group=principal, role=self)
+            xobj, xcreated = PrincipalParamRoleRelation.objects.get_or_create(group=principal, role=self)
         else:
             raise TypeError("The principal must be either a User instance or a Group instance.")   
 

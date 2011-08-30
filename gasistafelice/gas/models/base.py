@@ -404,8 +404,7 @@ class GASConfig(models.Model, PermissionResource):
     auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
-
-    gasmember_auto_confirm_order = False #TODO domthu placeholder: replace this line with the appropriate field
+    gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if True gasmember's orders are automatically confirmed. If False each  gasmember must confirm by himself his own orders"))
 
     history = HistoricalRecords()
 
@@ -531,12 +530,12 @@ class GASMember(models.Model, PermissionResource):
 
     def setup_roles(self):
         # automatically add a new GASMember to the `GAS_MEMBER` Role
+        #TODO: fixtures create user foreach person
+        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         user = self.person.user
         #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
         if user is None:
             return ""
-        #TODO: fixtures create user foreach person
-        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
         role.add_principal(user)
 
     def clean(self):
@@ -738,8 +737,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
-        register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)     
-    
+        register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
+
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return "" 
