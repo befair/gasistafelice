@@ -7,6 +7,11 @@ admin.autodiscover()
 
 from gasistafelice.gas_admin.models import gas_admin
 
+js_info_dict = {
+    'domain'  : 'djangojs',
+    'packages': ('gasistafelice.localejs',),
+}
+
 urlpatterns = patterns('',
 
 	(r'^$'       , 'base.views.index'  ),
@@ -19,6 +24,8 @@ urlpatterns = patterns('',
 
     (r'^gas-admin/', include(gas_admin.urls)),
     (r'^admin/', include(admin.site.urls)),
+
+	(r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
 
 )
 

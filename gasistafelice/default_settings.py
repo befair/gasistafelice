@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'permissions',
     'workflows',
     'history',
+    'gasistafelice.localejs',
     'gasistafelice.auth',
     'gasistafelice.base',
     'gasistafelice.bank',

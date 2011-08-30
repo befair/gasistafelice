@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-30 17:33+0200\n"
+"POT-Creation-Date: 2011-08-30 18:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,7 +133,7 @@ msgstr "Prodotti ordinati"
 msgid "Nobody"
 msgstr "Nessuno"
 
-#: auth/__init__.py:19 auth/models.py:93 rest/templates/html/index.html:2033
+#: auth/__init__.py:19 auth/models.py:93 rest/templates/html/index.html:2025
 msgid "Supplier"
 msgstr "Fornitore"
 
@@ -225,7 +225,7 @@ msgstr "La specifica %(s)s è errata per il ruolo %(r)s"
 msgid "GAS"
 msgstr "GAS"
 
-#: auth/models.py:94 rest/templates/html/index.html:2037
+#: auth/models.py:94 rest/templates/html/index.html:2029
 msgid "Order"
 msgstr "Ordine"
 
@@ -304,55 +304,55 @@ msgstr "Sabato"
 msgid "Sunday"
 msgstr "Domenica"
 
-#: base/models.py:345
+#: base/models.py:351
 msgid "Write your social security number here"
 msgstr "Inserisci il tuo Codice Fiscale"
 
-#: base/models.py:353
+#: base/models.py:359
 msgid "person"
 msgstr "Persona"
 
-#: base/models.py:354
+#: base/models.py:360
 msgid "persons"
 msgstr "Persone"
 
-#: base/models.py:528
+#: base/models.py:534
 msgid "contact"
 msgstr "Contatto"
 
-#: base/models.py:529
+#: base/models.py:535
 msgid "contacts"
 msgstr "Contatti"
 
-#: base/models.py:544
+#: base/models.py:550
 msgid "You can avoid to specify a name if you specify an address"
 msgstr "Puoi evitare di indicare un name se indichi un indirizzo"
 
-#: base/models.py:548
+#: base/models.py:554
 msgid "Zip code"
 msgstr "Codice Postale"
 
-#: base/models.py:551
+#: base/models.py:557
 msgid "Insert the province code here (max 2 char)"
 msgstr "Inserisci il codice della provincia (2 caratteri)"
 
-#: base/models.py:560
+#: base/models.py:566
 msgid "place"
 msgstr "Luogo"
 
-#: base/models.py:561
+#: base/models.py:567
 msgid "places"
 msgstr "Luoghi"
 
-#: base/models.py:592
+#: base/models.py:598
 msgid "default transition"
 msgstr "Transizione di default"
 
-#: base/models.py:593
+#: base/models.py:599
 msgid "default transitions"
 msgstr "Transizioni di default"
 
-#: base/models.py:621
+#: base/models.py:627
 #, python-format
 msgid ""
 "Workflow specifications are not consistent.\n"
@@ -472,12 +472,12 @@ msgstr "Indirizzo e-mail del presidente"
 msgid "City"
 msgstr ""
 
-#: gas/models/base.py:234
+#: gas/models/base.py:230
 #, python-format
 msgid "You have to bind GAS %s to a DES"
 msgstr "Devi collegare il GAS %s ad un DES"
 
-#: gas/models/base.py:364
+#: gas/models/base.py:360
 msgid ""
 "GAS can change supplier products price (i.e. to hold some funds for the GAS "
 "itself)"
@@ -485,7 +485,7 @@ msgstr ""
 "I GAS possomo modifcare i prezzi dei prodotti praticati dai fornitori (ad. "
 "es. per finanziare l'attività del GAS)"
 
-#: gas/models/base.py:368
+#: gas/models/base.py:364
 msgid ""
 "GAS views open orders by supplier. If disabled, views open order by delivery "
 "appointment"
@@ -493,23 +493,23 @@ msgstr ""
 "Il GAS visualizza gli ordini aperti in ordine di fornitore. Se disattivato, "
 "li visualizza in ordine di appuntamento di consegna"
 
-#: gas/models/base.py:373
+#: gas/models/base.py:369
 msgid "default closing order day of the week"
 msgstr "giorno della settimana in cui solitamente si chiudono gli ordini"
 
-#: gas/models/base.py:377
+#: gas/models/base.py:373
 msgid "default delivery day of the week"
 msgstr "giorno della settimana in cui solitamente si consegnano gli ordini"
 
-#: gas/models/base.py:383
+#: gas/models/base.py:379
 msgid "default order closing hour and minutes"
 msgstr "ora e minuto in cui solitamente si chiudono gli ordini"
 
-#: gas/models/base.py:387
+#: gas/models/base.py:383
 msgid "default delivery closing hour and minutes"
 msgstr "ora e minuto in cui di solito si chiudono le consegne"
 
-#: gas/models/base.py:391
+#: gas/models/base.py:387
 msgid ""
 "If False, GAS uses only one withdrawal place that is the default or if not "
 "set it is the GAS headquarter"
@@ -517,7 +517,7 @@ msgstr ""
 "se Falso, il GAS usa solo un luogo di ritiro che è quello predefinito, "
 "altrimenti se non è definito usa la sede del GAS"
 
-#: gas/models/base.py:395
+#: gas/models/base.py:391
 msgid ""
 "If False, GAS uses only one delivery place that is the default or if not set "
 "it is the GAS headquarter"
@@ -525,15 +525,15 @@ msgstr ""
 "se Falso, il GAS usa solo un luogo di consegna che è quello predefinito, "
 "altrimenti se non è definito usa la sede del GAS"
 
-#: gas/models/base.py:401
+#: gas/models/base.py:397
 msgid "to specify if different from headquarter"
 msgstr "da specificare se è diverso dalla sede"
 
-#: gas/models/base.py:402
+#: gas/models/base.py:398
 msgid "to specify if different from delivery place"
 msgstr "da specificare se è diverso dal luogo di consegna"
 
-#: gas/models/base.py:404
+#: gas/models/base.py:400
 msgid ""
 "automatic selection of all products bound to a supplier when a relation with "
 "the GAS is activated"
@@ -541,62 +541,62 @@ msgstr ""
 "selezione automatica di tutti i prodotti legati ad un fornitore quando una "
 "relazione con il GAS è attiva."
 
-#: gas/models/base.py:414 gas/models/base.py:415
+#: gas/models/base.py:410 gas/models/base.py:411
 msgid "GAS options"
 msgstr "opzioni del GAS"
 
-#: gas/models/base.py:419
+#: gas/models/base.py:415
 #, python-format
 msgid "Configuration for GAS \"%s\""
 msgstr "Configurazione per il GAS \"%s\""
 
-#: gas/models/base.py:459
+#: gas/models/base.py:455
 msgid "Card number"
 msgstr "numero di tessera"
 
-#: gas/models/base.py:459
+#: gas/models/base.py:455
 msgid "GAS card number"
 msgstr "numero di tessera del GAS"
 
-#: gas/models/base.py:462
+#: gas/models/base.py:458
 msgid "When was the last the annual quote payment"
 msgstr "Ultimo pagamento della quota associativa"
 
-#: gas/models/base.py:473
+#: gas/models/base.py:469
 #, fuzzy, python-format
 msgid "%(person)s in GAS \"%(gas)s\""
 msgstr "%(person)s del GAS %(gas)s"
 
-#: gas/models/base.py:514
+#: gas/models/base.py:510
 #, python-format
 msgid "%(id_in_gas)s - %(gas_member)s"
 msgstr "%(id_in_gas)s - %(gas_member)s"
 
-#: gas/models/base.py:546
+#: gas/models/base.py:542
 msgid "GAS Members must be registered users"
 msgstr "I membri del GAS devono essere utenti registrati"
 
-#: gas/models/base.py:643
+#: gas/models/base.py:640
 msgid "GAS supplier stock"
 msgstr "Stock fornitore-GAS"
 
-#: gas/models/base.py:644
+#: gas/models/base.py:641
 msgid "GAS supplier stocks"
 msgstr "Stocks fornitore-GAS"
 
-#: gas/models/base.py:684
+#: gas/models/base.py:681
 msgid "date of first meeting GAS-Producer"
 msgstr "data del primo incontro dei Produttori del GAS"
 
-#: gas/models/base.py:701
+#: gas/models/base.py:698
 msgid "Withdrawal week day agreement"
 msgstr "Giorno accordato per il prelievo settimanale"
 
-#: gas/models/base.py:704
+#: gas/models/base.py:701
 msgid "withdrawal time agreement"
 msgstr "ora accordata per il prelievo"
 
-#: gas/models/base.py:720
+#: gas/models/base.py:717
 #, fuzzy, python-format
 msgid "Pact between %(gas)s and %(supplier)s"
 msgstr "Relazione tra %(gas)s e %(supplier)s"
@@ -735,7 +735,7 @@ msgstr "Aggiungi"
 
 #: gas_admin/templates/gas_admin/change_form.html:28
 #: gas_admin/templates/gas_admin/object_history.html:10
-#: rest/templates/html/index.html:2085
+#: rest/templates/html/index.html:2077
 msgid "History"
 msgstr "Storia"
 
@@ -865,12 +865,14 @@ msgid ""
 msgstr ""
 
 #: gas_admin/templates/gas_admin/login.html:19
+#, fuzzy
 msgid "Username:"
-msgstr ""
+msgstr "%(name)s"
 
 #: gas_admin/templates/gas_admin/login.html:22
+#, fuzzy
 msgid "Password:"
-msgstr ""
+msgstr "Password"
 
 #: gas_admin/templates/gas_admin/login.html:26
 msgid "Log in"
@@ -881,7 +883,7 @@ msgid "Date/time"
 msgstr ""
 
 #: gas_admin/templates/gas_admin/object_history.html:23
-#: rest/models/blocks.py:22 rest/templates/html/index.html:1953
+#: rest/models/blocks.py:22 rest/templates/html/index.html:1945
 msgid "User"
 msgstr ""
 
@@ -932,99 +934,100 @@ msgstr ""
 msgid "Node's notes"
 msgstr ""
 
-#: rest/templates/html/index.html:1955
+#: rest/templates/html/index.html:1947
 msgid "Role"
 msgstr ""
 
-#: rest/templates/html/index.html:1957
+#: rest/templates/html/index.html:1949
 msgid "Logout"
 msgstr ""
 
-#: rest/templates/html/index.html:1998 rest/templates/html/index.html:2083
-#: rest/templates/html/index.html:2230 rest/templates/html/index.html:2238
+#: rest/templates/html/index.html:1990 rest/templates/html/index.html:2075
+#: rest/templates/html/index.html:2222 rest/templates/html/index.html:2230
 msgid "Minimize block"
 msgstr ""
 
-#: rest/templates/html/index.html:2000
+#: rest/templates/html/index.html:1992
 msgid "Search"
 msgstr ""
 
-#: rest/templates/html/index.html:2013
+#: rest/templates/html/index.html:2005
 msgid "Enter search keyword here"
 msgstr ""
 
-#: rest/templates/html/index.html:2018 rest/templates/html/index.html:2019
+#: rest/templates/html/index.html:2010 rest/templates/html/index.html:2011
 msgid "Reset search"
 msgstr ""
 
-#: rest/templates/html/index.html:2022
+#: rest/templates/html/index.html:2014
+#, fuzzy
 msgid "Options"
-msgstr ""
+msgstr "opzioni del GAS"
 
-#: rest/templates/html/index.html:2030 rest/templates/html/index.html:2034
+#: rest/templates/html/index.html:2022 rest/templates/html/index.html:2026
 #: sanet_users/models.py:149
 msgid "Name"
 msgstr ""
 
-#: rest/templates/html/index.html:2038
+#: rest/templates/html/index.html:2030
 #, fuzzy
 msgid "GAS name"
 msgstr "Gasista"
 
-#: rest/templates/html/index.html:2039
+#: rest/templates/html/index.html:2031
 #, fuzzy
 msgid "Supplier name"
 msgstr "Fornitore"
 
-#: rest/templates/html/index.html:2082
+#: rest/templates/html/index.html:2074
 msgid "Refresh history"
 msgstr ""
 
-#: rest/templates/html/index.html:2163 sanet_users/views/__init__.py:179
+#: rest/templates/html/index.html:2155 sanet_users/views/__init__.py:179
 msgid "User page"
 msgstr ""
 
-#: rest/templates/html/index.html:2222 rest/templates/html/index.html:2237
+#: rest/templates/html/index.html:2214 rest/templates/html/index.html:2229
 msgid "Refresh block now"
 msgstr ""
 
-#: rest/templates/html/index.html:2229 rest/templates/html/index.html:2236
+#: rest/templates/html/index.html:2221 rest/templates/html/index.html:2228
 msgid "Set to full screen"
 msgstr ""
 
-#: rest/templates/html/index.html:2257
+#: rest/templates/html/index.html:2249
 msgid "Select the resource type"
 msgstr ""
 
-#: rest/templates/html/index.html:2260
+#: rest/templates/html/index.html:2252
 msgid "Site"
 msgstr ""
 
-#: rest/templates/html/index.html:2261
+#: rest/templates/html/index.html:2253
 msgid "Container"
 msgstr ""
 
-#: rest/templates/html/index.html:2262
+#: rest/templates/html/index.html:2254
 msgid "Node"
 msgstr ""
 
-#: rest/templates/html/index.html:2263
+#: rest/templates/html/index.html:2255
 msgid "Interface"
 msgstr ""
 
-#: rest/templates/html/index.html:2264
+#: rest/templates/html/index.html:2256
 msgid "Target"
 msgstr ""
 
-#: rest/templates/html/index.html:2265
+#: rest/templates/html/index.html:2257
 msgid "Measure"
 msgstr ""
 
-#: rest/templates/html/index.html:2269
+#: rest/templates/html/index.html:2261
 msgid "Select the resource"
 msgstr ""
 
-#: rest/templates/html/index.html:2274
+#: rest/templates/html/index.html:2266
 msgid "Select the data block type"
 msgstr ""
 
@@ -1051,47 +1054,41 @@ msgstr ""
 
 #: rest/views/blocks/basket.py:37
 msgid "Confirm all"
-msgstr ""
+msgstr "Conferma tutto"
 
 #: rest/views/blocks/catalog_list.py:11
 msgid "Lista prodotti supplier/gas in ordine"
 msgstr ""
 
 #: rest/views/blocks/categories.py:11
-#, fuzzy
 msgid "Categories"
 msgstr "Categorie di prodotti"
 
 #: rest/views/blocks/closed_orders.py:11
-#, fuzzy
 msgid "Closed orders"
-msgstr "Ordini aperti"
+msgstr "Ordini chiusi"
 
 #: rest/views/blocks/details.py:53
 msgid "Details"
-msgstr ""
+msgstr "Dettali"
 
 #: rest/views/blocks/gas_list.py:31
 msgid "Add GAS"
-msgstr ""
+msgstr "Aggiungi GAS"
 
 #: rest/views/blocks/gasmember_list.py:11
-#, fuzzy
 msgid "GAS Members"
-msgstr "Gasista"
+msgstr "Gasisti"
 
 #: rest/views/blocks/gasmembers.py:15
-#, fuzzy
 msgid "GAS members"
-msgstr "Gasista"
+msgstr "gasisti"
 
 #: rest/views/blocks/gasmembers.py:30
-#, fuzzy
 msgid "Add GAS member"
-msgstr "Gasista"
+msgstr "Aggiungi gasista"
 
 #: rest/views/blocks/gasstocks.py:20
-#, fuzzy
 msgid "GAS Stocks"
 msgstr "Stocks fornitore-GAS"
 
@@ -1103,7 +1100,7 @@ msgstr ""
 #: rest/views/blocks/gasstocks.py:40 rest/views/blocks/order_report.py:40
 #: rest/views/blocks/order_stocks.py:40 rest/views/blocks/stocks.py:40
 msgid "Edit stock"
-msgstr ""
+msgstr "Modifica stock"
 
 #: rest/views/blocks/menu.py:21
 msgid "Context menu"
@@ -1182,8 +1179,9 @@ msgid "Insert User Name and Password"
 msgstr ""
 
 #: sanet_users/templates/login.html:125
+#, fuzzy
 msgid "Username"
-msgstr ""
+msgstr "%(name)s"
 
 #: sanet_users/templates/login.html:133
 msgid "Remember me"
@@ -1194,20 +1192,24 @@ msgid "Login"
 msgstr ""
 
 #: sanet_users/templates/forms/password_change.html:11
+#, fuzzy
 msgid "Old password:"
-msgstr ""
+msgstr "Password"
 
 #: sanet_users/templates/forms/password_change.html:13
+#, fuzzy
 msgid "New password:"
-msgstr ""
+msgstr "Cambia password"
 
 #: sanet_users/templates/forms/password_change.html:15
+#, fuzzy
 msgid "Confirm password:"
-msgstr ""
+msgstr "Cambia password"
 
 #: sanet_users/templates/forms/password_change.html:17
+#, fuzzy
 msgid "Change my password"
-msgstr ""
+msgstr "Cambia password"
 
 #: sanet_users/templates/forms/password_change_done.html:7
 msgid "Password change successful"
@@ -1245,6 +1247,10 @@ msgstr "Nome alternativo"
 #, python-format
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
+
+#, fuzzy
+#~ msgid "Product"
+#~ msgstr "Prodotti"
 
 #, fuzzy
 #~ msgid "Solidal pact list"
