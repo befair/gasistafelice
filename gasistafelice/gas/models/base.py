@@ -597,6 +597,7 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def basket(self):
+        from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(product__order__in=self.orders.open())
 
 class GASSupplierStock(models.Model, PermissionResource):

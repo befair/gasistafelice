@@ -1,0 +1,79 @@
+[
+    {
+        "pk": 11, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "DES_ADMIN"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_MEMBER"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_CASH"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_DELIVERY"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_ORDER"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_SUPPLIER"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_TECH"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_WITHDRAWAL"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "NOBODY"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "SUPPLIER_REFERRER"
+        }
+    }
+]
