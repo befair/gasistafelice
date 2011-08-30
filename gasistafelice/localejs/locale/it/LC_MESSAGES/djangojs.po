@@ -1,0 +1,740 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-30 18:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: blocks/advsearch.js:110 blocks/alarms.js:25 blocks/calendar.js:114
+#: blocks/details.js:717 blocks/globalstatus.js:25 blocks/gmap.js:153
+#: blocks/googlemap.js:551 blocks/googlemap.js.py:571 blocks/googlemap.js:604
+#: blocks/graph.js:34 blocks/ifaces.js:161 blocks/inventory_blk.js:117
+#: blocks/inventory_blk.js.py:220 blocks/inventory_blk.js:308
+#: blocks/inventory_blk.js.py:398 blocks/inventory_blk.js:466
+#: blocks/inventory_blk.js.py:570 blocks/inventory_blk.js:863
+#: blocks/inventory_blk.js.py:896 blocks/inventory_blk.js:961
+#: blocks/inventory_blk.js.py:988 blocks/inventory_blk.js:1050
+#: blocks/inventory_blk.js.py:1084 blocks/inventory_blk.js:1147
+#: blocks/inventory_blk.js.py:1199 blocks/inventory_blk.js:1207
+#: blocks/inventory_blk.js.py:1302 blocks/inventory_blk.js:1355
+#: blocks/inventory_blk.js.py:1509 blocks/inventory_blk.js:1540
+#: blocks/inventory_blk.js.py:1605 blocks/inventory_blk.js:1627
+#: blocks/inventory_blk.js.py:1663 blocks/ipmon_data.js:42 blocks/map.js:25
+#: blocks/measures.js:461 blocks/measures.js.py:788 blocks/nodes.js:147
+#: blocks/periodicreport_info.js:32 blocks/periodicreports_list.js:195
+#: blocks/reach_analysis.js:81 blocks/reports_list.js:190 blocks/rstate.js:141
+#: blocks/showcontainer.js:400 blocks/states_count.js:134
+#: blocks/states_logack.js:1314 blocks/status_rtt.js:84 blocks/targets.js:511
+#: blocks/targets2.js:477 blocks/targets2.js.py:591 blocks/usersettings.js:76
+msgid "An error occurred while retring the data from server"
+msgstr "Si è verificato un errore durante la lettura dei dati dal server"
+
+#: blocks/calendar.js:44
+msgid "Target"
+msgstr "Target"
+
+#: blocks/calendar.js:45 blocks/targets.js:203
+msgid "State"
+msgstr "Stato"
+
+#: blocks/calendar.js:46 blocks/targets2.js:696
+msgid "Node"
+msgstr "Nodo"
+
+#: blocks/calendar.js:47
+msgid "Interface"
+msgstr "Interfaccia"
+
+#: blocks/calendar.js:48 blocks/states_logack.js:224
+msgid "Description"
+msgstr "Descrizione"
+
+#
+# BLOCK 'details'
+#
+#: blocks/details.js:11
+msgid "Text"
+msgstr "Testo"
+
+#: blocks/details.js:50 blocks/periodicreports_list.js:29
+#: blocks/reports_list.js:35 blocks/states_logack.js:155
+#: blocks/states_logack.js.py:557
+msgid "Confirm"
+msgstr "Conferma"
+
+#: blocks/details.js:60
+msgid "New note"
+msgstr "Nuova nota"
+
+#: blocks/details.js:82
+msgid "Do you really want to delete this note?"
+msgstr "Sei sicuro di voler cancellare la nota?"
+
+#: blocks/details.js:114
+msgid "Suspend resourse"
+msgstr "Motivazioni suggerite"
+
+#: blocks/googlemap.js:58
+msgid "Save center/zoom"
+msgstr "Salva centro/zoom"
+
+#: blocks/googlemap.js:61
+msgid "Show node names"
+msgstr "Nomi nodi"
+
+#: blocks/googlemap.js:63
+msgid "Show links"
+msgstr "Link"
+
+#: blocks/googlemap.js:65
+msgid "Link size"
+msgstr "Spessore link"
+
+#: blocks/googlemap.js:69
+msgid "Link bend factor"
+msgstr "Curvatura link"
+
+#: blocks/googlemap.js:73
+msgid "Icon size"
+msgstr "Dimensione icone"
+
+#: blocks/ifaces.js:4 blocks/nodes.js:4
+msgid "Do you really want to remove this element from this list?"
+msgstr "Sei sicuro di voler togliere il nodo dall'elenco?"
+
+#: blocks/ifaces.js:66 blocks/nodes.js:59
+msgid "remove"
+msgstr "Rimuovi"
+
+#: blocks/ifaces.js:130 blocks/nodes.js:116
+msgid "There are no ifaces related to this resource."
+msgstr "Non ci sono interfacce associate alla risorsa"
+
+#: blocks/inventory_blk.js:61 blocks/inventory_blk.js.py:408
+#: blocks/inventory_blk.js:606 blocks/inventory_blk.js.py:1373
+#: blocks/inventory_blk.js:1383 blocks/inventory_blk.js.py:1395
+#: blocks/inventory_blk.js:1418 blocks/inventory_blk.js.py:1429
+#: blocks/inventory_blk.js:1442 blocks/inventory_blk.js.py:1676
+#: blocks/targets.js:186 blocks/targets2.js:686
+msgid "Name"
+msgstr "Nome"
+
+#: blocks/inventory_blk.js:62 blocks/inventory_blk.js.py:409
+#: blocks/inventory_blk.js:1373 blocks/inventory_blk.js.py:1418
+#: blocks/inventory_blk.js:1676
+msgid "Address"
+msgstr "Indirizzo"
+
+#: blocks/inventory_blk.js:63 blocks/inventory_blk.js.py:410
+#: blocks/inventory_blk.js:1373 blocks/inventory_blk.js.py:1418
+msgid "Notes"
+msgstr "Note"
+
+#: blocks/inventory_blk.js:71
+msgid "Update Location Data"
+msgstr "Aggiorna i dati sulla locazione"
+
+#: blocks/inventory_blk.js:87 blocks/inventory_blk.js.py:434
+msgid "location name must be specified"
+msgstr "La locazione deve essere specificata"
+
+#: blocks/inventory_blk.js:144 blocks/inventory_blk.js.py:493
+msgid "name"
+msgstr "Nome"
+
+#: blocks/inventory_blk.js:145 blocks/inventory_blk.js.py:494
+msgid "address"
+msgstr "indirizzo"
+
+#: blocks/inventory_blk.js:146 blocks/inventory_blk.js.py:495
+msgid "contact person"
+msgstr "referente"
+
+#: blocks/inventory_blk.js:147 blocks/inventory_blk.js.py:496
+msgid "telephone"
+msgstr "telefono"
+
+#: blocks/inventory_blk.js:148 blocks/inventory_blk.js.py:497
+msgid "mobile"
+msgstr "cellulare"
+
+#: blocks/inventory_blk.js:149 blocks/inventory_blk.js.py:498
+msgid "mail"
+msgstr "mail"
+
+#: blocks/inventory_blk.js:157
+msgid "Update Organization Data"
+msgstr "Aggiorna i dati dell'organizzazione"
+
+#: blocks/inventory_blk.js:176 blocks/inventory_blk.js.py:525
+msgid "organization and contact person names must be specified"
+msgstr "devono essere specificati il nome dell'organizzazione ed il referente"
+
+#: blocks/inventory_blk.js:182 blocks/inventory_blk.js.py:531
+msgid "please provide a valid email address"
+msgstr "deve essere fornito un indirizzo email valido"
+
+#: blocks/inventory_blk.js:248 blocks/inventory_blk.js.py:326
+msgid "Cannot delete requested Data"
+msgstr "non e' possibile cancellare i dati richiesti"
+
+#: blocks/inventory_blk.js:249
+msgid "the location is referred by the nodes"
+msgstr "la locazione e' riferita dai seguenti nodi"
+
+#: blocks/inventory_blk.js:262 blocks/inventory_blk.js.py:353
+msgid "Error"
+msgstr "Errore"
+
+#: blocks/inventory_blk.js:327
+msgid "the organization currently owns the following nodes"
+msgstr "l'organizzazione possiede i seguenti nodi"
+
+#: blocks/inventory_blk.js:334
+msgid "the organization is served by the following interfaces"
+msgstr "l'organizzazione e' servita dalle seguenti interfacce"
+
+#: blocks/inventory_blk.js:341
+msgid "the organization manages the following nodes"
+msgstr "l'organizzazione gestisce i seguenti nodi"
+
+#: blocks/inventory_blk.js:418
+msgid "Add New Location"
+msgstr "Aggiungi una nuova locazione"
+
+#: blocks/inventory_blk.js:506
+msgid "Add New Organization"
+msgstr "Aggiungi una nuova organizzazione"
+
+#: blocks/inventory_blk.js:603
+msgid "Organizations"
+msgstr "Organizzazioni"
+
+#: blocks/inventory_blk.js:606 blocks/inventory_blk.js.py:1383
+#: blocks/inventory_blk.js:1395 blocks/inventory_blk.js.py:1429
+#: blocks/inventory_blk.js:1442 blocks/inventory_blk.js.py:1676
+msgid "Contact Person"
+msgstr "Referente"
+
+#: blocks/inventory_blk.js:606 blocks/inventory_blk.js.py:1383
+#: blocks/inventory_blk.js:1395 blocks/inventory_blk.js.py:1429
+#: blocks/inventory_blk.js:1442 blocks/inventory_blk.js.py:1676
+msgid "Mail"
+msgstr "Mail"
+
+#: blocks/inventory_blk.js:606 blocks/inventory_blk.js.py:1383
+#: blocks/inventory_blk.js:1395 blocks/inventory_blk.js.py:1429
+#: blocks/inventory_blk.js:1442 blocks/inventory_blk.js.py:1676
+msgid "Phone"
+msgstr "Telefono"
+
+#: blocks/inventory_blk.js:606 blocks/inventory_blk.js.py:1383
+#: blocks/inventory_blk.js:1395 blocks/inventory_blk.js.py:1429
+#: blocks/inventory_blk.js:1442 blocks/inventory_blk.js.py:1676
+msgid "Mobile Phone"
+msgstr "Cellulare"
+
+#: blocks/inventory_blk.js:612
+msgid "error"
+msgstr "errore"
+
+#: blocks/inventory_blk.js:639 blocks/inventory_blk.js.py:697
+#: blocks/inventory_blk.js:1464 blocks/inventory_blk.js.py:1686
+#: blocks/inventory_blk.js:1704 blocks/inventory_blk.js.py:1718
+msgid "Delete"
+msgstr "Cancella"
+
+#: blocks/inventory_blk.js:640 blocks/inventory_blk.js.py:698
+#: blocks/inventory_blk.js:1423 blocks/inventory_blk.js.py:1436
+#: blocks/inventory_blk.js:1450 blocks/inventory_blk.js.py:1707
+#: blocks/inventory_blk.js:1722
+msgid "Update"
+msgstr "Aggiorna"
+
+#: blocks/inventory_blk.js:649 blocks/inventory_blk.js.py:706
+msgid "Add"
+msgstr "Aggiungi"
+
+#: blocks/inventory_blk.js:937
+msgid "Update Owner"
+msgstr "Aggiorna il possessore"
+
+#: blocks/inventory_blk.js:1027
+msgid "Update Location"
+msgstr "Aggiorna una locazione"
+
+#: blocks/inventory_blk.js:1124
+msgid "Add New Manager"
+msgstr "Aggiungi un nuovo gestore"
+
+#: blocks/inventory_blk.js:1256 blocks/inventory_blk.js.py:1381
+#: blocks/inventory_blk.js:1427
+msgid "Owner"
+msgstr "Possessore"
+
+#: blocks/inventory_blk.js:1261 blocks/inventory_blk.js.py:1393
+msgid "Manager"
+msgstr "Gestore"
+
+#: blocks/inventory_blk.js:1272
+msgid "Create New Asset Node"
+msgstr "Crea un nuovo asset node"
+
+#: blocks/inventory_blk.js:1284
+msgid "update asset node"
+msgstr "aggiorna l'asset node"
+
+#: blocks/inventory_blk.js:1339 blocks/inventory_blk.js.py:1479
+msgid "Configuration"
+msgstr "Caricamento della configurazione..."
+
+#: blocks/inventory_blk.js:1371 blocks/inventory_blk.js.py:1416
+msgid "Location"
+msgstr "Locazione"
+
+#: blocks/inventory_blk.js:1404 blocks/inventory_blk.js.py:1689
+msgid "Create"
+msgstr "Crea"
+
+#: blocks/inventory_blk.js:1440
+msgid "Managers"
+msgstr "Gestori"
+
+#: blocks/inventory_blk.js:1478
+msgid "Add Manager"
+msgstr "Aggiungi gestore"
+
+#: blocks/inventory_blk.js:1581
+msgid "Select Organization"
+msgstr "Seleziona una organizzazione"
+
+#: blocks/inventory_blk.js:1686
+msgid "Cannot delete an empty data"
+msgstr "Non posso cancellare un insieme di dati vuoto"
+
+#: blocks/inventory_blk.js:1783
+msgid "An error occurred while retriving the data from server"
+msgstr "Si e' verificato un errore durante la lettura dei dati dal server"
+
+#
+# Block 'ipmon_data'
+#
+#: blocks/ipmon_data.js:19
+msgid "Retrieving informations from the device"
+msgstr "Caricamento informazioni dall'apparato"
+
+#: blocks/measures.js:320 blocks/states_logack.js:1258 blocks/targets2.js:294
+msgid "total"
+msgstr "totale"
+
+#
+# BLOCK MEASURES
+#
+#: blocks/measures.js:330
+msgid "Are you sure you want to remove this measure?"
+msgstr "Sei sicuro di voler togliere la misura dall'elenco?"
+
+#: blocks/measures.js:394
+msgid "Merged graph"
+msgstr "Misure unite"
+
+#: blocks/measures.js:425 blocks/states_logack.js:1453 blocks/targets2.js:329
+#: blocks/targets2.js.py:333
+msgid "rows"
+msgstr "righe"
+
+#: blocks/measures.js:498
+msgid "Merge selected measures"
+msgstr "Unisci misure selezionate"
+
+#: blocks/measures.js:527
+msgid "Title"
+msgstr "Titolo"
+
+#: blocks/measures.js:541 blocks/states_logack.js:213
+msgid "Resource"
+msgstr "Risorsa"
+
+#: blocks/measures.js:547 blocks/targets2.js:723
+msgid "Last check"
+msgstr "Ultimo check"
+
+#: blocks/measures.js:612
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: blocks/measures.js:721
+msgid "There aren't measures linked to this resource"
+msgstr "Non ci sono misure associate alla risorsa"
+
+#: blocks/periodicreports_list.js:38 blocks/periodicreports_list.js.py:83
+#: blocks/reports_list.js:44 blocks/reports_list.js.py:88
+msgid "Cancel"
+msgstr "Annulla"
+
+#: blocks/periodicreports_list.js:44 blocks/reports_list.js:49
+msgid "New report"
+msgstr "Nuovo Report"
+
+#: blocks/periodicreports_list.js:88
+msgid "New report: parameters"
+msgstr "Nuovo Report: parametri"
+
+#
+# PERIODIC REPORTS
+#
+#: blocks/periodicreports_list.js:140
+msgid "Do you really want to delete this periodic report?"
+msgstr "Sei sicuro di voler cancellare il report periodico?"
+
+#: blocks/reports_list.js:94
+msgid "New report parameters"
+msgstr "Nuovo report: Parametri"
+
+#
+# REPORTS
+#
+#: blocks/reports_list.js:145
+msgid "Do you really want to delete this report?"
+msgstr "Sicuro di voler cancellare il report prodotto?"
+
+#
+# LOGACK
+#
+#: blocks/states_logack.js:26
+msgid "Show all"
+msgstr "Mostra tutti"
+
+#: blocks/states_logack.js:27
+msgid "Only ackable"
+msgstr "Solo con ACK richiesto"
+
+#: blocks/states_logack.js:28
+msgid "Only not acked"
+msgstr "Solo privi di ACK"
+
+#: blocks/states_logack.js:32 blocks/states_logack.js.py:147
+msgid "Ack Selected"
+msgstr "Ack selezionati"
+
+#: blocks/states_logack.js:33 blocks/states_logack.js.py:148
+msgid "Ack before selected"
+msgstr "Ack log selezionato e tutti quelli cronologicamente precedenti"
+
+#: blocks/states_logack.js:34 blocks/states_logack.js.py:149
+msgid "Deack Selected"
+msgstr "Deack selezionati"
+
+#: blocks/states_logack.js:35 blocks/states_logack.js.py:150
+msgid "Deack after selected"
+msgstr "Deack log selezionato e tutti quelli cronologicamente successivi"
+
+#: blocks/states_logack.js:36 blocks/states_logack.js.py:151
+msgid "Deack all of the same ack"
+msgstr "Deack tutti i log con lo stesso ack"
+
+#: blocks/states_logack.js:47
+msgid "Ack Type"
+msgstr "Tipo"
+
+#: blocks/states_logack.js:54
+msgid "Other reason"
+msgstr "Altra motivazione"
+
+#: blocks/states_logack.js:94
+msgid "Show logs"
+msgstr "Mostra log"
+
+#: blocks/states_logack.js:101 blocks/targets.js:196 blocks/targets2.js:714
+msgid "Priority"
+msgstr "Priorita'"
+
+#: blocks/states_logack.js:104
+msgid "Ack id"
+msgstr "Ack id"
+
+#: blocks/states_logack.js:109 blocks/states_logack.js.py:491
+msgid "From"
+msgstr "Da"
+
+#: blocks/states_logack.js:111 blocks/states_logack.js.py:115
+msgid "hour"
+msgstr "ora"
+
+#: blocks/states_logack.js:113 blocks/states_logack.js.py:487
+msgid "To"
+msgstr "A"
+
+#: blocks/states_logack.js:125
+msgid "FILTER"
+msgstr "Filtra"
+
+#: blocks/states_logack.js:127
+msgid "Remove filters"
+msgstr "Rimuovi"
+
+#: blocks/states_logack.js:136
+msgid "Select all visibles"
+msgstr "Seleziona tutti i visibili"
+
+#: blocks/states_logack.js:137
+msgid "Invert visibles selected"
+msgstr "Inverti selezionati"
+
+#: blocks/states_logack.js:140
+msgid "Text search"
+msgstr "Testo libero"
+
+#: blocks/states_logack.js:167
+msgid "Site"
+msgstr "Sito"
+
+#: blocks/states_logack.js:194 blocks/states_logack.js.py:362
+msgid "Time"
+msgstr "Orario"
+
+# msgid  "Time"
+# msgstr "Orario"
+#: blocks/states_logack.js:199
+msgid "S"
+msgstr "S"
+
+#: blocks/states_logack.js:206
+msgid "P"
+msgstr "P"
+
+#: blocks/states_logack.js:220
+msgid "Target Path"
+msgstr "Path del target"
+
+# msgid "Description"
+# msgstr "Descrizione"
+#: blocks/states_logack.js:230
+msgid "Ack info"
+msgstr "Info Ack"
+
+#: blocks/states_logack.js:359
+msgid "ID"
+msgstr "ID"
+
+#: blocks/states_logack.js:360
+msgid "Type"
+msgstr "Tipo"
+
+#: blocks/states_logack.js:361
+msgid "Descr"
+msgstr "Descrizione"
+
+#: blocks/states_logack.js:363
+msgid "Last Change time"
+msgstr "Ultimo var."
+
+#: blocks/states_logack.js:364
+msgid "User"
+msgstr "Utente"
+
+#: blocks/states_logack.js:365
+msgid "Reason"
+msgstr "Motivazione"
+
+#: blocks/states_logack.js:393 blocks/states_logack.js.py:1148
+msgid "Conferma"
+msgstr "Conferma"
+
+#: blocks/states_logack.js:399 blocks/states_logack.js.py:1153
+msgid "Acknowledgement"
+msgstr "Imposta Ack"
+
+# msgid  "Time"
+# msgstr "Orario"
+# msgid  "User"
+# msgstr "Utente"
+# msgid  "Reason"
+# msgstr "Motivazione"
+#: blocks/states_logack.js:413 blocks/states_logack.js.py:926
+#: blocks/states_logack.js:964 blocks/states_logack.js.py:1031
+#: blocks/states_logack.js:1167
+msgid "An error occurred while preparing the acknowledgement data"
+msgstr "Si e' verificato un errore durante la preparazione dei dati"
+
+#: blocks/states_logack.js:472
+msgid "All transitions states"
+msgstr "Tutte le transizioni"
+
+#: blocks/states_logack.js:476
+msgid "Select"
+msgstr "Seleziona"
+
+#: blocks/states_logack.js:587
+msgid "You must select a transition"
+msgstr "E' necessario selezionare una transizione"
+
+#: blocks/states_logack.js:597 blocks/states_logack.js.py:1422
+msgid "Change selected transitions"
+msgstr "Cambia transizioni selezionate"
+
+#: blocks/states_logack.js:600 blocks/states_logack.js.py:668
+#: blocks/states_logack.js:1420
+msgid "Select transitions"
+msgstr "Seleziona transizioni"
+
+#: blocks/states_logack.js:608
+msgid "Set visible log transitions"
+msgstr "Seleziona transizioni"
+
+#: blocks/states_logack.js:749
+msgid "You must specify a starting date"
+msgstr "Devi indicare una data di inizio periodo"
+
+#: blocks/states_logack.js:758 blocks/states_logack.js.py:773
+msgid "Invalid time"
+msgstr "Orario non valido"
+
+#: blocks/states_logack.js:764
+msgid "You must specify a ending date"
+msgstr "Devi indicare una data di fine periodo"
+
+#: blocks/states_logack.js:802
+msgid "You must specify a date range in order to perform a free text search"
+msgstr ""
+"E' necessario inserire un range di date per poter effettuare una ricerca a "
+"testo libero"
+
+#: blocks/states_logack.js:883 blocks/states_logack.js.py:901
+#: blocks/states_logack.js:998
+msgid "No log selected"
+msgstr "Nessun log selezionato"
+
+#: blocks/states_logack.js:917 blocks/states_logack.js.py:955
+#: blocks/states_logack.js:1022 blocks/states_logack.js.py:1113
+msgid "Operation completed"
+msgstr "Operazione completata"
+
+#: blocks/states_logack.js:923 blocks/states_logack.js.py:961
+#: blocks/states_logack.js:1028 blocks/states_logack.js.py:1120
+#: blocks/states_logack.js:1129
+msgid "ERROR"
+msgstr "ERRORE"
+
+#: blocks/states_logack.js:939
+msgid "You must specify a log"
+msgstr "E' necessario selezionare un log"
+
+#: blocks/states_logack.js:980 blocks/states_logack.js.py:1002
+msgid "You must select only one event"
+msgstr "Bisogna selezionare solamente un evento"
+
+#: blocks/states_logack.js:1059
+msgid "Suggested reasons"
+msgstr "Motivazioni suggerite"
+
+#: blocks/states_logack.js:1134
+msgid "An error occurred while processing the request!"
+msgstr "Si e' verificato un errore durante l'elaborazione della richiesta"
+
+#: blocks/states_logack.js:1546
+msgid "NOTE: you are watching a filtered subset of the saved logs"
+msgstr "NOTA: stai visualizzando solo un sottoinsieme dei log salvati"
+
+#: blocks/targets.js:130 blocks/targets2.js:131
+msgid "Do you really want to remove the selected target?"
+msgstr "Sei sicuro di voler togliere il target dall'elenco?"
+
+#: blocks/targets.js:189 blocks/targets2.js:702
+msgid "Linked to"
+msgstr "Collegato a"
+
+#: blocks/targets.js:200 blocks/targets2.js:731
+msgid "Last change"
+msgstr "Ultimo var."
+
+#: blocks/targets.js:207
+msgid "Acked"
+msgstr "Ack id"
+
+#: blocks/targets.js:215
+msgid "Dependent targets"
+msgstr "Target dipendenti"
+
+#: blocks/targets.js:227
+msgid "WARNING: some targets are not listed here due to block's configuration"
+msgstr ""
+"ATTENZIONE: dei target non sono visualizzati per via della parametrizzazione "
+"utente"
+
+#: blocks/targets.js:238 blocks/targets2.js:755
+msgid "Show target's timeline"
+msgstr "Espandi storia target"
+
+#: blocks/targets2.js:575
+msgid "Reachability analysis"
+msgstr "Analisi di raggiungibilita'"
+
+#: blocks/targets2.js:912
+msgid "It seems the reachability problem is indipendent from other nodes"
+msgstr "Il nodo sembra irraggiungibile senza altre cause esterne"
+
+#: blocks/targets2.js:916
+msgid "It seems the reachability problem depends from other nodes"
+msgstr "Il nodo sembra irragiungibile a causa di altri nodi guasti"
+
+#: scripts/jquery.labs.xmpprender.js:47
+msgid "This block does not allow customization."
+msgstr "Questo blocco non consente personalizzazioni."
+
+
+#~ msgid "notes"
+#~ msgstr "note"
+
+#~ msgid "Path"
+#~ msgstr "Path"
+
+#~ msgid "This section is empty!"
+#~ msgstr "Nessun contenuto attualmente associato a questa pagina."
+
+#~ msgid "Minimize block"
+#~ msgstr "Riduci blocco"
+
+#~ msgid "Restore block"
+#~ msgstr "Ripristina blocco"
+
+#~ msgid "Start Autorefresh"
+#~ msgstr "Avvia Autorefresh"
+
+#~ msgid "Stop Autorefresh"
+#~ msgstr "Ferma Autorefresh"
+
+#~ msgid "Full screen"
+#~ msgstr "Full screen"
+
+#~ msgid "Restore block size"
+#~ msgstr "Ripristina dimensione originale"
+
+#~ msgid "Clear history"
+#~ msgstr "Azzera cronologia"
+
+#~ msgid "Do you really want to clean the navigation history?"
+#~ msgstr "Sicuro di voler azzerare la cronologia?"
+
+#~ msgid "Navigation history cleaned."
+#~ msgstr "Cronologia azzerata."
+
+#~ msgid "Resource succesfully added to the user container"
+#~ msgstr "Risorsa aggiunta al contenitore utente"
+
+#~ msgid "Are you sure you want to remove every block from your userpage?"
+#~ msgstr ""
+#~ "Vuoi veramente rimuovere tutti i blocchi presenti nella pagina utente?"

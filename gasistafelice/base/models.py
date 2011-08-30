@@ -19,6 +19,10 @@ from gasistafelice.auth.models import PermissionBase # mix-in class for permissi
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
+from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
+
+
 class Resource(object):
     """Base class for project fundamental objects.
 
@@ -65,7 +69,9 @@ class Resource(object):
 
     @property
     def allnotes(self):
-        return []
+        ctype = ContentType.objects.get_for_model(self.__class__)
+        notes = Comment.objects.filter(object_pk=self.pk, content_type=ctype).order_by('-submit_date')
+        return notes
 
     # DEPRECATED
     # @property

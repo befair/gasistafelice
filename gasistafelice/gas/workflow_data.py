@@ -122,7 +122,7 @@ state_transition_map = (
                            ('on_completion', 'end_completion'),
                            ('finalized', 'send'),
                            ('sent', 'set_delivered'),
-                           ('set_delivered', 'archive'),
+                           ('delivered', 'archive'),
                            # SupplierOrder may be canceled at any time before delivery happens
                            ('open', 'cancel'),
                            ('closed', 'cancel'),
