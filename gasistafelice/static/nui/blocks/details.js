@@ -1,108 +1,34 @@
-
-//------------------------------------------------------------------------------//
-//                                                                              //
-//------------------------------------------------------------------------------//
-
-jQuery.open_new_note_form = function (note_action) {
-	
-	
-	var form_html = NEW_NOTE_FORM_TEXT.replace("@@new_note_action@@", note_action);
-	
-	//
-	// Initialize dialog component
-	//
-	var options = { 
-		success     : function (responseText, statusText)  { 
-			if (responseText.match('class="success"')) {
-				response = jQuery.parseXml(responseText);
-				var resource_type = $(response).attr('resource_type');
-				var resource_id   = $(response).attr('resource_id');
-				
-				//jQuery.refreshBlock(resource_type, resource_id, 'details');
-				
-				var block_box_id = jQuery.BLOCK_BOX_ID(resource_type, resource_id,'details');
-				
-				jQuery.update_details_block(block_box_id);
-			}			
-		}
-	}		
-	
-	//
-	// CREATE THE DIALOG
-	//
-	$(NEW_NOTE_DIALOG).dialog('close');
-	$(NEW_NOTE_DIALOG).dialog('destroy');
-	
-	$(NEW_NOTE_DIALOG).empty();
-	$(NEW_NOTE_DIALOG).append(form_html);
-	
-	var buttons = new Object();
-	buttons[gettext('Confirm')] = function() {
-		//
-		// "hide"/close the dialog
-		//
-		$(NEW_NOTE_DIALOG).dialog('destroy');
-		$(NEW_NOTE_DIALOG).dialog('close');
-		$(NEW_NOTE_FORM).ajaxSubmit(options);
-	};
-	
-	$(NEW_NOTE_DIALOG).dialog({
-		title: gettext("New note"),
-		bgiframe: true,
-		autoOpen: false,
-		width: 600,
-		height: "auto",
-		modal: true,
-		buttons: buttons,
-		close: function() { }
-	});
-	
-	$(NEW_NOTE_DIALOG).dialog('open');
-	
-	return false;
-	
-};
-
-//------------------------------------------------------------------------------//
-//                                                                              //
-//------------------------------------------------------------------------------//
-
-jQuery.remove_note = function(note_id) 
-{	
-	ask_confirm(
-		gettext("Do you really want to delete this note?")  // "Sei sicuro di voler cancellare la nota?" 
-		, function() { jQuery.remove_note2(note_id);  }
-		, function() { }
-	);	
-	
-	// block onclick() event
-	return false;				
-}
-
-jQuery.remove_note2 = function(note_id) 
-{	
-	var delete_url = jQuery.pre + "rest/" + sanet_urn + "/details/remove_note?note_id=" + note_id;	
-
-	// Send the GET command and delete the row identified by "report_row_id"
-	// if the GET is successful.
-	jQuery.get(delete_url, function (response_data) {
-
-		if (response_data.match('class="success"')) {
-			
-			$('#note_row_'+note_id).remove();
-		}
-	});
-
-	
-	return false;
-}
-
-
 //------------------------------------------------------------------------------//
 //                                                                              //
 //------------------------------------------------------------------------------//
 
 jQuery.UIBlockDetails = jQuery.UIBlock.extend({
+
+    render_actions : function(data) {
+
+        var list_actions = this._super(data);
+
+        // Append "add note" action in rendered data
+        
+        var action_new_note_template = '<input type="button" value="' + gettext("Add note")+ '" href="#" url="@@new_note_action@@" class="block_action" name="edit" popup_form="1" />';
+        new_note_action = this.resource.absolute_url + "/details/new_note";
+
+        action_new_note_template = action_new_note_template.replace('@@new_note_action@@', new_note_action);
+
+        //TODO: ugly but I don't know how to do better now
+        var res = $('<p> </p>');
+        list_actions = $(list_actions).append(action_new_note_template);
+        return res.append(list_actions).html();
+
+    },
+
+    action_handler : function(action_el) {
+        if (action_el.attr('name') == "edit") {
+            return this.open_new_note_form(action_el.attr('url'));
+        } else {
+            return this._super(action_el);
+        }
+    },
 
     render_content : function(data) {
 
@@ -112,10 +38,6 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
             return s;
         }
         
-        var other_buttons = "\
-        ";
-
-
         var user_options_text = "\
             <div style='font-size: 0.8em;'>" + gettext("WARNING: some informations are omissed due to block's configuration") + ": <span style='color:red'>@@text@@ </span> </div> \
             ";
@@ -160,15 +82,6 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                     </td>\n\
                 </tr>\n\
             </table>\n\
-            <table border='0'> \n\
-                <tr >\n\
-                    <td>\n\
-                        <input type='button' onclick='jQuery.open_new_note_form(\"@@new_note_action@@\")'  value='" + gettext("Add note")+ "' /> \n\
-                        @@other_buttons@@ \n\
-                    </td>\n\
-                </tr>\n\
-            </table>\n\
-            \n\
             @@user_options@@\
             \
         </div>";
@@ -378,40 +291,8 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
             
         });
         notes_rows = notes_rows.replace('@@note_row@@', '');
-        
-        // NOTES FORM
-        new_note_action = jQuery.pre + "rest/" + sanet_urn + "/details/new_note";	
-        details_template = details_template.replace('@@new_note_action@@', new_note_action);
-        
         details_template = details_template.replace('@@notes_rows@@', notes_rows);
         
-        //
-        // Calculate user actions
-        //
-        var other_buttons = [];
-        
-        var actions = jQel.find('content[type="user_actions"]');
-        actions.find('action').each(function(){
-
-            if ($(this).text() == 'suspend') {
-                var action = jQuery.pre + "rest/" + sanet_urn + "/action/suspend";	
-                var button = suspend_button_template;
-                button = button.replace('@@suspend_action@@', action);	
-                
-                other_buttons.push(button);
-            }
-            if ($(this).text() == 'resume') {
-                var button = resume_button_template;
-                button = button.replace('@@resource_urn@@', sanet_urn);
-                
-                other_buttons.push(button );
-            }
-        })
-        //
-        //
-        //
-        details_template = details_template.replace('@@other_buttons@@', other_buttons.join(' ') );
-
         //
         // Show informations about the user settings
         //
@@ -437,9 +318,97 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
         details_template = details_template.replace('@@user_options@@', user_options_text);	
         
         return details_template;
-    }
+    },
 	
+    //------------------------------------------------------------------------------//
+    //                                                                              //
+    //------------------------------------------------------------------------------//
+
+    open_new_note_form : function (note_action) {
+	
+        var form_html = NEW_NOTE_FORM_TEXT.replace("@@new_note_action@@", note_action);
+        
+        //
+        // Initialize dialog component
+        //
+        var block_instance = this;
+        var options = { 
+            success : function (responseText, statusText)  { 
+                block_instance.update_handler(block_instance.block_box_id);
+            }
+        }		
+	
+        //
+        // CREATE THE DIALOG
+        //
+        $(NEW_NOTE_DIALOG).dialog('close');
+        $(NEW_NOTE_DIALOG).dialog('destroy');
+        
+        $(NEW_NOTE_DIALOG).empty();
+        $(NEW_NOTE_DIALOG).append(form_html);
+        
+        var buttons = new Object();
+        buttons[gettext('Confirm')] = function() {
+            //
+            // "hide"/close the dialog
+            //
+            $(NEW_NOTE_DIALOG).dialog('destroy');
+            $(NEW_NOTE_DIALOG).dialog('close');
+            $(NEW_NOTE_FORM).ajaxSubmit(options);
+        };
+        
+        $(NEW_NOTE_DIALOG).dialog({
+            title: gettext("New note"),
+            bgiframe: true,
+            autoOpen: false,
+            width: 600,
+            height: "auto",
+            modal: true,
+            buttons: buttons,
+            close: function() { }
+        });
+        
+        $(NEW_NOTE_DIALOG).dialog('open');
+        
+        return false;
+        
+    }
+
 })
+
+//------------------------------------------------------------------------------//
+//                                                                              //
+//------------------------------------------------------------------------------//
+
+jQuery.remove_note = function(note_id) 
+{	
+	ask_confirm(
+		gettext("Do you really want to delete this note?")  // "Sei sicuro di voler cancellare la nota?" 
+		, function() { jQuery.remove_note2(note_id);  }
+		, function() { }
+	);	
+	
+	// block onclick() event
+	return false;				
+}
+
+jQuery.remove_note2 = function(note_id) 
+{	
+	var delete_url = jQuery.pre + "rest/" + sanet_urn + "/details/remove_note?note_id=" + note_id;	
+
+	// Send the GET command and delete the row identified by "report_row_id"
+	// if the GET is successful.
+	jQuery.get(delete_url, function (response_data) {
+
+		if (response_data.match('class="success"')) {
+			
+			$('#note_row_'+note_id).remove();
+		}
+	});
+
+	
+	return false;
+}
 
 
 jQuery.BLOCKS["details"] = new jQuery.UIBlockDetails("details");

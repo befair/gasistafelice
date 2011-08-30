@@ -17,27 +17,28 @@ var NEW_NOTE_FORM_TEXT= "\
 /* Resource management facitilies */
 jQuery.Resource = Class.extend({
 
-    init : function(name, urn) {
-        this.name = name;
+    init : function(urn, name) {
         this.urn = urn;
         this.type = urn.split('/')[0];
         this.id = urn.split('/')[1];
-        this.link = "#rest/"+urn;
+        this.url = "#rest/"+urn;
+        this.absolute_url = jQuery.pre + "rest/"+urn;
+        this.name = name;
     },
 
     render : function() {
-        var res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@link@@'> @@name@@ </a>";
+        if (this.name == undefined) {
+            alert(gettext('Please provide a name for this resource before rendering it'));
+        }
+        var res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
 
         res = res.replace(/@@resource_type@@/g, this.type);
         res = res.replace(/@@name@@/g, this.name);
         res = res.replace(/@@urn@@/g,  this.urn);
-        res = res.replace(/@@link@@/g, this.link);
+        res = res.replace(/@@url@@/g, this.url);
         return res
     },
 
-    toString : function() {
-        return this.render();
-    }
 });
     
 /* jQuery.BLOCKS are used to store Block instances.
@@ -71,6 +72,7 @@ jQuery.UIBlock = Class.extend({
         if (jQel.children('error').length > 0)
             return jQel.text()
         this.parsed_data = jQel;
+        this.resource = new jQuery.Resource(jQel.attr('sanet_urn'));
     },
 
     update_handler: function(block_box_id) {
@@ -150,13 +152,9 @@ jQuery.UIBlock = Class.extend({
         
         var jQel = this.parsed_data;
         
-        // Resource ID
-        var resource_type =  jQel.attr('resource_type');
-        var resource_id   =  jQel.attr('resource_id');
-        
         //Render block actions
         var contents = jQel.find('content[type="user_actions"]');
-        var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
+        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" />";
         var actions = '';
 
         if (contents.find('action').length > 0) {
@@ -259,10 +257,6 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
         var jQel = this.parsed_data;
 
-        // Resource ID... we could need them later... TODO fero TOCHECK
-        var resource_type =  jQel.attr('resource_type');
-        var resource_id   =  jQel.attr('resource_id');
-        
         // Find table and render
         var html_table = jQel.find('content[type="table"]').html();
 
@@ -330,7 +324,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
-                a = a.replace(/@@resource@@/g, new jQuery.Resource(name, urn).render());
+                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
 
                 var actions = '';
                 var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
