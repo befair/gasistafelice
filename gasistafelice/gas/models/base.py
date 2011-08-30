@@ -175,6 +175,16 @@ class GAS(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()  
     
+    @property
+    def supplier_referrers(self):
+        """
+        Return all users being supplier referrers for this GAS
+        """
+        # retrieve 'GAS supplier referrer' parametric role for this pact
+        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self)
+        # retrieve all Users having this role
+        return pr.get_users()    
+
     
     @property
     def city(self):
@@ -761,12 +771,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, **kwargs):
-        ## only GAS administrators can create a new pact for their GAS
+        ## GAS administrators, GAS referres and GAS supplier referrers (of other pacts)
+        ## can create a new pact for their GAS
         try:
             gas = kwargs['gas']
         except KeyError:
             raise SyntaxError("You need to specify a 'gas' argument to perform this permission check.")
-        return user in gas.tech_referrers
+        return (user in gas.tech_referrers) or (user in gas.referrers) or (user in gas.supplier_referrers)
  
     # Row-level EDIT permission
     def can_edit(self, user, **kwargs):
