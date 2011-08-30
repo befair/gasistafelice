@@ -15,13 +15,15 @@ from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REF
 from gasistafelice.auth.utils import register_parametric_role 
 from gasistafelice.auth.models import ParamRole
 
-from gasistafelice.supplier.models import Supplier, SupplierStock
+from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
+from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.bank.models import Account
 
 from gasistafelice.des.models import DES
 
-from gasistafelice.lib import fields, ClassProperty
+from gasistafelice.lib import ClassProperty
+from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
