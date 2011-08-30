@@ -123,11 +123,6 @@ class GAS(models.Model, PermissionResource):
             raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
         return user in des.admins
     
-    # Row-level VIEW permission
-    def can_view(self, user, **kwargs):
-        # only GAS members and DES administrators can view GAS details 
-        return (user in self.members) or (user in self.des.admins) 
-    
     # Row-level EDIT permission
     def can_edit(self, user, **kwargs):
         # only GAS tech referrers and DES administrators can edit GAS details
