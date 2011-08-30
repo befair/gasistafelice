@@ -15,7 +15,6 @@ from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REF
 from gasistafelice.auth.utils import register_parametric_role 
 from gasistafelice.auth.models import ParamRole
 
-from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.bank.models import Account
@@ -322,14 +321,17 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
         return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
 
     @property
     def ordered_products(self):
+        from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders)
 
     @property
     def basket(self):
+        from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
 
@@ -595,6 +597,7 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def basket(self):
+        from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(product__order__in=self.orders.open())
 
 class GASSupplierStock(models.Model, PermissionResource):
