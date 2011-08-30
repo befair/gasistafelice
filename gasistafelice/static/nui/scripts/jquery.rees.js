@@ -72,7 +72,14 @@ jQuery.UIBlock = Class.extend({
         if (jQel.children('error').length > 0)
             return jQel.text()
         this.parsed_data = jQel;
-        this.resource = new jQuery.Resource(jQel.attr('sanet_urn'));
+
+        //TODO: to be renamed as "urn"
+        var urn = jQel.attr('sanet_urn');
+        if (urn == undefined) {
+            var urn = jQel.attr('resource_type') + "/" + jQel.attr('resource_id');
+        }
+        
+        this.resource = new jQuery.Resource(urn);
     },
 
     update_handler: function(block_box_id) {
