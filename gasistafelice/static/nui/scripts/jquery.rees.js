@@ -442,9 +442,8 @@ jQuery.retrieve_form = function (action_el) {
 		$(form_html).ajaxSubmit(options);
 	};
 	
-//TODO fero gettext(action_name),
 	$(NEW_NOTE_DIALOG).dialog({
-		title: action_name,
+		title: gettext(action_name),
 		bgiframe: true,
 		autoOpen: false,
 		width: 600,

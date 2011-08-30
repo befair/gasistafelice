@@ -10,7 +10,7 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
 
         // Append "add note" action in rendered data
         
-        var action_new_note_template = '<input type="button" value="' + gettext("Add note")+ '" href="#" url="@@new_note_action@@" class="block_action" name="edit" popup_form="1" />';
+        var action_new_note_template = '<input type="button" value="' + gettext("Add note")+ '" href="#" url="@@new_note_action@@" class="block_action" name="new_note" popup_form="1" />';
         new_note_action = this.resource.absolute_url + "/details/new_note";
 
         action_new_note_template = action_new_note_template.replace('@@new_note_action@@', new_note_action);
@@ -23,7 +23,7 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
     },
 
     action_handler : function(action_el) {
-        if (action_el.attr('name') == "edit") {
+        if (action_el.attr('name') == "new_note") {
             return this.open_new_note_form(action_el.attr('url'));
         } else {
             return this._super(action_el);

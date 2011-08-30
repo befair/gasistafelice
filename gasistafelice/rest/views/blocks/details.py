@@ -3,6 +3,7 @@ import types
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.contrib.admin import helpers
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
@@ -159,6 +160,8 @@ class Block(AbstractBlock):
             # Server-side check for permission on this view
             if request.user.has_perm(EDIT, obj=request.resource):
                 return self._edit_resource(request)
+            raise PermissionDenied
+
         elif args == "new_note":
             return self.add_new_note(request, resource_type, resource_id)
         elif args == "remove_note":
