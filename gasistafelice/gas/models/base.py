@@ -95,10 +95,6 @@ class GAS(models.Model, PermissionResource):
         return self.name
      
     @property
-    def allnotes(self):
-        return []
-
-    @property
     def ancestors(self):
         return [self.des]
 
