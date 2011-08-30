@@ -63,7 +63,25 @@
 {"pk":5,"model":"supplier.certification", "fields": {"name":"NameCertification5","description":"BIO certificate description for Entity5" } },
 {"pk":6,"model":"supplier.certification", "fields": {"name":"NameCertification6","description":"BIO certificate description for Entity6" } },
 {"pk":7,"model":"supplier.certification", "fields": {"name":"NameCertification7","description":"BIO certificate description for Entity7" } },
-{"pk":8,"model":"supplier.certification", "fields": {"name":"NameCertification8","description":"BIO certificate description for Entity8" } }
+{"pk":8,"model":"supplier.certification", "fields": {"name":"NameCertification8","description":"BIO certificate description for Entity8" } }, 
+
+
+{"pk": 1,"model": "supplier.productmu","fields": {"symbol": "BTL","name": "Bottiglia","description": "description for Bottiglia [BTL]"}}, 
+{"pk": 2,"model": "supplier.productmu","fields": {"symbol": "BOX","name": "Cartone","description": "description for Cartone [BOX]"}}, 
+{"pk": 3,"model": "supplier.productmu","fields": {"symbol": "CX ","name": "Cassa","description": "description for Cassa [CX ]"}}, 
+{"pk": 4,"model": "supplier.productmu","fields": {"symbol": "CL ","name": "Centilitro","description": "description for Centilitro [CL ]"}}, 
+{"pk": 5,"model": "supplier.productmu","fields": {"symbol": "Cf ","name": "Confezione","description": "description for Confezione [Cf ]"}}, 
+{"pk": 6,"model": "supplier.productmu","fields": {"symbol": "DAM","name": "Dama","description": "description for Dama [DAM]"}}, 
+{"pk": 7,"model": "supplier.productmu","fields": {"symbol": "DL ","name": "Decilitro","description": "description for Decilitro [DL ]"}}, 
+{"pk": 8,"model": "supplier.productmu","fields": {"symbol": "Hg ","name": "Etto","description": "description for Etto [Hg ]"}}, 
+{"pk": 9,"model": "supplier.productmu","fields": {"symbol": "PAN","name": "Fila","description": "description for Fila [PAN]"}}, 
+{"pk": 10,"model": "supplier.productmu","fields": {"symbol": "FOR","name": "Forma","description": "description for Forma [FOR]"}}, 
+{"pk": 11,"model": "supplier.productmu","fields": {"symbol": "Gr ","name": "Grammo","description": "description for Grammo [Gr ]"}}, 
+{"pk": 12,"model": "supplier.productmu","fields": {"symbol": "KG ","name": "Kg","description": "description for Kg [KG ]"}}, 
+{"pk": 13,"model": "supplier.productmu","fields": {"symbol": "Lt ","name": "Litro","description": "description for Litro [Lt ]"}}, 
+{"pk": 14,"model": "supplier.productmu","fields": {"symbol": "ML ","name": "ml","description": "description for ml [ML ]"}}, 
+{"pk": 15,"model": "supplier.productmu","fields": {"symbol": "PAC","name": "Pacco","description": "description for Pacco [PAC]"}}, 
+{"pk": 16,"model": "supplier.productmu","fields": {"symbol": "PZ ","name": "Pezzo","description": "description for Pezzo [PZ ]"}}
 
 
 
