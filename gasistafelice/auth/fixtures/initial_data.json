@@ -1,11 +1,18 @@
 [
     {
-        "pk": 11, 
+        "pk": 1, 
         "model": "permissions.role", 
         "fields": {
-            "name": "DES_ADMIN"
+            "name": "NOBODY"
         }
     }, 
+    {
+        "pk": 2, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "SUPPLIER_REFERRER"
+        }
+    },
     {
         "pk": 3, 
         "model": "permissions.role", 
@@ -21,17 +28,10 @@
         }
     }, 
     {
-        "pk": 9, 
+        "pk": 5, 
         "model": "permissions.role", 
         "fields": {
-            "name": "GAS_REFERRER_CASH"
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "permissions.role", 
-        "fields": {
-            "name": "GAS_REFERRER_DELIVERY"
+            "name": "GAS_REFERRER_SUPPLIER"
         }
     }, 
     {
@@ -42,10 +42,24 @@
         }
     }, 
     {
-        "pk": 5, 
+        "pk": 7, 
         "model": "permissions.role", 
         "fields": {
-            "name": "GAS_REFERRER_SUPPLIER"
+            "name": "GAS_REFERRER_WITHDRAWAL"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_DELIVERY"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "permissions.role", 
+        "fields": {
+            "name": "GAS_REFERRER_CASH"
         }
     }, 
     {
@@ -56,24 +70,11 @@
         }
     }, 
     {
-        "pk": 7, 
+        "pk": 11, 
         "model": "permissions.role", 
         "fields": {
-            "name": "GAS_REFERRER_WITHDRAWAL"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "permissions.role", 
-        "fields": {
-            "name": "NOBODY"
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "permissions.role", 
-        "fields": {
-            "name": "SUPPLIER_REFERRER"
+            "name": "DES_ADMIN"
         }
     }
+
 ]
