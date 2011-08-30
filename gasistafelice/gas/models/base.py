@@ -194,7 +194,7 @@ class GAS(models.Model, PermissionResource):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
-        #register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
+        register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
         rv = (
@@ -232,10 +232,12 @@ class GAS(models.Model, PermissionResource):
         super(GAS, self).save(*args, **kw)
 
         if created:
-
-            self.config = GASConfig.objects.create(gas=self)
+            self.config, cfgcreated = GASConfig.objects.get_or_create(gas=self)
+            if cfgcreated:
+                self.config.save(**kwargs)
             #TODO self.account = Account.objects.create()
             #TODO self.liquidity = Account.objects.create()
+            #super(GAS, self).save()
 
     #-- Resource API --#
 
