@@ -518,29 +518,21 @@ class ParamRoleGetUsersTest(TestCase):
         
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         
-        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        # cleanup existing  `Param`s and `ParamRole`s (e.g. those auto-created when a new model is instantiated)
         Param.objects.all().delete()
         ParamRole.objects.all().delete()        
                 
-        self.role = Role.objects.create(name='FOO')   
-        p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', value=self.gas)
-        p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', value=self.supplier)
-        p_role.param_set.add(p2)
-        p_role.save()
-        self.p_role = p_role 
+        self.p_role = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact) 
         
     def testGetUsersOK(self):
         """Verify that all the users this parametric role was assigned to are returned"""
         self.p_role.add_principal(self.user1)
         self.p_role.add_principal(self.user2)
-        prrs = PrincipalParamRoleRelation.objects.filter(role=self.p_role)
-        users = [prr.user for prr in prrs if prr.user is not None]
-        self.assertEqual(set(users), set((self.user1, self.user2)) )
+        users = self.p_role.get_users()
+        self.assertEqual(set(users), set((self.user1, self.user2)))
         
-    # TODO: add tests for local roles
         
 class ParamRoleGetGroupsTest(TestCase):
     """Tests `ParamRole.get_groups()` method"""
@@ -552,31 +544,23 @@ class ParamRoleGetGroupsTest(TestCase):
         
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-
-        # cleanup existing ParamRoles (e.g. those auto-created at model instance's creation time)
+        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
+        
+        # cleanup existing  `Param`s  `ParamRole`s (e.g. those auto-created when a new model is instantiated)
         Param.objects.all().delete()
         ParamRole.objects.all().delete()        
                 
-        self.role = Role.objects.create(name='FOO')   
-        p_role= ParamRole.objects.create(role=self.role)
-        p1 = Param.objects.create(name='gas', value=self.gas)
-        p_role.param_set.add(p1)
-        p2 = Param.objects.create(name='supplier', value=self.supplier)
-        p_role.param_set.add(p2)
-        p_role.save()
-        self.p_role = p_role 
-    
-        
+        self.p_role = register_parametric_role(GAS_REFERRER_SUPPLIER, pact=self.pact) 
         
     def testGetGroupsOK(self):
         """Verify that all the groups this parametric role was assigned to are returned"""
         self.p_role.add_principal(self.group1)
         self.p_role.add_principal(self.group2)
-        prrs = PrincipalParamRoleRelation.objects.filter(role=self.p_role)
-        groups = [prr.group for prr in prrs if prr.group is not None]
+        groups = self.p_role.get_groups()
         self.assertEqual(set(groups), set((self.group1, self.group2)))
         
-    # TODO: add tests for local roles
+        
+
 class PrincipalRoleRelationTest(TestCase):
     """Tests for the `PrincipalRoleRelation` methods"""  
     def setUp(self):
