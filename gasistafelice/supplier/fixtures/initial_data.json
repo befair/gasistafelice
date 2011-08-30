@@ -53,6 +53,19 @@
 {"pk": 51,"model": "supplier.productcategory","fields": {"name": "Carta ","description": "description for category and subcategory Carta "}}, 
 {"pk": 52,"model": "supplier.productcategory","fields": {"name": "Igiene casa ","description": "description for category and subcategory Igiene casa "}}, 
 {"pk": 53,"model": "supplier.productcategory","fields": {"name": "Piante ","description": "description for category and subcategory Piante "}}, 
-{"pk": 54,"model": "supplier.productcategory","fields": {"name": "Piante::Piante aromatiche ","description": "description for category and subcategory Piante::Piante aromatiche "}}
+{"pk": 54,"model": "supplier.productcategory","fields": {"name": "Piante::Piante aromatiche ","description": "description for category and subcategory Piante::Piante aromatiche "}} ,
+
+
+{"pk":1,"model":"supplier.certification", "fields": {"name":"NameCertification1","description":"BIO certificate description for Entity1" } },
+{"pk":2,"model":"supplier.certification", "fields": {"name":"NameCertification2","description":"BIO certificate description for Entity2" } },
+{"pk":3,"model":"supplier.certification", "fields": {"name":"NameCertification3","description":"BIO certificate description for Entity3" } },
+{"pk":4,"model":"supplier.certification", "fields": {"name":"NameCertification4","description":"BIO certificate description for Entity4" } },
+{"pk":5,"model":"supplier.certification", "fields": {"name":"NameCertification5","description":"BIO certificate description for Entity5" } },
+{"pk":6,"model":"supplier.certification", "fields": {"name":"NameCertification6","description":"BIO certificate description for Entity6" } },
+{"pk":7,"model":"supplier.certification", "fields": {"name":"NameCertification7","description":"BIO certificate description for Entity7" } },
+{"pk":8,"model":"supplier.certification", "fields": {"name":"NameCertification8","description":"BIO certificate description for Entity8" } }
+
+
+
 ]
 
