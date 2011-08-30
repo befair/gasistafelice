@@ -166,11 +166,6 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Scheda del fornitore',
         'blocks': ['details', 'categories', 'pacts'],
     }], #must be extended with economic section
-
-# 'order' resource and page are needed in order to make gasmember able to choose products.
-# Useful until we have "expandable list of orders" (like targets with timeline in SANET)
-# I think this should be even more user-friendly than the "expandable list of orders" block
-
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',

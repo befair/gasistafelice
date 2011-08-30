@@ -16,8 +16,8 @@ from django.template.defaultfilters import floatformat
 
 class Block(BlockSSDataTables):
 
-    BLOCK_NAME = "gasstocks"
-    BLOCK_DESCRIPTION = _("GAS Stocks")
+    BLOCK_NAME = "order_stocks"
+    BLOCK_DESCRIPTION = _("Order stocks")
     BLOCK_VALID_RESOURCE_TYPES = ["order"] 
 
     COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability' }

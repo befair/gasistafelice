@@ -1,8 +1,8 @@
 
-jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
+jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     init: function() {
-        this._super("gasstocks", "table");
+        this._super("order_report", "table");
     },
 
     rendering_table_post_load_handler: function() {
@@ -28,5 +28,5 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
     
 });
 
-jQuery.BLOCKS["gasstocks"] = new jQuery.UIBlockGASStockList();
+jQuery.BLOCKS["order_report"] = new jQuery.UIBlockOrderReport();
 
