@@ -440,10 +440,10 @@ class GASConfig(models.Model, PermissionResource):
         
         return super(GASConfig, self).clean()
 
-    def save(self):
+    def save(self, *args, **kw):
         self.default_workflow_gassupplier_order = Workflow.objects.get(name="SupplierOrderDefault")
         self.default_workflow_gasmember_order = Workflow.objects.get(name="GASMemberOrderDefault")
-        return super(GASConfig, self).save()
+        return super(GASConfig, self).save(*args, **kw)
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
