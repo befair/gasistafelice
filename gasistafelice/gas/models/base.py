@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 
 from permissions.models import Role
 from workflows.models import Workflow
+from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
 from gasistafelice.base.fields import CurrencyField
@@ -334,6 +335,7 @@ class GAS(models.Model, PermissionResource):
     def basket(self):
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
+
 class GASConfig(models.Model, PermissionResource):
     """
     Encapsulate here gas settings and configuration facilities
@@ -428,6 +430,11 @@ class GASConfig(models.Model, PermissionResource):
         #pass
         
         return super(GASConfig, self).clean()
+
+    def save(self):
+        self.default_workflow_gassupplier_order = Workflow.objects.get(name="SupplierOrderDefault")
+        self.default_workflow_gasmember_order = Workflow.objects.get(name="GASMemberOrderDefault")
+        return super(GASConfig, self).save()
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.

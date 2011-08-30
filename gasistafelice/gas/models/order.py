@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from workflows.models import Workflow
+from workflows.models import Workflow, Transition
 from workflows.utils import get_workflow, set_workflow, get_state, do_transition
 from history.models import HistoricalRecords
 
@@ -46,27 +46,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
-        date_start, date_end, order_minimum_amount, delivery, withdrawal
+        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
+        date_start, date_end, order_minimum_amount, delivery, withdrawal,
+        
     )
-    @ClassProperty
-    @classmethod
-    def resource_type(cls):
-        return "order"
-    
-    @property
-    def gas(self):
-        """Return the GAS issuing this order."""
-        return self.pact.gas
-    
-    @property
-    def supplier(self):
-        """Return the supplier this order is placed against."""
-        return self.pact.supplier        
-    
-    @property
-    def suppliers(self):
-        return Supplier.objects.filter(pk=self.supplier.pk)
-    
+
+    def __unicode__(self):
+        if not self.date_end is None:
+            return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, '{0:%Y%m%d}'.format(self.date_end))
+        else:
+            return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
+
+    class Meta:
+        app_label = 'gas'
+        
 #-------------------------------------------------------------------------------#
 # Model Archive API
 
@@ -98,7 +91,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
 #-------------------------------------------------------------------------------#
 
-    
     def set_default_stock_set(self):
         '''
         A helper function associating a default set of products to a GASSupplierOrder.
@@ -109,27 +101,76 @@ class GASSupplierOrder(models.Model, PermissionResource):
         stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
             GASSupplierOrderProduct.objects.create(order=self, stock=s)
-        
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
         register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
         
+    # Workflow management
+
+    @property
+    def current_state(self):
+        return get_state(self)
+
+    @property
+    def workflow(self):
+        return get_workflow(self)
+
+    @workflow.setter
+    def workflow(self, value=None):
+        raise AttributeError(_("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
+
+    def forward(self, user):
+        """Apply default transition"""
+        state = get_state(self)
+        transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
+        do_transition(self, transition, user)
+ 
+    # -- Resource API --#
+
+    @ClassProperty
+    @classmethod
+    def resource_type(cls):
+        return "order"
+    
+    @property
+    def ancestors(self):
+        return [self.des, self.pact]
+
+    @property
+    def des(self):
+        return self.gas.des
+
+    @property
+    def gas(self):
+        """Return the GAS issuing this order."""
+        return self.pact.gas
+    
+    @property
+    def supplier(self):
+        """Return the supplier this order is placed against."""
+        return self.pact.supplier        
+    
+    @property
+    def suppliers(self):
+        return Supplier.objects.filter(pk=self.supplier.pk)
+    
+    def save(self, *args, **kw):
+
+        super(GASSupplierOrder, self).save(*args, **kw)
+
+        if not self.workflow:
+            # Set default workflow
+            w = self.gas.config.default_workflow_gassupplier_order
+            set_workflow(self, w)
+
+
     @property
     def report_name(self):
         # Clean file order name
         #TODO: clean supplier name 
         return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
     
-    def __unicode__(self):
-        if not self.date_end is None:
-            return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, '{0:%Y%m%d}'.format(self.date_end))
-        else:
-            return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
-
-    class Meta:
-        app_label = 'gas'
-        
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
 

@@ -148,6 +148,8 @@ jQuery.UIBlock = Class.extend({
         this.active_view = action_el.attr('name');
         if (action_el.attr('popup_form') == "1") {
             return jQuery.retrieve_form(action_el);
+        } else {
+            $.post(action_el.attr("url"));
         }
         this.update_handler(this.block_box_id);
         return false;

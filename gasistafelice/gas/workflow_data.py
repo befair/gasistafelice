@@ -90,10 +90,11 @@ state_list = (
            ('finalized', "Finalized"), # SupplierOrder was finalized (no more chances left for reopening)
            ('sent', "Sent"), # SupplierOrder was sent to the Supplier
            ('delivered', "Delivered"), # SupplierOrder was delivered to the GAS
+           ('archived', "Archived"), # SupplierOrder was delivered to and processed by the GAS
            ('canceled', "Canceled"),# SupplierOrder was canceled
            #(exception_raised,"Exception raised")
-           )
-  
+)
+
      
 ## Transitions allowed among States defined for a SupplierOrder
  
@@ -106,8 +107,9 @@ transition_list = (
                  ('finalize', "Finalize", 'finalized'), # finalize the SupplierOrder
                  ('send', "Send", 'sent'), # send the SupplierOrder to the Supplier
                  ('set_delivered', "Set delivered", 'delivered'), # mark the SupplierOrder as "delivered"
+                 ('archive', "Archive", 'archived'), # mark the SupplierOrder as "archived" (do not display anymore)
                  ('cancel', "Cancel", 'canceled'), # cancel the SupplierOrder                                     
-                    )
+)
  
 ## Transitions-to-States map
 # FIXME: should be a dictionary
@@ -119,6 +121,8 @@ state_transition_map = (
                            ('closed', 'start_completion'),
                            ('on_completion', 'end_completion'),
                            ('finalized', 'send'),
+                           ('sent', 'set_delivered'),
+                           ('set_delivered', 'archive'),
                            # SupplierOrder may be canceled at any time before delivery happens
                            ('open', 'cancel'),
                            ('closed', 'cancel'),

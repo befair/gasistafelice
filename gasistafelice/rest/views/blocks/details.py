@@ -27,6 +27,8 @@ from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.auth import EDIT
 
 from gas.forms import order, EDIT_PactForm
+from workflows.utils import get_allowed_transitions, do_transition
+from workflows.models import Transition
 
 #from users.models import can_write_to_resource
 
@@ -86,6 +88,18 @@ class Block(AbstractBlock):
                     url=url
                 )
             )
+
+            for t in get_allowed_transitions(request.resource, request.user):
+                user_actions.append( 
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name="transition/%s" % t.name.lower(), verbose_name=t, 
+                        popup_form=False,
+                        url=None
+                    )
+                )
+                
 
         return user_actions
 
@@ -149,6 +163,15 @@ class Block(AbstractBlock):
             return self.add_new_note(request, resource_type, resource_id)
         elif args == "remove_note":
             return self.remove_note(request, resource_type, resource_id)
+        elif args.startswith("transition"):
+            t_name = args.split("/")[1]
+            allowed_transitions = get_allowed_transitions(request.resource, request.user)
+            t = Transition.objects.get(name__iexact=t_name, workflow=request.resource.workflow)
+            if t in allowed_transitions:
+                do_transition(request.resource, t, request.user)
+                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.id))
+            else:
+                return HttpResponse('')
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     
