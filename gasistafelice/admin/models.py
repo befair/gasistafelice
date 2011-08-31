@@ -374,13 +374,14 @@ class UserProfileAdmin(admin.ModelAdmin):
         pass
     
 admin.site.register(base_models.Person, PersonAdmin)
-admin.site.register(base_models.Contact)
 admin.site.register(base_models.Place, PlaceAdmin)
+admin.site.register(base_models.Contact)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
+admin.site.register(supplier_models.Certification)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
