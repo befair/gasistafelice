@@ -3,10 +3,9 @@ from django.db.models.signals import post_syncdb
 from gasistafelice.gas.workflow_data import workflow_dict
 import workflows 
 
-def init_workflows(sender, app, created_models, verbosity, **kwargs):
-    app_label = app.__name__.split('.')[-2] 
-    # `worklows` app was syncronized for the first time
-    if app_label == 'workflows' and workflows.models.Workflow in created_models:
+def init_workflows(sender, app, created_models, verbosity, **kwargs): 
+    # `workflows` app was syncronized for the first time
+    if workflows.models.Workflow in created_models:
         # now that all necessary tables are in the DB, we can register our workflows
         for name, w in workflow_dict.items():
             w.register_workflow()
