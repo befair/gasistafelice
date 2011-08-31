@@ -26,6 +26,7 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
+from django.db.models.signals import post_save
 
 class GAS(models.Model, PermissionResource):
 
@@ -718,29 +719,18 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()    
 
-    
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
-    def elabore_report(self):
-        #TODO return report like pdf format. Report has to be signed-firmed by partners
-        return "" 
-
-    def save(self, *args, **kw):
-
-        created = False
-        if not self.pk:
-            created = True
-
-        super(GASSupplierSolidalPact, self).save(*args, **kw)
-
-        #if created and self.account is None:
-        #    self.account = Account.objects.create()
-
-        if created and self.gas.config.auto_select_all_products:
+    def setup_data(self):
+        if self.gas.config.auto_select_all_products:
             for st in self.supplier.stocks:
                 GASSupplierStock.objects.create(pact=self, supplier_stock=st, enabled=True)
+
+    def elabore_report(self):
+        #TODO return report like pdf format. Report has to be signed-firmed by partners
+        return ""
 
     @property
     def ancestors(self):
@@ -775,3 +765,20 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
 
 #-------------------------------------------------------------------------------
+def setup_data(sender, instance, created, **kwargs):
+    """
+    Setup proper data after a model instance is saved to the DB for the first time.
+    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
+    actual role-creation/setup logic is encapsulated there.
+    """
+    if created: # Automatic data-setup should happen only at instance-creation time 
+        try:
+            # `instance` is the model instance that has just been created
+            instance.setup_data()
+                                                
+        except AttributeError:
+            # sender model doesn't specify any data-related setup operations, so just ignore the signal
+            pass
+
+# add `setup_data` function as a listener to the `post_save` signal
+post_save.connect(setup_data)     
