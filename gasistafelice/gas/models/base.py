@@ -453,6 +453,10 @@ class GASMember(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
+    display_fields = (
+        membership_fee_payed,
+    )
+
     class Meta:
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), )
@@ -609,6 +613,10 @@ class GASSupplierStock(models.Model, PermissionResource):
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
     
     history = HistoricalRecords()
+
+    display_fields = (
+        enabled,
+    )
 
     def __unicode__(self):
         return unicode(self.supplier_stock)
