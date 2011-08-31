@@ -36,7 +36,7 @@ class GAS(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
     logo = models.ImageField(upload_to="/images/", null=True, blank=True)
-    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=True, blank=True)
+    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False)
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
@@ -340,6 +340,12 @@ class GAS(models.Model, PermissionResource):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
+    def clean(self):
+
+        if self.headquarter is None:
+           raise ValidationError(_("Default headquarter place must be set"))
+
+        return super(GAS, self).clean()
 
 class GASConfig(models.Model, PermissionResource):
     """
@@ -420,16 +426,6 @@ class GASConfig(models.Model, PermissionResource):
     @property
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
-
-    def clean(self):
-
-        if (self.default_delivery_place is None) and (self.gas.headquarter is None):
-           raise ValidationError(_("Default delivery place must be set if GAS headquarter is not specified"))
-
-        if (self.default_withdrawal_place is None) and (self.gas.headquarter is None):
-           raise ValidationError(_("Default withdrawal place must be set if GAS headquarter is not specified"))
-
-        return super(GASConfig, self).clean()
 
     def save(self, *args, **kw):
         self.default_workflow_gassupplier_order = Workflow.objects.get(name="SupplierOrderDefault")
