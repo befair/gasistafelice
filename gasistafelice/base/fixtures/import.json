@@ -458,7 +458,11 @@
 
 
 
+<<<<<<< HEAD
 >>>>>>> User's Fixtures  to associate with Person. Minor fix for SupplierStoc fixtures
+=======
+
+>>>>>>> Set fixture name for Person
 {"pk": 101,"model":"base.person", "fields": {"display_name": "personGassista 1","uuid": "12345679001","contacts": [],"user":102,"surname": "gassi","name": "gm1","address": 121} },
 {"pk": 102,"model":"base.person", "fields": {"display_name": "personGassista 2","uuid": "12345679002","contacts": [],"user":103,"surname": "gassi","name": "gm2","address": 122} },
 {"pk": 103,"model":"base.person", "fields": {"display_name": "personGassista 3","uuid": "12345679003","contacts": [],"user":104,"surname": "gassi","name": "gm3","address": 123} },
