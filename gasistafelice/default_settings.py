@@ -134,7 +134,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del DES',
-        'blocks' : ['details']
+        'blocks' : ['details', 'categories']
     }],
     'gas' : [{
         'name' : 'orders',

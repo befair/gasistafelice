@@ -188,9 +188,11 @@ class ParamRole(models.Model):
         if isinstance(principal, User):
             #PrincipalParamRoleRelation.objects.create(user=principal, role=self)
             xobj, xcreated = PrincipalParamRoleRelation.objects.get_or_create(user=principal, role=self)
+            #TODO LOG: whether add_principal is called and xreated = False. It should not happen...
         elif isinstance(principal, Group):
             #PrincipalParamRoleRelation.objects.create(group=principal, role=self)
             xobj, xcreated = PrincipalParamRoleRelation.objects.get_or_create(group=principal, role=self)
+            #TODO LOG: whether add_principal is called and xreated = False. It should not happen...
         else:
             raise TypeError("The principal must be either a User instance or a Group instance.")   
 

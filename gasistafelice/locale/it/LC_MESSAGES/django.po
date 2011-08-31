@@ -1070,7 +1070,7 @@ msgstr "Ordini chiusi"
 
 #: rest/views/blocks/details.py:53
 msgid "Details"
-msgstr "Dettali"
+msgstr "Dettagli"
 
 #: rest/views/blocks/gas_list.py:31
 msgid "Add GAS"
