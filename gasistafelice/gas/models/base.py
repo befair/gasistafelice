@@ -798,6 +798,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     #-- Resource API --#
 
+    def elabore_report(self):
+        #TODO return report like pdf format. Report has to be signed-firmed by partners
+        return ""
+
     @property
     def parent(self):
         return self.gas
