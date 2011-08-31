@@ -404,6 +404,7 @@
 
 
 
+
 {"pk": 51,"model":"base.person", "fields": {"display_name": "personSupplier 1 contact","uuid": "12345678951","contacts": [],"user":52,"surname": "prod","name": "Contatto51","address": 71} },
 {"pk": 52,"model":"base.person", "fields": {"display_name": "personSupplier 2 contact","uuid": "12345678952","contacts": [],"user":53,"surname": "prod","name": "Contatto52","address": 72} },
 {"pk": 53,"model":"base.person", "fields": {"display_name": "personSupplier 3 contact","uuid": "12345678953","contacts": [],"user":54,"surname": "prod","name": "Contatto53","address": 73} },
@@ -454,6 +455,7 @@
 {"pk": 98,"model":"base.person", "fields": {"display_name": "personSupplier 48 contact","uuid": "12345678998","contacts": [],"user":99,"surname": "prod","name": "Contatto98","address": 118} },
 {"pk": 99,"model":"base.person", "fields": {"display_name": "personSupplier 49 contact","uuid": "12345678999","contacts": [],"user":100,"surname": "prod","name": "Contatto99","address": 119} },
 {"pk": 100,"model":"base.person", "fields": {"display_name": "personSupplier 50 contact","uuid": "12345679000","contacts": [],"user":101,"surname": "prod","name": "Contatto100","address": 120} },
+
 
 
 
