@@ -15,11 +15,6 @@ class CurrencyField(models.DecimalField):
         kw['decimal_places'] = 4
         super(CurrencyField, self).__init__(*args, **kw)
 
-    def pre_save(self, model_instance, add):
-        print "AAAA" , self.attname
-        print "AAAA" , getattr(model_instance, self.attname)
-        return getattr(model_instance, self.attname)
-
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], [
     "^gasistafelice\.base\.fields\.CurrencyField",
