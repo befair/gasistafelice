@@ -231,7 +231,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     ordered_amount = models.PositiveIntegerField(null=True, blank=True)
     # how many Product units were withdrawn by the GAS member 
     withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
-    # gasmember order have to be confirm if GAS configuration allowed it
+    # gasmember order have to be confirmed if GAS configuration allowed it
     is_confirmed = models.BooleanField(default=False)
 
     history = HistoricalRecords()
@@ -282,16 +282,17 @@ class GASMemberOrder(models.Model, PermissionResource):
         transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
  
-## FIXME: commented out model's save override waiting for issue #1 (on GitHub) to be resolved
-    def save(self):
-#        if not self.workflow:
-#            # Set default workflow
-#            w = self.gas.config.default_workflow_gasmember_order
-#            set_workflow(self, w)
+    def save(self, *args, **ke):
+
+        if not self.workflow:
+            # Set default workflow
+            w = self.gas.config.default_workflow_gasmember_order
+            set_workflow(self, w)
+
         if self.purchaser.gas.config.gasmember_auto_confirm_order:
             self.is_confirmed = True
-        return super(GASMemberOrder, self).save()
 
+        return super(GASMemberOrder, self).save(*args, **kw)
 
 
 class Appointment(models.Model):
