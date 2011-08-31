@@ -199,10 +199,6 @@ class GAS(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
-        rv = (
-              # initial roles setup goes here
-              )
-        return rv
 
     def save(self, *args, **kw):
 
@@ -522,7 +518,7 @@ class GASMember(models.Model, PermissionResource):
 
     def setup_roles(self):
         # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
-        role = ParamRole.objects.get(name=GAS_MEMBER, gas=self.gas)
+        role = ParamRole.get_role(name=GAS_MEMBER, gas=self.gas)
         user = self.person.user
         role.add_principal(user)
 
