@@ -1,16 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
+# Localization file for GASISTA FELICE
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Riccardo Serafini <tapion@pdp.linux.it>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-30 18:42+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2011-08-31 08:03+0200\n"
+"PO-Revision-Date: 2011-08-31 07:30+0200\n"
+"Last-Translator: Riccardo Serafini <tapion@pdp.linux.it>\n"
+"Language-Team: Italian <it@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: DOM.py:36
 msgid "indicative products seasonality and availability"
-msgstr "stagionalità e disponibilità indicativa dei prodotti "
+msgstr "disponibilità stagionale indicativa dei prodotti "
 
 #: DOM.py:37
 msgid "provenance water for irrigation"
@@ -66,6 +66,7 @@ msgid ""
 "producer is available for: visit, inspection, examination, farm holidays, "
 "refreshment, feeding ..."
 msgstr ""
+"il produttore è disponibile per: visite, ispezioni, esami, agriturismi, "
 
 #: DOM.py:69
 msgid "title and brief description"
@@ -74,6 +75,8 @@ msgstr "titolo e breve descrizione"
 #: DOM.py:85
 msgid "producer response encharge responsability about the above question"
 msgstr ""
+"risposta all'incarico di responsabilità del produttore riguardo alla domanda "
+"precedente"
 
 #: DOM.py:107
 msgid "fresh product or human operation done on it"
@@ -370,9 +373,8 @@ msgid "sites"
 msgstr "luoghi"
 
 #: des/models.py:269
-#, fuzzy
 msgid "name"
-msgstr "%(name)s"
+msgstr "nome"
 
 #: des/models.py:270
 msgid "value"
@@ -383,14 +385,12 @@ msgid "type"
 msgstr "tipo"
 
 #: des/models.py:295
-#, fuzzy
 msgid "environment variable"
-msgstr "Nessuno disponibile"
+msgstr "variabile d'ambiente"
 
 #: des/models.py:296
-#, fuzzy
 msgid "environment variables"
-msgstr "Nessuno disponibile"
+msgstr "variabili d'ambiente"
 
 #: gas/const.py:4
 msgid "open"
@@ -418,7 +418,7 @@ msgstr "completato"
 
 #: gas/forms/pact.py:38 gas/forms/pact.py:85
 msgid "Pact between this GAS and this Supplier already exists"
-msgstr ""
+msgstr "Esiste già un patto tra questo GAS e questo Fornitore"
 
 #: gas/models/base.py:37
 msgid "GAS code"
@@ -470,7 +470,7 @@ msgstr "Indirizzo e-mail del presidente"
 
 #: gas/models/base.py:81
 msgid "City"
-msgstr ""
+msgstr "Città"
 
 #: gas/models/base.py:230
 #, python-format
@@ -615,10 +615,9 @@ msgstr "prodotti disponibili in questo ordine"
 
 #: gas/models/order.py:49
 msgid "Current state"
-msgstr ""
+msgstr "Stato corrente"
 
 #: gas/models/order.py:121
-#, fuzzy
 msgid ""
 "Workflow for specific GASSupplierOrder is not allowed. Just provide a "
 "default order workflow for your GAS"
@@ -628,11 +627,11 @@ msgstr ""
 
 #: gas/models/order.py:241
 msgid "GAS member order"
-msgstr "ordine gasista"
+msgstr "Ordine gasista"
 
 #: gas/models/order.py:242
 msgid "GAS member orders"
-msgstr "ordini gasista"
+msgstr "Ordini gasista"
 
 #: gas/models/order.py:277
 msgid ""
@@ -663,9 +662,8 @@ msgid "where the order will be withdrawn by GAS members"
 msgstr "dove l'ordine sarà ritirato dai gasisti"
 
 #: gas/models/order.py:384
-#, fuzzy
 msgid "when the order will be withdrawn by GAS members"
-msgstr "dove l'ordine sarà ritirato dai gasisti"
+msgstr "quando l'ordine sarà ritirato dai gasisti"
 
 #: gas/models/order.py:386
 msgid "when the withdrawal will start"
@@ -720,8 +718,9 @@ msgid ""
 "There's been an error. It's been reported to the site administrators via e-"
 "mail and should be fixed shortly. Thanks for your patience."
 msgstr ""
-"C'è stato un errore. Questo è stato riportato via e-mail all'amministratore "
-"del sito e dovrebbe essere corretto a breve. Grazie per la pazienza."
+"Si è verificato un errore. Questo è stato riportato via e-mail "
+"all'amministratore del sito e dovrebbe essere corretto a breve. Grazie per "
+"la pazienza."
 
 #: gas_admin/templates/gas_admin/base_site.html:10
 #: gas_admin/templates/gas_admin/base_site.html:20
@@ -791,6 +790,9 @@ msgid ""
 "related objects, but your account doesn't have permission to delete the "
 "following types of objects:"
 msgstr ""
+"Eliminare il %(object_name)s '%(escaped_object)s' eliminerebbe anchegli "
+"oggetti ad esso collegati, ma il tuo account non ha i permessi necessari per "
+"eliminarequesti tipi di oggetti:"
 
 #: gas_admin/templates/gas_admin/delete_confirmation.html:23
 #, python-format
@@ -798,6 +800,8 @@ msgid ""
 "Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? "
 "All of the following related items will be deleted:"
 msgstr ""
+"Sei sicuro di voler eliminare il %(object_name)s \"%(escaped_object)s\"? "
+"Tutti gli oggetti ad esso collegati verranno eliminati:"
 
 #: gas_admin/templates/gas_admin/delete_confirmation.html:28
 #: gas_admin/templates/gas_admin/delete_selected_confirmation.html:33
@@ -815,6 +819,9 @@ msgid ""
 "your account doesn't have permission to delete the following types of "
 "objects:"
 msgstr ""
+"Eliminare il %(object_name)s eliminerebbe anche gli oggetti ad esso "
+"collegati, ma il tuo account non ha i permessi necessari per eliminare "
+"questi tipi di oggetti:"
 
 #: gas_admin/templates/gas_admin/delete_selected_confirmation.html:22
 #, python-format
@@ -822,6 +829,8 @@ msgid ""
 "Are you sure you want to delete the selected %(object_name)s objects? All of "
 "the following objects and their related items will be deleted:"
 msgstr ""
+"Sei sicuro di voler eliminare il %(object_name)s ?Tutti gli oggetti ad esso "
+"collegati verranno eliminati:"
 
 #: gas_admin/templates/gas_admin/index.html:18
 #, python-format
@@ -863,68 +872,70 @@ msgid ""
 "database tables have been created, and make sure the database is readable by "
 "the appropriate user."
 msgstr ""
+"Qualcosa non va con l'installazione del tuo database. Controlla che le "
+"giuste tabelle siano state create, e assicurati che il database sia "
+"leggibile dai giusti utenti."
 
 #: gas_admin/templates/gas_admin/login.html:19
-#, fuzzy
 msgid "Username:"
-msgstr "%(name)s"
+msgstr "Nome utente:"
 
 #: gas_admin/templates/gas_admin/login.html:22
-#, fuzzy
 msgid "Password:"
-msgstr "Password"
+msgstr "Password:"
 
 #: gas_admin/templates/gas_admin/login.html:26
 msgid "Log in"
-msgstr ""
+msgstr "Accedi"
 
 #: gas_admin/templates/gas_admin/object_history.html:22
 msgid "Date/time"
-msgstr ""
+msgstr "Data/ora"
 
 #: gas_admin/templates/gas_admin/object_history.html:23
 #: rest/models/blocks.py:22 rest/templates/html/index.html:1945
 msgid "User"
-msgstr ""
+msgstr "Utente"
 
 #: gas_admin/templates/gas_admin/object_history.html:24
-#, fuzzy
 msgid "Action"
-msgstr "Le mie azioni"
+msgstr "Azione"
 
 #: gas_admin/templates/gas_admin/object_history.html:38
 msgid ""
 "This object doesn't have a change history. It probably wasn't added via this "
 "admin site."
 msgstr ""
+"Questo oggetto non sembra avere uno storico delle modifiche. Probabilmente "
+"non è stato aggiunto attraverso questo sito."
 
 #: lib/widgets.py:22
 msgid "Add Another"
-msgstr ""
+msgstr "Aggiungine un altro"
 
 #: rest/models/blocks.py:24
 msgid "Rest block name"
-msgstr ""
+msgstr "Nome del blocco REST"
 
 #: rest/models/blocks.py:26
 msgid "Resource type"
-msgstr ""
+msgstr "Tipo di risorsa"
 
 #: rest/models/blocks.py:27
 msgid "Resource key"
-msgstr ""
+msgstr "Chiave risorsa"
 
 #: rest/models/blocks.py:29
 msgid "user page"
-msgstr ""
+msgstr "pagina utente"
 
 #: rest/models/blocks.py:30
 msgid "page position"
-msgstr ""
+msgstr "posizione della pagina"
 
 #: rest/models/blocks.py:32 rest/models/pages.py:36
 msgid "Configuration data"
-msgstr ""
+msgstr "Dati di configurazione"
 
 #: rest/templates/related_notes.html:5
 msgid "Target's notes"
@@ -936,72 +947,69 @@ msgstr ""
 
 #: rest/templates/html/index.html:1947
 msgid "Role"
-msgstr ""
+msgstr "Ruolo"
 
 #: rest/templates/html/index.html:1949
 msgid "Logout"
-msgstr ""
+msgstr "Esci"
 
 #: rest/templates/html/index.html:1990 rest/templates/html/index.html:2075
 #: rest/templates/html/index.html:2222 rest/templates/html/index.html:2230
 msgid "Minimize block"
-msgstr ""
+msgstr "Minimizza il blocco"
 
 #: rest/templates/html/index.html:1992
 msgid "Search"
-msgstr ""
+msgstr "Cerca"
 
 #: rest/templates/html/index.html:2005
 msgid "Enter search keyword here"
-msgstr ""
+msgstr "Inserisci le parole chiave qui"
 
 #: rest/templates/html/index.html:2010 rest/templates/html/index.html:2011
 msgid "Reset search"
-msgstr ""
+msgstr "Azzera la ricerca"
 
 #: rest/templates/html/index.html:2014
-#, fuzzy
 msgid "Options"
-msgstr "opzioni del GAS"
+msgstr "Opzioni"
 
 #: rest/templates/html/index.html:2022 rest/templates/html/index.html:2026
 #: sanet_users/models.py:149
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: rest/templates/html/index.html:2030
-#, fuzzy
 msgid "GAS name"
-msgstr "Gasista"
+msgstr "Nome del GAS"
 
 #: rest/templates/html/index.html:2031
-#, fuzzy
 msgid "Supplier name"
-msgstr "Fornitore"
+msgstr "Nome del fornitore"
 
 #: rest/templates/html/index.html:2074
 msgid "Refresh history"
-msgstr ""
+msgstr "Aggiorna la cronologia"
 
 #: rest/templates/html/index.html:2155 sanet_users/views/__init__.py:179
 msgid "User page"
-msgstr ""
+msgstr "Pagina utente"
 
 #: rest/templates/html/index.html:2214 rest/templates/html/index.html:2229
 msgid "Refresh block now"
-msgstr ""
+msgstr "Aggiorna il blocco adesso"
 
 #: rest/templates/html/index.html:2221 rest/templates/html/index.html:2228
 msgid "Set to full screen"
-msgstr ""
+msgstr "Imposta a tutto schermo"
 
 #: rest/templates/html/index.html:2249
 msgid "Select the resource type"
-msgstr ""
+msgstr "Seleziona il tipo di risorsa"
 
 #: rest/templates/html/index.html:2252
 msgid "Site"
-msgstr ""
+msgstr "Sito"
 
 #: rest/templates/html/index.html:2253
 msgid "Container"
@@ -1025,24 +1033,23 @@ msgstr ""
 
 #: rest/templates/html/index.html:2261
 msgid "Select the resource"
-msgstr ""
+msgstr "Seleziona la risorsa"
 
 #: rest/templates/html/index.html:2266
 msgid "Select the data block type"
-msgstr ""
+msgstr "Seleziona il tipo di blocco della data"
 
 #: rest/views/__init__.py:70
 msgid "Master of the Universe"
-msgstr ""
+msgstr "Capo dell'Universo"
 
 #: rest/views/contextmenu.py:20
 msgid "Resource page"
-msgstr ""
+msgstr "Pagina delle risorse"
 
 #: rest/views/blocks/__init__.py:17
-#, fuzzy
 msgid "default description"
-msgstr "Transizione di default"
+msgstr "descrizione predefinita"
 
 #: rest/views/blocks/account_state.py:11
 msgid "Economic state"
@@ -1050,7 +1057,7 @@ msgstr "Stato economico"
 
 #: rest/views/blocks/basket.py:19
 msgid "Basket"
-msgstr ""
+msgstr "Paniere"
 
 #: rest/views/blocks/basket.py:37
 msgid "Confirm all"
@@ -1058,7 +1065,7 @@ msgstr "Conferma tutto"
 
 #: rest/views/blocks/catalog_list.py:11
 msgid "Lista prodotti supplier/gas in ordine"
-msgstr ""
+msgstr "Lista prodotti supplier/gas in ordine"
 
 #: rest/views/blocks/categories.py:11
 msgid "Categories"
@@ -1070,7 +1077,7 @@ msgstr "Ordini chiusi"
 
 #: rest/views/blocks/details.py:53
 msgid "Details"
-msgstr "Dettali"
+msgstr "Dettagli"
 
 #: rest/views/blocks/gas_list.py:31
 msgid "Add GAS"
@@ -1104,11 +1111,11 @@ msgstr "Modifica stock"
 
 #: rest/views/blocks/menu.py:21
 msgid "Context menu"
-msgstr ""
+msgstr "Menù contestuale"
 
 #: rest/views/blocks/open_orders.py:36
 msgid "Add order"
-msgstr "Apri ordine"
+msgstr "Aggiungi ordine"
 
 #: rest/views/blocks/order_report.py:20
 msgid "Order report"
