@@ -15,6 +15,8 @@ class CurrencyField(DecimalField):
 
         if comma_pos > dot_pos:
             new_value = value[:comma_pos] + '.' + value[comma_pos+1:]
+        else:
+            new_value = value
 
         return super(CurrencyField, self).clean(new_value)
         
