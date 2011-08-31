@@ -451,6 +451,14 @@ class GASConfig(models.Model, PermissionResource):
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
 
+<<<<<<< HEAD
+=======
+    def save(self, *args, **kw):
+        self.default_workflow_gassupplier_order = Workflow.objects.get(name="SupplierOrderDefault")
+        self.default_workflow_gasmember_order = Workflow.objects.get(name="GASMemberOrderDefault")
+        return super(GASConfig, self).save(*args, **kw)
+
+>>>>>>> Set headquarter obbligatory
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
