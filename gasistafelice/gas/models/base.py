@@ -400,7 +400,7 @@ class GASConfig(models.Model, PermissionResource):
     auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
-    gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if True gasmember's orders are automatically confirmed. If False each  gasmember must confirm by himself his own orders"))
+    gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
 
     history = HistoricalRecords()
 
@@ -422,17 +422,13 @@ class GASConfig(models.Model, PermissionResource):
         return self.default_withdrawal_place or self.gas.headquarter
 
     def clean(self):
-        #TODO placeholder domthu code that default_withdrawal_place must not be None
-        # if headquarter is not specified
-        if self.default_delivery_place is None:
-            self.default_delivery_place =  self.gas.headquarter;
-        #pass
-        #TODO placeholder domthu code that default_delivery_place must not be None
-        # if headquarter is not specified
-        if self.default_withdrawal_place is None:
-            self.default_withdrawal_place = self.gas.headquarter;
-        #pass
-        
+
+        if (self.default_delivery_place is None) and (self.gas.headquarter is None):
+           raise ValidationError(_("Default delivery place must be set if GAS headquarter is not specified"))
+
+        if (self.default_withdrawal_place is None) and (self.gas.headquarter is None):
+           raise ValidationError(_("Default withdrawal place must be set if GAS headquarter is not specified"))
+
         return super(GASConfig, self).clean()
 
     def save(self, *args, **kw):
@@ -525,13 +521,9 @@ class GASMember(models.Model, PermissionResource):
         raise NotImplementedError
 
     def setup_roles(self):
-        # automatically add a new GASMember to the `GAS_MEMBER` Role
-        #TODO: fixtures create user foreach person
-        role = register_parametric_role(name=GAS_MEMBER, gas=self.gas)
+        # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
+        role = ParamRole.objects.get(name=GAS_MEMBER, gas=self.gas)
         user = self.person.user
-        #COMMENT: issue #3 TypeError: The principal must be either a User instance or a Group instance.
-        if user is None:
-            return ""
         role.add_principal(user)
 
     def clean(self):
