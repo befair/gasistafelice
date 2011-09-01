@@ -806,6 +806,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def gasstock(self):
         raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one gas stock")
 
+    @property
+    def pact(self):
+        return self
     
     #-- Permission management --#
     

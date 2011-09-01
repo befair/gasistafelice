@@ -172,6 +172,10 @@ class BlockSSDataTables(BlockWithList):
     # To be overridden in subclass. Required for correct sorting behaviour
     COLUMN_INDEX_NAME_MAP = {} 
 
+    def __init__(self):
+        super(BlockSSDataTables, self).__init__()
+        self.BLOCK_TEMPLATE = "blocks/%s/block.xml" % self.BLOCK_NAME
+
     def _get_records(self, request, querySet):
         raise NotImplementedError("To be implemented in subclass")
 
@@ -194,7 +198,7 @@ class BlockSSDataTables(BlockWithList):
                 'user_actions'    : self._get_user_actions(request),
             }
 
-            template_name = "blocks/%s/block.xml" % self.BLOCK_NAME
+            template_name = self.BLOCK_TEMPLATE
             return render_to_xml_response(template_name, context)
 
         elif args == self.KW_DATA:
