@@ -7,6 +7,7 @@
     {% for stock in records %}
     [
         
+        "{{stock.id|escapejs}}",
         "{{stock.code|escapejs}}",
         "{{stock.product|escapejs}}",
         "{{stock.description|escapejs}}",
@@ -17,7 +18,8 @@
     ,
     {% endif %}
     {% endfor %}
-    ]
+    ],
+    "gf_moreData": {}
 }
 
 {% comment %}

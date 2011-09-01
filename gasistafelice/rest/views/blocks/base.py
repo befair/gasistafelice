@@ -18,7 +18,6 @@ from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.lib.fields import ResourceList
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
 from gasistafelice.base.models import Resource
@@ -34,25 +33,26 @@ from gasistafelice.auth import CREATE, EDIT_MULTIPLE
 
 class Action(object):
 
-    def __init__(self, name, verbose_name, url, popup_form=True):
+    def __init__(self, name, verbose_name, url, popup_form=True, method="POST"):
 
         self.name = name
         self.verbose_name = verbose_name
         self.url = url
         self.popup_form = popup_form
+        self.method = method
 
 class ResourceBlockAction(Action):
     """Action included in a resource block.
 
     Usually you should use this class"""
 
-    def __init__(self, resource, block_name, name, verbose_name, url=None, popup_form=True):
+    def __init__(self, resource, block_name, name, verbose_name, url=None, popup_form=True, method="POST"):
 
         self.resource = resource
         self.block_name = block_name
         if not url:
             url = "%s/%s/%s" % (resource.urn, block_name, name)
-        super(ResourceBlockAction, self).__init__(name, verbose_name, url, popup_form)
+        super(ResourceBlockAction, self).__init__(name, verbose_name, url, popup_form, method=method)
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -173,19 +173,22 @@ class BlockSSDataTables(BlockWithList):
     def _get_records(self, request, querySet):
         raise NotImplementedError("To be implemented in subclass")
 
+    def _get_edit_multiple_form_class(self):
+        raise NotImplementedError("_get_edit_multiple_form_class should be implemented in subclass")
+
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        resource = request.resource
+        super(BlockWithList, self).get_response(request, resource_type, resource_id, args)
 
         if args == "":
 
             context = {
                 'block_type' : self.name,
-                'resource'   : resource,
+                'resource'   : self.resource,
                 'user_actions'    : self._get_user_actions(request),
             }
 
@@ -205,6 +208,20 @@ class BlockSSDataTables(BlockWithList):
 
         elif args == EDIT_MULTIPLE:
 
+            if request.method == 'POST':
+
+                form_class = self._get_edit_multiple_form_class()
+                formset = form_class(request, request.POST)
+                
+                if formset.is_valid():
+                    for form in formset:
+                        # Check for data: empty formsets are full of empty data ;)
+                        if form.cleaned_data:
+                            form.save()
+                    return self.response_success()
+                else:
+                    return self.response_error(formset.errors)
+                    
             querySet = self._get_resource_list(request) 
             #columnIndexNameMap is required for correct sorting behavior
             columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
@@ -212,9 +229,9 @@ class BlockSSDataTables(BlockWithList):
             jsonTemplatePath = 'blocks/%s/edit_multiple.json' % self.BLOCK_NAME
 
             querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
-            records = self._get_records(request, querySet)
+            formset, records = self._get_records(request, querySet)
 
-            return render_datatables(request, records, dt_params, jsonTemplatePath)
+            return render_datatables(request, records, dt_params, jsonTemplatePath, moreData={'formset' : formset})
             
         elif args == CREATE:
 

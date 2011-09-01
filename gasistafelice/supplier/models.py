@@ -225,8 +225,8 @@ class SupplierStock(models.Model, PermissionResource):
     # Resource API
     product = models.ForeignKey(Product, related_name="stock_set")
     price = CurrencyField(verbose_name=_("price"))
-    code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
-    amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
+    code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
+    amount_available = models.PositiveIntegerField(verbose_name=_("availability"), default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
     #COMMENT: minimum amount of Product units a GASMember is able to order 

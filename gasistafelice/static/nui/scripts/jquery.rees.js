@@ -149,7 +149,14 @@ jQuery.UIBlock = Class.extend({
         if (action_el.attr('popup_form') == "1") {
             return jQuery.retrieve_form(action_el);
         } else {
-            $.post(action_el.attr("url"));
+
+            var method = action_el.attr("method");
+            if (method.toLowerCase() == "get")
+                method = "get";
+            else
+                method = "post";
+
+            $[method](action_el.attr("url"));
         }
         this.update_handler(this.block_box_id);
         return false;
@@ -163,7 +170,7 @@ jQuery.UIBlock = Class.extend({
         
         //Render block actions
         var contents = jQel.find('content[type="user_actions"]');
-        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" />";
+        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" method=\"@@action_method@@\" />";
         var actions = '';
 
         if (contents.find('action').length > 0) {
@@ -173,6 +180,7 @@ jQuery.UIBlock = Class.extend({
                 action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
                 action = action.replace(/@@action_url@@/g, $(this).attr("url"));
                 action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
+                action = action.replace(/@@action_method@@/g, $(this).attr("method"));
                 actions += action;
             });
         }
@@ -220,27 +228,56 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
             //If no errors found: reset active_view and reload.
             //If errors found: write down errors in form
 
-            //TODO: In any case #user_notifications should be filled with appropriate message
-            alert("Questi dati rappresentano gli errori. Se il dizionario è vuoto bene! In questo momento lato server non è ancora accaduto nulla"); 
+            if (!data['error_msg'].length) {
+                //No errors found
+                this.active_view = "view";
+                this.update_handler(this.block_box_id);
 
-            //TODO: check that errors are empty
-            this.active_view = "view";
-            this.update_handler(this.block_box_id);
+            } else {
+                var error_list_html = '<ul class="errorlist">';
+                for (var i=0; i<data['error_msg'].length; i++) {
+                    var error_d = data['error_msg'][i];
+                    if (!jQuery.isEmptyObject(error_d)) {
+                        var n = i+1;
+                        var error_html = '<li>Riga ' + n + ' - ';
+                        for (var item in error_d) {
+                            error_html += item + " " + error_d[item];
+                        }
+                        error_list_html += error_html + "</li>";
+                    }
+                }
+                error_list_html += "</ul>";
+                form_el.prepend(error_list_html);
+            }
+
+            //TODO: #user_notifications should be filled with appropriate message
+
+    },
+
+    form_beforeSubmit : function (form_el, formData, jqForm, options) { 
+
+            form_el.find('.errorlist').remove();
+
+            //set formset management fields:
+            //https://docs.djangoproject.com/en/dev/topics/forms/formsets/#understanding-the-managementform
     },
 
     rendering_list_post_load_handler: function () {},
     rendering_icons_post_load_handler: function () {},
     rendering_table_post_load_handler: function () {
 
-        var block_el = this;
+        var block_instance = this;
         if (this.active_view == "edit_multiple") {
             $('#' + this.block_box_id + '-form').submit( function() {
 
-                var form_el = this;
+                var form_el = $(this);
                 var options = {
                     dataType:  'json',
+                    beforeSubmit: function (formData, jqForm, options) {
+                        block_instance.form_beforeSubmit(form_el, formData, jqForm, options);
+                    },
                     success : function(data) {
-                        return block_el.form_success_process_json(form_el, data);
+                        return block_instance.form_success_process_json(form_el, data);
                     }
                 }
 
@@ -274,9 +311,13 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
         if (this.active_view == "edit_multiple") {
             var action_url = this.url + this.active_view;
-            res = "<form id=\"" + this.block_box_id + "-form\" method=\"POST\" action=\""+action_url+"\">";
+            var form_id = this.block_box_id + "-form";
+            res = "<form id=\"" + form_id +"\" method=\"POST\" action=\""+action_url+"\">";
             res += "<input type=\"submit\" name=\"" + gettext('Submit') + "\" />";
             res += html_table;
+            res += "<input type=\"hidden\" name=\"form-TOTAL_FORMS\" value=\"5\" id=\"" + form_id + "-TOTAL_FORMS\" />";
+            res += "<input type=\"hidden\" name=\"form-INITIAL_FORMS\" value=\"0\" id=\"" + form_id + "-INITIAL_FORMS\" />";
+            res += "<input type=\"hidden\" name=\"form-MAX_NUM_FORMS\" id=\"" + form_id + "-MAX_NUM_FORMS\" />";
             res += "</form>";
         }
 

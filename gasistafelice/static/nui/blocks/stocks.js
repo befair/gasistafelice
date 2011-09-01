@@ -17,6 +17,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                     null,
                     null,
                     null,
+                    null,
                     { "sType": "currency" },
                     null
                 ]
@@ -25,7 +26,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
         return this._super();
 
     }
-    
+
 });
 
 jQuery.BLOCKS["stocks"] = new jQuery.UIBlockStockList();
