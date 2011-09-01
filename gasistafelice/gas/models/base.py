@@ -22,11 +22,13 @@ from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.bank.models import Account
 from gasistafelice.des.models import DES
 
+from gasistafelice.lib.fields import Display
+
 from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
 
 class GAS(models.Model, PermissionResource):
 
@@ -182,7 +184,6 @@ class GAS(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()    
 
-    
     @property
     def city(self):
         return self.headquarter.city 
@@ -449,7 +450,7 @@ class GASMember(models.Model, PermissionResource):
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     account = models.ForeignKey(Account, null=True, blank=True)
-    membership_fee_payed = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
+    membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
     objects = GASMemberManager()
 
@@ -457,6 +458,9 @@ class GASMember(models.Model, PermissionResource):
 
     display_fields = (
         membership_fee_payed,
+        id_in_gas,
+        models.CharField(max_length=32, name="city", verbose_name=_("City")),
+        models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
     )
 
     class Meta:
@@ -522,6 +526,34 @@ class GASMember(models.Model, PermissionResource):
         # or
         # return something
         raise NotImplementedError
+
+    @property
+    def ancestors(self):
+        return [self.des, self.gas]
+
+    @property
+    def city(self):
+        return self.person.city 
+
+    @property
+    def economic_state(self):
+        st1 = self.total_basket
+        st2 = self.total_basket_to_delivery
+        return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+
+    @property
+    def total_basket(self):
+        tot = 0
+        for gmord in self.basket:
+            tot += gmord.ordered_price
+        return tot
+
+    @property
+    def total_basket_to_delivery(self):
+        tot = 0
+        for gmord in self.basket_to_delivery:
+            tot += gmord.ordered_price
+        return tot
 
     def setup_roles(self):
         # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
@@ -598,7 +630,12 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(product__order__in=self.orders.open())
+        return GASMemberOrder.objects.filter(order_product__in=self.orders.open())
+
+    @property
+    def basket_to_delivery(self):
+        from gasistafelice.gas.models import GASMemberOrder
+        return GASMemberOrder.objects.filter(order_product__in=self.orders.closed())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -775,21 +812,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
 
 #-------------------------------------------------------------------------------
-def setup_attribute_data(sender, instance, created, **kwargs):
-    """
-    Setup proper attribute data before a model instance is saved to the DB for the first time.
-    This function just calls the `setup_attribute_data()` instance method of the sender model class (if defined);
-    actual role-creation/setup logic is encapsulated there.
-    """
-    if created: # Automatic attribute-setup should happen only at instance-creation time 
-        try:
-            # `instance` is the model instance that has just been created
-            instance.setup_attribute_data()
-                                                
-        except AttributeError:
-            # sender model doesn't specify any data-related setup operations, so just ignore the signal
-            pass
-
 def setup_data(sender, instance, created, **kwargs):
     """
     Setup proper data after a model instance is saved to the DB for the first time.
