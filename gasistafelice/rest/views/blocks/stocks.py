@@ -62,9 +62,6 @@ class Block(BlockSSDataTables):
         # Build a dict (should be a QueryDict) with data needed for FormSet initialization
 
         data = {}
-        # FIXME TO BE REMOVED: initial data not needed anymore
-        formset_initial = []
-
         for i,el in enumerate(querySet):
             key_prefix = 'form-%d' % i
             data.update({
@@ -73,15 +70,6 @@ class Block(BlockSSDataTables):
                '%s-product' % key_prefix : el.product,
                '%s-price' % key_prefix : floatformat(el.price, 2),
                '%s-availability' % key_prefix : el.amount_available,
-            })
-
-            # FIXME TO BE REMOVED: initial data not needed anymore
-            formset_initial.append({
-               'pk' : el.pk,
-               'code' : el.code,
-               'product' : el.product,
-               'price' : floatformat(el.price, 2),
-               'amount_available' : el.amount_available,
             })
 
         data['form-TOTAL_FORMS'] = i
