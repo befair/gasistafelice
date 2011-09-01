@@ -42,9 +42,10 @@ class GAS_PactForm(Base_PactForm):
     def save(self):
         self.instance.gas = self.__gas
         super(GAS_PactForm, self).save()
-        
-        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
-        PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['gas_supplier_referrer'].user)
+
+        if self.cleaned_data.get('gas_supplier_referrer'):
+            pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
+            PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['gas_supplier_referrer'].user)
 
     class Meta:
 
