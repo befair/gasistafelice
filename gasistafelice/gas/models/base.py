@@ -23,7 +23,10 @@ from gasistafelice.bank.models import Account
 from gasistafelice.des.models import DES
 
 from gasistafelice.lib.fields import display
+<<<<<<< HEAD
 from gasistafelice.lib import ClassProperty
+=======
+>>>>>>> Register GAS_REFERRER during GAS creation
 
 from gasistafelice.exceptions import NoSenseException
 
@@ -198,7 +201,7 @@ class GAS(models.Model, PermissionResource):
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
-        # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP. 
+        # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP.
         register_parametric_role(name=GAS_REFERRER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
