@@ -591,7 +591,7 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def pacts(self):
-        # A GAS member is interested primarily in those pacts (`SupplierSolidalPact` instances) subscribed by its GAS
+        # A GAS member is interested primarily in those pacts (`GASSupplierSolidalPact` instances) subscribed by its GAS
         return self.gas.pacts
 
     @property
@@ -644,8 +644,8 @@ class GASMember(models.Model, PermissionResource):
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
 
-    pact = models.ForeignKey("GASSupplierSolidalPact")
-    supplier_stock = models.ForeignKey(SupplierStock)
+    pact = models.ForeignKey("GASSupplierSolidalPact", related_name="gasstock_set")
+    stock = models.ForeignKey(SupplierStock, related_name="gasstock_set")
     # if a Product is available to GAS Members; policy is GAS-specific
     enabled = models.BooleanField(default=True)
     ## constraints on what a single GAS Member is able to order
@@ -662,17 +662,17 @@ class GASSupplierStock(models.Model, PermissionResource):
     )
 
     def __unicode__(self):
-        return unicode(self.supplier_stock)
+        return unicode(self.stock)
         
     @property
     def supplier(self):
-        return self.supplier_stock.supplier
+        return self.stock.supplier
 
     @property
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
-        return self.supplier_stock.price*(1 + price_percent_update)
+        return self.stock.price*(1 + price_percent_update)
 
     class Meta:
         app_label = 'gas'
@@ -720,10 +720,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     date_signed = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True, default=None, help_text=_("date of first meeting GAS-Producer"))
 
     # which Products GAS members can order from Supplier
-    # COMMENT fero: I think the solution proposed by domthu in ticket #80 respect
-    # the semantic of the through parameter for a ManyToManyField relation:
-    # GASSupplierStock is just a way to augment relation between a pact and a supplier stock
-    supplier_stock = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
+    stock_set = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
     order_minimum_amount = CurrencyField(null=True, blank=True)
     order_delivery_cost = CurrencyField(null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
@@ -777,11 +774,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def setup_data(self):
         if self.gas.config.auto_select_all_products:
             for st in self.supplier.stocks:
-                GASSupplierStock.objects.create(pact=self, supplier_stock=st, enabled=True)
+                GASSupplierStock.objects.create(pact=self, stock=st, enabled=True)
 
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return ""
+
+    #-- Resource API --#
 
     @property
     def ancestors(self):
@@ -791,6 +790,23 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def des(self):
         return self.gas.des
 
+    @property
+    def stocks(self):
+        return self.stock_set.all()
+
+    @property
+    def gasstocks(self):
+        return self.gasstock_set.all()
+
+    @property
+    def stock(self):
+        raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one stock")
+        
+    @property
+    def gasstock(self):
+        raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one gas stock")
+
+    
     #-- Permission management --#
     
     # Table-level CREATE permission    
