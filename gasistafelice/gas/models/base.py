@@ -243,8 +243,8 @@ class GAS(models.Model, PermissionResource):
     #-- Resource API --#
 
     @property
-    def ancestors(self):
-        return [self.des]
+    def parent(self):
+        return self.des
 
     @property
     def gas(self):
@@ -516,8 +516,8 @@ class GASMember(models.Model, PermissionResource):
         return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
     @property
-    def ancestors(self):
-        return [self.des, self.gas]
+    def parent(self):
+        return self.gas
 
     #COMMENT domthu: fero added id_in_des (or id_in_gas ) for GASMember. That it not required: ask to community if necesary.
     @property
@@ -530,10 +530,6 @@ class GASMember(models.Model, PermissionResource):
         # or
         # return something
         raise NotImplementedError
-
-    @property
-    def ancestors(self):
-        return [self.des, self.gas]
 
     @property
     def city(self):
@@ -783,8 +779,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     #-- Resource API --#
 
     @property
-    def ancestors(self):
-        return [self.des, self.gas]
+    def parent(self):
+        return self.gas
 
     @property
     def des(self):

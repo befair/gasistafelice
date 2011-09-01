@@ -134,8 +134,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return "order"
     
     @property
-    def ancestors(self):
-        return [self.des, self.pact]
+    def parent(self):
+        return self.pact
 
     @property
     def des(self):
