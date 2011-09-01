@@ -23,10 +23,7 @@ from gasistafelice.bank.models import Account
 from gasistafelice.des.models import DES
 
 from gasistafelice.lib.fields import display
-<<<<<<< HEAD
 from gasistafelice.lib import ClassProperty
-=======
->>>>>>> Register GAS_REFERRER during GAS creation
 
 from gasistafelice.exceptions import NoSenseException
 
