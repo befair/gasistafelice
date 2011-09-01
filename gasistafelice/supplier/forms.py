@@ -25,7 +25,11 @@ class SingleSupplierStockForm(forms.Form):
 
     def save(self):
 
-        self.instance, created = SupplierStock.objects.get_or_create(pk=self.cleaned_data.get('id'))
+        if self.cleaned_data.get('id'):
+            self.instance = SupplierStock.objects.get(pk=self.cleaned_data['id'])
+        else:
+            self.instance = SupplierStock()
+
         self.instance.code = self.cleaned_data.get('code')
         self.instance.supplier = self.__supplier
         self.instance.product = self.cleaned_data['product']

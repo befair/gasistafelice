@@ -62,6 +62,8 @@ class Block(BlockSSDataTables):
         # Build a dict (should be a QueryDict) with data needed for FormSet initialization
 
         data = {}
+        i = 0
+        
         for i,el in enumerate(querySet):
             key_prefix = 'form-%d' % i
             data.update({
@@ -72,7 +74,7 @@ class Block(BlockSSDataTables):
                '%s-availability' % key_prefix : el.amount_available,
             })
 
-        data['form-TOTAL_FORMS'] = i
+        data['form-TOTAL_FORMS'] = i + 5
         data['form-INITIAL_FORMS'] = 0
         data['form-MAX_NUM_FORMS'] = 0
 
