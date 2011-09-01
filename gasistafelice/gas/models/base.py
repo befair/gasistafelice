@@ -23,6 +23,7 @@ from gasistafelice.bank.models import Account
 from gasistafelice.des.models import DES
 
 from gasistafelice.lib.fields import display
+from gasistafelice.lib import ClassProperty
 
 from gasistafelice.exceptions import NoSenseException
 
