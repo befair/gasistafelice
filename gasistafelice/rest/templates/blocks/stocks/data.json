@@ -18,12 +18,6 @@
     ,
     {% endif %}
     {% endfor %}
-    ]
+    ],
+    "gf_moreData": { {{ moreData }} }
 }
-
-{% comment %}
-TODO fero: td classes?!?
-    <td class="resource" sanet_urn="{{ res.product.urn}}">{{ res.product }}</td>
-    <td class="align-right"></td>
-    <td class="align-right"></td>
-{% endcomment %}

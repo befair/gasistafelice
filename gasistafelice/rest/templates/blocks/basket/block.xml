@@ -18,6 +18,7 @@
         <tbody>
         </tbody>
         </table>
+        <div id="total-basket-{{ resource.urn }}"> </div>
 
 	</content>
     

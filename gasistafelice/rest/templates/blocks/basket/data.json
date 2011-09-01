@@ -18,6 +18,7 @@
     ,
     {% endif %}
     {% endfor %}
-    ]
+    ],
+    "gf_moreData" : { {{moreData}} }
 }
 

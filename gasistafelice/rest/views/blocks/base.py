@@ -232,9 +232,9 @@ class BlockSSDataTables(BlockWithList):
             jsonTemplatePath = 'blocks/%s/edit_multiple.json' % self.BLOCK_NAME
 
             querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
-            formset, records = self._get_records(request, querySet)
+            formset, records, moreData = self._get_records(request, querySet)
 
-            return render_datatables(request, records, dt_params, jsonTemplatePath, moreData={'formset' : formset})
+            return render_datatables(request, records, dt_params, jsonTemplatePath, moreData=moreData)
             
         elif args == CREATE:
 
