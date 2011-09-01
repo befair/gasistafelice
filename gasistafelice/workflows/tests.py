@@ -9,7 +9,7 @@ from django.test.client import Client
 
 # workflows import
 import permissions.utils
-from gasistafelice.workflows import utils
+from gasistafelice.workflows.utils import set_workflow, get_allowed_transitions
 from gasistafelice.workflows.models import State
 from gasistafelice.workflows.models import StateInheritanceBlock
 from gasistafelice.workflows.models import StatePermissionRelation
@@ -19,6 +19,50 @@ from gasistafelice.workflows.models import Workflow
 from gasistafelice.workflows.models import WorkflowModelRelation
 from gasistafelice.workflows.models import WorkflowObjectRelation
 from gasistafelice.workflows.models import WorkflowPermissionRelation
+
+from gasistafelice.gas.models import GAS
+
+class GetAllowedTransitionsTestCase(TestCase):
+    """
+    Test retrieval of transitions allowed to a given user, with respect to a given model instance. 
+    """
+    def setUp(self):
+        self.gas_1 = GAS.objects.create(name="Foo")
+        
+        self.workflow = Workflow.objects.create(name="Foo")
+        workflow = self.workflow
+        
+        self.open = State.objects.create(name="Open", workflow= workflow)
+        self.closed = State.objects.create(name="Closed", workflow= workflow)
+        self.archived = State.objects.create(name="Closed", workflow= workflow)
+        
+        self.close = Transition.objects.create(name="Close", workflow=workflow, destination=self.closed)
+        self.ignore = Transition.objects.create(name="Ignore", workflow=workflow, destination=self.closed)
+        self.archive = Transition.objects.create(name="Archive", workflow=workflow, destination=self.archived)
+        self.reopen = Transition.objects.create(name="Reopen", workflow=workflow, destination=self.open)
+        
+        self.open.transitions.add(self.close)
+        self.open.transitions.add(self.ignore)
+        self.open.transitions.add(self.archive)
+        self.closed.transitions.add(self.reopen)
+        
+        workflow.initial_state = self.open
+        workflow.save()
+        
+        self.user = User.objects.create(username="john")
+        
+    def test_get_allowed_transitions_without_permissions(self):
+        """
+        If no permissions are set, all available transitions should be returned.
+        """ 
+        set_workflow(self.gas_1, self.workflow)
+        # retrieve allowed transitions via the utility function
+        allowed_transitions = get_allowed_transitions(self.gas_1, self.user)
+        self.assertEqual(set(allowed_transitions), set((self.close, self.ignore, self.archive)))
+        # retrieve allowed transitions via `State` model's method
+        allowed_transitions = self.open.get_allowed_transitions(self.gas_1, self.user)
+        self.assertEqual(set(allowed_transitions), set((self.close, self.ignore, self.archive)))
+        
 
 #class WorkflowTestCase(TestCase):
 #    """Tests a simple workflow without permissions.
