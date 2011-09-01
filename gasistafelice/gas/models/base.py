@@ -26,7 +26,7 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 
 class GAS(models.Model, PermissionResource):
 
@@ -353,14 +353,21 @@ class GASConfig(models.Model, PermissionResource):
     Encapsulate here gas settings and configuration facilities
     """
 
+    def get_supplier_order_default():
+        return Workflow.objects.get(name="SupplierOrderDefault")
+
+    def get_gasmember_order_default():
+        return Workflow.objects.get(name="GASMemberOrderDefault")
+
+
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gasmember_order_set", null=True, blank=True
+        related_name="gasmember_order_set", null=True, blank=True, default=get_gasmember_order_default
     )
     default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gassupplier_order_set", null=True, blank=True
+        related_name="gassupplier_order_set", null=True, blank=True, default=get_supplier_order_default
     )
 
     can_change_price = models.BooleanField(default=False,
@@ -427,11 +434,6 @@ class GASConfig(models.Model, PermissionResource):
     @property
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
-
-    def save(self, *args, **kw):
-        self.default_workflow_gassupplier_order = Workflow.objects.get(name="SupplierOrderDefault")
-        self.default_workflow_gasmember_order = Workflow.objects.get(name="GASMemberOrderDefault")
-        return super(GASConfig, self).save(*args, **kw)
 
 class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
@@ -773,6 +775,21 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
 
 #-------------------------------------------------------------------------------
+def setup_attribute_data(sender, instance, created, **kwargs):
+    """
+    Setup proper attribute data before a model instance is saved to the DB for the first time.
+    This function just calls the `setup_attribute_data()` instance method of the sender model class (if defined);
+    actual role-creation/setup logic is encapsulated there.
+    """
+    if created: # Automatic attribute-setup should happen only at instance-creation time 
+        try:
+            # `instance` is the model instance that has just been created
+            instance.setup_attribute_data()
+                                                
+        except AttributeError:
+            # sender model doesn't specify any data-related setup operations, so just ignore the signal
+            pass
+
 def setup_data(sender, instance, created, **kwargs):
     """
     Setup proper data after a model instance is saved to the DB for the first time.
@@ -789,4 +806,4 @@ def setup_data(sender, instance, created, **kwargs):
             pass
 
 # add `setup_data` function as a listener to the `post_save` signal
-post_save.connect(setup_data)     
+post_save.connect(setup_data)
