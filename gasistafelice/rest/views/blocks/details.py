@@ -9,6 +9,7 @@ from django.contrib.admin import helpers
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import models #fields types
+from django.db import transaction
 
 # Notes (Comment)
 from django.contrib.comments.models import Comment
@@ -171,7 +172,9 @@ class Block(AbstractBlock):
         elif args == EDIT:
             # Server-side check for permission on this view
             if request.user.has_perm(EDIT, obj=request.resource):
-                return self._edit_resource(request)
+                with transaction.commit_on_success():
+                    rv = self._edit_resource(request)
+                return rv
             raise PermissionDenied
 
         elif args == "new_note":

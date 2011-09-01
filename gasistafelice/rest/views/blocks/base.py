@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.admin import helpers
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.db import models #fields types
+from django.db import transaction
 
 # Notes (Comment)
 from django.contrib.comments.models import Comment
@@ -141,7 +141,9 @@ class BlockWithList(AbstractBlock):
 
         elif args == CREATE:
 
-            return self._add_resource(request)
+            with transaction.commit_on_success():
+                rv = self._add_resource(request)
+            return rv
 
         else:
             raise NotImplementedError
@@ -214,10 +216,11 @@ class BlockSSDataTables(BlockWithList):
                 formset = form_class(request, request.POST)
                 
                 if formset.is_valid():
-                    for form in formset:
-                        # Check for data: empty formsets are full of empty data ;)
-                        if form.cleaned_data:
-                            form.save()
+                    with transaction.commit_on_success():
+                        for form in formset:
+                            # Check for data: empty formsets are full of empty data ;)
+                            if form.cleaned_data:
+                                form.save()
                     return self.response_success()
                 else:
                     return self.response_error(formset.errors)
@@ -235,7 +238,9 @@ class BlockSSDataTables(BlockWithList):
             
         elif args == CREATE:
 
-            return self._add_resource(request)
+            with transaction.commit_on_success():
+                rv = self._add_resource(request)
+            return rv
 
         else:
             raise NotImplementedError("args = %s" % args)
