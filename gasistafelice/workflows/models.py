@@ -182,11 +182,11 @@ class State(models.Model):
             ]
 
         else:
-            rv = workflows.utils.get_allowed_transitions()
+            rv = workflows.utils.get_allowed_transitions(obj, user)
 
         for pr in param_roles:
             if user in pr.get_users():
-                rv = workflows.utils.get_allowed_transitions()
+                rv = workflows.utils.get_allowed_transitions(obj, user)
             else:
                 rv = []
 
