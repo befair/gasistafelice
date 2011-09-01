@@ -90,6 +90,18 @@ class Block(AbstractBlock):
                 )
             )
 
+            if klass_name == "GAS":
+                user_actions.append( 
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name="configure", verbose_name=_("Configure"), 
+                        popup_form=True,
+                        url=reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,))
+                    )
+                )
+
+
             for t in get_allowed_transitions(request.resource, request.user):
                 user_actions.append( 
                     ResourceBlockAction( 
