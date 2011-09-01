@@ -1407,6 +1407,8 @@
         }                      
 
         function init_user_roles_box() {    
+
+            $('#home_page').attr('href', jQuery.pre);
             $.get('{% url rest.views.user_roles %}', function(data) {
                 var user_roles = $.JSON.parse(data);
                 if (user_roles.length == 0) {
@@ -1417,12 +1419,12 @@
                         res += " " + gettext("on") + " ";
                         for (var i in user_roles[0]["role_resources"]) {
                             var resource_dict = user_roles[0]["role_resources"][i];
-                            var r = new jQuery.Resource(resource_dict["name"], resource_dict["urn"]);
-                            res += " " + r;
+                            res += ", " + r;
                         }
                     }
                     $('#user_role').append(res);
                 } else {
+
                     //Prepare a SELECT box to make the user able to switch role
                     var SWITCH_ROLE_FORM              = "switch-role-form";
                     var res = ' \
@@ -1943,6 +1945,8 @@
 
                         <span id="user_data">
                             {% trans "User" %}: <span id="user_name" class="ui-corner-all user"></span>
+                            |
+                            <a id="home_page" href="">{% trans "Home page" %}</a>
                             |
                             <span id="user_role">{% trans "Role" %} </span>
                             |

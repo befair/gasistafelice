@@ -12,15 +12,15 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from history.models import HistoricalRecords
 
+from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields import display
+
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import PermissionResource, Person, Place
-from gasistafelice.base.fields import CurrencyField
 from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
-
-from gasistafelice.lib import fields
 
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
@@ -110,8 +110,8 @@ class Supplier(models.Model, PermissionResource):
 
     display_fields = (
         seat, vat_number, website, flavour, 
-        fields.ResourceList(name="referrers", verbose_name=_("People")),
-        fields.ResourceList(name="pacts", verbose_name=_("Pacts")),
+        display.ResourceList(name="referrers", verbose_name=_("People")),
+        display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
 
   
@@ -223,9 +223,9 @@ class SupplierStock(models.Model, PermissionResource):
     supplier = models.ForeignKey(Supplier, related_name="stock_set")
     # Resource API
     product = models.ForeignKey(Product, related_name="stock_set")
-    price = CurrencyField()
-    code = models.CharField(max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
-    amount_available = models.PositiveIntegerField(default=ALWAYS_AVAILABLE)
+    price = CurrencyField(verbose_name=_("price"))
+    code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
+    amount_available = models.PositiveIntegerField(verbose_name=_("availability"), default=ALWAYS_AVAILABLE)
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
     #COMMENT: minimum amount of Product units a GASMember is able to order 

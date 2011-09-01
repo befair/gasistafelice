@@ -248,7 +248,7 @@ msgstr "%(user)s è %(role)s"
 #: bank/models.py:30
 #, python-format
 msgid "%(balance)s"
-msgstr ""
+msgstr "%(balance)s"
 
 #: bank/models.py:39
 msgid "causal of economic movement"
@@ -257,7 +257,7 @@ msgstr "causa del movimento economico"
 #: bank/models.py:42
 #, python-format
 msgid "%(amount)s (causal: %(causal)s)"
-msgstr ""
+msgstr "%(amount)s (causal: %(causal)s)"
 
 #: base/const.py:4
 msgid "Company"
@@ -563,7 +563,7 @@ msgid "When was the last the annual quote payment"
 msgstr "Ultimo pagamento della quota associativa"
 
 #: gas/models/base.py:469
-#, fuzzy, python-format
+#, python-format
 msgid "%(person)s in GAS \"%(gas)s\""
 msgstr "%(person)s del GAS %(gas)s"
 
@@ -597,9 +597,9 @@ msgid "withdrawal time agreement"
 msgstr "ora accordata per il prelievo"
 
 #: gas/models/base.py:717
-#, fuzzy, python-format
+#, python-format
 msgid "Pact between %(gas)s and %(supplier)s"
-msgstr "Relazione tra %(gas)s e %(supplier)s"
+msgstr "Patto tra %(gas)s e %(supplier)s"
 
 #: gas/models/order.py:33
 msgid "when the order will be opened"
@@ -751,9 +751,9 @@ msgstr[0] "Per favore correggi l'errore sottostanti."
 msgstr[1] "Per favore correggi gli errori sottostanti."
 
 #: gas_admin/templates/gas_admin/change_list.html:63
-#, fuzzy, python-format
+#, python-format
 msgid "Add %(name)s"
-msgstr "%(name)s"
+msgstr "Aggiungi %(name)s"
 
 #: gas_admin/templates/gas_admin/change_list.html:82
 msgid "Filter"
@@ -939,11 +939,11 @@ msgstr "Dati di configurazione"
 
 #: rest/templates/related_notes.html:5
 msgid "Target's notes"
-msgstr ""
+msgstr "Note dell'obiettivo"
 
 #: rest/templates/related_notes.html:33
 msgid "Node's notes"
-msgstr ""
+msgstr "Note del nodo"
 
 #: rest/templates/html/index.html:1947
 msgid "Role"
@@ -1013,23 +1013,23 @@ msgstr "Sito"
 
 #: rest/templates/html/index.html:2253
 msgid "Container"
-msgstr ""
+msgstr "Contenitore"
 
 #: rest/templates/html/index.html:2254
 msgid "Node"
-msgstr ""
+msgstr "Nodo"
 
 #: rest/templates/html/index.html:2255
 msgid "Interface"
-msgstr ""
+msgstr "Interfaccia"
 
 #: rest/templates/html/index.html:2256
 msgid "Target"
-msgstr ""
+msgstr "Obiettivo"
 
 #: rest/templates/html/index.html:2257
 msgid "Measure"
-msgstr ""
+msgstr "Misura"
 
 #: rest/templates/html/index.html:2261
 msgid "Select the resource"
@@ -1102,7 +1102,7 @@ msgstr "Stocks fornitore-GAS"
 #: rest/views/blocks/gasstocks.py:34 rest/views/blocks/order_report.py:34
 #: rest/views/blocks/order_stocks.py:34 rest/views/blocks/stocks.py:34
 msgid "Show stock"
-msgstr ""
+msgstr "Mostra le scorte"
 
 #: rest/views/blocks/gasstocks.py:40 rest/views/blocks/order_report.py:40
 #: rest/views/blocks/order_stocks.py:40 rest/views/blocks/stocks.py:40
@@ -1147,7 +1147,7 @@ msgstr "Prodotti"
 
 #: rest/views/blocks/stocks.py:20
 msgid "Stocks"
-msgstr ""
+msgstr "Scorte"
 
 #: rest/views/blocks/suppliers.py:16
 msgid "Suppliers"
@@ -1159,19 +1159,19 @@ msgstr "Aggiungi fornitore"
 
 #: sanet_users/models.py:33
 msgid "Redirect after logon"
-msgstr ""
+msgstr "Reindirizza dopo l'accesso"
 
 #: sanet_users/models.py:73
 msgid "SANET specific data"
-msgstr ""
+msgstr "Dato specifici di SANET"
 
 #: sanet_users/models.py:150
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #: sanet_users/models.py:152
 msgid "Owner"
-msgstr ""
+msgstr "Proprietario"
 
 #: sanet_users/models.py:154 sanet_users/models.py:198
 msgid "Parent user container"
@@ -1183,52 +1183,47 @@ msgstr ""
 
 #: sanet_users/templates/login.html:121
 msgid "Insert User Name and Password"
-msgstr ""
+msgstr "Inserisci Nome Utente e Password"
 
 #: sanet_users/templates/login.html:125
-#, fuzzy
 msgid "Username"
-msgstr "%(name)s"
+msgstr "Nome utente"
 
 #: sanet_users/templates/login.html:133
 msgid "Remember me"
-msgstr ""
+msgstr "Ricordati di me"
 
 #: sanet_users/templates/login.html:139
 msgid "Login"
-msgstr ""
+msgstr "Accedi"
 
 #: sanet_users/templates/forms/password_change.html:11
-#, fuzzy
 msgid "Old password:"
-msgstr "Password"
+msgstr "Vecchia password"
 
 #: sanet_users/templates/forms/password_change.html:13
-#, fuzzy
 msgid "New password:"
-msgstr "Cambia password"
+msgstr "Nuova password"
 
 #: sanet_users/templates/forms/password_change.html:15
-#, fuzzy
 msgid "Confirm password:"
-msgstr "Cambia password"
+msgstr "Conferma password"
 
 #: sanet_users/templates/forms/password_change.html:17
-#, fuzzy
 msgid "Change my password"
 msgstr "Cambia password"
 
 #: sanet_users/templates/forms/password_change_done.html:7
 msgid "Password change successful"
-msgstr ""
+msgstr "Password modificata con successo"
 
 #: sanet_users/templates/forms/password_change_done.html:9
 msgid "Your password was changed."
-msgstr ""
+msgstr "La tua password è stata cambiata"
 
 #: sanet_users/views/__init__.py:196
 msgid "Personal settings"
-msgstr ""
+msgstr "Impostazioni personali"
 
 #: supplier/models.py:114
 msgid "Pacts"
@@ -1255,16 +1250,14 @@ msgstr "Nome alternativo"
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
 
-#, fuzzy
-#~ msgid "Product"
-#~ msgstr "Prodotti"
+msgid "Product"
+msgstr "Prodotti"
 
-#, fuzzy
-#~ msgid "Solidal pact list"
-#~ msgstr "Patti di solidarietà"
+msgid "Solidal pact list"
+msgstr "Lista dei patti di solidarietà"
 
-#~ msgid "Supplier referrer"
-#~ msgstr "Referente fornitore"
+msgid "Supplier referrer"
+msgstr "Referente fornitore"
 
-#~ msgid "GAS uses only one delivery place"
-#~ msgstr "il GAS usa solo un luogo per le consegne"
+msgid "GAS uses only one delivery place"
+msgstr "il GAS usa solo un luogo per le consegne"

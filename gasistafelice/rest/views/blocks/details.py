@@ -9,6 +9,7 @@ from django.contrib.admin import helpers
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import models #fields types
+from django.db import transaction
 
 # Notes (Comment)
 from django.contrib.comments.models import Comment
@@ -18,7 +19,7 @@ from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.lib.fields import ResourceList
+from gasistafelice.lib.fields.display import ResourceList
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
@@ -90,6 +91,18 @@ class Block(AbstractBlock):
                 )
             )
 
+            if klass_name == "GAS":
+                user_actions.append( 
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name="configure", verbose_name=_("Configure"), 
+                        popup_form=True,
+                        url=reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,))
+                    )
+                )
+
+
             for t in get_allowed_transitions(request.resource, request.user):
                 user_actions.append( 
                     ResourceBlockAction( 
@@ -122,7 +135,7 @@ class Block(AbstractBlock):
             form = form_class(request, request.POST, instance=request.resource)
             if form.is_valid():
                 form.save()
-                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
+                return self.response_success
                 
         else:
             form = form_class(request, instance=request.resource)
@@ -159,7 +172,9 @@ class Block(AbstractBlock):
         elif args == EDIT:
             # Server-side check for permission on this view
             if request.user.has_perm(EDIT, obj=request.resource):
-                return self._edit_resource(request)
+                with transaction.commit_on_success():
+                    rv = self._edit_resource(request)
+                return rv
             raise PermissionDenied
 
         elif args == "new_note":

@@ -1,6 +1,9 @@
+import types
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.shortcuts import render_to_response
+from django.http import HttpResponse
+from django.utils import simplejson
 
 from django.contrib.auth.models import User
 
@@ -108,7 +111,27 @@ class AbstractBlock(object):
     #                                                                              #
     #------------------------------------------------------------------------------#        
     
+    def response_success(self):
+        return HttpResponse(simplejson.dumps(self.response_dict))
+        #WAS HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (self.resource.resource_type, self.resource.pk))
+
+    def response_error(self, error_msg):
+        response_dict = self.response_dict
+        if not isinstance(error_msg, types.ListType):
+            error_msg = [error_msg]
+        response_dict['error_msg'] = error_msg
+        return HttpResponse(simplejson.dumps(response_dict))
+        
     def get_response(self, request, resource_type, resource_id, args):
+        # Entry point for requests
+        self.request = request
+        self.resource = request.resource
+        self.response_dict = { 
+                'resource_type' : self.resource.resource_type, 
+                'resource_id' : self.resource.pk,
+                'error_msg' : [],
+        }
+
         return ""
 
     #------------------------------------------------------------------------------#

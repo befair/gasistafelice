@@ -20,7 +20,14 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Stocks")
     BLOCK_VALID_RESOURCE_TYPES = ["supplier"] 
 
-    COLUMN_INDEX_NAME_MAP = { 0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability' }
+    COLUMN_INDEX_NAME_MAP = { 
+        0: 'pk',
+        1: 'code', 
+        2: 'product', 
+        3: 'product__description', 
+        4: 'price', 
+        5: 'availability' 
+    }
 
     def _get_user_actions(self, request):
 
@@ -33,12 +40,14 @@ class Block(BlockSSDataTables):
                     resource = request.resource,
                     name=VIEW, verbose_name=_("Show stock"), 
                     popup_form=False,
+                    method="get",
                 ),
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=EDIT_MULTIPLE, verbose_name=_("Edit stock"), 
                     popup_form=False,
+                    method="get",
                 ),
             ]
 
@@ -50,29 +59,40 @@ class Block(BlockSSDataTables):
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
 
-        formset_initial = []
+        # Build a dict (should be a QueryDict) with data needed for FormSet initialization
 
-        for el in querySet:
-           formset_initial.append({
-               'code' : el.code,
-               'product' : el.product,
-               'price' : floatformat(el.price, 2),
-               'availability' : el.availability,
+        data = {}
+        i = 0
+        
+        for i,el in enumerate(querySet):
+            key_prefix = 'form-%d' % i
+            data.update({
+               '%s-id' % key_prefix : el.pk,
+               '%s-code' % key_prefix : el.code,
+               '%s-product' % key_prefix : el.product,
+               '%s-price' % key_prefix : floatformat(el.price, 2),
+               '%s-availability' % key_prefix : el.amount_available,
             })
 
-        formset = SingleSupplierStockFormSet(initial=formset_initial)
+        data['form-TOTAL_FORMS'] = i + 5
+        data['form-INITIAL_FORMS'] = 0
+        data['form-MAX_NUM_FORMS'] = 0
+
+        formset = SingleSupplierStockFormSet(request, data)
 
         records = []
         c = querySet.count()
-
         for i,form in enumerate(formset):
 
             if i < c:
                 description = querySet[i].product.description
+                pk = querySet[i].pk
             else:
                 description = ""
+                pk = None
 
             records.append({
+                'id' : form['id'],
                 'code' : form['code'],
                 'product' : form['product'],
                 'description' : description,
@@ -80,7 +100,8 @@ class Block(BlockSSDataTables):
                 'availability' : form['availability'],
             })
 
-        return records
+        return formset, records
 
-    def _set_records(self, request, records):
-        pass
+    def _get_edit_multiple_form_class(self):
+        return SingleSupplierStockFormSet
+

@@ -7,7 +7,9 @@ from workflows.models import Workflow
 from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
-from gasistafelice.base.fields import CurrencyField
+from gasistafelice.lib import ClassProperty
+from gasistafelice.lib.fields.models import CurrencyField
+
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
@@ -18,10 +20,8 @@ from gasistafelice.auth.models import ParamRole
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.bank.models import Account
-
 from gasistafelice.des.models import DES
 
-from gasistafelice.lib import ClassProperty
 from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
@@ -94,10 +94,6 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
      
-    @property
-    def ancestors(self):
-        return [self.des]
-
     #-- Properties --#
     @property
     def local_grants(self):
@@ -236,6 +232,10 @@ class GAS(models.Model, PermissionResource):
             #TODO self.liquidity = Account.objects.create()
 
     #-- Resource API --#
+
+    @property
+    def ancestors(self):
+        return [self.des]
 
     @property
     def gas(self):
@@ -518,7 +518,7 @@ class GASMember(models.Model, PermissionResource):
 
     def setup_roles(self):
         # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
-        role = ParamRole.get_role(name=GAS_MEMBER, gas=self.gas)
+        role = ParamRole.get_role(GAS_MEMBER, gas=self.gas)
         user = self.person.user
         role.add_principal(user)
 

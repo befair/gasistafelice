@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from permissions.models import Role
 from permissions import PermissionBase # mix-in class for permissions management
 
-from gasistafelice.base.fields import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.base.models import Resource, Person
 
 from django.db import models

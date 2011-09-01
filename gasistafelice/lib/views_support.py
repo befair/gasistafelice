@@ -73,7 +73,7 @@ def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
         'iTotalDisplayRecords' : iTotalDisplayRecords,
     }
 
-def render_datatables(request, records, dt_params, jsonTemplatePath):
+def render_datatables(request, records, dt_params, jsonTemplatePath, moreData=None):
 
     """
     Render datatables..
@@ -96,7 +96,7 @@ def render_datatables(request, records, dt_params, jsonTemplatePath):
     return response
 
 
-def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRecords, iTotalDisplayRecords):
+def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRecords, iTotalDisplayRecords, moreData=None):
     """
     Render datatables..
 
@@ -130,6 +130,9 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
     response_dict = {}
     response_dict.update({'aaData':aaData})
     response_dict.update({'sEcho': sEcho, 'iTotalRecords': iTotalRecords, 'iTotalDisplayRecords':iTotalDisplayRecords, 'sColumns':sColumns})
+
+    response_dict.update({'moreData':moreData})
+
     response =  HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
 
     #prevent from caching datatables result
