@@ -352,17 +352,18 @@ class GAS(models.Model, PermissionResource):
 
         return super(GAS, self).clean()
 
+#-----------------------------------------------------------------------------------------------------
+
+def get_supplier_order_default():
+    return Workflow.objects.get(name="SupplierOrderDefault")
+
+def get_gasmember_order_default():
+    return Workflow.objects.get(name="GASMemberOrderDefault")
+
 class GASConfig(models.Model, PermissionResource):
     """
     Encapsulate here gas settings and configuration facilities
     """
-
-    def get_supplier_order_default():
-        return Workflow.objects.get(name="SupplierOrderDefault")
-
-    def get_gasmember_order_default():
-        return Workflow.objects.get(name="GASMemberOrderDefault")
-
 
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
@@ -541,7 +542,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def economic_state(self):
         st1 = self.total_basket
-        st2 = self.total_basket_to_delivery
+        st2 = self.total_basket_to_be_delivered
         return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
 
     @property
@@ -552,9 +553,9 @@ class GASMember(models.Model, PermissionResource):
         return tot
 
     @property
-    def total_basket_to_delivery(self):
+    def total_basket_to_be_delivered(self):
         tot = 0
-        for gmord in self.basket_to_delivery:
+        for gmord in self.basket_to_be_delivered:
             tot += gmord.ordered_price
         return tot
 
@@ -636,7 +637,7 @@ class GASMember(models.Model, PermissionResource):
         return GASMemberOrder.objects.filter(order_product__in=self.orders.open())
 
     @property
-    def basket_to_delivery(self):
+    def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order_product__in=self.orders.closed())
 
