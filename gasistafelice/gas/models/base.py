@@ -94,10 +94,6 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
      
-    @property
-    def ancestors(self):
-        return [self.des]
-
     #-- Properties --#
     @property
     def local_grants(self):
@@ -240,6 +236,10 @@ class GAS(models.Model, PermissionResource):
             #TODO self.liquidity = Account.objects.create()
 
     #-- Resource API --#
+
+    @property
+    def ancestors(self):
+        return [self.des]
 
     @property
     def gas(self):
