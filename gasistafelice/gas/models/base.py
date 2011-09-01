@@ -29,7 +29,7 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
 
 class GAS(models.Model, PermissionResource):
 
@@ -865,21 +865,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
 
 #-------------------------------------------------------------------------------
-def setup_attribute_data(sender, instance, created, **kwargs):
-    """
-    Setup proper attribute data before a model instance is saved to the DB for the first time.
-    This function just calls the `setup_attribute_data()` instance method of the sender model class (if defined);
-    actual role-creation/setup logic is encapsulated there.
-    """
-    if created: # Automatic attribute-setup should happen only at instance-creation time 
-        try:
-            # `instance` is the model instance that has just been created
-            instance.setup_attribute_data()
-                                                
-        except AttributeError:
-            # sender model doesn't specify any data-related setup operations, so just ignore the signal
-            pass
-
 def setup_data(sender, instance, created, **kwargs):
     """
     Setup proper data after a model instance is saved to the DB for the first time.
