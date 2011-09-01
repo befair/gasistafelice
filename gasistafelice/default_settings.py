@@ -95,7 +95,6 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'permissions',
-    'workflows',
     'history',
     'gasistafelice.localejs',
     'gasistafelice.auth',
@@ -103,6 +102,7 @@ INSTALLED_APPS = (
     'gasistafelice.bank',
     'gasistafelice.supplier',
     'gasistafelice.gas',
+    'gasistafelice.workflows',
     'gasistafelice.admin',
     'gasistafelice.gas_admin',
     'gasistafelice.rest',

@@ -28,8 +28,8 @@ from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.auth import EDIT
 
 from gas.forms import order, EDIT_PactForm
-from workflows.utils import get_allowed_transitions, do_transition
-from workflows.models import Transition
+from gasistafelice.workflows.utils import get_allowed_transitions, do_transition
+from gasistafelice.workflows.models import Transition
 
 #from users.models import can_write_to_resource
 

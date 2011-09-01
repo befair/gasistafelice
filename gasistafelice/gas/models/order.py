@@ -3,8 +3,8 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from workflows.models import Workflow, Transition
-from workflows.utils import get_workflow, set_workflow, get_state, do_transition
+from gasistafelice.workflows.models import Workflow, Transition
+from gasistafelice.workflows.utils import get_workflow, set_workflow, get_state, do_transition
 from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition

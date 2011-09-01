@@ -11,7 +11,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import permalink
 
 
-from workflows.models import Workflow, Transition, State
+from gasistafelice.workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
