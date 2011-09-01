@@ -19,6 +19,6 @@
     {% endif %}
     {% endfor %}
     ],
-    "gf_moreData" : { {{moreData}} }
+    "gf_moreData" : { {{moreData|default:''}} }
 }
 
