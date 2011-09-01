@@ -18,7 +18,7 @@ from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.lib.fields import ResourceList
+from gasistafelice.lib.fields.display import ResourceList
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
@@ -122,7 +122,7 @@ class Block(AbstractBlock):
             form = form_class(request, request.POST, instance=request.resource)
             if form.is_valid():
                 form.save()
-                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
+                return self.response_success
                 
         else:
             form = form_class(request, instance=request.resource)
