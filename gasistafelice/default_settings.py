@@ -100,7 +100,6 @@ INSTALLED_APPS = (
     'gasistafelice.localejs',
     'gasistafelice.auth',
     'gasistafelice.base',
-    'gasistafelice.gigio',
     'gasistafelice.bank',
     'gasistafelice.supplier',
     'gasistafelice.gas',
