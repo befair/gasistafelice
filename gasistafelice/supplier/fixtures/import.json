@@ -3907,16 +3907,6 @@
 {"pk": 1871,"model": "supplier.supplierstock","fields": {"product": 1871,"supplier":50,"price":" 1", "order_minimum_amount" : "3", "code" : "code02418", "order_step" : 1, "delivery_terms": "delivery terms for DES by Supplier 50 for product 1871" } } , 
 {"pk": 1872,"model": "supplier.supplierstock","fields": {"product": 1872,"supplier":50,"price":" 1", "order_minimum_amount" : "3", "code" : "code02419", "order_step" : 1, "delivery_terms": "delivery terms for DES by Supplier 50 for product 1872" } } , 
 {"pk": 1873,"model": "supplier.supplierstock","fields": {"product": 1873,"supplier":50,"price":" 1", "order_minimum_amount" : "3", "code" : "code02420", "order_step" : 1, "delivery_terms": "delivery terms for DES by Supplier 50 for product 1873" } } , 
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
-,"price":" ", "order_minimum_amount" : "", "code" : "
 {"pk": 1874,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":50,"price":" 1", "order_minimum_amount" : "50", "code" : "SCA1002", "order_step" : 1, "delivery_terms": " real supplier for another producer delivery terms for DES by Supplier 50 for product 1" } } , 
 {"pk": 1875,"model": "supplier.supplierstock","fields": {"product": 2,"supplier":50,"price":" 1", "order_minimum_amount" : "50", "code" : "SCA1003", "order_step" : 1, "delivery_terms": " real supplier for another producer delivery terms for DES by Supplier 50 for product 2" } } , 
 {"pk": 1876,"model": "supplier.supplierstock","fields": {"product": 3,"supplier":50,"price":" 1", "order_minimum_amount" : "50", "code" : "SCA1004", "order_step" : 1, "delivery_terms": " real supplier for another producer delivery terms for DES by Supplier 50 for product 3" } } , 

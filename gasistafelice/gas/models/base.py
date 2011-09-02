@@ -85,7 +85,7 @@ class GAS(models.Model, PermissionResource):
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
-        display.ResourceList(verbose_name=_("referrers"), name="referrers"),
+        #display.ResourceList(verbose_name=_("referrers"), name="referrers_person"),
         association_act,
     )
 
@@ -188,6 +188,10 @@ class GAS(models.Model, PermissionResource):
     @property
     def economic_state(self):
         return u"%s - %s" % (self.account, self.liquidity)
+
+    @property
+    def referrers_person(self):
+        return [referrer.person for referrer in self.referrers]
 
     #-- Methods --#
 

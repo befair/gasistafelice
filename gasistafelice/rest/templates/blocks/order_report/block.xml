@@ -9,3 +9,8 @@
     <th>{% trans "TOT price" %}</th>
     <th>{% trans "It's ok" %}</th>
 {% endblock %}
+
+{% block extra_html_content %}
+        <div id="total-order-{{ resource.urn }}"> </div>
+{% endblock %}
+

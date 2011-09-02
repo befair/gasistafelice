@@ -152,7 +152,7 @@ RESOURCE_PAGE_BLOCKS = {
     'gasmember': [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders','closed_orders','basket'],
+        'blocks': ['open_orders','basket','closed_orders'],
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
