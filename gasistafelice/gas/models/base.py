@@ -357,12 +357,12 @@ class GAS(models.Model, PermissionResource):
         return super(GAS, self).clean()
 
 #-----------------------------------------------------------------------------------------------------
-
 def get_supplier_order_default():
     return Workflow.objects.get(name="SupplierOrderDefault")
 
 def get_gasmember_order_default():
     return Workflow.objects.get(name="GASMemberOrderDefault")
+
 
 class GASConfig(models.Model, PermissionResource):
     """
@@ -373,10 +373,10 @@ class GASConfig(models.Model, PermissionResource):
     gas = models.OneToOneField(GAS, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gasmember_order_set", null=True, blank=True, default=get_gasmember_order_default
+        related_name="gasmember_order_set", blank=True, default=get_gasmember_order_default
     )
     default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gassupplier_order_set", null=True, blank=True, default=get_supplier_order_default
+        related_name="gassupplier_order_set", blank=True, default=get_supplier_order_default
     )
 
     can_change_price = models.BooleanField(default=False,

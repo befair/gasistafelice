@@ -314,8 +314,8 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
             var action_url = this.url + this.active_view;
             var form_id = this.block_box_id + "-form";
             res = "<form id=\"" + form_id +"\" method=\"POST\" action=\""+action_url+"\">";
-            res += "<input type=\"submit\" name=\"submit\" value=\"" + gettext('Submit') + "\" />";
             res += html_table;
+            res += "<input type=\"submit\" name=\"submit\" value=\"" + gettext('Submit') + "\" />";
             res += "<input type=\"hidden\" name=\"form-TOTAL_FORMS\" value=\"2\" id=\"" + form_id + "-TOTAL_FORMS\" />";
             res += "<input type=\"hidden\" name=\"form-INITIAL_FORMS\" value=\"0\" id=\"" + form_id + "-INITIAL_FORMS\" />";
             res += "<input type=\"hidden\" name=\"form-MAX_NUM_FORMS\" id=\"" + form_id + "-MAX_NUM_FORMS\" />";

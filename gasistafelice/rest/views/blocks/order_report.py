@@ -21,8 +21,8 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["order"] 
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'product',
-        1: 'price', 
+        0: 'gasstock__stock__product',
+        1: 'gasstock__stock__price', 
         2: 'tot_gasmembers',
         3: 'tot_amount',
         4: 'tot_price',
