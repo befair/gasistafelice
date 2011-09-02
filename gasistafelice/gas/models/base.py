@@ -416,7 +416,7 @@ class GASConfig(models.Model, PermissionResource):
     default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
     default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
 
-    auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
+    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
     gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
@@ -735,6 +735,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
+    # Field to reflect
+    # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
+    # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
+    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"))
+
     #document = models.FileField(upload_to="/pacts/", null=True, blank=True)
 
     history = HistoricalRecords()
@@ -768,13 +773,20 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
     def setup_data(self):
-        if self.gas.config.auto_select_all_products:
-            for st in self.supplier.stocks:
-                GASSupplierStock.objects.create(pact=self, stock=st, enabled=True)
+
+        for st in self.supplier.stocks:
+            enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
 
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return ""
+
+    def save(self, *args, **kw):
+        if self.gas.config.auto_populate_products:
+            self.auto_populate_products = True
+
+        super(GASSupplierSolidalPact, self).save(*args, **kw)
 
     #-- Resource API --#
 
