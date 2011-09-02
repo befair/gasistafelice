@@ -1053,13 +1053,13 @@
         // Init clock
         //==============================================================================
 
-        var SANET_CLOCK_URL = '{% url rest.views.now %}';
+        var CLOCK_URL = '{% url rest.views.now %}';
         
-        var APP_CLOCK_TIMEOUT = 30; // 30 seconds
+        var APP_CLOCK_TIMEOUT = 120; // 120 seconds
         
         function init_clock_timer() {
             start_generic_update_timer(
-                generic_timers, SANET_CLOCK_URL, APP_CLOCK_TIMEOUT, 
+                generic_timers, CLOCK_URL, APP_CLOCK_TIMEOUT, 
                 '#app_clock')
         }
         
@@ -1418,8 +1418,10 @@
                     if (user_roles[0]["role_resources"].length > 0) {
                         res += " " + gettext("on") + " ";
                         for (var i in user_roles[0]["role_resources"]) {
+                            if (i>0) res += ", ";
                             var resource_dict = user_roles[0]["role_resources"][i];
-                            res += ", " + r;
+                            var r = new jQuery.Resource(resource_dict["urn"], resource_dict["name"]).render();
+                            res += r;
                         }
                     }
                     $('#user_role').append(res);
