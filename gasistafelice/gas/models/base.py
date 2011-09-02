@@ -653,10 +653,6 @@ class GASSupplierStock(models.Model, PermissionResource):
     
     history = HistoricalRecords()
 
-    display_fields = (
-        enabled,
-    )
-
     def __unicode__(self):
         return unicode(self.stock)
         
