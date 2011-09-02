@@ -58,14 +58,14 @@ class Resource(object):
     
     @property
     def ancestors(self):
-        return []
+        if self.parent:
+            return self.parent.ancestors + [self.parent]
+        else:
+            return []
 
     @property
     def parent(self):
-        try:
-            return self.ancestors[-1]
-        except IndexError:
-            return None
+        return None
 
     @property
     def allnotes(self):

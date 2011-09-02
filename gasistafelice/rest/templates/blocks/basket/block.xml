@@ -1,28 +1,15 @@
+{% extends "blocks/stocks/block.xml" %}
 {% load i18n %}
-<block type="{{ block_type }}" 
-       resource_type="{{ resource.resource_type }}" 
-       resource_id="{{ resource.id }}">
-       
-	<content type="table">
 
-        <table class="dataTable">
-        <thead>
-            <tr>
-                <th>{% trans "Order" %}</th>
-                <th>{% trans "Supplier" %}</th>
-                <th>{% trans "Product" %}</th>
-                <th>{% trans "Amount" %}</th>
-                <th>{% trans "Price" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        </table>
+{% block headers %}
+        <th>{% trans "Order" %}</th>
+        <th>{% trans "Supplier" %}</th>
+        <th>{% trans "Product" %}</th>
+        <th>{% trans "Amount" %}</th>
+        <th>{% trans "Price" %}</th>
+{% endblock %}
+
+{% block extra_html_content %}
         <div id="total-basket-{{ resource.urn }}"> </div>
-
-	</content>
-    
-    {% include "blocks/user_actions.xml" %}
-
-</block>
+{% endblock %}
 

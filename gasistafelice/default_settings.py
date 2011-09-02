@@ -152,7 +152,7 @@ RESOURCE_PAGE_BLOCKS = {
     'gasmember': [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders','closed_orders','basket'],
+        'blocks': ['open_orders','basket','closed_orders'],
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
@@ -171,10 +171,6 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr': 'Ordine',
         'blocks': ['details', 'order_report'],
-    },{ 
-        'name' : 'stock',
-        'descr': 'Prodotti',
-        'blocks': ['order_stocks'],
     },{ 
         'name' : 'delivery',
         'descr': 'Consegna',

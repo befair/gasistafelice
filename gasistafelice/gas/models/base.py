@@ -85,7 +85,7 @@ class GAS(models.Model, PermissionResource):
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
-        display.ResourceList(verbose_name=_("referrers"), name="referrers"),
+        #display.ResourceList(verbose_name=_("referrers"), name="referrers_person"),
         association_act,
     )
 
@@ -189,6 +189,10 @@ class GAS(models.Model, PermissionResource):
     def economic_state(self):
         return u"%s - %s" % (self.account, self.liquidity)
 
+    @property
+    def referrers_person(self):
+        return [referrer.person for referrer in self.referrers]
+
     #-- Methods --#
 
     def setup_roles(self):
@@ -239,8 +243,8 @@ class GAS(models.Model, PermissionResource):
     #-- Resource API --#
 
     @property
-    def ancestors(self):
-        return [self.des]
+    def parent(self):
+        return self.des
 
     @property
     def gas(self):
@@ -412,7 +416,7 @@ class GASConfig(models.Model, PermissionResource):
     default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
     default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
 
-    auto_select_all_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
+    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(default=True)
     use_scheduler = models.BooleanField(default=False)
     gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
@@ -512,8 +516,8 @@ class GASMember(models.Model, PermissionResource):
         return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
     @property
-    def ancestors(self):
-        return [self.des, self.gas]
+    def parent(self):
+        return self.gas
 
     #COMMENT domthu: fero added id_in_des (or id_in_gas ) for GASMember. That it not required: ask to community if necesary.
     @property
@@ -526,10 +530,6 @@ class GASMember(models.Model, PermissionResource):
         # or
         # return something
         raise NotImplementedError
-
-    @property
-    def ancestors(self):
-        return [self.des, self.gas]
 
     @property
     def city(self):
@@ -630,12 +630,12 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order_product__in=self.orders.open())
+        return GASMemberOrder.objects.filter(ordered_product__in=self.orders.open())
 
     @property
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order_product__in=self.orders.closed())
+        return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -652,10 +652,6 @@ class GASSupplierStock(models.Model, PermissionResource):
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
     
     history = HistoricalRecords()
-
-    display_fields = (
-        enabled,
-    )
 
     def __unicode__(self):
         return unicode(self.stock)
@@ -735,6 +731,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
+    # Field to reflect
+    # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
+    # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
+    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"))
+
     #document = models.FileField(upload_to="/pacts/", null=True, blank=True)
 
     history = HistoricalRecords()
@@ -768,19 +769,26 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
     def setup_data(self):
-        if self.gas.config.auto_select_all_products:
-            for st in self.supplier.stocks:
-                GASSupplierStock.objects.create(pact=self, stock=st, enabled=True)
+
+        for st in self.supplier.stocks:
+            enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
 
     def elabore_report(self):
         #TODO return report like pdf format. Report has to be signed-firmed by partners
         return ""
 
+    def save(self, *args, **kw):
+        if self.gas.config.auto_populate_products:
+            self.auto_populate_products = True
+
+        super(GASSupplierSolidalPact, self).save(*args, **kw)
+
     #-- Resource API --#
 
     @property
-    def ancestors(self):
-        return [self.des, self.gas]
+    def parent(self):
+        return self.gas
 
     @property
     def des(self):

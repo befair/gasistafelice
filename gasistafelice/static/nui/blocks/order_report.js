@@ -3,6 +3,8 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("order_report", "table");
+        this.active_view = "edit_multiple";
+        this.default_view = this.active_view;
     },
 
     rendering_table_post_load_handler: function() {

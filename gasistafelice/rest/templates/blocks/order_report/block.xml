@@ -1,0 +1,16 @@
+{% extends "blocks/stocks/block.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Product" %}</th>
+    <th>{% trans "Price" %}</th>
+    <th>{% trans "TOT GAS members" %}</th>
+    <th>{% trans "TOT amount" %}</th>
+    <th>{% trans "TOT price" %}</th>
+    <th>{% trans "It's ok" %}</th>
+{% endblock %}
+
+{% block extra_html_content %}
+        <div id="total-order-{{ resource.urn }}"> </div>
+{% endblock %}
+

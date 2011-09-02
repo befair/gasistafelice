@@ -1,0 +1,7 @@
+{% extends "blocks/stocks/block.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    {{ block.super }}
+    <th>{% trans "Enabled by GAS" %}</th>
+{% endblock %}
