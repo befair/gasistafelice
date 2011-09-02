@@ -100,7 +100,7 @@ class Block(BlockSSDataTables):
                 'availability' : form['availability'],
             })
 
-        return formset, records
+        return formset, records, {}
 
     def _get_edit_multiple_form_class(self):
         return SingleSupplierStockFormSet

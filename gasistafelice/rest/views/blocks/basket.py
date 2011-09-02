@@ -19,7 +19,7 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Basket")
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
-    COLUMN_INDEX_NAME_MAP = { 0: 'order_product__order__pk', 1 : 'order_product__stock__supplier_stock__supplier', 2: 'order_product__stock__supplier_stock__product', 3: 'ordered_amount', 4: 'ordered_price' }
+    COLUMN_INDEX_NAME_MAP = { 0: 'order_product__order__pk', 1 : 'order_product__gasstock__stock__supplier', 2: 'order_product__stock__supplier_stock__product', 3: 'ordered_amount', 4: 'ordered_price' }
 
     def _get_user_actions(self, request):
 

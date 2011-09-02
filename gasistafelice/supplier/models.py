@@ -258,6 +258,7 @@ class SupplierStock(models.Model, PermissionResource):
         # so it's stored as NULL in the DB, avoiding integrity issues.
         if not self.code:
             self.code = None
+
         super(SupplierStock, self).save(*args, **kwargs)
 
 

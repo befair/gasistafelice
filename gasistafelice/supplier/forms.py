@@ -1,9 +1,10 @@
 from django import forms
-from django.forms.formsets import formset_factory, BaseFormSet
-from django.utils.functional import curry
+from django.forms.formsets import formset_factory
 
 from gasistafelice.lib.widgets import RelatedFieldWidgetCanAdd
 from gasistafelice.lib.fields.forms import CurrencyField
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier.models import SupplierStock, Product
 
@@ -36,13 +37,6 @@ class SingleSupplierStockForm(forms.Form):
         self.instance.price = self.cleaned_data['price']
         self.instance.amount_available = [0, ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
         self.instance.save()
-
-class BaseFormSetWithRequest(BaseFormSet):
-
-    def __init__(self, request, *args, **kw):
-        # This trick is needed to pass request in form constructor. Superb python!
-        self.form = curry(self.form, request)
-        super(BaseFormSetWithRequest, self).__init__(*args, **kw)
 
 SingleSupplierStockFormSet = formset_factory(
                                   form=SingleSupplierStockForm, 

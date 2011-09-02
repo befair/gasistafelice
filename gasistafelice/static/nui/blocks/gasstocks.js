@@ -3,6 +3,8 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("gasstocks", "table");
+        this.active_view = "edit_multiple";
+        this.default_view = this.active_view;
     },
 
     rendering_table_post_load_handler: function() {
@@ -18,6 +20,8 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                     null,
                     null,
                     { "sType": "currency" },
+                    null,
+                    null,
                     null
                 ]
             }); 

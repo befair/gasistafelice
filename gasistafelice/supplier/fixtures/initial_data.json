@@ -54,6 +54,7 @@
 {"pk": 52,"model": "supplier.productcategory","fields": {"name": "Igiene casa ","description": "description for category and subcategory Igiene casa "}}, 
 {"pk": 53,"model": "supplier.productcategory","fields": {"name": "Piante ","description": "description for category and subcategory Piante "}}, 
 {"pk": 54,"model": "supplier.productcategory","fields": {"name": "Piante::Piante aromatiche ","description": "description for category and subcategory Piante::Piante aromatiche "}} ,
+{"pk": 55,"model": "supplier.productcategory","fields": {"name": "Alimenti::Miele ","description": "description for category and subcategory Alimenti::Miele"}}, 
 
 
 {"pk":1,"model":"supplier.certification", "fields": {"name":"NameCertification1","description":"BIO certificate description for Entity1" } },
