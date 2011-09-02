@@ -20,7 +20,7 @@ from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
 
-from gasistafelice.lib import fields
+from gasistafelice.lib.fields import display
 
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
@@ -110,8 +110,8 @@ class Supplier(models.Model, PermissionResource):
 
     display_fields = (
         seat, vat_number, website, flavour, 
-        fields.ResourceList(name="referrers", verbose_name=_("People")),
-        fields.ResourceList(name="pacts", verbose_name=_("Pacts")),
+        display.ResourceList(name="referrers", verbose_name=_("People")),
+        display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
 
   

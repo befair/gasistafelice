@@ -18,7 +18,6 @@ from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.lib.fields import ResourceList
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
 from gasistafelice.base.models import Resource

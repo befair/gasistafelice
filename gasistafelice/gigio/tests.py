@@ -9,16 +9,16 @@ from django.test.client import Client
 
 # workflows import
 import permissions.utils
-from gasistafelice.workflows.utils import set_workflow, get_allowed_transitions
-from gasistafelice.workflows.models import State
-from gasistafelice.workflows.models import StateInheritanceBlock
-from gasistafelice.workflows.models import StatePermissionRelation
-from gasistafelice.workflows.models import StateObjectRelation
-from gasistafelice.workflows.models import Transition
-from gasistafelice.workflows.models import Workflow
-from gasistafelice.workflows.models import WorkflowModelRelation
-from gasistafelice.workflows.models import WorkflowObjectRelation
-from gasistafelice.workflows.models import WorkflowPermissionRelation
+from gasistafelice.base.workflows_utils import set_workflow, get_allowed_transitions
+from workflows.models import State
+from workflows.models import StateInheritanceBlock
+from workflows.models import StatePermissionRelation
+from workflows.models import StateObjectRelation
+from workflows.models import Transition
+from workflows.models import Workflow
+from workflows.models import WorkflowModelRelation
+from workflows.models import WorkflowObjectRelation
+from workflows.models import WorkflowPermissionRelation
 
 from gasistafelice.gas.models import GAS
 
