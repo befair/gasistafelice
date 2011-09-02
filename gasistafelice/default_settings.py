@@ -172,10 +172,6 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Ordine',
         'blocks': ['details', 'order_report'],
     },{ 
-        'name' : 'stock',
-        'descr': 'Prodotti',
-        'blocks': ['order_stocks'],
-    },{ 
         'name' : 'delivery',
         'descr': 'Consegna',
         'blocks': [],

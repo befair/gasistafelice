@@ -8,22 +8,25 @@
         <table class="dataTable">
         <thead>
             <tr>
+                {% block headers %}
                 <th>{% trans "Id" %}</th>
                 <th>{% trans "Code" %}</th>
                 <th>{% trans "Product" %}</th>
                 <th>{% trans "Description" %}</th>
                 <th>{% trans "Price" %}</th>
                 <th>{% trans "Availability" %}</th>
-                {% block more_headers %}{% endblock %}
+                {% endblock %}
             </tr>
         </thead>
         <tbody>
         </tbody>
         </table>
+        {% block extra_html_content %} {% endblock %}
 
 	</content>
     
     {% include "blocks/user_actions.xml" %}
 
+    {% block extra_xml_content %} {% endblock %}
 </block>
 

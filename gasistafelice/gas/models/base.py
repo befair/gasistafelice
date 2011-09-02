@@ -630,12 +630,12 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order_product__in=self.orders.open())
+        return GASMemberOrder.objects.filter(ordered_product__in=self.orders.open())
 
     @property
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order_product__in=self.orders.closed())
+        return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""

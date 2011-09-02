@@ -3,6 +3,11 @@ from django import forms
 from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
+from django.forms.formsets import formset_factory
+
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from gasistafelice.gas.models import GASSupplierOrderProduct
+
 class BaseGASSupplierOrderForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kw):
@@ -73,4 +78,26 @@ def form_class_factory_for_request(request):
     return type('CustomEDIT_OrderForm', (EDIT_OrderForm,), attrs)
 
 
+#-------------------------------------------------------------------------------
 
+
+class GASSupplierOrderProductForm(forms.Form):
+
+    id = forms.IntegerField(required=True, widget=forms.HiddenInput)
+    enabled = forms.BooleanField(required=False)
+
+    def __init__(self, request, *args, **kw):
+        super(GASSupplierOrderProductForm, self).__init__(*args, **kw)
+        self.__order = request.resource.order
+
+    def save(self):
+
+        if not self.cleaned_data.get('enabled'):
+            GASSupplierOrderProduct.objects.delete(pk=self.cleaned_data['id'])
+
+
+GASSupplierOrderProductFormSet = formset_factory(
+                                form=GASSupplierOrderProductForm, 
+                                formset=BaseFormSetWithRequest, 
+                                extra=0
+                          )
