@@ -657,6 +657,10 @@ class GASSupplierStock(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
+        models.CharField(name="product_name", verbose_name=_("Product")),
+        models.CharField(max_length=32, name="price", verbose_name=_("Price")),
+        order_minimum_amount,
+        order_step,
         enabled,
     )
 
@@ -672,6 +676,10 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
         return self.supplier_stock.price*(1 + price_percent_update)
+
+    @property
+    def name(self):
+        return self.supplier_stock.product
 
     class Meta:
         app_label = 'gas'
