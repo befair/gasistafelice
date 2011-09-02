@@ -17,10 +17,11 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.dataSource + "?render_as=table",
                 "aoColumns": [
                     null,
-                    null,
-                    null,
                     { "sType": "currency" },
-                    null
+                    { "bSortable": "false" },
+                    { "bSortable": "false" },
+                    { "bSortable": "false", "sType": "currency" },
+                    { "bSortable": "false" },
                 ]
             }); 
 
