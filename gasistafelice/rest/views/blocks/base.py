@@ -174,7 +174,8 @@ class BlockSSDataTables(BlockWithList):
 
     def __init__(self):
         super(BlockSSDataTables, self).__init__()
-        self.BLOCK_TEMPLATE = "blocks/%s/block.xml" % self.BLOCK_NAME
+        #self.BLOCK_TEMPLATE = "blocks/%s/block.xml" % self.BLOCK_NAME
+        self.BLOCK_TEMPLATE = "blocks/%s/table.xml" % self.BLOCK_NAME
 
     def _get_records(self, request, querySet):
         raise NotImplementedError("To be implemented in subclass")
