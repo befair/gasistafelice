@@ -65,7 +65,7 @@ class Block(BlockSSDataTables):
                'product' : el.stock.product,
                'price' : floatformat(el.stock.price, 2),
                'availability' : bool(el.stock.amount_available),
-               'field_enabled' : form['enabled'],
+               'field_enabled' : [_('not available'),form['enabled']][bool(el.stock.amount_available)],
 
             })
 
