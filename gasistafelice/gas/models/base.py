@@ -688,10 +688,6 @@ class GASSupplierStock(models.Model, PermissionResource):
         price_percent_update = self.pact.order_price_percent_update or 0
         return self.stock.price*(1 + price_percent_update)
 
-    @property
-    def name(self):
-        return self.supplier_stock.product
-
     class Meta:
         app_label = 'gas'
         verbose_name = _("GAS supplier stock")
