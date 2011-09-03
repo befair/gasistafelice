@@ -173,14 +173,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
             w = self.gas.config.default_workflow_gassupplier_order
             set_workflow(self, w)
 
-
-    @property
-    def report_name(self):
-        # Clean file order name
-        #TODO: clean supplier name 
-        return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
-    
-
 class GASSupplierOrderProduct(models.Model, PermissionResource):
 
 

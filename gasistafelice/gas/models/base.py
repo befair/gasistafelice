@@ -785,10 +785,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
 
-    def elabore_report(self):
-        #TODO return report like pdf format. Report has to be signed-firmed by partners
-        return ""
-
     def save(self, *args, **kw):
         if self.gas.config.auto_populate_products:
             self.auto_populate_products = True

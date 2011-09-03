@@ -1,14 +1,22 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 from gasistafelice.auth import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.forms import GASSupplierOrderProductFormSet
 from django.template.defaultfilters import floatformat
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+import cgi, os
+from django.conf import settings
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -29,6 +37,24 @@ class Block(BlockSSDataTables):
         5: 'enabled' 
     }
 
+    def _get_user_actions(self, request):
+  
+        user_actions = []
+
+        # Check if order is in "closed_state"
+        user_actions = [
+
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE_PDF, verbose_name=_("Create PDF"), 
+                    popup_form=False,
+                ),
+        ]
+
+        return user_actions
+
+        
     def _get_resource_list(self, request):
         # Maybe we need to switch args KW_DATA, or EDIT_MULTIPLE
         # to get GASSupplierOrderProduct or GASSupplierStock respectively
@@ -73,3 +99,39 @@ class Block(BlockSSDataTables):
 
         return formset, records, {}
 
+    def get_response(self, request, resource_type, resource_id, args):
+
+        self.request = request
+        self.resource = resource = request.resource
+
+        if args == CREATE_PDF:
+            return self._create_pdf()
+        else:
+            return super(Block, self).get_response(request, resource_type, resource_id, args)
+
+            
+    def _create_pdf(self):
+
+        # Dati di esempio
+        order = self.resource.order
+        context_dict = {
+            'order' : order,
+            'records' : self._get_records(self.request, self._get_resource_list(self.request))[1], #ho usato get_records, ma puoi produrre i record come preferisci
+            'user' : self.request.user,
+            'total_amount' : 100, #da calcolare
+        }
+
+        REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME
+
+        template = get_template(REPORT_TEMPLATE)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+        if not pdf.err:
+            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename=GAS_%s_%s.pdf' % \
+                            (order.supplier, '20110909')
+#                            (order.supplier, '{0:%Y%m%d}'.format(order.delivery.date))
+            return response
+        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
