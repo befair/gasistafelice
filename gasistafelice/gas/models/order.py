@@ -8,7 +8,7 @@ from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_s
 from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
-from gasistafelice.base.fields import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib import fields, ClassProperty
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
@@ -295,7 +295,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
  
-    def save(self, *args, **ke):
+    def save(self, *args, **kw):
 
         if not self.workflow:
             # Set default workflow
