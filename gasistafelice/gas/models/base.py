@@ -198,7 +198,7 @@ class GAS(models.Model, PermissionResource):
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
-        # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP. 
+        # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP.
         register_parametric_role(name=GAS_REFERRER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
@@ -369,6 +369,13 @@ class GASConfig(models.Model, PermissionResource):
     Encapsulate here gas settings and configuration facilities
     """
 
+    def get_supplier_order_default():
+        return Workflow.objects.get(name="SupplierOrderDefault")
+
+    def get_gasmember_order_default():
+        return Workflow.objects.get(name="GASMemberOrderDefault")
+
+
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
 
@@ -537,7 +544,7 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def city(self):
-        return self.person.city 
+        return self.person.city
 
     @property
     def economic_state(self):
@@ -789,6 +796,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         super(GASSupplierSolidalPact, self).save(*args, **kw)
 
     #-- Resource API --#
+
+    def elabore_report(self):
+        #TODO return report like pdf format. Report has to be signed-firmed by partners
+        return ""
 
     @property
     def parent(self):

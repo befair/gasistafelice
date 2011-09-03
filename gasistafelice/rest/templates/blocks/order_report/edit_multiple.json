@@ -1,22 +1,21 @@
-{% load basic_tags %}
-{
-    "sEcho": {{sEcho}},
-    "iTotalRecords": {{iTotalRecords}},
-    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
-    "aaData":[
-    {% for order_product in records %}
+{% extends "blocks/base/edit_multiple.json" %}
+
+{% block table_rows %}
+    {% for stock in records %}
     [
-        "{{op.product|escapejs}}",
-        "{{op.price|escapejs}}",
-        "{{op.tot_gasmembers|escapejs}}",
-        "{{op.tot_amount|escapejs}}",
-        "&#8364; {{ op.tot_price|escapejs }}",
-        "{{ op.field_enabled|escapejs }}",
+
+        "{{stock.id|escapejs}}",
+        "{{stock.code|escapejs}}",
+        "{{stock.product|escapejs}}",
+        "{{stock.description|escapejs}}",
+        "&#8364; {{ stock.price|escapejs }}",
+        "{% filter escapejs %}{{ stock.availability }}{% endfilter %}",
+        "{{ stock.field_enabled|escapejs }}",
+
     ]
     {% if not forloop.last %}
     ,
     {% endif %}
     {% endfor %}
-    ],
-    "gf_moreData": { {{ moreData|default:'' }} }
-}
+
+{% endblock %}

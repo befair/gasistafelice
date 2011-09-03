@@ -1,0 +1,23 @@
+{% load i18n %}
+<block type="{{ block_type }}" 
+       resource_type="{{ resource.resource_type }}" 
+       resource_id="{{ resource.id }}">
+       
+	<content type="table">
+
+		<table class="dataTable">
+		<thead>
+			{% block headers %} {% endblock %}
+		</thead>
+		<tbody>
+		</tbody>
+		</table>
+		{% block extra_html_content %} {% endblock %}
+
+	</content>
+    
+    {% include "blocks/user_actions.xml" %}
+
+    {% block extra_xml_content %} {% endblock %}
+</block>
+

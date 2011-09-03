@@ -1,23 +1,20 @@
-{% load basic_tags %}
-{
-    "sEcho": {{sEcho}},
-    "iTotalRecords": {{iTotalRecords}},
-    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
-    "aaData":[
+{% extends "blocks/base/data.json" %}
+
+{% block table_rows %}
     {% for stock in records %}
     [
-        
+
         "{{stock.id|escapejs}}",
         "{{stock.code|default:''|escapejs}}",
         "{{stock.product|escapejs}}",
         "{{stock.product.description|escapejs}}",
         "&#8364; {{ stock.price|floatformat:2|escapejs }}",
         "{% filter escapejs %}{% bool_img stock.availability %}{% endfilter %}",
+
     ]
     {% if not forloop.last %}
     ,
     {% endif %}
     {% endfor %}
-    ],
-    "gf_moreData": { {{ moreData|default:'' }} }
-}
+
+{% endblock %}
