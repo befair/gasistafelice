@@ -145,10 +145,29 @@ jQuery.UIBlock = Class.extend({
     },
 
     action_handler : function(action_el) {
+        /* TODO: action attribute "on_complete" can assume values
+        /* reload_page, switch_view, reload_block, 
+        if action_el.attr('on_complete')
+        */
+        var name = action_el.attr('name');
 
-        this.active_view = action_el.attr('name');
         if (action_el.attr('popup_form') == "1") {
             return jQuery.retrieve_form(action_el);
+
+        } else if ((name == "edit_multiple")||(name=="view")) {
+            if (this.active_view != name) {
+                this.active_view = name;
+                this.update_handler(this.block_box_id);
+                //Reload dataTable
+                /*var dt_holder = this.block_el.find('.dataTable')
+                this.dataTable = dt_holder.dataTable({
+                    "sAjaxSource" : this.url + this.active_view + "?render_as=table",
+                    "bDestroy": true,
+                });*/
+                //this.dataTable.fnClearTable( 0 );
+                //this.dataTable.fnDraw();
+            }
+
         } else {
 
             var method = action_el.attr("method");
@@ -157,9 +176,11 @@ jQuery.UIBlock = Class.extend({
             else
                 method = "post";
 
+            //TODO: Notify user success/failure
             $[method](action_el.attr("url"));
+            this.update_handler(this.block_box_id);
         }
-        this.update_handler(this.block_box_id);
+
         return false;
     },
 
@@ -314,6 +335,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
             var action_url = this.url + this.active_view;
             var form_id = this.block_box_id + "-form";
             res = "<form id=\"" + form_id +"\" method=\"POST\" action=\""+action_url+"\">";
+            res += "<input type=\"submit\" name=\"submit\" value=\"" + gettext('Submit') + "\" />";
             res += html_table;
             res += "<input type=\"submit\" name=\"submit\" value=\"" + gettext('Submit') + "\" />";
             res += "<input type=\"hidden\" name=\"form-TOTAL_FORMS\" value=\"2\" id=\"" + form_id + "-TOTAL_FORMS\" />";
