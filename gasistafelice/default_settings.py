@@ -97,7 +97,6 @@ INSTALLED_APPS = (
     'permissions',
     'workflows',
     'history',
-    'gasistafelice.localejs',
     'gasistafelice.auth',
     'gasistafelice.base',
     'gasistafelice.bank',
@@ -115,6 +114,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.comments',
+    'gasistafelice.localejs',
     #'south',
     
 )

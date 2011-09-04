@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 17:17+0200\n"
+"POT-Creation-Date: 2011-09-04 17:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -772,19 +772,6 @@ msgstr ""
 msgid "Show target's timeline"
 msgstr "Espandi storia target"
 
-#: static/nui/blocks/targets2.js:843
-#, fuzzy
-msgid "There are notes on this target"
-msgstr "Non ci sono elementi associati alla risorsa"
-
-#: static/nui/blocks/targets2.js:975
-msgid "It seems the reachability problem is indipendent from other nodes"
-msgstr "Il nodo sembra irraggiungibile senza altre cause esterne"
-
-#: static/nui/blocks/targets2.js:979
-msgid "It seems the reachability problem depends from other nodes"
-msgstr "Il nodo sembra irragiungibile a causa di altri nodi guasti"
-
 #: static/nui/scripts/jquery.labs.xmpprender.js:47
 msgid "This block does not allow customization."
 msgstr "Questo blocco non consente personalizzazioni."
@@ -798,7 +785,7 @@ msgstr "Testo"
 
 #: static/nui/scripts/jquery.rees.js:31
 msgid "Please provide a name for this resource before rendering it"
-msgstr ""
+msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
 
 #: static/nui/scripts/jquery.rees.js:111
 msgid "An error occurred while retrieving the data from server ("
@@ -810,7 +797,7 @@ msgstr "Invia"
 
 #: static/nui/scripts/jquery.rees.js:408
 msgid "There are no elements related to this resource."
-msgstr "Non ci sono elementi associati alla risorsa"
+msgstr "Non ci sono elementi associati alla risorsa."
 
 #~ msgid "Suspend resourse"
 #~ msgstr "Motivazioni suggerite"
