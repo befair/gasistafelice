@@ -10,7 +10,7 @@ se non avete impostato la vostra chiave pubblica sul sito di GITHUB ed registrat
 (gasdev)/gasistafelice$ git submodule update --init
 
 3/7 Installare i requisity del progetto
-(gasdev)$ pip install -r gasistafelice/requirements.txt`
+(gasdev)$ pip install -r gasistafelice/requirements.txt
 
 4/7 Impostare gli vostri settings locale
 (gasdev)$ cd gasistafelice
