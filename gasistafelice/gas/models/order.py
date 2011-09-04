@@ -96,7 +96,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         A helper function associating a default set of products to a GASSupplierOrder.
         
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
-        in this case, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
+        in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
         stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
