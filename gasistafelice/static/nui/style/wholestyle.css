@@ -512,25 +512,7 @@ border:0px;
 }
 
 
+/* Added by fero - Gasista Felice */
 
-.measure-OK   { 
-	background-color : #ABFFA1;
-}
-.measure-IN {
-	background-color: white;
-}
-.measure-DO   { 
-	background-color: white; 
-}
-.measure-SV   { 
-	background-color : #ABFFD1; 
-}
-
-.measure-UN   { 
-	background-color: lightgrey; 
-}
-
-.measure-ER   { 
-	background-color : #FFAAAA; 
-}
+#page_resource   { text-transform:capitalize; }
 

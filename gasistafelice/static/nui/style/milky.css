@@ -1,0 +1,31 @@
+
+.site                                        { list-style-image : url('/static/nui/img/milky/site16x16.png'); }
+.site.inline                                 { background : transparent url('/static/nui/img/milky/site16x16.png') no-repeat scroll left; }
+
+.gas                                        { list-style-image : url('/static/nui/img/milky/gas16x16.png'); }
+.gas.inline                                 { background : transparent url('/static/nui/img/milky/gas16x16.png') no-repeat scroll left; }
+
+.gasmember                                        { list-style-image : url('/static/nui/img/milky/gasmember16x16.png'); }
+.gasmember.inline                                 { background : transparent url('/static/nui/img/milky/gasmember16x16.png') no-repeat scroll left; }
+
+.order                                        { list-style-image : url('/static/nui/img/milky/order16x16.png'); }
+.order.inline                                 { background : transparent url('/static/nui/img/milky/order16x16.png') no-repeat scroll left; }
+
+.person                                        { list-style-image : url('/static/nui/img/milky/person16x16.png'); }
+.person.inline                                 { background : transparent url('/static/nui/img/milky/person16x16.png') no-repeat scroll left; }
+
+.pact                                        { list-style-image : url('/static/nui/img/milky/pact16x16.png'); }
+.pact.inline                                 { background : transparent url('/static/nui/img/milky/pact16x16.png') no-repeat scroll left; }
+
+.supplier                                        { list-style-image : url('/static/nui/img/milky/supplier16x16.png'); }
+.supplier.inline                                 { background : transparent url('/static/nui/img/milky/supplier16x16.png') no-repeat scroll left; }
+
+.product                                        { list-style-image : url('/static/nui/img/milky/product16x16.png'); }
+.product.inline                                 { background : transparent url('/static/nui/img/milky/product16x16.png') no-repeat scroll left; }
+
+.delivery                                        { list-style-image : url('/static/nui/img/milky/delivery16x16.png'); }
+.delivery.inline                                 { background : transparent url('/static/nui/img/milky/delivery16x16.png') no-repeat scroll left; }
+
+.withdrawal                                        { list-style-image : url('/static/nui/img/milky/site16x16.png'); }
+.withdrawal.inline                                 { background : transparent url('/static/nui/img/milky/site16x16.png') no-repeat scroll left; }
+

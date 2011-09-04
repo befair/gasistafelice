@@ -119,6 +119,7 @@ INSTALLED_APPS = (
     
 )
 
+THEME = "milky"
 AUTH_PROFILE_MODULE = 'users.UserProfile'
 URL_PREFIX = "gasistafelice/"
 
@@ -165,7 +166,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
-        'blocks': ['details', 'categories', 'pacts'],
+        'blocks': ['details', 'categories'],
     }], #must be extended with economic section
     'order' : [{ 
         'name' : 'info',

@@ -31,7 +31,8 @@
     <link rel="stylesheet" type="text/css" href="/static/nui/style/wholestyle.css" />
 
 
-    <link rel="stylesheet" type="text/css" href="/static/nui/style/nuvola.css" title="nuvola" />
+    <link rel="stylesheet" type="text/css" href="/static/nui/style/{{ THEME }}.css" title="{{ THEME }}" />
+    <link rel="alternate stylesheet" type="text/css" href="/static/nui/style/nuvola.css" title="nuvola" />
     <link rel="alternate stylesheet" type="text/css" href="/static/nui/style/tango.css" title="tango" />
 
     <link rel="stylesheet" type="text/css" href="/static/nui/style/report.css" />
@@ -466,8 +467,8 @@
                     var resource_id   = parts[1];
                     //alert('resource: ' + resource_urn + " " + resource_descr);
                     add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
-                    $('#page_resource').html(resource_descr);
-                    document.title = "GF - " + resource_descr;
+                    $('#page_resource').html(gettext(resource_type) + ' ' + resource_descr);
+                    document.title = "GF - Gestione " + gettext(resource_type);
                 }
             }
                             
@@ -1517,7 +1518,8 @@
                         $('#user_data_placeholder').show();    // show
                         
                         //set_separator_icon();
-                        show_resource_panel();
+                        // Start with hidden resource panel
+                        //show_resource_panel();
 
                         $('#user_name').text(jQuery.labsglobals['user']);
 

@@ -28,6 +28,7 @@ def index(request):
         'VERSION': settings.VERSION,
         'INSTALLED_APPS': settings.INSTALLED_APPS,
         'LOGOUT_URL' : settings.LOGOUT_URL,
+        'THEME' : settings.THEME,
     }
     return render_to_response("html/index.html", ctx)
     

@@ -23,7 +23,7 @@ class AppMiddleware(object):
     def __init__(self):
 
         self.app_settings = {
-            'theme' : getattr(settings, 'THEME_NAME', ''),
+            'THEME' : getattr(settings, 'THEME', ''),
             'VERSION' : getattr(settings, 'VERSION', '0.1'),
         }
 

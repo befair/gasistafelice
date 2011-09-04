@@ -5,6 +5,7 @@
 #header          { width:100%; }
 #content-main    { float:left; width:100%; }
 #footer          { clear:both; padding:10px; }
+#page_resource   { text-transform:capitalize; }
 
 
 .right { float:right; }
