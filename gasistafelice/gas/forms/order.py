@@ -108,7 +108,7 @@ class SingleGASMemberOrderForm(forms.Form):
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     gssop_id = forms.IntegerField(required=True, widget=forms.HiddenInput)
-    ordered_amount = forms.IntegerField(required=False)
+    ordered_amount = forms.IntegerField(required=False, initial=0)
     ordered_price = forms.CharField(required=False, widget=forms.HiddenInput)
 
     def __init__(self, request, *args, **kw):

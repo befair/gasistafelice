@@ -29,7 +29,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     """
     
-    pact = models.ForeignKey(GASSupplierSolidalPact)
+    pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
     date_start = models.DateTimeField(default=datetime.now, help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
@@ -227,6 +227,14 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def gas(self):
         return self.order.pact.gas    
+
+    @property
+    def supplier(self):
+        return self.order.supplier
+
+    @property
+    def product(self):
+        return self.gasstock.product
 
     
 class GASMemberOrder(models.Model, PermissionResource):

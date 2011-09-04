@@ -380,10 +380,10 @@ class GASConfig(models.Model, PermissionResource):
     gas = models.OneToOneField(GAS, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gasmember_order_set", blank=True, default=get_gasmember_order_default
+        related_name="gmow_gasconfig_set", blank=True, default=get_gasmember_order_default
     )
     default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gassupplier_order_set", blank=True, default=get_supplier_order_default
+        related_name="gsopw_gasconfig_set", blank=True, default=get_supplier_order_default
     )
 
     can_change_price = models.BooleanField(default=False,
@@ -679,6 +679,10 @@ class GASSupplierStock(models.Model, PermissionResource):
         return self.stock.supplier
 
     @property
+    def product(self):
+        return self.stock.product
+
+    @property
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
@@ -815,6 +819,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def stocks(self):
         return self.stock_set.all()
+
+    @property
+    def orders(self):
+        return self.order_set.all()
 
     @property
     def gasstocks(self):

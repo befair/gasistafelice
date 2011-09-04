@@ -108,16 +108,26 @@ class Block(BlockSSDataTables):
 
         for i,el in enumerate(querySet):
 
-            form = formset[gmo_info[el.pk]['formset_index']]
+            try:
+                form = formset[gmo_info[el.pk]['formset_index']]
+                total = gmo_info[el.pk]['ordered_total']
+            except KeyError:
+                # GASMember has not ordered this product: build an empty form
+                form = SingleGASMemberOrderForm(self.request)
+                total = 0
 
+            form.fields['ordered_amount'].widget.attrs = { 
+                            'step' : el.gasstock.order_step or 1,
+                            'minimum_amount' : el.gasstock.order_minimum_amount or 1,
+            }
             records.append({
                'supplier' : el.supplier,
                'product' : el.product,
                'description' : el.product.description,
                'price' : floatformat(el.gasstock.price, 2),
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
-               'ordered_total' : gmo_info[el.pk]['ordered_total'],
-               'id' : "%s %s" % (form['id'], form['gssop-id'])
+               'ordered_total' : total,
+               'id' : "%s %s" % (form['id'], form['gssop_id'])
             })
 
         return formset, records, {}
