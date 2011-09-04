@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 11:28+0200\n"
+"POT-Creation-Date: 2011-09-04 17:17+0200\n"
 "PO-Revision-Date: 2011-08-31 07:30+0200\n"
 "Last-Translator: Riccardo Serafini <tapion@pdp.linux.it>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -219,7 +219,8 @@ msgstr ""
 msgid "Wrong specs %(s)s for role %(r)s"
 msgstr "La specifica %(s)s è errata per il ruolo %(r)s"
 
-#: auth/models.py:92 gas/models/base.py:94 rest/views/blocks/gas_list.py:16
+#: auth/models.py:92 des/models.py:49 gas/models/base.py:94
+#: rest/views/blocks/gas_list.py:16
 msgid "GAS"
 msgstr "GAS"
 
@@ -359,31 +360,51 @@ msgstr ""
 "Le specifiche di workflow non sono coerenti .\n"
 " %s"
 
-#: des/models.py:51
+#: des/models.py:50
+msgid "Gasmembers"
+msgstr "Gasisti"
+
+#: des/models.py:51 rest/views/blocks/suppliers.py:16
+msgid "Suppliers"
+msgstr "Fornitori"
+
+#: des/models.py:52 supplier/models.py:114
+msgid "Pacts"
+msgstr "Patti"
+
+#: des/models.py:53
+msgid "Orders"
+msgstr "Ordini"
+
+#: des/models.py:54
+msgid "Money"
+msgstr "Soldi"
+
+#: des/models.py:58
 msgid "site"
-msgstr "luogo"
+msgstr "sito"
 
-#: des/models.py:52
+#: des/models.py:59
 msgid "sites"
-msgstr "luoghi"
+msgstr "siti"
 
-#: des/models.py:269
+#: des/models.py:310
 msgid "name"
 msgstr "nome"
 
-#: des/models.py:270
+#: des/models.py:311
 msgid "value"
 msgstr "valore"
 
-#: des/models.py:271
+#: des/models.py:312
 msgid "type"
 msgstr "tipo"
 
-#: des/models.py:295
+#: des/models.py:336
 msgid "environment variable"
 msgstr "variabile d'ambiente"
 
-#: des/models.py:296
+#: des/models.py:337
 msgid "environment variables"
 msgstr "variabili d'ambiente"
 
@@ -614,7 +635,8 @@ msgid ""
 "automatic population of all products bound to a supplier in gas supplier "
 "stock"
 msgstr ""
-"Popola automaticamente il catalogo fornitore per il GAS con tutti i prodotti del fornitore."
+"Popola automaticamente il catalogo fornitore per il GAS con tutti i prodotti "
+"del fornitore."
 
 #: gas/models/base.py:761
 #, python-format
@@ -741,7 +763,7 @@ msgstr "Prodotti"
 
 #: rest/templates/blocks/basket/table.xml:8
 msgid "Amount"
-msgstr ""
+msgstr "Quantità"
 
 #: rest/templates/blocks/basket/table.xml:9
 #: rest/templates/blocks/order_report/table.xml:6
@@ -785,7 +807,7 @@ msgstr "Descrizione"
 msgid "Availability"
 msgstr "disponibilità"
 
-#: rest/views/__init__.py:70
+#: rest/views/__init__.py:73
 msgid "Master of the Universe"
 msgstr "Capo dell'Universo"
 
@@ -896,19 +918,15 @@ msgstr "Prodotti"
 
 #: rest/views/blocks/stocks.py:20
 msgid "Stocks"
-msgstr "Scorte"
+msgstr "Listino fornitore"
 
 #: rest/views/blocks/stocks.py:41
 msgid "Show stock"
-msgstr "Mostra le scorte"
+msgstr "Visualizza"
 
 #: rest/views/blocks/stocks.py:48
 msgid "Edit stock"
-msgstr "Modifica stock"
-
-#: rest/views/blocks/suppliers.py:16
-msgid "Suppliers"
-msgstr "Fornitori"
+msgstr "Modifica"
 
 #: rest/views/blocks/suppliers.py:31
 msgid "Add supplier"
@@ -945,10 +963,6 @@ msgstr "Pagina utente"
 #: sanet_users/views/__init__.py:196
 msgid "Personal settings"
 msgstr "Impostazioni personali"
-
-#: supplier/models.py:114
-msgid "Pacts"
-msgstr "Patti"
 
 #: supplier/models.py:157
 msgid "Product categories"
