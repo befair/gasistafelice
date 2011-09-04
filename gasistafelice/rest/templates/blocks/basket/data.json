@@ -1,4 +1,5 @@
 {% extends "blocks/base/data.json" %}
+{% load basic_tags %}
 
 {% block table_rows %}
     {% for el in records %}
