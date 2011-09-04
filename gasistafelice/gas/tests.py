@@ -371,6 +371,9 @@ class GASMemberManagerTest(TestCase):
 #"""}
 #
 #class SupplierStockTest(TestCase):
+#    """
+#    Tests for the `GASMemberManager` manager class
+#    """
 #    fixtures = ['test_data.json']
 #
 #    def multiple_supplier_per_product(self):

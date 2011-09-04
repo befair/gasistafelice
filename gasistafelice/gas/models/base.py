@@ -550,7 +550,10 @@ class GASMember(models.Model, PermissionResource):
     def economic_state(self):
         st1 = self.total_basket
         st2 = self.total_basket_to_be_delivered
-        return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+        if isinstance(self.account, Account):
+            return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+        else:
+            return u"(%s + %s)"  % (st1, st2)
 
     @property
     def total_basket(self):
