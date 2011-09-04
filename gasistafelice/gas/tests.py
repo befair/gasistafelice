@@ -58,23 +58,23 @@ class GASMemberOrderTest(TestCase):
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
         self.gas_stock = GASSupplierStock.objects.create(pact=self.pact, stock=self.stock)
         self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=self.now)
-        self.order_product = GASSupplierOrderProduct.objects.create(order=self.order, stock=self.gas_stock)
+        self.ordered_product = GASSupplierOrderProduct.objects.create(order=self.order, stock=self.gas_stock)
         
     def testActualPrice(self):
         '''Verify if actual price is computed correctly'''
-        self.order_product.delivered_price = 115
-        self.order_product.save()
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.order_product, ordered_amount=1)
+        self.ordered_product.delivered_price = 115
+        self.ordered_product.save()
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.ordered_product, ordered_amount=1)
         self.assertEqual(gmo.actual_price, 115)
         
     def testOrder(self):
         '''Verify if SupplierOrder is computed correctly'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.order_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.ordered_product, ordered_amount=1)
         self.assertEqual(gmo.order, self.order)
         
     def testGAS(self):
         '''Verify if GAS is computed correctly'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.order_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.ordered_product, ordered_amount=1)
         self.assertEqual(gmo.gas, self.gas)
         
 class GASSupplierOrderProductTest(TestCase):
@@ -371,6 +371,9 @@ class GASMemberManagerTest(TestCase):
 #"""}
 #
 #class SupplierStockTest(TestCase):
+#    """
+#    Tests for the `GASMemberManager` manager class
+#    """
 #    fixtures = ['test_data.json']
 #
 #    def multiple_supplier_per_product(self):
