@@ -1,0 +1,17 @@
+{% extends "blocks/base/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Product" %}</th>
+    <th>{% trans "Description" %}</th>
+    <th>{% trans "Price" %}</th>
+    <th>{% trans "Ordered amount" %}</th>
+    <th>{% trans "Ordered total" %}</th>
+{% endblock %}
+
+{% block extra_html_content %}
+    <div id="total-order-{{ resource.urn }}"> </div>
+{% endblock %}
+

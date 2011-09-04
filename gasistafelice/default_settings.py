@@ -153,7 +153,7 @@ RESOURCE_PAGE_BLOCKS = {
     'gasmember': [{
         'name' : 'orders',
         'descr': 'Ordinare',
-        'blocks': ['open_orders','closed_orders'],
+        'blocks': ['order', 'open_orders','closed_orders'],
     },{
         'name' : 'basket',
         'descr' : 'Paniere',

@@ -609,9 +609,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def orders(self):
         # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
-        # WARNING: get GAS proxy instance!
-        g = GAS.objects.get(pk=self.gas.pk)
-        return g.orders
+        return self.gas.orders
 
     @property
     def deliveries(self):
@@ -639,6 +637,10 @@ class GASMember(models.Model, PermissionResource):
         return self.gas.gasstocks
 
     @property
+    def gasmember(self):
+        return self
+
+    @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.open())
@@ -647,6 +649,11 @@ class GASMember(models.Model, PermissionResource):
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
+
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
