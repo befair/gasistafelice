@@ -1,0 +1,9 @@
+{% extends "blocks/resource_list.xml" %}
+{% load i18n %}
+
+{% block display_resource_entry %}
+<info type="{{ res.resource_type }}" sanet_urn="{{ res.urn }}" name="{{res}}"> 
+    <info_action verbose_name="Ordina" name="order" url="{{ res.urn }}/gasmember_order" popup_form="1" />
+</info>
+{% endblock %}
+

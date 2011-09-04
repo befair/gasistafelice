@@ -1,0 +1,31 @@
+.add_list {
+	text-align : left;
+	font-size: 14px;
+	padding : 0;
+	margin-left:18px;
+	position:relative;
+	right:50px;
+	width:150px;
+}
+.add {
+	background-image:url(tasto_add.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+	width:64px;height:20px;
+	background-color:transparent;
+	border:none;
+}
+
+.row {
+	height:25px;
+	width:100%;
+	padding-top:10px;
+	text-align:left;
+	font:Verdana, Geneva, sans-serif;
+	color:#0084ff;
+	text-indent:5px;
+	vertical-align:middle;
+	border-bottom:1px dotted #ccc;
+	font-weight:bold;
+	font-size:15px;
+}

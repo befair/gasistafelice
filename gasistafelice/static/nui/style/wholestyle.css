@@ -79,7 +79,7 @@ body {
 	color: black;
 }
 
-h1 { font-size: 26px; margin: 0px; padding: 0px; color: #005E31;  }
+h1 { font-size: 26px; margin: 0px; padding: 0px; color: #000;  }
 h2 { font-size: 12px; padding-top: 12px; font-weight: bold; color: #004400 }
 h3 { font-weight: bold; color: #003300 }
 h4 { font-weight: bold; color: #002200 }
@@ -139,8 +139,8 @@ select{
 #header {
 	height: 50px;
 	
-	background: lightgreen url('/static/logo_labs.jpg') left top no-repeat;
-	background: lightgreen url('/static/logo_cliente.jpg') right top no-repeat;
+	background: #FFF; url('/static/logo_labs.jpg') left top no-repeat;
+	background: #FFF; url('/static/logo_cliente.jpg') right top no-repeat;
 	
 	
 	border-bottom: 1px solid #aaaaaa;
@@ -241,14 +241,15 @@ border:0px;
 	min-width : 200px;
 }
 .block_header {
-	background-color : #d7ecc7;
+	background-color : #ccc;
 
 	border-bottom : 1px solid lightgrey;
 	
 
+	padding-top:8px;
 	/*clear : both;*/
 
-	height : 17px;
+	height : 21px;
 }
 
 .block-title {

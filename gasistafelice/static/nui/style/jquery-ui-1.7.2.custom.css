@@ -53,7 +53,7 @@
 .ui-widget-content { border: 1px solid #a6e2b0; background: #fcfdfd url(images/ui-bg_inset-hard_100_fcfdfd_1x100.png) 50% bottom repeat-x; color: #222222; }
 .ui-widget-content a { color: #222222; }
 .ui-widget-header { 
-	border: 1px solid #8bde6e; 
+	border: 1px solid #999; 
 	/*background: #d7ecc7 url(images/ui-bg_highlight-hard_55_d7ecc7_1x100.png) 50% 50% repeat-x; */
 	color: #ffffff; 
 	font-weight: bold; 
@@ -62,12 +62,12 @@
 
 /* Interaction states
 ----------------------------------*/
-.ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #c5ecca; background: #d7ecc7 url(images/ui-bg_highlight-hard_85_d7ecc7_1x100.png) 50% 50% repeat-x; font-weight: bold; color: #2e9e3b; outline: none; }
-.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { color: #2e9e3b; text-decoration: none; outline: none; }
+.ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #ccc; background: #ccc url(images/ui-bg_highlight-hard_85_d7ecc7_1x100.png) 50% 50% repeat-x; font-weight: bold; color: #ccc; outline: none; }
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { color: #0084ff; text-decoration: none; outline: none; }
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus { border: 1px solid #8bde6e; background: #ecf6e4 url(images/ui-bg_glass_75_ecf6e4_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #1d8725; outline: none; }
 .ui-state-hover a, .ui-state-hover a:hover { color: #1d8725; text-decoration: none; outline: none; }
-.ui-state-active, .ui-widget-content .ui-state-active { border: 1px solid #7be779; background: #f6f9f5 url(images/ui-bg_inset-hard_100_f6f9f5_1x100.png) 50% 50% repeat-x; font-weight: bold; color: #19e109; outline: none; }
-.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #19e109; outline: none; text-decoration: none; }
+.ui-state-active, .ui-widget-content .ui-state-active { border: 1px solid #999; background: #fff url(images/ui-bg_inset-hard_100_f6f9f5_1x100.png) 50% 50% repeat-x; font-weight: bold; color: #19e109; outline: none; }
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #0084ff; outline: none; text-decoration: none; }
 
 /* Interaction Cues
 ----------------------------------*/
