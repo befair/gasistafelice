@@ -547,6 +547,10 @@ class GASMember(models.Model, PermissionResource):
         return self.person.city
 
     @property
+    def email(self):
+        return self.person.email
+
+    @property
     def economic_state(self):
         st1 = self.total_basket
         st2 = self.total_basket_to_be_delivered
@@ -719,8 +723,23 @@ class GASSupplierStock(models.Model, PermissionResource):
         if self.has_changed_availability:
             self._msg = []
             self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
+            #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
+            for order in self.orders:
+                if self.enabled:
+                    #Add GASSupplierOrderProduct only for GASSupplierOrder in Open State
+                    order.add_product(self)
+                else:
+                    #Delete GASSupplierOrderProduct for GASSupplierOrder in Open State or Closed state. Delete GASMemberOrder associated
+                    order.remove_product(self)
+                if not order.message is None:
+                    self._msg.extend(order.message)
         super(GASSupplierStock, self).save(*args, **kwargs)
 
+    # Resource API
+    @property
+    def orders(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        return GASSupplierOrder.objects.open().filter(pact__in=self.pact)
 
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):
