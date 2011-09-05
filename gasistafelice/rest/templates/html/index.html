@@ -468,7 +468,7 @@
                     var resource_id   = parts[1];
                     //alert('resource: ' + resource_urn + " " + resource_descr);
                     add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
-                    $('#page_resource').html(gettext(resource_type) + ' ' + resource_descr);
+                    $('#page_resource').html(gettext(resource_type));
                     document.title = "GF - Gestione " + gettext(resource_type);
                 }
             }
@@ -658,6 +658,7 @@
                         var block_box_id = 'block_' + jQuery.app + '_' + block.block_urn.replace(/\//g, '_') + 'box';    // MAIN BLOCK HTML ELEMENT                        
                         
                         render_block_and_start_autorefresh_timer(block.block_name, block.block_urn, block.refresh_rate, block_box_id);
+                        jQuery.BLOCKS[block.block_name].get_control_panel();
                     }            
                 });
             }
@@ -2243,6 +2244,9 @@ TODO fero TOCHECK
                     </a>
                 </div>
 
+            </div>
+
+            <div name='block_control_panel' class="block_control_panel">
             </div>
 
             <div name='block_body' class="block_body">

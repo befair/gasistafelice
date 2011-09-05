@@ -394,6 +394,9 @@ class GASConfig(models.Model, PermissionResource):
         help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
     )
 
+    show_only_next_delivery = False
+    show_one_order_at_a_time = True
+
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
         help_text=_("default closing order day of the week")
