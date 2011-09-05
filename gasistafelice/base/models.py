@@ -515,6 +515,13 @@ class Person(models.Model, PermissionResource):
     def city(self):
         return self.address.city 
 
+    @property
+    def email(self):
+        if not sel.user is None:
+            return self.user.email
+        else:
+            return None
+
     def save(self, *args, **kwargs):
         self.name = self.name.capitalize()
         self.surname = self.surname.capitalize()

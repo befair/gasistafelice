@@ -60,6 +60,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
 
+    def __init__(self, *args, **kw):
+        super(GASSupplierOrder, self).__init__(*args, **kw)
+        self._msg = None
+
 #-------------------------------------------------------------------------------#
 # Model Archive API
 
@@ -100,7 +104,46 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
         stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
+            if s.enabled:
+                GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
+
+    def add_product(self, s):
+        '''
+        A helper function to add product to a GASSupplierOrder.
+        '''
+        self._msg = []
+        gsop = self.stock_set.filter(gasstock=s)
+        if not isinstance(gsop):
             GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+        else:
+            self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
+
+    def remove_product(self, s):
+        '''
+        A helper function to add product to a GASSupplierOrder.
+        '''
+        #TODO: Does workflows.utils have method state_in(tupple of state)
+        #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
+        self._msg = []
+        gsop = self.stock_set.filter(gasstock=s)
+        if isinstance(gsop):
+            self._msg.append('product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            #Delete all GASMemberOrders done
+            lst = gsop.gasmember_order_set
+            total = 0
+            for gmo in lst:
+                total += gmo.ordered_price
+                self._msg.append('Deleting gas member %s(%s) email %s ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                gmo.delete()
+            self._msg.append('Deleted gas members orders(%s) for total of %s' % (lst.count(), total,))
+            GASSupplierOrderProduct.objects.delete(gsop)
+        else:
+            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -226,7 +269,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     
     @property
     def gas(self):
-        return self.order.pact.gas    
+        return self.order.pact.gas
 
     @property
     def supplier(self):
@@ -273,6 +316,10 @@ class GASMemberOrder(models.Model, PermissionResource):
     def product(self):
         return self.ordered_product.stock.product
 
+    @property
+    def email(self):
+        return self.purchaser.email
+
     # how much the GAS member actually payed for this Product (as resulting from the invoice)   
     @property
     def actual_price(self):
@@ -281,7 +328,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     # GASSupplierOrder this GASMemberOrder belongs to
     @property
     def order(self):
-        return self.ordered_product.order 
+        return self.ordered_product.order
 
     # which GAS this order was issued to ? 
     @property
