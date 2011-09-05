@@ -19,6 +19,8 @@ from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_RE
 
 from datetime import datetime
 
+#from django.utils.encoding import force_unicode
+
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
@@ -104,6 +106,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
+
+        if not self.pact.gas.config.auto_populate_products:
+            self._msg.append('Configuration of auto generation of the product\'s order is not abilitated. To automatism the procedure set auto_populate_products to True')
+            return
+
         stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
             if s.enabled:
@@ -134,6 +141,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #TODO: Does workflows.utils have method state_in(tupple of state)
         #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
         self._msg = []
+
         try:
             gsop = self.orderable_products.get(gasstock=s)
         except GASSupplierOrderProduct.DoesNotExist:
@@ -232,7 +240,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return tot
 
     def save(self, *args, **kw):
-
         created = False
         if not self.pk:
             created = True
@@ -244,7 +251,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             w = self.gas.config.default_workflow_gassupplier_order
             set_workflow(self, w)
 
-        if created and self.pact.gas.config.auto_populate_products:
+        if created:
             self.set_default_stock_set()
 
 #-------------------------------------------------------------------------------
@@ -275,7 +282,8 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        return  unicode(self.stock)
+        return unicode(self.gasstock)
+        #return force_unicode(self.stock)
 
     # how many items of this kind were ordered (globally by the GAS)
     @property
