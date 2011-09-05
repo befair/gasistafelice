@@ -100,11 +100,6 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
-    @ClassProperty
-    @classmethod
-    def resource_type(cls):
-        return "gas"
-
     #-- Properties --#
     @property
     def local_grants(self):

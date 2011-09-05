@@ -24,7 +24,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
     * status is a meaningful parameter... TODO
-    * stock_set references specified products available for the specific order \
+    * gasstock_set references specified products available for the specific order \
       (they can be a subset of all available products from that Supplier for the order);
 
     """
@@ -40,7 +40,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     withdrawal = models.ForeignKey('Withdrawal', related_name="order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
-    stock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    gasstock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+
     #TODO: Notify system
 
     objects = OrderManager()
@@ -50,7 +51,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
     display_fields = (
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         date_start, date_end, order_minimum_amount, delivery, withdrawal,
-        
     )
 
     class Meta:
@@ -66,8 +66,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         super(GASSupplierOrder, self).__init__(*args, **kw)
         self._msg = None
 
-#-------------------------------------------------------------------------------#
-# Model Archive API
+    #-------------------------------------------------------------------------------#
+    # Model Archive API
 
     def is_active(self):
         """
@@ -81,8 +81,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """
         return not self.is_active()
     
-#-------------------------------------------------------------------------------#    
-# Authorization API
+    #-------------------------------------------------------------------------------#    
+    # Authorization API
 
     @property
     def referrers(self):
@@ -95,7 +95,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return pr.get_users()       
     
 
-#-------------------------------------------------------------------------------#
+    #-------------------------------------------------------------------------------#
 
     def set_default_stock_set(self):
         '''
@@ -104,7 +104,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
-        stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
@@ -205,22 +205,31 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return self.orderable_product_set.all()
 
     @property
-    def stock(self):
-        return self.gasstock.stock
+    def ordered_products(self):
+        return GASMemberOrder.objects.filter(ordered_product__in=self.orderable_products)
 
     @property
-    def total_order(self):
+    def stocks(self):
+        from supplier.models import SupplierStock
+        stocks_pk=map(lambda x: x[0], self.gasstock_set.values('stock'))
+        return SupplierStock.objects.filter(pk__in=stocks_pk)
+
+    @property
+    def gasstocks(self):
+        return self.gasstock_set.all()
+
+    @property
+    def total_ordered(self):
         tot = 0
-        return 101
-        #for gsop in self.stock_set: 
-        #'ManyRelatedManager' object is not iterable
-        #    tot += gmord.tot_price
-        #gsop_set = GASMemberOrder.objects.filter(ordered_product__in=self.stock_set)
-        #for gmord in gsop_set:
-        #    tot += gmord.ordered_price
+        for gmo in self.ordered_products:
+            tot += gmo.ordered_price
         return tot
 
     def save(self, *args, **kw):
+
+        created = False
+        if not self.pk:
+            created = True
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -228,6 +237,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
             # Set default workflow
             w = self.gas.config.default_workflow_gassupplier_order
             set_workflow(self, w)
+
+        if created and self.pact.gas.config.auto_populate_products:
+            self.set_default_stock_set()
+
+#-------------------------------------------------------------------------------
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
 
