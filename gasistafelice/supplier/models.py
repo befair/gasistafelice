@@ -281,14 +281,11 @@ class SupplierStock(models.Model, PermissionResource):
         except SupplierStock.DoesNotExist:
             return False
 
-<<<<<<< HEAD
-=======
     @property
     def message(self):
         """getter property for internal message from model."""
         return self._msg
 
->>>>>>> d322cb4fec5c3bd1711a1a5c420c39fbd4ffb508
     def save(self, *args, **kwargs):
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
         # so it's stored as NULL in the DB, avoiding integrity issues.

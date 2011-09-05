@@ -750,11 +750,13 @@ class GASSupplierStock(models.Model, PermissionResource):
                     self._msg.extend(order.message)
         super(GASSupplierStock, self).save(*args, **kwargs)
 
-    # Resource API
+    #-- Resource API --#
+
     @property
     def orders(self):
+        print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
         from gasistafelice.gas.models.order import GASSupplierOrder
-        return GASSupplierOrder.objects.open().filter(pact__in=self.pact)
+        return GASSupplierOrder.objects.filter(pact__in=self.pact)
 
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):

@@ -517,7 +517,7 @@ class Person(models.Model, PermissionResource):
 
     @property
     def email(self):
-        if not sel.user is None:
+        if not self.user is None:
             return self.user.email
         else:
             return None
