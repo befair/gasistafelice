@@ -272,7 +272,14 @@ class SupplierStock(models.Model, PermissionResource):
 
     @property
     def has_changed_availability(self):
-        return bool(self.amount_available != (SupplierStock.objects.get(pk=self.pk)).amount_available)
+        try:
+            ss = SupplierStock.objects.get(pk=self.pk)
+            if not ss is None:
+                return bool(self.amount_available != ss.amount_available)
+            else:
+                return False
+        except SupplierStock.DoesNotExist:
+            return False
 
     @property
     def message(self):
