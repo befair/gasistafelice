@@ -100,7 +100,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
         stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
-            GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+            if s.enabled:
+                GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -226,7 +227,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     
     @property
     def gas(self):
-        return self.order.pact.gas    
+        return self.order.pact.gas
 
     @property
     def supplier(self):

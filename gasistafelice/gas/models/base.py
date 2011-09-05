@@ -676,7 +676,11 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     def __unicode__(self):
         return unicode(self.stock)
-        
+
+    def __init__(self, *args, **kw):
+        super(GASSupplierStock, self).__init__(*args, **kw)
+        self._msg = None
+
     @property
     def supplier(self):
         return self.stock.supplier
@@ -695,6 +699,28 @@ class GASSupplierStock(models.Model, PermissionResource):
         app_label = 'gas'
         verbose_name = _("GAS supplier stock")
         verbose_name_plural = _("GAS supplier stocks")
+
+    @property
+    def has_changed_availability(self):
+        #TODO: add to GASSupplierSolidalPact model the suspended state of a solidal pact
+        #TODO: add to GASSupplierSolidalPact model the inactive state of a solidal pact
+        #if (not pact.is_active):
+        #    self._msg.append('Solidal pact unactive')
+        #    return False;
+        return bool(self.enabled != (GASSupplierStock.objects.get(pk=self.pk)).enabled)
+
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
+
+    def save(self, *args, **kwargs):
+        #CASCADING
+        if self.has_changed_availability:
+            self._msg = []
+            self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
+        super(GASSupplierStock, self).save(*args, **kwargs)
+
 
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):

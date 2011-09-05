@@ -253,7 +253,11 @@ class SupplierStock(models.Model, PermissionResource):
 
     class Meta:
         unique_together = (('code', 'supplier'),)
-    
+
+    def __init__(self, *args, **kw):
+        super(SupplierStock, self).__init__(*args, **kw)
+        self._msg = None
+
     def __unicode__(self):
         return "%s (by %s)" % (self.product, self.supplier)
 
@@ -269,6 +273,11 @@ class SupplierStock(models.Model, PermissionResource):
     def has_changed_availability(self):
         return bool(self.amount_available != (SupplierStock.objects.get(pk=self.pk)).amount_available)
 
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
+
     def save(self, *args, **kwargs):
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
         # so it's stored as NULL in the DB, avoiding integrity issues.
@@ -277,13 +286,27 @@ class SupplierStock(models.Model, PermissionResource):
 
         #CASCADING
         if self.has_changed_availability:
-            return ""
+            self._msg = []
+            self._msg.append('Availability have changed for supplier product %s' %  self.product)
+            #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
+            for gss in self.gasstocks:
+                if (self.availability != gss.enabled):
+                    gss.enabled = self.availability
+                    gss.save()
+                    if not gss.message is None:
+                        self._msg.extend(gss.message)
+            self._msg.append('Ended(%d)' % self.gasstocks.count())
+            print self._msg
         super(SupplierStock, self).save(*args, **kwargs)
-
 
     # Resource API
     #@property
     #def suppliers(self):
+
+    @property
+    def gasstocks(self):
+        return self.gasstock_set.all()
+
 
 class SupplierProductCategory(models.Model):
     """Map supplier categories to product categories with an optional alias.
