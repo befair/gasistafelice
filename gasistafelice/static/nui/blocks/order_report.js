@@ -22,7 +22,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
-                "sAjaxSource": this.dataSource + "?render_as=table",
+                "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     null,
                     { "sType": "currency" },

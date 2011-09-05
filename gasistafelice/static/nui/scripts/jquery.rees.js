@@ -57,6 +57,7 @@ jQuery.UIBlock = Class.extend({
         this.block_name = block_name;
         this.active_view = "view";
         this.default_view = this.active_view;
+        this.extra_queryString = '';
 
         //HACK to be compatible with SANET block management
         //TODO: blocks handler calls as pure objects
@@ -129,7 +130,11 @@ jQuery.UIBlock = Class.extend({
     },
 
     get_data_source : function() {
-        return this.url + this.active_view + '?render_as=' + this.rendering + '&' + this.extra_queryString;
+        var more = '';
+        if (this.extra_queryString) {
+            more = '&' + this.extra_queryString;
+        }
+        return this.url + this.active_view + '?render_as=' + this.rendering + more;
     },
     set_parsed_data: function(data) {
         var jQel = jQuery(jQuery.parseXml(data));
