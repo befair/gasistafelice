@@ -53,14 +53,14 @@ class Block(BlockSSDataTables):
         orders = gas.orders.open()
         field_type = "checkbox"
 
-        if gas.config.show_only_next_delivery:
+        if gas.config.order_show_only_next_delivery:
             orders = orders.order_by('-delivery__date')
             if orders[0].delivery:
                 orders.filter(delivery__date=orders[0].delivery.date)
             else:
                 orders.filter(delivery__date__isnull=True)
 
-        elif gas.config.show_one_order_at_a_time:
+        elif gas.config.order_show_only_one_at_a_time:
             field_type = "radio"
 
         fields = []

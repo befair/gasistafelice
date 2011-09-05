@@ -385,12 +385,14 @@ class GASConfig(models.Model, PermissionResource):
         help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
     )
 
-    show_order_by_supplier = models.BooleanField(default=True, 
-        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-    )
+#    show_order_by_supplier = models.BooleanField(default=True, 
+#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
+#    )
 
-    show_only_next_delivery = False
-    show_one_order_at_a_time = True
+    order_show_only_next_delivery = models.BooleanField(default=False, 
+        help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
+    order_show_only_one_at_a_time = models.BooleanField(default=False, 
+        help_text=_("GASMember can select only one open order at a time in order block"))
 
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
