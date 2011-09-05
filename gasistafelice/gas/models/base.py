@@ -380,10 +380,10 @@ class GASConfig(models.Model, PermissionResource):
     gas = models.OneToOneField(GAS, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gasmember_order_set", blank=True, default=get_gasmember_order_default
+        related_name="gmow_gasconfig_set", blank=True, default=get_gasmember_order_default
     )
     default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gassupplier_order_set", blank=True, default=get_supplier_order_default
+        related_name="gsopw_gasconfig_set", blank=True, default=get_supplier_order_default
     )
 
     can_change_price = models.BooleanField(default=False,
@@ -547,6 +547,10 @@ class GASMember(models.Model, PermissionResource):
         return self.person.city
 
     @property
+    def email(self):
+        return self.person.email
+
+    @property
     def economic_state(self):
         st1 = self.total_basket
         st2 = self.total_basket_to_be_delivered
@@ -612,9 +616,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def orders(self):
         # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
-        # WARNING: get GAS proxy instance!
-        g = GAS.objects.get(pk=self.gas.pk)
-        return g.orders
+        return self.gas.orders
 
     @property
     def deliveries(self):
@@ -642,6 +644,10 @@ class GASMember(models.Model, PermissionResource):
         return self.gas.gasstocks
 
     @property
+    def gasmember(self):
+        return self
+
+    @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.open())
@@ -650,6 +656,11 @@ class GASMember(models.Model, PermissionResource):
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
+
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -669,10 +680,18 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     def __unicode__(self):
         return unicode(self.stock)
-        
+
+    def __init__(self, *args, **kw):
+        super(GASSupplierStock, self).__init__(*args, **kw)
+        self._msg = None
+
     @property
     def supplier(self):
         return self.stock.supplier
+
+    @property
+    def product(self):
+        return self.stock.product
 
     @property
     def price(self):
@@ -684,6 +703,43 @@ class GASSupplierStock(models.Model, PermissionResource):
         app_label = 'gas'
         verbose_name = _("GAS supplier stock")
         verbose_name_plural = _("GAS supplier stocks")
+
+    @property
+    def has_changed_availability(self):
+        #TODO: add to GASSupplierSolidalPact model the suspended state of a solidal pact
+        #TODO: add to GASSupplierSolidalPact model the inactive state of a solidal pact
+        #if (not pact.is_active):
+        #    self._msg.append('Solidal pact unactive')
+        #    return False;
+        return bool(self.enabled != (GASSupplierStock.objects.get(pk=self.pk)).enabled)
+
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
+
+    def save(self, *args, **kwargs):
+        #CASCADING
+        if self.has_changed_availability:
+            self._msg = []
+            self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
+            #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
+            for order in self.orders:
+                if self.enabled:
+                    #Add GASSupplierOrderProduct only for GASSupplierOrder in Open State
+                    order.add_product(self)
+                else:
+                    #Delete GASSupplierOrderProduct for GASSupplierOrder in Open State or Closed state. Delete GASMemberOrder associated
+                    order.remove_product(self)
+                if not order.message is None:
+                    self._msg.extend(order.message)
+        super(GASSupplierStock, self).save(*args, **kwargs)
+
+    # Resource API
+    @property
+    def orders(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        return GASSupplierOrder.objects.open().filter(pact__in=self.pact)
 
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):
@@ -811,6 +867,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def stocks(self):
         return self.stock_set.all()
+
+    @property
+    def orders(self):
+        return self.order_set.all()
 
     @property
     def gasstocks(self):

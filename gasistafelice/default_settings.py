@@ -97,7 +97,6 @@ INSTALLED_APPS = (
     'permissions',
     'workflows',
     'history',
-    'gasistafelice.localejs',
     'gasistafelice.auth',
     'gasistafelice.base',
     'gasistafelice.bank',
@@ -115,6 +114,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.comments',
+    'gasistafelice.localejs',
     #'south',
     
 )
@@ -152,12 +152,20 @@ RESOURCE_PAGE_BLOCKS = {
     }],
     'gasmember': [{
         'name' : 'orders',
-        'descr': 'Ordini',
-        'blocks': ['open_orders','basket','closed_orders'],
+        'descr': 'Ordinare',
+        'blocks': ['order'], #This can be filtered in order block, 'open_orders','closed_orders'],
+    },{
+        'name' : 'basket',
+        'descr' : 'Paniere',
+        'blocks' : ['basket']
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
         'blocks' : ['details']
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : []
     }], #must be extended with economic section
     'supplier' : [{
         'name' : 'products',

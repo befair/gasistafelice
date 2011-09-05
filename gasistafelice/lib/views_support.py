@@ -69,7 +69,8 @@ def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
     if outputQ: querySet = querySet.filter(outputQ)
         
     iTotalDisplayRecords = querySet.count() #count how many records match the final criteria
-    querySet = querySet[startRecord:endRecord] #get the slice
+    if endRecord > startRecord:
+        querySet = querySet[startRecord:endRecord] #get the slice
 
     return querySet, {
         'iTotalRecords' : iTotalRecords,
