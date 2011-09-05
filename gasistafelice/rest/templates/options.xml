@@ -1,22 +1,15 @@
-
-<x type="form">
+<cpanel type="form">
     <xtitle>{{block_name}} Options</xtitle>
     {%for field in fields%}
     <field type="{{field.field_type}}"
            label="{{field.field_label}}"
            var="{{field.field_name}}">
-                              {%if field.single%}
-               {%for field_opt in field.field_opts%}
-        <option label="{{field_opt.label}}">
-            <value>{{field_opt.value}}</value>
-        </option>
-               {%endfor%}
-               {%endif%}
+        
+       {%for field_value in field.field_values%}
+        <value label="{{ field_value.label }}" xselected="{{ field_value.selected }}">{{field_value.value}}</value>
+       {%endfor%}
 
-               {%for field_value in field.field_values%}
-        <value>{{field_value}}</value>
-               {%endfor%}
     </field>
 
            {%endfor%}
-</x>
+</cpanel>

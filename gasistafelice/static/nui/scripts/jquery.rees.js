@@ -68,6 +68,69 @@ jQuery.UIBlock = Class.extend({
 
     },
 
+    get_control_panel: function() {
+        
+        var block_obj = this;
+        
+        $.ajax({
+            type:'GET',
+            url: block_obj.url + 'options',
+            dataType: 'xml',
+            complete: function(r, s){
+                
+                if (s == "success") {
+                    
+                    var jQel = jQuery(jQuery.parseXml(r.responseText));
+                    if (jQel.children('error').length > 0)
+                        return jQel.text()
+
+                    if (jQel.find('field').length) {
+                        var form_container = $('<div class="opt_content_div"><form id="'+ block_obj.block_name + '-options_form">\n</form></div>');
+                        var form   = form_container.children('form');
+
+                        form = form.append('<fieldset class="inner"></fieldset>').children();
+                        form = form.append('<table></table>').children();
+                        form = form.append('<tbody></tbody>').children();
+
+                        jQel.find('field').each( function () {
+                            var _ft   = $(this).attr('type');
+                            var _fl   = $(this).attr('label');
+                            var _fv   = $(this).attr('var');
+                            var _fval = $(this).children('value').text();
+                            
+                            var checked = '';
+                            if (_ft == 'checkbox')
+                                var _fchk = $(this).children('value').attr('xselected');
+                                if (_fchk == 'True')
+                                    checked = 'checked="checked"';
+                            
+                            if(_ft != 'select')
+                                form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+":</label></td></tr>" );
+                            else
+                                form.append("<tr><td><label>"+_fl+":</label></td><td><select name='gfCP_"+_fv+"'></select></td></tr>" );
+                        });
+
+                        block_obj.block_el.prev('.block_control_panel').html(form_container);
+
+                        block_obj.block_el.parent().find('.opt_content_div input').each( function () {
+                            $(this).change(function (e) {
+                                block_obj.extra_queryString = $('#'+ block_obj.block_name + '-options_form').serialize();
+                                block_obj.update_handler(block_obj.block_box_id);
+                            })
+                        });
+
+                      }
+                }
+                else {
+                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
+                }
+            }
+        });	
+    },
+
+    get_data_source : function() {
+        return this.url + this.active_view + '?render_as=' + this.rendering + '&' + this.extra_queryString;
+    },
     set_parsed_data: function(data) {
         var jQel = jQuery(jQuery.parseXml(data));
         if (jQel.children('error').length > 0)
@@ -93,7 +156,6 @@ jQuery.UIBlock = Class.extend({
         
         var block_urn = block_box_el.attr('block_urn');
         this.url = jQuery.pre + jQuery.app + '/' + block_urn;
-        this.dataSource = this.url + this.active_view;
 
         var block_obj = this;
         

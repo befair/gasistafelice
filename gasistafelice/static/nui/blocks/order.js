@@ -23,7 +23,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 'bPaginate': false, 
                 "bServerSide": true,
                 "bStateSave": true,
-                "sAjaxSource": this.dataSource + "?render_as=table",
+                "sAjaxSource": this.get_data_source(),
                 "aaSorting": [[5,"dsc"]],
                 "aoColumns": [
                     null,
