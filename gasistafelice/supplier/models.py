@@ -297,7 +297,7 @@ class SupplierStock(models.Model, PermissionResource):
         # CASCADING
         if self.has_changed_availability:
             self._msg = []
-            self._msg.append('Availability have changed for supplier product %s' %  self.product)
+            self._msg.append('Availability have changed for product %s' %  self.product)
             #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
             for gss in self.gasstocks:
                 if (self.availability != gss.enabled):

@@ -100,14 +100,6 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
-    #-- Properties --#
-    @property
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )
-        return rv
-
     #-- Permission management --#
     
     # Table-level CREATE permission    
