@@ -38,14 +38,14 @@ class Block(BlockSSDataTables):
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=VIEW, verbose_name=_("Show stock"), 
+                    name=VIEW, verbose_name=_("Show"), 
                     popup_form=False,
                     method="get",
                 ),
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit stock"), 
+                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
                     popup_form=False,
                     method="get",
                 ),

@@ -7,6 +7,14 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
         this.default_view = this.active_view;
     },
 
+    action_handler : function(action_el) {
+        if (action_el.attr('name') == 'createpdf') {
+            window.location = action_el.attr('url');
+        } else {
+            return this._super(action_el);
+        }
+    },
+
     rendering_table_post_load_handler: function() {
 
         // Init dataTables
@@ -14,13 +22,14 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
-                "sAjaxSource": this.dataSource + "?render_as=table",
+                "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     null,
-                    null,
-                    null,
                     { "sType": "currency" },
-                    null
+                    { "bSortable": "false" },
+                    { "bSortable": "false" },
+                    { "bSortable": "false", "sType": "currency" },
+                    { "bSortable": "false" },
                 ]
             }); 
 

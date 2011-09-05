@@ -9,7 +9,7 @@ from gasistafelice.gas_admin.models import gas_admin
 
 js_info_dict = {
     'domain'  : 'djangojs',
-    'packages': ('gasistafelice.localejs',),
+    'packages' : ('gasistafelice.localejs', ),
 }
 
 urlpatterns = patterns('',

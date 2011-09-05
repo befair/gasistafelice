@@ -57,6 +57,7 @@ jQuery.UIBlock = Class.extend({
         this.block_name = block_name;
         this.active_view = "view";
         this.default_view = this.active_view;
+        this.extra_queryString = '';
 
         //HACK to be compatible with SANET block management
         //TODO: blocks handler calls as pure objects
@@ -68,6 +69,73 @@ jQuery.UIBlock = Class.extend({
 
     },
 
+    get_control_panel: function() {
+        
+        var block_obj = this;
+        
+        $.ajax({
+            type:'GET',
+            url: block_obj.url + 'options',
+            dataType: 'xml',
+            complete: function(r, s){
+                
+                if (s == "success") {
+                    
+                    var jQel = jQuery(jQuery.parseXml(r.responseText));
+                    if (jQel.children('error').length > 0)
+                        return jQel.text()
+
+                    if (jQel.find('field').length) {
+                        var form_container = $('<div class="opt_content_div"><form id="'+ block_obj.block_name + '-options_form">\n</form></div>');
+                        var form   = form_container.children('form');
+
+                        form = form.append('<fieldset class="inner"></fieldset>').children();
+                        form = form.append('<table></table>').children();
+                        form = form.append('<tbody></tbody>').children();
+
+                        jQel.find('field').each( function () {
+                            var _ft   = $(this).attr('type');
+                            var _fl   = $(this).attr('label');
+                            var _fv   = $(this).attr('var');
+                            var _fval = $(this).children('value').text();
+                            
+                            var checked = '';
+                            if (_ft == 'checkbox')
+                                var _fchk = $(this).children('value').attr('xselected');
+                                if (_fchk == 'True')
+                                    checked = 'checked="checked"';
+                            
+                            if(_ft != 'select')
+                                form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+":</label></td></tr>" );
+                            else
+                                form.append("<tr><td><label>"+_fl+":</label></td><td><select name='gfCP_"+_fv+"'></select></td></tr>" );
+                        });
+
+                        block_obj.block_el.prev('.block_control_panel').html(form_container);
+
+                        block_obj.block_el.parent().find('.opt_content_div input').each( function () {
+                            $(this).change(function (e) {
+                                block_obj.extra_queryString = $('#'+ block_obj.block_name + '-options_form').serialize();
+                                block_obj.update_handler(block_obj.block_box_id);
+                            })
+                        });
+
+                      }
+                }
+                else {
+                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
+                }
+            }
+        });	
+    },
+
+    get_data_source : function() {
+        var more = '';
+        if (this.extra_queryString) {
+            more = '&' + this.extra_queryString;
+        }
+        return this.url + this.active_view + '?render_as=' + this.rendering + more;
+    },
     set_parsed_data: function(data) {
         var jQel = jQuery(jQuery.parseXml(data));
         if (jQel.children('error').length > 0)
@@ -93,7 +161,6 @@ jQuery.UIBlock = Class.extend({
         
         var block_urn = block_box_el.attr('block_urn');
         this.url = jQuery.pre + jQuery.app + '/' + block_urn;
-        this.dataSource = this.url + this.active_view;
 
         var block_obj = this;
         
@@ -145,10 +212,29 @@ jQuery.UIBlock = Class.extend({
     },
 
     action_handler : function(action_el) {
+        /* TODO: action attribute "on_complete" can assume values
+        /* reload_page, switch_view, reload_block, 
+        if action_el.attr('on_complete')
+        */
+        var name = action_el.attr('name');
 
-        this.active_view = action_el.attr('name');
         if (action_el.attr('popup_form') == "1") {
             return jQuery.retrieve_form(action_el);
+
+        } else if ((name == "edit_multiple")||(name=="view")) {
+            if (this.active_view != name) {
+                this.active_view = name;
+                this.update_handler(this.block_box_id);
+                //Reload dataTable
+                /*var dt_holder = this.block_el.find('.dataTable')
+                this.dataTable = dt_holder.dataTable({
+                    "sAjaxSource" : this.url + this.active_view + "?render_as=table",
+                    "bDestroy": true,
+                });*/
+                //this.dataTable.fnClearTable( 0 );
+                //this.dataTable.fnDraw();
+            }
+
         } else {
 
             var method = action_el.attr("method");
@@ -157,9 +243,11 @@ jQuery.UIBlock = Class.extend({
             else
                 method = "post";
 
+            //TODO: Notify user success/failure
             $[method](action_el.attr("url"));
+            this.update_handler(this.block_box_id);
         }
-        this.update_handler(this.block_box_id);
+
         return false;
     },
 
@@ -211,6 +299,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
         this.default_rendering = default_rendering;
         this.rendering = default_rendering;
+        this.submit_name = gettext('Submit');
         this._super(block_name);
     },
 
@@ -314,8 +403,9 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
             var action_url = this.url + this.active_view;
             var form_id = this.block_box_id + "-form";
             res = "<form id=\"" + form_id +"\" method=\"POST\" action=\""+action_url+"\">";
-            res += "<input type=\"submit\" name=\"submit\" value=\"" + gettext('Submit') + "\" />";
+            res += "<input type=\"submit\" name=\"submit\" value=\"" + this.submit_name + "\" />";
             res += html_table;
+            res += "<input type=\"submit\" name=\"submit\" value=\"" + this.submit_name + "\" />";
             res += "<input type=\"hidden\" name=\"form-TOTAL_FORMS\" value=\"2\" id=\"" + form_id + "-TOTAL_FORMS\" />";
             res += "<input type=\"hidden\" name=\"form-INITIAL_FORMS\" value=\"0\" id=\"" + form_id + "-INITIAL_FORMS\" />";
             res += "<input type=\"hidden\" name=\"form-MAX_NUM_FORMS\" id=\"" + form_id + "-MAX_NUM_FORMS\" />";

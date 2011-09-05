@@ -1,0 +1,11 @@
+{% load basic_tags %}
+{
+    "sEcho": {{sEcho}},
+    "iTotalRecords": {{iTotalRecords}},
+    "iTotalDisplayRecords": {{iTotalDisplayRecords}},
+    "aaData":[
+        {% block table_rows %} {% endblock %}
+    ],
+    "gf_moreData": {{ moreData|default:'{}' }} 
+}
+

@@ -6,6 +6,9 @@ from django.http import HttpResponse
 from django.utils.cache import add_never_cache_headers
 from django.utils import simplejson
 
+import os
+from django.conf import settings
+
 def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
     """
     Retrieve querySet to be displayed in datatables..
@@ -66,7 +69,8 @@ def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
     if outputQ: querySet = querySet.filter(outputQ)
         
     iTotalDisplayRecords = querySet.count() #count how many records match the final criteria
-    querySet = querySet[startRecord:endRecord] #get the slice
+    if endRecord > startRecord:
+        querySet = querySet[startRecord:endRecord] #get the slice
 
     return querySet, {
         'iTotalRecords' : iTotalRecords,
@@ -140,5 +144,12 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
     return response
 
 
+
+
+#Needed to insert images in report
+
+def pisa_fetch_resources(uri, rel):
+    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    return path
 
 

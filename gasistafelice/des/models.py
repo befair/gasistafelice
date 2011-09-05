@@ -45,7 +45,14 @@ class DES(Site, Resource):
 
     cfg_time = models.PositiveIntegerField()
     
-    display_fields = ()
+    display_fields = (
+        models.PositiveIntegerField(verbose_name=_("GAS"), name="tot_gas"),
+        models.PositiveIntegerField(verbose_name=_("Gasmembers"), name="tot_gasmembers"),
+        models.PositiveIntegerField(verbose_name=_("Suppliers"), name="tot_gasmembers"),
+        models.PositiveIntegerField(verbose_name=_("Pacts"), name="tot_pacts"),
+        models.PositiveIntegerField(verbose_name=_("Orders"), name="tot_orders"),
+        models.PositiveIntegerField(verbose_name=_("Money"), name="tot_money"),
+    )
 
     class Meta:
         verbose_name = _("site")
@@ -175,6 +182,40 @@ class DES(Site, Resource):
             if x not in ll:
                 ll.append(x)
         return ll
+
+    @property
+    def tot_gas(self):
+        from gas.models import GAS
+        return GAS.objects.count()
+
+    @property
+    def tot_gasmembers(self):
+        from gas.models import GASMember
+        return GASMember.objects.count()
+
+    @property
+    def tot_suppliers(self):
+        from supplier.models import Supplier
+        return Supplier.objects.count()
+
+    @property
+    def tot_orders(self):
+        from gas.models import GASSupplierOrder
+        return GASSupplierOrder.objects.count()
+
+    @property
+    def tot_pacts(self):
+        from gas.models import GASSupplierSolidalPact
+        return GASSupplierSolidalPact.objects.count()
+
+    @property
+    def tot_money(self):
+        # TODO improve performace: update-on-signal?
+        from gas.models import GASMemberOrder
+        rv = 0
+        for gmo in GASMemberOrder.objects.all():
+            rv += gmo.ordered_price
+        return rv
 
     #-- Resource API --#
     @property

@@ -141,3 +141,49 @@ default_transitions = (
                         )
  
 workflow_dict[name] = WorkflowDefinition(name, state_list, transition_list, state_transition_map, initial_state_name, default_transitions)
+
+#----------------------------------------------------------------------------- 
+## default Workflow for a SupplierOrder 
+name="VerySimpleSupplierOrderDefault"
+ 
+## States in which a SupplierOrder can be
+state_list = (
+          # (key, state name),
+           ('open', "Open"), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
+           ('closed', "Closed"), # SupplierOrder is closed; GasMemberOrders are disabled 
+           ('archived', "Archived"), # SupplierOrder was delivered to and processed by the GAS
+           ('canceled', "Canceled"),# SupplierOrder was canceled
+           #(exception_raised,"Exception raised")
+)
+
+     
+## Transitions allowed among States defined for a SupplierOrder
+ 
+transition_list = ( 
+                 # (key, transition name, destination state), 
+                 ('close', "Close", 'closed'), # close the SupplierOrder
+                 ('archive', "Archive", 'archived'), # mark the SupplierOrder as "archived" (do not display anymore)
+                 ('cancel', "Cancel", 'canceled'), # cancel the SupplierOrder                                     
+)
+ 
+## Transitions-to-States map
+# FIXME: should be a dictionary
+state_transition_map = (
+                           # (state name, transition name), 
+                           ('open', 'close'),
+                           ('closed', 'archive'),
+                           # SupplierOrder may be canceled at any time before delivery happens
+                           ('open', 'cancel'),
+                           ('closed', 'cancel'),
+                           )
+       
+initial_state_name = 'open'
+ 
+## define default Transitions for States in a Workflow, 
+## so we can suggest to end-users what the next "logical" State could be   
+# FIXME: should be a dictionary
+default_transitions = (
+                        # (state name, transition name),                         
+                        )
+ 
+workflow_dict[name] = WorkflowDefinition(name, state_list, transition_list, state_transition_map, initial_state_name, default_transitions)

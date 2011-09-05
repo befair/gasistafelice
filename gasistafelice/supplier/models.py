@@ -216,7 +216,18 @@ class Product(models.Model, PermissionResource):
 class SupplierStock(models.Model, PermissionResource):
     """A Product that a Supplier offers in the DES marketplace.
         
-       Includes price, order constraints and availability information.          
+       Includes price, order constraints and availability information.
+
+    >>> from supplier.models import *
+    >>> ss = SupplierStock.objects.get(pk=1)
+    >>> isinstance(ss, SupplierStock)
+    True
+    >>> ss.has_changed_availability
+    Fasle
+    >>> ss.amount_available = ss.amount_available + 1
+    >>> ss.has_changed_availability
+    True
+
     """
 
     # Resource API
@@ -248,10 +259,14 @@ class SupplierStock(models.Model, PermissionResource):
     @property
     def producer(self):
         return self.product.producer
-    
+
     @property
     def availability(self):
         return bool(self.amount_available)
+
+    @property
+    def has_changed_availability(self):
+        return bool(self.amount_available != (SupplierStock.objects.get(pk=self.pk)).amount_available)
 
     def save(self, *args, **kwargs):
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
@@ -259,6 +274,9 @@ class SupplierStock(models.Model, PermissionResource):
         if not self.code:
             self.code = None
 
+        #CASCADING
+        if self.has_changed_availability:
+            return ""
         super(SupplierStock, self).save(*args, **kwargs)
 
 

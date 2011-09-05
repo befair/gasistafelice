@@ -1,0 +1,12 @@
+{% extends "blocks/base/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+<th>{% trans "Id" %}</th>
+<th>{% trans "Code" %}</th>
+<th>{% trans "Product" %}</th>
+<th>{% trans "Description" %}</th>
+<th>{% trans "Price" %}</th>
+<th>{% trans "Availability" %}</th>
+{% endblock %}
+

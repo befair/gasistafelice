@@ -25,6 +25,7 @@ from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
 
 from gasistafelice.auth import CREATE, EDIT_MULTIPLE
+CREATE_PDF = "createpdf"
 
 #from users.models import can_write_to_resource
 #------------------------------------------------------------------------------#
@@ -120,6 +121,7 @@ class BlockWithList(AbstractBlock):
 
     def get_response(self, request, resource_type, resource_id, args):
 
+        self.request = request
         self.resource = resource = request.resource
 
         if args == "":
@@ -174,7 +176,8 @@ class BlockSSDataTables(BlockWithList):
 
     def __init__(self):
         super(BlockSSDataTables, self).__init__()
-        self.BLOCK_TEMPLATE = "blocks/%s/block.xml" % self.BLOCK_NAME
+        #self.BLOCK_TEMPLATE = "blocks/%s/block.xml" % self.BLOCK_NAME
+        self.BLOCK_TEMPLATE = "blocks/%s/table.xml" % self.BLOCK_NAME
 
     def _get_records(self, request, querySet):
         raise NotImplementedError("To be implemented in subclass")

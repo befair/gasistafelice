@@ -29,7 +29,7 @@ a:link, a:visited {
 /* HTML ELEMENTS                                                     */
 /* ================================================================= */
 
-html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td {
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,p,blockquote {
 	margin:0;
 	padding:0;
 }
@@ -79,7 +79,7 @@ body {
 	color: black;
 }
 
-h1 { font-size: 26px; margin: 0px; padding: 0px; color: #005E31;  }
+h1 { font-size: 26px; margin: 0px; padding: 0px; color: #000;  }
 h2 { font-size: 12px; padding-top: 12px; font-weight: bold; color: #004400 }
 h3 { font-weight: bold; color: #003300 }
 h4 { font-weight: bold; color: #002200 }
@@ -139,8 +139,8 @@ select{
 #header {
 	height: 50px;
 	
-	background: lightgreen url('/static/logo_labs.jpg') left top no-repeat;
-	background: lightgreen url('/static/logo_cliente.jpg') right top no-repeat;
+	background: #FFF; url('/static/logo_labs.jpg') left top no-repeat;
+	background: #FFF; url('/static/logo_cliente.jpg') right top no-repeat;
 	
 	
 	border-bottom: 1px solid #aaaaaa;
@@ -149,7 +149,7 @@ select{
 
 #header-content {
 	padding : 0 0 5px 5px;
-	margin-right : 110px;
+	margin-right : 2em;
 	color:#005E31;
 }
 
@@ -241,14 +241,15 @@ border:0px;
 	min-width : 200px;
 }
 .block_header {
-	background-color : #d7ecc7;
+	background-color : #ccc;
 
 	border-bottom : 1px solid lightgrey;
 	
 
+	padding-top:8px;
 	/*clear : both;*/
 
-	height : 17px;
+	height : 21px;
 }
 
 .block-title {
@@ -383,154 +384,13 @@ border:0px;
 
 
 
-/*************************
- **** Blocco target ****
- *************************/
-
-.box-UP { margin: 2px; background-color : lightgreen; }
-.box-DN { margin: 2px; background-color : red;        }
-.box-IN { margin: 2px; background-color : white;      }
-.box-FA { margin: 2px; background-color : yellow;     }
-.box-UU { margin: 2px; background-color : lightgrey;  }
-.box-UD { margin: 2px; background-color : lightgrey;  }
-
-.box-TD { margin: 2px; background-color : white;  }
-.box-TU { margin: 2px; background-color : white;  }
-
-.target_times {
-	float : right;
-	position:relative;
-	
-	/*border: 1px;
-	border-style: dashed;*/
-}
-
-.bar_element {
-	float : right;
-	position:relative;
-	//min-width: 90px;
-	padding : 0px 0px 0px 0px;
-	border: 1px dashed black;
-	/*
-	border-top : 1px solid black;
-	border-bottom : 1px solid black;
-	border-left : 1px dashed black;
-	border-right : 1px dashed black;
-	*/
-}
-
-/*************************
- **** Blocco misure ****
- *************************/
-
-.measure_time {
-	float : right;
-	position:relative;
-	
-	border: 1px;
-	border-style: dashed;
-}
 
 
-/*************************
- **** Log degli stati ****
- *************************/
-
-.target_states_log_header, .target_states_log_body {
-	border : 1px solid black;
-}
-
-.target_state_row {
-	border : 1px solid black;
-}
-
-.target_states_log_header span, .target_state_row span {
-	padding : 5px;
-	border-left : 1px dashed grey;
-}
+.ui-dialog-title { color: #2E9E3B; }
 
 
+/* Added by fero - Gasista Felice */
 
-
-
-.log_sort.up   { 
-	padding-left: 12px;	
-	background : transparent url('/static/nui/img/sort_up.gif') no-repeat scroll left; 
-}
-.log_sort.down { 
-	padding-left: 12px;	
-	background : transparent url('/static/nui/img/sort_down.gif') no-repeat scroll left; 
-}
-
-.log_sort.none   { 
-	padding-left: 12px;	
-	background : transparent url('/static/nui/img/sort_none.gif') no-repeat scroll left; 
-}
-
-
-
-.log-UP.log_selected   { 
-	background-color: #0000FF;
-}
-.log-TU.log_selected   { 
-	background-color: #0000FF;
-}
-.log-UU.log_selected   { 
-	background-color: #0000FF;
-}
-.log-DN.log_selected   { 
-	background-color: #0000FF;
-}
-.log-TD.log_selected   { 
-	background-color: #0000FF;
-}
-.log-UD.log_selected   { 
-	background-color: #0000FF;
-}
-.log-FA .log_selected   { 
-	background-color: #0000FF;
-}
-
-
-.log_table th {
-	font-size:0.9em; 
-	font-weight:bold; 
-}
-
-.log_legend td {
-	font-size: 0.8em;
-}
-.log_legend th {
-	font-size: 0.8em;
-	font-weight: bold;
-}
-
-
-.ui-dialog-title {
-	color: #2E9E3B;
-
-}
-
-
-
-.measure-OK   { 
-	background-color : #ABFFA1;
-}
-.measure-IN {
-	background-color: white;
-}
-.measure-DO   { 
-	background-color: white; 
-}
-.measure-SV   { 
-	background-color : #ABFFD1; 
-}
-
-.measure-UN   { 
-	background-color: lightgrey; 
-}
-
-.measure-ER   { 
-	background-color : #FFAAAA; 
-}
-
+#page_resource   { text-transform:capitalize; }
+td input[type="text"] { max-width:70%; }
+td input.amount { max-width:3em; text-align : center;}

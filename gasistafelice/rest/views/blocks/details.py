@@ -309,7 +309,7 @@ class Block(AbstractBlock):
 
     def get_image(self, resource, type, ext):
         
-        basedir = os.path.join(settings.MEDIA_URL, "theme", "img", "resources")
+        basedir = os.path.join(settings.MEDIA_URL, "nui", "img", settings.THEME)
         if hasattr(resource,'icon'):
             value = os.path.join(basedir, "%s%s.%s" % (resource.icon.fname, type, ext))
         else:

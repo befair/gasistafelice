@@ -36,7 +36,7 @@ class AbstractBlock(object):
         self.auto_refresh = False
         self.refresh_rate = 0
 
-        self.start_open   = False
+        self.start_open   = True
     
     #------------------------------------------------------------------------------#
     #                                                                              #

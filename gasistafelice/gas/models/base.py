@@ -198,7 +198,7 @@ class GAS(models.Model, PermissionResource):
     def setup_roles(self):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
-        # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP. 
+        # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP.
         register_parametric_role(name=GAS_REFERRER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
@@ -353,26 +353,33 @@ class GAS(models.Model, PermissionResource):
         return super(GAS, self).clean()
 
 #-----------------------------------------------------------------------------------------------------
-
 def get_supplier_order_default():
     return Workflow.objects.get(name="SupplierOrderDefault")
 
 def get_gasmember_order_default():
     return Workflow.objects.get(name="GASMemberOrderDefault")
 
+
 class GASConfig(models.Model, PermissionResource):
     """
     Encapsulate here gas settings and configuration facilities
     """
 
+    def get_supplier_order_default():
+        return Workflow.objects.get(name="SupplierOrderDefault")
+
+    def get_gasmember_order_default():
+        return Workflow.objects.get(name="GASMemberOrderDefault")
+
+
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
 
     default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gasmember_order_set", null=True, blank=True, default=get_gasmember_order_default
+        related_name="gmow_gasconfig_set", blank=True, default=get_gasmember_order_default
     )
     default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
-        related_name="gassupplier_order_set", null=True, blank=True, default=get_supplier_order_default
+        related_name="gsopw_gasconfig_set", blank=True, default=get_supplier_order_default
     )
 
     can_change_price = models.BooleanField(default=False,
@@ -382,6 +389,9 @@ class GASConfig(models.Model, PermissionResource):
     show_order_by_supplier = models.BooleanField(default=True, 
         help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
     )
+
+    show_only_next_delivery = False
+    show_one_order_at_a_time = True
 
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
@@ -533,13 +543,16 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def city(self):
-        return self.person.city 
+        return self.person.city
 
     @property
     def economic_state(self):
         st1 = self.total_basket
         st2 = self.total_basket_to_be_delivered
-        return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+        if isinstance(self.account, Account):
+            return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+        else:
+            return u"(%s + %s)"  % (st1, st2)
 
     @property
     def total_basket(self):
@@ -598,9 +611,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def orders(self):
         # A GAS member is interested primarily in those suppliers orders to which he/she can submit orders
-        # WARNING: get GAS proxy instance!
-        g = GAS.objects.get(pk=self.gas.pk)
-        return g.orders
+        return self.gas.orders
 
     @property
     def deliveries(self):
@@ -628,6 +639,10 @@ class GASMember(models.Model, PermissionResource):
         return self.gas.gasstocks
 
     @property
+    def gasmember(self):
+        return self
+
+    @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.open())
@@ -636,6 +651,11 @@ class GASMember(models.Model, PermissionResource):
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
+
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -659,6 +679,10 @@ class GASSupplierStock(models.Model, PermissionResource):
     @property
     def supplier(self):
         return self.stock.supplier
+
+    @property
+    def product(self):
+        return self.stock.product
 
     @property
     def price(self):
@@ -774,10 +798,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
 
-    def elabore_report(self):
-        #TODO return report like pdf format. Report has to be signed-firmed by partners
-        return ""
-
     def save(self, *args, **kw):
         if self.gas.config.auto_populate_products:
             self.auto_populate_products = True
@@ -785,6 +805,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         super(GASSupplierSolidalPact, self).save(*args, **kw)
 
     #-- Resource API --#
+
+    def elabore_report(self):
+        #TODO return report like pdf format. Report has to be signed-firmed by partners
+        return ""
 
     @property
     def parent(self):
@@ -797,6 +821,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def stocks(self):
         return self.stock_set.all()
+
+    @property
+    def orders(self):
+        return self.order_set.all()
 
     @property
     def gasstocks(self):

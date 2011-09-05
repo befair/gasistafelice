@@ -1,4 +1,4 @@
-{% extends "blocks/stocks/block.xml" %}
+{% extends "blocks/stocks/table.xml" %}
 {% load i18n %}
 
 {% block headers %}
@@ -11,6 +11,6 @@
 {% endblock %}
 
 {% block extra_html_content %}
-        <div id="total-order-{{ resource.urn }}"> </div>
+    <div id="total-order-{{ resource.urn }}"> </div>
 {% endblock %}
 

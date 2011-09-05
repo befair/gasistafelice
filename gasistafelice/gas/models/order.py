@@ -29,7 +29,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     """
     
-    pact = models.ForeignKey(GASSupplierSolidalPact)
+    pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
     date_start = models.DateTimeField(default=datetime.now, help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
@@ -51,15 +51,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
         
     )
 
+    class Meta:
+        app_label = 'gas'
+        
     def __unicode__(self):
         if not self.date_end is None:
             return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, '{0:%Y%m%d}'.format(self.date_end))
         else:
             return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
 
-    class Meta:
-        app_label = 'gas'
-        
 #-------------------------------------------------------------------------------#
 # Model Archive API
 
@@ -96,11 +96,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         A helper function associating a default set of products to a GASSupplierOrder.
         
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
-        in this case, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
+        in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
         stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
         for s in stocks:
-            GASSupplierOrderProduct.objects.create(order=self, stock=s)
+            GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -155,6 +155,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def suppliers(self):
         return Supplier.objects.filter(pk=self.supplier.pk)
     
+    @property
+    def orderable_products(self):
+        return self.orderable_product_set.all()
+
+    @property
+    def stock(self):
+        return self.gasstock.stock
+
+
     def save(self, *args, **kw):
 
         super(GASSupplierOrder, self).save(*args, **kw)
@@ -164,14 +173,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
             w = self.gas.config.default_workflow_gassupplier_order
             set_workflow(self, w)
 
-
-    @property
-    def report_name(self):
-        # Clean file order name
-        #TODO: clean supplier name 
-        return u"GAS_%s_%s" % (self.supplier.supplier, '{0:%Y%m%d}'.format(self.delivery_date))
-    
-
 class GASSupplierOrderProduct(models.Model, PermissionResource):
 
 
@@ -180,8 +181,8 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
 
     """
 
-    order = models.ForeignKey(GASSupplierOrder)
-    gasstock = models.ForeignKey(GASSupplierStock)
+    order = models.ForeignKey(GASSupplierOrder, related_name="orderable_product_set")
+    gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set")
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
     maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0)
@@ -226,6 +227,14 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def gas(self):
         return self.order.pact.gas    
+
+    @property
+    def supplier(self):
+        return self.order.supplier
+
+    @property
+    def product(self):
+        return self.gasstock.product
 
     
 class GASMemberOrder(models.Model, PermissionResource):
