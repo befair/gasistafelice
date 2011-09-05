@@ -859,7 +859,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def setup_data(self):
 
         for st in self.supplier.stocks:
-            enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            enabled = bool(st.amount_available)
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
 
     def save(self, *args, **kw):

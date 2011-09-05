@@ -38,7 +38,7 @@ class Supplier(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
@@ -193,7 +193,8 @@ class Product(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
+        #return self.name.decode('utf8')
 
     @property
     def referrers(self):
@@ -260,7 +261,7 @@ class SupplierStock(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        return "%s (by %s)" % (self.product, self.supplier)
+        return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
     @property
     def producer(self):
