@@ -1,0 +1,44 @@
+{% extends "blocks/base/report.html" %}
+
+{%block page_header%}
+   <div>
+    <h1>Gasista {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
+    <h2>Stampato da {{ user.person }}</h2>
+   </div>
+<hr />
+{%endblock%}
+
+{%block content%}
+<table>
+<thead>
+    <th>Ordine</th>
+    <th>Produttore</th>
+    <th>prodotto</th>
+    <th>Quantit&agrave;</th>
+    <th>Prezzo</th>
+</thead>
+<tbody>
+
+    {% for row in records %}
+    <tr>
+        <td>{{r.order}}</td>
+        <td>{{r.supplier}}</td>
+        <td>{{r.product}}</td>
+        <td>{{r.ordered_amount}}</td>
+        <td>{{r.price}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td>TOTALE ORDINE</td>
+        <td> </td>
+        <td>{{total_amount}}</td>
+    </tr>
+</tbody>
+</table>
+{%endblock%}
+
+{%block page_foot%}
+<pdf:pagenumber>
+{%endblock%}
+
+
