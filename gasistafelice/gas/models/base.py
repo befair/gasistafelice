@@ -99,7 +99,12 @@ class GAS(models.Model, PermissionResource):
     #-- Overriding built-in methods --#
     def __unicode__(self):
         return self.name
-     
+
+    @ClassProperty
+    @classmethod
+    def resource_type(cls):
+        return "gas"
+
     #-- Properties --#
     @property
     def local_grants(self):
@@ -359,12 +364,6 @@ class GAS(models.Model, PermissionResource):
         return super(GAS, self).clean()
 
 #-----------------------------------------------------------------------------------------------------
-def get_supplier_order_default():
-    return Workflow.objects.get(name="SupplierOrderDefault")
-
-def get_gasmember_order_default():
-    return Workflow.objects.get(name="GASMemberOrderDefault")
-
 
 class GASConfig(models.Model, PermissionResource):
     """
@@ -376,7 +375,6 @@ class GASConfig(models.Model, PermissionResource):
 
     def get_gasmember_order_default():
         return Workflow.objects.get(name="GASMemberOrderDefault")
-
 
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
@@ -713,12 +711,19 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     @property
     def has_changed_availability(self):
-        #TODO: add to GASSupplierSolidalPact model the suspended state of a solidal pact
         #TODO: add to GASSupplierSolidalPact model the inactive state of a solidal pact
         #if (not pact.is_active):
         #    self._msg.append('Solidal pact unactive')
         #    return False;
-        return bool(self.enabled != (GASSupplierStock.objects.get(pk=self.pk)).enabled)
+        try:
+            #FIXME: Generate error raise self.model.DoesNotExist: GASSupplierStock matching query does not exist
+            gss = GASSupplierStock.objects.get(pk=self.pk)
+            if not gss is None:
+                return bool(self.enabled != gss.enabled)
+            else:
+                return False
+        except GASSupplierStock.DoesNotExist:
+            return False
 
     @property
     def message(self):
