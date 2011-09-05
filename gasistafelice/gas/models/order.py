@@ -32,17 +32,17 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
-    date_start = models.DateTimeField(default=datetime.now, help_text=_("when the order will be opened"))
-    date_end = models.DateTimeField(help_text=_("when the order will be closed"), null=True, blank=True)
+    date_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
+    date_end = models.DateTimeField(verbose_name=_('Date start'), help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', related_name="order_set", null=True, blank=True)
+    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
-    order_minimum_amount = CurrencyField(null=True, blank=True)
+    order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="order_set", null=True, blank=True)
+    withdrawal = models.ForeignKey('Withdrawal', verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
-    gasstock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     #TODO: Notify system
 

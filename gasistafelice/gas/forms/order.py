@@ -1,9 +1,11 @@
 from django import forms
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
 from django.forms.formsets import formset_factory
+from django.forms import widgets
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.gas.models import GASSupplierOrderProduct
@@ -21,7 +23,8 @@ class BaseGASSupplierOrderForm(forms.ModelForm):
 
 class GASSupplierOrderForm(BaseGASSupplierOrderForm):
 
-    supplier = forms.ModelChoiceField(queryset=Supplier.objects.none())
+    supplier = forms.ModelChoiceField(label=_('Supplier'), queryset=Supplier.objects.none())
+    delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
 
     def __init__(self, request, *args, **kw):
         super(GASSupplierOrderForm, self).__init__(request, *args, **kw)
@@ -41,7 +44,7 @@ class GASSupplierOrderForm(BaseGASSupplierOrderForm):
         fields = ('supplier', 'date_start', 'date_end')
 
         gf_fieldsets = [(None, { 
-            'fields' : ('supplier', ('date_start', 'date_end')) 
+            'fields' : ('supplier', ('date_start', 'date_end'), 'delivery_terms') 
         })]
 
 class EDIT_OrderForm(BaseGASSupplierOrderForm):
