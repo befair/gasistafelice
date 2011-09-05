@@ -11,6 +11,9 @@
 		</thead>
 		<tbody>
 		</tbody>
+        <tfoot>
+            {% block footer %} {% endblock %}
+        </tfoot>
 		</table>
 		{% block extra_html_content %} {% endblock %}
 

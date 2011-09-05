@@ -33,24 +33,56 @@ class Block(BlockSSDataTables):
     }
 
     def _get_resource_list(self, request):
-        return request.resource.orderable_products
+        selected_orders = request.GET.getlist('gfCP_order')
+        rv = request.resource.orderable_products
+        if (selected_orders):
+            rv = rv.filter(order__pk__in=selected_orders)
+        return rv
 
-#    def _get_user_actions(self, request):
-#  
-#        user_actions = []
-#
-#        # Check if order is in "closed_state"
-#        user_actions = [
-#
-#                ResourceBlockAction( 
-#                    block_name = self.BLOCK_NAME,
-#                    resource = request.resource,
-#                    name=CREATE_PDF, verbose_name=_("Create PDF"), 
-#                    popup_form=False,
-#                ),
-#        ]
-#
-#        return user_actions
+    def options_response(self, request, resource_type, resource_id):
+        """Get options for orders block. Check GAS configuration.
+        WARNING: call to this method doesn't pass through get_response
+        so you have to reset self.request and self.resource attribute if you want
+        """
+
+        self.request = request
+        self.resource = request.resource
+
+        gas = self.resource.gas
+
+        orders = gas.orders.open()
+        field_type = "checkbox"
+
+        if gas.config.show_only_next_delivery:
+            orders = orders.order_by('-delivery__date')
+            if orders[0].delivery:
+                orders.filter(delivery__date=orders[0].delivery.date)
+            else:
+                orders.filter(delivery__date__isnull=True)
+
+        elif gas.config.show_one_order_at_a_time:
+            field_type = "radio"
+
+        fields = []
+    
+        for i,open_order in enumerate(orders):
+            if field_type == "radio":
+                selected = i == 0
+            else:
+                selected = True
+        
+            fields.append({
+                'field_type'   : field_type,
+                'field_label'  : open_order,
+                'field_name'   : 'order',
+                'field_values' : [{ 'value' : open_order.pk, 'selected' : selected}]
+            }) 
+
+        ctx = {
+            'block_name' : self.description,
+            'fields': fields,
+        }
+        return render_to_xml_response('options.xml', ctx)
 
         
     def _get_edit_multiple_form_class(self):
@@ -117,6 +149,7 @@ class Block(BlockSSDataTables):
                 total = 0
 
             form.fields['ordered_amount'].widget.attrs = { 
+                            'class' : 'amount',
                             'step' : el.gasstock.order_step or 1,
                             'minimum_amount' : el.gasstock.order_minimum_amount or 1,
             }

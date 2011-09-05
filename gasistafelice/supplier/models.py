@@ -38,7 +38,7 @@ class Supplier(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
@@ -193,7 +193,8 @@ class Product(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
+        #return self.name.decode('utf8')
 
     @property
     def referrers(self):
@@ -260,7 +261,7 @@ class SupplierStock(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        return "%s (by %s)" % (self.product, self.supplier)
+        return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
     @property
     def producer(self):
@@ -281,14 +282,11 @@ class SupplierStock(models.Model, PermissionResource):
         except SupplierStock.DoesNotExist:
             return False
 
-<<<<<<< HEAD
-=======
     @property
     def message(self):
         """getter property for internal message from model."""
         return self._msg
 
->>>>>>> d322cb4fec5c3bd1711a1a5c420c39fbd4ffb508
     def save(self, *args, **kwargs):
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
         # so it's stored as NULL in the DB, avoiding integrity issues.
@@ -297,9 +295,8 @@ class SupplierStock(models.Model, PermissionResource):
 
         #CASCADING
         if self.has_changed_availability:
-
             self._msg = []
-            self._msg.append('Availability have changed for product %s' %  self.product)
+            self._msg.append('Availability have changed for supplier product %s' %  self.product)
             #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
             for gss in self.gasstocks:
                 if (self.availability != gss.enabled):
@@ -309,7 +306,6 @@ class SupplierStock(models.Model, PermissionResource):
                         self._msg.extend(gss.message)
             self._msg.append('Ended(%d)' % self.gasstocks.count())
             print self._msg
-
         super(SupplierStock, self).save(*args, **kwargs)
 
     # Resource API

@@ -19,6 +19,8 @@ from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_RE
 
 from datetime import datetime
 
+#from django.utils.encoding import force_unicode
+
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
@@ -104,7 +106,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
-        stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
+        if not self.pact.gas.config.auto_populate_products:
+            self._msg.append('Configuration of auto generation of the product\'s order is not abilitated. To automatism the procedure set auto_populate_products to True')
+            return
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
@@ -118,12 +123,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         A helper function to add product to a GASSupplierOrder.
         '''
         self._msg = []
-        gsop = self.stock_set.filter(gasstock=s)
-        if not isinstance(gsop):
-            GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
-        else:
-            self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
 
     def remove_product(self, s):
         '''
@@ -132,20 +131,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #TODO: Does workflows.utils have method state_in(tupple of state)
         #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
         self._msg = []
-        gsop = self.stock_set.filter(gasstock=s)
-        if isinstance(gsop):
-            self._msg.append('product found in order(%s) state(%s)' % (self.pk, self.current_state))
-            #Delete all GASMemberOrders done
-            lst = gsop.gasmember_order_set
-            total = 0
-            for gmo in lst:
-                total += gmo.ordered_price
-                self._msg.append('Deleting gas member %s(%s) email %s ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
-                gmo.delete()
-            self._msg.append('Deleted gas members orders(%s) for total of %s' % (lst.count(), total,))
-            GASSupplierOrderProduct.objects.delete(gsop)
-        else:
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -219,15 +204,24 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #for gmord in gsop_set:
         #    tot += gmord.ordered_price
         return tot
+<<<<<<< HEAD
+=======
+
+>>>>>>> 18d26e8deb2878e8c3562e37aa28a1de16325ebd
 
     def save(self, *args, **kw):
-
+        created = False
+        if not self.pk:
+            created = True
         super(GASSupplierOrder, self).save(*args, **kw)
 
         if not self.workflow:
             # Set default workflow
             w = self.gas.config.default_workflow_gassupplier_order
             set_workflow(self, w)
+
+        if created:
+            self.set_default_stock_set()
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
 
@@ -255,7 +249,8 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        return  unicode(self.stock)
+        return unicode(self.gasstock)
+        #return force_unicode(self.stock)
 
     # how many items of this kind were ordered (globally by the GAS)
     @property
