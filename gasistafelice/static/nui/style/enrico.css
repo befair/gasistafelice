@@ -22,10 +22,17 @@
 	padding-top:10px;
 	text-align:left;
 	font:Verdana, Geneva, sans-serif;
-	color:#0084ff;
+	color:#005687;
 	text-indent:5px;
 	vertical-align:middle;
 	border-bottom:1px dotted #ccc;
 	font-weight:bold;
 	font-size:15px;
+}
+
+.subtitle{
+	position:absolute;
+	height:25px;
+	right:60px;	
+	vertical-align:top;
 }

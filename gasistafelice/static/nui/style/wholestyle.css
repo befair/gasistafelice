@@ -236,14 +236,14 @@ border:0px;
 	/*margin : 0px 0px 0px 0px;*/
 	margin: 10px;
 	
-	border : 1px solid #ccc;
+	border : 1px solid #DDDDDD;
 	border-collapse : collapse;
 	min-width : 200px;
 }
 .block_header {
-	background-color : #ccc;
+	background-color : #afd909;
 
-	border-bottom : 1px solid lightgrey;
+	border-bottom : 1px solid #FFF;
 	
 
 	padding-top:8px;
