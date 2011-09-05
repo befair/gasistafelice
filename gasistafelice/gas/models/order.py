@@ -41,8 +41,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     stock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    #TODO: Notify system
 
     objects = OrderManager()
+
     history = HistoricalRecords()
 
     display_fields = (
@@ -206,6 +208,17 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def stock(self):
         return self.gasstock.stock
 
+    @property
+    def total_order(self):
+        tot = 0
+        return 101
+        #for gsop in self.stock_set: 
+        #'ManyRelatedManager' object is not iterable
+        #    tot += gmord.tot_price
+        #gsop_set = GASMemberOrder.objects.filter(ordered_product__in=self.stock_set)
+        #for gmord in gsop_set:
+        #    tot += gmord.ordered_price
+        return tot
 
     def save(self, *args, **kw):
 
@@ -263,7 +276,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # grab all GASMemberOrders related to this product and issued by members of the right GAS
         gmo_list = self.gasmember_order_set.values('ordered_price')
         amount = 0 
-        for gmo in gmo_list:         
+        for gmo in gmo_list:
             amount += gmo['ordered_price']
         return amount 
     
