@@ -213,7 +213,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         tot = 0
         return 101
         #for gsop in self.stock_set: 
-'ManyRelatedManager' object is not iterable
+        #'ManyRelatedManager' object is not iterable
         #    tot += gmord.tot_price
         #gsop_set = GASMemberOrder.objects.filter(ordered_product__in=self.stock_set)
         #for gmord in gsop_set:

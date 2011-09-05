@@ -812,7 +812,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
     # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
     auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"))
-    #TODO: Field to reflect "il GAS può stracciare il Patto di Solidarietà."
+    #TODO: Field to reflect "il GAS puo stracciare il Patto di Solidarieta."
     #TODO:is_active = models.BooleanField(default=True, help_text=_("This pact can be broken o removed by one of the partner. If not active no orders can be done and the pact will not appear anymore in the interface"))
     #TODO:is_suspended = models.BooleanField(default=False, help_text=_("This pact can be suspended when partners are on unavailable (hollidays, closed). The motor use this flag to operate or not some automatisms"))
 
