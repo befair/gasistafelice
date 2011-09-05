@@ -23,7 +23,7 @@ def get_allowed_transitions(obj, user):
     if isinstance(obj, GASSupplierOrder):
         param_roles =  [
              ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=obj.pact),
-             ParamRole.get_role(GAS_REFERRER_TECH, pact=obj.gas),
+             ParamRole.get_role(GAS_REFERRER_TECH, gas=obj.gas),
         ]
     elif isinstance(obj, GASMemberOrder):
         param_roles = [
