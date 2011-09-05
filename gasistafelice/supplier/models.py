@@ -248,6 +248,7 @@ class SupplierStock(models.Model, PermissionResource):
     #TODO: Field for Product units per box
     # how the Product will be delivered
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
+    #TODO: Notify system
 
     history = HistoricalRecords()
 
@@ -271,7 +272,14 @@ class SupplierStock(models.Model, PermissionResource):
 
     @property
     def has_changed_availability(self):
-        return bool(self.amount_available != (SupplierStock.objects.get(pk=self.pk)).amount_available)
+        try:
+            ss = SupplierStock.objects.get(pk=self.pk)
+            if not ss is None:
+                return bool(self.amount_available != ss.amount_available)
+            else:
+                return False
+        except SupplierStock.DoesNotExist:
+            return False
 
 <<<<<<< HEAD
 =======
