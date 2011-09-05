@@ -73,6 +73,8 @@ class GAS(models.Model, PermissionResource):
     # Resource API
     des = models.ForeignKey(DES)
 
+    #TODO: Notify system
+
     #COMMENT fero: photogallery and attachments does not go here
     #they should be managed elsewhere in Wordpress (now, at least)
 
@@ -97,14 +99,6 @@ class GAS(models.Model, PermissionResource):
     #-- Overriding built-in methods --#
     def __unicode__(self):
         return self.name
-     
-    #-- Properties --#
-    @property
-    def local_grants(self):
-        rv = (
-              # permission specs go here
-              )
-        return rv
 
     #-- Permission management --#
     
@@ -353,12 +347,6 @@ class GAS(models.Model, PermissionResource):
         return super(GAS, self).clean()
 
 #-----------------------------------------------------------------------------------------------------
-def get_supplier_order_default():
-    return Workflow.objects.get(name="SupplierOrderDefault")
-
-def get_gasmember_order_default():
-    return Workflow.objects.get(name="GASMemberOrderDefault")
-
 
 class GASConfig(models.Model, PermissionResource):
     """
@@ -370,7 +358,6 @@ class GASConfig(models.Model, PermissionResource):
 
     def get_gasmember_order_default():
         return Workflow.objects.get(name="GASMemberOrderDefault")
-
 
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
@@ -386,12 +373,14 @@ class GASConfig(models.Model, PermissionResource):
         help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
     )
 
-    show_order_by_supplier = models.BooleanField(default=True, 
-        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
-    )
+#    show_order_by_supplier = models.BooleanField(default=True, 
+#        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
+#    )
 
-    show_only_next_delivery = False
-    show_one_order_at_a_time = True
+    order_show_only_next_delivery = models.BooleanField(default=False, 
+        help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
+    order_show_only_one_at_a_time = models.BooleanField(default=False, 
+        help_text=_("GASMember can select only one open order at a time in order block"))
 
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
@@ -427,9 +416,12 @@ class GASConfig(models.Model, PermissionResource):
     default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
 
     auto_populate_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
     use_scheduler = models.BooleanField(default=False)
     gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
+
+    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("The GAS is not available (hollidays, closed). The motor use this flag to operate or not some automatisms"))
+    #TODO:notify_days = models.PositiveIntegerField(null=True, default=0, help_text=_("The number of days that the system will notify an event (product changed). If set to 0 the notify system is off."))
 
     history = HistoricalRecords()
 
@@ -465,6 +457,7 @@ class GASMember(models.Model, PermissionResource):
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
+    #TODO: Notify system
 
     objects = GASMemberManager()
 
@@ -544,6 +537,10 @@ class GASMember(models.Model, PermissionResource):
     @property
     def city(self):
         return self.person.city
+
+    @property
+    def email(self):
+        return self.person.email
 
     @property
     def economic_state(self):
@@ -670,12 +667,17 @@ class GASSupplierStock(models.Model, PermissionResource):
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product ships in packages containing multiple units.
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
-    
+    #TODO: Notify system
+
     history = HistoricalRecords()
 
     def __unicode__(self):
         return unicode(self.stock)
-        
+
+    def __init__(self, *args, **kw):
+        super(GASSupplierStock, self).__init__(*args, **kw)
+        self._msg = None
+
     @property
     def supplier(self):
         return self.stock.supplier
@@ -694,6 +696,56 @@ class GASSupplierStock(models.Model, PermissionResource):
         app_label = 'gas'
         verbose_name = _("GAS supplier stock")
         verbose_name_plural = _("GAS supplier stocks")
+
+    @property
+    def has_changed_availability(self):
+        #TODO: add to GASSupplierSolidalPact model the inactive state of a solidal pact
+        #if (not pact.is_active):
+        #    self._msg.append('Solidal pact unactive')
+        #    return False;
+        try:
+            #FIXME: Generate error raise self.model.DoesNotExist: GASSupplierStock matching query does not exist
+            gss = GASSupplierStock.objects.get(pk=self.pk)
+            if not gss is None:
+                return bool(self.enabled != gss.enabled)
+            else:
+                return False
+        except GASSupplierStock.DoesNotExist:
+            return False
+
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
+
+    def save(self, *args, **kwargs):
+
+        # CASCADING
+        if self.has_changed_availability:
+
+            self._msg = []
+            self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
+            #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
+            for order in self.orders.open():
+                if self.enabled:
+                    #FIXME: see issue #9
+                    #Add GASSupplierOrderProduct only for GASSupplierOrder in Open State
+                    order.add_product(self)
+                else:
+                    #Delete GASSupplierOrderProduct for GASSupplierOrder in Open State or Closed state. Delete GASMemberOrder associated
+                    order.remove_product(self)
+                if order.message is not None:
+                    self._msg.extend(order.message)
+
+        super(GASSupplierStock, self).save(*args, **kwargs)
+
+    #-- Resource API --#
+
+    @property
+    def orders(self):
+        print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        return GASSupplierOrder.objects.filter(pact__in=self.pact)
 
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):
@@ -759,6 +811,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
     # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
     auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"))
+    #TODO: Field to reflect "il GAS puo stracciare il Patto di Solidarieta."
+    #TODO:is_active = models.BooleanField(default=True, help_text=_("This pact can be broken o removed by one of the partner. If not active no orders can be done and the pact will not appear anymore in the interface"))
+    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("This pact can be suspended when partners are on unavailable (hollidays, closed). The motor use this flag to operate or not some automatisms"))
 
     #document = models.FileField(upload_to="/pacts/", null=True, blank=True)
 
@@ -795,7 +850,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def setup_data(self):
 
         for st in self.supplier.stocks:
-            enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            enabled = bool(st.amount_available)
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
 
     def save(self, *args, **kw):

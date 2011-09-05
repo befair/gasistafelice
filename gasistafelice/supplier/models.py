@@ -38,7 +38,7 @@ class Supplier(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
 
     def setup_roles(self):
     #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
@@ -192,7 +192,8 @@ class Product(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name)
+        #return self.name.decode('utf8')
 
     @property
     def referrers(self):
@@ -247,14 +248,19 @@ class SupplierStock(models.Model, PermissionResource):
     #TODO: Field for Product units per box
     # how the Product will be delivered
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
+    #TODO: Notify system
 
     history = HistoricalRecords()
 
     class Meta:
         unique_together = (('code', 'supplier'),)
-    
+
+    def __init__(self, *args, **kw):
+        super(SupplierStock, self).__init__(*args, **kw)
+        self._msg = None
+
     def __unicode__(self):
-        return "%s (by %s)" % (self.product, self.supplier)
+        return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
     @property
     def producer(self):
@@ -266,23 +272,48 @@ class SupplierStock(models.Model, PermissionResource):
 
     @property
     def has_changed_availability(self):
-        return bool(self.amount_available != (SupplierStock.objects.get(pk=self.pk)).amount_available)
+        try:
+            ss = SupplierStock.objects.get(pk=self.pk)
+            if not ss is None:
+                return bool(self.amount_available != ss.amount_available)
+            else:
+                return False
+        except SupplierStock.DoesNotExist:
+            return False
+
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
 
     def save(self, *args, **kwargs):
+
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
         # so it's stored as NULL in the DB, avoiding integrity issues.
         if not self.code:
             self.code = None
 
-        #CASCADING
+        # CASCADING
         if self.has_changed_availability:
-            return ""
+            self._msg = []
+            self._msg.append('Availability have changed for product %s' %  self.product)
+            #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
+            for gss in self.gasstocks:
+                if (self.availability != gss.enabled):
+                    gss.enabled = self.availability
+                    gss.save()
+                    if not gss.message is None:
+                        self._msg.extend(gss.message)
+            self._msg.append('Ended(%d)' % self.gasstocks.count())
+            print self._msg
         super(SupplierStock, self).save(*args, **kwargs)
 
+    #-- Resource API --#
 
-    # Resource API
-    #@property
-    #def suppliers(self):
+    @property
+    def gasstocks(self):
+        return self.gasstock_set.all()
+
 
 class SupplierProductCategory(models.Model):
     """Map supplier categories to product categories with an optional alias.

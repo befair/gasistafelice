@@ -1,13 +1,24 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 from gasistafelice.auth import EDIT, CONFIRM
 
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.lib.http import HttpResponse
 
 from django.template.defaultfilters import floatformat
+
+from gasistafelice.gas.models import GASMember
+from django.template.defaultfilters import floatformat
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+import cgi, os
+from django.conf import settings
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -37,7 +48,16 @@ class Block(BlockSSDataTables):
                         name=CONFIRM, verbose_name=_("Confirm all"), 
                         popup_form=False,
                     ),
+
                 ]
+        user_actions += [
+            ResourceBlockAction( 
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name=CREATE_PDF, verbose_name=_("Create PDF"), 
+                popup_form=False,
+            ),
+        ]
 
         return user_actions
         
@@ -62,6 +82,25 @@ class Block(BlockSSDataTables):
 
         return records
 
+    def _get_pdfrecords(self, request, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        c = querySet.count()
+
+        for el in querySet:
+
+            records.append({
+               'order' : el.ordered_product.order.pk,
+               'supplier' : el.ordered_product.stock.supplier,
+               'product' : el.product,
+               'amount' : el.ordered_amount,
+               'price' : floatformat(el.ordered_price, 2),
+            })
+
+        return records
+
+
     def _set_records(self, request, records):
         pass
 
@@ -75,6 +114,33 @@ class Block(BlockSSDataTables):
 
             #IMPORTANT: unset args to compute table results!
             args = self.KW_DATA
+        elif args == CREATE_PDF:
+            return self._create_pdf()
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
 
+    def _create_pdf(self):
+
+        # Dati di esempio
+        gasmember = self.resource
+        context_dict = {
+            'gasmember' : gasmember,
+            'records' : self._get_pdfrecords(self.request, self._get_resource_list(self.request))[1], 
+            'user' : self.request.user,
+            'total_amount' : self.resource.total_basket,
+        }
+
+        REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME
+
+        template = get_template(REPORT_TEMPLATE)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+        if not pdf.err:
+            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \
+                            (gasmember.id_in_gas, '20110909')
+#                            (gasmember.id, '{0:%Y%m%d}'.format(order.delivery.date))
+            return response
+        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(html))

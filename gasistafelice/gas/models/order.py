@@ -19,12 +19,14 @@ from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_RE
 
 from datetime import datetime
 
+#from django.utils.encoding import force_unicode
+
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
     * status is a meaningful parameter... TODO
-    * stock_set references specified products available for the specific order \
+    * gasstock_set references specified products available for the specific order \
       (they can be a subset of all available products from that Supplier for the order);
 
     """
@@ -40,15 +42,17 @@ class GASSupplierOrder(models.Model, PermissionResource):
     withdrawal = models.ForeignKey('Withdrawal', related_name="order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
-    stock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    gasstock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+
+    #TODO: Notify system
 
     objects = OrderManager()
+
     history = HistoricalRecords()
 
     display_fields = (
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         date_start, date_end, order_minimum_amount, delivery, withdrawal,
-        
     )
 
     class Meta:
@@ -60,8 +64,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
 
-#-------------------------------------------------------------------------------#
-# Model Archive API
+    def __init__(self, *args, **kw):
+        super(GASSupplierOrder, self).__init__(*args, **kw)
+        self._msg = None
+
+    #-------------------------------------------------------------------------------#
+    # Model Archive API
 
     def is_active(self):
         """
@@ -75,8 +83,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """
         return not self.is_active()
     
-#-------------------------------------------------------------------------------#    
-# Authorization API
+    #-------------------------------------------------------------------------------#    
+    # Authorization API
 
     @property
     def referrers(self):
@@ -89,7 +97,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return pr.get_users()       
     
 
-#-------------------------------------------------------------------------------#
+    #-------------------------------------------------------------------------------#
 
     def set_default_stock_set(self):
         '''
@@ -98,9 +106,60 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
         in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
         '''
-        stocks = GASSupplierStock.objects.filter(pact=self.pact, supplier_stock__supplier=self.pact.supplier)
+
+        if not self.pact.gas.config.auto_populate_products:
+            self._msg.append('Configuration of auto generation of the product\'s order is not abilitated. To automatism the procedure set auto_populate_products to True')
+            return
+
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
-            GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+            if s.enabled:
+                GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+    @property
+    def message(self):
+        """getter property for internal message from model."""
+        return self._msg
+
+    def add_product(self, s):
+        '''
+        A helper function to add product to a GASSupplierOrder.
+        '''
+        self._msg = []
+
+        # We can retrieve GASSupplierOrderProduct bound to this order with
+        # self.orderable_products but it is useful to use get_or_create
+        gsop, create = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
+        if created:
+            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+        else:
+            self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
+
+    def remove_product(self, s):
+        '''
+        A helper function to add product to a GASSupplierOrder.
+        '''
+        #TODO: Does workflows.utils have method state_in(tupple of state)
+        #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
+        self._msg = []
+
+        try:
+            gsop = self.orderable_products.get(gasstock=s)
+        except GASSupplierOrderProduct.DoesNotExist:
+            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+
+        else:
+            self._msg.append('product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            #Delete all GASMemberOrders done
+            lst = gsop.gasmember_order_set.all()
+            total = 0
+            count = lst.count()
+            for gmo in lst:
+                total += gmo.ordered_price
+                self._msg.append('Deleting gas member %s(%s) email %s ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                gmo.delete()
+            self._msg.append('Deleted gas members orders(%s) for total of %s' % (count, total))
+            GASSupplierOrderProduct.objects.delete(gsop)
+
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
@@ -160,11 +219,30 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return self.orderable_product_set.all()
 
     @property
-    def stock(self):
-        return self.gasstock.stock
+    def ordered_products(self):
+        return GASMemberOrder.objects.filter(ordered_product__in=self.orderable_products)
 
+    @property
+    def stocks(self):
+        from supplier.models import SupplierStock
+        stocks_pk=map(lambda x: x[0], self.gasstock_set.values('stock'))
+        return SupplierStock.objects.filter(pk__in=stocks_pk)
+
+    @property
+    def gasstocks(self):
+        return self.gasstock_set.all()
+
+    @property
+    def total_ordered(self):
+        tot = 0
+        for gmo in self.ordered_products:
+            tot += gmo.ordered_price
+        return tot
 
     def save(self, *args, **kw):
+        created = False
+        if not self.pk:
+            created = True
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -172,6 +250,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
             # Set default workflow
             w = self.gas.config.default_workflow_gassupplier_order
             set_workflow(self, w)
+
+        if created:
+            self.set_default_stock_set()
+
+#-------------------------------------------------------------------------------
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
 
@@ -199,7 +282,8 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        return  unicode(self.stock)
+        return unicode(self.gasstock)
+        #return force_unicode(self.stock)
 
     # how many items of this kind were ordered (globally by the GAS)
     @property
@@ -220,13 +304,13 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # grab all GASMemberOrders related to this product and issued by members of the right GAS
         gmo_list = self.gasmember_order_set.values('ordered_price')
         amount = 0 
-        for gmo in gmo_list:         
+        for gmo in gmo_list:
             amount += gmo['ordered_price']
         return amount 
     
     @property
     def gas(self):
-        return self.order.pact.gas    
+        return self.order.pact.gas
 
     @property
     def supplier(self):
@@ -273,6 +357,10 @@ class GASMemberOrder(models.Model, PermissionResource):
     def product(self):
         return self.ordered_product.stock.product
 
+    @property
+    def email(self):
+        return self.purchaser.email
+
     # how much the GAS member actually payed for this Product (as resulting from the invoice)   
     @property
     def actual_price(self):
@@ -281,7 +369,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     # GASSupplierOrder this GASMemberOrder belongs to
     @property
     def order(self):
-        return self.ordered_product.order 
+        return self.ordered_product.order
 
     # which GAS this order was issued to ? 
     @property
