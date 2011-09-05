@@ -287,12 +287,13 @@ class SupplierStock(models.Model, PermissionResource):
         return self._msg
 
     def save(self, *args, **kwargs):
+
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
         # so it's stored as NULL in the DB, avoiding integrity issues.
         if not self.code:
             self.code = None
 
-        #CASCADING
+        # CASCADING
         if self.has_changed_availability:
 
             self._msg = []
@@ -309,9 +310,7 @@ class SupplierStock(models.Model, PermissionResource):
 
         super(SupplierStock, self).save(*args, **kwargs)
 
-    # Resource API
-    #@property
-    #def suppliers(self):
+    #-- Resource API --#
 
     @property
     def gasstocks(self):

@@ -118,9 +118,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         A helper function to add product to a GASSupplierOrder.
         '''
         self._msg = []
-        gsop = self.stock_set.filter(gasstock=s)
-        if not isinstance(gsop):
-            GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+
+        # We can retrieve GASSupplierOrderProduct bound to this order with
+        # self.orderable_products but it is useful to use get_or_create
+        gsop, create = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
+        if created:
             self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
         else:
             self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
@@ -132,20 +134,24 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #TODO: Does workflows.utils have method state_in(tupple of state)
         #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
         self._msg = []
-        gsop = self.stock_set.filter(gasstock=s)
-        if isinstance(gsop):
+        try:
+            gsop = self.orderable_products.get(gasstock=s)
+        except GASSupplierOrderProduct.DoesNotExist:
+            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+
+        else:
             self._msg.append('product found in order(%s) state(%s)' % (self.pk, self.current_state))
             #Delete all GASMemberOrders done
-            lst = gsop.gasmember_order_set
+            lst = gsop.gasmember_order_set.all()
             total = 0
+            count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
                 self._msg.append('Deleting gas member %s(%s) email %s ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 gmo.delete()
-            self._msg.append('Deleted gas members orders(%s) for total of %s' % (lst.count(), total,))
+            self._msg.append('Deleted gas members orders(%s) for total of %s' % (count, total))
             GASSupplierOrderProduct.objects.delete(gsop)
-        else:
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder

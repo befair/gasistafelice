@@ -729,20 +729,24 @@ class GASSupplierStock(models.Model, PermissionResource):
         return self._msg
 
     def save(self, *args, **kwargs):
-        #CASCADING
+
+        # CASCADING
         if self.has_changed_availability:
+
             self._msg = []
             self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
             #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
-            for order in self.orders:
+            for order in self.orders.open():
                 if self.enabled:
+                    #FIXME: see issue #9
                     #Add GASSupplierOrderProduct only for GASSupplierOrder in Open State
                     order.add_product(self)
                 else:
                     #Delete GASSupplierOrderProduct for GASSupplierOrder in Open State or Closed state. Delete GASMemberOrder associated
                     order.remove_product(self)
-                if not order.message is None:
+                if order.message is not None:
                     self._msg.extend(order.message)
+
         super(GASSupplierStock, self).save(*args, **kwargs)
 
     #-- Resource API --#
