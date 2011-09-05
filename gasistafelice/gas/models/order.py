@@ -17,6 +17,8 @@ from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
+from django.conf import settings
+
 from datetime import datetime
 
 #from django.utils.encoding import force_unicode
@@ -33,7 +35,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
     date_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
-    date_end = models.DateTimeField(verbose_name=_('Date start'), help_text=_("when the order will be closed"), null=True, blank=True)
+    date_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
     delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
@@ -59,10 +61,18 @@ class GASSupplierOrder(models.Model, PermissionResource):
         app_label = 'gas'
         
     def __unicode__(self):
-        if not self.date_end is None:
-            return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, '{0:%Y%m%d}'.format(self.date_end))
-        else:
-            return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
+        if self.date_end is not None:
+            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.date_end)
+            if self.is_active():
+                state = _("close on %(date)s") % { 'date' : fmt_date }
+            else:
+                state = _("closed on %(date)s") % { 'date' : fmt_date }
+
+        return _("Order %(gas)s to %(supplier)s (%(state)s)") % {
+                    'gas' : self.gas,
+                    'supplier' : self.supplier,
+                    'state' : state
+        }
 
     def __init__(self, *args, **kw):
         super(GASSupplierOrder, self).__init__(*args, **kw)
