@@ -1,6 +1,7 @@
 from django import forms
 
 from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
+from gasistafelice.gas.models import GASMemberOrder
 from gasistafelice.supplier.models import Supplier
 
 from django.forms.formsets import formset_factory
