@@ -118,7 +118,7 @@ class Block(BlockSSDataTables):
             'order' : order,
             'records' : self._get_records(self.request, self._get_resource_list(self.request))[1], #ho usato get_records, ma puoi produrre i record come preferisci
             'user' : self.request.user,
-            'total_amount' : 100, #da calcolare
+            'total_amount' : self.resource.total_order, #da Model da confrontare con il calcolato
         }
 
         REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME

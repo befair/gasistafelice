@@ -248,6 +248,7 @@ class SupplierStock(models.Model, PermissionResource):
     #TODO: Field for Product units per box
     # how the Product will be delivered
     delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
+    #TODO: Notify system
 
     history = HistoricalRecords()
 
