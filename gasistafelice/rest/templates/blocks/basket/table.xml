@@ -7,9 +7,10 @@
         <th>{% trans "Product" %}</th>
         <th>{% trans "Amount" %}</th>
         <th>{% trans "Price" %}</th>
+        <th>{% trans "TOT Price" %}</th>
 {% endblock %}
 
-{% block extra_html_content %}
-        <div id="total-basket-{{ resource.urn }}"> </div>
+{% block footer %}
+    <tr><th colspan="4" style="text-align:right" rowspan="1">{% trans "Total" %}:</th><th rowspan="1" colspan="1" id="total-order"> </th></tr>
 {% endblock %}
 

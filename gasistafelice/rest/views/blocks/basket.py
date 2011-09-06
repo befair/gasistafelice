@@ -30,7 +30,7 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Basket")
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
-    COLUMN_INDEX_NAME_MAP = { 0: 'ordered_product__order__pk', 1 : 'ordered_product__gasstock__stock__supplier', 2: 'ordered_product__stock__supplier_stock__product', 3: 'ordered_amount', 4: 'ordered_price' }
+    COLUMN_INDEX_NAME_MAP = { 0: 'ordered_product__order__pk', 1 : 'ordered_product__gasstock__stock__supplier', 2: 'ordered_product__stock__supplier_stock__product', 3: 'ordered_amount', 4: 'ordered_price', 5 : '' }
 
     def _get_user_actions(self, request):
 
@@ -77,10 +77,11 @@ class Block(BlockSSDataTables):
                'supplier' : el.ordered_product.stock.supplier,
                'product' : el.product,
                'amount' : el.ordered_amount,
-               'price' : floatformat(el.ordered_price, 2),
+               'price' : floatformat(el.ordered_product.gasstock.price, 2),
+               'tot_price' : floatformat(el.tot_price, 2),
             })
 
-        return records
+        return records, records, {}
 
     def _get_pdfrecords(self, request, querySet):
         """Return records of rendered table fields."""
@@ -116,6 +117,21 @@ class Block(BlockSSDataTables):
             args = self.KW_DATA
         elif args == CREATE_PDF:
             return self._create_pdf()
+        
+        #TODO FIXME: ugly patch to fix AFTER 6
+        if args == self.KW_DATA:
+            from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
+            
+            querySet = self._get_resource_list(request) 
+            #columnIndexNameMap is required for correct sorting behavior
+            columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
+            #path to template used to generate json (optional)
+            jsonTemplatePath = 'blocks/%s/data.json' % self.BLOCK_NAME
+
+            querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
+            #TODO FIXME: AFTER 6 
+            formset, records, moreData = self._get_records(request, querySet)
+            return render_datatables(request, records, dt_params, jsonTemplatePath)
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
 

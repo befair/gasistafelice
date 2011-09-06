@@ -369,7 +369,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     """
 
-    purchaser = models.ForeignKey(GASMember)
+    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set")
     ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set")
     # price of the Product at order time
     ordered_price = CurrencyField(null=True, blank=True)
@@ -394,8 +394,16 @@ class GASMemberOrder(models.Model, PermissionResource):
         self.is_confirmed = True
 
     @property
+    def tot_price(self):
+        return self.ordered_price*self.ordered_amount
+
+    @property
     def product(self):
         return self.ordered_product.stock.product
+
+    @property
+    def supplier(self):
+        return self.ordered_product.supplier
 
     @property
     def email(self):
