@@ -35,6 +35,9 @@ class BlockConfiguration(Model):
     
     class Meta:
         app_label = "rest"
+        verbose_name = "Block configuration data"
+        db_table = "blockconfiguration"
+        db_tablespace = REST_TABLE_SPACE
 
     def __unicode__(self):
         return "[%s]%s/%s/%s/%s/%s" % (self.user.username, self.page, self.resource_type, self.resource_id, self.blocktype, self.get_configuration())
@@ -68,11 +71,6 @@ class BlockConfiguration(Model):
 
     #-----------------------------------------------------------------------------#
     
-    class Meta:
-        verbose_name = "Block configuration data"
-        db_table = "blockconfiguration"
-        
-        db_tablespace = REST_TABLE_SPACE
         
 #def remove_displayed_blocks_from_userpage_by_user(user, printout=None):
 #    
