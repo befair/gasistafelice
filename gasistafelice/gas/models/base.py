@@ -876,6 +876,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return self.gas
 
     @property
+    def suppliers(self):
+        return Supplier.objects.filter(pk=self.pk)
+
+    @property
     def des(self):
         return self.gas.des
 
