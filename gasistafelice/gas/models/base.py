@@ -744,6 +744,7 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     @property
     def orders(self):
+        #TODO FIXME AFTER 6
         print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact__in=self.pact)

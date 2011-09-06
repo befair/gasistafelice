@@ -2,9 +2,9 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import BlockWithList, Action, ResourceBlockAction
-from gasistafelice.auth import CREATE
+from gasistafelice.auth import CREATE, EDIT
 from gasistafelice.gas.forms import order as order_forms
-from gasistafelice.gas.models import GASSupplierOrder
+from gasistafelice.gas.models import GASSupplierOrder, GASSupplierSolidalPact
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -28,7 +28,7 @@ class Block(BlockWithList):
 
         user_actions = []
 
-        if request.user.has_perm(CREATE, obj=GASSupplierOrder):
+        if request.user.has_perm(EDIT, obj=request.resource.pact):
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

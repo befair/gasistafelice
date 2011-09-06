@@ -106,18 +106,19 @@ class ParamRoleBackend(object):
         
         # delegate non-object permission check to Django's default backend (`ModelBackend`) - or whatever
         if obj is None:
-                return False
+            return False
                     
+
         # Superuser can do evrything
         if user_obj.is_superuser:
             return True
 
         # if User is not authenticated or inactive, (s)he has no permissions 
-        elif user_obj.is_anonymous or not user_obj.is_active:
+        elif user_obj.is_anonymous() or not user_obj.is_active:
             return False
 
         # retrieve the function implementing the permission check for the given model
         # if `obj` is a model instance, that function should be a (bound) instance method;
         # if `obj` is a model class, it should be a (bound) class method.          
-        perm_check = getattr(obj, 'can_' + perm.lowercase())
+        perm_check = getattr(obj, 'can_' + perm.lower())
         return perm_check(user_obj, **kwargs)

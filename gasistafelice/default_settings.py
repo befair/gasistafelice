@@ -189,7 +189,7 @@ RESOURCE_PAGE_BLOCKS = {
     'pact' : [{
         'name': 'info',
         'descr': 'Info',
-        'blocks' : ['details'],
+        'blocks' : ['details', 'open_orders', 'closed_orders'],
     },{ 
         'name' : 'stock',
         'descr': 'Prodotti',
