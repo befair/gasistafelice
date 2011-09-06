@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-06 16:29+0200\n"
+"POT-Creation-Date: 2011-09-06 18:57+0200\n"
 "PO-Revision-Date: 2011-08-31 07:30+0200\n"
 "Last-Translator: Lorenzo Franceschini <lorenzo.franceschini@informaetica."
 "it>\n"
 "Language-Team: Italian <it@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: DOM.py:36
@@ -219,8 +219,8 @@ msgid ""
 "Wrong param '%(wp)s' provided for role %(r)s. Only %(pl)s are relatable to "
 "this role"
 msgstr ""
-"Il parametro '%(wp)s' fornito non è corretto per il ruolo %(r)s. Solo i/gli %"
-"(pl)s sono collegabili a questo ruolo."
+"Il parametro '%(wp)s' fornito non è corretto per il ruolo %(r)s. Solo i/gli "
+"%(pl)s sono collegabili a questo ruolo."
 
 #: auth/exceptions.py:29
 #, python-format
@@ -377,7 +377,7 @@ msgstr "Gasisti"
 msgid "Suppliers"
 msgstr "Fornitori"
 
-#: des/models.py:52 supplier/models.py:115
+#: des/models.py:52 supplier/models.py:119
 msgid "Pacts"
 msgstr "Patti"
 
@@ -443,7 +443,7 @@ msgstr "completato"
 
 #: gas/forms/order.py:27 gas/models/order.py:40
 msgid "Date start"
-msgstr ""
+msgstr "Data di apertura"
 
 #: gas/forms/order.py:28 gas/models/order.py:40
 msgid "when the order will be opened"
@@ -485,9 +485,25 @@ msgstr "Città di ritiro"
 msgid "Withdrawal address or place"
 msgstr "Indirizzo o luogo di ritiro"
 
-#: gas/forms/pact.py:38 gas/forms/pact.py:86
+#: gas/forms/pact.py:24 gas/models/base.py:790
+msgid "Date signed"
+msgstr "Data dell'accordo"
+
+#: gas/forms/pact.py:25
+msgid "date of first meeting GAS - supplier"
+msgstr "data del primo incontro fra il fornitore e il GAS"
+
+#: gas/forms/pact.py:44 gas/forms/pact.py:94
 msgid "Pact between this GAS and this Supplier already exists"
 msgstr "Esiste già un patto tra questo GAS e questo Fornitore"
+
+#: gas/forms/pact.py:77 gas/forms/pact.py:121
+msgid "Document"
+msgstr "Documento"
+
+#: gas/forms/pact.py:77 gas/forms/pact.py:121
+msgid "Document signed by GAS and Supplier"
+msgstr "Il documento firmato dal GAS e dal Fornitore"
 
 #: gas/models/base.py:41
 msgid "GAS code"
@@ -727,19 +743,31 @@ msgstr "Prodotto fornitore per il GAS"
 msgid "GAS supplier stocks"
 msgstr "Listino fornitore per il GAS"
 
-#: gas/models/base.py:789
+#: gas/models/base.py:790
 msgid "date of first meeting GAS-Producer"
 msgstr "data del primo incontro dei Produttori del GAS"
 
-#: gas/models/base.py:803
+#: gas/models/base.py:794
+msgid "Order minimum amount"
+msgstr "Importo minimo"
+
+#: gas/models/base.py:795
+msgid "Order delivery cost"
+msgstr "Costo di consegna"
+
+#: gas/models/base.py:797
+msgid "Order delivery interval"
+msgstr "Tempo da attendere per la consegna"
+
+#: gas/models/base.py:804
 msgid "Withdrawal week day agreement"
 msgstr "Giorno accordato per il prelievo settimanale"
 
-#: gas/models/base.py:806
+#: gas/models/base.py:807
 msgid "withdrawal time agreement"
 msgstr "ora accordata per il prelievo"
 
-#: gas/models/base.py:814
+#: gas/models/base.py:815
 msgid ""
 "automatic population of all products bound to a supplier in gas supplier "
 "stock"
@@ -747,7 +775,11 @@ msgstr ""
 "Popola automaticamente il catalogo fornitore per il GAS con tutti i prodotti "
 "del fornitore."
 
-#: gas/models/base.py:832
+#: gas/models/base.py:826
+msgid "Referrers"
+msgstr "Referenti"
+
+#: gas/models/base.py:834
 #, python-format
 msgid "Pact between %(gas)s and %(supplier)s"
 msgstr "Patto tra %(gas)s e %(supplier)s"
@@ -775,7 +807,7 @@ msgstr "chiuso in data %(date)s"
 msgid "Order %(gas)s to %(supplier)s (%(state)s)"
 msgstr "Ordine dal %(gas)s al fornitore %(supplier)s (%(state)s)"
 
-#: gas/models/order.py:202
+#: gas/models/order.py:210
 msgid ""
 "Workflow for specific GASSupplierOrder is not allowed. Just provide a "
 "default order workflow for your GAS"
@@ -783,27 +815,27 @@ msgstr ""
 "Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
 "solamente un workflow di default per il tuo GAS "
 
-#: gas/models/order.py:289
+#: gas/models/order.py:297
 msgid "Current state"
 msgstr "Stato corrente"
 
-#: gas/models/order.py:291
+#: gas/models/order.py:299
 msgid "Delivery referrer"
 msgstr "Referente di consegna"
 
-#: gas/models/order.py:292
+#: gas/models/order.py:300
 msgid "Withdrawal referrer"
 msgstr "Referente di ritiro"
 
-#: gas/models/order.py:388
+#: gas/models/order.py:396
 msgid "GAS member order"
 msgstr "Ordine gasista"
 
-#: gas/models/order.py:389
+#: gas/models/order.py:397
 msgid "GAS member orders"
 msgstr "Ordini gasista"
 
-#: gas/models/order.py:436
+#: gas/models/order.py:444
 msgid ""
 "Workflow for specific GASMemberOrder is not allowed. Just provide a default "
 "order workflow for your GAS"
@@ -811,43 +843,43 @@ msgstr ""
 "Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
 "solamente un workflow di default per il tuo GAS "
 
-#: gas/models/order.py:493
+#: gas/models/order.py:501
 msgid "where the order will be delivered by supplier"
 msgstr "dove l'ordine sarà consegnato dal fornitore"
 
-#: gas/models/order.py:494
+#: gas/models/order.py:502
 msgid "when the order will be delivered by supplier"
 msgstr "quando l'ordine sarà consegnato dal fornitore"
 
-#: gas/models/order.py:504
+#: gas/models/order.py:512
 msgid "delivery"
 msgstr "consegna"
 
-#: gas/models/order.py:505
+#: gas/models/order.py:513
 msgid "deliveries"
 msgstr "consegne"
 
-#: gas/models/order.py:544
+#: gas/models/order.py:552
 msgid "where the order will be withdrawn by GAS members"
 msgstr "dove l'ordine sarà ritirato dai gasisti"
 
-#: gas/models/order.py:548
+#: gas/models/order.py:556
 msgid "when the order will be withdrawn by GAS members"
 msgstr "quando l'ordine sarà ritirato dai gasisti"
 
-#: gas/models/order.py:550
+#: gas/models/order.py:558
 msgid "when the withdrawal will start"
 msgstr "quando inizierà il ritiro"
 
-#: gas/models/order.py:551
+#: gas/models/order.py:559
 msgid "when the withdrawal will end"
 msgstr "quando terminerà il ritiro"
 
-#: gas/models/order.py:559
+#: gas/models/order.py:567
 msgid "wihtdrawal"
 msgstr "ritiro"
 
-#: gas/models/order.py:560
+#: gas/models/order.py:568
 msgid "wihtdrawals"
 msgstr "ritiri"
 
@@ -1310,7 +1342,7 @@ msgstr "Patti di solidarietà"
 msgid "Add pact"
 msgstr "Aggiungi patto"
 
-#: rest/views/blocks/persons.py:15 supplier/models.py:114
+#: rest/views/blocks/persons.py:15 supplier/models.py:118
 msgid "People"
 msgstr "Persone"
 
@@ -1402,31 +1434,31 @@ msgstr "La tua password è stata cambiata"
 msgid "Personal settings"
 msgstr "Impostazioni personali"
 
-#: supplier/models.py:157
+#: supplier/models.py:161
 msgid "Product categories"
 msgstr "Categorie di prodotti"
 
-#: supplier/models.py:185
+#: supplier/models.py:189
 msgid "Product code"
 msgstr "Codice prodotto"
 
-#: supplier/models.py:239
+#: supplier/models.py:243
 msgid "price"
 msgstr "prezzo"
 
-#: supplier/models.py:240
+#: supplier/models.py:244
 msgid "code"
 msgstr "codice"
 
-#: supplier/models.py:240
+#: supplier/models.py:244
 msgid "Product supplier identifier"
 msgstr "Identificativo del fornitore per il prodotto"
 
-#: supplier/models.py:241
+#: supplier/models.py:245
 msgid "availability"
 msgstr "disponibilità"
 
-#: supplier/models.py:327
+#: supplier/models.py:331
 msgid "Alternative name"
 msgstr "Nome alternativo"
 
@@ -1480,9 +1512,6 @@ msgstr "Profilo per %(user)s"
 #~ msgstr ""
 #~ "Il GAS visualizza gli ordini aperti in ordine di fornitore. Se "
 #~ "disattivato, li visualizza in ordine di appuntamento di consegna"
-
-#~ msgid "referrers"
-#~ msgstr "referenti"
 
 #~ msgid "Order stocks"
 #~ msgstr "Stocks dell'ordine"

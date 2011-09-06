@@ -787,14 +787,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     gas = models.ForeignKey(GAS, related_name="pact_set")
     supplier = models.ForeignKey(Supplier, related_name="pact_set")
-    date_signed = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True, default=None, help_text=_("date of first meeting GAS-Producer"))
+    date_signed = models.DateField(verbose_name=_('Date signed'), auto_now=False, auto_now_add=False, blank=True, null=True, default=None, help_text=_("date of first meeting GAS-Producer"))
 
     # which Products GAS members can order from Supplier
     stock_set = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
-    order_minimum_amount = CurrencyField(null=True, blank=True)
-    order_delivery_cost = CurrencyField(null=True, blank=True)
+    order_minimum_amount = CurrencyField(verbose_name=_('Order minimum amount'), null=True, blank=True)
+    order_delivery_cost = CurrencyField(verbose_name=_('Order delivery cost'), null=True, blank=True)
     #time needed for the delivery since the GAS issued the order disposition
-    order_deliver_interval = models.TimeField(null=True, blank=True)
+    order_deliver_interval = models.TimeField(verbose_name=_('Order delivery interval'), null=True, blank=True)
     # how much (in percentage) base prices from the Supplier are modified for the GAS
     order_price_percent_update = models.FloatField(null=True, blank=True)
     

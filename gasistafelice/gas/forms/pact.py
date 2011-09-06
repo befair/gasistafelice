@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django import forms
 from django.forms import ValidationError
+from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.gas.models.proxy import GASSupplierSolidalPact
 from gasistafelice.base.models import Person
@@ -8,6 +9,9 @@ from gasistafelice.supplier.models import Supplier
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER
 from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
+
+def today():
+    return datetime.date.today().strftime(settings.DATE_FMT)
 
 
 class BasePactForm(forms.ModelForm):
@@ -17,6 +21,8 @@ class BasePactForm(forms.ModelForm):
 
 class GAS_PactForm(BasePactForm):
     """Form for pact management by a GAS resource"""
+    date_signed = forms.DateField(label=_('Date signed'), required=True, 
+                    help_text=_("date of first meeting GAS - supplier"), widget=admin_widgets.AdminDateWidget, initial=today)
     gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
