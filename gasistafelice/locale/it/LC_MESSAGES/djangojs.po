@@ -62,21 +62,20 @@ msgid "An error occurred while retring the data from server"
 msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
 #: static/nui/blocks/calendar.js:44
-#, fuzzy
 msgid "Target"
-msgstr "Path del target"
+msgstr "Destinazione"
 
 #: static/nui/blocks/calendar.js:45 static/nui/blocks/targets.js:203
 msgid "State"
-msgstr ""
+msgstr "Stato"
 
 #: static/nui/blocks/calendar.js:46 static/nui/blocks/targets2.js:743
 msgid "Node"
-msgstr ""
+msgstr "Nodo"
 
 #: static/nui/blocks/calendar.js:47
 msgid "Interface"
-msgstr ""
+msgstr "Interfaccia"
 
 #: static/nui/blocks/calendar.js:48 static/nui/blocks/states_logack.js:224
 msgid "Description"
@@ -108,22 +107,22 @@ msgstr "Salva centro/zoom"
 
 #: static/nui/blocks/googlemap.js:61
 msgid "Show node names"
-msgstr ""
+msgstr "Mostra i nomi dei nodi"
 
 #: static/nui/blocks/googlemap.js:63
 #, fuzzy
 msgid "Show links"
-msgstr "Mostra log"
+msgstr "Mostra i collegamenti"
 
 #: static/nui/blocks/googlemap.js:65
 #, fuzzy
 msgid "Link size"
-msgstr "Dimensione icone"
+msgstr "Dimensione del collegamento"
 
 #: static/nui/blocks/googlemap.js:69
 #, fuzzy
 msgid "Link bend factor"
-msgstr "Collegato a"
+msgstr "Fattore di curvatura dei link "
 
 #: static/nui/blocks/googlemap.js:73
 msgid "Icon size"
@@ -138,14 +137,13 @@ msgid "remove"
 msgstr "Rimuovi"
 
 #: static/nui/blocks/ifaces.js:130 static/nui/blocks/nodes.js:116
-#, fuzzy
 msgid "There are no ifaces related to this resource."
-msgstr "Non ci sono elementi associati alla risorsa"
+msgstr "Non ci sono interfacce associati alla risorsa"
 
 #: static/nui/blocks/inventory_blk.js:137 static/nui/blocks/measures.js:320
 #: static/nui/blocks/states_logack.js:1258 static/nui/blocks/targets2.js:294
 msgid "total"
-msgstr ""
+msgstr "totale"
 
 #: static/nui/blocks/inventory_blk.js:161
 #: static/nui/blocks/inventory_blk.js:510
@@ -235,11 +233,11 @@ msgstr "deve essere fornito un indirizzo email valido"
 #: static/nui/blocks/inventory_blk.js:350
 #: static/nui/blocks/inventory_blk.js:428
 msgid "Cannot delete requested Data"
-msgstr "non e' possibile cancellare i dati richiesti"
+msgstr "Non e' possibile cancellare i dati richiesti"
 
 #: static/nui/blocks/inventory_blk.js:351
 msgid "the location is referred by the nodes"
-msgstr "la locazione e' riferita dai seguenti nodi"
+msgstr "la locazione è riferita dai seguenti nodi"
 
 #: static/nui/blocks/inventory_blk.js:364
 #: static/nui/blocks/inventory_blk.js:455
@@ -252,7 +250,7 @@ msgstr "l'organizzazione possiede i seguenti nodi"
 
 #: static/nui/blocks/inventory_blk.js:436
 msgid "the organization is served by the following interfaces"
-msgstr "l'organizzazione e' servita dalle seguenti interfacce"
+msgstr "l'organizzazione è servita dalle seguenti interfacce"
 
 #: static/nui/blocks/inventory_blk.js:443
 msgid "the organization manages the following nodes"
@@ -407,26 +405,25 @@ msgstr "Non posso cancellare un insieme di dati vuoto"
 
 #: static/nui/blocks/ipmon_data.js:19
 msgid "Retrieving informations from the device"
-msgstr ""
+msgstr "Sto recuperando informazioni dal dispositivo"
 
 #: static/nui/blocks/measures.js:330
-#, fuzzy
 msgid "Are you sure you want to remove this measure?"
-msgstr "Sei sicuro di voler togliere il target dall'elenco?"
+msgstr "Sei sicuro di voler rimuovere questa misura"
 
 #: static/nui/blocks/measures.js:394
 msgid "Merged graph"
-msgstr ""
+msgstr "Grafico ???"
 
 #: static/nui/blocks/measures.js:425 static/nui/blocks/states_logack.js:1453
 #: static/nui/blocks/targets2.js:329 static/nui/blocks/targets2.js.py:333
 msgid "rows"
-msgstr ""
+msgstr "righe"
 
 #: static/nui/blocks/measures.js:498
 #, fuzzy
 msgid "Merge selected measures"
-msgstr "Cambia transizioni selezionate"
+msgstr "Cambia le misure selezionate"
 
 # msgid  "Time"
 # msgstr "Orario"
@@ -478,14 +475,14 @@ msgstr "Sei sicuro di voler cancellare il report periodico?"
 
 #: static/nui/blocks/reports_list.js:94
 msgid "New report parameters"
-msgstr "Nuovo report: Parametri"
+msgstr "Nuovi parametri per il report"
 
 #
 # REPORTS
 #
 #: static/nui/blocks/reports_list.js:145
 msgid "Do you really want to delete this report?"
-msgstr "Sicuro di voler cancellare il report prodotto?"
+msgstr "Sicuro di voler cancellare questo report?"
 
 #
 # LOGACK
@@ -620,7 +617,7 @@ msgstr "Descrizione"
 
 #: static/nui/blocks/states_logack.js:363
 msgid "Last Change time"
-msgstr "Ultimo var."
+msgstr "Ultima modifica"
 
 #: static/nui/blocks/states_logack.js:364
 msgid "User"
@@ -679,7 +676,7 @@ msgstr "Seleziona transizioni"
 
 #: static/nui/blocks/states_logack.js:608
 msgid "Set visible log transitions"
-msgstr "Seleziona transizioni"
+msgstr "Imposta il registro delle transizioni visibili"
 
 #: static/nui/blocks/states_logack.js:749
 msgid "You must specify a starting date"
@@ -752,7 +749,7 @@ msgstr "Collegato a"
 
 #: static/nui/blocks/targets.js:200 static/nui/blocks/targets2.js:778
 msgid "Last change"
-msgstr "Ultimo var."
+msgstr "Ultima modifica"
 
 #: static/nui/blocks/targets.js:207
 msgid "Acked"
@@ -765,8 +762,8 @@ msgstr "Target dipendenti"
 #: static/nui/blocks/targets.js:227
 msgid "WARNING: some targets are not listed here due to block's configuration"
 msgstr ""
-"ATTENZIONE: dei target non sono visualizzati per via della parametrizzazione "
-"utente"
+"ATTENZIONE: Alcuni target non sono visualizzati per via della configurazione del blocco"
+""
 
 #: static/nui/blocks/targets.js:238 static/nui/blocks/targets2.js:803
 msgid "Show target's timeline"
@@ -827,10 +824,10 @@ msgstr "Non ci sono elementi associati alla risorsa."
 #~ msgstr "Ferma Autorefresh"
 
 #~ msgid "Full screen"
-#~ msgstr "Full screen"
+#~ msgstr "Schermo intero"
 
 #~ msgid "Restore block size"
-#~ msgstr "Ripristina dimensione originale"
+#~ msgstr "Ripristina dimensione del blocco"
 
 #~ msgid "Clear history"
 #~ msgstr "Azzera cronologia"
