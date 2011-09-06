@@ -12,10 +12,10 @@ msgstr ""
 "Last-Translator: Lorenzo Franceschini <lorenzo.franceschini@informaetica."
 "it>\n"
 "Language-Team: Italian <it@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: DOM.py:36
@@ -219,8 +219,8 @@ msgid ""
 "Wrong param '%(wp)s' provided for role %(r)s. Only %(pl)s are relatable to "
 "this role"
 msgstr ""
-"Il parametro '%(wp)s' fornito non è corretto per il ruolo %(r)s. Solo i/gli "
-"%(pl)s sono collegabili a questo ruolo."
+"Il parametro '%(wp)s' fornito non è corretto per il ruolo %(r)s. Solo i/gli %"
+"(pl)s sono collegabili a questo ruolo."
 
 #: auth/exceptions.py:29
 #, python-format
@@ -646,7 +646,7 @@ msgstr "da specificare se è diverso dal luogo di consegna"
 
 #: gas/models/base.py:418
 msgid "Auto populate products"
-msgstr ""
+msgstr "Popola automaticamente i prodotti"
 
 #: gas/models/base.py:418
 msgid ""
@@ -1492,3 +1492,6 @@ msgstr "Profilo per %(user)s"
 
 #~ msgid "Supplier referrer"
 #~ msgstr "Referente fornitore"
+
+#~ msgid "GAS uses only one delivery place"
+#~ msgstr "il GAS usa solo un luogo per le consegne"
