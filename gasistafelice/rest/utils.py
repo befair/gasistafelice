@@ -2,7 +2,7 @@ import os
 
 from gasistafelice.lib import load_symbol
 
-import settings
+from django.conf import settings
 
 #------------------------------------------------------------------------------#
 #                                                                              #
