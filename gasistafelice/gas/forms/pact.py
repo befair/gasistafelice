@@ -56,7 +56,7 @@ class GAS_PactForm(BasePactForm):
 
         gf_fieldsets = [(None, { 
             'fields' : (
-                'supplier', 'date_signed', 
+                'supplier', 'date_signed',  
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
                 'gas_supplier_referrer',
@@ -67,7 +67,9 @@ class GAS_PactForm(BasePactForm):
 
 class Supplier_PactForm(BasePactForm):
     """Form for pact management by a Supplier resource"""
-
+    
+    document = forms.FileField(label=_("Document"), required=False, help_text=_("Document signed by GAS and Supplier"))  
+        
     def __init__(self, request, *args, **kw):
 
         super(Supplier_PactForm, self).__init__(*args, **kw)
@@ -98,7 +100,7 @@ class Supplier_PactForm(BasePactForm):
 
         gf_fieldsets = [(None, { 
             'fields' : [
-                'gas', 'date_signed', 
+                'gas', 'date_signed', 'document',
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
         ]})]
@@ -110,6 +112,7 @@ class EditPactForm(BasePactForm):
 
     Support one GAS_REFERRER_SUPPLIER for each pact"""
 
+    document = forms.FileField(label=_("Document"), required=False, help_text=_("Document signed by GAS and Supplier"))
     gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
@@ -137,7 +140,7 @@ class EditPactForm(BasePactForm):
 
         gf_fieldsets = [(None, { 
             'fields' : (
-                'date_signed', 
+                'date_signed', 'document',
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
                 'gas_supplier_referrer',
