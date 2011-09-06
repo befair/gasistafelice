@@ -21,16 +21,16 @@ class GAS_PactForm(BasePactForm):
 
     def __init__(self, request, *args, **kw):
         super(GAS_PactForm, self).__init__(*args, **kw)
-        self.__gas = request.resource.gas
-        self.fields['gas_supplier_referrer'].queryset = self.__gas.persons
-        des = self.__gas.des
-        self.fields['supplier'].queryset = des.suppliers.exclude(pk__in=[obj.pk for obj in self.__gas.suppliers])
+        self._gas = request.resource.gas
+        self.fields['gas_supplier_referrer'].queryset = self._gas.persons
+        des = self._gas.des
+        self.fields['supplier'].queryset = des.suppliers.exclude(pk__in=[obj.pk for obj in self._gas.suppliers])
 
     def clean(self):
         cleaned_data = super(GAS_PactForm, self).clean()
 
         try:
-            GASSupplierSolidalPact.objects.get(gas=self.__gas, supplier=cleaned_data['supplier'])
+            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
         except GASSupplierSolidalPact.DoesNotExist:
             #ok
             pass
@@ -40,7 +40,7 @@ class GAS_PactForm(BasePactForm):
         return cleaned_data
 
     def save(self):
-        self.instance.gas = self.__gas
+        self.instance.gas = self._gas
         super(GAS_PactForm, self).save()
 
         if self.cleaned_data.get('gas_supplier_referrer'):
@@ -114,14 +114,13 @@ class EditPactForm(BasePactForm):
 
     def __init__(self, request, *args, **kw):
         self.__param_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=kw['instance'])
-        #TODO placeholder seldon-dev DEBUG!
-        raise ValueError(self.__param_role.get_users())
         if self.__param_role.get_users():
             kw['initial'] = kw.get('initial', {}).update({
                 'gas_supplier_referrer' : self.__param_role.get_users()[0].person
             })
         super(EditPactForm, self).__init__(*args, **kw)
-        self.fields['gas_supplier_referrer'].queryset = self.__gas.persons
+        self._gas = request.resource.gas
+        self.fields['gas_supplier_referrer'].queryset = self._gas.persons
 
     def save(self):
         super(EditPactForm, self).save()
