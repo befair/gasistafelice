@@ -3,8 +3,6 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("order_report", "table");
-        this.active_view = "edit_multiple";
-        this.default_view = this.active_view;
     },
 
     action_handler : function(action_el) {
@@ -29,7 +27,6 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     { "bSortable": "false" },
                     { "bSortable": "false" },
                     { "bSortable": "false", "sType": "currency" },
-                    { "bSortable": "false" },
                 ]
             }); 
 

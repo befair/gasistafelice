@@ -357,6 +357,9 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     def product(self):
         return self.gasstock.product
 
+    @property
+    def stock(self):
+        return self.gasstock.stock
     
 class GASMemberOrder(models.Model, PermissionResource):
 

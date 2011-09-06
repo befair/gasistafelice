@@ -55,7 +55,7 @@
 .ui-widget-header { 
 	border: 1px solid #999; 
 	/*background: #d7ecc7 url(images/ui-bg_highlight-hard_55_d7ecc7_1x100.png) 50% 50% repeat-x; */
-	color: #ffffff; 
+	color: #333; 
 	font-weight: bold; 
 }
 .ui-widget-header a { color: #ffffff; }
