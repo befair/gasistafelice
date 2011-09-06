@@ -12,6 +12,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from history.models import HistoricalRecords
 
+from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib.fields import display
 
@@ -131,9 +132,8 @@ class SupplierReferrer(models.Model, PermissionResource):
     def setup_roles(self):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
-        #FIXME: ValueError: Cannot assign "(<Role: SUPPLIER_REFERRER>, False)": "ParamRole.role" must be a "Role" instance.
-        #role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        #role.add_principal(user)     
+        role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
+        role.add_principal(user)     
     
 class Certification(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True) 

@@ -92,7 +92,7 @@ msgstr "un giorno della settimana"
 
 #: DOM.py:154
 msgid "an hour"
-msgstr "un ora"
+msgstr "un'ora"
 
 #: admin/models.py:19
 msgid "GAS membership"
@@ -445,44 +445,39 @@ msgstr "Quando l'ordine verrà aperto"
 
 #: gas/forms/order.py:28 gas/models/order.py:40
 msgid "Date end"
-msgstr ""
+msgstr "Data di chiusura"
 
 #: gas/forms/order.py:29 gas/models/order.py:40
 msgid "when the order will be closed"
 msgstr "Quando l'ordine verrà chiuso"
 
 #: gas/forms/order.py:95 gas/forms/order.py:135
-#, fuzzy
 msgid "Delivery terms"
-msgstr "Consegna"
+msgstr "Condizioni di consegna"
 
 #: gas/forms/order.py:172
-#, fuzzy
 msgid "Delivery on/at"
-msgstr "Consegna"
+msgstr "Consegna c/o"
 
 #: gas/forms/order.py:173
-#, fuzzy
 msgid "Delivery city"
-msgstr "Consegna"
+msgstr "Città di consegna"
 
 #: gas/forms/order.py:174
 msgid "Delivery address or place"
-msgstr ""
+msgstr "Indirizzo o luogo di consegna"
 
 #: gas/forms/order.py:180
-#, fuzzy
 msgid "Withdrawal on/at"
-msgstr "Ritiro"
+msgstr "Ritiro c/o"
 
 #: gas/forms/order.py:181
-#, fuzzy
 msgid "Withdrawal city"
-msgstr "Ritiro"
+msgstr "Città di ritiro"
 
 #: gas/forms/order.py:182
 msgid "Withdrawal address or place"
-msgstr ""
+msgstr "Indirizzo o luogo di ritiro"
 
 #: gas/forms/pact.py:38 gas/forms/pact.py:86
 msgid "Pact between this GAS and this Supplier already exists"
@@ -547,7 +542,7 @@ msgstr "Devi collegare il GAS %s ad un DES"
 
 #: gas/models/base.py:349
 msgid "Default headquarter place must be set"
-msgstr ""
+msgstr "Una sede di default deve essere impostata"
 
 #: gas/models/base.py:377
 msgid ""
@@ -561,11 +556,11 @@ msgstr ""
 msgid ""
 "GASMember can choose to filter order block among one or more orders that "
 "share the next withdrawal appointment"
-msgstr ""
+msgstr "Un gasista può scegliere di filtrare il blocco degli ordini tra uno o più ordini che condividono il prossimo appuntamento di ritiro"
 
 #: gas/models/base.py:387
 msgid "GASMember can select only one open order at a time in order block"
-msgstr ""
+msgstr "Un gasista può selezionare solo un ordine aperto alla volta nel blocco degli ordini"
 
 #: gas/models/base.py:391
 msgid "default closing order day of the week"
@@ -617,13 +612,13 @@ msgstr ""
 
 #: gas/models/base.py:423
 msgid "This GAS doesn't exist anymore or is banned? (from who?)"
-msgstr ""
+msgstr "Questo GAS non esiste più o è stato bandito (da parte di chi ?)"
 
 #: gas/models/base.py:425
 msgid ""
 "if checked, gasmember's orders are automatically confirmed. If not, each "
 "gasmember must confirm by himself his own orders"
-msgstr ""
+msgstr "Se selezionato, gli ordini dei gasisti vengono automaticamente confermati.  Altrimenti, ogni gasista deve confermare manualmente i propri ordini"
 
 #: gas/models/base.py:434 gas/models/base.py:435
 msgid "GAS options"
@@ -644,7 +639,7 @@ msgstr "numero di tessera del GAS"
 
 #: gas/models/base.py:463
 msgid "membership_fee_payed"
-msgstr ""
+msgstr "quota associativa versata"
 
 #: gas/models/base.py:463
 msgid "When was the last the annual quote payment"
@@ -652,7 +647,7 @@ msgstr "Ultimo pagamento della quota associativa"
 
 #: gas/models/base.py:474
 msgid "Account"
-msgstr ""
+msgstr "Conto"
 
 #: gas/models/base.py:482
 #, python-format
@@ -703,26 +698,24 @@ msgstr "Patto tra %(gas)s e %(supplier)s"
 
 #: gas/models/order.py:44
 msgid "Minimum amount"
-msgstr ""
+msgstr "Importo minimo"
 
 #: gas/models/order.py:49
 msgid "products available for the order"
 msgstr "prodotti disponibili in questo ordine"
 
 #: gas/models/order.py:64
-#, fuzzy, python-format
 msgid "close on %(date)s"
-msgstr "Ordini chiusi"
+msgstr "Chiude in data %(date)s"
 
 #: gas/models/order.py:66
-#, fuzzy, python-format
 msgid "closed on %(date)s"
-msgstr "Ordini chiusi"
+msgstr "Chiusa in data %(date)s"
 
 #: gas/models/order.py:70
 #, python-format
 msgid "Order %(gas)s to %(supplier)s (%(state)s)"
-msgstr ""
+msgstr "Ordine dal %(gas)s al fornitore %(supplier)s (%(state)s)"
 
 #: gas/models/order.py:201
 msgid ""
@@ -870,7 +863,7 @@ msgstr "Abilitato dal GAS"
 #: rest/templates/blocks/order/table.xml:5
 #: rest/templates/blocks/stocks/table.xml:5
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: rest/templates/blocks/order/table.xml:8
 #: rest/templates/blocks/stocks/table.xml:8 sanet_users/models.py:150
@@ -938,7 +931,7 @@ msgstr "Crea PDF"
 #: rest/views/blocks/basket.py:162 rest/views/blocks/order_report.py:137
 #, python-format
 msgid "We had some errors<pre>%s</pre>"
-msgstr ""
+msgstr "Si sono verificati alcuni errori<pre>%s</pre>"
 
 #: rest/views/blocks/catalog_list.py:11
 msgid "Lista prodotti supplier/gas in ordine"
@@ -1046,11 +1039,11 @@ msgstr "Proprietario"
 
 #: sanet_users/models.py:154 sanet_users/models.py:198
 msgid "Parent user container"
-msgstr ""
+msgstr "Contenitore utente superiore"
 
 #: sanet_users/models.py:183
 msgid "User container"
-msgstr ""
+msgstr "Contenitore utente"
 
 #: sanet_users/views/__init__.py:179
 msgid "User page"
@@ -1093,284 +1086,280 @@ msgstr "Nome alternativo"
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
 
-#~ msgid "DES administration"
-#~ msgstr "Amministrazione del DES"
-
-#~ msgid "Page not found"
-#~ msgstr "Pagina non trovata"
-
-#~ msgid "We're sorry, but the requested page could not be found."
-#~ msgstr "Siamo spiacenti, ma la pagina richiesta non è stata trovata."
-
-#~ msgid "Home"
-#~ msgstr "Home"
-
-#~ msgid "Server error"
-#~ msgstr "Errore del server"
-
-#~ msgid "Server error (500)"
-#~ msgstr "Errore del server (500)"
-
-#~ msgid "Server Error <em>(500)</em>"
-#~ msgstr "Errore del server <em>(500)<em>"
+msgid "DES administration"
+msgstr "Amministrazione del DES"
+
+msgid "Page not found"
+msgstr "Pagina non trovata"
+
+msgid "We're sorry, but the requested page could not be found."
+msgstr "Siamo spiacenti, ma la pagina richiesta non è stata trovata."
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Server error"
+msgstr "Errore del server"
+
+msgid "Server error (500)"
+msgstr "Errore del server (500)"
+
+msgid "Server Error <em>(500)</em>"
+msgstr "Errore del server <em>(500)<em>"
 
-#~ msgid ""
-#~ "There's been an error. It's been reported to the site administrators via "
-#~ "e-mail and should be fixed shortly. Thanks for your patience."
-#~ msgstr ""
-#~ "Si è verificato un errore. Questo è stato riportato via e-mail "
-#~ "all'amministratore del sito e dovrebbe essere corretto a breve. Grazie "
-#~ "per la pazienza."
+msgid ""
+"There's been an error. It's been reported to the site administrators via "
+"e-mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+"Si è verificato un errore. Questo è stato riportato via e-mail "
+"all'amministratore del sito e dovrebbe essere corretto a breve. Grazie "
+"per la pazienza."
+
+msgid "GAS administration"
+msgstr "amministrazione del GAS"
+
+msgid "Add"
+msgstr "Aggiungi"
+
+msgid "History"
+msgstr "Storia"
+
+msgid "View on site"
+msgstr "Visualizza nel sito"
+
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Per favore correggi l'errore sottostanti."
+msgstr[1] "Per favore correggi gli errori sottostanti."
+
+msgid "Add %(name)s"
+msgstr "Aggiungi %(name)s"
 
-#~ msgid "GAS administration"
-#~ msgstr "amministrazione del GAS"
-
-#~ msgid "Add"
-#~ msgstr "Aggiungi"
-
-#~ msgid "History"
-#~ msgstr "Storia"
-
-#~ msgid "View on site"
-#~ msgstr "Visualizza nel sito"
+msgid "Filter"
+msgstr "Filtro"
+
+msgid "Change password"
+msgstr "Cambia password"
+
+msgid "Enter a new password for the user <strong>%(username)s</strong>."
+msgstr ""
+"Inserisci una nuova password per l'utente <strong>%(username)s<strong>."
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Password (again)"
+msgstr "Password (ancora)"
 
-#~ msgid "Please correct the error below."
-#~ msgid_plural "Please correct the errors below."
-#~ msgstr[0] "Per favore correggi l'errore sottostanti."
-#~ msgstr[1] "Per favore correggi gli errori sottostanti."
-
-#~ msgid "Add %(name)s"
-#~ msgstr "Aggiungi %(name)s"
+msgid "Enter the same password as above, for verification."
+msgstr "Inserisci la stessa password di sopra, per verifica."
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would result in "
+"deleting related objects, but your account doesn't have permission to "
+"delete the following types of objects:"
+msgstr ""
+"Eliminare il %(object_name)s '%(escaped_object)s' eliminerebbe anchegli "
+"oggetti ad esso collegati, ma il tuo account non ha i permessi necessari "
+"per eliminare questi tipi di oggetti:"
 
-#~ msgid "Filter"
-#~ msgstr "Filtro"
+msgid ""
+"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s"
+"\"? All of the following related items will be deleted:"
+msgstr ""
+"Sei sicuro di voler eliminare il %(object_name)s \"%(escaped_object)s\"? "
+"Tutti gli oggetti ad esso collegati verranno eliminati:"
 
-#~ msgid "Change password"
-#~ msgstr "Cambia password"
-
-#~ msgid "Enter a new password for the user <strong>%(username)s</strong>."
-#~ msgstr ""
-#~ "Inserisci una nuova password per l'utente <strong>%(username)s<strong>."
-
-#~ msgid "Password"
-#~ msgstr "Password"
-
-#~ msgid "Password (again)"
-#~ msgstr "Password (ancora)"
+msgid ""
+"Deleting the %(object_name)s would result in deleting related objects, "
+"but your account doesn't have permission to delete the following types of "
+"objects:"
+msgstr ""
+"Eliminare il %(object_name)s eliminerebbe anche gli oggetti ad esso "
+"collegati, ma il tuo account non ha i permessi necessari per eliminare "
+"questi tipi di oggetti:"
 
-#~ msgid "Enter the same password as above, for verification."
-#~ msgstr "Inserisci la stessa password di sopra, per verifica."
+msgid ""
+"Are you sure you want to delete the selected %(object_name)s objects? All "
+"of the following objects and their related items will be deleted:"
+msgstr ""
+"Sei sicuro di voler eliminare il %(object_name)s ?Tutti gli oggetti ad "
+"esso collegati verranno eliminati:"
 
-#~ msgid ""
-#~ "Deleting the %(object_name)s '%(escaped_object)s' would result in "
-#~ "deleting related objects, but your account doesn't have permission to "
-#~ "delete the following types of objects:"
-#~ msgstr ""
-#~ "Eliminare il %(object_name)s '%(escaped_object)s' eliminerebbe anchegli "
-#~ "oggetti ad esso collegati, ma il tuo account non ha i permessi necessari "
-#~ "per eliminarequesti tipi di oggetti:"
+msgid "Models available in the %(name)s application."
+msgstr "Modelli disponibili nell'applicazione %(name)s"
 
-#~ msgid ""
-#~ "Are you sure you want to delete the %(object_name)s \"%(escaped_object)s"
-#~ "\"? All of the following related items will be deleted:"
-#~ msgstr ""
-#~ "Sei sicuro di voler eliminare il %(object_name)s \"%(escaped_object)s\"? "
-#~ "Tutti gli oggetti ad esso collegati verranno eliminati:"
+msgid "%(name)s"
+msgstr "%(name)s"
 
-#~ msgid ""
-#~ "Deleting the %(object_name)s would result in deleting related objects, "
-#~ "but your account doesn't have permission to delete the following types of "
-#~ "objects:"
-#~ msgstr ""
-#~ "Eliminare il %(object_name)s eliminerebbe anche gli oggetti ad esso "
-#~ "collegati, ma il tuo account non ha i permessi necessari per eliminare "
-#~ "questi tipi di oggetti:"
+msgid "Change"
+msgstr "Modifica"
 
-#~ msgid ""
-#~ "Are you sure you want to delete the selected %(object_name)s objects? All "
-#~ "of the following objects and their related items will be deleted:"
-#~ msgstr ""
-#~ "Sei sicuro di voler eliminare il %(object_name)s ?Tutti gli oggetti ad "
-#~ "esso collegati verranno eliminati:"
+msgid "You don't have permission to edit anything."
+msgstr "Non sei autorizzato a modificare nulla."
 
-#~ msgid "Models available in the %(name)s application."
-#~ msgstr "Modelli disponibili nell'applicazione %(name)s"
+msgid "Recent Actions"
+msgstr "Azioni recenti"
 
-#~ msgid "%(name)s"
-#~ msgstr "%(name)s"
+msgid "My Actions"
+msgstr "Le mie azioni"
 
-#~ msgid "Change"
-#~ msgstr "Modifica"
+msgid "None available"
+msgstr "Non disponibile"
 
-#~ msgid "You don't have permission to edit anything."
-#~ msgstr "Non sei autorizzato a modificare nulla."
+msgid "Unknown content"
+msgstr "Contenuto sconosciuto"
 
-#~ msgid "Recent Actions"
-#~ msgstr "Azioni recenti"
+msgid ""
+"Something's wrong with your database installation. Make sure the "
+"appropriate database tables have been created, and make sure the database "
+"is readable by the appropriate user."
+msgstr ""
+"Qualcosa non va con l'installazione del tuo database. Controlla che le "
+"giuste tabelle siano state create, e assicurati che il database sia "
+"leggibile dai giusti utenti."
 
-#~ msgid "My Actions"
-#~ msgstr "Le mie azioni"
+msgid "Username:"
+msgstr "Nome utente:"
 
-#, fuzzy
-#~ msgid "None available"
-#~ msgstr "Non disponibile"
+msgid "Password:"
+msgstr "Password:"
 
-#~ msgid "Unknown content"
-#~ msgstr "Contenuto sconosciuto"
+msgid "Log in"
+msgstr "Accedi"
 
-#~ msgid ""
-#~ "Something's wrong with your database installation. Make sure the "
-#~ "appropriate database tables have been created, and make sure the database "
-#~ "is readable by the appropriate user."
-#~ msgstr ""
-#~ "Qualcosa non va con l'installazione del tuo database. Controlla che le "
-#~ "giuste tabelle siano state create, e assicurati che il database sia "
-#~ "leggibile dai giusti utenti."
+msgid "Date/time"
+msgstr "Data/ora"
 
-#~ msgid "Username:"
-#~ msgstr "Nome utente:"
+msgid "Action"
+msgstr "Azione"
 
-#~ msgid "Password:"
-#~ msgstr "Password:"
+msgid ""
+"This object doesn't have a change history. It probably wasn't added via "
+"this admin site."
+msgstr ""
+"Questo oggetto non sembra avere uno storico delle modifiche. "
+"Probabilmente non è stato aggiunto attraverso questo sito."
 
-#~ msgid "Log in"
-#~ msgstr "Accedi"
+msgid "Target's notes"
+msgstr "Note dell'obiettivo"
 
-#~ msgid "Date/time"
-#~ msgstr "Data/ora"
+msgid "Node's notes"
+msgstr "Note del nodo"
 
-#~ msgid "Action"
-#~ msgstr "Azione"
+msgid "Home page"
+msgstr "Pagina utente"
 
-#~ msgid ""
-#~ "This object doesn't have a change history. It probably wasn't added via "
-#~ "this admin site."
-#~ msgstr ""
-#~ "Questo oggetto non sembra avere uno storico delle modifiche. "
-#~ "Probabilmente non è stato aggiunto attraverso questo sito."
+msgid "Role"
+msgstr "Ruolo"
 
-#~ msgid "Target's notes"
-#~ msgstr "Note dell'obiettivo"
+msgid "Logout"
+msgstr "Esci"
 
-#~ msgid "Node's notes"
-#~ msgstr "Note del nodo"
+msgid "Minimize block"
+msgstr "Minimizza il blocco"
 
-#, fuzzy
-#~ msgid "Home page"
-#~ msgstr "pagina utente"
+msgid "Search"
+msgstr "Cerca"
 
-#~ msgid "Role"
-#~ msgstr "Ruolo"
+msgid "Enter search keyword here"
+msgstr "Inserisci le parole chiave qui"
 
-#~ msgid "Logout"
-#~ msgstr "Esci"
+msgid "Reset search"
+msgstr "Azzera la ricerca"
 
-#~ msgid "Minimize block"
-#~ msgstr "Minimizza il blocco"
+msgid "Options"
+msgstr "Opzioni"
 
-#~ msgid "Search"
-#~ msgstr "Cerca"
+msgid "GAS name"
+msgstr "Nome del GAS"
 
-#~ msgid "Enter search keyword here"
-#~ msgstr "Inserisci le parole chiave qui"
+msgid "Supplier name"
+msgstr "Nome del fornitore"
 
-#~ msgid "Reset search"
-#~ msgstr "Azzera la ricerca"
+msgid "Refresh history"
+msgstr "Aggiorna la cronologia"
 
-#~ msgid "Options"
-#~ msgstr "Opzioni"
+msgid "Refresh block now"
+msgstr "Aggiorna il blocco adesso"
 
-#~ msgid "GAS name"
-#~ msgstr "Nome del GAS"
+msgid "Set to full screen"
+msgstr "Imposta a tutto schermo"
 
-#~ msgid "Supplier name"
-#~ msgstr "Nome del fornitore"
+msgid "Select the resource type"
+msgstr "Seleziona il tipo di risorsa"
 
-#~ msgid "Refresh history"
-#~ msgstr "Aggiorna la cronologia"
+msgid "Site"
+msgstr "Sito"
 
-#~ msgid "Refresh block now"
-#~ msgstr "Aggiorna il blocco adesso"
+msgid "Container"
+msgstr "Contenitore"
 
-#~ msgid "Set to full screen"
-#~ msgstr "Imposta a tutto schermo"
+msgid "Node"
+msgstr "Nodo"
 
-#~ msgid "Select the resource type"
-#~ msgstr "Seleziona il tipo di risorsa"
+msgid "Interface"
+msgstr "Interfaccia"
 
-#~ msgid "Site"
-#~ msgstr "Sito"
+msgid "Target"
+msgstr "Obiettivo"
 
-#~ msgid "Container"
-#~ msgstr "Contenitore"
+msgid "Measure"
+msgstr "Misura"
 
-#~ msgid "Node"
-#~ msgstr "Nodo"
+msgid "Select the resource"
+msgstr "Seleziona la risorsa"
 
-#~ msgid "Interface"
-#~ msgstr "Interfaccia"
+msgid "Select the data block type"
+msgstr "Seleziona il tipo di blocco della data"
 
-#~ msgid "Target"
-#~ msgstr "Obiettivo"
+msgid "Insert User Name and Password"
+msgstr "Inserisci Nome Utente e Password"
 
-#~ msgid "Measure"
-#~ msgstr "Misura"
+msgid "Username"
+msgstr "Nome utente"
 
-#~ msgid "Select the resource"
-#~ msgstr "Seleziona la risorsa"
+msgid "Remember me"
+msgstr "Ricordati di me"
 
-#~ msgid "Select the data block type"
-#~ msgstr "Seleziona il tipo di blocco della data"
+msgid "Login"
+msgstr "Accedi"
 
-#~ msgid "Insert User Name and Password"
-#~ msgstr "Inserisci Nome Utente e Password"
+msgid "Old password:"
+msgstr "Vecchia password"
 
-#~ msgid "Username"
-#~ msgstr "Nome utente"
+msgid "New password:"
+msgstr "Nuova password"
 
-#~ msgid "Remember me"
-#~ msgstr "Ricordati di me"
+msgid "Confirm password:"
+msgstr "Conferma password"
 
-#~ msgid "Login"
-#~ msgstr "Accedi"
+msgid "Change my password"
+msgstr "Cambia password"
 
-#~ msgid "Old password:"
-#~ msgstr "Vecchia password"
+msgid "Password change successful"
+msgstr "Password modificata con successo"
 
-#~ msgid "New password:"
-#~ msgstr "Nuova password"
+msgid "Your password was changed."
+msgstr "La tua password è stata cambiata"
 
-#~ msgid "Confirm password:"
-#~ msgstr "Conferma password"
+msgid ""
+"GAS views open orders by supplier. If disabled, views open order by "
+"delivery appointment"
+msgstr ""
+"Il GAS visualizza gli ordini aperti in ordine di fornitore. Se "
+"disattivato, li visualizza in ordine di appuntamento di consegna"
 
-#~ msgid "Change my password"
-#~ msgstr "Cambia password"
+msgid "referrers"
+msgstr "referenti"
 
-#~ msgid "Password change successful"
-#~ msgstr "Password modificata con successo"
+msgid "Order stocks"
+msgstr "Stocks dell'ordine"
 
-#~ msgid "Your password was changed."
-#~ msgstr "La tua password è stata cambiata"
+msgid "Solidal pact list"
+msgstr "Lista dei patti di solidarietà"
 
-#~ msgid ""
-#~ "GAS views open orders by supplier. If disabled, views open order by "
-#~ "delivery appointment"
-#~ msgstr ""
-#~ "Il GAS visualizza gli ordini aperti in ordine di fornitore. Se "
-#~ "disattivato, li visualizza in ordine di appuntamento di consegna"
+msgid "Supplier referrer"
+msgstr "Referente fornitore"
 
-#, fuzzy
-#~ msgid "referrers"
-#~ msgstr "referenti"
-
-#~ msgid "Order stocks"
-#~ msgstr "Stocks dell'ordine"
-
-#~ msgid "Solidal pact list"
-#~ msgstr "Lista dei patti di solidarietà"
-
-#~ msgid "Supplier referrer"
-#~ msgstr "Referente fornitore"
-
-#~ msgid "GAS uses only one delivery place"
-#~ msgstr "il GAS usa solo un luogo per le consegne"
+msgid "GAS uses only one delivery place"
+msgstr "il GAS usa solo un luogo per le consegne"

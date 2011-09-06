@@ -198,10 +198,6 @@ class GAS(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
-        rv = (
-              # initial roles setup goes here
-              )
-        return rv
 
     def save(self, *args, **kw):
 
@@ -346,7 +342,7 @@ class GAS(models.Model, PermissionResource):
     def clean(self):
 
         if self.headquarter is None:
-           raise ValidationError(_("Default headquarter place must be set"))
+            raise ValidationError(_("Default headquarter place must be set"))
 
         return super(GAS, self).clean()
 

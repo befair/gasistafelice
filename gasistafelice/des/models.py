@@ -185,33 +185,33 @@ class DES(Site, Resource):
 
     @property
     def tot_gas(self):
-        from gas.models import GAS
+        from gasistafelice.gas.models import GAS
         return GAS.objects.count()
 
     @property
     def tot_gasmembers(self):
-        from gas.models import GASMember
+        from gasistafelice.gas.models import GASMember
         return GASMember.objects.count()
 
     @property
     def tot_suppliers(self):
-        from supplier.models import Supplier
+        from gasistafelice.supplier.models import Supplier
         return Supplier.objects.count()
 
     @property
     def tot_orders(self):
-        from gas.models import GASSupplierOrder
+        from gasistafelice.gas.models import GASSupplierOrder
         return GASSupplierOrder.objects.count()
 
     @property
     def tot_pacts(self):
-        from gas.models import GASSupplierSolidalPact
+        from gasistafelice.gas.models import GASSupplierSolidalPact
         return GASSupplierSolidalPact.objects.count()
 
     @property
     def tot_money(self):
         # TODO improve performace: update-on-signal?
-        from gas.models import GASMemberOrder
+        from gasistafelice.gas.models import GASMemberOrder
         rv = 0
         for gmo in GASMemberOrder.objects.all():
             rv += gmo.ordered_price

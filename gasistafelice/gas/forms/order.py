@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
+from gasistafelice.gas.models import GASMemberOrder
 from gasistafelice.supplier.models import Supplier
 
 from django.forms.formsets import formset_factory
@@ -10,7 +11,7 @@ from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
-from gasistafelice.gas.models.order import Delivery, Withdrawal
+from gasistafelice.gas.models import Delivery, Withdrawal
 from gasistafelice.base.models import Place, Person
 from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 from gasistafelice.auth import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY

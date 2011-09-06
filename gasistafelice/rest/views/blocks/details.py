@@ -19,17 +19,20 @@ from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.lib.fields.display import ResourceList
+from gasistafelice.lib.fields import display
+
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
+from gasistafelice.base.workflows_utils import get_allowed_transitions, do_transition
 
 from gasistafelice.auth import EDIT
 
 from gasistafelice.gas.forms import order as order_forms
 from gasistafelice.gas.forms.pact import EditPactForm
+
 from workflows.utils import get_allowed_transitions, do_transition
 from workflows.models import Transition
 
@@ -234,7 +237,7 @@ class Block(AbstractBlock):
             element_value = getattr(res, display_field.name)
             if element_value != None:
 
-                if isinstance(display_field, ResourceList):
+                if isinstance(display_field, display.ResourceList):
                     element_type  = 'resourcelist'
                 elif isinstance(element_value, Resource):
                     element_type = 'resource'
