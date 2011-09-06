@@ -7,6 +7,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
     rendering_table_post_load_handler: function() {
 
+        var block_obj = this;
         // Init dataTables
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
@@ -27,6 +28,11 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                     "sInfo": gettext("Showing _START_ to _END_ of _TOTAL_ records"),
                     "sInfoEmpty": gettext("Showing 0 to 0 of 0 records"),
                     "sInfoFiltered": gettext("(filtered from _MAX_ total records)")
+                },
+                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    /* Modify Django management form info */
+                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
                 }
             }); 
 
