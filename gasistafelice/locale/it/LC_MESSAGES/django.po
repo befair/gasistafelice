@@ -5,11 +5,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: GASISTA-FELICE-0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-09-06 06:46+0200\n"
 "PO-Revision-Date: 2011-08-31 07:30+0200\n"
-"Last-Translator: Riccardo Serafini <tapion@pdp.linux.it>\n"
+"Last-Translator: Lorenzo Franceschini <lorenzo.franceschini@informaetica.it>\n"
 "Language-Team: Italian <it@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -706,11 +706,11 @@ msgstr "prodotti disponibili in questo ordine"
 
 #: gas/models/order.py:64
 msgid "close on %(date)s"
-msgstr "Chiude in data %(date)s"
+msgstr "chiude in data %(date)s"
 
 #: gas/models/order.py:66
 msgid "closed on %(date)s"
-msgstr "Chiusa in data %(date)s"
+msgstr "chiuso in data %(date)s"
 
 #: gas/models/order.py:70
 #, python-format
@@ -832,7 +832,7 @@ msgstr "Dati di configurazione"
 #: rest/templates/blocks/order_report/table.xml:5
 #: rest/templates/blocks/stocks/table.xml:7
 msgid "Product"
-msgstr "Prodotti"
+msgstr "Prodotto"
 
 #: rest/templates/blocks/basket/table.xml:8
 msgid "Amount"
@@ -846,9 +846,8 @@ msgid "Price"
 msgstr "Prezzo"
 
 #: rest/templates/blocks/basket/table.xml:10
-#, fuzzy
 msgid "TOT Price"
-msgstr "TOT prezzo"
+msgstr "TOT Prezzo"
 
 #: rest/templates/blocks/basket/table.xml:14
 #: rest/templates/blocks/order/table.xml:15
@@ -871,14 +870,12 @@ msgid "Description"
 msgstr "Descrizione"
 
 #: rest/templates/blocks/order/table.xml:10
-#, fuzzy
 msgid "Ordered amount"
-msgstr "TOT quantità"
+msgstr "Quantità ordinata"
 
 #: rest/templates/blocks/order/table.xml:11
-#, fuzzy
 msgid "Ordered total"
-msgstr "Report dell'ordine"
+msgstr "Totale ordinato"
 
 #: rest/templates/blocks/order_report/table.xml:7
 msgid "TOT GAS members"
