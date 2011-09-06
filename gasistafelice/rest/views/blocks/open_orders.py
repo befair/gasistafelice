@@ -28,7 +28,7 @@ class Block(BlockWithList):
 
         user_actions = []
 
-        if request.user.has_perm(EDIT, obj=request.resource.pact):
+        if request.user.has_perm(CREATE, obj=GASSupplierOrder):
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

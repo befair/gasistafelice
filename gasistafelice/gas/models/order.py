@@ -106,6 +106,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()       
     
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, **kwargs):
+        # TODO FIXME AFTER 6
+        # Needs to answer "yes but with some restrictions" ?!?
+        
+        return user.username == 'gm14'
+ 
     #-------------------------------------------------------------------------------#
 
     @property

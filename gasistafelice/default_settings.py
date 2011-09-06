@@ -172,6 +172,10 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Prodotti',
         'blocks': ['stocks'],
     },{
+        'name' : 'orders',
+        'descr': 'Ordini',
+        'blocks': ['open_orders', 'closed_orders'],
+    },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
         'blocks': ['details', 'categories'],
