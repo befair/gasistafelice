@@ -377,9 +377,9 @@ class GASConfig(models.Model, PermissionResource):
 #        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
 #    )
 
-    order_show_only_next_delivery = models.BooleanField(default=False, 
+    order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False, 
         help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
-    order_show_only_one_at_a_time = models.BooleanField(default=False, 
+    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Show only one order at a time'), default=False, 
         help_text=_("GASMember can select only one open order at a time in order block"))
 
     #TODO: see ticket #65
@@ -393,32 +393,32 @@ class GASConfig(models.Model, PermissionResource):
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
     #TODO placeholder domthu: Default time to be set to 00:00
-    default_close_time = models.TimeField(blank=True, null=True,
+    default_close_time = models.TimeField(verbose_name=_('Default close time'), blank=True, null=True,
         help_text=_("default order closing hour and minutes")
     )
   
-    default_delivery_time = models.TimeField(blank=True, null=True,
+    default_delivery_time = models.TimeField(verbose_name=_('Default delivery day time'), blank=True, null=True,
         help_text=_("default delivery closing hour and minutes")
     )
 
-    can_change_withdrawal_place_on_each_order = models.BooleanField(default=False, 
+    can_change_withdrawal_place_on_each_order = models.BooleanField(verbose_name=_('Can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
-    can_change_delivery_place_on_each_order = models.BooleanField(default=False, 
+    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, 
         help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
     # to follow headquarter value if it changes.
     # Provide delivery place and withdrawal place properties to get the right value
-    default_withdrawal_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
-    default_delivery_place = models.ForeignKey(Place, blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
+    default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
+    default_delivery_place = models.ForeignKey(Place, verbose_name=_('Default delivery place'), blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
 
-    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
-    is_active = models.BooleanField(default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
+    auto_populate_products = models.BooleanField(verbose_name=_('Auto populate products'), default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
+    is_active = models.BooleanField(verbose_name=_('Is active'), default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
     use_scheduler = models.BooleanField(default=False)
-    gasmember_auto_confirm_order = models.BooleanField(default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
+    gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
 
     #TODO:is_suspended = models.BooleanField(default=False, help_text=_("The GAS is not available (hollidays, closed). The motor use this flag to operate or not some automatisms"))
     #TODO:notify_days = models.PositiveIntegerField(null=True, default=0, help_text=_("The number of days that the system will notify an event (product changed). If set to 0 the notify system is off."))
@@ -820,7 +820,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
-    display_fields = ()
+    display_fields = (
+        default_withdrawal_place,
+        display.ResourceList(name="gas_supplier_referrers_persons", verbose_name=_("Referrers"))
+    )
 
     class Meta:
         app_label = 'gas'
@@ -899,6 +902,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def pact(self):
         return self
     
+    @property
+    def persons(self):
+        return self.gas.persons | self.supplier.persons
+
+    @property
+    def gas_supplier_referrers_persons(self):
+        return self.persons.filter(user__in=self.gas_supplier_referrers)
+
     #-- Permission management --#
     
     # Table-level CREATE permission    

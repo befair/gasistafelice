@@ -109,6 +109,10 @@ class Supplier(models.Model, PermissionResource):
         #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
         return ProductCategory.objects.filter(product_set__in=self.products)
 
+    @property
+    def persons(self):
+        return self.referrer_set.all()
+
     display_fields = (
         seat, vat_number, website, flavour, 
         display.ResourceList(name="referrers", verbose_name=_("People")),
