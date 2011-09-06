@@ -188,7 +188,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 self._msg.append('Deleting gas member %s(%s) email %s ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 gmo.delete()
             self._msg.append('Deleted gas members orders(%s) for total of %s' % (count, total))
-            GASSupplierOrderProduct.objects.delete(gsop)
+            gsop.delete()
 
 
     def setup_roles(self):

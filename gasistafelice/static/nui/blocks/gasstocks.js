@@ -9,6 +9,7 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
 
     rendering_table_post_load_handler: function() {
 
+        var block_obj = this;
         // Init dataTables
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
@@ -23,7 +24,12 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                     null,
                     null,
                     null
-                ]
+                ],
+                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    /* Modify Django management form info */
+                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
+                }
             }); 
 
         return this._super();

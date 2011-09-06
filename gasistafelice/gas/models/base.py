@@ -747,7 +747,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         #TODO FIXME AFTER 6
         print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
         from gasistafelice.gas.models.order import GASSupplierOrder
-        return GASSupplierOrder.objects.filter(pact__in=self.pact)
+        return GASSupplierOrder.objects.filter(pact=self.pact)
 
 
 class GASSupplierSolidalPact(models.Model, PermissionResource):
@@ -807,7 +807,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         help_text=_("withdrawal time agreement")
     )
 
-    default_withdrawal_place = models.ForeignKey(Place, related_name="pact_default_withdrawal_place_set", null=True, blank=True)
+    default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), related_name="pact_default_withdrawal_place_set", null=True, blank=True)
 
     # Field to reflect
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
@@ -822,8 +822,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
+        display.ResourceList(name="gas_supplier_referrers_persons", verbose_name=_("Referrers")),
+        order_minimum_amount, order_delivery_cost, order_deliver_interval,
         default_withdrawal_place,
-        display.ResourceList(name="gas_supplier_referrers_persons", verbose_name=_("Referrers"))
     )
 
     class Meta:
