@@ -342,7 +342,7 @@ class GAS(models.Model, PermissionResource):
     def clean(self):
 
         if self.headquarter is None:
-           raise ValidationError(_("Default headquarter place must be set"))
+            raise ValidationError(_("Default headquarter place must be set"))
 
         return super(GAS, self).clean()
 

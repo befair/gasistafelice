@@ -10,7 +10,8 @@ from history.models import HistoricalRecords
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
 from gasistafelice.lib.fields.models import CurrencyField
-from gasistafelice.lib import fields, ClassProperty
+from gasistafelice.lib.fields import display
+from gasistafelice.lib import ClassProperty
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
@@ -149,7 +150,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        gsop, create = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
+        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
         if created:
             self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
         else:
@@ -245,7 +246,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def stocks(self):
-        from supplier.models import SupplierStock
+        from gasistafelice.supplier.models import SupplierStock
         stocks_pk=map(lambda x: x[0], self.gasstock_set.values('stock'))
         return SupplierStock.objects.filter(pk__in=stocks_pk)
 

@@ -7,20 +7,11 @@ from django.contrib.sessions.backends.file import SessionStore
 from django.core.handlers.wsgi import WSGIRequest
 from django.test.client import Client
 
-# workflows import
-import permissions.utils
-from gasistafelice.workflows.utils import set_workflow, get_allowed_transitions
-from gasistafelice.workflows.models import State
-from gasistafelice.workflows.models import StateInheritanceBlock
-from gasistafelice.workflows.models import StatePermissionRelation
-from gasistafelice.workflows.models import StateObjectRelation
-from gasistafelice.workflows.models import Transition
-from gasistafelice.workflows.models import Workflow
-from gasistafelice.workflows.models import WorkflowModelRelation
-from gasistafelice.workflows.models import WorkflowObjectRelation
-from gasistafelice.workflows.models import WorkflowPermissionRelation
+from workflows.models import State, Transition, Workflow
+from workflows.utils import set_workflow
 
 from gasistafelice.gas.models import GAS
+from gasistafelice.base.workflows_utils import get_allowed_transitions
 
 class GetAllowedTransitionsTestCase(TestCase):
     """

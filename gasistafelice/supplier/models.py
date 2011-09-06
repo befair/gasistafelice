@@ -12,6 +12,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from history.models import HistoricalRecords
 
+from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib.fields import display
 

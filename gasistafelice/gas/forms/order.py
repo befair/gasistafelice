@@ -11,7 +11,7 @@ from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
-from gasistafelice.gas.models.order import Delivery, Withdrawal
+from gasistafelice.gas.models import Delivery, Withdrawal
 from gasistafelice.base.models import Place, Person
 from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 from gasistafelice.auth import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY
