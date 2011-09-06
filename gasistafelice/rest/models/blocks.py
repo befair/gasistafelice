@@ -74,46 +74,46 @@ class BlockConfiguration(Model):
         
         db_tablespace = REST_TABLE_SPACE
         
-def remove_displayed_blocks_from_userpage_by_user(user, printout=None):
-    
-    from users.models import can_access_to_resource
-    from state.models import type_model_d
-    key_column = {
-        'site'         :'name',
-        'iface'        :'name',
-        'target'       :'expanded_title',
-        'measure'      :'path',
-        'node'         :'name',
-        'container'    :'name',
-        'usercontainer':'name',
-    }    
-    
-    
-    for b in BlockConfiguration.objects.filter(user=user):
-        
-        resource_class = type_model_d[ b.resource_type ]
-        r = resource_class.objects.get(id=int(b.resource_id))
-        
-        if not can_access_to_resource(user, r):
-            if printout:
-                printout("removing block %s from %s's userpage" % (b, user))
-            b.delete()
-            
-def remove_displayed_blocks_from_userpage_by_resource(resource, printout=None):
-    
-    from users.models import can_access_to_resource
-    
-    resource_type = resource.__class__.__name__.lower()
-    resource_id   = resource.id
-
-    for b in BlockConfiguration.objects.filter(resource_type=resource_type, resource_id=str(resource_id) ):
-        
-        user = b.user
-        
-        if not can_access_to_resource(user, resource):
-            if printout:
-                printout("removing block %s from %s's userpage" % (b, user))
-            b.delete()
-
-
-
+#def remove_displayed_blocks_from_userpage_by_user(user, printout=None):
+#    
+#    from users.models import can_access_to_resource
+#    from state.models import type_model_d
+#    key_column = {
+#        'site'         :'name',
+#        'iface'        :'name',
+#        'target'       :'expanded_title',
+#        'measure'      :'path',
+#        'node'         :'name',
+#        'container'    :'name',
+#        'usercontainer':'name',
+#    }    
+#    
+#    
+#    for b in BlockConfiguration.objects.filter(user=user):
+#        
+#        resource_class = type_model_d[ b.resource_type ]
+#        r = resource_class.objects.get(id=int(b.resource_id))
+#        
+#        if not can_access_to_resource(user, r):
+#            if printout:
+#                printout("removing block %s from %s's userpage" % (b, user))
+#            b.delete()
+#            
+#def remove_displayed_blocks_from_userpage_by_resource(resource, printout=None):
+#    
+#    from users.models import can_access_to_resource
+#    
+#    resource_type = resource.__class__.__name__.lower()
+#    resource_id   = resource.id
+#
+#    for b in BlockConfiguration.objects.filter(resource_type=resource_type, resource_id=str(resource_id) ):
+#        
+#        user = b.user
+#        
+#        if not can_access_to_resource(user, resource):
+#            if printout:
+#                printout("removing block %s from %s's userpage" % (b, user))
+#            b.delete()
+#
+#
+#
