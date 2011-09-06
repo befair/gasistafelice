@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 17:45+0200\n"
+"POT-Creation-Date: 2011-09-06 06:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,19 +85,19 @@ msgstr "Descrizione"
 msgid "Add note"
 msgstr "Aggiungi nota"
 
-#: static/nui/blocks/details.js:330
+#: static/nui/blocks/details.js:335
 #: static/nui/blocks/periodicreports_list.js:29
 #: static/nui/blocks/reports_list.js:35 static/nui/blocks/states_logack.js:155
 #: static/nui/blocks/states_logack.js:557
-#: static/nui/scripts/jquery.rees.js:484
+#: static/nui/scripts/jquery.rees.js:553
 msgid "Confirm"
 msgstr "Conferma"
 
-#: static/nui/blocks/details.js:340
+#: static/nui/blocks/details.js:345
 msgid "New note"
 msgstr "Nuova nota"
 
-#: static/nui/blocks/details.js:364
+#: static/nui/blocks/details.js:369
 msgid "Do you really want to delete this note?"
 msgstr "Sei sicuro di voler cancellare la nota?"
 
@@ -451,6 +451,26 @@ msgstr "Rimuovi"
 msgid "There aren't measures linked to this resource"
 msgstr "Non ci sono misure associate alla risorsa"
 
+#: static/nui/blocks/order.js:72 static/nui/blocks/stocks.js:24
+msgid "Display _MENU_ records per page"
+msgstr ""
+
+#: static/nui/blocks/order.js:73 static/nui/blocks/stocks.js:25
+msgid "Nothing found"
+msgstr ""
+
+#: static/nui/blocks/order.js:74 static/nui/blocks/stocks.js:26
+msgid "Showing _START_ to _END_ of _TOTAL_ records"
+msgstr ""
+
+#: static/nui/blocks/order.js:75 static/nui/blocks/stocks.js:27
+msgid "Showing 0 to 0 of 0 records"
+msgstr ""
+
+#: static/nui/blocks/order.js:76 static/nui/blocks/stocks.js:28
+msgid "(filtered from _MAX_ total records)"
+msgstr ""
+
 #: static/nui/blocks/periodicreports_list.js:38
 #: static/nui/blocks/periodicreports_list.js:83
 #: static/nui/blocks/reports_list.js:44 static/nui/blocks/reports_list.js:88
@@ -769,6 +789,19 @@ msgstr ""
 msgid "Show target's timeline"
 msgstr "Espandi storia target"
 
+#: static/nui/blocks/targets2.js:843
+#, fuzzy
+msgid "There are notes on this target"
+msgstr "Non ci sono elementi associati alla risorsa"
+
+#: static/nui/blocks/targets2.js:975
+msgid "It seems the reachability problem is indipendent from other nodes"
+msgstr ""
+
+#: static/nui/blocks/targets2.js:979
+msgid "It seems the reachability problem depends from other nodes"
+msgstr ""
+
 #: static/nui/scripts/jquery.labs.xmpprender.js:47
 msgid "This block does not allow customization."
 msgstr "Questo blocco non consente personalizzazioni."
@@ -784,15 +817,15 @@ msgstr "Testo"
 msgid "Please provide a name for this resource before rendering it"
 msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
 
-#: static/nui/scripts/jquery.rees.js:111
+#: static/nui/scripts/jquery.rees.js:125 static/nui/scripts/jquery.rees.js:178
 msgid "An error occurred while retrieving the data from server ("
 msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
-#: static/nui/scripts/jquery.rees.js:326 static/nui/scripts/jquery.rees.js:328
+#: static/nui/scripts/jquery.rees.js:295
 msgid "Submit"
 msgstr "Invia"
 
-#: static/nui/scripts/jquery.rees.js:408
+#: static/nui/scripts/jquery.rees.js:477
 msgid "There are no elements related to this resource."
 msgstr "Non ci sono elementi associati alla risorsa."
 

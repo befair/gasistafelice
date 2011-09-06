@@ -348,16 +348,16 @@ class GAS(models.Model, PermissionResource):
 
 #-----------------------------------------------------------------------------------------------------
 
+def get_supplier_order_default():
+    return Workflow.objects.get(name="SupplierOrderDefault")
+
+def get_gasmember_order_default():
+    return Workflow.objects.get(name="GASMemberOrderDefault")
+
 class GASConfig(models.Model, PermissionResource):
     """
     Encapsulate here gas settings and configuration facilities
     """
-
-    def get_supplier_order_default():
-        return Workflow.objects.get(name="SupplierOrderDefault")
-
-    def get_gasmember_order_default():
-        return Workflow.objects.get(name="GASMemberOrderDefault")
 
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
