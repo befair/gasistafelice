@@ -9,8 +9,8 @@
         "{{el.supplier|escapejs}}",
         "{{el.product|escapejs}}",
         "{{el.amount|escapejs}}",
-        "&#8364; {{ el.price|floatformat:2|escapejs }}",
-        {# "{% filter escapejs %}{% bool_img stock.amount_available %}{% endfilter %}", #}
+        "&#8364; {{ el.price|escapejs }}",
+        "&#8364; {{ el.tot_price|escapejs }}",
 
     ]
     {% if not forloop.last %}

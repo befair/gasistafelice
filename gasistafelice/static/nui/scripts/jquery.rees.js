@@ -358,7 +358,8 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
         var block_instance = this;
         if (this.active_view == "edit_multiple") {
-            $('#' + this.block_box_id + '-form').submit( function() {
+            var form_id = this.block_box_id + "-form";
+            $('#' + form_id).submit( function() {
 
                 var form_el = $(this);
                 var options = {

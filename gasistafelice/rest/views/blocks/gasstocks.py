@@ -7,7 +7,7 @@ from gasistafelice.auth import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms import GASSupplierStockFormSet
+from gasistafelice.gas.forms.stocks import GASSupplierStockFormSet
 from django.template.defaultfilters import floatformat
 
 #------------------------------------------------------------------------------#

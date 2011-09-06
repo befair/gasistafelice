@@ -6,6 +6,6 @@
     "aaData":[
         {% block table_rows %} {% endblock %}
     ],
-    "gf_moreData": {{ moreData|default:'{}' }} 
+    "gf_moreData": {% block moreData %}{{ moreData|default:'{}' }}{% endblock %} 
 }
 

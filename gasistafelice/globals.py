@@ -13,8 +13,6 @@ type_model_d = {
 	'category' : ProductCategory,
 	'unit' : ProductMU,
 	'pact' : GASSupplierSolidalPact,
-	'delivery' : Delivery,
-	'withdrawal' : Withdrawal,
 	'account' : Account,
 	'transact' : Movement,
 }

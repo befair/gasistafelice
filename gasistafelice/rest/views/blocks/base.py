@@ -4,6 +4,7 @@ import types
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.admin import helpers
+from django.utils.safestring import mark_safe
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import transaction
@@ -111,6 +112,7 @@ class BlockWithList(AbstractBlock):
             'has_change_permission': False,
             'show_delete' : False,
             'errors': helpers.AdminErrorList(form, []),
+            'media': mark_safe(adminForm.media),
         }
 
         return render_to_context_response(request, self.TEMPLATE_ADD_FORM, context)

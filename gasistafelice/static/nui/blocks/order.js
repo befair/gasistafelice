@@ -18,6 +18,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     rendering_table_post_load_handler: function() {
 
+        var block_obj = this;
         // Init dataTables
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'bPaginate': false, 
@@ -85,6 +86,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
                     $(nCells[1]).html('&#8364; ' + iTotal);
+
+                    /* Modify Django management form info */
+                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
                 }
             }); 
 

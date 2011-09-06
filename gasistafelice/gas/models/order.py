@@ -8,16 +8,20 @@ from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_s
 from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
+
 from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib import fields, ClassProperty
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
+from gasistafelice.base.models import Person
 from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
-from datetime import datetime
+from django.conf import settings
+
+from datetime import datetime, timedelta
 
 #from django.utils.encoding import force_unicode
 
@@ -32,17 +36,17 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
-    date_start = models.DateTimeField(default=datetime.now, help_text=_("when the order will be opened"))
-    date_end = models.DateTimeField(help_text=_("when the order will be closed"), null=True, blank=True)
+    date_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
+    date_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', related_name="order_set", null=True, blank=True)
+    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
-    order_minimum_amount = CurrencyField(null=True, blank=True)
+    order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', related_name="order_set", null=True, blank=True)
+    withdrawal = models.ForeignKey('Withdrawal', verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True)
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
-    gasstock_set = models.ManyToManyField(GASSupplierStock, help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     #TODO: Notify system
 
@@ -50,19 +54,24 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
-    display_fields = (
-        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
-        date_start, date_end, order_minimum_amount, delivery, withdrawal,
-    )
-
     class Meta:
         app_label = 'gas'
         
     def __unicode__(self):
-        if not self.date_end is None:
-            return "Order gas %s to %s (close on %s)" % (self.gas, self.supplier, '{0:%Y%m%d}'.format(self.date_end))
+        if self.date_end is not None:
+            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.date_end)
+            if self.is_active():
+                state = _("close on %(date)s") % { 'date' : fmt_date }
+            else:
+                state = _("closed on %(date)s") % { 'date' : fmt_date }
         else:
-            return "Order gas %s to %s (opened)" % (self.gas, self.supplier)
+            state = _("open")
+
+        return _("Order %(gas)s to %(supplier)s (%(state)s)") % {
+                    'gas' : self.gas,
+                    'supplier' : self.supplier,
+                    'state' : state
+        }
 
     def __init__(self, *args, **kw):
         super(GASSupplierOrder, self).__init__(*args, **kw)
@@ -96,8 +105,19 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()       
     
-
     #-------------------------------------------------------------------------------#
+
+    @property
+    def delivery_referrer_persons(self):
+        if self.delivery:
+            return Person.objects.filter(user__in=self.delivery.referrers_users)
+        return Person.objects.none()
+
+    @property
+    def withdrawal_referrer_persons(self):
+        if self.withdrawal:
+            return Person.objects.filter(user__in=self.withdrawal.referrers_users)
+        return Person.objects.none()
 
     def set_default_stock_set(self):
         '''
@@ -115,6 +135,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         for s in stocks:
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+
     @property
     def message(self):
         """getter property for internal message from model."""
@@ -243,6 +264,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
         created = False
         if not self.pk:
             created = True
+            # Create default withdrawal
+            if self.date_end and not self.withdrawal:
+                #TODO: check gasconfig for weekday
+                w = Withdrawal(
+                        date=self.date_end + timedelta(7), 
+                        place=self.gas.config.withdrawal_place
+                )
+                w.save()
+                self.withdrawal = w
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -253,6 +283,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if created:
             self.set_default_stock_set()
+
+    display_fields = (
+        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
+        date_start, date_end, order_minimum_amount, 
+        delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
+        withdrawal, display.ResourceList(name="withdrawal_referrer_persons", verbose_name=_("Withdrawal referrer")),
+    )
 
 #-------------------------------------------------------------------------------
 
@@ -320,6 +357,9 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     def product(self):
         return self.gasstock.product
 
+    @property
+    def stock(self):
+        return self.gasstock.stock
     
 class GASMemberOrder(models.Model, PermissionResource):
 
@@ -329,7 +369,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     """
 
-    purchaser = models.ForeignKey(GASMember)
+    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set")
     ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set")
     # price of the Product at order time
     ordered_price = CurrencyField(null=True, blank=True)
@@ -354,8 +394,16 @@ class GASMemberOrder(models.Model, PermissionResource):
         self.is_confirmed = True
 
     @property
+    def tot_price(self):
+        return self.ordered_price*self.ordered_amount
+
+    @property
     def product(self):
         return self.ordered_product.stock.product
+
+    @property
+    def supplier(self):
+        return self.ordered_product.supplier
 
     @property
     def email(self):
@@ -493,10 +541,13 @@ class Withdrawal(Appointment, PermissionResource):
     """
     
     place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
+    #TODO FIXME AFTER 6th of september: 
+    # * date should be Date field
+    # * start_time and end_time (with no defaults) must be managed in forms
     date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
     # a Withdrawal appointment usually span a time interval
-    start_time = models.TimeField(help_text=_("when the withdrawal will start"))
-    end_time = models.TimeField(help_text=_("when the withdrawal will end"))
+    start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
+    end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
     
@@ -508,7 +559,12 @@ class Withdrawal(Appointment, PermissionResource):
         verbose_name_plural = _('wihtdrawals')
     
     def __unicode__(self):
-        return "%From (start_time)s to (end_time)s of (date)s at %(place)s" % {'start_time':self.start_time, 'end_time':self.end_time, 'date':self.date, 'place':self.place}
+        return "At %(place)s on %(date)s from %(start_time)s to %(end_time)s" % {
+                    'start_time':self.start_time.strftime("%H:%M"), 
+                    'end_time':self.end_time.strftime("%H:%M"), 
+                    'date':self.date.strftime("%d-%m-%Y"), 
+                    'place':self.place
+        }
     
     @property
     def gas_set(self):
@@ -526,7 +582,7 @@ class Withdrawal(Appointment, PermissionResource):
         Return all users being referrers for this wihtdrawal appointment.
         """
         # retrieve 'wihtdrawal referrer' parametric role for this order
-        pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, wihtdrawal=self)
+        pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self)
         # retrieve all Users having this role
         return pr.get_users()       
 

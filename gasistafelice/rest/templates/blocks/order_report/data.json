@@ -1,0 +1,20 @@
+{% extends "blocks/base/edit_multiple.json" %}
+
+{% block table_rows %}
+    {% for row in records %}
+    [
+
+        "{{row.product|escapejs}}",
+        "&#8364; {{ row.price|escapejs }}",
+        "{{row.tot_gasmembers|escapejs}}",
+        "{{row.tot_amount|escapejs}}",
+        "&#8364; {{ row.tot_price|escapejs }}",
+
+    ]
+    {% if not forloop.last %}
+        ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+

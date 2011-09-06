@@ -8,7 +8,7 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GASMemberOrder
-from gasistafelice.gas.forms import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
 from django.template.defaultfilters import floatformat
 
 #------------------------------------------------------------------------------#
@@ -114,19 +114,29 @@ class Block(BlockSSDataTables):
         # Store mapping between GSSOP-id and neededs info: formset_index and ordered_total
         gmo_info = { }
 
-        for i,el in enumerate(gmos):
+        gmo_lint = GASMemberOrder()
+
+        for i,el in enumerate(querySet):
+
+            try:
+                #TODO: to be improved in performance
+                gmo = el.gasmember_order_set.get(
+                        purchaser=self.request.resource.gasmember
+                )
+            except GASMemberOrder.DoesNotExist:
+                gmo=gmo_lint
 
             key_prefix = 'form-%d' % i
             data.update({
-               '%s-id' % key_prefix : el.pk,
-               '%s-ordered_amount' % key_prefix : el.ordered_amount,
-               '%s-ordered_price' % key_prefix : el.ordered_price, #displayed as hiddend field
-               '%s-gssop_id' % key_prefix : el.ordered_product.pk, #displayed as hiddend field
+               '%s-id' % key_prefix : gmo.pk,
+               '%s-ordered_amount' % key_prefix : gmo.ordered_amount or 0,
+               '%s-ordered_price' % key_prefix : el.gasstock.price, #displayed as hiddend field
+               '%s-gssop_id' % key_prefix : el.pk, #displayed as hiddend field
             })
 
-            gmo_info[el.ordered_product.pk] = {
+            gmo_info[el.pk] = {
                 'formset_index' : i,
-                'ordered_total' : el.ordered_product.order_price*el.ordered_amount, # This is the total computed NOW (with ordered_product.price)
+                'ordered_total' : (el.gasstock.price or 0)*(gmo.ordered_amount or 0), # This is the total computed NOW (with ordered_product.price)
             }
 
 
@@ -153,6 +163,7 @@ class Block(BlockSSDataTables):
                             'step' : el.gasstock.order_step or 1,
                             'minimum_amount' : el.gasstock.order_minimum_amount or 1,
             }
+
             records.append({
                'supplier' : el.supplier,
                'product' : el.product,
@@ -160,9 +171,18 @@ class Block(BlockSSDataTables):
                'price' : floatformat(el.gasstock.price, 2),
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
                'ordered_total' : total,
-               'id' : "%s %s" % (form['id'], form['gssop_id'])
+               'id' : "%s %s %s" % (form['id'], form['gssop_id'], form['ordered_price'])
             })
 
         return formset, records, {}
+
+#TODO FIXME AFTER 6: understand how to parte gf_moreData!
+#[ data["form-INITIAL_FORMS"], data["form-TOTAL_FORMS"]]
+#{
+#            "1" : "2", "2" : "3"
+#            "form_TOTAL_FORMS"  : '1', #data["form-TOTAL_FORMS"], 
+#            "form_INITIAL_FORMS": '2', #data["form-INITIAL_FORMS"],
+#            "form_MAX_NUM_FORMS": '3', #data["form-MAX_NUM_FORMS"],
+#        }
 
 
