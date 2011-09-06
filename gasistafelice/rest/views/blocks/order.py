@@ -8,7 +8,7 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GASMemberOrder
-from gasistafelice.gas.forms import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
 from django.template.defaultfilters import floatformat
 
 #------------------------------------------------------------------------------#

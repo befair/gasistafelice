@@ -113,7 +113,7 @@ class GASConfigAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
     fieldsets = ((_("Configuration"), {
-        'fields' : ('can_change_price', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active', 'use_scheduler'),
+        'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active', 'use_scheduler'),
     }),
     )
 
@@ -279,21 +279,8 @@ class SupplierStockAdmin(admin.ModelAdmin):
     price_pretty.short_description = "price"
 
 
-class GASSupplierOrderForm(forms.ModelForm):
-
-    class Meta:
-        model = gas_models.GASSupplierOrder
-
-    def clean_address(self):
-        if not self.cleaned_data["name"]:
-            if not self.cleaned_data["address"]:
-                raise forms.ValidationError("Name field and Address field cannot be empty at the same time. Please set at least one of them.")
-                
-        return self.cleaned_data["address"]
-
 
 class GASSupplierOrderAdmin(admin.ModelAdmin):
-    form = GASSupplierOrderForm
     fieldsets = ((None,
             { 'fields' : (
                 'pact',
@@ -303,27 +290,6 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
               )
             }),
     )
-    #exclude = ('withdrawal',)
-    
-    def get_form(self, request, obj=None, **kwargs):
-        
-        if request.user.is_superuser:
-            pass
-        elif 1: #TODO request.user.has_perm(PERM)
-
-            if request.user.person.gasmember_set.count() == 1:
-                # Ovverride form class
-                orig_form = self.__class__.form
-                default_gas = gas_models.GAS.objects.filter(gasmember__in=[request.user.person])[0]
-                class ReferrerMeta(orig_form.Meta):
-                    widgets = { 'gas' : forms.widgets.TextInput(attrs={ 'value' : default_gas}) }
-                    fields = ('supplier', 'date_start', 'date_end', 'delivery', 'withdrawal')
-                attrs = { 'Meta' : ReferrerMeta }
-                gas_referrer_form = type(orig_form.__name__ + "Referrer", (orig_form,), attrs)
-                self.form = gas_referrer_form
-
-        return super(GASSupplierOrderAdmin, self).get_form(request, obj, **kwargs)
-        
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
@@ -341,7 +307,7 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
     def queryset(self, request):
         return super(GASSupplierOrderAdmin, self).queryset(request)
 
-    inlines = [GASSupplierOrderProductInline, ]
+    #inlines = [GASSupplierOrderProductInline, ]
     
 class GASSupplierOrderProductAdmin(admin.ModelAdmin):
     pass

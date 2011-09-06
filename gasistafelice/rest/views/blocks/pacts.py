@@ -4,7 +4,7 @@ from django.core import urlresolvers
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.auth import CREATE
 from gasistafelice.gas.models.base import GASSupplierSolidalPact
-from gasistafelice.gas.forms import GAS_PactForm, Supplier_PactForm
+from gasistafelice.gas.forms.pact import GAS_PactForm, Supplier_PactForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #

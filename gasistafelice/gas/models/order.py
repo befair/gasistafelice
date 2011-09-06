@@ -9,17 +9,19 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 from gasistafelice.base.fields import CurrencyField
-from gasistafelice.lib import fields, ClassProperty
+from gasistafelice.lib import ClassProperty
+from gasistafelice.lib.fields import display
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
+from gasistafelice.base.models import Person
 from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
 
 from django.conf import settings
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 #from django.utils.encoding import force_unicode
 
@@ -52,11 +54,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
-    display_fields = (
-        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
-        date_start, date_end, order_minimum_amount, delivery, withdrawal,
-    )
-
     class Meta:
         app_label = 'gas'
         
@@ -67,6 +64,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 state = _("close on %(date)s") % { 'date' : fmt_date }
             else:
                 state = _("closed on %(date)s") % { 'date' : fmt_date }
+        else:
+            state = _("open")
 
         return _("Order %(gas)s to %(supplier)s (%(state)s)") % {
                     'gas' : self.gas,
@@ -106,8 +105,19 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()       
     
-
     #-------------------------------------------------------------------------------#
+
+    @property
+    def delivery_referrer_persons(self):
+        if self.delivery:
+            return Person.objects.filter(user__in=self.delivery.referrers_users)
+        return Person.objects.none()
+
+    @property
+    def withdrawal_referrer_persons(self):
+        if self.withdrawal:
+            return Person.objects.filter(user__in=self.withdrawal.referrers_users)
+        return Person.objects.none()
 
     def set_default_stock_set(self):
         '''
@@ -125,6 +135,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         for s in stocks:
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+
     @property
     def message(self):
         """getter property for internal message from model."""
@@ -253,6 +264,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
         created = False
         if not self.pk:
             created = True
+            # Create default withdrawal
+            if self.date_end and not self.withdrawal:
+                #TODO: check gasconfig for weekday
+                w = Withdrawal(
+                        date=self.date_end + timedelta(7), 
+                        place=self.gas.config.withdrawal_place
+                )
+                w.save()
+                self.withdrawal = w
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -263,6 +283,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if created:
             self.set_default_stock_set()
+
+    display_fields = (
+        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
+        date_start, date_end, order_minimum_amount, 
+        delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
+        withdrawal, display.ResourceList(name="withdrawal_referrer_persons", verbose_name=_("Withdrawal referrer")),
+    )
 
 #-------------------------------------------------------------------------------
 
@@ -503,10 +530,13 @@ class Withdrawal(Appointment, PermissionResource):
     """
     
     place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
+    #TODO FIXME AFTER 6th of september: 
+    # * date should be Date field
+    # * start_time and end_time (with no defaults) must be managed in forms
     date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
     # a Withdrawal appointment usually span a time interval
-    start_time = models.TimeField(help_text=_("when the withdrawal will start"))
-    end_time = models.TimeField(help_text=_("when the withdrawal will end"))
+    start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
+    end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
     # GAS referrers for this Withdrawal appointment  
     referrers = models.ManyToManyField(GASMember)
     
@@ -518,7 +548,12 @@ class Withdrawal(Appointment, PermissionResource):
         verbose_name_plural = _('wihtdrawals')
     
     def __unicode__(self):
-        return "%From (start_time)s to (end_time)s of (date)s at %(place)s" % {'start_time':self.start_time, 'end_time':self.end_time, 'date':self.date, 'place':self.place}
+        return "At %(place)s on %(date)s from %(start_time)s to %(end_time)s" % {
+                    'start_time':self.start_time.strftime("%H:%M"), 
+                    'end_time':self.end_time.strftime("%H:%M"), 
+                    'date':self.date.strftime("%d-%m-%Y"), 
+                    'place':self.place
+        }
     
     @property
     def gas_set(self):
@@ -536,7 +571,7 @@ class Withdrawal(Appointment, PermissionResource):
         Return all users being referrers for this wihtdrawal appointment.
         """
         # retrieve 'wihtdrawal referrer' parametric role for this order
-        pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, wihtdrawal=self)
+        pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self)
         # retrieve all Users having this role
         return pr.get_users()       
 

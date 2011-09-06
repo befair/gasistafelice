@@ -10,12 +10,12 @@ from gasistafelice.auth import GAS_REFERRER_SUPPLIER
 from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
 
 
-class Base_PactForm(forms.ModelForm):
+class BasePactForm(forms.ModelForm):
         pass
 
 #-------------------------------------------------------------------------------
 
-class GAS_PactForm(Base_PactForm):
+class GAS_PactForm(BasePactForm):
     """Form for pact management by a GAS resource"""
     gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
 
@@ -65,7 +65,7 @@ class GAS_PactForm(Base_PactForm):
 
 #-------------------------------------------------------------------------------
 
-class Supplier_PactForm(Base_PactForm):
+class Supplier_PactForm(BasePactForm):
     """Form for pact management by a Supplier resource"""
 
     def __init__(self, request, *args, **kw):
@@ -97,15 +97,15 @@ class Supplier_PactForm(Base_PactForm):
         fields = ('gas', 'date_signed', 'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval')
 
         gf_fieldsets = [(None, { 
-            'fields' : (
+            'fields' : [
                 'gas', 'date_signed', 
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
-        )})]
+        ]})]
     
 #-------------------------------------------------------------------------------
 
-class EDIT_PactForm(Base_PactForm):
+class EditPactForm(BasePactForm):
     """Form for pact editing.
 
     Support one GAS_REFERRER_SUPPLIER for each pact"""
@@ -120,11 +120,11 @@ class EDIT_PactForm(Base_PactForm):
             kw['initial'] = kw.get('initial', {}).update({
                 'gas_supplier_referrer' : self.__param_role.get_users()[0].person
             })
-        super(EDIT_PactForm, self).__init__(*args, **kw)
+        super(EditPactForm, self).__init__(*args, **kw)
         self.fields['gas_supplier_referrer'].queryset = self.__gas.persons
 
     def save(self):
-        super(EDIT_PactForm, self).save()
+        super(EditPactForm, self).save()
         
         #TODO placeholder seldon-dev. Replace GAS_SUPPLIER_REFERRER
         #In add stage was: PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['gas_supplier_referrer'].user)

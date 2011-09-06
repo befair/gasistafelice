@@ -157,7 +157,7 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                     ";
         */
         resource_element = "\
-                    <a class='ctx_enabled resource @@resource_type@@ @@resource_status@@' \
+                    <a class='ctx_enabled resource @@resource_type@@ @@resource_status@@ inline' \
                        sanet_urn='@@sanet_urn@@' \
                        href='#rest/@@resource_type@@/@@resource_id@@/'>@@resource_descr@@</a> \
                     \
@@ -181,8 +181,13 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
             }
             if (val_type=='email') {
                 val  = '<a href="mailto:' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
-            }
-            else if (val_type == 'resourcelist') {
+            } else if (val_type == 'resource') {
+                
+                var res = $(val_obj.children()[0]);
+                res = new jQuery.Resource(res.attr('type')+'/'+res.attr('id'), res.text());
+                var val = res.render();
+                
+            } else if (val_type == 'resourcelist') {
                 
                 var val = '';
                 var html = '-';
