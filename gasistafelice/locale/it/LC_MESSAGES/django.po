@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-06 06:46+0200\n"
+"POT-Creation-Date: 2011-09-06 12:49+0200\n"
 "PO-Revision-Date: 2011-08-31 07:30+0200\n"
 "Last-Translator: Riccardo Serafini <tapion@pdp.linux.it>\n"
 "Language-Team: Italian <it@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: DOM.py:36
@@ -119,6 +119,11 @@ msgstr "Ciao %s"
 msgid "Say hello to gas members"
 msgstr "Saluta i gasisti"
 
+#: admin/templates/admin/base_site.html:5
+#: admin/templates/admin/base_site.html:12
+msgid "DES administration"
+msgstr "Amministrazione del DES"
+
 #: admin/templatetags/admin_tags.py:19 rest/views/blocks/open_orders.py:16
 msgid "Open orders"
 msgstr "Ordini aperti"
@@ -131,9 +136,8 @@ msgstr "Prodotti ordinati"
 msgid "Nobody"
 msgstr "Nessuno"
 
-#: auth/__init__.py:19 auth/models.py:93 gas/forms/order.py:94
-#: rest/templates/blocks/basket/table.xml:6
-#: rest/templates/blocks/order/table.xml:6
+#: auth/__init__.py:19 auth/models.py:93 gas/forms/order.py:95
+#: rest/templates/html/index.html:2035
 msgid "Supplier"
 msgstr "Fornitore"
 
@@ -185,7 +189,7 @@ msgstr "Elenca"
 msgid "Create"
 msgstr "Crea"
 
-#: auth/__init__.py:68 rest/views/blocks/details.py:89
+#: auth/__init__.py:68 rest/views/blocks/details.py:92
 #: rest/views/blocks/stocks.py:48
 msgid "Edit"
 msgstr "Modifica"
@@ -195,6 +199,7 @@ msgid "Edit multiple"
 msgstr "Modifica multipla"
 
 #: auth/__init__.py:70
+#: gas_admin/templates/gas_admin/delete_confirmation.html:10
 msgid "Delete"
 msgstr "Cancella"
 
@@ -213,8 +218,8 @@ msgid ""
 "Wrong param '%(wp)s' provided for role %(r)s. Only %(pl)s are relatable to "
 "this role"
 msgstr ""
-"Il parametro '%(wp)s' fornito non è corretto per il ruolo %(r)s. Solo i/gli "
-"%(pl)s sono collegabili a questo ruolo."
+"Il parametro '%(wp)s' fornito non è corretto per il ruolo %(r)s. Solo i/gli %"
+"(pl)s sono collegabili a questo ruolo."
 
 #: auth/exceptions.py:29
 #, python-format
@@ -226,16 +231,16 @@ msgstr "La specifica %(s)s è errata per il ruolo %(r)s"
 msgid "GAS"
 msgstr "GAS"
 
-#: auth/models.py:94 rest/templates/blocks/basket/table.xml:5
+#: auth/models.py:94 rest/templates/html/index.html:2039
 #: rest/views/blocks/order.py:21
 msgid "Order"
 msgstr "Ordine"
 
-#: auth/models.py:95 gas/models/order.py:42
+#: auth/models.py:95 gas/models/order.py:43
 msgid "Delivery"
 msgstr "Consegna"
 
-#: auth/models.py:96 gas/models/order.py:46
+#: auth/models.py:96 gas/models/order.py:47
 msgid "Withdrawal"
 msgstr "Ritiro"
 
@@ -371,7 +376,7 @@ msgstr "Gasisti"
 msgid "Suppliers"
 msgstr "Fornitori"
 
-#: des/models.py:52 supplier/models.py:114
+#: des/models.py:52 supplier/models.py:115
 msgid "Pacts"
 msgstr "Patti"
 
@@ -411,7 +416,7 @@ msgstr "variabile d'ambiente"
 msgid "environment variables"
 msgstr "variabili d'ambiente"
 
-#: gas/const.py:4 gas/models/order.py:68
+#: gas/const.py:4 gas/models/order.py:69
 msgid "open"
 msgstr "aperto"
 
@@ -435,47 +440,47 @@ msgstr "consegnato"
 msgid "ultimated"
 msgstr "completato"
 
-#: gas/forms/order.py:26 gas/models/order.py:39
+#: gas/forms/order.py:27 gas/models/order.py:40
 msgid "Date start"
 msgstr ""
 
-#: gas/forms/order.py:27 gas/models/order.py:39
+#: gas/forms/order.py:28 gas/models/order.py:40
 msgid "when the order will be opened"
 msgstr "Quando l'ordine verrà aperto"
 
-#: gas/forms/order.py:28 gas/models/order.py:40
+#: gas/forms/order.py:29 gas/models/order.py:41
 msgid "Date end"
 msgstr "Data di chiusura"
 
-#: gas/forms/order.py:29 gas/models/order.py:40
+#: gas/forms/order.py:30 gas/models/order.py:41
 msgid "when the order will be closed"
 msgstr "Quando l'ordine verrà chiuso"
 
-#: gas/forms/order.py:95 gas/forms/order.py:135
+#: gas/forms/order.py:96 gas/forms/order.py:136
 msgid "Delivery terms"
 msgstr "Condizioni di consegna"
 
-#: gas/forms/order.py:172
+#: gas/forms/order.py:173
 msgid "Delivery on/at"
 msgstr "Consegna c/o"
 
-#: gas/forms/order.py:173
+#: gas/forms/order.py:174
 msgid "Delivery city"
 msgstr "Città di consegna"
 
-#: gas/forms/order.py:174
+#: gas/forms/order.py:175
 msgid "Delivery address or place"
 msgstr "Indirizzo o luogo di consegna"
 
-#: gas/forms/order.py:180
+#: gas/forms/order.py:181
 msgid "Withdrawal on/at"
 msgstr "Ritiro c/o"
 
-#: gas/forms/order.py:181
+#: gas/forms/order.py:182
 msgid "Withdrawal city"
 msgstr "Città di ritiro"
 
-#: gas/forms/order.py:182
+#: gas/forms/order.py:183
 msgid "Withdrawal address or place"
 msgstr "Indirizzo o luogo di ritiro"
 
@@ -531,20 +536,20 @@ msgstr "Codice Fiscale"
 msgid "Email president"
 msgstr "Indirizzo e-mail del presidente"
 
-#: gas/models/base.py:87 gas/models/base.py:473
+#: gas/models/base.py:87 gas/models/base.py:469
 msgid "City"
 msgstr "Città"
 
-#: gas/models/base.py:229
+#: gas/models/base.py:225
 #, python-format
 msgid "You have to bind GAS %s to a DES"
 msgstr "Devi collegare il GAS %s ad un DES"
 
-#: gas/models/base.py:349
+#: gas/models/base.py:345
 msgid "Default headquarter place must be set"
 msgstr "Una sede di default deve essere impostata"
 
-#: gas/models/base.py:377
+#: gas/models/base.py:373
 msgid ""
 "GAS can change supplier products price (i.e. to hold some funds for the GAS "
 "itself)"
@@ -552,33 +557,37 @@ msgstr ""
 "I GAS possomo modifcare i prezzi dei prodotti praticati dai fornitori (ad. "
 "es. per finanziare l'attività del GAS)"
 
-#: gas/models/base.py:385
+#: gas/models/base.py:381
 msgid ""
 "GASMember can choose to filter order block among one or more orders that "
 "share the next withdrawal appointment"
-msgstr "Un gasista può scegliere di filtrare il blocco degli ordini tra uno o più ordini che condividono il prossimo appuntamento di ritiro"
+msgstr ""
+"Un gasista può scegliere di filtrare il blocco degli ordini tra uno o più "
+"ordini che condividono il prossimo appuntamento di ritiro"
+
+#: gas/models/base.py:383
+msgid "GASMember can select only one open order at a time in order block"
+msgstr ""
+"Un gasista può selezionare solo un ordine aperto alla volta nel blocco degli "
+"ordini"
 
 #: gas/models/base.py:387
-msgid "GASMember can select only one open order at a time in order block"
-msgstr "Un gasista può selezionare solo un ordine aperto alla volta nel blocco degli ordini"
-
-#: gas/models/base.py:391
 msgid "default closing order day of the week"
 msgstr "giorno della settimana in cui solitamente si chiudono gli ordini"
 
-#: gas/models/base.py:395
+#: gas/models/base.py:391
 msgid "default delivery day of the week"
 msgstr "giorno della settimana in cui solitamente si consegnano gli ordini"
 
-#: gas/models/base.py:401
+#: gas/models/base.py:397
 msgid "default order closing hour and minutes"
 msgstr "ora e minuto in cui solitamente si chiudono gli ordini"
 
-#: gas/models/base.py:405
+#: gas/models/base.py:401
 msgid "default delivery closing hour and minutes"
 msgstr "ora e minuto in cui di solito si chiudono le consegne"
 
-#: gas/models/base.py:409
+#: gas/models/base.py:405
 msgid ""
 "If False, GAS uses only one withdrawal place that is the default or if not "
 "set it is the GAS headquarter"
@@ -586,7 +595,7 @@ msgstr ""
 "se Falso, il GAS usa solo un luogo di ritiro che è quello predefinito, "
 "altrimenti se non è definito usa la sede del GAS"
 
-#: gas/models/base.py:413
+#: gas/models/base.py:409
 msgid ""
 "If False, GAS uses only one delivery place that is the default or if not set "
 "it is the GAS headquarter"
@@ -594,15 +603,15 @@ msgstr ""
 "se Falso, il GAS usa solo un luogo di consegna che è quello predefinito, "
 "altrimenti se non è definito usa la sede del GAS"
 
-#: gas/models/base.py:419
+#: gas/models/base.py:415
 msgid "to specify if different from headquarter"
 msgstr "da specificare se è diverso dalla sede"
 
-#: gas/models/base.py:420
+#: gas/models/base.py:416
 msgid "to specify if different from delivery place"
 msgstr "da specificare se è diverso dal luogo di consegna"
 
-#: gas/models/base.py:422
+#: gas/models/base.py:418
 msgid ""
 "automatic selection of all products bound to a supplier when a relation with "
 "the GAS is activated"
@@ -610,80 +619,82 @@ msgstr ""
 "selezione automatica di tutti i prodotti legati ad un fornitore quando una "
 "relazione con il GAS è attiva."
 
-#: gas/models/base.py:423
+#: gas/models/base.py:419
 msgid "This GAS doesn't exist anymore or is banned? (from who?)"
 msgstr "Questo GAS non esiste più o è stato bandito (da parte di chi ?)"
 
-#: gas/models/base.py:425
+#: gas/models/base.py:421
 msgid ""
 "if checked, gasmember's orders are automatically confirmed. If not, each "
 "gasmember must confirm by himself his own orders"
-msgstr "Se selezionato, gli ordini dei gasisti vengono automaticamente confermati.  Altrimenti, ogni gasista deve confermare manualmente i propri ordini"
+msgstr ""
+"Se selezionato, gli ordini dei gasisti vengono automaticamente confermati.  "
+"Altrimenti, ogni gasista deve confermare manualmente i propri ordini"
 
-#: gas/models/base.py:434 gas/models/base.py:435
+#: gas/models/base.py:430 gas/models/base.py:431
 msgid "GAS options"
 msgstr "opzioni del GAS"
 
-#: gas/models/base.py:439
+#: gas/models/base.py:435
 #, python-format
 msgid "Configuration for GAS \"%s\""
 msgstr "Configurazione per il GAS \"%s\""
 
-#: gas/models/base.py:460
+#: gas/models/base.py:456
 msgid "Card number"
 msgstr "numero di tessera"
 
-#: gas/models/base.py:460
+#: gas/models/base.py:456
 msgid "GAS card number"
 msgstr "numero di tessera del GAS"
 
-#: gas/models/base.py:463
+#: gas/models/base.py:459
 msgid "membership_fee_payed"
 msgstr "quota associativa versata"
 
-#: gas/models/base.py:463
+#: gas/models/base.py:459
 msgid "When was the last the annual quote payment"
 msgstr "Ultimo pagamento della quota associativa"
 
-#: gas/models/base.py:474
+#: gas/models/base.py:470
 msgid "Account"
 msgstr "Conto"
 
-#: gas/models/base.py:482
+#: gas/models/base.py:478
 #, python-format
 msgid "%(person)s in GAS \"%(gas)s\""
 msgstr "%(person)s del GAS %(gas)s"
 
-#: gas/models/base.py:523
+#: gas/models/base.py:519
 #, python-format
 msgid "%(id_in_gas)s - %(gas_member)s"
 msgstr "%(id_in_gas)s - %(gas_member)s"
 
-#: gas/models/base.py:582
+#: gas/models/base.py:578
 msgid "GAS Members must be registered users"
 msgstr "I membri del GAS devono essere utenti registrati"
 
-#: gas/models/base.py:702 gas/models/order.py:49
+#: gas/models/base.py:698 gas/models/order.py:50
 msgid "GAS supplier stock"
 msgstr "Prodotto fornitore per il GAS"
 
-#: gas/models/base.py:703
+#: gas/models/base.py:699
 msgid "GAS supplier stocks"
 msgstr "Listino fornitore per il GAS"
 
-#: gas/models/base.py:793
+#: gas/models/base.py:789
 msgid "date of first meeting GAS-Producer"
 msgstr "data del primo incontro dei Produttori del GAS"
 
-#: gas/models/base.py:807
+#: gas/models/base.py:803
 msgid "Withdrawal week day agreement"
 msgstr "Giorno accordato per il prelievo settimanale"
 
-#: gas/models/base.py:810
+#: gas/models/base.py:806
 msgid "withdrawal time agreement"
 msgstr "ora accordata per il prelievo"
 
-#: gas/models/base.py:818
+#: gas/models/base.py:814
 msgid ""
 "automatic population of all products bound to a supplier in gas supplier "
 "stock"
@@ -691,33 +702,35 @@ msgstr ""
 "Popola automaticamente il catalogo fornitore per il GAS con tutti i prodotti "
 "del fornitore."
 
-#: gas/models/base.py:834
+#: gas/models/base.py:830
 #, python-format
 msgid "Pact between %(gas)s and %(supplier)s"
 msgstr "Patto tra %(gas)s e %(supplier)s"
 
-#: gas/models/order.py:44
+#: gas/models/order.py:45
 msgid "Minimum amount"
 msgstr "Importo minimo"
 
-#: gas/models/order.py:49
+#: gas/models/order.py:50
 msgid "products available for the order"
 msgstr "prodotti disponibili in questo ordine"
 
-#: gas/models/order.py:64
+#: gas/models/order.py:65
+#, python-format
 msgid "close on %(date)s"
 msgstr "Chiude in data %(date)s"
 
-#: gas/models/order.py:66
+#: gas/models/order.py:67
+#, python-format
 msgid "closed on %(date)s"
 msgstr "Chiusa in data %(date)s"
 
-#: gas/models/order.py:70
+#: gas/models/order.py:71
 #, python-format
 msgid "Order %(gas)s to %(supplier)s (%(state)s)"
 msgstr "Ordine dal %(gas)s al fornitore %(supplier)s (%(state)s)"
 
-#: gas/models/order.py:201
+#: gas/models/order.py:202
 msgid ""
 "Workflow for specific GASSupplierOrder is not allowed. Just provide a "
 "default order workflow for your GAS"
@@ -725,29 +738,29 @@ msgstr ""
 "Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
 "solamente un workflow di default per il tuo GAS "
 
-#: gas/models/order.py:288
+#: gas/models/order.py:289
 msgid "Current state"
 msgstr "Stato corrente"
 
-#: gas/models/order.py:290
+#: gas/models/order.py:291
 #, fuzzy
 msgid "Delivery referrer"
 msgstr "Referente di consegna"
 
-#: gas/models/order.py:291
+#: gas/models/order.py:292
 #, fuzzy
 msgid "Withdrawal referrer"
 msgstr "Referente di ritiro"
 
-#: gas/models/order.py:387
+#: gas/models/order.py:388
 msgid "GAS member order"
 msgstr "Ordine gasista"
 
-#: gas/models/order.py:388
+#: gas/models/order.py:389
 msgid "GAS member orders"
 msgstr "Ordini gasista"
 
-#: gas/models/order.py:435
+#: gas/models/order.py:436
 msgid ""
 "Workflow for specific GASMemberOrder is not allowed. Just provide a default "
 "order workflow for your GAS"
@@ -755,53 +768,276 @@ msgstr ""
 "Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
 "solamente un workflow di default per il tuo GAS "
 
-#: gas/models/order.py:492
+#: gas/models/order.py:493
 msgid "where the order will be delivered by supplier"
 msgstr "dove l'ordine sarà consegnato dal fornitore"
 
-#: gas/models/order.py:493
+#: gas/models/order.py:494
 msgid "when the order will be delivered by supplier"
 msgstr "quando l'ordine sarà consegnato dal fornitore"
 
-#: gas/models/order.py:503
+#: gas/models/order.py:504
 msgid "delivery"
 msgstr "consegna"
 
-#: gas/models/order.py:504
+#: gas/models/order.py:505
 msgid "deliveries"
 msgstr "consegne"
 
-#: gas/models/order.py:543
+#: gas/models/order.py:544
 msgid "where the order will be withdrawn by GAS members"
 msgstr "dove l'ordine sarà ritirato dai gasisti"
 
-#: gas/models/order.py:547
+#: gas/models/order.py:548
 msgid "when the order will be withdrawn by GAS members"
 msgstr "quando l'ordine sarà ritirato dai gasisti"
 
-#: gas/models/order.py:549
+#: gas/models/order.py:550
 msgid "when the withdrawal will start"
 msgstr "quando inizierà il ritiro"
 
-#: gas/models/order.py:550
+#: gas/models/order.py:551
 msgid "when the withdrawal will end"
 msgstr "quando terminerà il ritiro"
 
-#: gas/models/order.py:558
+#: gas/models/order.py:559
 msgid "wihtdrawal"
 msgstr "ritiro"
 
-#: gas/models/order.py:559
+#: gas/models/order.py:560
 msgid "wihtdrawals"
 msgstr "ritiri"
+
+#: gas_admin/templates/gas_admin/404.html:4
+#: gas_admin/templates/gas_admin/404.html:8
+msgid "Page not found"
+msgstr "Pagina non trovata"
+
+#: gas_admin/templates/gas_admin/404.html:10
+msgid "We're sorry, but the requested page could not be found."
+msgstr "Siamo spiacenti, ma la pagina richiesta non è stata trovata."
+
+#: gas_admin/templates/gas_admin/500.html:4
+#: gas_admin/templates/gas_admin/change_form.html:18
+#: gas_admin/templates/gas_admin/change_list.html:42
+#: gas_admin/templates/gas_admin/change_password.html:11
+#: gas_admin/templates/gas_admin/delete_confirmation.html:6
+#: gas_admin/templates/gas_admin/delete_selected_confirmation.html:6
+#: gas_admin/templates/gas_admin/invalid_setup.html:4
+#: gas_admin/templates/gas_admin/object_history.html:6
+msgid "Home"
+msgstr "Home"
+
+#: gas_admin/templates/gas_admin/500.html:4
+msgid "Server error"
+msgstr "Errore del server"
+
+#: gas_admin/templates/gas_admin/500.html:6
+msgid "Server error (500)"
+msgstr "Errore del server (500)"
+
+#: gas_admin/templates/gas_admin/500.html:9
+msgid "Server Error <em>(500)</em>"
+msgstr "Errore del server <em>(500)<em>"
+
+#: gas_admin/templates/gas_admin/500.html:10
+msgid ""
+"There's been an error. It's been reported to the site administrators via e-"
+"mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+"Si è verificato un errore. Questo è stato riportato via e-mail "
+"all'amministratore del sito e dovrebbe essere corretto a breve. Grazie per "
+"la pazienza."
+
+#: gas_admin/templates/gas_admin/base_site.html:10
+#: gas_admin/templates/gas_admin/base_site.html:20
+msgid "GAS administration"
+msgstr "amministrazione del GAS"
+
+#: gas_admin/templates/gas_admin/change_form.html:21
+#: gas_admin/templates/gas_admin/index.html:29
+msgid "Add"
+msgstr "Aggiungi"
+
+#: gas_admin/templates/gas_admin/change_form.html:28
+#: gas_admin/templates/gas_admin/object_history.html:10
+#: rest/templates/html/index.html:2087
+msgid "History"
+msgstr "Storia"
+
+#: gas_admin/templates/gas_admin/change_form.html:29
+msgid "View on site"
+msgstr "Visualizza nel sito"
+
+#: gas_admin/templates/gas_admin/change_form.html:39
+#: gas_admin/templates/gas_admin/change_list.html:71
+#: gas_admin/templates/gas_admin/change_password.html:24
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Per favore correggi l'errore sottostanti."
+msgstr[1] "Per favore correggi gli errori sottostanti."
+
+#: gas_admin/templates/gas_admin/change_list.html:63
+#, python-format
+msgid "Add %(name)s"
+msgstr "Aggiungi %(name)s"
+
+#: gas_admin/templates/gas_admin/change_list.html:82
+msgid "Filter"
+msgstr "Filtro"
+
+#: gas_admin/templates/gas_admin/change_password.html:15
+#: gas_admin/templates/gas_admin/change_password.html:48
+msgid "Change password"
+msgstr "Cambia password"
+
+#: gas_admin/templates/gas_admin/change_password.html:28
+#, python-format
+msgid "Enter a new password for the user <strong>%(username)s</strong>."
+msgstr ""
+"Inserisci una nuova password per l'utente <strong>%(username)s<strong>."
+
+#: gas_admin/templates/gas_admin/change_password.html:35
+msgid "Password"
+msgstr "Password"
+
+#: gas_admin/templates/gas_admin/change_password.html:41
+msgid "Password (again)"
+msgstr "Password (ancora)"
+
+#: gas_admin/templates/gas_admin/change_password.html:42
+msgid "Enter the same password as above, for verification."
+msgstr "Inserisci la stessa password di sopra, per verifica."
+
+#: gas_admin/templates/gas_admin/delete_confirmation.html:16
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would result in deleting "
+"related objects, but your account doesn't have permission to delete the "
+"following types of objects:"
+msgstr ""
+"Eliminare il %(object_name)s '%(escaped_object)s' eliminerebbe anchegli "
+"oggetti ad esso collegati, ma il tuo account non ha i permessi necessari per "
+"eliminare questi tipi di oggetti:"
+
+#: gas_admin/templates/gas_admin/delete_confirmation.html:23
+#, python-format
+msgid ""
+"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? "
+"All of the following related items will be deleted:"
+msgstr ""
+"Sei sicuro di voler eliminare il %(object_name)s \"%(escaped_object)s\"? "
+"Tutti gli oggetti ad esso collegati verranno eliminati:"
+
+#: gas_admin/templates/gas_admin/delete_confirmation.html:28
+#: gas_admin/templates/gas_admin/delete_selected_confirmation.html:33
+msgid "Yes, I'm sure"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/delete_selected_confirmation.html:9
+msgid "Delete multiple objects"
+msgstr ""
+
+#: gas_admin/templates/gas_admin/delete_selected_confirmation.html:15
+#, python-format
+msgid ""
+"Deleting the %(object_name)s would result in deleting related objects, but "
+"your account doesn't have permission to delete the following types of "
+"objects:"
+msgstr ""
+"Eliminare il %(object_name)s eliminerebbe anche gli oggetti ad esso "
+"collegati, ma il tuo account non ha i permessi necessari per eliminare "
+"questi tipi di oggetti:"
+
+#: gas_admin/templates/gas_admin/delete_selected_confirmation.html:22
+#, python-format
+msgid ""
+"Are you sure you want to delete the selected %(object_name)s objects? All of "
+"the following objects and their related items will be deleted:"
+msgstr ""
+"Sei sicuro di voler eliminare il %(object_name)s ?Tutti gli oggetti ad esso "
+"collegati verranno eliminati:"
+
+#: gas_admin/templates/gas_admin/index.html:18
+#, python-format
+msgid "Models available in the %(name)s application."
+msgstr "Modelli disponibili nell'applicazione %(name)s"
+
+#: gas_admin/templates/gas_admin/index.html:19
+#, python-format
+msgid "%(name)s"
+msgstr "%(name)s"
+
+#: gas_admin/templates/gas_admin/index.html:35
+msgid "Change"
+msgstr "Modifica"
+
+#: gas_admin/templates/gas_admin/index.html:45
+msgid "You don't have permission to edit anything."
+msgstr "Non sei autorizzato a modificare nulla."
+
+#: gas_admin/templates/gas_admin/index.html:53
+msgid "Recent Actions"
+msgstr "Azioni recenti"
+
+#: gas_admin/templates/gas_admin/index.html:54
+msgid "My Actions"
+msgstr "Le mie azioni"
+
+#: gas_admin/templates/gas_admin/index.html:58
+msgid "None available"
+msgstr "Non disponibile"
+
+#: gas_admin/templates/gas_admin/index.html:72
+msgid "Unknown content"
+msgstr "Contenuto sconosciuto"
+
+#: gas_admin/templates/gas_admin/invalid_setup.html:7
+msgid ""
+"Something's wrong with your database installation. Make sure the appropriate "
+"database tables have been created, and make sure the database is readable by "
+"the appropriate user."
+msgstr ""
+"Qualcosa non va con l'installazione del tuo database. Controlla che le "
+"giuste tabelle siano state create, e assicurati che il database sia "
+"leggibile dai giusti utenti."
+
+#: gas_admin/templates/gas_admin/login.html:19
+msgid "Username:"
+msgstr "Nome utente:"
+
+#: gas_admin/templates/gas_admin/login.html:22
+msgid "Password:"
+msgstr "Password:"
+
+#: gas_admin/templates/gas_admin/login.html:26
+msgid "Log in"
+msgstr "Accedi"
+
+#: gas_admin/templates/gas_admin/object_history.html:22
+msgid "Date/time"
+msgstr "Data/ora"
+
+#: gas_admin/templates/gas_admin/object_history.html:23
+#: rest/models/blocks.py:22 rest/templates/html/index.html:1953
+msgid "User"
+msgstr "Utente"
+
+#: gas_admin/templates/gas_admin/object_history.html:24
+msgid "Action"
+msgstr "Azione"
+
+#: gas_admin/templates/gas_admin/object_history.html:38
+msgid ""
+"This object doesn't have a change history. It probably wasn't added via this "
+"admin site."
+msgstr ""
+"Questo oggetto non sembra avere uno storico delle modifiche. Probabilmente "
+"non è stato aggiunto attraverso questo sito."
 
 #: lib/widgets.py:22
 msgid "Add Another"
 msgstr "Aggiungine un altro"
-
-#: rest/models/blocks.py:22
-msgid "User"
-msgstr "Utente"
 
 #: rest/models/blocks.py:24
 msgid "Rest block name"
@@ -827,78 +1063,110 @@ msgstr "posizione della pagina"
 msgid "Configuration data"
 msgstr "Dati di configurazione"
 
-#: rest/templates/blocks/basket/table.xml:7
-#: rest/templates/blocks/order/table.xml:7
-#: rest/templates/blocks/order_report/table.xml:5
-#: rest/templates/blocks/stocks/table.xml:7
-msgid "Product"
-msgstr "Prodotti"
+#: rest/templates/related_notes.html:5
+msgid "Target's notes"
+msgstr "Note dell'obiettivo"
 
-#: rest/templates/blocks/basket/table.xml:8
-msgid "Amount"
-msgstr "Quantità"
+#: rest/templates/related_notes.html:33
+msgid "Node's notes"
+msgstr "Note del nodo"
 
-#: rest/templates/blocks/basket/table.xml:9
-#: rest/templates/blocks/order/table.xml:9
-#: rest/templates/blocks/order_report/table.xml:6
-#: rest/templates/blocks/stocks/table.xml:9
-msgid "Price"
-msgstr "Prezzo"
+#: rest/templates/html/index.html:1955
+msgid "Home page"
+msgstr "Pagina utente"
 
-#: rest/templates/blocks/basket/table.xml:10
-#, fuzzy
-msgid "TOT Price"
-msgstr "TOT prezzo"
+#: rest/templates/html/index.html:1957
+msgid "Role"
+msgstr "Ruolo"
 
-#: rest/templates/blocks/basket/table.xml:14
-#: rest/templates/blocks/order/table.xml:15
-#: rest/templates/blocks/order_report/table.xml:13
-msgid "Total"
-msgstr ""
+#: rest/templates/html/index.html:1959
+msgid "Logout"
+msgstr "Esci"
 
-#: rest/templates/blocks/gasstocks/table.xml:6
-msgid "Enabled by GAS"
-msgstr "Abilitato dal GAS"
+#: rest/templates/html/index.html:2000 rest/templates/html/index.html:2085
+#: rest/templates/html/index.html:2232 rest/templates/html/index.html:2240
+msgid "Minimize block"
+msgstr "Minimizza il blocco"
 
-#: rest/templates/blocks/order/table.xml:5
-#: rest/templates/blocks/stocks/table.xml:5
-msgid "Id"
-msgstr "Id"
+#: rest/templates/html/index.html:2002
+msgid "Search"
+msgstr "Cerca"
 
-#: rest/templates/blocks/order/table.xml:8
-#: rest/templates/blocks/stocks/table.xml:8 sanet_users/models.py:150
-msgid "Description"
-msgstr "Descrizione"
+#: rest/templates/html/index.html:2015
+msgid "Enter search keyword here"
+msgstr "Inserisci le parole chiave qui"
 
-#: rest/templates/blocks/order/table.xml:10
-#, fuzzy
-msgid "Ordered amount"
-msgstr "TOT quantità"
+#: rest/templates/html/index.html:2020 rest/templates/html/index.html:2021
+msgid "Reset search"
+msgstr "Azzera la ricerca"
 
-#: rest/templates/blocks/order/table.xml:11
-#, fuzzy
-msgid "Ordered total"
-msgstr "Report dell'ordine"
+#: rest/templates/html/index.html:2024
+msgid "Options"
+msgstr "Opzioni"
 
-#: rest/templates/blocks/order_report/table.xml:7
-msgid "TOT GAS members"
-msgstr "TOT gasisti"
+#: rest/templates/html/index.html:2032 rest/templates/html/index.html:2036
+msgid "Name"
+msgstr "Nome"
 
-#: rest/templates/blocks/order_report/table.xml:8
-msgid "TOT amount"
-msgstr "TOT quantità"
+#: rest/templates/html/index.html:2040
+msgid "GAS name"
+msgstr "Nome del GAS"
 
-#: rest/templates/blocks/order_report/table.xml:9
-msgid "TOT price"
-msgstr "TOT prezzo"
+#: rest/templates/html/index.html:2041
+msgid "Supplier name"
+msgstr "Nome del fornitore"
 
-#: rest/templates/blocks/stocks/table.xml:6
-msgid "Code"
-msgstr "Codice"
+#: rest/templates/html/index.html:2084
+msgid "Refresh history"
+msgstr "Aggiorna la cronologia"
 
-#: rest/templates/blocks/stocks/table.xml:10
-msgid "Availability"
-msgstr "disponibilità"
+#: rest/templates/html/index.html:2165
+msgid "User page"
+msgstr "Pagina utente"
+
+#: rest/templates/html/index.html:2224 rest/templates/html/index.html:2239
+msgid "Refresh block now"
+msgstr "Aggiorna il blocco adesso"
+
+#: rest/templates/html/index.html:2231 rest/templates/html/index.html:2238
+msgid "Set to full screen"
+msgstr "Imposta a tutto schermo"
+
+#: rest/templates/html/index.html:2262
+msgid "Select the resource type"
+msgstr "Seleziona il tipo di risorsa"
+
+#: rest/templates/html/index.html:2265
+msgid "Site"
+msgstr "Sito"
+
+#: rest/templates/html/index.html:2266
+msgid "Container"
+msgstr "Contenitore"
+
+#: rest/templates/html/index.html:2267
+msgid "Node"
+msgstr "Nodo"
+
+#: rest/templates/html/index.html:2268
+msgid "Interface"
+msgstr "Interfaccia"
+
+#: rest/templates/html/index.html:2269
+msgid "Target"
+msgstr "Obiettivo"
+
+#: rest/templates/html/index.html:2270
+msgid "Measure"
+msgstr "Misura"
+
+#: rest/templates/html/index.html:2274
+msgid "Select the resource"
+msgstr "Seleziona la risorsa"
+
+#: rest/templates/html/index.html:2279
+msgid "Select the data block type"
+msgstr "Seleziona il tipo di blocco della data"
 
 #: rest/views/__init__.py:73
 msgid "Master of the Universe"
@@ -945,11 +1213,11 @@ msgstr "Categorie di prodotti"
 msgid "Closed orders"
 msgstr "Ordini chiusi"
 
-#: rest/views/blocks/details.py:55
+#: rest/views/blocks/details.py:58
 msgid "Details"
 msgstr "Dettagli"
 
-#: rest/views/blocks/details.py:100
+#: rest/views/blocks/details.py:103
 msgid "Configure"
 msgstr "Configura"
 
@@ -997,7 +1265,7 @@ msgstr "Patti di solidarietà"
 msgid "Add pact"
 msgstr "Aggiungi patto"
 
-#: rest/views/blocks/persons.py:15 supplier/models.py:113
+#: rest/views/blocks/persons.py:15 supplier/models.py:114
 msgid "People"
 msgstr "Persone"
 
@@ -1020,38 +1288,6 @@ msgstr "Visualizza"
 #: rest/views/blocks/suppliers.py:31
 msgid "Add supplier"
 msgstr "Aggiungi fornitore"
-
-#: sanet_users/models.py:33
-msgid "Redirect after logon"
-msgstr "Reindirizza dopo l'accesso"
-
-#: sanet_users/models.py:73
-msgid "SANET specific data"
-msgstr "Dato specifici di SANET"
-
-#: sanet_users/models.py:149
-msgid "Name"
-msgstr "Nome"
-
-#: sanet_users/models.py:152
-msgid "Owner"
-msgstr "Proprietario"
-
-#: sanet_users/models.py:154 sanet_users/models.py:198
-msgid "Parent user container"
-msgstr "Contenitore utente superiore"
-
-#: sanet_users/models.py:183
-msgid "User container"
-msgstr "Contenitore utente"
-
-#: sanet_users/views/__init__.py:179
-msgid "User page"
-msgstr "Pagina utente"
-
-#: sanet_users/views/__init__.py:196
-msgid "Personal settings"
-msgstr "Impostazioni personali"
 
 #: supplier/models.py:157
 msgid "Product categories"
@@ -1086,280 +1322,117 @@ msgstr "Nome alternativo"
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
 
-msgid "DES administration"
-msgstr "Amministrazione del DES"
-
-msgid "Page not found"
-msgstr "Pagina non trovata"
-
-msgid "We're sorry, but the requested page could not be found."
-msgstr "Siamo spiacenti, ma la pagina richiesta non è stata trovata."
-
-msgid "Home"
-msgstr "Home"
-
-msgid "Server error"
-msgstr "Errore del server"
-
-msgid "Server error (500)"
-msgstr "Errore del server (500)"
-
-msgid "Server Error <em>(500)</em>"
-msgstr "Errore del server <em>(500)<em>"
+#~ msgid "Product"
+#~ msgstr "Prodotti"
 
-msgid ""
-"There's been an error. It's been reported to the site administrators via "
-"e-mail and should be fixed shortly. Thanks for your patience."
-msgstr ""
-"Si è verificato un errore. Questo è stato riportato via e-mail "
-"all'amministratore del sito e dovrebbe essere corretto a breve. Grazie "
-"per la pazienza."
-
-msgid "GAS administration"
-msgstr "amministrazione del GAS"
-
-msgid "Add"
-msgstr "Aggiungi"
-
-msgid "History"
-msgstr "Storia"
-
-msgid "View on site"
-msgstr "Visualizza nel sito"
-
-msgid "Please correct the error below."
-msgid_plural "Please correct the errors below."
-msgstr[0] "Per favore correggi l'errore sottostanti."
-msgstr[1] "Per favore correggi gli errori sottostanti."
-
-msgid "Add %(name)s"
-msgstr "Aggiungi %(name)s"
+#~ msgid "Amount"
+#~ msgstr "Quantità"
 
-msgid "Filter"
-msgstr "Filtro"
-
-msgid "Change password"
-msgstr "Cambia password"
-
-msgid "Enter a new password for the user <strong>%(username)s</strong>."
-msgstr ""
-"Inserisci una nuova password per l'utente <strong>%(username)s<strong>."
-
-msgid "Password"
-msgstr "Password"
-
-msgid "Password (again)"
-msgstr "Password (ancora)"
+#~ msgid "Price"
+#~ msgstr "Prezzo"
 
-msgid "Enter the same password as above, for verification."
-msgstr "Inserisci la stessa password di sopra, per verifica."
-msgid ""
-"Deleting the %(object_name)s '%(escaped_object)s' would result in "
-"deleting related objects, but your account doesn't have permission to "
-"delete the following types of objects:"
-msgstr ""
-"Eliminare il %(object_name)s '%(escaped_object)s' eliminerebbe anchegli "
-"oggetti ad esso collegati, ma il tuo account non ha i permessi necessari "
-"per eliminare questi tipi di oggetti:"
+#, fuzzy
+#~ msgid "TOT Price"
+#~ msgstr "TOT prezzo"
 
-msgid ""
-"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s"
-"\"? All of the following related items will be deleted:"
-msgstr ""
-"Sei sicuro di voler eliminare il %(object_name)s \"%(escaped_object)s\"? "
-"Tutti gli oggetti ad esso collegati verranno eliminati:"
+#~ msgid "Enabled by GAS"
+#~ msgstr "Abilitato dal GAS"
 
-msgid ""
-"Deleting the %(object_name)s would result in deleting related objects, "
-"but your account doesn't have permission to delete the following types of "
-"objects:"
-msgstr ""
-"Eliminare il %(object_name)s eliminerebbe anche gli oggetti ad esso "
-"collegati, ma il tuo account non ha i permessi necessari per eliminare "
-"questi tipi di oggetti:"
+#~ msgid "Id"
+#~ msgstr "Id"
 
-msgid ""
-"Are you sure you want to delete the selected %(object_name)s objects? All "
-"of the following objects and their related items will be deleted:"
-msgstr ""
-"Sei sicuro di voler eliminare il %(object_name)s ?Tutti gli oggetti ad "
-"esso collegati verranno eliminati:"
+#~ msgid "Description"
+#~ msgstr "Descrizione"
 
-msgid "Models available in the %(name)s application."
-msgstr "Modelli disponibili nell'applicazione %(name)s"
+#, fuzzy
+#~ msgid "Ordered amount"
+#~ msgstr "TOT quantità"
 
-msgid "%(name)s"
-msgstr "%(name)s"
+#, fuzzy
+#~ msgid "Ordered total"
+#~ msgstr "Report dell'ordine"
 
-msgid "Change"
-msgstr "Modifica"
+#~ msgid "TOT GAS members"
+#~ msgstr "TOT gasisti"
 
-msgid "You don't have permission to edit anything."
-msgstr "Non sei autorizzato a modificare nulla."
+#~ msgid "TOT amount"
+#~ msgstr "TOT quantità"
 
-msgid "Recent Actions"
-msgstr "Azioni recenti"
+#~ msgid "TOT price"
+#~ msgstr "TOT prezzo"
 
-msgid "My Actions"
-msgstr "Le mie azioni"
+#~ msgid "Code"
+#~ msgstr "Codice"
 
-msgid "None available"
-msgstr "Non disponibile"
+#~ msgid "Availability"
+#~ msgstr "disponibilità"
 
-msgid "Unknown content"
-msgstr "Contenuto sconosciuto"
+#~ msgid "Redirect after logon"
+#~ msgstr "Reindirizza dopo l'accesso"
 
-msgid ""
-"Something's wrong with your database installation. Make sure the "
-"appropriate database tables have been created, and make sure the database "
-"is readable by the appropriate user."
-msgstr ""
-"Qualcosa non va con l'installazione del tuo database. Controlla che le "
-"giuste tabelle siano state create, e assicurati che il database sia "
-"leggibile dai giusti utenti."
+#~ msgid "SANET specific data"
+#~ msgstr "Dato specifici di SANET"
 
-msgid "Username:"
-msgstr "Nome utente:"
+#~ msgid "Owner"
+#~ msgstr "Proprietario"
 
-msgid "Password:"
-msgstr "Password:"
+#~ msgid "Parent user container"
+#~ msgstr "Contenitore utente superiore"
 
-msgid "Log in"
-msgstr "Accedi"
+#~ msgid "User container"
+#~ msgstr "Contenitore utente"
 
-msgid "Date/time"
-msgstr "Data/ora"
+#~ msgid "Personal settings"
+#~ msgstr "Impostazioni personali"
 
-msgid "Action"
-msgstr "Azione"
+#~ msgid "Insert User Name and Password"
+#~ msgstr "Inserisci Nome Utente e Password"
 
-msgid ""
-"This object doesn't have a change history. It probably wasn't added via "
-"this admin site."
-msgstr ""
-"Questo oggetto non sembra avere uno storico delle modifiche. "
-"Probabilmente non è stato aggiunto attraverso questo sito."
+#~ msgid "Username"
+#~ msgstr "Nome utente"
 
-msgid "Target's notes"
-msgstr "Note dell'obiettivo"
+#~ msgid "Remember me"
+#~ msgstr "Ricordati di me"
 
-msgid "Node's notes"
-msgstr "Note del nodo"
+#~ msgid "Login"
+#~ msgstr "Accedi"
 
-msgid "Home page"
-msgstr "Pagina utente"
+#~ msgid "Old password:"
+#~ msgstr "Vecchia password"
 
-msgid "Role"
-msgstr "Ruolo"
+#~ msgid "New password:"
+#~ msgstr "Nuova password"
 
-msgid "Logout"
-msgstr "Esci"
+#~ msgid "Confirm password:"
+#~ msgstr "Conferma password"
 
-msgid "Minimize block"
-msgstr "Minimizza il blocco"
+#~ msgid "Change my password"
+#~ msgstr "Cambia password"
 
-msgid "Search"
-msgstr "Cerca"
+#~ msgid "Password change successful"
+#~ msgstr "Password modificata con successo"
 
-msgid "Enter search keyword here"
-msgstr "Inserisci le parole chiave qui"
+#~ msgid "Your password was changed."
+#~ msgstr "La tua password è stata cambiata"
 
-msgid "Reset search"
-msgstr "Azzera la ricerca"
+#~ msgid ""
+#~ "GAS views open orders by supplier. If disabled, views open order by "
+#~ "delivery appointment"
+#~ msgstr ""
+#~ "Il GAS visualizza gli ordini aperti in ordine di fornitore. Se "
+#~ "disattivato, li visualizza in ordine di appuntamento di consegna"
 
-msgid "Options"
-msgstr "Opzioni"
+#~ msgid "referrers"
+#~ msgstr "referenti"
 
-msgid "GAS name"
-msgstr "Nome del GAS"
+#~ msgid "Order stocks"
+#~ msgstr "Stocks dell'ordine"
 
-msgid "Supplier name"
-msgstr "Nome del fornitore"
+#~ msgid "Solidal pact list"
+#~ msgstr "Lista dei patti di solidarietà"
 
-msgid "Refresh history"
-msgstr "Aggiorna la cronologia"
+#~ msgid "Supplier referrer"
+#~ msgstr "Referente fornitore"
 
-msgid "Refresh block now"
-msgstr "Aggiorna il blocco adesso"
-
-msgid "Set to full screen"
-msgstr "Imposta a tutto schermo"
-
-msgid "Select the resource type"
-msgstr "Seleziona il tipo di risorsa"
-
-msgid "Site"
-msgstr "Sito"
-
-msgid "Container"
-msgstr "Contenitore"
-
-msgid "Node"
-msgstr "Nodo"
-
-msgid "Interface"
-msgstr "Interfaccia"
-
-msgid "Target"
-msgstr "Obiettivo"
-
-msgid "Measure"
-msgstr "Misura"
-
-msgid "Select the resource"
-msgstr "Seleziona la risorsa"
-
-msgid "Select the data block type"
-msgstr "Seleziona il tipo di blocco della data"
-
-msgid "Insert User Name and Password"
-msgstr "Inserisci Nome Utente e Password"
-
-msgid "Username"
-msgstr "Nome utente"
-
-msgid "Remember me"
-msgstr "Ricordati di me"
-
-msgid "Login"
-msgstr "Accedi"
-
-msgid "Old password:"
-msgstr "Vecchia password"
-
-msgid "New password:"
-msgstr "Nuova password"
-
-msgid "Confirm password:"
-msgstr "Conferma password"
-
-msgid "Change my password"
-msgstr "Cambia password"
-
-msgid "Password change successful"
-msgstr "Password modificata con successo"
-
-msgid "Your password was changed."
-msgstr "La tua password è stata cambiata"
-
-msgid ""
-"GAS views open orders by supplier. If disabled, views open order by "
-"delivery appointment"
-msgstr ""
-"Il GAS visualizza gli ordini aperti in ordine di fornitore. Se "
-"disattivato, li visualizza in ordine di appuntamento di consegna"
-
-msgid "referrers"
-msgstr "referenti"
-
-msgid "Order stocks"
-msgstr "Stocks dell'ordine"
-
-msgid "Solidal pact list"
-msgstr "Lista dei patti di solidarietà"
-
-msgid "Supplier referrer"
-msgstr "Referente fornitore"
-
-msgid "GAS uses only one delivery place"
-msgstr "il GAS usa solo un luogo per le consegne"
+#~ msgid "GAS uses only one delivery place"
+#~ msgstr "il GAS usa solo un luogo per le consegne"
