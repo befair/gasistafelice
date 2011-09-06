@@ -12,21 +12,30 @@
 <table>
 <thead>
     <th>Prodotto</th>
-    <th>Quantità</th>
-    <th>Prezzo</th>
+    <th>Prezzo Un</th>
+    <th>Membri</th>
+    <th>Quantit&agrave;</th>
+    <th>Prezzo totale</th>
 </thead>
 <tbody>
     {% for row in records %}
-    <tr>
-        <td>{{r.product}}</td>
-        <td>{{r.tot_amount}}</td>
-        <td>{{r.tot_price}}</td>
-    </tr>
-    {% endfor %}
+        
+        {% if row.tot_price > 0  %}
+            <tr>
+                <td style="background-color: #D7ECC7;"> {{ row.product }} </td>
+                <td style="text-align: right;padding-right: 10px;">{{row.price}}</td>
+                <td style="text-align: center;padding-right: 10px;">{{row.tot_gasmembers}}</td>
+                <td style="text-align: center;padding-right: 10px;">{{row.tot_amount}}</td>
+                <td style="text-align: right;padding-right: 10px;">{{row.tot_price}}</td>
+            </tr>
+
+        {%  endif %}
+
+    {%  endfor %}
     <tr>
         <td>TOTALE ORDINE</td>
         <td> </td>
-        <td>{{total_amount}}</td>
+        <td>{{ total_amount }}</td>
     </tr>
 </tbody>
 </table>

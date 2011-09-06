@@ -88,8 +88,8 @@ class Block(BlockSSDataTables):
         for i,el in enumerate(querySet):
 
             records.append({
-               'product' : el.stock.product,
-               'price' : floatformat(el.stock.price, 2),
+               'product' : el.product,
+               'price' : floatformat(el.order_price, 2),
                'tot_gasmembers' : el.tot_gasmembers,
                'tot_amount' : el.ordered_amount,
                'tot_price' : el.tot_price,
@@ -98,6 +98,26 @@ class Block(BlockSSDataTables):
             })
 
         return None, records, {}
+
+
+    def _get_pdfrecords(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        c = querySet.count()
+
+        for el in querySet:
+            if el.tot_price > 0:
+                records.append({
+                   'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
+                   'price' : floatformat(el.gasstock.price, 2),
+                   'tot_gasmembers' : el.tot_gasmembers,
+                   'tot_amount' : el.ordered_amount,
+                   'tot_price' : floatformat(el.tot_price, 2),
+                })
+
+        return records
+
 
     def get_response(self, request, resource_type, resource_id, args):
 
@@ -116,7 +136,7 @@ class Block(BlockSSDataTables):
         order = self.resource.order
         context_dict = {
             'order' : order,
-            'records' : self._get_records(self.request, self._get_resource_list(self.request))[1], #ho usato get_records, ma puoi produrre i record come preferisci
+            'records' : self._get_pdfrecords(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), #ho usato get_records, ma puoi produrre i record come preferisci
             'user' : self.request.user,
             'total_amount' : self.resource.total_ordered, #da Model da confrontare con il calcolato
         }
@@ -127,7 +147,7 @@ class Block(BlockSSDataTables):
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=GAS_%s_%s.pdf' % \
