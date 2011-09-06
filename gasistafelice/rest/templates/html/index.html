@@ -658,7 +658,16 @@
                         var block_box_id = 'block_' + jQuery.app + '_' + block.block_urn.replace(/\//g, '_') + 'box';    // MAIN BLOCK HTML ELEMENT                        
                         
                         render_block_and_start_autorefresh_timer(block.block_name, block.block_urn, block.refresh_rate, block_box_id);
-                        jQuery.BLOCKS[block.block_name].get_control_panel();
+
+                        // Load control panel for each block
+                        // fero - copied some code from doUpdate
+                        var visible  = get_block_attribute(block.block_name, 'show');
+                        if ( visible == undefined ) {
+                            visible = "false";
+                            if (block.attr('start_open') != "false") visible = "true";
+                        }
+                        if (visible == "true") 
+                            jQuery.BLOCKS[block.block_name].get_control_panel();
                     }            
                 });
             }
@@ -1775,6 +1784,14 @@
                     //
                     if(bcontent.children().length<=0)
                         $(this).siblings('.toggle_refresh').click();
+
+                    //fero - reload control panel
+                    if (is_visible == "false") {
+                        block.children('.block_control_panel').children().remove();
+                    } else {
+                        jQuery.BLOCKS[block_name].get_control_panel();
+                    }
+
                 }
             });
             
