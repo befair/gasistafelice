@@ -432,7 +432,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         transition = DefaultTransition.objects.get(workflow=self.workflow, state=state).transition
         do_transition(self, transition, user)
  
-    def save(self, *args, **ke):
+    def save(self, *args, **kw):
 
         if not self.workflow:
             # Set default workflow

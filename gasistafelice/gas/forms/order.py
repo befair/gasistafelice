@@ -9,7 +9,7 @@ from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
-from gasistafelice.gas.models import GASSupplierOrderProduct
+from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.gas.models.order import Delivery, Withdrawal
 from gasistafelice.base.models import Place, Person
 from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
@@ -221,7 +221,7 @@ class SingleGASMemberOrderForm(forms.Form):
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.IntegerField(required=False, initial=0)
-    ordered_price = forms.CharField(required=False, widget=forms.HiddenInput)
+    ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
 
     def __init__(self, request, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
@@ -232,10 +232,13 @@ class SingleGASMemberOrderForm(forms.Form):
         id = self.cleaned_data.get('id')
         if id:
             gmo = GASMemberOrder.objects.get(pk=id)
+            gmo.ordered_price = self.cleaned_data.get('ordered_price')
+            gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+            gmo.save()
         else:
             gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
             gmo = GASMemberOrder(
-                    order_product = gmo,
+                    ordered_product = gssop,
                     ordered_price = self.cleaned_data.get('ordered_price'),
                     ordered_amount = self.cleaned_data.get('ordered_amount'),
                     purchaser = self.__gm,
