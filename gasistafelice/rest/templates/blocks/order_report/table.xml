@@ -9,7 +9,6 @@
     <th>{% trans "TOT price" %}</th>
 {% endblock %}
 
-{% block extra_html_content %}
-    <div id="total-order-{{ resource.urn }}"> </div>
+{% block footer %}
+    <tr><th colspan="4" style="text-align:right" rowspan="1">{% trans "Total" %}:</th><th rowspan="1" colspan="1" id="total-order"> </th></tr>
 {% endblock %}
-

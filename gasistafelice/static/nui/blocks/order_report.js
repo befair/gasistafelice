@@ -27,7 +27,19 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     { "bSortable": "false" },
                     { "bSortable": "false" },
                     { "bSortable": "false", "sType": "currency" },
-                ]
+                ],
+                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+
+                    var iTotal = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ )
+                    {
+                        iTotal += parseFloat(aaData[i][4].substr(8).replace(',','.'));
+                    }
+                    
+                    /* Modify the footer row to match what we want */
+                    var nCells = $(nRow).find('th');
+                    $(nCells[1]).html('&#8364; ' + iTotal);
+                }
             }); 
 
         return this._super();

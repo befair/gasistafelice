@@ -66,26 +66,26 @@ class Block(BlockSSDataTables):
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
 
-        data = {}
-        i = 0
-        
+#        data = {}
+#        i = 0
+#        
+#        for i,el in enumerate(querySet):
+#
+#            key_prefix = 'form-%d' % i
+#            data.update({
+#               '%s-id' % key_prefix : el.pk,
+#               '%s-enabled' % key_prefix : True,
+#            })
+#
+#        data['form-TOTAL_FORMS'] = i 
+#        data['form-INITIAL_FORMS'] = 0
+#        data['form-MAX_NUM_FORMS'] = 0
+#
+#        formset = GASSupplierOrderProductFormSet(request, data)
+#
+#        records = []
+#        c = querySet.count()
         for i,el in enumerate(querySet):
-
-            key_prefix = 'form-%d' % i
-            data.update({
-               '%s-id' % key_prefix : el.pk,
-               '%s-enabled' % key_prefix : True,
-            })
-
-        data['form-TOTAL_FORMS'] = i 
-        data['form-INITIAL_FORMS'] = 0
-        data['form-MAX_NUM_FORMS'] = 0
-
-        formset = GASSupplierOrderProductFormSet(request, data)
-
-        records = []
-        c = querySet.count()
-        for i,form in enumerate(formset):
 
             records.append({
                'product' : el.stock.product,
@@ -93,11 +93,11 @@ class Block(BlockSSDataTables):
                'tot_gasmembers' : el.tot_gasmembers,
                'tot_amount' : el.ordered_amount,
                'tot_price' : el.tot_price,
-               'field_enabled' : "%s %s" % (form['id'], form['enabled']),
+#               'field_enabled' : "%s %s" % (form['id'], form['enabled']),
 
             })
 
-        return formset, records, {}
+        return None, records, {}
 
     def get_response(self, request, resource_type, resource_id, args):
 
