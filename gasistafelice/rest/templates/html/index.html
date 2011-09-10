@@ -664,7 +664,9 @@
                         var visible  = get_block_attribute(block.block_name, 'show');
                         if ( visible == undefined ) {
                             visible = "false";
-                            if (block.attr('start_open') != "false") visible = "true";
+                            if (typeof block.attr == 'function') {
+                                if (block.attr('start_open') != "false") visible = "true";
+                            }
                         }
                         if (visible == "true") 
                             jQuery.BLOCKS[block.block_name].get_control_panel();
