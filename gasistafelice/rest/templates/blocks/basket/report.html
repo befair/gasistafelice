@@ -14,20 +14,27 @@
     <th>Ordine</th>
     <th>Produttore</th>
     <th>prodotto</th>
-    <th>Quantit&agrave;</th>
     <th>Prezzo</th>
+    <th>Quantit&agrave;</th>
+    <th>Da pagare</th>
 </thead>
 <tbody>
 
     {% for row in records %}
-    <tr>
-        <td>{{r.order}}</td>
-        <td>{{r.supplier}}</td>
-        <td>{{r.product}}</td>
-        <td>{{r.ordered_amount}}</td>
-        <td>{{r.price}}</td>
-    </tr>
-    {% endfor %}
+        {% if row.tpayed > 0  %}
+
+            <tr>
+                <td>{{row.order}}</td>
+                <td>{{row.supplier}}</td>
+                <td>{{row.product}}</td>
+                <td>{{row.price}}</td>
+                <td>{{row.amount}}</td>
+                <td>{{row.payed}}</td>
+            </tr>
+
+        {%  endif %}
+    {%  endfor %}
+
     <tr>
         <td>TOTALE ORDINE</td>
         <td> </td>

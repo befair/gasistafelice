@@ -30,7 +30,14 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Basket")
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
-    COLUMN_INDEX_NAME_MAP = { 0: 'ordered_product__order__pk', 1 : 'ordered_product__gasstock__stock__supplier', 2: 'ordered_product__stock__supplier_stock__product', 3: 'ordered_amount', 4: 'ordered_price', 5 : '' }
+    COLUMN_INDEX_NAME_MAP = { 
+        0: 'ordered_product__order__pk', 
+        1: 'ordered_product__gasstock__stock__supplier', 
+        2: 'ordered_product__stock__supplier_stock__product', 
+        3: 'ordered_amount', 
+        4: 'ordered_price', 
+        5: 'tot_price' 
+    }
 
     def _get_user_actions(self, request):
 
@@ -84,6 +91,7 @@ class Block(BlockSSDataTables):
         return records, records, {}
 
     def _get_pdfrecords(self, request, querySet):
+    #def _get_pdfrecords(self, querySet):
         """Return records of rendered table fields."""
 
         records = []
@@ -97,6 +105,7 @@ class Block(BlockSSDataTables):
                'product' : el.product,
                'amount' : el.ordered_amount,
                'price' : floatformat(el.ordered_price, 2),
+               'payed' : floatformat(el.payed, 2),
             })
 
         return records
@@ -139,9 +148,10 @@ class Block(BlockSSDataTables):
 
         # Dati di esempio
         gasmember = self.resource
+        #    'records' : self._get_pdfrecords(self.request, self._get_resource_list(self.request))[1], 
         context_dict = {
             'gasmember' : gasmember,
-            'records' : self._get_pdfrecords(self.request, self._get_resource_list(self.request))[1], 
+            'records' : self._get_pdfrecords(self.request, self._get_resource_list(self.request)),
             'user' : self.request.user,
             'total_amount' : self.resource.total_basket,
         }
