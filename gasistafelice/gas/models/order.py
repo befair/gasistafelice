@@ -128,7 +128,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             return Person.objects.filter(user__in=self.withdrawal.referrers_users)
         return Person.objects.none()
 
-    def set_default_stock_set(self):
+    def set_default_gasstock_set(self):
         '''
         A helper function associating a default set of products to a GASSupplierOrder.
         
@@ -140,10 +140,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
             self._msg.append('Configuration of auto generation of the product\'s order is not abilitated. To automatism the procedure set auto_populate_products to True')
             return
 
+        #stocks = GASSupplierStock.objects.filter(pact=self.pact, gasstock__supplier=self.pact.supplier)
         stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
             if s.enabled:
-                GASSupplierOrderProduct.objects.create(order=self, gasstock=s)
+                GASSupplierOrderProduct.objects.create(order=self, gasstock=s, order_price=s.price)
 
     @property
     def message(self):
@@ -185,7 +186,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append('Deleting gas member %s(%s) email %s ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                self._msg.append('Deleting gas member %s(%s) email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 gmo.delete()
             self._msg.append('Deleted gas members orders(%s) for total of %s' % (count, total))
             gsop.delete()
@@ -262,11 +263,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def gasstocks(self):
         return self.gasstock_set.all()
 
+    #
     @property
     def total_ordered(self):
         tot = 0
         for gmo in self.ordered_products:
-            tot += gmo.ordered_price
+            tot += gmo.tot_price #ordered_price
         return tot
 
     def save(self, *args, **kw):
@@ -291,7 +293,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             set_workflow(self, w)
 
         if created:
-            self.set_default_stock_set()
+            self.set_default_gasstock_set()
 
     display_fields = (
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
@@ -346,14 +348,18 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         return self.gasmember_order_set.count()
 
     @property
+    def ordered_price(self):
+        return self.order_price
+
+    @property
     def tot_price(self):
         # grab all GASMemberOrders related to this product and issued by members of the right GAS
-        gmo_list = self.gasmember_order_set.values('ordered_price')
+        gmo_list = self.gasmember_order_set.all() #values('ordered_price')
         amount = 0 
         for gmo in gmo_list:
-            amount += gmo['ordered_price']
+            amount += gmo.tot_price # gmo['ordered_price']
         return amount 
-    
+
     @property
     def gas(self):
         return self.order.pact.gas
@@ -402,13 +408,18 @@ class GASMemberOrder(models.Model, PermissionResource):
     def confirm(self):
         self.is_confirmed = True
 
+    # how much the GAS member actually payed for this Product for the amount of quantity
     @property
     def tot_price(self):
-        return self.ordered_price*self.ordered_amount
+        if (not self.ordered_price is None) & (not self.ordered_amount is None):
+            return self.ordered_price * self.ordered_amount
+        else:
+            return 0
 
     @property
     def product(self):
-        return self.ordered_product.stock.product
+        #return self.ordered_product.stock.product
+        return self.ordered_product.gasstock.product
 
     @property
     def supplier(self):
@@ -418,7 +429,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     def email(self):
         return self.purchaser.email
 
-    # how much the GAS member actually payed for this Product (as resulting from the invoice)   
+    # how much the GAS member actually payed for this Product (as resulting from the invoice)
+    #FIXME: ordered_price? it is the "price of the Product at order time" or it is the Total payed (order price * quantity)???
     @property
     def actual_price(self):
         return self.ordered_product.delivered_price
