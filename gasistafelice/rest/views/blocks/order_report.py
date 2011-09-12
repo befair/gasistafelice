@@ -95,7 +95,7 @@ class Block(BlockSSDataTables):
                'product' : el.product,
                'price' : floatformat(el.order_price, 2),
                'tot_gasmembers' : el.tot_gasmembers,
-               'tot_amount' : el.ordered_amount,
+               'tot_amount' : el.tot_amount,
                'tot_price' : el.tot_price,
 #               'field_enabled' : "%s %s" % (form['id'], form['enabled']),
 
@@ -114,9 +114,9 @@ class Block(BlockSSDataTables):
             if el.tot_price > 0:
                 records.append({
                    'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
-                   'price' : floatformat(el.gasstock.price, 2),
+                   'price' : floatformat(el.order_price, 2),
                    'tot_gasmembers' : el.tot_gasmembers,
-                   'tot_amount' : el.ordered_amount,
+                   'tot_amount' : el.tot_amount,
                    'tot_price' : floatformat(el.tot_price, 2),
                 })
 
@@ -144,7 +144,7 @@ class Block(BlockSSDataTables):
             'order' : order,
             'records' : self._get_pdfrecords(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
             'user' : self.request.user,
-            'total_amount' : self.resource.total_ordered, #da Model da confrontare con il calcolato
+            'total_amount' : self.resource.tot_price, #da Model da confrontare con il calcolato
         }
 
         REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME

@@ -4,6 +4,7 @@ from django.core import urlresolvers
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.auth import CREATE
 from gasistafelice.gas.models import GAS
+from gasistafelice.des.models import Siteattr
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -23,7 +24,8 @@ class Block(BlockWithList):
 
         user_actions = []
 
-        if request.user.has_perm(CREATE, obj=GAS):
+        des = Siteattr.get_site()
+        if request.user.has_perm(CREATE, obj=GAS, des=des):
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

@@ -5,7 +5,7 @@
     [
 
         "{{row.product|escapejs}}",
-        "&#8364; {{ row.price|escapejs }}",
+        "&#8364; {{ row.order_price|floatformat:"2"|escapejs }}",
         "{{row.tot_gasmembers|escapejs}}",
         "{{row.tot_amount|escapejs}}",
         "&#8364; {{ row.tot_price|escapejs }}",

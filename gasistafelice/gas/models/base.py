@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.conf import settings
 
 from permissions.models import Role
 from workflows.models import Workflow
@@ -29,7 +31,6 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
-from django.db.models.signals import post_save
 
 class GAS(models.Model, PermissionResource):
 
@@ -475,7 +476,11 @@ class GASMember(models.Model, PermissionResource):
         unique_together = (('gas', 'id_in_gas'), )
 
     def __unicode__(self):
-        return _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
+            
+        rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
+        if settings.DEBUG:
+            rv += " [%s]" % self.pk
+        return rv
    
 
     def _get_roles(self):
@@ -674,7 +679,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return unicode(self.stock)
+        return self.stock
 
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)

@@ -58,6 +58,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
     class Meta:
         app_label = 'gas'
         
+    def __init__(self, *args, **kw):
+        super(GASSupplierOrder, self).__init__(*args, **kw)
+        self._msg = None
+
     def __unicode__(self):
         if self.date_end is not None:
             fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.date_end)
@@ -68,15 +72,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             state = _("open")
 
-        return _("Order %(gas)s to %(supplier)s (%(state)s)") % {
+        rv = _("Order %(gas)s to %(supplier)s (%(state)s)") % {
                     'gas' : self.gas,
                     'supplier' : self.supplier,
                     'state' : state
         }
-
-    def __init__(self, *args, **kw):
-        super(GASSupplierOrder, self).__init__(*args, **kw)
-        self._msg = None
+        if settings.DEBUG:
+            rv += " [%s]" % self.pk
+        return rv
 
     #-------------------------------------------------------------------------------#
     # Model Archive API
@@ -137,10 +140,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
 
         if not self.pact.gas.config.auto_populate_products:
-            self._msg.append('Configuration of auto generation of the product\'s order is not abilitated. To automatism the procedure set auto_populate_products to True')
+            self._msg.append(ugettext("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
             return
 
-        #stocks = GASSupplierStock.objects.filter(pact=self.pact, gasstock__supplier=self.pact.supplier)
         stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
             if s.enabled:
@@ -186,9 +188,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append('Deleting gas member %s(%s) email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.pk, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                self._msg.append(ugettext('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 gmo.delete()
-            self._msg.append('Deleted gas members orders(%s) for total of %s' % (count, total))
+            self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))
             gsop.delete()
 
 
@@ -263,12 +265,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def gasstocks(self):
         return self.gasstock_set.all()
 
-    #
     @property
-    def total_ordered(self):
+    def tot_price(self):
         tot = 0
         for gmo in self.ordered_products:
-            tot += gmo.tot_price #ordered_price
+            tot += gmo.tot_price
         return tot
 
     def save(self, *args, **kw):
@@ -317,8 +318,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
     maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0)
+    # the price of the Product at the time the GASSupplierOrder was created
+    initial_price = CurrencyField()
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
-    order_price = CurrencyField(null=True, blank=True)
+    order_price = CurrencyField()
     # the actual price of the Product (as resulting from the invoice)
     delivered_price = CurrencyField(null=True, blank=True)
     # how many items were actually delivered by the Supplier 
@@ -330,12 +333,14 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        return unicode(self.gasstock)
-        #return force_unicode(self.stock)
+        rv = _("%(gasstock)s of order %(order)s") % { 'gasstock' : self.gasstock, 'order' : self.order}
+        if settings.DEBUG:
+            rv += " [%s]" % self.pk
+        return rv
 
     # how many items of this kind were ordered (globally by the GAS)
     @property
-    def ordered_amount(self):
+    def tot_amount(self):
         # grab all GASMemberOrders related to this product and issued by members of the right GAS
         gmo_list = self.gasmember_order_set.values('ordered_amount')
         amount = 0 
@@ -348,16 +353,17 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         return self.gasmember_order_set.count()
 
     @property
-    def ordered_price(self):
-        return self.order_price
-
-    @property
     def tot_price(self):
-        # grab all GASMemberOrders related to this product and issued by members of the right GAS
-        gmo_list = self.gasmember_order_set.all() #values('ordered_price')
+        """Grab all GASMemberOrders related to this orderable product"""
+
+        #INFO: i.e. if you want to optimize this method you could write:
+        #INFO: self.gasmember_order_set.values('ordered_price', 'ordered_amount')
+        #INFO: and compute tot_price in here.
+        
+        gmo_list = self.gasmember_order_set.all()
         amount = 0 
         for gmo in gmo_list:
-            amount += gmo.tot_price # gmo['ordered_price']
+            amount += gmo.tot_price
         return amount 
 
     @property
@@ -376,6 +382,12 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     def stock(self):
         return self.gasstock.stock
     
+    def save(self, *args, **kw):
+        """Sef default initial price"""
+        if not self.pk:
+            self.initial_price = self.order_price
+        super(GASSupplierOrderProduct, self).save(*args, **kw)
+
 class GASMemberOrder(models.Model, PermissionResource):
 
     """An order made by a GAS member in the context of a given GASSupplierOrder.
@@ -387,9 +399,9 @@ class GASMemberOrder(models.Model, PermissionResource):
     purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set")
     ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set")
     # price of the Product at order time
-    ordered_price = CurrencyField(null=True, blank=True)
+    ordered_price = CurrencyField()
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.PositiveIntegerField(null=True, blank=True)
+    ordered_amount = models.PositiveIntegerField()
     # how many Product units were withdrawn by the GAS member 
     withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
     # gasmember order have to be confirmed if GAS configuration allowed it
@@ -403,23 +415,23 @@ class GASMemberOrder(models.Model, PermissionResource):
         verbose_name_plural = _('GAS member orders')
 
     def __unicode__(self):
-        return unicode(self.product)
+        return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.purchaser }
     
     def confirm(self):
         self.is_confirmed = True
 
-    # how much the GAS member actually payed for this Product for the amount of quantity
+    @property
+    def has_changed(self):
+        return self.ordered_product.order_price != self.ordered_price
+
     @property
     def tot_price(self):
-        if (not self.ordered_price is None) & (not self.ordered_amount is None):
-            return self.ordered_price * self.ordered_amount
-        else:
-            return 0
+        """Ordered price per ordered amount for this ordered product"""
+        return self.ordered_product.order_price * self.ordered_amount
 
     @property
     def product(self):
-        #return self.ordered_product.stock.product
-        return self.ordered_product.gasstock.product
+        return self.ordered_product.product
 
     @property
     def supplier(self):
@@ -429,20 +441,15 @@ class GASMemberOrder(models.Model, PermissionResource):
     def email(self):
         return self.purchaser.email
 
-    # how much the GAS member actually payed for this Product (as resulting from the invoice)
-    #FIXME: ordered_price? it is the "price of the Product at order time" or it is the Total payed (order price * quantity)???
-    @property
-    def actual_price(self):
-        return self.ordered_product.delivered_price
-    
-    # GASSupplierOrder this GASMemberOrder belongs to
     @property
     def order(self):
+        """GASSupplierOrder this GASMemberOrder belongs to."""
+
         return self.ordered_product.order
 
-    # which GAS this order was issued to ? 
     @property
     def gas(self):
+        """Which GAS this order belongs"""
         return self.purchaser.gas
 
     # Workflow management
@@ -462,6 +469,10 @@ class GASMemberOrder(models.Model, PermissionResource):
         do_transition(self, transition, user)
  
     def save(self, *args, **kw):
+
+        # Delete a GAS Member order if amount == 0
+        if not self.ordered_amount:
+            return self.delete()
 
         if not self.workflow:
             # Set default workflow

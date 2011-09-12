@@ -1,9 +1,12 @@
 {% extends "blocks/base/report.html" %}
+{% load i18n %}
 
 {%block page_header%}
    <div>
-    <h1>Gasista {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
-    <h2>Stampato da {{ user.person }}</h2>
+    {% blocktrans %}
+        <h1>Gasista {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
+        <h2>Stampato da {{ user.person }}</h2>
+    {% endblocktrans %}
    </div>
 <hr />
 {%endblock%}
@@ -11,33 +14,28 @@
 {%block content%}
 <table>
 <thead>
-    <th>Ordine</th>
-    <th>Produttore</th>
-    <th>prodotto</th>
-    <th>Prezzo</th>
-    <th>Quantit&agrave;</th>
-    <th>Da pagare</th>
+    <th>{% trans "Order" %}</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Product" %}</th>
+    <th>{% trans "Unit price" %}</th>
+    <th>{% trans "Amount" %}</th>
+    <th>{% trans "Total price" %}</th>
 </thead>
 <tbody>
 
     {% for row in records %}
-        {% if row.tpayed > 0  %}
-
-            <tr>
-                <td>{{row.order}}</td>
-                <td>{{row.supplier}}</td>
-                <td>{{row.product}}</td>
-                <td>{{row.price}}</td>
-                <td>{{row.amount}}</td>
-                <td>{{row.payed}}</td>
-            </tr>
-
-        {%  endif %}
+        <tr>
+            <td>{{row.order}}</td>
+            <td>{{row.supplier}}</td>
+            <td>{{row.product}}</td>
+            <td>{{row.price}}</td>
+            <td>{{row.amount}}</td>
+            <td>{{row.tot_price}}</td>
+        </tr>
     {%  endfor %}
 
     <tr>
-        <td>TOTALE ORDINE</td>
-        <td> </td>
+        <td colspan="2">{% trans "Total cost" %}</td>
         <td>{{total_amount}}</td>
     </tr>
 </tbody>
@@ -47,5 +45,3 @@
 {%block page_foot%}
 <pdf:pagenumber>
 {%endblock%}
-
-

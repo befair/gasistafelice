@@ -236,14 +236,15 @@ class SingleGASMemberOrderForm(forms.Form):
             gmo.ordered_price = self.cleaned_data.get('ordered_price')
             gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
             gmo.save()
-        else:
-            gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
-            gmo = GASMemberOrder(
-                    ordered_product = gssop,
-                    ordered_price = self.cleaned_data.get('ordered_price'),
-                    ordered_amount = self.cleaned_data.get('ordered_amount'),
-                    purchaser = self.__gm,
-            )
-            gmo.save()
+
+        elif self.cleaned_data.get('ordered_amount'):
+                gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
+                gmo = GASMemberOrder(
+                        ordered_product = gssop,
+                        ordered_price = self.cleaned_data.get('ordered_price'),
+                        ordered_amount = self.cleaned_data.get('ordered_amount'),
+                        purchaser = self.__gm,
+                )
+                gmo.save()
 
 
