@@ -60,6 +60,10 @@ class Block(BlockSSDataTables):
         # to get GASSupplierOrderProduct or GASSupplierStock respectively
         return request.resource.orderable_products
 
+    def _get_resource_pdflist(self, request):
+        return request.resource.ordered_products
+
+
     def _get_edit_multiple_form_class(self):
         return GASSupplierOrderProductFormSet
 
@@ -132,11 +136,13 @@ class Block(BlockSSDataTables):
             
     def _create_pdf(self):
 
+        #'records' : self._get_pdfrecords(self._get_resource_list(self.request)), #ho usato get_records, ma puoi produrre i record come preferisci
+
         # Dati di esempio
         order = self.resource.order
         context_dict = {
             'order' : order,
-            'records' : self._get_pdfrecords(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), #ho usato get_records, ma puoi produrre i record come preferisci
+            'records' : self._get_pdfrecords(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
             'user' : self.request.user,
             'total_amount' : self.resource.total_ordered, #da Model da confrontare con il calcolato
         }

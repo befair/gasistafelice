@@ -3,7 +3,7 @@
 {%block page_header%}
    <div>
     <h1>Ordine {{ order.id }} - {{ order }}</h1>
-    <h2>Stampato da {{ user.person }}</h2>
+    <h2>Stampato da {{ user.userprofile }}</h2>
    </div>
 <hr />
 {%endblock%}
@@ -13,7 +13,7 @@
 <thead>
     <th>Prodotto</th>
     <th>Prezzo Un</th>
-    <th>Membri</th>
+    <th>N° gassisti</th>
     <th>Quantit&agrave;</th>
     <th>Prezzo totale</th>
 </thead>

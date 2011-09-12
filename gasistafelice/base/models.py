@@ -54,7 +54,7 @@ class Resource(object):
     @property
     def urn(self):
         """Unique resource name"""
-        return "%s/%s" % (self.resource_type, self.pk)
+        return '%s/%s' % (self.resource_type, self.pk)
     
     @property
     def ancestors(self):
