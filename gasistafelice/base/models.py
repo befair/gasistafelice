@@ -16,6 +16,7 @@ from history.models import HistoricalRecords
 
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
 from gasistafelice.auth.models import PermissionBase # mix-in class for permissions management
+from gasistafelice.auth.exceptions import WrongPermissionCheck
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
@@ -339,7 +340,8 @@ class PermissionResource(Resource, PermissionBase):
     pass
 
 class Person(models.Model, PermissionResource):
-    """A Person is an anagraphic record of a human being.
+    """
+    A Person is an anagraphic record of a human being.
     It can be a User or not.
     """
 
@@ -528,7 +530,40 @@ class Person(models.Model, PermissionResource):
         if self.uuid == '':
             self.uuid = None
         super(Person, self).save(*args, **kwargs)
-
+        
+    #----------------- Authorization API ------------------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new Person in a DES ?
+        # * DES administrators
+        try:
+            des = context['des']
+            allowed_users = des.admins            
+            return user in allowed_users 
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+        
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit a Person in a DES ?
+        # * the person itself
+        # * administrators of one of the DESs this person belongs to
+        des_admins = []
+        for des in self.des_list:
+            des_admins += des.admins
+        allowed_users = list(des_admins) + [self.user]
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a Person from the system ?
+        allowed_users = [self.user]
+        return user in allowed_users      
+    
+        
+    #-----------------------------------------------------#
    
 class Contact(models.Model, PermissionResource):
 
@@ -561,7 +596,7 @@ class Place(models.Model, PermissionResource):
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
     city = models.CharField(max_length=128)
-    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"))
+    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)")) 
         
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(null=True, blank=True)
@@ -590,6 +625,47 @@ class Place(models.Model, PermissionResource):
                 #COMMENT LF: This never occur because in form we check that name or address have been set
                 self.name = u"%s (%s)" % (self.city, self.province)
         super(Place, self).save(*args, **kw)
+        
+        #----------------- Authorization API ------------------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new Place in a DES ?
+        # * DES administrators
+        # * GAS members
+        # * Suppliers 
+        
+        try:
+            des = context['des']
+            all_gas_members = set()
+            for gas in des.gas_list:
+                all_gas_members = gas.members | all_gas_members
+            all_suppliers = set()
+            for supplier in des.suppliers:
+                all_suppliers = supplier.referrers_as_users | all_suppliers
+            allowed_users =  des.admins | all_gas_members | all_suppliers
+            return user in allowed_users 
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+                
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of an existing place in a DES ?
+        # (note that places can be shared among GASs)
+        # * DES administrators
+        allowed_users =  self.des.admins
+        return user in allowed_users
+        
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing place from a DES ?
+        # (note that places can be shared among GASs)
+        # * DES administrators
+        allowed_users =  self.des.admins
+        return user in allowed_users       
+                
+    #-----------------------------------------------------#
 
 # Generic workflow management
 
