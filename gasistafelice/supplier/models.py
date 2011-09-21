@@ -22,6 +22,7 @@ from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
+from gasistafelice.auth.models import ParamRole
 
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
@@ -112,6 +113,17 @@ class Supplier(models.Model, PermissionResource):
     @property
     def persons(self):
         return self.referrer_set.all()
+    
+    @property
+    def referrers_as_users(self):
+        """
+        Return all users being referrers for this supplier.
+        """
+        # retrieve 'Supplier Referrer' parametric role for this supplier
+        pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=self)
+        # retrieve all Users having this role
+        return pr.get_users()       
+
 
     display_fields = (
         seat, vat_number, website, flavour, 
