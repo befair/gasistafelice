@@ -28,3 +28,13 @@ class RoleParameterWrongSpecsProvided(Exception):
     def __str__(self):
         return _("Wrong specs %(s)s for role %(r)s") % \
                     { 's' : self.param_specs, 'r' : self.role_name }
+
+class WrongPermissionCheck(Exception):
+    def __init__(self, perm, obj, context):
+        self.perm = perm
+        self.obj = obj
+        self.context = context
+
+    def __str__(self):
+        return _("Can't check permission %(perm)s on object %(obj)s with respect to context (ctx)s") % \
+                    { 'perm' : self.perm, 'obj' : self.obj, 'ctx' : self.context }
