@@ -19,6 +19,7 @@ from gasistafelice.base.models import Person
 from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
+from gasistafelice.auth.exceptions import WrongPermissionCheck
 
 from django.conf import settings
 
@@ -97,7 +98,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return not self.is_active()
     
     #-------------------------------------------------------------------------------#    
-    # Authorization API
 
     @property
     def referrers(self):
@@ -108,15 +108,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         pr = ParamRole.get_role(GAS_REFERRER_ORDER, order=self)
         # retrieve all Users having this role
         return pr.get_users()       
-    
-    # Table-level CREATE permission    
-    @classmethod
-    def can_create(cls, user, **kwargs):
-        # TODO FIXME AFTER 6
-        # Needs to answer "yes but with some restrictions" ?!?
-        
-        return user.username == 'gm14'
- 
+
     #-------------------------------------------------------------------------------#
 
     @property
@@ -295,6 +287,42 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if created:
             self.set_default_gasstock_set()
+            
+        
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a supplier order in a GAS ?
+        # * GAS administrators
+        # *  referrers for the pact the order is placed against
+        try:
+            pact = context['pact']
+            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a supplier order in a GAS ?
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against
+        # * GAS administrators
+        allowed_users = self.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can edit details of a supplier order in a GAS ?
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against
+        # * GAS administrators  
+        allowed_users = self.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return user in allowed_users 
+    
+    #-----------------------------------------------#
 
     display_fields = (
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
@@ -367,6 +395,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         return amount 
 
     @property
+    def pact(self):
+        return self.order.pact
+
+    @property
     def gas(self):
         return self.order.pact.gas
 
@@ -387,6 +419,41 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         if not self.pk:
             self.initial_price = self.order_price
         super(GASSupplierOrderProduct, self).save(*args, **kw)
+        
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new product to a supplier order in a GAS ?
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against
+        # * GAS administrators        
+        try:
+            order = context['order']
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of product associated with a supplier order in a GAS ?
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against
+        # * GAS administrators        
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a product associated with a supplier order in a GAS ?
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against
+        # * GAS administrators    
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers        
+        return user in allowed_users 
+    
 
 class GASMemberOrder(models.Model, PermissionResource):
 
@@ -483,7 +550,43 @@ class GASMemberOrder(models.Model, PermissionResource):
             self.is_confirmed = True
 
         return super(GASMemberOrder, self).save(*args, **kw)
-
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can issue an order *to* a GAS ?
+        # *  members of that GAS
+        try:
+            order = context['order']
+            allowed_users = order.gas.members
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can modify an order placed by a GAS member ?
+        # * the member itself (of course)
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against 
+        # * GAS administrators                
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an order placed by a GAS member ?
+        # * the member itself (of course)
+        # * order referrers (if any)
+        # * referrers for the pact the order is placed against 
+        # * GAS administrators                
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
+        return user in allowed_users
+    
+    #---------------------------------------------------#
+     
 
 class Appointment(models.Model):
     """
@@ -543,10 +646,17 @@ class Delivery(Appointment, PermissionResource):
         """
         Return a QuerySet containing all GAS sharing this delivery appointment. 
         """
-        pass
+        # TODO
+        raise NotImplementedError
     
+    @property
+    def des(self):
+        """
+        The DES this delivery appointment refers to.
+        """
+        # TODO
+        raise NotImplementedError
 #-------------------------------------------------------------------------------#   
-# Authorization API
 
     @property
     def referrers_users(self):
@@ -564,6 +674,80 @@ class Delivery(Appointment, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)      
     
 #-------------------------------------------------------------------------------#
+
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can schedule a new delivery appointment for a GAS ?
+        # * pact referrers (all)
+        # * order referrers (all, if any)
+        # * GAS administrators       
+        try:
+            gas = context['gas']
+            pact_referrers_all = list(gas.supplier_referrers)
+            order_referrers_all = []
+            for order in GASSupplierOrder.objects.active(): #TODO: implement ``.active()`` on ``OrderManager``
+                order_referrers_all += order.referrers               
+            allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can modify a delivery appointment ?
+        # (remember that they can be shared among orders and GASs)
+        # 1) If only one supplier order is currently associated with this appointment:
+        #     * order referrers (if any) 
+        #     * referrers for the pact that order is placed against
+        #     * GAS administrators
+        # 2) If more than one order is currently associated with this appointment,
+        #    but they belogns to the same GAS:
+        #     * GAS administrators            
+        # 3) ELSE:
+        #     * DES administrators
+        associated_orders = self.order_set.all()  
+        if len(associated_orders) == 1:
+            order = associated_orders[0] 
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+        elif len(self.gas_set) == 1:
+            gas = self.gas_set[0]
+            allowed_users = gas.tech_referrers
+        else: 
+            allowed_users = self.des.admins
+            
+        return user in allowed_users
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a delivery appointment ?
+        # (remember that they can be shared among orders and GASs)
+        # 1) If only one supplier order is currently associated with this appointment:
+        #     * order referrers (if any) 
+        #     * referrers for the pact that order is placed against
+        #     * GAS administrators
+        # 2) If more than one order is currently associated with this appointment,
+        #    but they belogns to the same GAS:
+        #     * GAS administrators            
+        # 3) ELSE:
+        #     * DES administrators
+        associated_orders = self.order_set.all()  
+        if len(associated_orders) == 1:
+            order = associated_orders[0] 
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+        elif len(self.gas_set) == 1:
+            gas = self.gas_set[0]
+            allowed_users = gas.tech_referrers
+        else: 
+            allowed_users = self.des.admins
+            
+        return user in allowed_users
+    
+        
+    #---------------------------------------------------#
+     
     
 
 class Withdrawal(Appointment, PermissionResource):
@@ -598,15 +782,24 @@ class Withdrawal(Appointment, PermissionResource):
                     'place':self.place
         }
     
+    
     @property
     def gas_set(self):
         """
         Return a QuerySet containing all GAS sharing this withdrawal appointment. 
         """
-        pass
-
+        # TODO
+        raise NotImplementedError
+    
+    @property
+    def des(self):
+        """
+        The DES this withdrawal appointment refers to.
+        """
+        # TODO
+        raise NotImplementedError
+    
 #-------------------------------------------------------------------------------#   
-# Authorization API
 
     @property
     def referrers_users(self):
@@ -624,3 +817,76 @@ class Withdrawal(Appointment, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)  
          
 #-------------------------------------------------------------------------------#
+
+
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can schedule a new withdrawal appointment for a GAS ?
+        # * pact referrers (all)
+        # * order referrers (all, if any)
+        # * GAS administrators       
+        try:
+            gas = context['gas']
+            pact_referrers_all = list(gas.supplier_referrers)
+            order_referrers_all = []
+            for order in GASSupplierOrder.objects.active(): #TODO: implement ``.active()`` on ``OrderManager``
+                order_referrers_all += order.referrers               
+            allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can modify a withdrawal appointment ?
+        # (remember that they can be shared among orders and GASs)
+        # 1) If only one supplier order is currently associated with this appointment:
+        #     * order referrers (if any) 
+        #     * referrers for the pact that order is placed against
+        #     * GAS administrators
+        # 2) If more than one order is currently associated with this appointment,
+        #    but they belogns to the same GAS:
+        #     * GAS administrators            
+        # 3) ELSE:
+        #     * DES administrators
+        associated_orders = self.order_set.all()  
+        if len(associated_orders) == 1:
+            order = associated_orders[0] 
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+        elif len(self.gas_set) == 1:
+            gas = self.gas_set[0]
+            allowed_users = gas.tech_referrers
+        else: 
+            allowed_users = self.des.admins
+            
+        return user in allowed_users
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a withdrawal appointment ?
+        # (remember that they can be shared among orders and GASs)
+        # 1) If only one supplier order is currently associated with this appointment:
+        #     * order referrers (if any) 
+        #     * referrers for the pact that order is placed against
+        #     * GAS administrators
+        # 2) If more than one order is currently associated with this appointment,
+        #    but they belogns to the same GAS:
+        #     * GAS administrators            
+        # 3) ELSE:
+        #     * DES administrators
+        associated_orders = self.order_set.all()  
+        if len(associated_orders) == 1:
+            order = associated_orders[0] 
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+        elif len(self.gas_set) == 1:
+            gas = self.gas_set[0]
+            allowed_users = gas.tech_referrers
+        else: 
+            allowed_users = self.des.admins
+            
+        return user in allowed_users
+            
+    #---------------------------------------------------#

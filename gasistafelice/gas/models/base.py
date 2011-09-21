@@ -18,6 +18,7 @@ from gasistafelice.base.const import DAY_CHOICES
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 from gasistafelice.auth.utils import register_parametric_role 
 from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
@@ -101,27 +102,36 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
-    #-- Permission management --#
+    #-- Authorization API --#
     
     # Table-level CREATE permission    
     @classmethod
-    def can_create(cls, user, **kwargs):
-        ## only DES administrators can create a new GAS in a DES
+    def can_create(cls, user, context):
+        # Who can create a new GAS in a DES ?
+        # * DES administrators
         try:
-            des = kwargs['des']
+            des = context['des']
+            allowed_users =  des.admins
+            return user in allowed_users
         except KeyError:
             raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
-        return user in des.admins
     
     # Row-level EDIT permission
-    def can_edit(self, user, **kwargs):
-        # only GAS tech referrers and DES administrators can edit GAS details
-        return (user in self.tech_referrers) or (user in self.des.admins) 
+    def can_edit(self, user, context):
+        # Who can edit details of an existing GAS ?
+        # * GAS tech referrers
+        # * administrators of the DES that GAS belongs to
+        allowed_users =  self.tech_referrers | self.des.admins
+        return user in allowed_users  
     
     # Row-level DELETE permission
-    def can_delete(self, user, **kwargs):
-        # only DES administrators can delete a GAS in a DES
-        return user in self.des.admins
+    def can_delete(self, user, context):
+        # Who can delete an existing GAS from a DES ?
+        # * administrators of the DES that GAS belongs to
+        allowed_users = self.des.admins
+        return user in allowed_users
+            
+    #--------------------------#
     
     #-- Properties --#
 
@@ -660,6 +670,38 @@ class GASMember(models.Model, PermissionResource):
     def orderable_products(self):
         from gasistafelice.gas.models import GASSupplierOrderProduct
         return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+    
+    #-- Authorization API --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new Person to a GAS ?
+        # * administrators for that GAS
+        try:
+            gas = context['gas']
+            allowed_users = gas.tech_referrers
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a GAS member ?
+        # * the member itself
+        # * tech referrers for that GAS
+        allowed_users = list(self.gas.tech_referrers) + [self.person.user] 
+        return user in allowed_users  
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can remove a member from a GAS ?
+        # * tech referrers for that GAS
+        allowed_users = self.gas.tech_referrers  
+        return user in allowed_users
+         
+    #--------------------------#
+    
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -684,7 +726,11 @@ class GASSupplierStock(models.Model, PermissionResource):
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)
         self._msg = None
-
+    
+    @property
+    def gas(self):
+        return self.pact.gas
+    
     @property
     def supplier(self):
         return self.stock.supplier
@@ -754,8 +800,39 @@ class GASSupplierStock(models.Model, PermissionResource):
         print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact=self.pact)
-
-
+    
+    #-- Authorization API --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new supplier stock for a GAS ?
+        # * referrers for the pact the supplier stock is associated to
+        # * GAS administrators
+        try:
+            pact = context['pact']
+            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
+            return allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details for an existing supplier stock for a GAS ?
+        # * referrers for the pact the supplier stock is associated to
+        # * GAS administrators 
+        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return allowed_users
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing supplier stock for a GAS ?
+        # * referrers for the pact the supplier stock is associated to
+        # * GAS administrators 
+        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return allowed_users
+    
+    
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
@@ -922,29 +999,37 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def gas_supplier_referrers_persons(self):
         return self.persons.filter(user__in=self.gas_supplier_referrers)
 
-    #-- Permission management --#
+    #-- Authorization API --#
     
     # Table-level CREATE permission    
     @classmethod
-    def can_create(cls, user, **kwargs):
-        ## GAS administrators, GAS referres and GAS supplier referrers (of other pacts)
-        ## can create a new pact for their GAS
+    def can_create(cls, user, context):
+        # Who can create a a new pact for a GAS ?
+        # * GAS supplier referrers (of other pacts)
+        # * GAS referrers
+        # * GAS administrators
         try:
-            gas = kwargs['gas']
+            gas = context['gas']
+            allowed_users = gas.tech_referrers | gas.referrers | gas.supplier_referrers 
+            return allowed_users
         except KeyError:
-            raise SyntaxError("You need to specify a 'gas' argument to perform this permission check.")
-        return (user in gas.tech_referrers) or (user in gas.referrers) or (user in gas.supplier_referrers)
+            raise WrongPermissionCheck('CREATE', self, context)
  
     # Row-level EDIT permission
-    def can_edit(self, user, **kwargs):
-        # only GAS technical referrers and referrers for this pact can edit pact details
-        return (user in self.gas.tech_referrers) or (user in self.gas_supplier_referrers) 
+    def can_edit(self, user, context):
+        # Who can edit details for a pact in a GAS ?
+        # * GAS administrators 
+        # * referrers for that pact
+        allowed_users = self.gas.tech_referrers | self.gas.supplier_referrers 
+        return allowed_users 
     
     # Row-level DELETE permission
-    def can_delete(self, user, **kwargs):
-        # only GAS technical referrers can delete a pact in a GAS
-        return user in self.gas.tech_referrers       
-
+    def can_delete(self, user, context):
+        # Who can delete a pact in a GAS ?
+        # * GAS administrators 
+        allowed_users = self.gas.tech_referrers 
+        return allowed_users 
+    
 
 #-------------------------------------------------------------------------------
 def setup_data(sender, instance, created, **kwargs):
