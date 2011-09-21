@@ -304,6 +304,30 @@ class DES(Site, Resource):
     def basket(self):
         from gasistafelice.gas.models.order import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new DES ?
+        # * Only a MegaSuperUser ! ;-)
+        return False # superusers skip every access-control check
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit DES details ?
+        # * DES administrators
+        allowed_users = self.admins            
+        return user in allowed_users
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a DES ?
+        # "DESs shouldn't die, only born" !  
+        return False
+            
+    #---------------------------------------------------#
 
 class Siteattr(models.Model):
 
