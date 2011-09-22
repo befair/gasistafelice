@@ -6,7 +6,6 @@ from gasistafelice.supplier.models import Supplier, Product, ProductCategory, Pr
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.models.order import GASSupplierOrder, Delivery, Withdrawal, GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.des.models import DES, Siteattr
-from gasistafelice.bank.models import Account, Movement
 
 from gasistafelice.exceptions import NoSenseException
 #-------------------------------------------------------------------------------
@@ -202,20 +201,6 @@ class ProductCategory(ProductCategory):
 
 #-------------------------------------------------------------------------------
 
-class Account(Account):
-    #TODO
-
-    class Meta:
-        proxy = True
-
-    @property
-    def accounts(self):
-        return Account.objects.filter(pk=self.pk)
-
-    @property
-    def transacts(self):
-        #return Movement.objects.filter(account=self)
-        raise NotImplementedError
 
 #TODO: des, gas, gasmember, supplier
 

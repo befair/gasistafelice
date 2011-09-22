@@ -13,7 +13,7 @@ DES_ADMIN = 'DES_ADMIN'
 
 ## QUESTION: Does the section below is useful/needed by some pieces of code in *Gasista Felice* ?
 
-# permission-related constants
+## permission-related constants
 VIEW = 'view'
 LIST = 'list'
 CREATE = 'create'
@@ -23,3 +23,16 @@ ALL = 'all' # catchall
 EDIT_MULTIPLE = 'edit_multiple'
 CONFIRM = 'confirm'
 
+## accounting-related constants
+# account types
+INCOME = 'INCOME'
+EXPENSE = 'EXPENSE'
+ASSET = 'ASSET'
+LIABILITY = 'LIABILITY'
+EQUITY = 'EQUITY'
+
+# transaction types
+INVOICE_PAYMENT = 'INVOICE_PAYMENT'
+INVOICE_COLLECTION = 'INVOICE_COLLECTION'
+GAS_MEMBER_RECHARGE = 'GAS_MEMBER_RECHARGE'
+MEMBERSHIP_FEE_PAYMENT = 'MEMBERSHIP_FEE_PAYMENT' 

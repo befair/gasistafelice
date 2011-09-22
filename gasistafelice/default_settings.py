@@ -98,8 +98,8 @@ INSTALLED_APPS = (
     'workflows',
     'history',
     'flexi_auth',
+    'accounting',
     'gasistafelice.base',
-    'gasistafelice.bank',
     'gasistafelice.supplier',
     'gasistafelice.gas',
     'gasistafelice.admin',
@@ -276,4 +276,26 @@ PERMISSIONS_CHOICES = (
 (EDIT_MULTIPLE, _('Edit multiple')),
 (DELETE, _('Delete')),
 (ALL, _('All')), # catchall
+)
+
+#--------------------- ACCOUNTING settings ----------------#
+SUBJECTIVE_MODELS = (
+    'gas.GAS',
+    'gas.GASMember',
+    'supplier.Supplier',                      
+)
+
+ACCOUNT_TYPES = (
+    (INCOME, _('Incomes')),
+    (EXPENSE, _('Expenses')),
+    (ASSET, _('Assets')),
+    (LIABILITY, _('Liabilities')),
+    (EQUITY, _('Equity')),     
+)
+
+TRANSACTION_TYPES = (
+     (INVOICE_PAYMENT, 'Payment of an invoice '),
+     (INVOICE_COLLECTION, 'Collection of an invoice'),
+     (GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
+     (MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
 )

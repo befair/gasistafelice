@@ -22,7 +22,6 @@ from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
-from gasistafelice.bank.models import Account
 from gasistafelice.des.models import DES
 
 from gasistafelice.lib.fields import display
@@ -47,12 +46,7 @@ class GAS(models.Model, PermissionResource):
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
     supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
-
-    #, editable=False: admin validation refers to field 'account_state' that is missing from the form
-    account = models.ForeignKey(Account, null=True, blank=True, related_name="bank_acc_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
-    #TODO: change name
-    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="bank_liq_set", help_text=_("GAS have is own bank account. "))
-
+    
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
     vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
@@ -466,7 +460,6 @@ class GASMember(models.Model, PermissionResource):
     gas = models.ForeignKey(GAS)
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
-    account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
     #TODO: Notify system
 
@@ -559,12 +552,9 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def economic_state(self):
-        st1 = self.total_basket
-        st2 = self.total_basket_to_be_delivered
-        if isinstance(self.account, Account):
-            return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
-        else:
-            return u"(%s + %s)"  % (st1, st2)
+        # QUESTION @domthu: what does this method is supposed to do ?
+        raise NotImplementedError
+
 
     @property
     def total_basket(self):
