@@ -6,3 +6,6 @@ doc*/build/
 .metatada/
 build/
 src/
+.settings/
+sqlite.db
+sqlite.db-journal
