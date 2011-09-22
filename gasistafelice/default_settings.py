@@ -119,6 +119,14 @@ INSTALLED_APPS = (
     
 )
 
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_ROOT, 'fixtures/auth/'),
+    os.path.join(PROJECT_ROOT, 'fixtures/base/'),
+    os.path.join(PROJECT_ROOT, 'fixtures/des/'),
+    os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
+    os.path.join(PROJECT_ROOT, 'fixtures/supplier/'),
+)
+
 THEME = "milky"
 AUTH_PROFILE_MODULE = 'users.UserProfile'
 URL_PREFIX = "gasistafelice/"
