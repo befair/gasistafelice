@@ -12,8 +12,7 @@ from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 from gasistafelice.gas.models.proxy import Siteattr
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
-from gasistafelice.auth import ROLES_DICT
-from gasistafelice.auth.models import ParamRole
+from flexi_auth.models import ROLES_DICT, ParamRole
 
 import time, datetime
 

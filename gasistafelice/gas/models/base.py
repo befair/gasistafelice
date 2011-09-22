@@ -15,10 +15,10 @@ from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
-from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
-from gasistafelice.auth.utils import register_parametric_role 
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.exceptions import WrongPermissionCheck
+from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
+from flexi_auth.utils import register_parametric_role 
+from flexi_auth.models import ParamRole
+from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager

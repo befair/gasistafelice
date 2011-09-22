@@ -20,10 +20,10 @@ from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.des.models import DES, Siteattr
 
-from gasistafelice.auth import SUPPLIER_REFERRER
-from gasistafelice.auth.utils import register_parametric_role
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.exceptions import WrongPermissionCheck
+from gasistafelice.consts import SUPPLIER_REFERRER
+from flexi_auth.utils import register_parametric_role
+from flexi_auth.models import ParamRole
+from flexi_auth.exceptions import WrongPermissionCheck
 
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""

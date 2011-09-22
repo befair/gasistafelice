@@ -13,10 +13,10 @@ from django.db.models import permalink
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
-from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
-from gasistafelice.auth.models import PermissionBase # mix-in class for permissions management
-from gasistafelice.auth.exceptions import WrongPermissionCheck
-from gasistafelice.auth.utils import get_parametric_roles
+from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
+from flexi_auth.models import PermissionBase # mix-in class for permissions management
+from flexi_auth.exceptions import WrongPermissionCheck
+from flexi_auth.utils import get_parametric_roles
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES

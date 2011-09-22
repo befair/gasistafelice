@@ -16,10 +16,10 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
 from gasistafelice.base.models import Person
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.utils import register_parametric_role
-from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_DELIVERY, GAS_REFERRER_WITHDRAWAL
-from gasistafelice.auth.exceptions import WrongPermissionCheck
+from gasistafelice.consts import *
+from flexi_auth.models import ParamRole
+from flexi_auth.utils import register_parametric_role
+from flexi_auth.exceptions import WrongPermissionCheck
 
 from django.conf import settings
 

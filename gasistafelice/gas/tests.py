@@ -11,10 +11,9 @@ from gasistafelice.gas.managers import GASMemberManager
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 
-from gasistafelice.auth import GAS_REFERRER, GAS_REFERRER_CASH, GAS_REFERRER_TECH, GAS_REFERRER_DELIVERY,\
-GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_SUPPLIER, GAS_REFERRER_ORDER 
-from gasistafelice.auth.models import ParamRole, Param
-from gasistafelice.auth.utils import register_parametric_role
+from gasistafelice.consts import * 
+from flexi_auth.models import ParamRole, Param
+from flexi_auth.utils import register_parametric_role
 
 from datetime import time, date, datetime
 

@@ -7,7 +7,7 @@ from gasistafelice.base import models as base_models
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
-from gasistafelice.auth import models as auth_models
+from flexi_auth import models as auth_models
 from gasistafelice.rest.models import pages as rest_models
 from gasistafelice.users import models as user_models
 

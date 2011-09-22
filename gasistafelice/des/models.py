@@ -22,9 +22,9 @@ from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import Resource
-from gasistafelice.auth import DES_ADMIN
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.utils import register_parametric_role
+from gasistafelice.consts import DES_ADMIN
+from flexi_auth.models import ParamRole
+from flexi_auth.utils import register_parametric_role
 
 import time
 
