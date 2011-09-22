@@ -244,10 +244,7 @@ class Certification(models.Model, PermissionResource):
         # Who can add a new certification ?
         # * DES administrators
         try:            
-            des_admins_all = set()
-            for des in DES.objects.all():
-                des_admins_all = des_admins_all | des.admins
-            allowed_users = des_admins_all
+            allowed_users = DES.admins_all()
             return user in allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', self, context)   
@@ -255,21 +252,15 @@ class Certification(models.Model, PermissionResource):
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of an existing certification ?
-        # * DES administrators         
-        des_admins_all = set()
-        for des in DES.objects.all():
-            des_admins_all = des_admins_all | des.admins        
-        allowed_users = des_admins_all
+        # * DES administrators    
+        allowed_users = DES.admins_all()    
         return user in allowed_users 
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing certification ?
         # * DES administrators
-        des_admins_all = set()
-        for des in DES.objects.all():
-            des_admins_all = des_admins_all | des.admins        
-        allowed_users = des_admins_all
+        allowed_users = DES.admins_all()
         return user in allowed_users     
         
     #-----------------------------------------------#
@@ -296,11 +287,8 @@ class ProductCategory(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a new category for products ?
         # * DES administrators
-        try:            
-            des_admins_all = set()
-            for des in DES.objects.all():
-                des_admins_all = des_admins_all | des.admins
-            allowed_users = des_admins_all
+        try:  
+            allowed_users = DES.admins_all()          
             return user in allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', self, context)   
@@ -308,21 +296,15 @@ class ProductCategory(models.Model, PermissionResource):
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of an existing category ?
-        # * DES administrators         
-        des_admins_all = set()
-        for des in DES.objects.all():
-            des_admins_all = des_admins_all | des.admins        
-        allowed_users = des_admins_all
+        # * DES administrators  
+        allowed_users = DES.admins_all()       
         return user in allowed_users 
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing category ?
         # * DES administrators
-        des_admins_all = set()
-        for des in DES.objects.all():
-            des_admins_all = des_admins_all | des.admins        
-        allowed_users = des_admins_all
+        allowed_users = DES.admins_all()
         return user in allowed_users
 
     #-----------------------------------------------#
@@ -353,10 +335,7 @@ class ProductMU(models.Model, PermissionResource):
         # Who can create a new unit of measure for products ?
         # * DES administrators
         try:            
-            des_admins_all = set()
-            for des in DES.objects.all():
-                des_admins_all = des_admins_all | des.admins
-            allowed_users = des_admins_all
+            allowed_users = DES.admins_all()
             return user in allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', self, context)   
@@ -365,20 +344,14 @@ class ProductMU(models.Model, PermissionResource):
     def can_edit(self, user, context):
         # Who can edit details of an existing unit of measure for products ?
         # * DES administrators         
-        des_admins_all = set()
-        for des in DES.objects.all():
-            des_admins_all = des_admins_all | des.admins        
-        allowed_users = des_admins_all
+        allowed_users = DES.admins_all()
         return user in allowed_users 
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing unit of measure for products ?
         # * DES administrators
-        des_admins_all = set()
-        for des in DES.objects.all():
-            des_admins_all = des_admins_all | des.admins        
-        allowed_users = des_admins_all
+        allowed_users = DES.admins_all()
         return user in allowed_users
 
     #-----------------------------------------------#

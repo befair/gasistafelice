@@ -93,11 +93,22 @@ class DES(Site, Resource):
         # retrieve 'DES administrator' parametric role for this DES
         pr = ParamRole.get_role(DES_ADMIN, des=self)
         # retrieve all Users having this role
-        return pr.get_users()       
+        return pr.get_users()
+    
+    @classmethod
+    def admins_all(cls):
+        """
+        Return all users being administrators for **any** DES.
+        """
+        #FIXME: use a descriptor to merge this functionality with that of ``DES.admins()``
+        des_admins_all = set()
+        for des in cls.objects.all():
+            des_admins_all = des_admins_all | des.admins
+        return des_admins_all               
     
         
     def setup_roles(self):
-        # register a new `DES_ADMIN` role for this DES
+        # register a new ``DES_ADMIN`` role for this DES
         register_parametric_role(name=DES_ADMIN, des=self)
     
 
