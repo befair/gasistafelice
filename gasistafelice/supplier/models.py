@@ -23,6 +23,7 @@ from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.auth import SUPPLIER_REFERRER
 from gasistafelice.auth.utils import register_parametric_role
 from gasistafelice.auth.models import ParamRole
+from gasistafelice.auth.exceptions import WrongPermissionCheck
 
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
@@ -122,7 +123,44 @@ class Supplier(models.Model, PermissionResource):
         # retrieve 'Supplier Referrer' parametric role for this supplier
         pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=self)
         # retrieve all Users having this role
-        return pr.get_users()       
+        return pr.get_users()
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new supplier in a DES ?
+        # * DES administrators
+        # * referrers and administrators of every GAS in the DES
+        try:
+            des = context['des']
+            all_gas_referrers = set()
+            all_gas_referrers_tech = set()
+            for gas in des.gas_list:
+                all_gas_referrers = all_gas_referrers | gas.referrers
+                all_gas_referrers_tech = all_gas_referrers_tech | gas.tech_referrers
+            allowed_users = des.admins | all_gas_referrers | all_gas_referrers_tech 
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a Supplier in a DES ?
+        # * DES administrators
+        # * referrers for that supplier        
+        allowed_users = self.des.admins | self.referrers_as_users
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can remove a supplier from a DES ?
+        # * DES administrators
+        allowed_users = self.des.admins
+        return user in allowed_users 
+    
+    #-----------------------------------------------#       
 
 
     display_fields = (
@@ -149,7 +187,45 @@ class SupplierReferrer(models.Model, PermissionResource):
         # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
         user = self.person.user
         role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        role.add_principal(user)     
+        role.add_principal(user)   
+        
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new referrer for an existing supplier in a DES ?
+        # * DES administrators
+        # * referrers and administrators of every GAS in the DES
+        try:
+            des = context['des']
+            all_gas_referrers = set()
+            all_gas_referrers_tech = set()
+            for gas in des.gas_list:
+                all_gas_referrers = all_gas_referrers | gas.referrers
+                all_gas_referrers_tech = all_gas_referrers_tech | gas.tech_referrers
+            allowed_users = des.admins | all_gas_referrers | all_gas_referrers_tech 
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+        
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a supplier referrer ?
+        # * DES administrators
+        # * the referrer itself
+        allowed_users = set(self.supplier.des.admins) | set(self.person.user) 
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a supplier referrer ?
+        # * DES administrators
+        # * other referrers for that supplier  
+        allowed_users = self.supplier.des.admins | self.supplier.referrers_as_users
+        return user in allowed_users 
+    
+    #-----------------------------------------------#  
     
 class Certification(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True) 
@@ -159,7 +235,45 @@ class Certification(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+
+#-------------- Authorization API ---------------#
     
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new certification ?
+        # * DES administrators
+        try:            
+            des_admins_all = set()
+            for des in DES.objects.all():
+                des_admins_all = des_admins_all | des.admins
+            allowed_users = des_admins_all
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of an existing certification ?
+        # * DES administrators         
+        des_admins_all = set()
+        for des in DES.objects.all():
+            des_admins_all = des_admins_all | des.admins        
+        allowed_users = des_admins_all
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing certification ?
+        # * DES administrators
+        des_admins_all = set()
+        for des in DES.objects.all():
+            des_admins_all = des_admins_all | des.admins        
+        allowed_users = des_admins_all
+        return user in allowed_users     
+        
+    #-----------------------------------------------#
+
 
 class ProductCategory(models.Model, PermissionResource):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
@@ -174,6 +288,44 @@ class ProductCategory(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new category for products ?
+        # * DES administrators
+        try:            
+            des_admins_all = set()
+            for des in DES.objects.all():
+                des_admins_all = des_admins_all | des.admins
+            allowed_users = des_admins_all
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of an existing category ?
+        # * DES administrators         
+        des_admins_all = set()
+        for des in DES.objects.all():
+            des_admins_all = des_admins_all | des.admins        
+        allowed_users = des_admins_all
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing category ?
+        # * DES administrators
+        des_admins_all = set()
+        for des in DES.objects.all():
+            des_admins_all = des_admins_all | des.admins        
+        allowed_users = des_admins_all
+        return user in allowed_users
+
+    #-----------------------------------------------#
 
 class ProductMU(models.Model, PermissionResource):
     """Measurement unit for a Product."""
@@ -192,6 +344,45 @@ class ProductMU(models.Model, PermissionResource):
     class Meta():
         verbose_name="measurement unit"
         verbose_name_plural="measurement units"
+    
+        #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new unit of measure for products ?
+        # * DES administrators
+        try:            
+            des_admins_all = set()
+            for des in DES.objects.all():
+                des_admins_all = des_admins_all | des.admins
+            allowed_users = des_admins_all
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of an existing unit of measure for products ?
+        # * DES administrators         
+        des_admins_all = set()
+        for des in DES.objects.all():
+            des_admins_all = des_admins_all | des.admins        
+        allowed_users = des_admins_all
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing unit of measure for products ?
+        # * DES administrators
+        des_admins_all = set()
+        for des in DES.objects.all():
+            des_admins_all = des_admins_all | des.admins        
+        allowed_users = des_admins_all
+        return user in allowed_users
+
+    #-----------------------------------------------#
+
     
 
 class Product(models.Model, PermissionResource):
@@ -230,6 +421,36 @@ class Product(models.Model, PermissionResource):
     # Resource API
     #@property
     #def suppliers(self):
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new product to a supplier catalog ?
+        # * referrers for that supplier
+        try:
+            supplier = context['supplier']
+            allowed_users = supplier.referrers_as_users
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a product in a supplier catalog ?
+        # * referrers for that supplier
+        allowed_users = self.producer.referrers_as_users
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a product from a supplier catalog ?
+        # * referrers for that supplier
+        allowed_users = self.producer.referrers_as_users
+        return user in allowed_users 
+    
+    #-----------------------------------------------#
 
 class SupplierStock(models.Model, PermissionResource):
     """A Product that a Supplier offers in the DES marketplace.
@@ -330,6 +551,36 @@ class SupplierStock(models.Model, PermissionResource):
     @property
     def gasstocks(self):
         return self.gasstock_set.all()
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new stock to a supplier catalog ?
+        # * referrers for that supplier
+        try:
+            supplier = context['supplier']
+            allowed_users = supplier.referrers_as_users
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a stock in  a supplier catalog ?
+        # * referrers for that supplier
+        allowed_users = self.supplier.referrers_as_users
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a stock from  a supplier catalog ?
+        # * referrers for that supplier
+        allowed_users = self.supplier.referrers_as_users
+        return user in allowed_users 
+    
+    #-----------------------------------------------#
 
 
 class SupplierProductCategory(models.Model):
@@ -348,4 +599,33 @@ class SupplierProductCategory(models.Model):
  
     def __unicode__(self):
         return self.name
-
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new supplier-specific category ?
+        # * referrers for that supplier
+        try:
+            supplier = context['supplier']
+            allowed_users = supplier.referrers_as_users
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a supplier-specific category ?
+        # * referrers for that supplier
+        allowed_users = self.supplier.referrers_as_users
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a supplier-specific category ?
+        # * referrers for that supplier
+        allowed_users = self.supplier.referrers_as_users
+        return user in allowed_users 
+    
+    #-----------------------------------------------#
