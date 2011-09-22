@@ -640,10 +640,10 @@ class Place(models.Model, PermissionResource):
             des = context['des']
             all_gas_members = set()
             for gas in des.gas_list:
-                all_gas_members = gas.members | all_gas_members
+                all_gas_members = all_gas_members | gas.members 
             all_suppliers = set()
             for supplier in des.suppliers:
-                all_suppliers = supplier.referrers_as_users | all_suppliers
+                all_suppliers = all_suppliers | supplier.referrers_as_users  
             allowed_users =  des.admins | all_gas_members | all_suppliers
             return user in allowed_users 
         except KeyError:
