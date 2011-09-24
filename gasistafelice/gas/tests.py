@@ -43,40 +43,86 @@ class GASSupplierStockTest(TestCase):
         self.assertEqual(gss.price, 105)
 
 class GASMemberOrderTest(TestCase):
-    '''Test behaviour of managed attributes of GASMemberOrder'''
-    
+    '''Test behaviour of managed attributes of GASMemberOrder
+
+    Set of minimalistic anagrafical fixtures. In order to correct and clean setUp anagrafical data.
+    In order to be more readable and focus on TestCase itself
+
+    test.json give
+        2 GAS
+        each GAS have 2 gasmembers so 2 persons so 2 users
+        2 Producers and 2 suppliers
+        4 products
+        Supplier 1 produce 2 products and sell 2 products
+        Supplier 2 produce 2 products and sell 3 products (one is produce by producer 1)
+        SolidalPact between
+            GAS 1 <--> Supplier 1
+            GAS 1 <--> Supplier 2
+            GAS 2 <--> Supplier 1
+            a pact can be created between GAS 2 and Supplier 2 for some TestCase
+
+        Use runing $ python manage.py test gas.GASMemberOrderTest'''
+    fixtures = ['test.json']
+
     def setUp(self):
         self.now = date.today()
-        user = User.objects.create(username='Foo') 
-        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')        
-        self.person = Person.objects.create(name='John', surname='Smith', user=user)
-        self.member = GASMember.objects.create(person=self.person, gas=self.gas)
-        self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
-        self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
-        self.category = ProductCategory.objects.create(name='food') 
-        self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
-        self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
-        self.gas_stock = GASSupplierStock.objects.create(pact=self.pact, stock=self.stock)
+        self.pact = GASSupplierSolidalPact.objects.get(pk=1)
+        self.gas = self.pact.gas
+        self.member = self.gas.gasmembers[:1].get()
         self.order = GASSupplierOrder.objects.create(pact=self.pact, date_start=self.now)
-        self.ordered_product = GASSupplierOrderProduct.objects.create(order=self.order, stock=self.gas_stock)
-        
+        self.orderable_product = self.order.orderable_products[0]
+
+    def testDeliveredPrice(self):
+        '''Verify if actual delivered is computed correctly by auto populate 
+
+        in form we use el.gasstock.price'''
+        self.assertIsNotNone(not self.orderable_product.delivered_price)
+
     def testActualPrice(self):
-        '''Verify if actual price is computed correctly'''
-        self.ordered_product.delivered_price = 115
-        self.ordered_product.save()
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.ordered_product, ordered_amount=1)
-        self.assertEqual(gmo.actual_price, 115)
-        
+        '''Verify if actual price is computed correctly
+
+        Don't be confused:
+        orderable_product.initial_price: the price of the Product at the time the GASSupplierOrder was created
+        orderable_product.order_price: the price of the Product at the time the GASSupplierOrder was sent to the Supplier
+        orderable_product.delivered_price: the actual price of the Product (as resulting from the invoice)'''
+        self.orderable_product.delivered_price = 115
+        self.orderable_product.save()
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        self.assertEqual(gmo.tot_price, 115)
+
     def testOrder(self):
         '''Verify if SupplierOrder is computed correctly'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.ordered_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
         self.assertEqual(gmo.order, self.order)
         
     def testGAS(self):
         '''Verify if GAS is computed correctly'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, product=self.ordered_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
         self.assertEqual(gmo.gas, self.gas)
-        
+
+    def testAvoidDuplicateEntry(self):
+        '''Verify that entry are unique for together purchaser and order_product'''
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo.save()
+        gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+        gmo2.save()
+        gmos = GASMemberOrder.objects.filter(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product)
+        self.assertEqual(gmos.count(), 1)
+
+    def testCascadingEnablingProduct(self):
+        '''TODO Enable Supplier stock and verify cascading until GASSupplierOrderProduct (Added to list).'''
+        return True
+
+    def testCascadingDisablingProduct(self):
+        '''TODO Disable Supplier stock and verify cascading until GASMemberOrder (delete existing).'''
+        return True
+
+    def testControlPurchaserUserIsTheSamePerson(self):
+        '''TODO in form View: the logged user cannot insert GASMemberOrder for other user.'''
+        self.member2 = self.gas.gasmembers[1]
+        return True
+
+
 class GASSupplierOrderProductTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierOrderProduct'''
     
@@ -93,7 +139,7 @@ class GASSupplierOrderProductTest(TestCase):
         self.person_3 = Person.objects.create(name='Paul', surname='Black', user=user3)
         
         self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
-        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2')        
+        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2')
         
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
@@ -132,13 +178,13 @@ class GASSupplierOrderProductTest(TestCase):
         '''Verify if ordered amount is computed correctly'''
         # FIXME: perhaps a fixture would be a better way to initialize the environment 
         
-        GASMemberOrder.objects.create(purchaser=self.member_1, product=self.product_1, ordered_amount=1)
-        GASMemberOrder.objects.create(purchaser=self.member_1, product=self.product_2, ordered_amount=2)
-        GASMemberOrder.objects.create(purchaser=self.member_2, product=self.product_1, ordered_amount=4)
+        GASMemberOrder.objects.create(purchaser=self.member_1, ordered_price= self.product_1.order_price, ordered_product=self.product_1, ordered_amount=1)
+        GASMemberOrder.objects.create(purchaser=self.member_1, ordered_price= self.product_2.order_price, ordered_product=self.product_2, ordered_amount=2)
+        GASMemberOrder.objects.create(purchaser=self.member_2, ordered_price= self.product_1.order_price, ordered_product=self.product_1, ordered_amount=4)
         # In a real world scenario, this order shouldn't be allowed 
         # (i.e. a GAS member issuing an GASMemberOrder against a SupplierOrder opened by another GAS)
-        GASMemberOrder.objects.create(purchaser=self.member_3, product=self.product_1, ordered_amount=8)
-        GASMemberOrder.objects.create(purchaser=self.member_3, product=self.product_3, ordered_amount=16)
+        GASMemberOrder.objects.create(purchaser=self.member_3, ordered_price= self.product_1.order_price, ordered_product=self.product_1, ordered_amount=8)
+        GASMemberOrder.objects.create(purchaser=self.member_3, ordered_price= self.product_3.order_price, ordered_product=self.product_3, ordered_amount=16)
         
         self.assertEqual(self.product_1.ordered_amount, 5)
         
@@ -187,7 +233,7 @@ class GASSupplierOrderTest(TestCase):
 class GASMemberManagerTest(TestCase):
     """
     Tests for the `GASMemberManager` manager class
-    """  
+    """
 
     def setUp(self):
         today = date.today()
@@ -343,6 +389,7 @@ class GASMemberManagerTest(TestCase):
         self.p_role_2.add_principal(self.user_2)
         
         self.assertEqual(set(GASMember.objects.withdrawal_referrers()), set((self.member_1, self.member_2, self.member_3)))
+
 
 
 #__test__ = {"doctest": """

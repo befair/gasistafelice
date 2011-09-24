@@ -1,0 +1,32 @@
+[
+
+{"pk": 1,"model":"gas.gas","fields": {"des": 1, "name":"Gas S 1","description":"GAS Simple1","birthday":"2011-04-28","vat":"123456789","headquarter": 1,"logo":"","intent_act":"","phone":"2356485","note":"note per GAS 1","membership_fee":10,"liquidity":1,"account":2,"id_in_des":"X01","association_act":"","fcc":"","email_referrer":"gas1@libero.it","email_gas":"list-gas1@des.it" }},
+{"pk": 2,"model":"gas.gas","fields": {"des": 1, "name":"Gas S  C2","description":"Gas Simple Confirm2","birthday":"2010-04-28","vat":"123456790","headquarter": 2,"logo":"","intent_act":"","phone":"2356486","note":"note per GAS 2","membership_fee":12,"liquidity":3,"account":4,"id_in_des":"X02","association_act":"","fcc":"","email_referrer":"gas2@libero.it","email_gas":"list-gas2@des.it" }},
+
+
+
+
+{"pk": 1,"model":"gas.gasconfig","fields": {"default_close_day": "TUESDAY", "default_delivery_place": 3,  "use_scheduler": false, "is_active": true,"default_close_time":"14:00:00","default_delivery_time":"8:30:00", "order_show_only_next_delivery":false,"order_show_only_one_at_a_time":false,"default_delivery_day":"THURSDAY","can_change_delivery_place_on_each_order":false,"can_change_withdrawal_place_on_each_order":false, "default_withdrawal_place": 3,"gas":1,"can_change_price":false,"auto_populate_products": true,"default_workflow_gasmember_order": 3,"default_workflow_gassupplier_order": 1,"gasmember_auto_confirm_order": true} },
+{"pk": 2,"model":"gas.gasconfig","fields": {"default_close_day": "WEDNESDAY", "default_delivery_place": 4,  "use_scheduler": false, "is_active": true,"default_close_time":"15:00:00","default_delivery_time":"9:30:00", "order_show_only_next_delivery":true,"order_show_only_one_at_a_time":false,"default_delivery_day":"FRIDAY","can_change_delivery_place_on_each_order":false,"can_change_withdrawal_place_on_each_order":false, "default_withdrawal_place": 4,"gas":2,"can_change_price":false,"auto_populate_products": true,"default_workflow_gasmember_order": 3,"default_workflow_gassupplier_order": 1,"gasmember_auto_confirm_order": false} },
+
+
+
+{"pk": 1,"model": "gas.gasmember","fields": {"person": 5,"gas":1,"id_in_gas": "GAS1-1","available_for_roles": [3, 4, 5, 6, 7, 8, 2, 9, 10], "account" : 7, "membership_fee_payed": "2011-04-28" }},
+{"pk": 2,"model": "gas.gasmember","fields": {"person": 6,"gas":1,"id_in_gas": "GAS1-2","available_for_roles": [3], "account" : 8, "membership_fee_payed": "2011-04-28" }},
+{"pk": 3,"model": "gas.gasmember","fields": {"person": 7,"gas":2,"id_in_gas": "GAS2-1","available_for_roles": [3], "account" : 9, "membership_fee_payed": "2011-04-28" }},
+{"pk": 4,"model": "gas.gasmember","fields": {"person": 8,"gas":2,"id_in_gas": "GAS2-2","available_for_roles": [3], "account" : 10, "membership_fee_payed": "2011-04-28" }},
+
+
+{"pk": 1,"model": "gas.gassuppliersolidalpact","fields": {"gas": 1,"supplier":1, "date_signed": "2011-01-12"} } , 
+{"pk": 2,"model": "gas.gassuppliersolidalpact","fields": {"gas": 1,"supplier":2, "date_signed": "2011-01-12"} } , 
+{"pk": 3,"model": "gas.gassuppliersolidalpact","fields": {"gas": 2,"supplier":1, "date_signed": "2011-01-12"} }
+
+
+
+
+
+
+
+]
+
+

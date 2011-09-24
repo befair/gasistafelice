@@ -23,6 +23,7 @@ class Block(BlockWithList):
 
         user_actions = []
 
+        #if request.user.has_perm(CREATE, obj=GASSupplierSolidalPact, gas=gas):
         if request.user.has_perm(CREATE, obj=GASSupplierSolidalPact):
             user_actions.append( 
                 ResourceBlockAction( 

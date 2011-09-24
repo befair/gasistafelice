@@ -146,7 +146,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
         for s in stocks:
             if s.enabled:
-                GASSupplierOrderProduct.objects.create(order=self, gasstock=s, order_price=s.price)
+                GASSupplierOrderProduct.objects.create(order=self, gasstock=s, initial_price=s.price, order_price=s.price, delivered_price=s.price)
 
     @property
     def message(self):
@@ -164,8 +164,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
         gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
         if created:
             self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            gsop.order_price = s.price
+            gsop.save()
         else:
             self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            if gsop.delivered_price != s.price:
+                gsop.delivered_price = s.price
+                gsop.save()
 
     def remove_product(self, s):
         '''
@@ -250,6 +255,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def orderable_products(self):
         return self.orderable_product_set.all()
+    #ERROR: An unexpected error occurred while tokenizing input
+    #The following traceback may be corrupted or invalid
+    #The error message is: ('EOF in multi-line statement', (390, 0))
 
     @property
     def ordered_products(self):
@@ -333,7 +341,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        rv = _("%(gasstock)s of order %(order)s") % { 'gasstock' : self.gasstock, 'order' : self.order}
+        rv = _('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
@@ -386,6 +394,8 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         """Sef default initial price"""
         if not self.pk:
             self.initial_price = self.order_price
+        if self.delivered_price is None:
+            self.delivered_price = self.order_price
         super(GASSupplierOrderProduct, self).save(*args, **kw)
 
 class GASMemberOrder(models.Model, PermissionResource):
@@ -411,6 +421,10 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     class Meta:
         app_label = 'gas'
+        unique_together = (('ordered_product', 'purchaser'),)
+
+    class Meta:
+        app_label = 'gas'
         verbose_name = _('GAS member order')
         verbose_name_plural = _('GAS member orders')
 
@@ -427,6 +441,7 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def tot_price(self):
         """Ordered price per ordered amount for this ordered product"""
+        #FIXME: we have to use self.ordered_price instead of self.ordered_product.order_price?
         return self.ordered_product.order_price * self.ordered_amount
 
     @property

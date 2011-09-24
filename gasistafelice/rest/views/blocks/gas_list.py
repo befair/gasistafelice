@@ -4,7 +4,7 @@ from django.core import urlresolvers
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.auth import CREATE
 from gasistafelice.gas.models import GAS
-from gasistafelice.des.models import Siteattr
+from gasistafelice.des.models import Siteattr, DES
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -15,7 +15,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "gas_list"
     BLOCK_DESCRIPTION = _("GAS")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "person"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site"] 
 
     def _get_resource_list(self, request):
         return request.resource.gas_list
@@ -25,7 +25,13 @@ class Block(BlockWithList):
         user_actions = []
 
         des = Siteattr.get_site()
-        if request.user.has_perm(CREATE, obj=GAS, des=des):
+        #se accedo al des (http://127.0.0.1:8000/gasistafelice/rest/site/1/gas_list/?render_as=list)
+        #if request.user.has_perm(CREATE, obj=GAS, des=des):
+        #come lnx crea errore. 
+        #come gasista crea errore: has_perm() got an unexpected keyword argument 'des'
+        if request.user.has_perm(CREATE, obj=GAS):
+        #come lnx Ok. 
+        #come gasista crea errore: You need to specify a 'des' argument to perform this permission check.
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

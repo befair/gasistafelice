@@ -1,0 +1,31 @@
+[
+
+
+{"pk":1,"model":"supplier.supplier", "fields": {"name":"NameSupplier1","website":"http://supplier1.com","flavour":" COMPANY","seat":301,"vat_number": " 9876AB543210" ,"certifications": [] } },
+{"pk":2,"model":"supplier.supplier", "fields": {"name":"NameSupplier2","website":"http://supplier2.com","flavour":" COMPANY","seat":302,"vat_number": " 9876AB543211" ,"certifications": [] } },
+
+
+
+
+
+
+
+{"pk":1,"model":"supplier.supplierreferrer", "fields": {"job_title":"JobTitle X","job_description":"Job description X","supplier": 1,"person": 1 } },
+{"pk":2,"model":"supplier.supplierreferrer", "fields": {"job_title":"JobTitle X","job_description":"Job description X","supplier": 2,"person": 2 } },
+
+
+
+{"pk":1,"model":"supplier.product", "fields": {"name":"Olio extra vergine di oliva","category":43,"description":" description for Olio extra vergine di oliva","producer":1,"mu":16,"uuid":"2569436386"} },
+{"pk":2,"model":"supplier.product", "fields": {"name":"Pistacchi al naturale","category":11,"description":" description for Pistacchi al naturale","producer":1,"mu":12,"uuid":"2569436387"} },
+{"pk":3,"model":"supplier.product", "fields": {"name":"Pane bianco","category":32,"description":" description for Pane bianco","producer":2,"mu":9,"uuid":"2569436392"} },
+{"pk":4,"model":"supplier.product", "fields": {"name":"Pane di farro","category":32,"description":" description for Pane di farro","producer":2,"mu":9,"uuid":"2569436393"} },
+
+{"pk": 1,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":1,"price":" 1", "order_minimum_amount" : "1", "code" : "code00001", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 1" } } , 
+{"pk": 2,"model": "supplier.supplierstock","fields": {"product": 2,"supplier":1,"price":" 2", "order_minimum_amount" : "2", "code" : "code00002", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 2" } } , 
+{"pk": 3,"model": "supplier.supplierstock","fields": {"product": 3,"supplier":1,"price":" 3", "order_minimum_amount" : "3", "code" : "code00003", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 3" } } , 
+{"pk": 4,"model": "supplier.supplierstock","fields": {"product": 4,"supplier":1,"price":" 4", "order_minimum_amount" : "4", "code" : "code00004", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 4" } } , 
+{"pk": 5,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":2,"price":" 1", "order_minimum_amount" : "50", "code" : "SCA1002", "order_step" : 1, "delivery_terms": " real supplier for another producer delivery terms for DES by Supplier 2 for product 1 produce by supplier 1" } }
+
+
+]
+

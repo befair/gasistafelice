@@ -360,7 +360,7 @@ class Person(models.Model, PermissionResource):
         verbose_name_plural = _("persons")
 
     def __unicode__(self):
-        return u"%s %s" % (self.name, self.surname) 
+        return _('%(name)s %(surname)s') % {'name' : self.name, 'surname': self.surname}
 
     ## START Resource API
     # Note that all the following methods return a QuerySet

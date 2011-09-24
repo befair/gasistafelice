@@ -476,7 +476,6 @@ class GASMember(models.Model, PermissionResource):
         unique_together = (('gas', 'id_in_gas'), )
 
     def __unicode__(self):
-            
         rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
@@ -679,7 +678,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return self.stock
+        return '%s' % (self.stock)
 
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)

@@ -235,10 +235,19 @@ class SingleGASMemberOrderForm(forms.Form):
             gmo = GASMemberOrder.objects.get(pk=id)
             gmo.ordered_price = self.cleaned_data.get('ordered_price')
             gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
-            gmo.save()
+            if gmo.ordered_amount == 0:
+                gmo.delete()
+                print "STO CANCELLANDO un ordine gasista"
+            else:
+                gmo.save()
+                print "ho aggiornato un ordine gasista"
 
         elif self.cleaned_data.get('ordered_amount'):
                 gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
+                #retrieve if yet exist. Security to ensure non duplicate entry into database
+                #But this is done into GASMemberOrder Model with set unique_together
+                yet_exist = GASMemberOrder.objects.filter(purchaser = self.__gm, ordered_product = gssop)
+                if not yet_exist
                 gmo = GASMemberOrder(
                         ordered_product = gssop,
                         ordered_price = self.cleaned_data.get('ordered_price'),

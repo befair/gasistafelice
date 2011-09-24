@@ -19,6 +19,7 @@ import xhtml2pdf.pisa as pisa
 import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
+from datetime import datetime
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -166,7 +167,6 @@ class Block(BlockSSDataTables):
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \
-                            (gasmember.id_in_gas, '20110909')
-#                            (gasmember.id, '{0:%Y%m%d}'.format(order.delivery.date))
+                            (gasmember.id_in_gas, '{0:%Y%m%d_%H%M}'.format(datetime.now()))
             return response
         return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(html))

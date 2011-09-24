@@ -1,0 +1,14 @@
+[
+{"pk":1,"model":"bank.account", "fields": {"balance":"0"} },
+{"pk": 2,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 3,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 4,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 5,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 6,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 7,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 8,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 9,"model":"bank.account", "fields": {"balance": 0} },
+{"pk": 10,"model":"bank.account", "fields": {"balance": 0} }
+
+]
+
