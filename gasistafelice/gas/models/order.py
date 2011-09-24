@@ -421,12 +421,9 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     class Meta:
         app_label = 'gas'
-        unique_together = (('ordered_product', 'purchaser'),)
-
-    class Meta:
-        app_label = 'gas'
         verbose_name = _('GAS member order')
         verbose_name_plural = _('GAS member orders')
+        unique_together = (('ordered_product', 'purchaser'),)
 
     def __unicode__(self):
         return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.purchaser }
