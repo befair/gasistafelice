@@ -30,7 +30,7 @@ class Supplier(models.Model, PermissionResource):
     seat = models.ForeignKey(Place, null=True, blank=True)
     vat_number = models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website = models.URLField(verify_exists=True, blank=True)
-    referrer_set = models.ManyToManyField(Person, through="SupplierReferrer") 
+    agent_set = models.ManyToManyField(Person, through="SupplierAgent")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
@@ -65,7 +65,33 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def referrers(self):
-        return self.referrer_set.all()
+        '''All Person (or SupplierAgent?) linked as info for this resource'''
+        #See ticket #77#comment:6
+        return self.agent_set.all()
+
+    @property
+    def referrers_person(self):
+        '''All Person linked as info for this resource'''
+        #See ticket #77#comment:6
+        return self.agent_set.all()
+
+    @property
+    def referrers_user(self):
+        """
+        Return all valid users being referrers for this GAS
+        """
+        usr = []
+        for agent in self.referrers:
+            if agent.user is not None:
+                usr.append(agent)
+        return usr
+        #return [referrer.user for referrer in self.referrers]
+
+    @property
+    def persons(self):
+        '''All Person related to this resource'''
+        #See ticket #77#comment:6
+        return self.agent_set.all()
 
     @property
     def stocks(self):
@@ -78,7 +104,7 @@ class Supplier(models.Model, PermissionResource):
     @property
     def pact(self):
         raise NoSenseException("calling supplier.pact is a no-sense. Supplier is related to more than one pact")
-        
+
     @property
     def orders(self):
         from gasistafelice.gas.models.order import GASSupplierOrder
@@ -109,36 +135,33 @@ class Supplier(models.Model, PermissionResource):
         #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
         return ProductCategory.objects.filter(product_set__in=self.products)
 
-    @property
-    def persons(self):
-        return self.referrer_set.all()
-
     display_fields = (
         seat, vat_number, website, flavour, 
         display.ResourceList(name="referrers", verbose_name=_("People")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
 
-  
-class SupplierReferrer(models.Model, PermissionResource):
+
+class SupplierAgent(models.Model, PermissionResource):
 
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
-    
+
     history = HistoricalRecords()
 
     @property
     def ancestors(self):
-        return [self.des, self.supplier]
+        return [self.supplier]
     
     def setup_roles(self):
-        # automatically add a new SupplierReferrer to the `SUPPLIER_REFERRER` Role
+        # automatically add a new SupplierAgent to the `SUPPLIER_REFERRER` Role
         user = self.person.user
         role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        role.add_principal(user)     
-    
+        role.add_principal(user)
+
+
 class Certification(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True) 
     description = models.TextField(blank=True)
@@ -147,7 +170,6 @@ class Certification(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
-    
 
 class ProductCategory(models.Model, PermissionResource):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
@@ -166,7 +188,7 @@ class ProductCategory(models.Model, PermissionResource):
 class ProductMU(models.Model, PermissionResource):
     """Measurement unit for a Product."""
     # Implemented as a separated entity like GasDotto software.
-    # Each SupplierReferrer has to be able to create its own measurement units.
+    # Each SupplierAgent has to be able to create its own measurement units.
     
     name = models.CharField(max_length=32, unique=True, blank=False)
     symbol = models.CharField(max_length=5, unique=True, null=True, blank=True)

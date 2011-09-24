@@ -1,7 +1,7 @@
 from django.db import models
 
 from gasistafelice.base.models import Person
-from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock, SupplierReferrer, Certification
+from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock, SupplierAgent, Certification
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.models.order import GASSupplierOrder, Delivery, Withdrawal, GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.des.models import DES
@@ -306,14 +306,14 @@ class Product(Product):
 
 #-------------------------------------------------------------------------------
 
-class SupplierReferrer(SupplierReferrer):
+class SupplierAgent(SupplierAgent):
 
     class Meta:
         proxy = True
 
     @property
     def referrers(self):
-        return SupplierReferrer.objects.filter(pk=self.pk)
+        return SupplierAgent.objects.filter(pk=self.pk)
 
 #TODO: des, gas, supplier, person, gasmember
 

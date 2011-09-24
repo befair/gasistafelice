@@ -42,8 +42,8 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('supplier_supplier_certifications', ['supplier_id', 'certification_id'])
 
-        # Adding model 'HistoricalSupplierReferrer'
-        db.create_table('supplier_historicalsupplierreferrer', (
+        # Adding model 'HistoricalSupplierAgent'
+        db.create_table('supplier_historicalsupplieragent', (
             ('id', self.gf('django.db.models.fields.IntegerField')(db_index=True, blank=True)),
             ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['supplier.Supplier'])),
             ('person', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['base.Person'])),
@@ -51,20 +51,20 @@ class Migration(SchemaMigration):
             ('job_description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_supplierreferrer_history', null=True, to=orm['auth.User'])),
+            ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_supplieragent_history', null=True, to=orm['auth.User'])),
             ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
         ))
-        db.send_create_signal('supplier', ['HistoricalSupplierReferrer'])
+        db.send_create_signal('supplier', ['HistoricalSupplierAgent'])
 
-        # Adding model 'SupplierReferrer'
-        db.create_table('supplier_supplierreferrer', (
+        # Adding model 'SupplierAgent'
+        db.create_table('supplier_supplieragent', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['supplier.Supplier'])),
             ('person', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['base.Person'])),
             ('job_title', self.gf('django.db.models.fields.CharField')(max_length=256, blank=True)),
             ('job_description', self.gf('django.db.models.fields.TextField')(blank=True)),
         ))
-        db.send_create_signal('supplier', ['SupplierReferrer'])
+        db.send_create_signal('supplier', ['SupplierAgent'])
 
         # Adding model 'HistoricalCertification'
         db.create_table('supplier_historicalcertification', (
@@ -196,11 +196,11 @@ class Migration(SchemaMigration):
         # Removing M2M table for field certifications on 'Supplier'
         db.delete_table('supplier_supplier_certifications')
 
-        # Deleting model 'HistoricalSupplierReferrer'
-        db.delete_table('supplier_historicalsupplierreferrer')
+        # Deleting model 'HistoricalSupplierAgent'
+        db.delete_table('supplier_historicalsupplieragent')
 
-        # Deleting model 'SupplierReferrer'
-        db.delete_table('supplier_supplierreferrer')
+        # Deleting model 'SupplierAgent'
+        db.delete_table('supplier_supplieragent')
 
         # Deleting model 'HistoricalCertification'
         db.delete_table('supplier_historicalcertification')
@@ -360,12 +360,12 @@ class Migration(SchemaMigration):
             'vat_number': ('django.db.models.fields.CharField', [], {'max_length': '128', 'db_index': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
-        'supplier.historicalsupplierreferrer': {
-            'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalSupplierReferrer'},
+        'supplier.historicalsupplieragent': {
+            'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalSupplierAgent'},
             'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_supplierreferrer_history'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_supplieragent_history'", 'null': 'True', 'to': "orm['auth.User']"}),
             'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
             'job_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'job_title': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),
@@ -415,13 +415,13 @@ class Migration(SchemaMigration):
             'flavour': ('django.db.models.fields.CharField', [], {'default': "'COMPANY'", 'max_length': '128'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'referrers': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['base.Person']", 'through': "orm['supplier.SupplierReferrer']", 'symmetrical': 'False'}),
+            'referrers': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['base.Person']", 'through': "orm['supplier.SupplierAgent']", 'symmetrical': 'False'}),
             'seat': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['base.Place']"}),
             'vat_number': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
-        'supplier.supplierreferrer': {
-            'Meta': {'object_name': 'SupplierReferrer'},
+        'supplier.supplieragent': {
+            'Meta': {'object_name': 'SupplierAgent'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'job_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'job_title': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),

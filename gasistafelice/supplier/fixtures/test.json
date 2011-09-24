@@ -10,8 +10,8 @@
 
 
 
-{"pk":1,"model":"supplier.supplierreferrer", "fields": {"job_title":"JobTitle X","job_description":"Job description X","supplier": 1,"person": 1 } },
-{"pk":2,"model":"supplier.supplierreferrer", "fields": {"job_title":"JobTitle X","job_description":"Job description X","supplier": 2,"person": 2 } },
+{"pk":1,"model":"supplier.supplieragent", "fields": {"job_title":"JobTitle X","job_description":"Job description X","supplier": 1,"person": 1 } },
+{"pk":2,"model":"supplier.supplieragent", "fields": {"job_title":"JobTitle X","job_description":"Job description X","supplier": 2,"person": 2 } },
 
 
 

@@ -418,14 +418,14 @@ class Person(models.Model, PermissionResource):
         Supplier = get_model('supplier', 'Supplier')
         
         # initialize the return QuerySet 
-        qs = Supplier.object.none()
+        qs = Supplier.objects.none()
         
         #add the suppliers who have signed a pact with a GAS this person belongs to
         for gas in self.gas_list:
             qs = qs | gas.suppliers
         
-        # add the suppliers for which this person is a referrer
-        referred_set = set([sr.supplier for sr  in self.supplierreferrer_set])
+        # add the suppliers for which this person is an agent
+        referred_set = set([sr.supplier for sr  in self.supplieragent_set])
         qs = qs | Supplier.objects.filter(pk__in=[obj.pk for obj in referred_set])
         
         return qs
@@ -446,7 +446,7 @@ class Person(models.Model, PermissionResource):
         GASSupplierOrder = get_model('gas', 'GASSupplierOrder')
         
         # initialize the return QuerySet 
-        qs = GASSupplierOrder.object.none()
+        qs = GASSupplierOrder.objects.none()
         
         #add the supplier orders opened by a GAS he/she belongs to
         for gas in self.gas_list:

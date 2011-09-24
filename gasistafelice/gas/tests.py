@@ -333,7 +333,7 @@ class GASMemberManagerTest(TestCase):
         
         self.assertEqual(set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3)))
     
-    def testSupplierReferrersOK(self):
+    def testSupplierAgentsOK(self):
         """
         Only GAS members having a 'Supplier Referrer' role in the GAS they belongs to should be returned.    
         """

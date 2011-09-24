@@ -2,8 +2,8 @@ from django.db import models
 from django.core.exceptions import MultipleObjectsReturned
 
 from gasistafelice.base.models import Person
-from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock, SupplierReferrer, Certification
-from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
+from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock, SupplierAgent, Certification
+from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock, GASActivist
 from gasistafelice.gas.models.order import GASSupplierOrder, Delivery, Withdrawal, GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.bank.models import Account, Movement

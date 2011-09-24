@@ -724,13 +724,13 @@ class Migration(SchemaMigration):
             'flavour': ('django.db.models.fields.CharField', [], {'default': "'COMPANY'", 'max_length': '128'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'referrers': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['base.Person']", 'through': "orm['supplier.SupplierReferrer']", 'symmetrical': 'False'}),
+            'referrers': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['base.Person']", 'through': "orm['supplier.SupplierAgent']", 'symmetrical': 'False'}),
             'seat': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['base.Place']"}),
             'vat_number': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '128'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
-        'supplier.supplierreferrer': {
-            'Meta': {'object_name': 'SupplierReferrer'},
+        'supplier.supplieragent': {
+            'Meta': {'object_name': 'SupplierAgent'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'job_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'job_title': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),
