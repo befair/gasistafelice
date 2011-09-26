@@ -68,7 +68,7 @@ class GAS(models.Model, PermissionResource):
     #Persons include relative associated resources to GAS class
     #FIXME: Cannot run SyncDB
     #gas.gas: 'activist_set' specifies an m2m relation through model GASActivist, which has not been installed
-    activist_set = models.ManyToManyField('base.Person', verbose_name=_('GAS activits'), null=True, blank=True, through="GASActivist")
+    #activist_set = models.ManyToManyField('base.Person', verbose_name=_('GAS activits'), null=True, blank=True, through="GASActivist")
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
     intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
