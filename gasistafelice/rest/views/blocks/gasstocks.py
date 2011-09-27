@@ -28,7 +28,6 @@ class Block(BlockSSDataTables):
         4: 'price', 
         5: 'availability',
         6: 'enabled' 
-        7: 'tot_order' 
     }
 
     def _get_resource_list(self, request):
@@ -82,7 +81,6 @@ class Block(BlockSSDataTables):
                'price' : floatformat(price, 2),
                'availability' : bool(av),
                'field_enabled' : [_('not available'),form['enabled']][bool(av)],
-               'tot_order' : floatformat(price, 2),
             })
 
         return formset, records, {}
