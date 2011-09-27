@@ -28,6 +28,7 @@ class Block(BlockSSDataTables):
         4: 'price', 
         5: 'availability',
         6: 'enabled' 
+        7: 'tot_order' 
     }
 
     def _get_resource_list(self, request):
@@ -59,14 +60,29 @@ class Block(BlockSSDataTables):
         c = querySet.count()
         for i,form in enumerate(formset):
 
+            if i < c:
+                code = querySet[i].stock.code
+                product = querySet[i].stock.product
+                price = querySet[i].stock.price
+                description = querySet[i].stock.product.description
+                av = querySet[i].stock.amount_available
+            else:
+                code = ""
+                product = ""
+                price = ""
+                description = ""
+                av = False
+
+
             records.append({
                'id' : form['id'],
-               'code' : el.stock.code or '',
-               'product' : el.stock.product,
-               'price' : floatformat(el.stock.price, 2),
-               'availability' : bool(el.stock.amount_available),
-               'field_enabled' : [_('not available'),form['enabled']][bool(el.stock.amount_available)],
-
+               'code' : code,
+               'product' : product,
+               'description' : description,
+               'price' : floatformat(price, 2),
+               'availability' : bool(av),
+               'field_enabled' : [_('not available'),form['enabled']][bool(av)],
+               'tot_order' : floatformat(price, 2),
             })
 
         return formset, records, {}
