@@ -106,7 +106,7 @@ class Block(BlockSSDataTables):
                'product' : el.product,
                'amount' : el.ordered_amount,
                'price' : floatformat(el.ordered_price, 2),
-               'payed' : floatformat(el.payed, 2),
+               'payed' : floatformat(el.tot_price, 2),
             })
 
         return records
@@ -117,7 +117,8 @@ class Block(BlockSSDataTables):
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        resource = request.resource
+        self.resource = request.resource
+        self.request = request
 
         if args == CONFIRM:
             for gmo in resource.basket:
