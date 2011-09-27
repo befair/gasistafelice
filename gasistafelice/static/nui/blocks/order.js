@@ -29,15 +29,15 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     null,
                     null,
-                    { "bSortable": "false" },
-                    { "bSortable": "false" },
-                    { "bSortable": "false", 
+                    { "bSortable" : false },
+                    { "bSortable" : false },
+                    { "bSortable" : false, "sClass": "taright", 
                       "sType": "currency",
                       "fnRender": function (oObj) {
                                     return '&#8364; ' + oObj.aData[4];
                                   },
                     },
-                    { "bSortable": "false",
+                    { "bSortable" : false,
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[5]).attr('step');
                                     var min =  $(oObj.aData[5]).attr('minimum_amount');

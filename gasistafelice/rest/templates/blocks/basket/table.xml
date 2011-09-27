@@ -2,15 +2,19 @@
 {% load i18n %}
 
 {% block headers %}
-        <th>{% trans "Order" %}</th>
-        <th>{% trans "Supplier" %}</th>
-        <th>{% trans "Product" %}</th>
-        <th>{% trans "Amount" %}</th>
-        <th>{% trans "Price" %}</th>
-        <th>{% trans "TOT Price" %}</th>
+    <th>{% trans "Order" %}</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Product" %}</th>
+    <th>{% trans "Amount" %}</th>
+    <th>{% trans "Price" %}</th>
+    <th>{% trans "TOT Price" %}</th>
+    <th>{% trans "Delete" %}</th>
 {% endblock %}
 
 {% block footer %}
-    <tr><th colspan="4" style="text-align:right" rowspan="1">{% trans "Total" %}:</th><th rowspan="1" colspan="1" id="total-order"> </th></tr>
+    <tr>
+        <th class="totfield" rowspan="1" colspan="6">{% trans "Total" %}:</th>
+        <th class="totvalue" rowspan="1" colspan="1" id="total-order"></th>
+    </tr>
 {% endblock %}
 

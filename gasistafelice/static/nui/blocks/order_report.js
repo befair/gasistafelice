@@ -23,10 +23,11 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     null,
-                    { "sType": "currency" },
-                    { "bSortable": "false" },
-                    { "bSortable": "false" },
-                    { "bSortable": "false", "sType": "currency" },
+                    { "sType": "currency", "sClass": "taright" },
+                    { "bSortable" : false, "sClass": "taright" },
+                    { "bSortable" : false, "sClass": "taright" },
+                    { "bSortable" : false, "sType": "currency", "sClass": "taright" },
+                    null,
                 ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 

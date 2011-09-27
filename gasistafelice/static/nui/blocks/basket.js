@@ -25,9 +25,14 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     null,
                     null,
                     null,
-                    null,
-                    { "sType": "currency" },
-                    { "sType": "currency", "bSortable" : "false" }
+                    { "sClass": "taright" },
+                    { "sType": "currency", "sClass": "taright" },
+                    { "sType": "currency", "bSortable" : false, "sClass": "taright" },
+                    { "fnRender": function ( oObj ) {
+                            return 'todo';
+                            },
+                      "aTargets": [ 0 ]
+                    }
                 ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 

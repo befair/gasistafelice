@@ -37,7 +37,8 @@ class Block(BlockSSDataTables):
         2: 'ordered_product__stock__supplier_stock__product', 
         3: 'ordered_amount', 
         4: 'ordered_price', 
-        5: 'tot_price' 
+        5: 'tot_price', 
+        6: '' 
     }
 
     def _get_user_actions(self, request):
@@ -92,11 +93,9 @@ class Block(BlockSSDataTables):
         return records, records, {}
 
     def _get_pdfrecords(self, request, querySet):
-    #def _get_pdfrecords(self, querySet):
         """Return records of rendered table fields."""
 
         records = []
-        c = querySet.count()
 
         for el in querySet:
 
@@ -129,7 +128,7 @@ class Block(BlockSSDataTables):
         elif args == CREATE_PDF:
             return self._create_pdf()
         
-        #TODO FIXME: ugly patch to fix AFTER 6
+        #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
         if args == self.KW_DATA:
             from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
             
@@ -148,12 +147,12 @@ class Block(BlockSSDataTables):
 
     def _create_pdf(self):
 
-        # Dati di esempio
         gasmember = self.resource
-        #    'records' : self._get_pdfrecords(self.request, self._get_resource_list(self.request))[1], 
+        querySet = self._get_resource_list(self.request)
         context_dict = {
             'gasmember' : gasmember,
-            'records' : self._get_pdfrecords(self.request, self._get_resource_list(self.request)),
+            'records' : self._get_pdfrecords(self.request, querySet),
+            'rec_count' : querySet.count(),
             'user' : self.request.user,
             'total_amount' : self.resource.total_basket,
         }

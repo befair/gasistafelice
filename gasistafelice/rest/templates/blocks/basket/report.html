@@ -12,31 +12,38 @@
 {%endblock%}
 
 {%block content%}
-<table>
+{{ rec_count }}
+<table style="width:96%; padding: 3px" border="1" cellpadding="1" cellspacing="1">
 <thead>
     <th>{% trans "Order" %}</th>
     <th>{% trans "Supplier" %}</th>
     <th>{% trans "Product" %}</th>
-    <th>{% trans "Unit price" %}</th>
-    <th>{% trans "Amount" %}</th>
-    <th>{% trans "Total price" %}</th>
+    <th style="text-align:right">{% trans "Unit price" %}</th>
+    <th style="text-align:right">{% trans "Amount" %}</th>
+    <th style="text-align:right">{% trans "Total price" %}</th>
 </thead>
 <tbody>
-
-    {% for row in records %}
+    {% if rec_count > 0 %}
         <tr>
-            <td>{{row.order}}</td>
-            <td>{{row.supplier}}</td>
-            <td>{{row.product}}</td>
-            <td>{{row.price}}</td>
-            <td>{{row.amount}}</td>
-            <td>{{row.tot_price}}</td>
+            <td class"empty" colspan="6">
+                {% trans "EmptyBasket" %}
+            </td>
         </tr>
-    {%  endfor %}
-
+    {% else %}
+        {% for row in records %}
+            <tr>
+                <td>{{row.order}}</td>
+                <td>{{row.supplier}}</td>
+                <td>{{row.product|truncatewords:"100" }}</td>
+                <td class="right">{{row.price}}</td>
+                <td class="right">{{row.amount}}</td>
+                <td style="text-align:right; color:red;">{{row.tot_price}}</td>
+            </tr>
+        {%  endfor %}
+    {% endif %}
     <tr>
-        <td colspan="2">{% trans "Total cost" %}</td>
-        <td>{{total_amount}}</td>
+        <td class="totfield" colspan="5">{% trans "Total cost" %}</td>
+        <td class="totvalue" >{{total_amount}}</td>
     </tr>
 </tbody>
 </table>

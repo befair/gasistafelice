@@ -11,7 +11,7 @@
         "{{el.amount|escapejs}}",
         "&#8364; {{ el.price|escapejs }}",
         "&#8364; {{ el.tot_price|escapejs }}",
-
+        "eliminare",
     ]
     {% if not forloop.last %}
     ,

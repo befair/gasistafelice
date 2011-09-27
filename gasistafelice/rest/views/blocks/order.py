@@ -26,10 +26,10 @@ class Block(BlockSSDataTables):
         1: 'supplier', 
         2: 'gasstock__stock__product',
         3: 'gasstock__stock__product__description',
-        3: 'order_price',
-        4: '',
-        5: '', 
+        4: 'order_price',
+        5: '',
         6: '', 
+        7: '', 
     }
 
     def _get_resource_list(self, request):
