@@ -611,14 +611,14 @@ class GASMember(models.Model, PermissionResource):
     def total_basket(self):
         tot = 0
         for gmord in self.basket:
-            tot += gmord.ordered_price
+            tot += gmord.tot_price
         return tot
 
     @property
     def total_basket_to_be_delivered(self):
         tot = 0
         for gmord in self.basket_to_be_delivered:
-            tot += gmord.ordered_price
+            tot += gmord.tot_price
         return tot
 
     def setup_roles(self):
