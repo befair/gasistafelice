@@ -85,10 +85,12 @@ class Block(BlockSSDataTables):
                'order' : el.ordered_product.order.pk,
                'supplier' : el.ordered_product.stock.supplier,
                'product' : el.product,
-               'amount' : el.ordered_amount,
-               'price' : floatformat(el.ordered_product.gasstock.price, 2),
+               'amount' : floatformat(el.ordered_amount, "-2"),
+               'price' : floatformat(el.ordered_product.order_price, 2),
+               'price_changed' : el.has_changed,
                'tot_price' : floatformat(el.tot_price, 2),
             })
+               #'price' : floatformat(el.ordered_product.gasstock.price, 2),
 
         return records, records, {}
 
@@ -103,9 +105,11 @@ class Block(BlockSSDataTables):
                'order' : el.ordered_product.order.pk,
                'supplier' : el.ordered_product.stock.supplier,
                'product' : el.product,
-               'amount' : el.ordered_amount,
-               'price' : floatformat(el.ordered_price, 2),
-               'payed' : floatformat(el.tot_price, 2),
+               'amount' : floatformat(el.ordered_amount, "-2"),
+               'price_ordered' : floatformat(el.ordered_price, 2),
+               'price_delivered' : floatformat(el.ordered_product.order_price, 2),
+               'price_changed' : el.has_changed,
+               'tot_price' : floatformat(el.tot_price, 2),
             })
 
         return records

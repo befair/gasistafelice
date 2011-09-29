@@ -6,13 +6,13 @@
     {% blocktrans %}
         <h1>Gasista {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
         <h2>Stampato da {{ user.person }}</h2>
+        <h2>OrderedProduct {{ rec_count }}</h2>
     {% endblocktrans %}
    </div>
 <hr />
 {%endblock%}
 
 {%block content%}
-{{ rec_count }}
 <table style="width:96%; padding: 3px" border="1" cellpadding="1" cellspacing="1">
 <thead>
     <th>{% trans "Order" %}</th>
@@ -23,32 +23,40 @@
     <th style="text-align:right">{% trans "Total price" %}</th>
 </thead>
 <tbody>
-    {% if rec_count > 0 %}
-        <tr>
-            <td class"empty" colspan="6">
-                {% trans "EmptyBasket" %}
-            </td>
-        </tr>
-    {% else %}
+
         {% for row in records %}
             <tr>
                 <td>{{row.order}}</td>
                 <td>{{row.supplier}}</td>
-                <td>{{row.product|truncatewords:"100" }}</td>
-                <td class="right">{{row.price}}</td>
+                <td>{{row.product|truncatewords:"200" }}</td>
+                {% if row.price_changed %}
+                    <td class="right; color:red;">{{row.price_ordered}} --> {{row.price_delivered}}</td>
+                {% else %}
+                    <td class="right">{{row.price_delivered}}</td>
+                {% endif %}
                 <td class="right">{{row.amount}}</td>
                 <td style="text-align:right; color:red;">{{row.tot_price}}</td>
             </tr>
         {%  endfor %}
-    {% endif %}
     <tr>
         <td class="totfield" colspan="5">{% trans "Total cost" %}</td>
-        <td class="totvalue" >{{total_amount}}</td>
+        <td class="totvalue" >{{total_amount|floatformat:"-2"}}</td>
     </tr>
 </tbody>
+
 </table>
 {%endblock%}
 
 {%block page_foot%}
 <pdf:pagenumber>
+
+
+{% comment %} PlaceHolder: domthu verify if util
+    {{row.order|safe|linenumbers}} 
+    {% autoescape off %}{% endautoescape %}
+    Insert css for custom GAS-PRODUCER class
+{% endcomment %}
+
+
+
 {%endblock%}
