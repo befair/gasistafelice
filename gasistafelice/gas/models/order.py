@@ -406,8 +406,8 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     """
 
-    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set")
-    ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set")
+    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set", null=False, blank=False)
+    ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set", null=False, blank=False)
     # price of the Product at order time
     ordered_price = CurrencyField()
     # how many Product units were ordered by the GAS member
@@ -485,6 +485,12 @@ class GASMemberOrder(models.Model, PermissionResource):
         # Delete a GAS Member order if amount == 0
         if not self.ordered_amount:
             return self.delete()
+
+        #Duplicate Entry. Retrieve data from database
+        if not self.pk:
+            YetExist = GASMemberOrder.objects.filter(ordered_product=self.ordered_product, purchaser=self.purchaser)
+            if YetExist and YetExist.count() > 0:
+                self.pk = YetExist[0].pk
 
         if not self.workflow:
             # Set default workflow

@@ -125,6 +125,7 @@ class Block(BlockSSDataTables):
                'price_changed' : el.has_changed,
                'tot_price' : floatformat(el.tot_price, 2),
                'tot_prod' : tot_prod,
+               'order_confirmed' : el.is_confirmed,
             })
 
         return records

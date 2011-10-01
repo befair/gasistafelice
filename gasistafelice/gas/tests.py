@@ -22,10 +22,10 @@ class GASSupplierStockTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierStock'''
     
     def setUp(self):
-        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')        
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
-        self.category = ProductCategory.objects.create(name='food') 
+        self.category = ProductCategory.objects.create(name='food')
         self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
         
@@ -85,10 +85,27 @@ class GASMemberOrderTest(TestCase):
         orderable_product.initial_price: the price of the Product at the time the GASSupplierOrder was created
         orderable_product.order_price: the price of the Product at the time the GASSupplierOrder was sent to the Supplier
         orderable_product.delivered_price: the actual price of the Product (as resulting from the invoice)'''
-        self.orderable_product.delivered_price = 115
+        self.orderable_product.order_price = 115
         self.orderable_product.save()
         gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
         self.assertEqual(gmo.tot_price, 115)
+
+    def testDeliveryPrice(self):
+        '''Verify if delivery price is computed correctly'''
+        self.orderable_product.order_price = 115
+        self.orderable_product.delivery_price = 100
+        self.orderable_product.save()
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        self.assertEqual(gmo.tot_price, 115)
+        self.assertEqual(gmo.ordered_product.delivery_price, 100)
+
+    def testTotalPrice(self):
+        '''Verify if total price is computed correctly'''
+        self.orderable_product.order_price = 100
+        self.orderable_product.save()
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+        self.assertEqual(gmo.tot_price, 2 * gmo.ordered_price)
+        self.assertEqual(gmo.tot_price, 2 * gmo.ordered_product.order_price)
 
     def testOrder(self):
         '''Verify if SupplierOrder is computed correctly'''
@@ -100,14 +117,45 @@ class GASMemberOrderTest(TestCase):
         gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
         self.assertEqual(gmo.gas, self.gas)
 
+    def testDuplicateEntryNotRaiseError(self):
+        '''Verify that entry are unique for together purchaser and order_product
+        If an entry already exist the record are retrieve and updated with new value
+        '''
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo.save()
+        error_ocurred = False
+        try: 
+            #should raise an exception IntegrityError: (1062, "Duplicate entry '1-1' for key 'ordered_product_id'")
+            gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+        #except IntegrityError:  import from psycopg
+        except Exception:
+            error_ocurred = True
+        self.assertTrue(error_ocurred)
+
     def testAvoidDuplicateEntry(self):
         '''Verify that entry are unique for together purchaser and order_product'''
         gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
         gmo.save()
         gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
         gmo2.save()
+        #IntegrityError: (1062, "Duplicate entry '1-1' for key 'ordered_product_id'")
         gmos = GASMemberOrder.objects.filter(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product)
         self.assertEqual(gmos.count(), 1)
+
+    def testIsConfirmed(self):
+        '''Verify if gmo confirmation depend of GAS configuration'''
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo.save()
+        self.assertEqual(gmo.is_confirmed, self.gas.config.gasmember_auto_confirm_order)
+
+    def testManualIsConfirmed(self):
+        '''Verify that gmo must be confirmed manually if requested by GAS configuration'''
+        self.gas.config.gasmember_auto_confirm_order = False;
+        self.gas.save()
+        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo.save()
+        self.assertEqual(gmo.purchaser.gas.config.gasmember_auto_confirm_order, self.gas.config.gasmember_auto_confirm_order)
+        self.assertFalse(gmo.is_confirmed)
 
     def testCascadingEnablingProduct(self):
         '''TODO Enable Supplier stock and verify cascading until GASSupplierOrderProduct (Added to list).'''
@@ -189,7 +237,9 @@ class GASSupplierOrderProductTest(TestCase):
         self.assertEqual(self.product_1.ordered_amount, 5)
         
     def testGas(self):
-        '''Verify if gas attribute is computed correctly'''
+        '''Verify if gas attribute is computed correctly'''        gmo2 = GASMemberOrde        gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+r.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+
         product = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_1)
         self.assertEqual(product.gas, self.gas_1)
         
