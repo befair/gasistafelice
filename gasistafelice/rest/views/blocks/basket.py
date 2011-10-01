@@ -98,18 +98,33 @@ class Block(BlockSSDataTables):
         """Return records of rendered table fields."""
 
         records = []
+        actualProduttore = -1
+        rowOrder = -1
+        description = ""
+        producer = ""
+        tot_prod = 0
 
         for el in querySet:
+            rowOrder = el.ordered_product.order.pk
+            if actualProduttore == -1 or actualProduttore != rowOrder:
+                if actualProduttore != -1:
+                    tot_prod = 0
+                actualProduttore = rowOrder
+                description = unicode(el.ordered_product.order)
+                producer = el.ordered_product.stock.supplier
+            tot_prod += el.tot_price
 
             records.append({
-               'order' : el.ordered_product.order.pk,
-               'supplier' : el.ordered_product.stock.supplier,
+               'order' : rowOrder,
+               'order_description' : description,
+               'supplier' : producer,
                'product' : el.product,
                'amount' : floatformat(el.ordered_amount, "-2"),
                'price_ordered' : floatformat(el.ordered_price, 2),
                'price_delivered' : floatformat(el.ordered_product.order_price, 2),
                'price_changed' : el.has_changed,
                'tot_price' : floatformat(el.tot_price, 2),
+               'tot_prod' : tot_prod,
             })
 
         return records
@@ -158,7 +173,7 @@ class Block(BlockSSDataTables):
             'records' : self._get_pdfrecords(self.request, querySet),
             'rec_count' : querySet.count(),
             'user' : self.request.user,
-            'total_amount' : self.resource.total_basket,
+            'total_amount' : floatformat(self.resource.total_basket, 2),
         }
 
         REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME

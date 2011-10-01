@@ -1,19 +1,25 @@
 {% extends "blocks/base/report.html" %}
 {% load i18n %}
+{% load basic_tags %}
 
 {%block page_header%}
    <div>
-    {% blocktrans %}
-        <h1>Gasista {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
-        <h2>Stampato da {{ user.person }}</h2>
-        <h2>OrderedProduct {{ rec_count }}</h2>
-    {% endblocktrans %}
+        <h1>{% trans "GASMember" %} {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
+        <h2>{% trans "StampBy" %} {{ user.person }} {% now "l d F Y H:i" %} </h2>
+        <table style="width:96%; ">
+            <tr>
+                <td style="width:25%"><h2>{% trans "OrderedProducts" %} {{ rec_count }}</h2></td>
+                <td class="totfield" style="font-size:14px;font-weight:bolder; text-align:right;" colspan="4">{% trans "Total cost" %}</td>
+                <td class="totvalue" style="text-align:right; color:green;font-size:16px;font-weight:bolder;">{{total_amount}}</td>
+            </tr>
+        </table>
    </div>
 <hr />
 {%endblock%}
 
 {%block content%}
-<table style="width:96%; padding: 3px" border="1" cellpadding="1" cellspacing="1">
+<table style="width:96%; padding: 3px; font-size:12px; vertical-align middle;" border="0" cellpadding="1" cellspacing="1">
+{% comment %}
 <thead>
     <th>{% trans "Order" %}</th>
     <th>{% trans "Supplier" %}</th>
@@ -22,26 +28,58 @@
     <th style="text-align:right">{% trans "Amount" %}</th>
     <th style="text-align:right">{% trans "Total price" %}</th>
 </thead>
+{% endcomment %}
 <tbody>
+{% assign ActualProduttore -1 %}
+{% assign tot_prod -1 %}
 
         {% for row in records %}
-            <tr>
-                <td>{{row.order}}</td>
-                <td>{{row.supplier}}</td>
-                <td>{{row.product|truncatewords:"200" }}</td>
-                {% if row.price_changed %}
-                    <td class="right; color:red;">{{row.price_ordered}} --> {{row.price_delivered}}</td>
-                {% else %}
-                    <td class="right">{{row.price_delivered}}</td>
+            {% set tot_prod = row.tot_prod %}
+            {% if ActualProduttore == -1 or ActualProduttore != row.order %}
+                {% if ActualProduttore != -1 %}
+                    <tr>
+                        <td colspan='3'></td>
+                        <td style="border: solid 2px #344960; font-size:14px; text-align: right;">&euro; {{tot_prod|floatformat:"2"}}</td>
+                        <td></td>
+                    </tr>
                 {% endif %}
-                <td class="right">{{row.amount}}</td>
-                <td style="text-align:right; color:red;">{{row.tot_price}}</td>
+                {% set ActualProduttore = row.order %}
+                <tr><td colspan="5"></td></tr>
+                <tr>
+                    <td colspan='5' style="border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;">(ord.{{row.order}}) {{row.supplier}} </td>
+                </tr>
+            {% endif %}
+
+            {% if row.is_confirmed %}
+                <tr>
+            {% else %}
+                <tr style="color:red;" >
+            {% endif %}
+                <td style="width: 5%;"></td>
+                {% if row.price_changed %}
+                    <td class="right" style="width: 15%; color:red; text-align: right;border: solid 1px #C6D7DE;">&euro; {{row.price_ordered}} --> {{row.price_delivered}}</td>
+                {% else %}
+                    <td class="right" style="width: 15%; text-align: right;border: solid 1px #C6D7DE;">&euro; {{row.price_delivered}}</td>
+                {% endif %}
+                <td style="width: 10%; text-align: right;border: solid 1px #C6D7DE;">{{row.amount}}</td>
+                <td style="width: 15%; text-align: right; color:darkgray;border: solid 1px #C6D7DE;">&euro; {{row.tot_price}}</td>
+                <td style="border: solid 1px #C6D7DE;">{{row.product|truncatewords:"200" }}</td>
             </tr>
+
         {%  endfor %}
-    <tr>
-        <td class="totfield" colspan="5">{% trans "Total cost" %}</td>
-        <td class="totvalue" >{{total_amount|floatformat:"-2"}}</td>
-    </tr>
+
+        {% if ActualProduttore != -1 %}
+            <tr>
+                <td colspan='3'></td>
+                <td style="border: solid 2px #344960; font-size:14px; text-align: right;">&euro; {{tot_prod|floatformat:"2"}}</td>
+                <td></td>
+            </tr>
+        {% endif %}
+            <tr>
+                <td colspan='3'></td>
+                <td style="border: solid 2px #344960; font-size:14px; text-align: left; margin-left: 20px;">&euro; {{tot_prod|floatformat:"2"}}</td>
+                <td></td>
+            </tr>
 </tbody>
 
 </table>
@@ -49,14 +87,5 @@
 
 {%block page_foot%}
 <pdf:pagenumber>
-
-
-{% comment %} PlaceHolder: domthu verify if util
-    {{row.order|safe|linenumbers}} 
-    {% autoescape off %}{% endautoescape %}
-    Insert css for custom GAS-PRODUCER class
-{% endcomment %}
-
-
 
 {%endblock%}
