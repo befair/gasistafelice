@@ -175,6 +175,7 @@ class Block(BlockSSDataTables):
             'rec_count' : querySet.count(),
             'user' : self.request.user,
             'total_amount' : floatformat(self.resource.total_basket, 2),
+            'CSS_URL' : settings.MEDIA_ROOT,
         }
 
         REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME

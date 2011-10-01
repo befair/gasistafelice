@@ -2,15 +2,39 @@
 {% load i18n %}
 {% load basic_tags %}
 
+{%block media%}
+<link rel="stylesheet" type="text/css" href="{{ CSS_URL }}nui/style/report.css" />
+{%endblock%}
+
+{% block customstyle %}
+.head{font-family: Monospace, Arial;}
+.sumQta{width:30%}
+.sumPricefield{width:40%; font-size:14px;font-weight:bolder;}
+.sumPricevalue{width:30%; color: #006400;font-size:18px;font-weight:bold;}
+.empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
+.taright{text-align:right;}
+.taright th{margin-right:17px; padding-right:17px;}
+.tacenter{text-align:center;}
+.tbl{width:96%; padding:3px 3px 0px 3px; marging:3px 3px 0px 3px; font-size:12px; vertical-align middle;}
+.Prod{border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;}
+.totProd{border: solid 2px #344960; font-size:14px; text-align: right;}
+.alert{color:red;}
+.uprice{width: 15%; border: solid 1px #C6D7DE;}
+.qta{width: 10%; border: solid 1px #C6D7DE;}
+.totprice{width: 20%; color:darkgray;border: solid 1px #C6D7DE;}
+.product{border: solid 1px #C6D7DE;}
+.tab{width: 5%;}
+{%endblock%}
+
 {%block page_header%}
-   <div>
+   <div class="head">
         <h1>{% trans "GASMember" %} {{ gasmember.id_in_gas }} - {{ gasmember }} - ({{ gasmember.id }})</h1>
         <h2>{% trans "StampBy" %} {{ user.person }} {% now "l d F Y H:i" %} </h2>
         <table style="width:96%; ">
             <tr>
-                <td style="width:25%"><h2>{% trans "OrderedProducts" %} {{ rec_count }}</h2></td>
-                <td class="totfield" style="font-size:14px;font-weight:bolder; text-align:right;" colspan="4">{% trans "Total cost" %}</td>
-                <td class="totvalue" style="text-align:right; color:green;font-size:16px;font-weight:bolder;">{{total_amount}}</td>
+                <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ rec_count }}</h2></td>
+                <td class="sumPricefield taright">{% trans "Total cost" %}</td>
+                <td class="sumPricevalue taright">&euro; {{total_amount}}</td>
             </tr>
         </table>
    </div>
@@ -18,17 +42,18 @@
 {%endblock%}
 
 {%block content%}
-<table style="width:96%; padding:3px 3px 0px 3px; marging:3px 3px 0px 3px; font-size:12px; vertical-align middle;" border="0" cellpadding="1" cellspacing="1">
+<table class="tbl" border="0" cellpadding="1" cellspacing="1">
 {% comment %}
 <thead>
     <th>{% trans "Order" %}</th>
     <th>{% trans "Supplier" %}</th>
     <th>{% trans "Product" %}</th>
-    <th style="text-align:right">{% trans "Unit price" %}</th>
-    <th style="text-align:right">{% trans "Amount" %}</th>
-    <th style="text-align:right">{% trans "Total price" %}</th>
+    <th class="taright">{% trans "Unit price" %}</th>
+    <th class="taright">{% trans "Amount" %}</th>
+    <th class="taright">{% trans "Total price" %}</th>
 </thead>
 {% endcomment %}
+
 <tbody>
 {% assign ActualProduttore -1 %}
 {% assign Last_tot_prod -1 %}
@@ -38,14 +63,14 @@
                 {% if ActualProduttore != -1 %}
                     <tr>
                         <td colspan='3'></td>
-                        <td style="border: solid 2px #344960; font-size:14px; text-align: right;">&euro; {{Last_tot_prod|floatformat:"2"}}</td>
+                        <td class="totProd">&euro; {{Last_tot_prod|floatformat:"2"}}</td>
                         <td></td>
                     </tr>
                 {% endif %}
                 {% set ActualProduttore = row.order %}
                 <tr><td colspan="5"></td></tr>
                 <tr>
-                    <td colspan='5' style="border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;">(ord.{{row.order}}) {{row.supplier}} {{row.order_description}}</td>
+                    <td colspan='5' class="Prod">(ord.{{row.order}}) {{row.supplier}} {{row.order_description}}</td>
                 </tr>
             {% endif %}
 
@@ -53,24 +78,24 @@
             {% if row.order_confirmed %}
                 <tr>
             {% else %}
-                <tr style="color:red;" >
+                <tr class="alert" >
             {% endif %}
-                <td style="width: 5%;"></td>
+                <td class="tab"></td>
                 {% if row.price_changed %}
-                    <td class="right" style="width: 15%; color:red; text-align: right;border: solid 1px #C6D7DE;">&euro; {{row.price_ordered}} --> {{row.price_delivered}}</td>
+                    <td class="taright alert uprice">&euro; {{row.price_ordered}} --> {{row.price_delivered}}</td>
                 {% else %}
-                    <td class="right" style="width: 15%; text-align: right;border: solid 1px #C6D7DE;">&euro; {{row.price_delivered}}</td>
+                    <td class="taright uprice">&euro; {{row.price_delivered}}</td>
                 {% endif %}
-                <td style="width: 10%; text-align: right;border: solid 1px #C6D7DE;">{{row.amount}}</td>
-                <td style="width: 20%; text-align: right; color:darkgray;border: solid 1px #C6D7DE;">&euro; {{row.tot_price}}</td>
-                <td style="border: solid 1px #C6D7DE;">{{row.product|truncatewords:"200" }}</td>
+                <td class="taright qta">{{row.amount}}</td>
+                <td class="taright totprice">&euro; {{row.tot_price}}</td>
+                <td class="product">{{row.product|truncatewords:"200"}}</td>
             </tr>
 
 
             {% if ActualProduttore != -1 and forloop.last %}
                 <tr>
                     <td colspan='3'></td>
-                    <td style="border: solid 2px #344960; font-size:14px; text-align: right;">&euro; {{row.tot_prod|floatformat:"2"}}</td>
+                    <td class="totProd">&euro; {{row.tot_prod|floatformat:"2"}}</td>
                     <td></td>
                 </tr>
             {% endif %}
