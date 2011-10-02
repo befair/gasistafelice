@@ -114,11 +114,11 @@ class Block(BlockSSDataTables):
                 producer = el.ordered_product.stock.supplier
             tot_prod += el.tot_price
 
+               #'product' : el.product.encode('utf-8', "ignore"),
             records.append({
                'order' : rowOrder,
                'order_description' : description,
                'supplier' : producer,
-               'product' : el.product,
                'amount' : floatformat(el.ordered_amount, "-2"),
                'price_ordered' : floatformat(el.ordered_price, 2),
                'price_delivered' : floatformat(el.ordered_product.order_price, 2),

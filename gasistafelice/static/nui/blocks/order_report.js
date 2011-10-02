@@ -50,6 +50,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 }
             }); 
 
+
         return this._super();
 
     }

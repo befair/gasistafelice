@@ -18,6 +18,8 @@ import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
 
+from django.utils.encoding import smart_unicode
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -54,15 +56,13 @@ class Block(BlockSSDataTables):
 
         return user_actions
 
-        
-    def _get_resource_list(self, request):
+    def _get_resource_products(self, request):
         # Maybe we need to switch args KW_DATA, or EDIT_MULTIPLE
         # to get GASSupplierOrderProduct or GASSupplierStock respectively
         return request.resource.orderable_products
 
-    def _get_resource_pdflist(self, request):
+    def _get_resource_families(self, request):
         return request.resource.ordered_products
-
 
     def _get_edit_multiple_form_class(self):
         return GASSupplierOrderProductFormSet
@@ -104,7 +104,7 @@ class Block(BlockSSDataTables):
         return None, records, {}
 
 
-    def _get_pdfrecords(self, querySet):
+    def _get_pdfrecords_products(self, querySet):
         """Return records of rendered table fields."""
 
         records = []
@@ -114,13 +114,53 @@ class Block(BlockSSDataTables):
             if el.tot_price > 0:
                 records.append({
                    'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
-                   'price' : floatformat(el.order_price, 2),
+                   'price' : el.order_price,
                    'tot_gasmembers' : el.tot_gasmembers,
                    'tot_amount' : el.tot_amount,
-                   'tot_price' : floatformat(el.tot_price, 2),
+                   'tot_price' : el.tot_price,
                 })
 
         return records
+
+    def _get_pdfrecords_families(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        actualFamily = -1
+        rowFam = -1
+        description = ""
+        product = ""
+        tot_fam = 0
+        nProducts = 0
+        tot_Ord = 0
+
+        for el in querySet:
+            rowFam = el.purchaser.pk
+            if actualFamily == -1 or actualFamily != rowFam:
+                if actualFamily != -1:
+                    tot_fam = 0
+                    nProducts = 0
+                actualFamily = rowFam
+                description = smart_unicode(el.purchaser.person)
+            product = smart_unicode(el.product)
+
+            tot_fam += el.tot_price
+            nProducts += 1
+            tot_Ord += el.tot_price
+
+            records.append({
+               'product' : product,
+               'price_ordered' : el.ordered_price,
+               'price_delivered' : el.ordered_product.order_price,
+               'price_changed' : el.has_changed,
+               'amount' : el.ordered_amount,
+               'tot_price' : el.tot_price,
+               'gasmember' : description,
+               'tot_fam' : tot_fam,
+               'nProducts' : nProducts,
+            })
+
+        return records, tot_Ord
 
 
     def get_response(self, request, resource_type, resource_id, args):
@@ -136,15 +176,16 @@ class Block(BlockSSDataTables):
             
     def _create_pdf(self):
 
-        #'records' : self._get_pdfrecords(self._get_resource_list(self.request)), #ho usato get_records, ma puoi produrre i record come preferisci
-
         # Dati di esempio
         order = self.resource.order
+        fams, total_calc = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
         context_dict = {
             'order' : order,
-            'records' : self._get_pdfrecords(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
+            'recProd' : self._get_pdfrecords_products(self._get_resource_products(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
+            'recFam' : fams, 
             'user' : self.request.user,
-            'total_amount' : self.resource.tot_price, #da Model da confrontare con il calcolato
+            'total_amount' : self.resource.tot_price, #total da Model
+            'total_calc' : total_calc, #total dal calcolato
         }
 
         REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME
