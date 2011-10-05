@@ -1,5 +1,6 @@
 {% extends "blocks/base/report.html" %}
 {% load i18n %}
+{% load basic_tags %}
 
 {% block customstyle %}
 .head{font-family: Monospace, Arial;}
@@ -14,11 +15,13 @@
 .Prod{border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;}
 .totProd{border: solid 2px #344960; font-size:14px; text-align: right;}
 .alert{color:red;}
-.uprice{width: 15%; border: solid 1px #C6D7DE;}
+.uprice{width: 15%; color:darkgray; border: solid 1px #C6D7DE;}
 .qta{width: 10%; border: solid 1px #C6D7DE;}
-.totprice{width: 20%; color:darkgray;border: solid 1px #C6D7DE;}
+.totprice{width: 20%; color:#000;border: solid 1px #C6D7DE;}
 .product{border: solid 1px #C6D7DE;}
 .tab{width: 5%;}
+.fam{text-align:center;vertical-align:middle;border-top:solid 1px #000;border-bottom:solid 1px #000;font-weight:bold;}
+.bd{font-weight:bold;}
 {%endblock%}
 
 
@@ -44,19 +47,36 @@
 {%block content%}
 <table class="tbl" border="0" cellpadding="1" cellspacing="1">
 <tbody>
+{% assign ActualFamily -1 %}
+
     {% for row in recFam %}
-        
         {% if row.tot_price > 0  %}
             <tr>
                 <td class="product">{{row.product|truncatewords:"200"}}</td>
                 {% if row.price_changed %}
-                    <td class="taright alert uprice">&euro; {{row.price_ordered}} --> {{row.price_delivered}}</td>
+                    <td class="taright alert uprice">&euro;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
                 {% else %}
-                    <td class="taright uprice">&euro; {{row.price_delivered}}</td>
+                    <td class="taright uprice">&euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
                 {% endif %}
-                <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
-                <td class="taright totprice">&euro; {{row.tot_price}}</td>
-                <td style="background-color: #D7ECC7;"> {{ row.gasmember }} </td>
+                {% if row.amount > 1 %}
+                    <td class="taright qta bd">{{row.amount|floatformat:"-2"}}</td>
+                {% else %}
+                    <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
+                {% endif %}
+                <td class="taright totprice">&euro;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
+
+                {% if ActualFamily == -1 or ActualFamily != row.family_id %}
+                    {% set ActualFamily = row.family_id %}
+                    {% for fam in subFam %}
+                        {% if fam.family_id == ActualFamily %}
+                            {% if fam.basket_products == 1 %}
+                                <td class="fam" >{{ fam.gasmember }}&nbsp;&euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                            {% else %}
+                                <td class="fam" rowspan="{{ fam.basket_products }}">{{ fam.gasmember }}<br /> &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             </tr>
 
         {%  endif %}
@@ -70,30 +90,24 @@
 <table class="tbl" border="0" cellpadding="1" cellspacing="1">
 <thead>
     <th>Prodotto</th>
-    <th>Prezzo Un</th>
-    <th>N° gassisti</th>
     <th>Quantit&agrave;</th>
     <th>Prezzo totale</th>
 </thead>
 <tbody>
-    {% for row in recProd %}
-        
-        {% if row.tot_price > 0  %}
-            <tr>
-                <td class="product"> {{ row.product }} </td>
-                <td class="taright uprice">{{row.price|floatformat:"2"}}</td>
-                <td class="taright qta">{{row.tot_gasmembers}}</td>
-                <td class="taright qta">{{row.tot_amount|floatformat:"-2"}}</td>
-                <td class="taright totprice">{{row.tot_price|floatformat:"2"}}</td>
-            </tr>
-
-        {%  endif %}
-
+    {% for pd in recProd %}
+        <tr>
+        {% if pd.tot_gasmembers > 1 %}
+            <td class="product"> {{ pd.product }} -&nbsp;&nbsp;&euro;&nbsp;{{pd.price|floatformat:"2"}}&nbsp;&nbsp;-->&nbsp;{{pd.tot_gasmembers}}</td>
+        {% else %}
+            <td class="product"> {{ pd.product }} -&nbsp;&nbsp;&euro;&nbsp;{{pd.price|floatformat:"2"}}</td>
+        {% endif %}
+            <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
+            <td class="taright totprice">&nbsp;&euro;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
+        </tr>
     {%  endfor %}
     <tr>
-        <td>TOTALE ORDINE</td>
-        <td> </td>
-        <td>{{ total_amount }}</td>
+        <td class="sumPricefield taright" colspan="2" >{% trans "Total cost" %}</td>
+        <td class="sumPricevalue taright">&euro; {{ total_amount|floatformat:"2"}}</td>
     </tr>
 </tbody>
 </table>
