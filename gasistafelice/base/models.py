@@ -548,7 +548,7 @@ class Person(models.Model, PermissionResource):
         super(Person, self).save(*args, **kwargs)
 
    
-class Contact(models.Model, PermissionResource):
+class Contact(models.Model):
 
     contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
     contact_value = models.CharField(max_length=32)
@@ -571,8 +571,7 @@ class Place(models.Model, PermissionResource):
     multiple delivery and/or withdrawal locations can be present.
     """
 
-    #COMMENT: What the meaning for name? What is the reason to set it as unique=True? 
-    name = models.CharField(max_length=128, blank=True, unique=True, help_text=_("You can avoid to specify a name if you specify an address"))
+    name = models.CharField(max_length=128, blank=True, help_text=_("You can avoid to specify a name if you specify an address"))
     description = models.TextField(blank=True)
     #TODO: ADD place type from CHOICE (HOME, WORK, HEARTHQUARTER, WITHDRAWAL...)     
     address = models.CharField(max_length=128, blank=True)
@@ -592,7 +591,10 @@ class Place(models.Model, PermissionResource):
         verbose_name_plural = _("places")
 
     def __unicode__(self):
-        return self.name
+        return _("%(name)s in %(city)s") % {
+                    'name' : self.name or self.address, 
+                    'city' : self.city
+        }
 
     def save(self, *args, **kw):
         #TODO: we should compute city and province starting from zipcode using local_flavor in forms
