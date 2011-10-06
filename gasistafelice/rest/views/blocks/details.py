@@ -279,7 +279,7 @@ class Block(AbstractBlock):
         ctx = {
             'resource'      : res,
             'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
-            'rimage'        : self.get_image(res, '128x128', "png"),
+            'rimage'        : res.icon.url,
             'display_fields': df,
             'more_details'  : res.details if hasattr(res, 'details') else None,
             'notes'         : notes,
@@ -309,75 +309,6 @@ class Block(AbstractBlock):
         return visible_notes
 
 
-    def get_image(self, resource, type, ext):
-        
-        basedir = os.path.join(settings.MEDIA_URL, "nui", "img", settings.THEME)
-        if hasattr(resource,'icon'):
-            value = os.path.join(basedir, "%s%s.%s" % (resource.icon.fname, type, ext))
-        else:
-            value = os.path.join(basedir, "%s%s.%s" % (resource.resource_type, type, ext))
-        
-        return value        
-        
-        """
-        #filename_end = type + "." + ext
-        #base_path = os.path.join('theme', 'img', 'resources')
-
-        name = resource.name.lower()
-        try:
-            cat_name = resource.category.name.lower()
-        except AttributeError:
-            cat_name = None
-            
-        try:
-            #controlla le performance di questa operazione, se e' lenta prova a farla
-            #nel caso falliscano le prime due ricerche
-            catbranch_name = resource.category.site_branch.lower()
-        except AttributeError:
-            #Abbiamo a che fare con il site
-            catbranch_name = resource.__class__.__name__.lower()
-
-        parent_paths = []
-        try:
-            x = resource.category
-            while (x.parent):
-                parent_paths.append(os.path.join(base_path, x.parent.name) + filename_end)
-                x = x.parent
-        except AttributeError:
-            #No problem if this list is empty
-            pass
-
-        icon_possible_paths = []
-        if cat_name:
-            icon_possible_paths += [
-                os.path.join(base_path, cat_name, name) + filename_end,
-                os.path.join(base_path, cat_name) + filename_end
-            ]
-
-        icon_possible_paths += parent_paths
-
-        if catbranch_name:
-            icon_possible_paths.append(os.path.join(base_path, catbranch_name) + filename_end)
-
-        icon_possible_paths += [
-            os.path.join(base_path, "default_icon" + filename_end),
-            os.path.join(base_path, "default_icon." + ext)
-        ]
-
-        i = 0
-        icon_path = False
-        while (not icon_path) and (i < len(icon_possible_paths)):
-            possible_path = icon_possible_paths[i]
-            icon_path = os.path.exists(os.path.join(settings.MEDIA_ROOT, possible_path))
-            i += 1
-
-        if not icon_path:
-            raise ValueError, "No icon found for %s object, please create at least the default icon %s" % (resource.name, icon_possible_paths[-1])
-
-        icon_url = os.path.join(settings.MEDIA_URL, possible_path)
-        return icon_url
-            """
-            
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
