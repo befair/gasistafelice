@@ -18,10 +18,10 @@ from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
 from gasistafelice.auth.models import PermissionBase # mix-in class for permissions management
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
+from gasistafelice.base.utils import get_resource_icon_path
 
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
-
 
 class Resource(object):
     """Base class for project fundamental objects.
@@ -352,6 +352,7 @@ class Person(models.Model, PermissionResource):
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
     address = models.OneToOneField('Place', null=True, blank=True)
+    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
 
     history = HistoricalRecords()
 
@@ -361,6 +362,10 @@ class Person(models.Model, PermissionResource):
 
     def __unicode__(self):
         return u"%s %s" % (self.name, self.surname) 
+
+    @property
+    def icon(self):
+        return self.avatar 
 
     ## START Resource API
     # Note that all the following methods return a QuerySet

@@ -14,6 +14,7 @@ from gasistafelice.lib.fields.models import CurrencyField
 
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
+from gasistafelice.base.utils import get_resource_icon_path
 
 from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 from gasistafelice.auth.utils import register_parametric_role 
@@ -31,7 +32,6 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
-
 class GAS(models.Model, PermissionResource):
 
     """A group of people which make some purchases together.
@@ -40,7 +40,7 @@ class GAS(models.Model, PermissionResource):
     """
     name = models.CharField(max_length=128, unique=True)
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
-    logo = models.ImageField(upload_to="/images/", null=True, blank=True)
+    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
     headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False)
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
@@ -124,6 +124,10 @@ class GAS(models.Model, PermissionResource):
         return user in self.des.admins
     
     #-- Properties --#
+
+    @property
+    def icon(self):
+        return self.logo 
 
     @property
     def referrers(self):
