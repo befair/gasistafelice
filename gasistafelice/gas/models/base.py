@@ -269,10 +269,6 @@ class GAS(models.Model, PermissionResource):
         return self.des
 
     @property
-    def ancestors(self):
-        return [self.parent]
-
-    @property
     def gas(self):
         return self
 
@@ -482,8 +478,8 @@ class GASActivist(models.Model, PermissionResource):
     #history = HistoricalRecords()
 
     @property
-    def ancestors(self):
-        return [self.gas]
+    def parent(self):
+        return self.gas
 
     #TODO placeholder domthu: Add signal if necesary to register role for activist
     #See ticket #77#comment:6 

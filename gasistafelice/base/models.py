@@ -58,6 +58,14 @@ class Resource(object):
     
     @property
     def ancestors(self):
+        """List of ancestors of a resource.
+
+        This is te list of parents from root to the resource itself.
+        It is used p.e. to display navigation breadcrumbs.
+
+        You SHOULD NOT implement it in subclasses
+        """
+        
         if self.parent:
             return self.parent.ancestors + [self.parent]
         else:
@@ -65,6 +73,16 @@ class Resource(object):
 
     @property
     def parent(self):
+        """Identifies resource which includes this resource.
+
+        Stated that there can be only one parent for a resource,
+        (no multiple parents allowed), setting this attribute makes the resource
+        confident of who includes itself.
+
+        This attribute is then used to make the list of `:ref:ancestors`.
+        
+        You MUST implement it in subclasses if they have parent.
+        """
         return None
 
     @property

@@ -141,11 +141,9 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
 def resource_page(request, resource_type, resource_id):
         
     resource = request.resource
-    
-    parent = resource.ancestors
     page_config = get_resource_page_content_config(resource.resource_type)
 
-    return create_page_settings_from_config(page_config, resource, parent)
+    return create_page_settings_from_config(page_config, resource, resource.ancestors)
 
 
 #------------------------------------------------------------------------------#

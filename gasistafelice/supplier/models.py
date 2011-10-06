@@ -52,8 +52,8 @@ class Supplier(models.Model, PermissionResource):
         return Siteattr.get_site()
 
     @property
-    def ancestors(self):
-        return [self.des]
+    def parent(self):
+        return self.des
 
     @property
     def suppliers(self):
@@ -152,8 +152,8 @@ class SupplierAgent(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     @property
-    def ancestors(self):
-        return [self.supplier]
+    def parent(self):
+        return self.supplier
     
     def setup_roles(self):
         # automatically add a new SupplierAgent to the `SUPPLIER_REFERRER` Role
