@@ -1,6 +1,8 @@
 # Django settings for gasistafelice project.
 
-import os 
+import os, locale
+import consts
+from django.utils.translation import ugettext_lazy as _
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -216,29 +218,26 @@ CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
 
 DATE_FMT = "%d/%m/%Y"
-
-import locale
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+
 
 #--------------------- AUTH settings ----------------#
 ## QUESTION: Maybe app-specific settings like these should be placed 
 ## in an dedicated settings module and imported here ?
 
-from gasistafelice.consts import *
-
-# TODO: DES_REFERRER role
+# TODO: DES_REFERRER role (or remove GAS_REFERRER role?)
 ROLES_LIST = (
-    (NOBODY, _('Nobody')),
-    (SUPPLIER_REFERRER, _('Supplier')),
-    (GAS_MEMBER, _('GAS member')),
-    (GAS_REFERRER, _('GAS referrer')),
-    (GAS_REFERRER_SUPPLIER, _('GAS supplier referrer')),
-    (GAS_REFERRER_ORDER, _('GAS order referrer')),
-    (GAS_REFERRER_WITHDRAWAL, _('GAS withdrawal referrer')),
-    (GAS_REFERRER_DELIVERY, _('GAS delivery referrer')),
-    (GAS_REFERRER_CASH, _('GAS cash referrer')),
-    (GAS_REFERRER_TECH, _('GAS technical referrer')),
-    (DES_ADMIN, _('DES administrator')),
+    (consts.NOBODY, _('Nobody')),
+    (consts.SUPPLIER_REFERRER, _('Supplier')),
+    (consts.GAS_MEMBER, _('GAS member')),
+    (consts.GAS_REFERRER, _('GAS referrer')),
+    (consts.GAS_REFERRER_SUPPLIER, _('GAS supplier referrer')),
+    (consts.GAS_REFERRER_ORDER, _('GAS order referrer')),
+    (consts.GAS_REFERRER_WITHDRAWAL, _('GAS withdrawal referrer')),
+    (consts.GAS_REFERRER_DELIVERY, _('GAS delivery referrer')),
+    (consts.GAS_REFERRER_CASH, _('GAS cash referrer')),
+    (consts.GAS_REFERRER_TECH, _('GAS technical referrer')),
+    (consts.DES_ADMIN, _('DES administrator')),
 )
 
 PARAM_CHOICES = (
@@ -255,27 +254,27 @@ VALID_PARAMS_FOR_ROLES = {
     ## format
     # ``{<role name>: {<parameter name>: <parameter type>, ..}, ..}``
     # where the parameter type is expressed as a *model label* (i.e. a string of the form ``app_label.model_name``)
-    SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
-    GAS_MEMBER : {'gas':'gas.GAS'},
-    GAS_REFERRER : {'gas':'gas.GAS'},
-    GAS_REFERRER_CASH : {'gas':'gas.GAS'},
-    GAS_REFERRER_TECH : {'gas':'gas.GAS'},
-    GAS_REFERRER_SUPPLIER : {'pact':'gas.GASSupplierSolidalPact'}, 
-    GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
-    GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
-    GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
-    DES_ADMIN: {'des':'des.DES'},                         
+    consts.SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
+    consts.GAS_MEMBER : {'gas':'gas.GAS'},
+    consts.GAS_REFERRER : {'gas':'gas.GAS'},
+    consts.GAS_REFERRER_CASH : {'gas':'gas.GAS'},
+    consts.GAS_REFERRER_TECH : {'gas':'gas.GAS'},
+    consts.GAS_REFERRER_SUPPLIER : {'pact':'gas.GASSupplierSolidalPact'}, 
+    consts.GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
+    consts.GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
+    consts.GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
+    consts.DES_ADMIN: {'des':'des.DES'},                         
 }
 
 ## QUESTION: Does the section below is useful/needed by some pieces of code in *Gasista Felice* ?
 PERMISSIONS_CHOICES = (
-(VIEW, _('View')),
-(LIST, _('List')),
-(CREATE, _('Create')),
-(EDIT, _('Edit')),
-(EDIT_MULTIPLE, _('Edit multiple')),
-(DELETE, _('Delete')),
-(ALL, _('All')), # catchall
+    (consts.VIEW, _('View')),
+    (consts.LIST, _('List')),
+    (consts.CREATE, _('Create')),
+    (consts.EDIT, _('Edit')),
+    (consts.EDIT_MULTIPLE, _('Edit multiple')),
+    (consts.DELETE, _('Delete')),
+    (consts.ALL, _('All')), # catchall
 )
 
 #--------------------- ACCOUNTING settings ----------------#
@@ -286,16 +285,16 @@ SUBJECTIVE_MODELS = (
 )
 
 ACCOUNT_TYPES = (
-    (INCOME, _('Incomes')),
-    (EXPENSE, _('Expenses')),
-    (ASSET, _('Assets')),
-    (LIABILITY, _('Liabilities')),
-    (EQUITY, _('Equity')),     
+    (consts.INCOME, _('Incomes')),
+    (consts.EXPENSE, _('Expenses')),
+    (consts.ASSET, _('Assets')),
+    (consts.LIABILITY, _('Liabilities')),
+    (consts.EQUITY, _('Equity')),     
 )
 
 TRANSACTION_TYPES = (
-     (INVOICE_PAYMENT, 'Payment of an invoice '),
-     (INVOICE_COLLECTION, 'Collection of an invoice'),
-     (GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
-     (MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
+     (consts.INVOICE_PAYMENT, 'Payment of an invoice '),
+     (consts.INVOICE_COLLECTION, 'Collection of an invoice'),
+     (consts.GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
+     (consts.MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
 )
