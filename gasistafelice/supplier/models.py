@@ -17,6 +17,7 @@ from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib.fields import display
 
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
+from gasistafelice.base.utils import get_resource_icon_path
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.des.models import DES, Siteattr
 
@@ -35,6 +36,7 @@ class Supplier(models.Model, PermissionResource):
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
+    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
 
     #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
 
@@ -46,6 +48,10 @@ class Supplier(models.Model, PermissionResource):
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
+
+    @property
+    def icon(self):
+        return self.logo 
 
     #-- Resource API --#
 

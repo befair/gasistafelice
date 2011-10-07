@@ -1,4 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
+from django.template.defaultfilters import slugify
+
+import os, datetime
 
 def get_ctype_from_model_label(label):
     """
@@ -16,3 +19,15 @@ def get_ctype_from_model_label(label):
         return ctype        
     except:
         return None 
+
+
+def get_resource_icon_path(instance, filename):
+
+    if instance.pk:
+        return instance.icon.name
+
+    ext = filename.split('.')[-1]
+    d = datetime.datetime.today()
+    filename = "%s-%s.%s" % (d.strftime("%Y-%m-%s"), slugify(instance.name), ext)
+    return os.path.join('images/%s' % instance.resource_type, filename)
+

@@ -8,7 +8,9 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import permalink
-
+from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
@@ -20,10 +22,9 @@ from flexi_auth.utils import get_parametric_roles
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
+from gasistafelice.base.utils import get_resource_icon_path
 
-from django.contrib.comments.models import Comment
-from django.contrib.contenttypes.models import ContentType
-
+import os
 
 class Resource(object):
     """Base class for project fundamental objects.
@@ -111,6 +112,14 @@ class Resource(object):
         """
 
         raise NotImplementedError
+
+    @property
+    def icon(self):
+        "Default icon for resources"""
+        icon = models.ImageField(upload_to="fake")
+        basedir = os.path.join(settings.MEDIA_URL, "nui", "img", settings.THEME)
+        icon.url = os.path.join(basedir, "%s%s.%s" % (self.resource_type, "128x128", "png"))
+        return icon
 
     def as_dict(self):
         return {
@@ -422,6 +431,7 @@ class Person(models.Model, PermissionResource):
     contacts = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
     address = models.OneToOneField('Place', null=True, blank=True)
+    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
 
     history = HistoricalRecords()
 
@@ -431,6 +441,10 @@ class Person(models.Model, PermissionResource):
 
     def __unicode__(self):
         return _('%(name)s %(surname)s') % {'name' : self.name, 'surname': self.surname}
+
+    @property
+    def icon(self):
+        return self.avatar 
 
     ## START Resource API
     # Note that all the following methods return a QuerySet
