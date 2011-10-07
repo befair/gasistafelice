@@ -661,12 +661,12 @@ class Delivery(Appointment, PermissionResource):
         return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
     
     @property
-    def gas_set(self):
+    def gas_list(self):
         """
         Return a QuerySet containing all GAS sharing this delivery appointment. 
         """
-        # TODO
-        raise NotImplementedError
+        pacts = GASSupplierSolidalPact.objects.filter(order_set__in=self.order_set.all())
+        return GAS.objects.filter(pact_set__in = pacts)
     
     #-------------------------------------------------------------------------------#   
     # Referrers API
@@ -735,8 +735,8 @@ class Delivery(Appointment, PermissionResource):
         if len(associated_orders) == 1:
             order = associated_orders[0] 
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
-        elif len(self.gas_set) == 1:
-            gas = self.gas_set[0]
+        elif len(self.gas_list) == 1:
+            gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
         else: 
             allowed_users = self.des.admins
@@ -760,8 +760,8 @@ class Delivery(Appointment, PermissionResource):
         if len(associated_orders) == 1:
             order = associated_orders[0] 
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
-        elif len(self.gas_set) == 1:
-            gas = self.gas_set[0]
+        elif len(self.gas_list) == 1:
+            gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
         else: 
             allowed_users = self.des.admins
@@ -809,11 +809,13 @@ class Withdrawal(Appointment, PermissionResource):
     
     
     @property
-    def gas_set(self):
+    def gas_list(self):
         """
         Return a QuerySet containing all GAS sharing this withdrawal appointment. 
+
         """
-        pass
+        pacts = GASSupplierSolidalPact.objects.filter(order_set__in=self.order_set.all())
+        return GAS.objects.filter(pact_set__in = pacts)
 
     #-------------------------------------------------------------------------------#   
     # Referrers API
@@ -883,8 +885,8 @@ class Withdrawal(Appointment, PermissionResource):
         if len(associated_orders) == 1:
             order = associated_orders[0] 
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
-        elif len(self.gas_set) == 1:
-            gas = self.gas_set[0]
+        elif len(self.gas_list) == 1:
+            gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
         else: 
             allowed_users = self.des.admins
@@ -908,8 +910,8 @@ class Withdrawal(Appointment, PermissionResource):
         if len(associated_orders) == 1:
             order = associated_orders[0] 
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
-        elif len(self.gas_set) == 1:
-            gas = self.gas_set[0]
+        elif len(self.gas_list) == 1:
+            gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
         else: 
             allowed_users = self.des.admins

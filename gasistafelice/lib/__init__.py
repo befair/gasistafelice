@@ -44,6 +44,19 @@ def load_symbol(path):
 
     return symbol
 
+#------------------------------------------------------------------------------
+# Uniq functions from http://www.peterbe.com/plog/uniqifiers-benchmark
+#
+
+def unordered_uniq(seq): #Peter Bengtsson
+    # Not order preserving
+    return list(set(seq))
+
+def ordered_uniq(seq): # Dave Kirby
+    # Order preserving
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
+
 
 #Is it provided by default python lib?
 # def mkpath(path):

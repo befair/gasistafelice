@@ -20,7 +20,7 @@ from flexi_auth.models import PermissionBase # mix-in class for permissions mana
 from flexi_auth.exceptions import WrongPermissionCheck
 from flexi_auth.utils import get_parametric_roles
 
-from gasistafelice.lib import ClassProperty
+from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base.const import CONTACT_CHOICES
 from gasistafelice.base.utils import get_resource_icon_path
 
@@ -187,10 +187,10 @@ class Resource(object):
     def updaters(self):
         """Returns User QuerySet of who has updated the resource."""
        
-        self_updates_pk = \
-            self._default_history.filter(id=self.pk, history_type="~").values_list('pk')
+        self_updaters = \
+            unordered_uniq(self._default_history.filter(id=self.pk, history_type="~").values_list('history_user'))
 
-        return User.objects.filter(pk__in=self_updates_pk)
+        return User.objects.filter(pk__in=map(lambda x: x[0].pk, self_updaters))
 
     #------------------------------------
     # Basic properties: cache management
