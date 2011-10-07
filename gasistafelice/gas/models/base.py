@@ -15,13 +15,13 @@ from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.base.models import PermissionResource, Person, Place
 from gasistafelice.base.const import DAY_CHOICES
 
-from gasistafelice.auth import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
-from gasistafelice.auth.utils import register_parametric_role 
-from gasistafelice.auth.models import ParamRole
+from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
+from flexi_auth.utils import register_parametric_role 
+from flexi_auth.models import ParamRole
+from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
-from gasistafelice.bank.models import Account
 from gasistafelice.des.models import DES
 
 from gasistafelice.lib.fields import display
@@ -46,12 +46,7 @@ class GAS(models.Model, PermissionResource):
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
 
     supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
-
-    #, editable=False: admin validation refers to field 'account_state' that is missing from the form
-    account = models.ForeignKey(Account, null=True, blank=True, related_name="bank_acc_set", help_text=_("GAS manage all bank account for GASMember and PDS."))
-    #TODO: change name
-    liquidity = models.ForeignKey(Account, null=True, blank=True, related_name="bank_liq_set", help_text=_("GAS have is own bank account. "))
-
+    
     #active = models.BooleanField()
     birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
     vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
@@ -105,27 +100,36 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
-    #-- Permission management --#
+    #-- Authorization API --#
     
     # Table-level CREATE permission    
     @classmethod
-    def can_create(cls, user, **kwargs):
-        ## only DES administrators can create a new GAS in a DES
+    def can_create(cls, user, context):
+        # Who can create a new GAS in a DES ?
+        # * DES administrators
         try:
-            des = kwargs['des']
+            des = context['des']
+            allowed_users =  des.admins
+            return user in allowed_users
         except KeyError:
             raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
-        return user in des.admins
     
     # Row-level EDIT permission
-    def can_edit(self, user, **kwargs):
-        # only GAS tech referrers and DES administrators can edit GAS details
-        return (user in self.tech_referrers) or (user in self.des.admins) 
+    def can_edit(self, user, context):
+        # Who can edit details of an existing GAS ?
+        # * GAS tech referrers
+        # * administrators of the DES that GAS belongs to
+        allowed_users =  self.tech_referrers | self.des.admins
+        return user in allowed_users  
     
     # Row-level DELETE permission
-    def can_delete(self, user, **kwargs):
-        # only DES administrators can delete a GAS in a DES
-        return user in self.des.admins
+    def can_delete(self, user, context):
+        # Who can delete an existing GAS from a DES ?
+        # * administrators of the DES that GAS belongs to
+        allowed_users = self.des.admins
+        return user in allowed_users
+            
+    #--------------------------#
     
     #-- Properties --#
 
@@ -480,7 +484,6 @@ class GASMember(models.Model, PermissionResource):
     gas = models.ForeignKey(GAS)
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
-    account = models.ForeignKey(Account, null=True, blank=True)
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
     #TODO: Notify system
 
@@ -572,12 +575,9 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def economic_state(self):
-        st1 = self.total_basket
-        st2 = self.total_basket_to_be_delivered
-        if isinstance(self.account, Account):
-            return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
-        else:
-            return u"(%s + %s)"  % (st1, st2)
+        # QUESTION @domthu: what does this method is supposed to do ?
+        raise NotImplementedError
+
 
     @property
     def total_basket(self):
@@ -683,6 +683,38 @@ class GASMember(models.Model, PermissionResource):
     def orderable_products(self):
         from gasistafelice.gas.models import GASSupplierOrderProduct
         return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+    
+    #-- Authorization API --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can add a new Person to a GAS ?
+        # * administrators for that GAS
+        try:
+            gas = context['gas']
+            allowed_users = gas.tech_referrers
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of a GAS member ?
+        # * the member itself
+        # * tech referrers for that GAS
+        allowed_users = list(self.gas.tech_referrers) + [self.person.user] 
+        return user in allowed_users  
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can remove a member from a GAS ?
+        # * tech referrers for that GAS
+        allowed_users = self.gas.tech_referrers  
+        return user in allowed_users
+         
+    #--------------------------#
+    
 
 #-----------------------------------------------------------------------------------------------------
 
@@ -709,7 +741,11 @@ class GASSupplierStock(models.Model, PermissionResource):
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)
         self._msg = None
-
+    
+    @property
+    def gas(self):
+        return self.pact.gas
+    
     @property
     def supplier(self):
         return self.stock.supplier
@@ -780,10 +816,39 @@ class GASSupplierStock(models.Model, PermissionResource):
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact=self.pact)
 
-
+    #-- Authorization API --#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new supplier stock for a GAS ?
+        # * referrers for the pact the supplier stock is associated to
+        # * GAS administrators
+        try:
+            pact = context['pact']
+            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
+            return allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details for an existing supplier stock for a GAS ?
+        # * referrers for the pact the supplier stock is associated to
+        # * GAS administrators 
+        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return allowed_users
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing supplier stock for a GAS ?
+        # * referrers for the pact the supplier stock is associated to
+        # * GAS administrators 
+        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return allowed_users
+    
 #-----------------------------------------------------------------------------------------------------
-
-
+    
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
@@ -950,29 +1015,37 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def gas_supplier_referrers_persons(self):
         return self.persons.filter(user__in=self.gas_supplier_referrers)
 
-    #-- Permission management --#
+    #-- Authorization API --#
     
     # Table-level CREATE permission    
     @classmethod
-    def can_create(cls, user, **kwargs):
-        ## GAS administrators, GAS referres and GAS supplier referrers (of other pacts)
-        ## can create a new pact for their GAS
+    def can_create(cls, user, context):
+        # Who can create a a new pact for a GAS ?
+        # * GAS supplier referrers (of other pacts)
+        # * GAS referrers
+        # * GAS administrators
         try:
-            gas = kwargs['gas']
+            gas = context['gas']
+            allowed_users = gas.tech_referrers | gas.referrers | gas.supplier_referrers 
+            return allowed_users
         except KeyError:
-            raise SyntaxError("You need to specify a 'gas' argument to perform this permission check.")
-        return (user in gas.tech_referrers) or (user in gas.referrers) or (user in gas.supplier_referrers)
+            raise WrongPermissionCheck('CREATE', self, context)
  
     # Row-level EDIT permission
-    def can_edit(self, user, **kwargs):
-        # only GAS technical referrers and referrers for this pact can edit pact details
-        return (user in self.gas.tech_referrers) or (user in self.gas_supplier_referrers) 
+    def can_edit(self, user, context):
+        # Who can edit details for a pact in a GAS ?
+        # * GAS administrators 
+        # * referrers for that pact
+        allowed_users = self.gas.tech_referrers | self.gas.supplier_referrers 
+        return allowed_users 
     
     # Row-level DELETE permission
-    def can_delete(self, user, **kwargs):
-        # only GAS technical referrers can delete a pact in a GAS
-        return user in self.gas.tech_referrers       
-
+    def can_delete(self, user, context):
+        # Who can delete a pact in a GAS ?
+        # * GAS administrators 
+        allowed_users = self.gas.tech_referrers 
+        return allowed_users 
+    
 
 #-------------------------------------------------------------------------------
 

@@ -4,7 +4,6 @@ It includes common data on which all (or almost all) other applications rely on.
 """
 
 from django.db import models
-from django.db.models import get_model
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
@@ -14,8 +13,11 @@ from django.db.models import permalink
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
-from gasistafelice.auth import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
-from gasistafelice.auth.models import PermissionBase # mix-in class for permissions management
+from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
+from flexi_auth.models import PermissionBase # mix-in class for permissions management
+from flexi_auth.exceptions import WrongPermissionCheck
+from flexi_auth.utils import get_parametric_roles
+
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.const import CONTACT_CHOICES
 
@@ -363,7 +365,8 @@ class PermissionResource(Resource, PermissionBase):
     pass
 
 class Person(models.Model, PermissionResource):
-    """A Person is an anagraphic record of a human being.
+    """
+    A Person is an anagraphic record of a human being.
     It can be a User or not.
     """
 
@@ -405,10 +408,8 @@ class Person(models.Model, PermissionResource):
         """
         All GAS this person belongs to
         (remember that a person may be a member of more than one GAS).
-        """
-        # needed to avoid stumbling upon circular imports
-        # `gasistafelice.base` app shouldn't depend on `gasistafelice.gas` 
-        GAS = get_model('gas', 'GAS')
+        """ 
+        from gasistafelice.gas.models import GAS
         gas_set = set([member.gas for member in self.gasmembers])
         return GAS.objects.filter(pk__in=[obj.pk for obj in gas_set])
     
@@ -419,9 +420,7 @@ class Person(models.Model, PermissionResource):
         All DESs this person belongs to 
         (either as a member of one or more GAS or as a referrer for one or more suppliers in the DES).         
         """
-        # needed to avoid stumbling upon circular imports
-        # `gasistafelice.base` app shouldn't depend on `gasistafelice.des` 
-        DES = get_model('des', 'DES')
+        from gasistafelice.des.models import DES
         des_set = set([gas.des for gas in self.gas_list])
         return DES.objects.filter(pk__in=[obj.pk for obj in des_set])
     
@@ -439,8 +438,7 @@ class Person(models.Model, PermissionResource):
         1) suppliers for which he/she is a referrer
         2) suppliers who have signed a pact with a GAS he/she belongs to
         """
-        Supplier = get_model('supplier', 'Supplier')
-        
+        from gasistafelice.supplier.models import Supplier
         # initialize the return QuerySet 
         qs = Supplier.objects.none()
         
@@ -465,10 +463,9 @@ class Person(models.Model, PermissionResource):
         3) order to suppliers for which he/she is a referrer
         
         """
-        from gasistafelice.auth.utils import get_parametric_roles
-        
-        GASSupplierOrder = get_model('gas', 'GASSupplierOrder')
-        
+
+        from gasistafelice.gas.models import GASSupplierOrder
+                
         # initialize the return QuerySet 
         qs = GASSupplierOrder.objects.none()
         
@@ -499,7 +496,7 @@ class Person(models.Model, PermissionResource):
         1) delivery appointments for which this person is a referrer
         2) delivery appointments associated with a GAS he/she belongs to
         """
-        Delivery = get_model('gas', 'Delivery')
+        from gasistafelice.gas.models import Delivery
         # initialize the return QuerySet
         qs = Delivery.objects.none()    
         # add  delivery appointments for which this person is a referrer   
@@ -519,8 +516,7 @@ class Person(models.Model, PermissionResource):
         1) withdrawal appointments for which this person is a referrer
         2) withdrawal appointments associated with a GAS he/she belongs to
         """
-        
-        Withdrawal = get_model('gas', 'Withdrawal')
+        from gasistafelice.gas.models import Withdrawal
         # initialize the return QuerySet
         qs = Withdrawal.objects.none()    
         # add  withdrawal appointments for which this person is a referrer   
@@ -552,7 +548,40 @@ class Person(models.Model, PermissionResource):
         if self.uuid == '':
             self.uuid = None
         super(Person, self).save(*args, **kwargs)
-
+        
+    #----------------- Authorization API ------------------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new Person in a DES ?
+        # * DES administrators
+        try:
+            des = context['des']
+            allowed_users = des.admins            
+            return user in allowed_users 
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+        
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit a Person in a DES ?
+        # * the person itself
+        # * administrators of one of the DESs this person belongs to
+        des_admins = []
+        for des in self.des_list:
+            des_admins += des.admins
+        allowed_users = list(des_admins) + [self.user]
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a Person from the system ?
+        allowed_users = [self.user]
+        return user in allowed_users      
+    
+        
+    #-----------------------------------------------------#
    
 class Contact(models.Model):
 
@@ -584,7 +613,7 @@ class Place(models.Model, PermissionResource):
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
     city = models.CharField(max_length=128)
-    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"))
+    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)")) 
         
     #TODO geolocation: use GeoDjango PointField?
     lon = models.FloatField(null=True, blank=True)
@@ -616,6 +645,47 @@ class Place(models.Model, PermissionResource):
                 #COMMENT LF: This never occur because in form we check that name or address have been set
                 self.name = u"%s (%s)" % (self.city, self.province)
         super(Place, self).save(*args, **kw)
+        
+        #----------------- Authorization API ------------------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new Place in a DES ?
+        # * DES administrators
+        # * GAS members
+        # * Suppliers 
+        
+        try:
+            des = context['des']
+            all_gas_members = set()
+            for gas in des.gas_list:
+                all_gas_members = all_gas_members | gas.members 
+            all_suppliers = set()
+            for supplier in des.suppliers:
+                all_suppliers = all_suppliers | supplier.referrers
+            allowed_users =  des.admins | all_gas_members | all_suppliers
+            return user in allowed_users 
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)
+                
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of an existing place in a DES ?
+        # (note that places can be shared among GASs)
+        # * DES administrators
+        allowed_users =  self.des.admins
+        return user in allowed_users
+        
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing place from a DES ?
+        # (note that places can be shared among GASs)
+        # * DES administrators
+        allowed_users =  self.des.admins
+        return user in allowed_users       
+                
+    #-----------------------------------------------------#
 
 # Generic workflow management
 

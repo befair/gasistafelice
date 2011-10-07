@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth import GAS_MEMBER
+from flexi_auth.models import ParamRole
+from gasistafelice.consts import GAS_MEMBER
 from gasistafelice.des.models import Siteattr
 from gasistafelice.gas.models import GASMember
 from django.core.urlresolvers import reverse

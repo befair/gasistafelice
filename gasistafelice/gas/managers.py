@@ -1,6 +1,7 @@
 from django.db import models
 
-from gasistafelice.auth.models import ParamRole
+from gasistafelice.consts import *
+from flexi_auth.models import ParamRole
 from gasistafelice.gas.query import OrderQuerySet, AppointmentQuerySet
 
 class GASMemberManager(models.Manager):
@@ -16,8 +17,8 @@ class GASMemberManager(models.Manager):
         If a `gas` argument is provided, the result set is filtered accordingly.      
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_referrers(gas)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER, gas)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
@@ -36,8 +37,8 @@ class GASMemberManager(models.Manager):
         If a `gas` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_tech_referrers(gas)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_TECH, gas)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
@@ -56,8 +57,8 @@ class GASMemberManager(models.Manager):
         If a `gas` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_cash_referrers(gas)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_CASH, gas)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
@@ -75,8 +76,8 @@ class GASMemberManager(models.Manager):
         If a `gas` and/or a 'supplier' arguments are provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_supplier_referrers(gas, supplier)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_SUPPLIER, gas, supplier)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
@@ -95,8 +96,8 @@ class GASMemberManager(models.Manager):
         If a `order` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_order_referrers(order)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_ORDER, order)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
@@ -114,8 +115,8 @@ class GASMemberManager(models.Manager):
         If a `delivery` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_order_referrers(delivery)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_DELIVERY, delivery)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)
@@ -133,8 +134,8 @@ class GASMemberManager(models.Manager):
         If a `withdrawal` argument is provided, the result set is filtered accordingly.    
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.gas_order_referrers(withdrawal)
-        # initialize the return QuesrySet to an EmptyQuerySet
+        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_WITHDRAWAL, withdrawal)
+        # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
         # (one for each parametric role of interest)

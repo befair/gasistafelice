@@ -2,7 +2,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
-from gasistafelice.auth import EDIT, CONFIRM
+from gasistafelice.consts import EDIT, CONFIRM
 
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.lib.http import HttpResponse

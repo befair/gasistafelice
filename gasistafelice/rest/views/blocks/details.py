@@ -28,7 +28,7 @@ from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.base.workflows_utils import get_allowed_transitions, do_transition
 
-from gasistafelice.auth import EDIT
+from gasistafelice.consts import EDIT
 
 from gasistafelice.gas.forms import order as order_forms
 from gasistafelice.gas.forms.pact import EditPactForm

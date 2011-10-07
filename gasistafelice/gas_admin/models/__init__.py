@@ -5,7 +5,7 @@ from django.contrib import admin
 from gasistafelice.base import models as base_models
 from gasistafelice.supplier import models as supplier_models
 from gasistafelice.gas import models as gas_models
-from gasistafelice.bank import models as bank_models
+from accounting import models as accounting_models
 
 from gasistafelice.gas_admin.models.base import *
 from gasistafelice.gas_admin.models.gas import *

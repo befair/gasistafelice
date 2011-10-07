@@ -25,7 +25,7 @@ from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
 
-from gasistafelice.auth import CREATE, EDIT_MULTIPLE
+from gasistafelice.consts import CREATE, EDIT_MULTIPLE
 CREATE_PDF = "createpdf"
 
 #from users.models import can_write_to_resource

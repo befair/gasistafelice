@@ -7,8 +7,8 @@ from gasistafelice.gas.models.proxy import GASSupplierSolidalPact
 from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import Supplier
 
-from gasistafelice.auth import GAS_REFERRER_SUPPLIER
-from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
+from gasistafelice.consts import GAS_REFERRER_SUPPLIER
+from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 def today():
     return datetime.date.today().strftime(settings.DATE_FMT)

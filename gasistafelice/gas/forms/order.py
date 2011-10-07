@@ -13,8 +13,8 @@ from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.gas.models import Delivery, Withdrawal
 from gasistafelice.base.models import Place, Person
-from gasistafelice.auth.models import ParamRole, PrincipalParamRoleRelation
-from gasistafelice.auth import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY
+from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
+from gasistafelice.consts import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY
 
 from django.conf import settings
 import datetime, copy

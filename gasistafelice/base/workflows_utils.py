@@ -17,8 +17,8 @@ def get_allowed_transitions(obj, user):
         The user for which the transitions are allowed.
     """
     from gasistafelice.gas.models import GASSupplierOrder, GASMemberOrder
-    from gasistafelice.auth.models import ParamRole
-    from gasistafelice.auth import GAS_MEMBER, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH
+    from flexi_auth.models import ParamRole
+    from gasistafelice.consts import GAS_MEMBER, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH
         
     if isinstance(obj, GASSupplierOrder):
         param_roles =  [

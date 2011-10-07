@@ -7,3 +7,6 @@ doc*/build/
 build/
 src/
 .*.swp
+.settings/
+*.db
+*.db-journal

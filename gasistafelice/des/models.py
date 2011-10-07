@@ -22,9 +22,9 @@ from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import PermissionResource, Person
-from gasistafelice.auth import DES_ADMIN
-from gasistafelice.auth.models import ParamRole
-from gasistafelice.auth.utils import register_parametric_role
+from gasistafelice.consts import DES_ADMIN
+from flexi_auth.models import ParamRole
+from flexi_auth.utils import register_parametric_role
 
 import time
 
@@ -94,7 +94,18 @@ class DES(Site, PermissionResource):
         # retrieve 'DES administrator' parametric role for this DES
         pr = ParamRole.get_role(DES_ADMIN, des=self)
         # retrieve all Users having this role
-        return pr.get_users()       
+        return pr.get_users()
+    
+    @classmethod
+    def admins_all(cls):
+        """
+        Return all users being administrators for **any** DES.
+        """
+        #FIXME: use a descriptor to merge this functionality with that of ``DES.admins()``
+        des_admins_all = set()
+        for des in cls.objects.all():
+            des_admins_all = des_admins_all | des.admins
+        return des_admins_all               
     
     @property
     def referrers(self):
@@ -105,7 +116,7 @@ class DES(Site, PermissionResource):
         return self.info_people_set.all()
         
     def setup_roles(self):
-        # register a new `DES_ADMIN` role for this DES
+        # register a new ``DES_ADMIN`` role for this DES
         register_parametric_role(name=DES_ADMIN, des=self)
     
 
@@ -310,6 +321,30 @@ class DES(Site, PermissionResource):
     def basket(self):
         from gasistafelice.gas.models.order import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
+    
+    #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new DES ?
+        # * Only a MegaSuperUser ! ;-)
+        return False # superusers skip every access-control check
+    
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit DES details ?
+        # * DES administrators
+        allowed_users = self.admins            
+        return user in allowed_users
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete a DES ?
+        # "DESs shouldn't die, only born" !  
+        return False
+            
+    #---------------------------------------------------#
 
 class Siteattr(models.Model):
 
