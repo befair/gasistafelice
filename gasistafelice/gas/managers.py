@@ -184,5 +184,24 @@ class OrderManager(models.Manager):
 
     def closed(self):
         return self.get_query_set().closed()
-
+    
+    def on_completion(self):
+        return self.get_query_set().on_completion()
+    
+    def finalized(self):
+        return self.get_query_set().finalized()
+    
+    def sent(self):
+        return self.get_query_set().sent()
+    
+    def delivered(self):
+        return self.get_query_set().delivered()
+    
+    def archived(self):
+        return self.get_query_set().archived()
+    
+    def canceled(self):
+        return self.get_query_set().canceled()
+  
+    
 
