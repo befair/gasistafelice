@@ -126,7 +126,10 @@ class Block(BlockSSDataTables):
         """Return records of rendered table fields."""
 
         records = []
+        #memorize family, total price and number of products
+        subTotals = []
         actualFamily = -1
+        loadedFamily = -1
         rowFam = -1
         description = ""
         product = ""
@@ -138,6 +141,12 @@ class Block(BlockSSDataTables):
             rowFam = el.purchaser.pk
             if actualFamily == -1 or actualFamily != rowFam:
                 if actualFamily != -1:
+                    subTotals.append({
+                       'family_id' : actualFamily,
+                       'gasmember' : description,
+                       'basket_price' : tot_fam,
+                       'basket_products' : nProducts,
+                    })
                     tot_fam = 0
                     nProducts = 0
                 actualFamily = rowFam
@@ -155,12 +164,18 @@ class Block(BlockSSDataTables):
                'price_changed' : el.has_changed,
                'amount' : el.ordered_amount,
                'tot_price' : el.tot_price,
-               'gasmember' : description,
-               'tot_fam' : tot_fam,
-               'nProducts' : nProducts,
+               'family_id' : rowFam,
             })
 
-        return records, tot_Ord
+        if actualFamily != -1 and tot_fam > 0:
+            subTotals.append({
+               'family_id' : actualFamily,
+               'gasmember' : description,
+               'basket_price' : tot_fam,
+               'basket_products' : nProducts,
+            })
+
+        return records, tot_Ord, subTotals
 
 
     def get_response(self, request, resource_type, resource_id, args):
@@ -173,16 +188,17 @@ class Block(BlockSSDataTables):
         else:
             return super(Block, self).get_response(request, resource_type, resource_id, args)
 
-            
+
     def _create_pdf(self):
 
         # Dati di esempio
         order = self.resource.order
-        fams, total_calc = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
+        fams, total_calc, subTotals = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
         context_dict = {
             'order' : order,
             'recProd' : self._get_pdfrecords_products(self._get_resource_products(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
             'recFam' : fams, 
+            'subFam' : subTotals, 
             'user' : self.request.user,
             'total_amount' : self.resource.tot_price, #total da Model
             'total_calc' : total_calc, #total dal calcolato
