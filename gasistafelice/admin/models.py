@@ -30,7 +30,7 @@ class GASMemberOrderInline(admin.TabularInline):
 
 class SupplierStockInline(admin.TabularInline):
     model = supplier_models.SupplierStock
-    exclude = ('delivery_terms',)
+    exclude = ('delivery_notes',)
     extra = 1
     
 class GASSupplierOrderProductInline(admin.TabularInline):
@@ -210,7 +210,7 @@ class SupplierStockAdmin(admin.ModelAdmin):
         }),
         ('Constraints', {
             'classes': ('collapse',),
-            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
+            'fields': ('order_minimum_amount', 'order_step', 'delivery_notes',)
          })
         )
 
@@ -252,7 +252,7 @@ class SupplierStockAdmin(admin.ModelAdmin):
         }),
         ('Constraints', {
             'classes': ('collapse',),
-            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
+            'fields': ('order_minimum_amount', 'order_step', 'delivery_notes',)
          })
         )
 

@@ -1,11 +1,8 @@
 from django.db.models.query import QuerySet
-from django.contrib.contenttypes.models import ContentType  
-
-from workflows.models import StateObjectRelation
-
-from gasistafelice.gas.models import GASSupplierOrder
-
 from datetime import date
+
+from django.contrib.contenttypes.models import ContentType  
+from workflows.models import StateObjectRelation
 
 class OrderQuerySet(QuerySet):
     
@@ -17,6 +14,8 @@ class OrderQuerySet(QuerySet):
         since different model instances may be associated to different workflows, and states belonging to 
         different workflows are different even if they are named the same way.          
         """
+        from gasistafelice.gas.models import GASSupplierOrder
+
         order_ct = ContentType.objects.get_for_model(GASSupplierOrder)
         sors = StateObjectRelation.objects.filter(content_type=order_ct, state__name=name)
         orders = GASSupplierOrder.objects.filter(pk__in=[sor.content_id for sor in sors])
@@ -46,8 +45,8 @@ class OrderQuerySet(QuerySet):
     def canceled(self):
         return self.get_by_state('Canceled')
             
-    
-    
+#-------------------------------------------------------------------------------
+
 class AppointmentQuerySet(QuerySet):
 
     def future(self):
@@ -61,4 +60,3 @@ class AppointmentQuerySet(QuerySet):
         Return a QuerySet containing all past appointments.
         """
         return self.filter(date__lt=date.today())
-
