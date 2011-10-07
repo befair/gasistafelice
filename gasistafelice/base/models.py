@@ -140,6 +140,49 @@ class Resource(object):
         """Returns Person to contact for info QuerySet"""
         raise NotImplementedError("class: %s method: info_people" % self.__class__.__name__)
 
+    #-- History API --#
+
+    # Requires that an history manager exists for the resource
+    
+    @property
+    def created_by(self):
+        """Returns user that created the resource."""
+       
+        # There could be the case that a deleted id is reused, so, do not use .get method
+        self_as_of_creation = \
+            self._default_history.filter(id=self.pk, history_type="+")[0]
+
+        return self_as_of_creation.history_user
+
+    @property
+    def created_by_person(self):
+        """Returns person bound to the user that created the resource."""
+        return self.created_by.person
+
+    @property
+    def last_update_by(self):
+        """Returns user that has made the last update to the resource."""
+       
+        # There could be the case that a deleted id is reused, so, do not use .get method
+        self_as_of_last_update = \
+            self._default_history.filter(id=self.pk, history_type="~")[0]
+
+        return self_as_of_last_update.history_user
+
+    @property
+    def last_update_by_person(self):
+        """Returns person bound to the user that made the last update the resource."""
+        return self.last_update_by.person
+
+    @property
+    def updaters(self):
+        """Returns User QuerySet of who has updated the resource."""
+       
+        self_updates_pk = \
+            self._default_history.filter(id=self.pk, history_type="~").values_list('pk')
+
+        return User.objects.filter(pk__in=self_updates_pk)
+
     #------------------------------------
     # Basic properties: cache management
     #------------------------------------
@@ -626,12 +669,16 @@ class Place(models.Model, PermissionResource):
         verbose_name_plural = _("places")
 
     def __unicode__(self):
-        return _("%(name)s in %(city)s") % {
+        return _("%(name)s in %(city)s (%(pr)s)") % {
                     'name' : self.name or self.address, 
-                    'city' : self.city
+                    'city' : self.city,
+                    'pr' : self.province,
         }
 
     def save(self, *args, **kw):
+
+        #TODO: check if an already existent place with the same full address exist and in that case force update
+
         #TODO: we should compute city and province starting from zipcode using local_flavor in forms
         self.city = self.city.capitalize()
         self.province = self.province.upper()
@@ -640,13 +687,13 @@ class Place(models.Model, PermissionResource):
             # Separate check for name and address because we must set a name for a place.
             # Otherwise error occurs.
             if self.address:
-                self.name = u"%s - %s (%s)" % (self.address, self.city, self.province)
+                self.name = self.address
             else:
-                #COMMENT LF: This never occur because in form we check that name or address have been set
-                self.name = u"%s (%s)" % (self.city, self.province)
+                raise ValueError("Name or address should be set for a Place")
+
         super(Place, self).save(*args, **kw)
         
-        #----------------- Authorization API ------------------------#
+    #----------------- Authorization API ------------------------#
     
     # Table-level CREATE permission    
     @classmethod
@@ -674,7 +721,11 @@ class Place(models.Model, PermissionResource):
         # Who can edit details of an existing place in a DES ?
         # (note that places can be shared among GASs)
         # * DES administrators
-        allowed_users =  self.des.admins
+        # * User that created the place
+        # * User who has updated it. How he can do it? 
+        #   If a User try to create a new place with the same parameters
+        #   of an already existent one, he updates the place
+        allowed_users =  self.des.admins | self.created_by | self.updaters
         return user in allowed_users
         
     # Row-level DELETE permission
@@ -682,7 +733,9 @@ class Place(models.Model, PermissionResource):
         # Who can delete an existing place from a DES ?
         # (note that places can be shared among GASs)
         # * DES administrators
-        allowed_users =  self.des.admins
+        # * User that created the place
+        # * User who has updated it. How he can do it? see can_edit above
+        allowed_users =  self.des.admins | self.created_by | self.updaters
         return user in allowed_users       
                 
     #-----------------------------------------------------#
