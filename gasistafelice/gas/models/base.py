@@ -575,9 +575,27 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def economic_state(self):
-        # QUESTION @domthu: what does this method is supposed to do ?
-        raise NotImplementedError
+        """Show summary of GASMember economic state.
 
+        It uses the following syntax:
+
+        %(account_money)s - ( %(tot_confirmed_gmo_for_open_gso)s - %(tot_confirmed_gmo_for_closed_gso)s) = %(account_decurted)s
+
+        where:
+
+        * account_money: is the amount of money that exist now in the GASMember account
+        * tot_confirmed_gmo_for_open_gso: is the amount of money due for confirmed GASMemberOrder of GASSupplierOrder that are not closed
+        * tot_confirmed_gmo_for_closed_gso: is the amount of money due for confirmed GASMemberOrder of GASSupplierOrder that are closed
+        * account_decurted: is the result of the operation
+        """
+
+        st1 = self.total_basket
+        st2 = self.total_basket_to_be_delivered
+        try:
+            return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+        except AttributeError:
+            # Account descriptor is not implemented yet
+            return u"(%s + %s)"  % (st1, st2)
 
     @property
     def total_basket(self):
