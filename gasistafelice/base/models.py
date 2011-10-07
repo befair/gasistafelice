@@ -152,6 +152,17 @@ class Resource(object):
     #-- History API --#
 
     # Requires that an history manager exists for the resource
+    # TODO: encapsulate it in HistoryResource class
+
+    @property
+    def created_on(self):
+        """Returns datetime instance of when the instance has been created."""
+       
+        # There could be the case that a deleted id is reused, so, do not use .get method
+        self_as_of_creation = \
+            self._default_history.filter(id=self.pk, history_type="+")[0]
+
+        return self_as_of_creation.history_date
     
     @property
     def created_by(self):
