@@ -21,7 +21,7 @@ from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
-from gasistafelice.base.models import Resource
+from gasistafelice.base.models import PermissionResource, Person
 from gasistafelice.auth import DES_ADMIN
 from gasistafelice.auth.models import ParamRole
 from gasistafelice.auth.utils import register_parametric_role
@@ -31,7 +31,7 @@ import time
 #------------------------------------------------------------------------------
 # Basic DES object: configuration registry
 
-class DES(Site, Resource):
+class DES(Site, PermissionResource):
     """Facade for Siteattr object. It's an orthogonal representation for it.
     It proxies get attribute operations. 
     It is a Model instance since there are foreign key for it (i.e. comments)
@@ -44,6 +44,7 @@ class DES(Site, Resource):
     """
 
     cfg_time = models.PositiveIntegerField()
+    info_people_set = models.ManyToManyField(Person, null=True, blank=True)
     
     display_fields = (
         models.PositiveIntegerField(verbose_name=_("GAS"), name="tot_gas"),
@@ -95,6 +96,13 @@ class DES(Site, Resource):
         # retrieve all Users having this role
         return pr.get_users()       
     
+    @property
+    def referrers(self):
+        return self.admins
+
+    @property
+    def info_people(self):
+        return self.info_people_set.all()
         
     def setup_roles(self):
         # register a new `DES_ADMIN` role for this DES
@@ -152,7 +160,6 @@ class DES(Site, Resource):
         else:
             return Comment.objects.filter(is_removed=False).order_by('-submit_date').all()
 
-    #TODO placeholder domthu update limits abbreviations with resource abbreviations
     def quick_search(self, q, limits=['gn','sn','ogn','osn']):
         """Search with limit.
         @param q: search query
@@ -232,7 +239,6 @@ class DES(Site, Resource):
 
     @property
     def persons(self):
-        from gasistafelice.base.models import Person
         return Person.objects.all()
 
     @property
