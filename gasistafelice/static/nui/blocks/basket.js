@@ -30,7 +30,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     null,
                     null,
                     { "sType": "currency", "sClass": "taright" },
-                    { "bSortable" : false,
+                    { "bSortable" : false, "sClass": "taright" ,
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[5]).attr('step');
                                     var min =  $(oObj.aData[5]).attr('minimum_amount');
@@ -60,11 +60,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                                   },
                      },
                     { "sType": "currency", "bSortable" : false, "sClass": "taright" },
-                    { "fnRender": function ( oObj ) {
-                            return 'TODO';
-                            },
-                      "aTargets": [ 0 ]
-                    }
+                    null
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -88,6 +84,11 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                 }
             }); 
 
+//                    { "fnRender": function ( oObj ) {
+//                            return 'TODO';
+//                            },
+//                      "aTargets": [ 0 ]
+//                    }
         return this._super();
 
     }

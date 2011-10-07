@@ -9,7 +9,7 @@ from gasistafelice.lib.http import HttpResponse
 
 from gasistafelice.gas.models import GASMember
 
-from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import BasketGASMemberOrderForm, SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -41,7 +41,7 @@ class Block(BlockSSDataTables):
         4: 'ordered_price', 
         5: 'ordered_amount', 
         6: 'tot_price', 
-        7: '' 
+        7: 'enabled'
     }
 
     def _get_user_actions(self, request):
@@ -80,7 +80,7 @@ class Block(BlockSSDataTables):
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
         return formset_factory(
-                    form=SingleGASMemberOrderForm,
+                    form=BasketGASMemberOrderForm,
                     formset=BaseFormSetWithRequest, 
                     extra=qs.count()
         )
@@ -99,16 +99,18 @@ class Block(BlockSSDataTables):
         gmo_info = { }
 
         gmo =  self.resource #GASMemberOrder()
+        av = False
 
         for i,el in enumerate(querySet):
 
             key_prefix = 'form-%d' % i
             data.update({
-               '%s-id' % key_prefix : gmo.pk,
+               '%s-id' % key_prefix : el.pk, #gmo.pk,
                '%s-ordered_amount' % key_prefix : el.ordered_amount or 0,
                '%s-ordered_price' % key_prefix : el.ordered_product.order_price, #displayed as hiddend field
-               '%s-gmo_id' % key_prefix : el.pk, #displayed as hiddend field !Attention is gmo_id 
-               '%s-gssop_id' % key_prefix : el.ordered_product.pk, #displayed as hiddend field --> gsop_id
+               '%s-gm_id' % key_prefix : gmo.pk, #displayed as hiddend field !Attention is gmo_id 
+               '%s-gsop_id' % key_prefix : el.ordered_product.pk,
+               '%s-enabled' % key_prefix : bool(av),
             })
 
             gmo_info[el.pk] = {
@@ -117,7 +119,7 @@ class Block(BlockSSDataTables):
             }
 
 
-        data['form-TOTAL_FORMS'] = c 
+        data['form-TOTAL_FORMS'] = c + 7
         data['form-INITIAL_FORMS'] = c
         data['form-MAX_NUM_FORMS'] = 0
 
@@ -136,16 +138,23 @@ class Block(BlockSSDataTables):
                             'minimum_amount' : el.ordered_product.gasstock.order_minimum_amount or 1,
             }
 
+#            form.fields['enabled'].widget.attrs = { 
+#                            'class' : 'amount',
+#            }
+
             records.append({
-               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),
+               'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),
                'order' : el.ordered_product.order.pk,
                'supplier' : el.supplier,
                'product' : el.product,
                'price' : el.ordered_product.order_price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
                'ordered_total' : total,
-               'price_changed' : el.has_changed
+               'price_changed' : el.has_changed,
+               'field_enabled' : av
             })
+               #FIXME'field_enabled' : form['enabled']
+               #'field_enabled' : [_('not available'),form['enabled']][bool(av)],
                #'description' : el.product.description,
 
         #return records, records, {}

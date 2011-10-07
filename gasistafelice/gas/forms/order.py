@@ -218,14 +218,12 @@ GASSupplierOrderProductFormSet = formset_factory(
 
 
 class SingleGASMemberOrderForm(forms.Form):
-    """Return form class for row level operaton on datatable"""
+    """Return form class for row level operation on GSOP datatable"""
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.IntegerField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
-    #test
-    #enabled = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
@@ -241,17 +239,12 @@ class SingleGASMemberOrderForm(forms.Form):
             if gmo.ordered_amount == 0:
                 gmo.delete()
                 print "STO CANCELLANDO un ordine gasista da widget quantita"
-            #test
-            #elif not self.cleaned_data.get('enabled'):
-            #    gmo.delete()
-            #    print "STO CANCELLANDO un ordine gasista da pulsante elimina"
             else:
                 gmo.save()
                 print "ho aggiornato un ordine gasista"
 
         elif self.cleaned_data.get('ordered_amount'):
                 gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
-                #test
                 #retrieve if yet exist. Security to ensure non duplicate entry into database
                 #But this is done into GASMemberOrder Model with set unique_together
                 gmo = GASMemberOrder(
@@ -261,5 +254,43 @@ class SingleGASMemberOrderForm(forms.Form):
                         purchaser = self.__gm,
                 )
                 gmo.save()
+
+class BasketGASMemberOrderForm(forms.Form):
+    """Return form class for row level operation on GMO datatable"""
+
+    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    gsop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    ordered_amount = forms.IntegerField(required=False, initial=0)
+    ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
+    delete_it = forms.BooleanField(required=False)
+
+    def __init__(self, request, *args, **kw):
+        super(BasketGASMemberOrderForm, self).__init__(*args, **kw)
+        #self.__gm = request.resource.gasmember
+
+    def save(self):
+
+        id = self.cleaned_data.get('id')
+        gm_id = self.cleaned_data.get('id')
+        gsop_id = self.cleaned_data.get('gsop_id')
+        ordered_amount = self.cleaned_data.get('ordered_amount')
+        ordered_price = self.cleaned_data.get('ordered_price')
+        delete_it = self.cleaned_data.get('enabled')
+        if id:
+            gmo = GASMemberOrder.objects.get(pk=id)
+#            if gm_id and gm_id != gmo.purchaser.pk:
+#                print "Qualcosa non va con: GASmember"
+#                return ""
+            gmo.ordered_price = ordered_price
+            gmo.ordered_amount = ordered_amount
+            if gmo.ordered_amount == 0 or delete_it:
+                gmo.delete()
+                print "STO CANCELLANDO un ordine gasista da widget quantita"
+            else:
+                gmo.save()
+                print "ho aggiornato un ordine gasista"
+
+#        elif self.cleaned_data.get('ordered_amount'):
 
 
