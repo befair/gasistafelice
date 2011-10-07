@@ -20,23 +20,19 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
         var block_obj = this;
         // Init dataTables
+                //'bPaginate': false, 'sPaginationType': 'full_numbers', 
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'bPaginate': false, 
+                'bPaginate': false,
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
-                "aaSorting": [[5,"dsc"]],
+                "aaSorting": [[2,"asc"]],
                 "aoColumns": [
                     null,
                     null,
-                    { "bSortable" : false },
-                    { "bSortable" : false },
-                    { "bSortable" : false, "sClass": "taright", 
-                      "sType": "currency",
-                      "fnRender": function (oObj) {
-                                    return '&#8364; ' + oObj.aData[4];
-                                  },
-                    },
+                    { "bSortable" : true },
+                    { "bSortable" : true },
+                    { "bSortable" : true, "sClass": "taright", "sType": "currency"},
                     { "bSortable" : false,
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[5]).attr('step');

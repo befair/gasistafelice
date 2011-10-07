@@ -5,10 +5,10 @@
     [
 
         "{{row.id|escapejs}}",
+        "{{row.order}}",
         "{{row.supplier|escapejs}}",
         "{{row.product|escapejs}}",
-        "{{row.description|escapejs}}",
-        "{{row.price|floatformat:"2"}}",
+        "&#8364; {{row.price|floatformat:"2"}}",
         "{{row.ordered_amount|escapejs}}",
         "&#8364; {{ row.ordered_total|floatformat:"2"}}",
 
@@ -19,4 +19,4 @@
     {% endfor %}
 
 {% endblock %}
-      
+

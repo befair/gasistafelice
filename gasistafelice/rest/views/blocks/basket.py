@@ -7,10 +7,9 @@ from gasistafelice.auth import EDIT, CONFIRM
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.lib.http import HttpResponse
 
-from django.template.defaultfilters import floatformat
-
 from gasistafelice.gas.models import GASMember
-from django.template.defaultfilters import floatformat
+
+from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -20,6 +19,8 @@ import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
 from datetime import datetime
+
+from django.template.defaultfilters import floatformat
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -31,14 +32,16 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Basket")
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
+        #3: 'ordered_product__stock__supplier_stock__product', gasstock
     COLUMN_INDEX_NAME_MAP = { 
-        0: 'ordered_product__order__pk', 
-        1: 'ordered_product__gasstock__stock__supplier', 
-        2: 'ordered_product__stock__supplier_stock__product', 
-        3: 'ordered_amount', 
+        0: 'pk', 
+        1: 'ordered_product__order__pk', 
+        2: 'ordered_product__gasstock__stock__supplier', 
+        3: 'ordered_product__gasstock__stock__product', 
         4: 'ordered_price', 
-        5: 'tot_price', 
-        6: '' 
+        5: 'ordered_amount', 
+        6: 'tot_price', 
+        7: '' 
     }
 
     def _get_user_actions(self, request):
@@ -73,26 +76,82 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         return request.resource.basket
 
+
+    def _get_edit_multiple_form_class(self):
+        qs = self._get_resource_list(self.request)
+        return formset_factory(
+                    form=SingleGASMemberOrderForm,
+                    formset=BaseFormSetWithRequest, 
+                    extra=qs.count()
+        )
+
+
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
 
-        records = []
-        c = querySet.count()
+        gmos = querySet
 
-        for el in querySet:
+        data = {}
+        i = 0
+        c = querySet.count()
+        
+        # Store mapping between GSSOP-id and neededs info: formset_index and ordered_total
+        gmo_info = { }
+
+        gmo =  self.resource #GASMemberOrder()
+
+        for i,el in enumerate(querySet):
+
+            key_prefix = 'form-%d' % i
+            data.update({
+               '%s-id' % key_prefix : gmo.pk,
+               '%s-ordered_amount' % key_prefix : el.ordered_amount or 0,
+               '%s-ordered_price' % key_prefix : el.ordered_product.order_price, #displayed as hiddend field
+               '%s-gmo_id' % key_prefix : el.pk, #displayed as hiddend field !Attention is gmo_id 
+               '%s-gssop_id' % key_prefix : el.ordered_product.pk, #displayed as hiddend field --> gsop_id
+            })
+
+            gmo_info[el.pk] = {
+                'formset_index' : i,
+                'ordered_total' : el.tot_price, # This is the total computed NOW (with ordered_product.price)
+            }
+
+
+        data['form-TOTAL_FORMS'] = c 
+        data['form-INITIAL_FORMS'] = c
+        data['form-MAX_NUM_FORMS'] = 0
+
+        formset = self._get_edit_multiple_form_class()(request, data)
+
+        records = []
+
+        for i,el in enumerate(querySet):
+
+            form = formset[gmo_info[el.pk]['formset_index']]
+            total = gmo_info[el.pk]['ordered_total']
+
+            form.fields['ordered_amount'].widget.attrs = { 
+                            'class' : 'amount',
+                            'step' : el.ordered_product.gasstock.order_step or 1,
+                            'minimum_amount' : el.ordered_product.gasstock.order_minimum_amount or 1,
+            }
 
             records.append({
+               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),
                'order' : el.ordered_product.order.pk,
-               'supplier' : el.ordered_product.stock.supplier,
+               'supplier' : el.supplier,
                'product' : el.product,
-               'amount' : floatformat(el.ordered_amount, "-2"),
-               'price' : floatformat(el.ordered_product.order_price, 2),
-               'price_changed' : el.has_changed,
-               'tot_price' : floatformat(el.tot_price, 2),
+               'price' : el.ordered_product.order_price,
+               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
+               'ordered_total' : total,
+               'price_changed' : el.has_changed
             })
-               #'price' : floatformat(el.ordered_product.gasstock.price, 2),
+               #'description' : el.product.description,
 
-        return records, records, {}
+        #return records, records, {}
+        return formset, records, {}
+
+
 
     def _get_pdfrecords(self, request, querySet):
         """Return records of rendered table fields."""
@@ -119,11 +178,11 @@ class Block(BlockSSDataTables):
                'order' : rowOrder,
                'order_description' : description,
                'supplier' : producer,
-               'amount' : floatformat(el.ordered_amount, "-2"),
-               'price_ordered' : floatformat(el.ordered_price, 2),
-               'price_delivered' : floatformat(el.ordered_product.order_price, 2),
+               'amount' : el.ordered_amount,
+               'price_ordered' : el.ordered_price,
+               'price_delivered' : el.ordered_product.order_price,
                'price_changed' : el.has_changed,
-               'tot_price' : floatformat(el.tot_price, 2),
+               'tot_price' : el.tot_price,
                'tot_prod' : tot_prod,
                'order_confirmed' : el.is_confirmed,
             })
@@ -174,7 +233,7 @@ class Block(BlockSSDataTables):
             'records' : self._get_pdfrecords(self.request, querySet),
             'rec_count' : querySet.count(),
             'user' : self.request.user,
-            'total_amount' : floatformat(self.resource.total_basket, 2),
+            'total_amount' : self.resource.total_basket,
             'CSS_URL' : settings.MEDIA_ROOT,
         }
 

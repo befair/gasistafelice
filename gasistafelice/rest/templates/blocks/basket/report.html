@@ -34,7 +34,7 @@
             <tr>
                 <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ rec_count }}</h2></td>
                 <td class="sumPricefield taright">{% trans "Total cost" %}</td>
-                <td class="sumPricevalue taright">&euro; {{total_amount}}</td>
+                <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}</td>
             </tr>
         </table>
    </div>
@@ -82,12 +82,12 @@
             {% endif %}
                 <td class="tab"></td>
                 {% if row.price_changed %}
-                    <td class="taright alert uprice">&euro; {{row.price_ordered}} --> {{row.price_delivered}}</td>
+                    <td class="taright alert uprice">&euro; {{row.price_ordered|floatformat:"2"}} --> {{row.price_delivered|floatformat:"2"}}</td>
                 {% else %}
-                    <td class="taright uprice">&euro; {{row.price_delivered}}</td>
+                    <td class="taright uprice">&euro; {{row.price_delivered|floatformat:"2"}}</td>
                 {% endif %}
                 <td class="taright qta">{{row.amount}}</td>
-                <td class="taright totprice">&euro; {{row.tot_price}}</td>
+                <td class="taright totprice">&euro; {{row.tot_price|floatformat:"2"}}</td>
                 <td class="product">{{row.product|truncatewords:"200"}}</td>
             </tr>
 
