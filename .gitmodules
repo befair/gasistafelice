@@ -2,3 +2,9 @@
 	url = git@github.com:feroda/django-pro-history.git
     path = extra/django-history
 
+[submodule "extra/django-simple-accounting"]
+	path = extra/django-simple-accounting
+	url = git://github.com/seldon/django-simple-accounting.git
+[submodule "extra/django-flexi-auth"]
+	path = extra/django-flexi-auth
+	url = git://github.com/seldon/django-flexi-auth.git
