@@ -192,12 +192,12 @@ class Block(BlockSSDataTables):
                 producer = el.ordered_product.stock.supplier
             tot_prod += el.tot_price
 
-               #'product' : el.product.encode('utf-8', "ignore"),
             records.append({
                'order' : rowOrder,
                'order_description' : description,
                'supplier' : producer,
                'amount' : el.ordered_amount,
+               'product' : el.product,
                'price_ordered' : el.ordered_price,
                'price_delivered' : el.ordered_product.order_price,
                'price_changed' : el.has_changed,
@@ -246,7 +246,7 @@ class Block(BlockSSDataTables):
     def _create_pdf(self):
 
         gasmember = self.resource
-        querySet = self._get_resource_list(self.request)
+        querySet = self._get_resource_list(self.request).order_by('ordered_product__order__pk')
         context_dict = {
             'gasmember' : gasmember,
             'records' : self._get_pdfrecords(self.request, querySet),
@@ -262,7 +262,7 @@ class Block(BlockSSDataTables):
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result)
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \

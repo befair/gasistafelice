@@ -212,8 +212,7 @@ class Product(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     def __unicode__(self):
-        return unicode(self.name)
-        #return self.name.decode('utf8')
+        return self.name
 
     @property
     def referrers(self):
