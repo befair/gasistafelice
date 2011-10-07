@@ -263,7 +263,8 @@ class BasketGASMemberOrderForm(forms.Form):
     gsop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.IntegerField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
-    delete_it = forms.BooleanField(required=False)
+    #FIXME: integrate BooleanField in this class and remove DeleteGASMemberOrderForm 
+    enabled = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kw):
         super(BasketGASMemberOrderForm, self).__init__(*args, **kw)
@@ -276,7 +277,7 @@ class BasketGASMemberOrderForm(forms.Form):
         gsop_id = self.cleaned_data.get('gsop_id')
         ordered_amount = self.cleaned_data.get('ordered_amount')
         ordered_price = self.cleaned_data.get('ordered_price')
-        delete_it = self.cleaned_data.get('enabled')
+        enabled = self.cleaned_data.get('enabled')
         if id:
             gmo = GASMemberOrder.objects.get(pk=id)
 #            if gm_id and gm_id != gmo.purchaser.pk:
@@ -284,7 +285,8 @@ class BasketGASMemberOrderForm(forms.Form):
 #                return ""
             gmo.ordered_price = ordered_price
             gmo.ordered_amount = ordered_amount
-            if gmo.ordered_amount == 0 or delete_it:
+            if gmo.ordered_amount == 0 or enabled:
+            #if gmo.ordered_amount == 0:
                 gmo.delete()
                 print "STO CANCELLANDO un ordine gasista da widget quantita"
             else:
@@ -293,4 +295,26 @@ class BasketGASMemberOrderForm(forms.Form):
 
 #        elif self.cleaned_data.get('ordered_amount'):
 
+class DeleteGASMemberOrderForm(forms.Form):
+
+    id = forms.IntegerField(required=True, widget=forms.HiddenInput)
+    enabled = forms.BooleanField(required=False)
+
+    def __init__(self, request, *args, **kw):
+        super(DeleteGASMemberOrderForm, self).__init__(*args, **kw)
+
+    def save(self):
+        id = self.cleaned_data.get('id')
+        if id:
+            gmo = GASMemberOrder.objects.get(pk=id)
+            enabled = self.cleaned_data.get('enabled')
+            if enabled:
+                gmo.delete()
+
+
+DeleteGASMemberOrderFormSet = formset_factory(
+                                form=DeleteGASMemberOrderForm, 
+                                formset=BaseFormSetWithRequest, 
+                                extra=0
+                          )
 

@@ -9,7 +9,7 @@ from gasistafelice.lib.http import HttpResponse
 
 from gasistafelice.gas.models import GASMember
 
-from gasistafelice.gas.forms.order import BasketGASMemberOrderForm, SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import BasketGASMemberOrderForm, SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory, DeleteGASMemberOrderFormSet
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -92,6 +92,7 @@ class Block(BlockSSDataTables):
         gmos = querySet
 
         data = {}
+        data2 = {}
         i = 0
         c = querySet.count()
         
@@ -118,12 +119,23 @@ class Block(BlockSSDataTables):
                 'ordered_total' : el.tot_price, # This is the total computed NOW (with ordered_product.price)
             }
 
+            data2.update({
+               '%s-id' % key_prefix : el.pk,
+               '%s-enabled' % key_prefix : bool(av),
+            })
 
-        data['form-TOTAL_FORMS'] = c + 7
+        data['form-TOTAL_FORMS'] = c 
         data['form-INITIAL_FORMS'] = c
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)
+
+
+        data2['form-TOTAL_FORMS'] = c 
+        data2['form-INITIAL_FORMS'] = 0
+        data2['form-MAX_NUM_FORMS'] = 0
+
+        formset2 = DeleteGASMemberOrderFormSet(request, data2)
 
         records = []
 
@@ -138,9 +150,7 @@ class Block(BlockSSDataTables):
                             'minimum_amount' : el.ordered_product.gasstock.order_minimum_amount or 1,
             }
 
-#            form.fields['enabled'].widget.attrs = { 
-#                            'class' : 'amount',
-#            }
+            form2 = formset2[gmo_info[el.pk]['formset_index']]
 
             records.append({
                'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),
@@ -151,7 +161,7 @@ class Block(BlockSSDataTables):
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
                'ordered_total' : total,
                'price_changed' : el.has_changed,
-               'field_enabled' : av
+               'field_enabled' : form2['enabled'],
             })
                #FIXME'field_enabled' : form['enabled']
                #'field_enabled' : [_('not available'),form['enabled']][bool(av)],
