@@ -295,10 +295,13 @@ class Certification(models.Model, PermissionResource):
 
 
 class ProductCategory(models.Model, PermissionResource):
-    # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
-    # like sourceforge categories
+
+    # The name is in the form MAINCATEGORY::SUBCATEGORY
+    # accept arbitrary sublevels
+
     name = models.CharField(max_length=128, unique=True, blank=False)
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
 
     history = HistoricalRecords()
 
@@ -308,6 +311,10 @@ class ProductCategory(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
     
+    @property
+    def icon(self):
+        return self.image
+
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    
@@ -475,19 +482,25 @@ class SupplierStock(models.Model, PermissionResource):
     supplier = models.ForeignKey(Supplier, related_name="stock_set")
     # Resource API
     product = models.ForeignKey(Product, related_name="stock_set")
+
+    # Custom category defined by Supplier
+    supplier_category = models.ForeignKey("SupplierProductCategory", null=True, blank=True)
+    image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+
     price = CurrencyField(verbose_name=_("price"))
     code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(verbose_name=_("availability"), default=ALWAYS_AVAILABLE)
+
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS is able to order 
-    #COMMENT: minimum amount of Product units a GASMember is able to order 
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True)
-    #TODO: Field for Product units per box
-    # how the Product will be delivered
-    delivery_terms = models.TextField(null=True, blank=True) #FIXME: find a better name for this attribute 
+    order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"))
+
+    # How the Product will be delivered
+    delivery_notes = models.TextField(blank=True, default='')
+
     #TODO: Notify system
 
     history = HistoricalRecords()
@@ -501,6 +514,10 @@ class SupplierStock(models.Model, PermissionResource):
 
     def __unicode__(self):
         return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
+
+    @property
+    def icon(self):
+        return self.image or self.product.category.image
 
     @property
     def producer(self):
@@ -586,19 +603,15 @@ class SupplierStock(models.Model, PermissionResource):
 
 
 class SupplierProductCategory(models.Model):
-    """Map supplier categories to product categories with an optional alias.
+    """Let supplier to specify his own categories for products he sells.
 
-    This is useful to know WHICH categories a suppplier CAN sell,
+    This is useful to know WHICH categories a supplier CAN sell,
     and so limiting the choice in product selections."""
 
-    category = models.ForeignKey(ProductCategory)
     supplier = models.ForeignKey(Supplier)
-    alias = models.CharField(verbose_name=_('Alternative name'), max_length=128, blank=True)
+    name = models.CharField(verbose_name=_('name'), max_length=128)
+    sorting = models.PositiveIntegerField(blank=True, null=True)
 
-    @property
-    def name(self):
-        return self.alias or self.category.name
- 
     def __unicode__(self):
         return self.name
     

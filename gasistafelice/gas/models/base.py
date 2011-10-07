@@ -500,6 +500,7 @@ class GASMember(models.Model, PermissionResource):
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
+
     #TODO: Notify system
 
     objects = GASMemberManager()
@@ -758,12 +759,14 @@ class GASSupplierStock(models.Model, PermissionResource):
     stock = models.ForeignKey(SupplierStock, related_name="gasstock_set")
     # if a Product is available to GAS Members; policy is GAS-specific
     enabled = models.BooleanField(default=True)
+
     ## constraints on what a single GAS Member is able to order
     # minimun amount of Product units a GAS Member is able to order
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product ships in packages containing multiple units.
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+
     #TODO: Notify system
 
     history = HistoricalRecords()
