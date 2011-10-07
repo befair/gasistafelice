@@ -12,8 +12,8 @@ from history.models import HistoricalRecords
 from gasistafelice.lib import ClassProperty
 from gasistafelice.lib.fields.models import CurrencyField
 
-from gasistafelice.base.models import PermissionResource, Person, Place
-from gasistafelice.base.const import DAY_CHOICES
+from gasistafelice.base.models import PermissionResource, Person, Place, Contact
+from gasistafelice.base import const
 from gasistafelice.base.utils import get_resource_icon_path
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
@@ -52,17 +52,14 @@ class GAS(models.Model, PermissionResource):
     vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
     fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))
 
-    email_gas = models.EmailField(null=True, blank=True)
+    contact_set = models.ManyToManyField(Contact, null=True, blank=True)
 
-    #COMMENT fero: imho email_referrer should be a property
-    #that retrieve email contact from GAS_REFERRER (role just added). GAS REFERRER usually is GAS President
-    #COMMENT domthu: The president 
-    email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
-    phone = models.CharField(max_length=50, blank=True)
+    # Orders email contact is the mailing-list where we can send notification about orders
+    orders_email_contact = models.ForeignKey(Contact, limit_choices_to = { 'flavour' : const.EMAIL }, null=True, blank=True)
+
     website = models.URLField(verify_exists=True, null=True, blank=True)
 
-    #Persons include relative associated resources to GAS class
-    #gas.gas: 'activist_set' specifies an m2m relation through model GASActivist, which has not been installed
+    #Persons who are active in GAS and can give info about it
     activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True)
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
@@ -193,6 +190,20 @@ class GAS(models.Model, PermissionResource):
     @property
     def economic_state(self):
         return u"%s - %s" % (self.account, self.liquidity)
+
+    #-- Contacts --#
+
+    @property
+    def contacts(self):
+        return self.contact_set.all() | Contact.objects.filter(person__in=self.info_people)
+
+    @property
+    def preferred_email_contacts(self):
+        pref_contacts = self.contact_set.filter(is_preferred=True)
+        if pref_contacts.count():
+            return pref_contacts
+        else:
+            return super(GAS, self).preferred_email_contacts()
 
     #-- Methods --#
 
@@ -387,11 +398,11 @@ class GASConfig(models.Model, PermissionResource):
         help_text=_("GASMember can select only one open order at a time in order block"))
 
     #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+    default_close_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
         help_text=_("default closing order day of the week")
     )
     #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
+    default_delivery_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
         help_text=_("default delivery day of the week")
     )
 
@@ -848,7 +859,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # * GAS administrators
         try:
             pact = context['pact']
-            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
+            allowed_users = pact.gas.tech_referrers | pact.referrers
             return allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', self, context)
@@ -858,7 +869,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Who can edit details for an existing supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators 
-        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.gas.tech_referrers | self.pact.referrers
         return allowed_users
     
     # Row-level DELETE permission
@@ -866,7 +877,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Who can delete an existing supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators 
-        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.gas.tech_referrers | self.pact.referrers
         return allowed_users
     
 #-----------------------------------------------------------------------------------------------------
@@ -921,7 +932,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     
     #domthu: if GAS's configuration use only one 
     #TODO: see ticket #65
-    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, blank=True,
+    default_withdrawal_day = models.CharField(max_length=16, choices=const.DAY_CHOICES, blank=True,
         help_text=_("Withdrawal week day agreement")
     )
     default_withdrawal_time = models.TimeField(null= True, blank=True, \
@@ -943,7 +954,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
-        display.ResourceList(name="gas_supplier_referrers_persons", verbose_name=_("Referrers")),
+        display.ResourceList(name="referrers_people", verbose_name=_("Referrers")),
         order_minimum_amount, order_delivery_cost, order_deliver_interval,
         default_withdrawal_place,
     )
@@ -961,7 +972,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return "pact"
 
     @property
-    def gas_supplier_referrers(self):
+    def referrers(self):
         """
         Return all users being referrers for this solidal pact (GAS-to-Supplier interface).
         """
@@ -1034,8 +1045,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return self.gas.persons | self.supplier.persons
 
     @property
-    def gas_supplier_referrers_persons(self):
-        return self.persons.filter(user__in=self.gas_supplier_referrers)
+    def referrers_people(self):
+        return self.persons.filter(user__in=self.referrers)
+
+    @property
+    def info_people(self):
+        return self.gas.info_people | self.supplier.info_people
 
     #-- Authorization API --#
     

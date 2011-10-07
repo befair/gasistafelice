@@ -18,7 +18,7 @@ from gasistafelice.lib.fields import display
 
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
 from gasistafelice.base.utils import get_resource_icon_path
-from gasistafelice.base.models import PermissionResource, Person, Place
+from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.consts import SUPPLIER_REFERRER
@@ -37,6 +37,7 @@ class Supplier(models.Model, PermissionResource):
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
     certifications = models.ManyToManyField('Certification', null=True, blank=True)
     logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+    contact_set = models.ManyToManyField(Contact, null=True, blank=True)
 
     #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
 
@@ -52,6 +53,20 @@ class Supplier(models.Model, PermissionResource):
     @property
     def icon(self):
         return self.logo 
+
+    #-- Contacts --#
+
+    @property
+    def contacts(self):
+        return self.contact_set.all() | Contact.objects.filter(person__in=self.info_people)
+
+    @property
+    def preferred_email_contacts(self):
+        pref_contacts = self.contact_set.filter(is_preferred=True)
+        if pref_contacts.count():
+            return pref_contacts
+        else:
+            return super(GAS, self).preferred_email_contacts()
 
     #-- Resource API --#
 

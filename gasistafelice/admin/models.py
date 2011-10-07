@@ -12,6 +12,11 @@ from gasistafelice.rest.models import pages as rest_models
 from gasistafelice.users import models as user_models
 
 ########################## Inlines #######################
+
+class ContactInline(admin.TabularInline):
+    model = base_models.Contact
+    extra = 2
+
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
     extra = 0
@@ -89,9 +94,9 @@ class PlaceAdmin(admin.ModelAdmin):
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
+    list_display = ('__unicode__', 'id_in_des', 'city', 'website_with_link', 'economic_state')
     fieldsets = ((_('Identity'),
-            { 'fields' : ('name', 'id_in_des', 'email_gas', 'phone', 'logo', 'headquarter', 'description')
+            { 'fields' : ('name', 'id_in_des', 'logo', 'headquarter', 'description')
     }),
 # COMMENT fero: Economic state is disabled right now
 #    (_("Economic"), {
@@ -99,8 +104,8 @@ class GASAdmin(admin.ModelAdmin):
 #        'classes': ('collapse',)
 #    }),
     )
-    inlines = [ GASMemberInline, ]
-    search_fields = ('^name', '^id_in_des','email_gas', 'headquarter__city')
+    inlines = [ ContactInline, ]
+    search_fields = ('^name', '^id_in_des', 'headquarter__city')
 
     def website_with_link(self, obj):
         url = obj.website

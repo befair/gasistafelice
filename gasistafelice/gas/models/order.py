@@ -82,6 +82,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
             rv += " [%s]" % self.pk
         return rv
 
+    #-- Contacts --#
+
+    @property
+    def contacts(self):
+        return Contact.objects.filter(person__in=self.info_people)
+
+    @property
+    def info_people(self):
+        return self.pact.info_people
+
     #-------------------------------------------------------------------------------#
     # Model Archive API
 

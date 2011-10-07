@@ -8,10 +8,14 @@ SUPPLIER_FLAVOUR_LIST = [
 MU_CHOICES = [('Km', 'Km')]
 ALWAYS_AVAILABLE = 1000000000
 
+PHONE = 'PHONE'
+EMAIL = 'EMAIL'
+FAX = 'FAX'
+
 CONTACT_CHOICES = [
-    ('PHONE', _('PHONE')),
-    ('EMAIL', _('EMAIL')),
-    ('FAX', _('FAX')),
+    (PHONE, _('PHONE')),
+    (EMAIL, _('EMAIL')),
+    (FAX, _('FAX')),
 ]
 
 DAY_CHOICES = [

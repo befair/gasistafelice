@@ -21,7 +21,7 @@ from flexi_auth.exceptions import WrongPermissionCheck
 from flexi_auth.utils import get_parametric_roles
 
 from gasistafelice.lib import ClassProperty, unordered_uniq
-from gasistafelice.base.const import CONTACT_CHOICES
+from gasistafelice.base import const
 from gasistafelice.base.utils import get_resource_icon_path
 
 import os
@@ -100,26 +100,6 @@ class Resource(object):
                 'resource_type' : self.resource_type, 
                 'resource_id' : self.pk 
         })
-
-    @property
-    def preferred_contact_email(self):
-        """The email address, we should write if we would know more info on the resource.
-
-        It is not necessarily bound to a person. 
-
-        NOTE that it could be even a list of addresses following syntax in RFC 5322 and RFC 5321,
-        or simply http://en.wikipedia.org/wiki/Email_address#Syntax :)
-        """
-
-        raise NotImplementedError
-
-    @property
-    def icon(self):
-        "Default icon for resources"""
-        icon = models.ImageField(upload_to="fake")
-        basedir = os.path.join(settings.MEDIA_URL, "nui", "img", settings.THEME)
-        icon.url = os.path.join(basedir, "%s%s.%s" % (self.resource_type, "128x128", "png"))
-        return icon
 
     def as_dict(self):
         return {
@@ -387,6 +367,48 @@ class Resource(object):
         """Return GASMemberOrder querySet for open orders bound to resource"""
         raise NotImplementedError("class: %s method: basket" % self.__class__.__name__)
 
+    #-- Contacts --#
+
+    @property
+    def contacts(self):
+        """Contact QuerySet bound to the resource.
+
+        You SHOULD override it when needed
+        """
+        return self.contact_set.all()
+
+    @property
+    def preferred_email_address(self):
+        """The email address, where we should write if we would know more info on the resource.
+
+        It is not necessarily bound to a person. 
+
+        NOTE that it could be even a list of addresses following syntax in RFC 5322 and RFC 5321,
+        or simply http://en.wikipedia.org/wiki/Email_address#Syntax :)
+
+        Usually you SHOULD NOT NEED TO OVERRIDE IT in subclasses
+        """
+        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_email_contacts.values_list('value'))))
+
+    @property
+    def preferred_email_contacts(self):
+        """Email Contacts, where we should write if we would know more info on the resource.
+
+        It is not necessarily bound to a person. 
+
+        Usually you SHOULD NOT NEED TO OVERRIDE IT in subclasses
+        """
+        return self.contacts.filter(flavour=const.EMAIL, is_preferred=True) or \
+                    self.contacts.filter(flavour=const.EMAIL)
+
+    @property
+    def icon(self):
+        "Returns default icon for resource"""
+        icon = models.ImageField(upload_to="fake")
+        basedir = os.path.join(settings.MEDIA_URL, "nui", "img", settings.THEME)
+        icon.url = os.path.join(basedir, "%s%s.%s" % (self.resource_type, "128x128", "png"))
+        return icon
+
 #TODO CHECK if these methods SHOULD be removed from Resource API
 # because they are tied only to a specific resource. Leave commented now.
 # If you need them in a specific resource, implement in it
@@ -439,7 +461,7 @@ class Person(models.Model, PermissionResource):
     #TODO: Verify if this information is necessary
     #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
     uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
-    contacts = models.ManyToManyField('Contact', null=True, blank=True)
+    contact_set = models.ManyToManyField('Contact', null=True, blank=True)
     user = models.OneToOneField(User, null=True, blank=True)
     address = models.OneToOneField('Place', null=True, blank=True)
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
@@ -554,7 +576,6 @@ class Person(models.Model, PermissionResource):
                 
         return qs
         
-     
     
     @property
     def deliveries(self):
@@ -603,13 +624,6 @@ class Person(models.Model, PermissionResource):
     def city(self):
         return self.address.city 
 
-    @property
-    def email(self):
-        if not self.user is None:
-            return self.user.email
-        else:
-            return None
-
     def save(self, *args, **kwargs):
         self.name = self.name.capitalize()
         self.surname = self.surname.capitalize()
@@ -653,8 +667,10 @@ class Person(models.Model, PermissionResource):
    
 class Contact(models.Model):
 
-    contact_type = models.CharField(max_length=32, choices=CONTACT_CHOICES)
-    contact_value = models.CharField(max_length=32)
+    flavour = models.CharField(max_length=32, choices=const.CONTACT_CHOICES, default=const.EMAIL)
+    value = models.CharField(max_length=32)
+    is_preferred = models.BooleanField(default=False)
+    description = models.CharField(max_length=128, blank=True, default='')
 
     history = HistoricalRecords()
 
@@ -663,7 +679,7 @@ class Contact(models.Model):
         verbose_name_plural = _("contacts")
 
     def __unicode__(self):
-        return u"%(t)s: %(v)s" % {'t': self.contact_type, 'v': self.contact_value}
+        return u"%(t)s: %(v)s" % {'t': self.flavour, 'v': self.value}
 
 class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
