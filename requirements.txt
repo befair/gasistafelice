@@ -8,3 +8,5 @@ psycopg2>=2.2.1
 xhtml2pdf
 #pysqlite>=1.0.1
 -e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
+file:../gasistafelice/extra/django-simple-accounting
+file:../gasistafelice/extra/django-flexi-auth
