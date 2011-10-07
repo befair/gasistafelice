@@ -91,12 +91,6 @@ class Resource(object):
         notes = Comment.objects.filter(object_pk=self.pk, content_type=ctype).order_by('-submit_date')
         return notes
 
-    # DEPRECATED
-    # @property
-    # def uID(self):
-    #   """Unique string identifier"""
-    #   return "%s-%s" % (self.resource_type, self.pk)
-
     @permalink
     def get_absolute_url(self):
         return ('rest.views.resource_page', (), { 
@@ -121,6 +115,28 @@ class Resource(object):
             'name': unicode(self),
             'urn' : self.urn,
         }
+
+    #-- Referrers API --#
+
+    @property
+    def referrers(self):
+        """Returns User QuerySet bound to resource"""
+        raise NotImplementedError("class: %s method: referrers" % self.__class__.__name__)
+
+    @property
+    def referrer(self):
+        """Return User bound to resource"""
+        raise NotImplementedError("class: %s method: referrer" % self.__class__.__name__)
+
+    @property
+    def referrers_people(self):
+        """Returns Person related to referrers QuerySet"""
+        return Person.objects.filter(user__in=self.referrers)
+
+    @property
+    def info_people(self):
+        """Returns Person to contact for info QuerySet"""
+        raise NotImplementedError("class: %s method: info_people" % self.__class__.__name__)
 
     #------------------------------------
     # Basic properties: cache management
@@ -305,16 +321,6 @@ class Resource(object):
     def basket(self):
         """Return GASMemberOrder querySet for open orders bound to resource"""
         raise NotImplementedError("class: %s method: basket" % self.__class__.__name__)
-
-    @property
-    def referrers(self):
-        """Return Referrer list bound to resource"""
-        raise NotImplementedError("class: %s method: referrers" % self.__class__.__name__)
-
-    @property
-    def referrer(self):
-        """Return Referrer bound to resource"""
-        raise NotImplementedError("class: %s method: referrer" % self.__class__.__name__)
 
 #TODO CHECK if these methods SHOULD be removed from Resource API
 # because they are tied only to a specific resource. Leave commented now.

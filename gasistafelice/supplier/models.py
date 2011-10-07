@@ -26,13 +26,13 @@ from gasistafelice.auth.utils import register_parametric_role
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
 
-    name = models.CharField(max_length=128) 
-    seat = models.ForeignKey(Place, null=True, blank=True)
-    vat_number = models.CharField(max_length=128, unique=True, null=True) #TODO: perhaps a custom field needed here ? (for validation purposes)
-    website = models.URLField(verify_exists=True, blank=True)
+    name = models.CharField(max_length=128, verbose_name=_("name")) 
+    seat = models.ForeignKey(Place, null=True, blank=True, verbose_name=_("seat"))
+    vat_number = models.CharField(max_length=128, unique=True, null=True, verbose_name=_("VAT number")) #TODO: perhaps a custom field needed here ? (for validation purposes)
+    website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
-    flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0])
-    certifications = models.ManyToManyField('Certification', null=True, blank=True)
+    flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
+    certifications = models.ManyToManyField('Certification', null=True, blank=True, verbose_name=_("certifications"))
 
     #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
 
@@ -42,7 +42,7 @@ class Supplier(models.Model, PermissionResource):
         return unicode(self.name)
 
     def setup_roles(self):
-    #    # register a new `SUPPLIER_REFERRER` Role for this Supplier
+        # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
 
     #-- Resource API --#
@@ -65,33 +65,24 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def referrers(self):
-        '''All Person (or SupplierAgent?) linked as info for this resource'''
-        #See ticket #77#comment:6
-        return self.agent_set.all()
+        """All User linked as platform operators for this resource.
+
+        User who have role SUPPLIER_REFERRER."""
+
+        # retrieve 'Supplier Referrer' parametric role for this supplier
+        pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=self)
+        # retrieve all Users having this role
+        return pr.get_users()
 
     @property
-    def referrers_person(self):
-        '''All Person linked as info for this resource'''
-        #See ticket #77#comment:6
+    def info_people(self):
+        """Return Person that can give info on this resource QuerySet."""
         return self.agent_set.all()
-
-    @property
-    def referrers_user(self):
-        """
-        Return all valid users being referrers for this GAS
-        """
-        usr = []
-        for agent in self.referrers:
-            if agent.user is not None:
-                usr.append(agent)
-        return usr
-        #return [referrer.user for referrer in self.referrers]
 
     @property
     def persons(self):
-        '''All Person related to this resource'''
-        #See ticket #77#comment:6
-        return self.agent_set.all()
+        """Return evryone (Person) related to this resource."""
+        return self.info_people | self.referrers_people
 
     @property
     def stocks(self):
@@ -137,12 +128,18 @@ class Supplier(models.Model, PermissionResource):
 
     display_fields = (
         seat, vat_number, website, flavour, 
-        display.ResourceList(name="referrers", verbose_name=_("People")),
+        display.ResourceList(name="info_people", verbose_name=_("Contacts")),
+        display.ResourceList(name="referrers_people", verbose_name=_("Platform referrers")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
 
 
 class SupplierAgent(models.Model, PermissionResource):
+    """Relation between a `Supplier` and a `Person`.
+
+    If you need information on the Supplier, ask this person.
+    This is not necessarily a user in the system. You can consider it just as a contact.
+    """
 
     supplier = models.ForeignKey(Supplier)
     person = models.ForeignKey(Person)
@@ -154,13 +151,6 @@ class SupplierAgent(models.Model, PermissionResource):
     @property
     def parent(self):
         return self.supplier
-    
-    def setup_roles(self):
-        # automatically add a new SupplierAgent to the `SUPPLIER_REFERRER` Role
-        user = self.person.user
-        role = register_parametric_role(name=SUPPLIER_REFERRER, supplier=self.supplier)
-        role.add_principal(user)
-
 
 class Certification(models.Model, PermissionResource):
     name = models.CharField(max_length=128, unique=True) 

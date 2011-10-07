@@ -34,7 +34,7 @@ from decimal import Decimal
 
 class GAS(models.Model, PermissionResource):
 
-    """A group of people which make some purchases together.
+    """A group of people who makes some purchases together.
 
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
     """
@@ -65,10 +65,11 @@ class GAS(models.Model, PermissionResource):
     email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
     phone = models.CharField(max_length=50, blank=True)
     website = models.URLField(verify_exists=True, null=True, blank=True)
+
     #Persons include relative associated resources to GAS class
     #FIXME: Cannot run SyncDB
     #gas.gas: 'activist_set' specifies an m2m relation through model GASActivist, which has not been installed
-    #activist_set = models.ManyToManyField('base.Person', verbose_name=_('GAS activits'), null=True, blank=True, through="GASActivist")
+    #activist_set = models.ManyToManyField(Person, verbose_name=_('GAS activits'), null=True, blank=True, through="GASActivist")
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
     intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
@@ -129,53 +130,24 @@ class GAS(models.Model, PermissionResource):
     
     #-- Properties --#
 
+    #-- Referrers API --#
+
     @property
     def referrers(self):
-        """
-        All Person (or GASActivist?) linked as info for this resource
-        See ticket #77#comment:6 (ex: Return all users being referrers for this GAS)
-        """
-        ## retrieve 'GAS referrer' parametric role for this GAS
+        """Returns GAS referrers which are TECH referrers."""
+        return self.tech_referrers
+
+        #TODO: we can add person with GAS_REFERRER role, but doesn't mind now
         #pr = ParamRole.get_role(GAS_REFERRER, gas=self)
-        ## retrieve all Users having this role
-        #return pr.get_users()
-        return self.activist_set.all()
+        #return pr.get_users() | self.tech_referrers
 
     @property
-    def referrers_persons(self):
-    #    return [referrer.person for referrer in self.referrers]
-        return referrers(self)
-
-    @property
-    def referrers_users(self):
-        """
-        Return all valid users being referrers for this GAS
-        """
-        usr = []
-        for activist in self.referrers:
-            if agent.user is not None:
-                usr.append(activist)
-        return usr
-        #return [referrer.user for referrer in self.referrers]
-
-    @property
-    def members(self):
-        """
-        Return all users being members of this GAS.
-        """
-        # retrieve 'GAS member' parametric role for this GAS
-        pr = ParamRole.get_role(GAS_MEMBER, gas=self)
-        # retrieve all Users having this role
-        return pr.get_users()       
-
-    @property
-    def gasmembers(self):
-        '''All GASMember related to this resource'''
-        return self.gasmember_set.all()
+    def info_people(self):
+        return Person.objects.filter(gasactivist_set__in=self.activist_set.all())
 
     @property
     def persons(self):
-        return Person.objects.filter(gasmember__in=self.gasmembers)
+        return Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
 
     @property
     def tech_referrers(self):
@@ -271,6 +243,11 @@ class GAS(models.Model, PermissionResource):
     @property
     def gas(self):
         return self
+
+    @property
+    def gasmembers(self):
+        """All GASMember for this GAS"""
+        return self.gasmember_set.all()
 
     @property
     def orders(self):
@@ -465,11 +442,12 @@ class GASConfig(models.Model, PermissionResource):
 #----------------------------------------------------------------------------------------------------
 
 class GASActivist(models.Model, PermissionResource):
-    '''GAS's activists are person who are responsable of some area in the GAS's organization
-    We can give them GAS_OPERATOR role if necesary
+    """Relation between a `GAS` and a `Person`.
 
-    Do not confuse with GASMembers that are referer for one or more producer throught GASSupplierSolidalPact
-    A GASMember that refer to a Supplier have an GAS_OPERATOR_REFERER role'''
+    If you need information on the GAS, ask to this person.
+    This is not necessarily a user in the system. You can consider it just as a contact.
+    """
+
     gas = models.ForeignKey(GAS)
     person = models.ForeignKey(Person)
     info_title = models.CharField(max_length=256, blank=True)
@@ -480,14 +458,6 @@ class GASActivist(models.Model, PermissionResource):
     @property
     def parent(self):
         return self.gas
-
-    #TODO placeholder domthu: Add signal if necesary to register role for activist
-    #See ticket #77#comment:6 
-    #def setup_roles(self):
-    #    # automatically add a new GASActivist to the `GAS_OPERATOR` Role
-    #    user = self.person.user
-    #    role = register_parametric_role(name=GAS_OPERATOR, gas=self.gas)
-    #    role.add_principal(user)
 
 #----------------------------------------------------------------------------------------------------
 
