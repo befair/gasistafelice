@@ -39,7 +39,8 @@ class DES(Site, PermissionResource):
     TODO: cache attributes in order to avoid database operations.
     (stub for validity already done)
 
-    >>> Siteattr.get_attribute_or_empty('name') == DES.name
+    >>> d = Siteattr.get_site()
+    >>> Siteattr.get_attribute_or_empty('name') == d.name
     True
     """
 

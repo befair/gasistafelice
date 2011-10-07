@@ -10,6 +10,7 @@ from django.test.client import Client
 from workflows.models import State, Transition, Workflow
 from workflows.utils import set_workflow
 
+from gasistafelice.base.models import Place
 from gasistafelice.gas.models import GAS
 from gasistafelice.base.workflows_utils import get_allowed_transitions
 
@@ -18,7 +19,8 @@ class GetAllowedTransitionsTestCase(TestCase):
     Test retrieval of transitions allowed to a given user, with respect to a given model instance. 
     """
     def setUp(self):
-        self.gas_1 = GAS.objects.create(name="Foo")
+        self.place_1 = Place.objects.create(name="GAS1 headquarter")
+        self.gas_1 = GAS.objects.create(name="Foo", headquarter=self.place_1)
         
         self.workflow = Workflow.objects.create(name="Foo")
         workflow = self.workflow

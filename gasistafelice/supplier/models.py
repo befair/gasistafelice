@@ -437,14 +437,15 @@ class SupplierStock(models.Model, PermissionResource):
         
        Includes price, order constraints and availability information.
 
-    >>> from supplier.models import *
-    >>> ss = SupplierStock.objects.get(pk=1)
-    >>> isinstance(ss, SupplierStock)
+    # TODO UNITTEST
+    >> from supplier.models import *
+    >> ss = SupplierStock.objects.get(pk=1)
+    >> isinstance(ss, SupplierStock)
     True
-    >>> ss.has_changed_availability
-    Fasle
-    >>> ss.amount_available = ss.amount_available + 1
-    >>> ss.has_changed_availability
+    >> ss.has_changed_availability
+    False
+    >> ss.amount_available = ss.amount_available + 1
+    >> ss.has_changed_availability
     True
 
     """

@@ -21,7 +21,8 @@ class GASSupplierStockTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierStock'''
     
     def setUp(self):
-        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1')
+        self.place_1 = Place.objects.create(name="fooGAS headquarter")
+        self.gas = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         self.category = ProductCategory.objects.create(name='food')
@@ -185,8 +186,10 @@ class GASSupplierOrderProductTest(TestCase):
         self.person_2 = Person.objects.create(name='Mary', surname='White', user=user2)
         self.person_3 = Person.objects.create(name='Paul', surname='Black', user=user3)
         
-        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
-        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2')
+        self.place_1 = Place.objects.create(name="fooGAS headquarter")
+        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
+        self.place_2 = Place.objects.create(name="RiGAS headquarter")
+        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2', headquarter=self.place_2)
         
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
@@ -236,8 +239,8 @@ class GASSupplierOrderProductTest(TestCase):
         self.assertEqual(self.product_1.ordered_amount, 5)
         
     def testGas(self):
-        '''Verify if gas attribute is computed correctly'''        gmo2 = GASMemberOrde        gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
-r.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+        '''Verify if gas attribute is computed correctly'''
+        gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
 
         product = GASSupplierOrderProduct.objects.create(order=self.order_1, stock=self.gas_stock_1)
         self.assertEqual(product.gas, self.gas_1)
@@ -247,8 +250,10 @@ class GASSupplierOrderTest(TestCase):
     def setUp(self):
         self.now = date.today()
                        
-        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
-        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2')        
+        self.place_1 = Place.objects.create(name="fooGAS headquarter")
+        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
+        self.place_2 = Place.objects.create(name="RiGAS headquarter")
+        self.gas_2 = GAS.objects.create(name='RiGAS', id_in_des='2', headquarter=self.place_2)        
         
         self.supplier_1 = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.supplier_2 = Supplier.objects.create(name='GoodCompany', vat_number='321')
@@ -289,8 +294,10 @@ class GASMemberManagerTest(TestCase):
         now = datetime.now()        
         midnight = time(hour=0)
         
-        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1')
-        self.gas_2 = GAS.objects.create(name='barGAS', id_in_des='2')
+        self.place_1 = Place.objects.create(name="fooGAS headquarter")
+        self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
+        self.place_2 = Place.objects.create(name="barGAS headquarter")
+        self.gas_2 = GAS.objects.create(name='barGAS', id_in_des='2', headquarter=self.place_2)
         
         self.person_1 = Person.objects.create(name='Mario', surname='Rossi')
         self.person_2 = Person.objects.create(name='Carlo', surname='Bianchi')

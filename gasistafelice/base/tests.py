@@ -32,7 +32,7 @@ class PlaceSaveTest(TestCase):
     def testNameAutoset(self):
         '''Verify a missing name is correctly autoset on save'''
         p = Place.objects.create(city='senigallia', province='an', address='via Garibaldi, 1')
-        self.assertEqual(p.name, 'via Garibaldi, 1 - Senigallia (AN)')
+        self.assertEqual(p.name, 'via Garibaldi, 1')
     def testNameHonored(self):
         '''Verify name is honored if specified'''
         p = Place.objects.create(name='Rotonda a mare', city='senigallia', province='ancona')

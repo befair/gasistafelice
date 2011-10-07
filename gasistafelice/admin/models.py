@@ -15,7 +15,7 @@ from gasistafelice.users import models as user_models
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
     extra = 0
-    exclude = ('account', 'available_for_roles')
+    exclude = ('available_for_roles',)
     verbose_name = _("GAS membership")
     verbose_name_plural = _("GAS memberships")
 

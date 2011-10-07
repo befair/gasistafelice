@@ -13,8 +13,6 @@ type_model_d = {
 	'category' : ProductCategory,
 	'unit' : ProductMU,
 	'pact' : GASSupplierSolidalPact,
-	'account' : Account,
-	'transact' : Movement,
 }
 
 #TODO domthu TOCHECK
