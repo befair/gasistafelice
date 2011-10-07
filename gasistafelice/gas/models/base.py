@@ -67,9 +67,8 @@ class GAS(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, null=True, blank=True)
 
     #Persons include relative associated resources to GAS class
-    #FIXME: Cannot run SyncDB
     #gas.gas: 'activist_set' specifies an m2m relation through model GASActivist, which has not been installed
-    #activist_set = models.ManyToManyField(Person, verbose_name=_('GAS activits'), null=True, blank=True, through="GASActivist")
+    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True)
 
     association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
     intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
@@ -441,7 +440,7 @@ class GASConfig(models.Model, PermissionResource):
 
 #----------------------------------------------------------------------------------------------------
 
-class GASActivist(models.Model, PermissionResource):
+class GASActivist(models.Model):
     """Relation between a `GAS` and a `Person`.
 
     If you need information on the GAS, ask to this person.
@@ -453,11 +452,18 @@ class GASActivist(models.Model, PermissionResource):
     info_title = models.CharField(max_length=256, blank=True)
     info_description = models.TextField(blank=True)
 
-    #history = HistoricalRecords()
+    history = HistoricalRecords()
 
     @property
     def parent(self):
         return self.gas
+
+    class Meta:
+        verbose_name = _('GAS activist')
+        verbose_name_plural = _('GAS activists')
+        app_label = 'gas'
+
+    
 
 #----------------------------------------------------------------------------------------------------
 

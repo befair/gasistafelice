@@ -32,7 +32,7 @@ class Supplier(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
-    certifications = models.ManyToManyField('Certification', null=True, blank=True, verbose_name=_("certifications"))
+    certifications = models.ManyToManyField('Certification', null=True, blank=True)
 
     #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
 
@@ -160,6 +160,9 @@ class Certification(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("certification")
 
 class ProductCategory(models.Model, PermissionResource):
     # Proposal: the name is in the form MAINCATEGORY::SUBCATEGORY
