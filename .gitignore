@@ -6,3 +6,4 @@ doc*/build/
 .metatada/
 build/
 src/
+.*.swp
