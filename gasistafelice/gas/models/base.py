@@ -137,7 +137,7 @@ class GAS(models.Model, PermissionResource):
         """Returns GAS referrers which are TECH referrers."""
         return self.tech_referrers
 
-        #TODO: we can add person with GAS_REFERRER role, but doesn't mind now
+        #TODO: can add person with GAS_REFERRER role if needed, but don't mind for it now
         #pr = ParamRole.get_role(GAS_REFERRER, gas=self)
         #return pr.get_users() | self.tech_referrers
 

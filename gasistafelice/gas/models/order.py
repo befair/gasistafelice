@@ -122,13 +122,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def delivery_referrer_persons(self):
         if self.delivery:
-            return Person.objects.filter(user__in=self.delivery.referrers_users)
+            return self.delivery.referrers_people
         return Person.objects.none()
 
     @property
     def withdrawal_referrer_persons(self):
         if self.withdrawal:
-            return Person.objects.filter(user__in=self.withdrawal.referrers_users)
+            return self.withdrawal.referrers_people
         return Person.objects.none()
 
     def set_default_gasstock_set(self):
@@ -541,10 +541,11 @@ class Delivery(Appointment, PermissionResource):
     
     place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"))
     date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
-    # GAS referrers for this Delivery appointment (if any) 
-    referrers = models.ManyToManyField(GASMember, null=True, blank=True)
+
+    # Person who coordinates delivery appointment (if any) 
+    info_people_set = models.ManyToManyField(Person, null=True, blank=True)
     
-    # COSTO DI QUESTA CONSEGNA SPECIFICA?
+    # TODO: COSTO DI QUESTA CONSEGNA SPECIFICA?
     
     history = HistoricalRecords()
 
@@ -563,11 +564,11 @@ class Delivery(Appointment, PermissionResource):
         """
         pass
     
-#-------------------------------------------------------------------------------#   
-# Authorization API
-
+    #-------------------------------------------------------------------------------#   
+    # Referrers API
+        
     @property
-    def referrers_users(self):
+    def referrers(self):
         """
         Return all users being referrers for this delivery appointment.
         """
@@ -576,6 +577,16 @@ class Delivery(Appointment, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()       
  
+    @property
+    def info_people(self):
+        return self.info_people_set.all()
+
+    @property
+    def persons(self):
+        return self.info_people | self.referrers_people
+
+    #-------------------------------------------------------------------------------#   
+    # Authorization API
         
     def setup_roles(self):
         # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
@@ -595,11 +606,13 @@ class Withdrawal(Appointment, PermissionResource):
     # * date should be Date field
     # * start_time and end_time (with no defaults) must be managed in forms
     date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
+
     # a Withdrawal appointment usually span a time interval
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
-    # GAS referrers for this Withdrawal appointment  
-    referrers = models.ManyToManyField(GASMember)
+
+    # Person who coordinates this withdrawal appointment (if any) 
+    info_people_set = models.ManyToManyField(GASMember)
     
     history = HistoricalRecords()
 
@@ -623,11 +636,11 @@ class Withdrawal(Appointment, PermissionResource):
         """
         pass
 
-#-------------------------------------------------------------------------------#   
-# Authorization API
-
+    #-------------------------------------------------------------------------------#   
+    # Referrers API
+        
     @property
-    def referrers_users(self):
+    def referrers(self):
         """
         Return all users being referrers for this wihtdrawal appointment.
         """
@@ -636,6 +649,16 @@ class Withdrawal(Appointment, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()       
 
+    @property
+    def info_people(self):
+        return self.info_people_set.all()
+
+    @property
+    def persons(self):
+        return self.info_people | self.referrers_people
+
+    #-------------------------------------------------------------------------------#   
+    # Authorization API
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
