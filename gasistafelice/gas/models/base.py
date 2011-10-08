@@ -764,7 +764,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     # minimun amount of Product units a GAS Member is able to order
     order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
     # increment step (in Product units) for amounts exceeding minimum;
-    # useful when a Product ships in packages containing multiple units.
+    # useful when a Product has a fixed step of increment
     order_step = models.PositiveSmallIntegerField(null=True, blank=True)
 
     #TODO: Notify system
@@ -991,9 +991,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def setup_data(self):
 
         for st in self.supplier.stocks:
-            #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
-            enabled = bool(st.amount_available)
-            GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
+            enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
+                                order_minimum_amount=self.gasmember_order_minimum_amount,
+                                order_step=self.gasmember_order_step,
+            )
 
     def save(self, *args, **kw):
         if self.gas.config.auto_populate_products:
