@@ -142,6 +142,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
 
         if not self.pact.gas.config.auto_populate_products:
+            self._msg = []
             self._msg.append(ugettext("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
             return
 

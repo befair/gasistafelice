@@ -8,9 +8,9 @@
         "{{el.order|escapejs}}",
         "{{el.supplier|escapejs}}",
         "{{el.product|escapejs}}",
-        "{{el.amount}}",
+        "{{el.ordered_amount}}",
         "&#8364; {{ el.price}}",
-        "&#8364; {{ el.tot_price}}",
+        "&#8364; {{ el.ordered_total}}",
         "eliminare",
     ]
     {% if not forloop.last %}

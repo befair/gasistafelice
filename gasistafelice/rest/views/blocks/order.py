@@ -9,7 +9,6 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GASMemberOrder
 from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
-from django.template.defaultfilters import floatformat
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -22,8 +21,8 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'id',
-        1: 'supplier', 
+        0: 'order__pk', 
+        1: 'gasstock__stock__supplier', 
         2: 'gasstock__stock__product',
         3: 'gasstock__stock__product__description',
         4: 'order_price',
@@ -168,10 +167,10 @@ class Block(BlockSSDataTables):
                'supplier' : el.supplier,
                'product' : el.product,
                'description' : el.product.description,
-               'price' : floatformat(el.gasstock.price, 2),
+               'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
                'ordered_total' : total,
-               'id' : "%s %s %s" % (form['id'], form['gssop_id'], form['ordered_price'])
+               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
             })
 
         return formset, records, {}

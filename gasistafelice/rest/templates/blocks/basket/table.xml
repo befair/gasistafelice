@@ -2,12 +2,13 @@
 {% load i18n %}
 
 {% block headers %}
+    <th>{% trans "Id" %}</th>
     <th>{% trans "Order" %}</th>
     <th>{% trans "Supplier" %}</th>
     <th>{% trans "Product" %}</th>
-    <th>{% trans "Amount" %}</th>
     <th>{% trans "Price" %}</th>
-    <th>{% trans "TOT Price" %}</th>
+    <th>{% trans "Ordered amount" %}</th>
+    <th>{% trans "Ordered total" %}</th>
     <th>{% trans "Delete" %}</th>
 {% endblock %}
 
