@@ -546,6 +546,17 @@ class SupplierStock(models.Model, PermissionResource):
             return False
 
     @property
+    def has_changed_price(self):
+        try:
+            ss = SupplierStock.objects.get(pk=self.pk)
+            if not ss is None:
+                return bool(self.price != ss.pirce)
+            else:
+                return False
+        except SupplierStock.DoesNotExist:
+            return False
+
+    @property
     def message(self):
         """getter property for internal message from model."""
         return self._msg
@@ -560,16 +571,31 @@ class SupplierStock(models.Model, PermissionResource):
         # CASCADING
         if self.has_changed_availability:
             self._msg = []
-            self._msg.append('Availability have changed for product %s' %  self.product)
+            self._msg.append('Availability has changed for product %s' %  self.product)
             #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
             for gss in self.gasstocks:
                 if (self.availability != gss.enabled):
                     gss.enabled = self.availability
                     gss.save()
+                    if not gss.enabled:
+                        signals.gasstock_product_disabled.send(sender=self)
+                    else:
+                        signals.gasstock_product_enabled.send(sender=self)
+                    
                     if not gss.message is None:
                         self._msg.extend(gss.message)
             self._msg.append('Ended(%d)' % self.gasstocks.count())
             print self._msg
+
+        if self.has_changed_price:
+            for gsop in self.orderable_products:
+                gsop.order_price = self.price
+                gsop.save()
+
+            for gmo in self.basket:
+                if gmo.has_changed:
+                    signals.gmo_price_update.send(sender=gmo, old_price=gmo.ordered_price, new_price=gmo.ordered_product.order_price)
+            
         super(SupplierStock, self).save(*args, **kwargs)
 
     #-- Resource API --#
@@ -578,6 +604,26 @@ class SupplierStock(models.Model, PermissionResource):
     def gasstocks(self):
         return self.gasstock_set.all()
     
+    @property
+    def orders(self):
+        from gasistafelice.gas.models import GASSupplierOrder
+        return GASSupplierOrder.objects.filter(gasstock_set__in=self.gasstocks)
+
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+
+    @property
+    def ordered_products(self):
+        from gasistafelice.gas.models import GASMemberOrder
+        return GASMemberOrder.objects.filter(order__in=self.orders)
+
+    @property
+    def basket(self):
+        from gasistafelice.gas.models import GASMemberOrder
+        return GASMemberOrder.objects.filter(order__in=self.orders.open())
+
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    

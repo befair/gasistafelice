@@ -189,7 +189,7 @@ class Block(AbstractBlock):
             allowed_transitions = get_allowed_transitions(request.resource, request.user)
             t = Transition.objects.get(name__iexact=t_name, workflow=request.resource.workflow)
             if t in allowed_transitions:
-                do_transition(request.resource, t, request.user)
+                request.resource.do_transition(t, request.user)
                 return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.id))
             else:
                 return HttpResponse('')

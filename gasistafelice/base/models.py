@@ -24,6 +24,7 @@ from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const
 from gasistafelice.base.utils import get_resource_icon_path
 
+from workflows.utils import do_transition
 import os
 
 class Resource(object):
@@ -87,6 +88,9 @@ class Resource(object):
         You MUST implement it in subclasses if they have parent.
         """
         return None
+
+    def do_transition(self, transition, user):
+        return do_transition(self, transition, user)
 
     @property
     def allnotes(self):

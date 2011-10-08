@@ -15,6 +15,7 @@ from gasistafelice.lib import ClassProperty
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
+from gasistafelice.gas import signals
 from gasistafelice.base.models import Person
 from gasistafelice.consts import *
 from flexi_auth.models import ParamRole
@@ -23,6 +24,7 @@ from flexi_auth.exceptions import WrongPermissionCheck
 
 from django.conf import settings
 
+from workflows.utils import do_transition
 from datetime import datetime, timedelta
 
 #from django.utils.encoding import force_unicode
@@ -81,6 +83,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
+
+    def do_transition(self, transition, user):
+        super(GASSupplierOrder, self).do_transition(transition, user)
+        signals.order_state_update(sender=self, transition=transition)
 
     #-- Contacts --#
 
@@ -177,7 +183,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def remove_product(self, s):
         '''
-        A helper function to add product to a GASSupplierOrder.
+        A helper function to remove a product from a GASSupplierOrder.
         '''
         #TODO: Does workflows.utils have method state_in(tupple of state)
         #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
@@ -197,6 +203,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             for gmo in lst:
                 total += gmo.ordered_price
                 self._msg.append(ugettext('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                signals.gmo_product_erased.send(sender=self)
                 gmo.delete()
             self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))
             gsop.delete()
