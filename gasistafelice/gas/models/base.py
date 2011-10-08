@@ -151,11 +151,11 @@ class GAS(models.Model, PermissionResource):
     
     #-- Properties --#
 
-    #-- Referrers API --#
-
     @property
     def icon(self):
-        return self.logo 
+        return self.logo or super(GAS, self).icon
+
+    #-- Referrers API --#
 
     @property
     def referrers(self):

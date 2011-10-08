@@ -22,6 +22,7 @@ from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import PermissionResource, Person
+from gasistafelice.base.utils import get_resource_icon_path
 from gasistafelice.consts import DES_ADMIN
 from flexi_auth.models import ParamRole
 from flexi_auth.utils import register_parametric_role
@@ -45,6 +46,7 @@ class DES(Site, PermissionResource):
     """
 
     cfg_time = models.PositiveIntegerField()
+    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
     info_people_set = models.ManyToManyField(Person, null=True, blank=True)
     
     display_fields = (
@@ -75,16 +77,14 @@ class DES(Site, PermissionResource):
             setattr(self, attr, Siteattr.get_attribute_or_empty(attr))
         self.cfg_time = Siteattr.get_site_config_timestamp()
         
-    @property
-    def icon(self):
-        if hasattr(self, 'icon_id'):
-            return Icon.objects.get(id=int(self.icon_id))
-        else:
-            return Icon.objects.get(name='site')
             
     def __unicode__(self):
         return self.name
     
+    @property
+    def icon(self):
+        return self.logo or super(DES, self).icon
+
     # authorization API
     
     @property

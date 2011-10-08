@@ -52,7 +52,7 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def icon(self):
-        return self.logo 
+        return self.logo or super(Supplier, self).icon
 
     #-- Contacts --#
 
@@ -313,7 +313,7 @@ class ProductCategory(models.Model, PermissionResource):
     
     @property
     def icon(self):
-        return self.image
+        return self.image or super(ProductCategory, self).icon
 
     #-------------- Authorization API ---------------#
     
