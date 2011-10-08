@@ -106,7 +106,9 @@ class GAS(models.Model, PermissionResource):
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
         display.ResourceList(verbose_name=_("referrers"), name="referrers"),
-        association_act, intent_act
+        association_act, intent_act,
+        display.ResourceList(verbose_name=_("created by"), name="created_by_person"),
+        display.ResourceList(verbose_name=_("last update by"), name="last_update_by_person"),
     )
 
     #-- Meta --#
