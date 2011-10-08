@@ -189,7 +189,8 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def economic_state(self):
-        return u"%s - %s" % (self.account, self.liquidity)
+        return "0"
+        #return u"%s - %s" % (self.account, self.liquidity)
 
     #-- Contacts --#
 
