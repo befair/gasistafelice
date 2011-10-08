@@ -104,7 +104,7 @@ class GASAdmin(admin.ModelAdmin):
 #        'classes': ('collapse',)
 #    }),
     )
-    inlines = [ ContactInline, ]
+#    inlines = [ ContactInline, ]
     search_fields = ('^name', '^id_in_des', 'headquarter__city')
 
     def website_with_link(self, obj):
