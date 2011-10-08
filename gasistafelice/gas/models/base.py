@@ -1013,9 +1013,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
     def setup_data(self):
+
         #FIXME: Fixtures do not pass "DoesNotExist: Supplier matching query does not exist."
-        #for st in self.supplier.stocks:
-        for st in self.supplier.stock_set:
+        for st in self.supplier.stocks:
             enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
                                 order_minimum_amount=st.gasmember_order_minimum_amount,
