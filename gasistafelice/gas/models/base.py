@@ -32,6 +32,27 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 
+#-------------------------------------------------------------------------------    
+# Utility functions to get path for GAS documents 
+
+def get_association_act_path(instance, filename):
+    return get_gas_doc_path(instance, filename, "association_act")
+
+def get_intent_act_path(instance, filename):
+    return get_gas_doc_path(instance, filename, "intent_act")
+
+def get_gas_doc_path(instance, filename, flavour):
+
+    if instance.pk:
+        return instance.association_act.name
+
+    ext = filename.split('.')[-1]
+    d = datetime.datetime.today()
+    filename = "%s-%s-%s.%s" % (d.strftime("%Y-%m-%s"), slugify(instance.name), flavour, ext)
+    return os.path.join('docs/%s' % instance.resource_type, filename)
+
+#-------------------------------------------------------------------------------
+
 class GAS(models.Model, PermissionResource):
 
     """A group of people who makes some purchases together.
@@ -62,8 +83,8 @@ class GAS(models.Model, PermissionResource):
     #Persons who are active in GAS and can give info about it
     activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True)
 
-    association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
-    intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
+    association_act = models.FileField(upload_to=get_association_act_path, null=True, blank=True, verbose_name=_("association act"))
+    intent_act = models.FileField(upload_to=get_intent_act_path, null=True, blank=True, verbose_name=_("intent act"))
 
     note = models.TextField(blank=True)
 
@@ -85,7 +106,7 @@ class GAS(models.Model, PermissionResource):
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
         display.ResourceList(verbose_name=_("referrers"), name="referrers"),
-        association_act,
+        association_act, intent_act
     )
 
     #-- Meta --#

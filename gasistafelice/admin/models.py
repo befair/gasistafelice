@@ -96,7 +96,7 @@ class GASAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('__unicode__', 'id_in_des', 'city', 'website_with_link', 'economic_state')
     fieldsets = ((_('Identity'),
-            { 'fields' : ('name', 'id_in_des', 'logo', 'headquarter', 'description')
+            { 'fields' : ('name', 'id_in_des', 'logo', 'headquarter', 'description', 'association_act', 'intent_act')
     }),
 # COMMENT fero: Economic state is disabled right now
 #    (_("Economic"), {
