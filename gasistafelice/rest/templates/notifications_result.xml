@@ -1,0 +1,10 @@
+{% load basic_tags %}
+
+<div class="content">
+<ul>
+	{% for notification in notifications %} 
+	<li>{{ notification }}</li>
+    {% endfor %}
+</ul>
+</div>
+

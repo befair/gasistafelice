@@ -1548,6 +1548,7 @@
                         //TODO fero TOCHECK init_context_menu();
 
                         //TODO: fero TOCHECK start_user_notes_timer();
+                        start_user_notifications_timer();
                     }
 
                     else
@@ -1560,10 +1561,8 @@
         // Resource Panel
         //
 
-        function show_resource_panel() 
+        function prepare_resource_panel() 
         {            
-            $('#resource_panel').toggle();
-            
             var h = $('#body').css('height');
             //alert(h);
             $('#separator').css('height', h);
@@ -1571,6 +1570,12 @@
             $('#separator_gap').css('width', 2);
             
             set_separator_icon();
+        }
+        
+        function show_resource_panel() 
+        {            
+            $('#resource_panel').toggle();
+            prepare_resource_panel();
         }
         
         function set_separator_icon() 
@@ -1584,6 +1589,76 @@
             }                    
         }
 
+
+        // 
+        // Notifications panel
+        //
+        jQuery.last_notification_download_time = '';
+        
+        var NOTIFICATIONS_PLACEHOLDER = '#all_notifications';
+        var NOTIFICATIONS_RESOURCE_URL = jQuery.pre + 'rest/list_notifications/all';
+        var NOTIFICATIONS_REFRESH_TIME = 90;  // 30 seconds
+        
+        function prepare_notifications_panel() 
+        {            
+            var h = $('#body').css('height');
+            //alert(h);
+            $('#right_separator').css('height', h);
+            $('#right_separator_gap').css('height', 300     );
+            $('#right_separator_gap').css('width', 2);
+            
+            set_right_separator_icon();
+        }
+        
+        function show_notifications_panel() 
+        {            
+            $('#notifications-panel').toggle();
+            prepare_notifications_panel();
+        }
+            
+        function set_right_separator_icon() 
+        {
+            //alert($('#notifications_panel').is(':visible'));
+            if ($('#notifications-panel').is(':visible')==true) {
+                $('#right_separator_button').attr('src', '{{ MEDIA_URL }}nui/img/expand_button_right.gif');
+            }
+            else {
+                $('#right_separator_button').attr('src', '{{ MEDIA_URL }}nui/img/expand_button_left.gif');
+            }                    
+        }
+
+        function start_user_notifications_timer()
+        {
+            start_generic_update_timer(
+                generic_timers,
+                NOTIFICATIONS_RESOURCE_URL,         // resource URL
+                NOTIFICATIONS_REFRESH_TIME,         // next-timeout
+                NOTIFICATIONS_PLACEHOLDER,        // DOM destination node
+                function () {},            // pre-process
+                process_downloaded_notes    // post-process
+            );
+            
+            return false;
+        }
+        
+        function refresh_user_notifications() 
+        {
+            $.ajax({
+                type:'GET',
+                url:NOTIFICATIONS_RESOURCE_URL,
+                dataType:'xml',
+                
+                complete:function(r,s){
+                    var t = r.responseText;
+                    $(NOTIFICATIONS_PLACEHOLDER).html(t);
+                    
+                    process_downloaded_notifications();
+                }
+            });                        
+        }
+
+        function process_downloaded_notifications() {
+        }
 
         //
         // GLOBAL INITIALIZATION
@@ -1626,7 +1701,7 @@
             $('.templates').hide();
 
             // Hide everything before download
-            $('#resource_panel').hide();        // hide
+            // $('#resource_panel').hide();        // hide
             $('#user_data_placeholder').hide();    // hide
                         
             $('#body_content').sortable({
@@ -1821,6 +1896,7 @@
                 // HIDE EVERY OTHER ELEMENT
                 //
                 $('#resource_panel').toggle();
+                $('#notifications-panel').toggle();
                 
                 
                 $('.block').filter('[block_urn]').each( function (bl) {
@@ -1918,6 +1994,16 @@
                 }
             });
 
+            $('#notifications-panel').resizable({
+                handles:'e',
+                autoHide:true,
+                stop:function(){
+                    var width = $('#notifications-panel').css('width')
+
+                    save_block_attribute('notification_sidebar_width', width);
+                }
+            });
+
             var width = get_block_attribute('sanet_sidebar_width')
             if (width != undefined) 
                 $('#resource_panel').css('width', width);
@@ -1929,6 +2015,9 @@
                 show_resource_panel();
             });
 
+            $('#right_separator_button').click(function(e) {
+                show_notifications_panel();
+            });
 
         
             /*
@@ -1940,7 +2029,8 @@
             if (visible == 'true') 
             */
             
-            show_resource_panel();
+            prepare_resource_panel();
+            prepare_notifications_panel();
 
             init_user_buttons();
             
@@ -1999,8 +2089,7 @@
 
         <div id="main_content">
         
-        
-            <div id="resource_panel">
+            <div id="resource_panel" class="panel">
             
                 <!--<div id="resource_panel_hide_button" >
                     <img alt='nascondi'  title='nascondi' src='{{ MEDIA_URL }}nui/img/expand_button_left.gif'/>
@@ -2164,6 +2253,37 @@
             <div id="separator" style='float:left'>
                 <img id='separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>
                 <img id='separator_button'/>
+            </div>
+        </div>
+
+        <div id="right_column_wrapper" style="float:right">
+        
+            <div id="notifications-panel" class="panel">
+            
+                <!-- =============================================== -->
+                <!-- NOTIFICATIONS BOX                               -->
+                <!-- =============================================== -->
+
+                <div class="block" id="user-notifications">
+                    <div class="block_header">
+                        <div class="right toolbar">
+                            <img class="header_button toggle_refresh hide_on_toggle"
+                                 src=""
+                                 onclick='return refresh_user_notifications()'/>
+                            <span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/></span>
+                        </div>
+                        <h1 class="block-title">{% trans "Notifications" %}</h1> <!-- Notifiche -->
+                    </div>
+
+                    <div class="block_body" id="all_notifications" is_open="1">
+
+                    </div>
+                </div> <!-- blocco notifiche -->
+            </div>
+
+            <div id="right_separator" style='float:left'>
+                <img id='right_separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>
+                <img id='right_separator_button'/>
             </div>
         </div>
 

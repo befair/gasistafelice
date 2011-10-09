@@ -353,6 +353,16 @@ def list_comments(request):
     }
     return render_to_xml_response("comments_result.xml", context)
 
+#------------------------------------------------------------------------------#
+
+@login_required()
+def list_notifications(request):
+
+    context = {
+        'notifications': request.user.message_set.all()
+    }
+    return render_to_xml_response("notifications_result.xml", context)
+
 
 
 
