@@ -1547,7 +1547,7 @@
 
                         //TODO fero TOCHECK init_context_menu();
 
-                        //TODO: fero TOCHECK start_user_notes_timer();
+                        start_user_notes_timer();
                         start_user_notifications_timer();
                     }
 
@@ -2153,31 +2153,6 @@
                     </div>
                 </div> <!-- blocco search -->
 
-                {% comment %}
-                ##### TODO fero #####
-
-                <!-- =============================================== -->
-                <!-- NOTES                                           -->
-                <!-- =============================================== -->
-
-                <div class="block" id="notes">
-                    <div class="block_header">
-
-                        <div class="right toolbar">
-                            <img class="header_button toggle_refresh hide_on_toggle"
-                                 src=""
-                                 onclick='return refresh_user_notes()'/>
-                            <span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/> </span> <!-- Riduci blocco -->
-                        </div>
-
-                        <h1 class="block-title" >{% trans "Notes" %} (<span id="notes-count">0</span>)</h1> <!-- Note -->
-                    </div>
-                    <div class="block_body" id="all_notes">
-
-                    </div>
-                </div> <!-- blocco note-->
-                {% endcomment %}
-
                 <!-- =============================================== -->
                 <!-- HISTORY                                         -->
                 <!-- =============================================== -->
@@ -2258,6 +2233,10 @@
 
         <div id="right_column_wrapper" style="float:right">
         
+            <div id="right_separator" style='float:left'>
+                <img id='right_separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>
+                <img id='right_separator_button'/>
+            </div>
             <div id="notifications-panel" class="panel">
             
                 <!-- =============================================== -->
@@ -2279,12 +2258,30 @@
 
                     </div>
                 </div> <!-- blocco notifiche -->
+
+                <!-- =============================================== -->
+                <!-- NOTES                                           -->
+                <!-- =============================================== -->
+
+                <div class="block" id="notes">
+                    <div class="block_header">
+
+                        <div class="right toolbar">
+                            <img class="header_button toggle_refresh hide_on_toggle"
+                                 src=""
+                                 onclick='return refresh_user_notes()'/>
+                            <span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/> </span> <!-- Riduci blocco -->
+                        </div>
+
+                        <h1 class="block-title" >{% trans "Notes" %} (<span id="notes-count">0</span>)</h1> <!-- Note -->
+                    </div>
+                    <div class="block_body" id="all_notes">
+
+                    </div>
+                </div> <!-- blocco note-->
+
             </div>
 
-            <div id="right_separator" style='float:left'>
-                <img id='right_separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>
-                <img id='right_separator_button'/>
-            </div>
         </div>
 
         <div id="body">

@@ -212,7 +212,7 @@ border:0px;
 #separator_button {
 }
 
-#separator {
+#separator, #right_separator {
 	background-color: #eee;
 }
 
