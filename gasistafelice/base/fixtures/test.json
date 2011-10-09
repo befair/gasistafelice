@@ -22,16 +22,16 @@
 
 
 
-{"pk": 1,"model":"base.person", "fields": {"display_name": "personSupplier 1 producer","uuid": "12345678901","contacts": [],"user":2,"surname": "prod","name": "prod1","address": 5} },
-{"pk": 2,"model":"base.person", "fields": {"display_name": "personSupplier 2 producer","uuid": "12345678902","contacts": [],"user":3,"surname": "prod","name": "prod2","address": 6} },
+{"pk": 1,"model":"base.person", "fields": {"display_name": "personSupplier 1 producer","uuid": "12345678901","contact_set": [],"user":2,"surname": "prod","name": "prod1","address": 5} },
+{"pk": 2,"model":"base.person", "fields": {"display_name": "personSupplier 2 producer","uuid": "12345678902","contact_set": [],"user":3,"surname": "prod","name": "prod2","address": 6} },
 
-{"pk": 3,"model":"base.person", "fields": {"display_name": "personSupplier 1 contact","uuid": "12345678951","contacts": [],"user":4,"surname": "prod","name": "Contatto1","address": 7} },
-{"pk": 4,"model":"base.person", "fields": {"display_name": "personSupplier 2 contact","uuid": "12345678952","contacts": [],"user":5,"surname": "prod","name": "Contatto2","address": 8} },
+{"pk": 3,"model":"base.person", "fields": {"display_name": "personSupplier 1 contact","uuid": "12345678951","contact_set": [],"user":4,"surname": "prod","name": "Contatto1","address": 7} },
+{"pk": 4,"model":"base.person", "fields": {"display_name": "personSupplier 2 contact","uuid": "12345678952","contact_set": [],"user":5,"surname": "prod","name": "Contatto2","address": 8} },
 
-{"pk": 5,"model":"base.person", "fields": {"display_name": "personGassista 1","uuid": "12345679001","contacts": [],"user":6,"surname": "gassi","name": "gm1","address": 9} },
-{"pk": 6,"model":"base.person", "fields": {"display_name": "personGassista 2","uuid": "12345679002","contacts": [],"user":7,"surname": "gassi","name": "gm2","address": 10} },
-{"pk": 7,"model":"base.person", "fields": {"display_name": "personGassista 3","uuid": "12345679003","contacts": [],"user":8,"surname": "gassi","name": "gm3","address": 11} },
-{"pk": 8,"model":"base.person", "fields": {"display_name": "personGassista 4","uuid": "12345679004","contacts": [],"user":9,"surname": "gassi","name": "gm4","address": 12} }
+{"pk": 5,"model":"base.person", "fields": {"display_name": "personGassista 1","uuid": "12345679001","contact_set": [],"user":6,"surname": "gassi","name": "gm1","address": 9} },
+{"pk": 6,"model":"base.person", "fields": {"display_name": "personGassista 2","uuid": "12345679002","contact_set": [],"user":7,"surname": "gassi","name": "gm2","address": 10} },
+{"pk": 7,"model":"base.person", "fields": {"display_name": "personGassista 3","uuid": "12345679003","contact_set": [],"user":8,"surname": "gassi","name": "gm3","address": 11} },
+{"pk": 8,"model":"base.person", "fields": {"display_name": "personGassista 4","uuid": "12345679004","contact_set": [],"user":9,"surname": "gassi","name": "gm4","address": 12} }
 
 
 

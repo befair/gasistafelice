@@ -20,11 +20,11 @@
 {"pk":3,"model":"supplier.product", "fields": {"name":"Pane bianco","category":32,"description":" description for Pane bianco","producer":2,"mu":9,"uuid":"2569436392"} },
 {"pk":4,"model":"supplier.product", "fields": {"name":"Pane di farro","category":32,"description":" description for Pane di farro","producer":2,"mu":9,"uuid":"2569436393"} },
 
-{"pk": 1,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":1,"price":" 1", "order_minimum_amount" : "1", "code" : "code00001", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 1" } } , 
-{"pk": 2,"model": "supplier.supplierstock","fields": {"product": 2,"supplier":1,"price":" 2", "order_minimum_amount" : "2", "code" : "code00002", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 2" } } , 
-{"pk": 3,"model": "supplier.supplierstock","fields": {"product": 3,"supplier":1,"price":" 3", "order_minimum_amount" : "3", "code" : "code00003", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 3" } } , 
-{"pk": 4,"model": "supplier.supplierstock","fields": {"product": 4,"supplier":1,"price":" 4", "order_minimum_amount" : "4", "code" : "code00004", "order_step" : 0.2, "delivery_terms": "delivery terms for DES by Supplier 1 for product 4" } } , 
-{"pk": 5,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":2,"price":" 1", "order_minimum_amount" : "50", "code" : "SCA1002", "order_step" : 1, "delivery_terms": " real supplier for another producer delivery terms for DES by Supplier 2 for product 1 produce by supplier 1" } }
+{"pk": 1,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":1,"price":" 1", "order_minimum_amount" : "1", "code" : "code00001", "order_step" : 0.2, "delivery_notes": "delivery terms for DES by Supplier 1 for product 1" } } , 
+{"pk": 2,"model": "supplier.supplierstock","fields": {"product": 2,"supplier":1,"price":" 2", "order_minimum_amount" : "2", "code" : "code00002", "order_step" : 0.2, "delivery_notes": "delivery terms for DES by Supplier 1 for product 2" } } , 
+{"pk": 3,"model": "supplier.supplierstock","fields": {"product": 3,"supplier":1,"price":" 3", "order_minimum_amount" : "3", "code" : "code00003", "order_step" : 0.2, "delivery_notes": "delivery terms for DES by Supplier 1 for product 3" } } , 
+{"pk": 4,"model": "supplier.supplierstock","fields": {"product": 4,"supplier":1,"price":" 4", "order_minimum_amount" : "4", "code" : "code00004", "order_step" : 0.2, "delivery_notes": "delivery terms for DES by Supplier 1 for product 4" } } , 
+{"pk": 5,"model": "supplier.supplierstock","fields": {"product": 1,"supplier":2,"price":" 1", "order_minimum_amount" : "50", "code" : "SCA1002", "order_step" : 1, "delivery_notes": " real supplier for another producer delivery terms for DES by Supplier 2 for product 1 produce by supplier 1" } }
 
 
 ]

@@ -322,7 +322,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if created:
             self.set_default_gasstock_set()
             #TODO: dispatching order_open is to be moved elsewhere when scheduler works
-            signals.order_open(sender=self)
+            signals.order_open.send(sender=self)
             
         
     #-------------- Authorization API ---------------#

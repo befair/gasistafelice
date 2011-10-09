@@ -477,7 +477,7 @@ class Person(models.Model, PermissionResource):
         verbose_name_plural = _("persons")
 
     def __unicode__(self):
-        return _('%(name)s %(surname)s') % {'name' : self.name, 'surname': self.surname}
+        return self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
 
     @property
     def icon(self):
