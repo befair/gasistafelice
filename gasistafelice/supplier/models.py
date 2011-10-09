@@ -594,7 +594,7 @@ class SupplierStock(models.Model, PermissionResource):
 
             for gmo in self.basket:
                 if gmo.has_changed:
-                    signals.gmo_price_update.send(sender=gmo, old_price=gmo.ordered_price, new_price=gmo.ordered_product.order_price)
+                    signals.gmo_price_update.send(sender=gmo)
             
         super(SupplierStock, self).save(*args, **kwargs)
 

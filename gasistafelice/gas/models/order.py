@@ -284,6 +284,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return self.gasstock_set.all()
 
     @property
+    def gas(self):
+        return self.pact.gas
+
+    @property
+    def gasmembers(self):
+        return self.gas.gasmembers
+
+    @property
     def tot_price(self):
         tot = 0
         for gmo in self.ordered_products:
@@ -313,6 +321,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if created:
             self.set_default_gasstock_set()
+            #TODO: dispatching order_open is to be moved elsewhere when scheduler works
+            signals.order_open(sender=self)
             
         
     #-------------- Authorization API ---------------#
