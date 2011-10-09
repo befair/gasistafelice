@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.comments',
     'gasistafelice.localejs',
+    'gasistafelice.des_notifications',
     #'south',
     
 )
