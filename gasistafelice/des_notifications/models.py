@@ -48,7 +48,7 @@ def notify_gasstock_product_enabled(sender, **kwargs):
             'gas' : gasstock.gas
     }
 
-    for gm in gasstock.gasmemebers:
+    for gm in gasstock.gasmembers:
         #TODO: check for user settings and see if user wants to be notified
         # via messages, mail or both
         gm.person.user.message_set.create(message=msg)
@@ -63,7 +63,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
             'gas' : gasstock.gas
     }
 
-    for gm in gasstock.gasmemebers:
+    for gm in gasstock.gasmembers:
         #TODO: check for user settings and see if user wants to be notified
         # via messages, mail or both
         gm.person.user.message_set.create(message=msg)
@@ -78,7 +78,7 @@ def notify_order_open(sender, **kwargs):
             'url' : order.get_absolute_url()
     }
 
-    for gm in order.gasmemebers:
+    for gm in order.gasmembers:
         #TODO: check for user settings and see if user wants to be notified
         # via messages, mail or both
         gm.person.user.message_set.create(message=msg)
@@ -96,7 +96,7 @@ def notify_order_state_update(sender, **kwargs):
                 'url' : order.get_absolute_url()
         }
 
-        for gm in order.gasmemebers:
+        for gm in order.gasmembers:
             #TODO: check for user settings and see if user wants to be notified
             # via messages, mail or both
             gm.person.user.message_set.create(message=msg)

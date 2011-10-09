@@ -243,6 +243,12 @@ class Block(AbstractBlock):
                     element_type = 'resource'
                 elif isinstance(display_field, models.EmailField):
                     element_type  = 'email'
+                elif isinstance(display_field, models.FileField):
+                    element_type  = 'file'
+                    try:
+                        element_value = element_value.url
+                    except ValueError:
+                        element_value = ''
                 else: 
                     element_type  = 'str'
                     if display_field.choices:

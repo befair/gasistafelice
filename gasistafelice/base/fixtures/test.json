@@ -28,11 +28,12 @@
 {"pk": 3,"model":"base.person", "fields": {"display_name": "personSupplier 1 contact","uuid": "12345678951","contact_set": [],"user":4,"surname": "prod","name": "Contatto1","address": 7} },
 {"pk": 4,"model":"base.person", "fields": {"display_name": "personSupplier 2 contact","uuid": "12345678952","contact_set": [],"user":5,"surname": "prod","name": "Contatto2","address": 8} },
 
-{"pk": 5,"model":"base.person", "fields": {"display_name": "personGassista 1","uuid": "12345679001","contact_set": [],"user":6,"surname": "gassi","name": "gm1","address": 9} },
-{"pk": 6,"model":"base.person", "fields": {"display_name": "personGassista 2","uuid": "12345679002","contact_set": [],"user":7,"surname": "gassi","name": "gm2","address": 10} },
-{"pk": 7,"model":"base.person", "fields": {"display_name": "personGassista 3","uuid": "12345679003","contact_set": [],"user":8,"surname": "gassi","name": "gm3","address": 11} },
-{"pk": 8,"model":"base.person", "fields": {"display_name": "personGassista 4","uuid": "12345679004","contact_set": [],"user":9,"surname": "gassi","name": "gm4","address": 12} }
-
+{"pk": 101,"model":"base.person", "fields": {"display_name": "personGasista 1","uuid": "12345679001","contact_set": [],"user":102,"surname": "gasista","name": "gm1","address": 121} },
+{"pk": 102,"model":"base.person", "fields": {"display_name": "personGasista 2","uuid": "12345679002","contact_set": [],"user":103,"surname": "gasista","name": "gm2","address": 122} },
+{"pk": 103,"model":"base.person", "fields": {"display_name": "personGasista 3","uuid": "12345679003","contact_set": [],"user":104,"surname": "gasista","name": "gm3","address": 123} },
+{"pk": 104,"model":"base.person", "fields": {"display_name": "personGasista 4","uuid": "12345679004","contact_set": [],"user":105,"surname": "gasista","name": "gm4","address": 124} },
+{"pk": 105,"model":"base.person", "fields": {"display_name": "personGasista 5","uuid": "12345679005","contact_set": [],"user":106,"surname": "gasista","name": "gm5","address": 125} },
+{"pk": 106,"model":"base.person", "fields": {"display_name": "personGasista 6","uuid": "12345679006","contact_set": [],"user":107,"surname": "gasista","name": "gm6","address": 126} },
 
 
 ]

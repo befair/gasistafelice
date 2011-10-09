@@ -33,15 +33,18 @@ from gasistafelice.exceptions import NoSenseException
 from decimal import Decimal
 
 #-------------------------------------------------------------------------------    
-# Utility functions to get path for GAS documents 
+# Utility functions to get path for resource documents 
 
 def get_association_act_path(instance, filename):
-    return get_gas_doc_path(instance, filename, "association_act")
+    return get_doc_path(instance, filename, "association_act")
 
 def get_intent_act_path(instance, filename):
-    return get_gas_doc_path(instance, filename, "intent_act")
+    return get_doc_path(instance, filename, "intent_act")
 
-def get_gas_doc_path(instance, filename, flavour):
+def get_pact_path(instance, filename):
+    return get_doc_path(instance, filename, "pact")
+
+def get_doc_path(instance, filename, flavour):
 
     if instance.pk:
         return instance.association_act.name
@@ -170,7 +173,7 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def info_people(self):
-        return Person.objects.filter(gasactivist_set__in=self.activist_set.all())
+        return Person.objects.filter(gasactivist__in=self.activist_set.all())
 
     @property
     def persons(self):
@@ -976,14 +979,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     #TODO:is_active = models.BooleanField(default=True, help_text=_("This pact can be broken o removed by one of the partner. If not active no orders can be done and the pact will not appear anymore in the interface"))
     #TODO:is_suspended = models.BooleanField(default=False, help_text=_("This pact can be suspended when partners are on unavailable (hollidays, closed). The motor use this flag to operate or not some automatisms"))
 
-    #document = models.FileField(upload_to="/pacts/", null=True, blank=True)
+    document = models.FileField(upload_to=get_pact_path, null=True, blank=True, verbose_name=_("association act"))
 
     history = HistoricalRecords()
 
     display_fields = (
         display.ResourceList(name="referrers_people", verbose_name=_("Referrers")),
         order_minimum_amount, order_delivery_cost, order_deliver_interval,
-        default_withdrawal_place,
+        default_withdrawal_place, document
     )
 
     class Meta:

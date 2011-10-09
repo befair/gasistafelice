@@ -8,13 +8,9 @@
 			<!-- <span class="resource {{ obj_note.0.resource_type }} {% ifequal obj_note.0.resource_type 'target' %}{{ obj_note.0.status }}{% endifequal %}" > -->
 			
 			{% with obj_note.0 as r %}
-				<a class="ctx_enabled resource {{ r.resource_type }} inline  {% ifequal r.resource_type 'target' %}{{ r.status }}{% endifequal %}" 
+				<a class="ctx_enabled resource {{ r.resource_type }} inline" 
 				   sanet_urn="{{ r.resource_type }}/{{ r.id }}" 
 				   href="#rest/{{ r.resource_type }}/{{ r.id }}/" 
-				   
-				   {% if r.icon %}
-				   style='background: transparent url(/static/theme/img/resources/{{r.icon.fname}}16x16.png) no-repeat scroll left center;'
-				   {% endif %}
 				   >
 					{{ r }}
 				</a>

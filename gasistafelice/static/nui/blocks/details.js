@@ -178,8 +178,9 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                     val = "<span style='color:red'>" + val_obj.text() + "</a>";
                 else
                     val  = val_obj.text();
-            }
-            if (val_type=='email') {
+            } else if (val_type=='file') {
+                val  = '<a href="' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
+            } else if (val_type=='email') {
                 val  = '<a href="mailto:' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
             } else if (val_type == 'resource') {
                 
