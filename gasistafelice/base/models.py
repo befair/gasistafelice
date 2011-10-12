@@ -459,16 +459,16 @@ class Person(models.Model, PermissionResource):
     It can be a User or not.
     """
 
-    name = models.CharField(max_length=128)
-    surname = models.CharField(max_length=128)
-    display_name = models.CharField(max_length=128, blank=True)
+    name = models.CharField(max_length=128,verbose_name=_('Name'))
+    surname = models.CharField(max_length=128,verbose_name=_('Surname'))
+    display_name = models.CharField(max_length=128, blank=True,verbose_name=_('Display name'))
     #TODO: Verify if this information is necessary
     #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
-    uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'))
-    contact_set = models.ManyToManyField('Contact', null=True, blank=True)
-    user = models.OneToOneField(User, null=True, blank=True)
-    address = models.OneToOneField('Place', null=True, blank=True)
-    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+    uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'),verbose_name=_('Social Security Number'))
+    contact_set = models.ManyToManyField('Contact', null=True, blank=True,verbose_name=_('contacts'))
+    user = models.OneToOneField(User, null=True, blank=True,verbose_name=_('User'))
+    address = models.OneToOneField('Place', null=True, blank=True,verbose_name=_('main address'))
+    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True,verbose_name=_('Avatar'))
 
     history = HistoricalRecords()
 
@@ -671,10 +671,10 @@ class Person(models.Model, PermissionResource):
    
 class Contact(models.Model):
 
-    flavour = models.CharField(max_length=32, choices=const.CONTACT_CHOICES, default=const.EMAIL)
-    value = models.CharField(max_length=32)
-    is_preferred = models.BooleanField(default=False)
-    description = models.CharField(max_length=128, blank=True, default='')
+    flavour = models.CharField(max_length=32, choices=const.CONTACT_CHOICES, default=const.EMAIL,verbose_name=_('flavour'))
+    value = models.CharField(max_length=32,verbose_name=_('value'))
+    is_preferred = models.BooleanField(default=False,verbose_name=_('preferred'))
+    description = models.CharField(max_length=128, blank=True, default='',verbose_name=_('description'))
 
     history = HistoricalRecords()
 
@@ -694,18 +694,18 @@ class Place(models.Model, PermissionResource):
     multiple delivery and/or withdrawal locations can be present.
     """
 
-    name = models.CharField(max_length=128, blank=True, help_text=_("You can avoid to specify a name if you specify an address"))
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=128, blank=True, help_text=_("You can avoid to specify a name if you specify an address"),verbose_name=_('name'))
+    description = models.TextField(blank=True,verbose_name=_('description'))
     #TODO: ADD place type from CHOICE (HOME, WORK, HEARTHQUARTER, WITHDRAWAL...)     
-    address = models.CharField(max_length=128, blank=True)
+    address = models.CharField(max_length=128, blank=True,verbose_name=_('address'))
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
-    city = models.CharField(max_length=128)
-    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)")) 
+    city = models.CharField(max_length=128,verbose_name=_('city'))
+    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"),verbose_name=_('province')) 
         
     #TODO geolocation: use GeoDjango PointField?
-    lon = models.FloatField(null=True, blank=True)
-    lat = models.FloatField(null=True, blank=True)
+    lon = models.FloatField(null=True, blank=True,verbose_name=_('lon'))
+    lat = models.FloatField(null=True, blank=True,verbose_name=_('lat'))
 
     history = HistoricalRecords()
     
@@ -789,9 +789,9 @@ class Place(models.Model, PermissionResource):
 
 class DefaultTransition(models.Model, PermissionResource):
 
-    workflow = models.ForeignKey(Workflow, related_name="default_transition_set")
-    state = models.ForeignKey(State)
-    transition = models.ForeignKey(Transition)
+    workflow = models.ForeignKey(Workflow, related_name="default_transition_set",verbose_name=_('workflow'))
+    state = models.ForeignKey(State,verbose_name=_('state'))
+    transition = models.ForeignKey(Transition,verbose_name=_('transition'))
 
     history = HistoricalRecords()
 
