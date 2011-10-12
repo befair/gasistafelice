@@ -39,7 +39,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     """
     
-    pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
+    pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
     date_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
     date_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
@@ -59,6 +59,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     class Meta:
+        verbose_name = _('order issued to supplier')
+        verbose_name = _('orders issued to supplier')
         app_label = 'gas'
         
     def __init__(self, *args, **kw):
@@ -202,7 +204,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append(ugettext('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                self._msg.append(ugettext('Deleting gas member %(member)s email %(email)s: Unit price(%(price)s) ordered quantity(%(quantity)s) total price(%(price)s) for product %(product)s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 signals.gmo_product_erased.send(sender=self)
                 gmo.delete()
             self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))
@@ -377,23 +379,25 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
 
     """
 
-    order = models.ForeignKey(GASSupplierOrder, related_name="orderable_product_set")
-    gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set")
+    order = models.ForeignKey(GASSupplierOrder, related_name="orderable_product_set",verbose_name=_('order'))
+    gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set",verbose_name=_('gas stock'))
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
-    maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0)
+    maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0,verbose_name=_('maximum amount'))
     # the price of the Product at the time the GASSupplierOrder was created
-    initial_price = CurrencyField()
+    initial_price = CurrencyField(verbose_name=_('initial price'))
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
-    order_price = CurrencyField()
+    order_price = CurrencyField(verbose_name=_('order price'))
     # the actual price of the Product (as resulting from the invoice)
-    delivered_price = CurrencyField(null=True, blank=True)
+    delivered_price = CurrencyField(null=True, blank=True,verbose_name=_('delivered price'))
     # how many items were actually delivered by the Supplier 
-    delivered_amount = models.PositiveIntegerField(null=True, blank=True)
+    delivered_amount = models.PositiveIntegerField(null=True, blank=True,verbose_name=_('delivered amount'))
     
     history = HistoricalRecords()
     
     class Meta:
+        verbose_name = _('gas supplier order product')
+        verbose_name_plural = _('gas supplier order products')
         app_label = 'gas'
 
     def __unicode__(self):
@@ -501,16 +505,16 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     """
 
-    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set", null=False, blank=False)
-    ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set", null=False, blank=False)
+    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set", null=False, blank=False,verbose_name=_('purchaser'))
+    ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set", null=False, blank=False,verbose_name=_('order product'))
     # price of the Product at order time
-    ordered_price = CurrencyField()
+    ordered_price = CurrencyField(verbose_name=_('ordered price'))
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.PositiveIntegerField()
+    ordered_amount = models.PositiveIntegerField(verbose_name=_('order amount'))
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
+    withdrawn_amount = models.PositiveIntegerField(null=True, blank=True,verbose_name=_('widthdrawn amount'))
     # gasmember order have to be confirmed if GAS configuration allowed it
-    is_confirmed = models.BooleanField(default=False)
+    is_confirmed = models.BooleanField(default=False,verbose_name=_('confirmed'))
 
     history = HistoricalRecords()
 
@@ -670,11 +674,11 @@ class Delivery(Appointment, PermissionResource):
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
     """
     
-    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"))
-    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
+    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"),verbose_name=_('place'))
+    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"),verbose_name=_('date'))    
 
     # Person who coordinates delivery appointment (if any) 
-    info_people_set = models.ManyToManyField(Person, null=True, blank=True)
+    info_people_set = models.ManyToManyField(Person, null=True, blank=True,verbose_name=_('info people'))
     
     # TODO: COSTO DI QUESTA CONSEGNA SPECIFICA?
     

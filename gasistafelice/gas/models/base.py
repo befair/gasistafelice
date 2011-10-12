@@ -62,37 +62,37 @@ class GAS(models.Model, PermissionResource):
 
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
     """
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
     logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
-    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False)
-    description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
-    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
+    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False,verbose_name=_('headquarter'))
+    description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"),verbose_name=_('description'))
+    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True,verbose_name=_('membership fee'))
 
-    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
+    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"),verbose_name=_('Suppliers'))
     
     #active = models.BooleanField()
-    birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
-    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
-    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))
+    birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"),verbose_name=_('birthday'))
+    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"),verbose_name=_('VAT'))
+    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"),verbose_name=_('Fiscal code card'))
 
-    contact_set = models.ManyToManyField(Contact, null=True, blank=True)
+    contact_set = models.ManyToManyField(Contact, null=True, blank=True,verbose_name=_('contacts'))
 
     # Orders email contact is the mailing-list where we can send notification about orders
     orders_email_contact = models.ForeignKey(Contact, limit_choices_to = { 'flavour' : const.EMAIL }, null=True, blank=True, related_name="gas_use_for_orders_set")
 
-    website = models.URLField(verify_exists=True, null=True, blank=True)
+    website = models.URLField(verify_exists=True, null=True, blank=True,verbose_name=_('web site'))
 
     #Persons who are active in GAS and can give info about it
-    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True)
+    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True,verbose_name=_('activist set'))
 
     association_act = models.FileField(upload_to=get_association_act_path, null=True, blank=True, verbose_name=_("association act"))
     intent_act = models.FileField(upload_to=get_intent_act_path, null=True, blank=True, verbose_name=_("intent act"))
 
-    note = models.TextField(blank=True)
+    note = models.TextField(blank=True,verbose_name =_('notes'))
 
     # Resource API
-    des = models.ForeignKey(DES)
+    des = models.ForeignKey(DES,verbose_name=_('des'))
 
     #TODO: Notify system
 
@@ -426,11 +426,11 @@ class GASConfig(models.Model, PermissionResource):
 
     #TODO: see ticket #65
     default_close_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
-        help_text=_("default closing order day of the week")
+        help_text=_("default closing order day of the week"),verbose_name=_('default close day')
     )
     #TODO: see ticket #65
     default_delivery_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
-        help_text=_("default delivery day of the week")
+        help_text=_("default delivery day of the week"),verbose_name=_('default delivery day')
     )
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
@@ -493,8 +493,8 @@ class GASActivist(models.Model):
     This is not necessarily a user in the system. You can consider it just as a contact.
     """
 
-    gas = models.ForeignKey(GAS)
-    person = models.ForeignKey(Person)
+    gas = models.ForeignKey(GAS,verbose_name=_('gas'))
+    person = models.ForeignKey(Person,verbose_name=_('person'))
     info_title = models.CharField(max_length=256, blank=True)
     info_description = models.TextField(blank=True)
 
@@ -521,11 +521,11 @@ class GASMember(models.Model, PermissionResource):
     
     """
     # Resource API
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(Person,verbose_name=_('person'))
     # Resource API
-    gas = models.ForeignKey(GAS)
+    gas = models.ForeignKey(GAS,verbose_name=_('gas'))
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
-    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
+    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set",verbose_name=_('available for roles'))
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
     #TODO: Notify system
@@ -542,6 +542,8 @@ class GASMember(models.Model, PermissionResource):
     )
 
     class Meta:
+        verbose_name = _('GAS member')
+        verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), )
 
@@ -785,14 +787,14 @@ class GASSupplierStock(models.Model, PermissionResource):
     pact = models.ForeignKey("GASSupplierSolidalPact", related_name="gasstock_set")
     stock = models.ForeignKey(SupplierStock, related_name="gasstock_set")
     # if a Product is available to GAS Members; policy is GAS-specific
-    enabled = models.BooleanField(default=True)
+    enabled = models.BooleanField(default=True,verbose_name=_('enabled'))
 
     ## constraints on what a single GAS Member is able to order
     # minimun amount of Product units a GAS Member is able to order
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True,verbose_name=_('minimum order amount'))
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product has a fixed step of increment
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+    order_step = models.PositiveSmallIntegerField(null=True, blank=True,verbose_name=_('step of increment'))
 
     #TODO: Notify system
 
@@ -947,8 +949,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     """
 
-    gas = models.ForeignKey(GAS, related_name="pact_set")
-    supplier = models.ForeignKey(Supplier, related_name="pact_set")
+    gas = models.ForeignKey(GAS, related_name="pact_set",verbose_name=_('GAS'))
+    supplier = models.ForeignKey(Supplier, related_name="pact_set",verbose_name=_('Supplier'))
     date_signed = models.DateField(verbose_name=_('Date signed'), auto_now=False, auto_now_add=False, blank=True, null=True, default=None, help_text=_("date of first meeting GAS-Producer"))
 
     # which Products GAS members can order from Supplier
@@ -958,15 +960,15 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     #time needed for the delivery since the GAS issued the order disposition
     order_deliver_interval = models.TimeField(verbose_name=_('Order delivery interval'), null=True, blank=True)
     # how much (in percentage) base prices from the Supplier are modified for the GAS
-    order_price_percent_update = models.FloatField(null=True, blank=True)
+    order_price_percent_update = models.FloatField(null=True, blank=True,verbose_name=_('Order price percent update'))
     
     #domthu: if GAS's configuration use only one 
     #TODO: see ticket #65
     default_withdrawal_day = models.CharField(max_length=16, choices=const.DAY_CHOICES, blank=True,
-        help_text=_("Withdrawal week day agreement")
+        help_text=_("Withdrawal week day agreement"),verbose_name=_('default withdrawal day')
     )
     default_withdrawal_time = models.TimeField(null= True, blank=True, \
-        help_text=_("withdrawal time agreement")
+        help_text=_("withdrawal time agreement"),verbose_name=_('default withdrawal time')
     )
 
     default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), related_name="pact_default_withdrawal_place_set", null=True, blank=True)
@@ -974,7 +976,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # Field to reflect
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
     # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
-    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"))
+    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"),verbose_name=_('auto populate products'))
     #TODO: Field to reflect "il GAS puo stracciare il Patto di Solidarieta."
     #TODO:is_active = models.BooleanField(default=True, help_text=_("This pact can be broken o removed by one of the partner. If not active no orders can be done and the pact will not appear anymore in the interface"))
     #TODO:is_suspended = models.BooleanField(default=False, help_text=_("This pact can be suspended when partners are on unavailable (hollidays, closed). The motor use this flag to operate or not some automatisms"))

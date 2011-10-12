@@ -35,7 +35,7 @@ class Supplier(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
-    certifications = models.ManyToManyField('Certification', null=True, blank=True)
+    certifications = models.ManyToManyField('Certification', null=True, blank=True, verbose_name = _('certifications'))
     logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
     contact_set = models.ManyToManyField(Contact, null=True, blank=True)
 
@@ -43,6 +43,10 @@ class Supplier(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
+    class Meta :
+        verbose_name = _('supplier')
+        verbose_name_plural = _('suppliers')        
+
     def __unicode__(self):
         return unicode(self.name)
 
@@ -253,8 +257,8 @@ class SupplierAgent(models.Model, PermissionResource):
 
     
 class Certification(models.Model, PermissionResource):
-    name = models.CharField(max_length=128, unique=True) 
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=128, unique=True,verbose_name=_('name')) 
+    description = models.TextField(blank=True,verbose_name=_('description'))
 
     history = HistoricalRecords()
 
@@ -263,6 +267,7 @@ class Certification(models.Model, PermissionResource):
 
     class Meta:
         verbose_name = _("certification")
+        verbose_name_plural = _("certifications")
 
     #-------------- Authorization API ---------------#
     
@@ -299,13 +304,14 @@ class ProductCategory(models.Model, PermissionResource):
     # The name is in the form MAINCATEGORY::SUBCATEGORY
     # accept arbitrary sublevels
 
-    name = models.CharField(max_length=128, unique=True, blank=False)
-    description = models.TextField(blank=True)
-    image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+    name = models.CharField(max_length=128, unique=True, blank=False,verbose_name=_('name'))
+    description = models.TextField(blank=True,verbose_name=_('description'))
+    image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True,verbose_name=_('image'))
 
     history = HistoricalRecords()
 
     class Meta:
+        verbose_name=_('Product category')
         verbose_name_plural = _("Product categories")
 
     def __unicode__(self):
@@ -398,15 +404,19 @@ class Product(models.Model, PermissionResource):
     # COMMENT: some producer don't have product codification. 
     # That's why uuid could be blank AND null. See save() method
     uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
-    producer = models.ForeignKey(Supplier, related_name="produced_product_set")
+    producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
     # Resource API
-    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set")
+    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"))
     mu = models.ForeignKey(ProductMU, blank=True, null=True)
-    name = models.CharField(max_length=128)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=128, verbose_name = _("name"))
+    description = models.TextField(blank=True, verbose_name = _("description"))
     
     history = HistoricalRecords()
     
+    class Meta:
+        verbose_name = _('product')
+        verbose_name_plural = _('products')
+
     def __unicode__(self):
         return self.name
 
@@ -478,13 +488,13 @@ class SupplierStock(models.Model, PermissionResource):
     """
 
     # Resource API
-    supplier = models.ForeignKey(Supplier, related_name="stock_set")
+    supplier = models.ForeignKey(Supplier, related_name="stock_set", verbose_name = _('supplier'))
     # Resource API
-    product = models.ForeignKey(Product, related_name="stock_set")
+    product = models.ForeignKey(Product, related_name="stock_set", verbose_name = _('product'))
 
     # Custom category defined by Supplier
-    supplier_category = models.ForeignKey("SupplierProductCategory", null=True, blank=True)
-    image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+    supplier_category = models.ForeignKey("SupplierProductCategory", null=True, blank=True, verbose_name = _('supplier category'))
+    image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name = _('image'))
 
     price = CurrencyField(verbose_name=_("price"))
     code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
@@ -492,7 +502,7 @@ class SupplierStock(models.Model, PermissionResource):
 
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS can order 
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1)
+    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1, verbose_name = _('order minimum amount'))
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
     order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"), default=1)
@@ -500,19 +510,21 @@ class SupplierStock(models.Model, PermissionResource):
     ## constraints posed by the Supplier on orders issued by *every* GASMember
     ## they act as default when creating a GASSupplierSolidalPact
     # minimum amount of Product units a GASMember can order 
-    gasmember_order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1)
+    gasmember_order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1, verbose_name = _('order minimum amount'))
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product has a fixed step of increment
     gasmember_order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"), default=1)
 
     # How the Product will be delivered
-    delivery_notes = models.TextField(blank=True, default='')
+    delivery_notes = models.TextField(blank=True, default='', verbose_name = _('delivery notes'))
 
     #TODO: Notify system
 
     history = HistoricalRecords()
 
     class Meta:
+        verbose_name = _('supplier stock')
+        verbose_name_plural = _('supplier stocks')
         unique_together = (('code', 'supplier'),)
 
     def __init__(self, *args, **kw):
