@@ -30,16 +30,19 @@ DATABASES = {
 }
 $ export DJANGO_SETTINGS_MODULE=gasistafelice.settings
 (optional)$ export PYTHONPATH=/www
+$ sudo locale-gen it_IT.UTF-8
 $ django-admin.py runserver
 Validating models...
 0 errors found
-Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
+
 
 5/7 Sincronizzare database
+create your empty database first
 (gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables and the super user
+Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
 
-6/7 (facoltativo) Load some data for testing
-(gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata import.json
+6/7 (optional) Load some data for testing
+(gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata test_data.json
 
 7/7 Running
 (gasdev)/gasistafelice/gasistafelice$ python manage.py runserver
