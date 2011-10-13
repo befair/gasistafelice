@@ -787,12 +787,11 @@ class GASSupplierStock(models.Model, PermissionResource):
     # if a Product is available to GAS Members; policy is GAS-specific
     enabled = models.BooleanField(default=True)
 
-    ## constraints on what a single GAS Member is able to order
-    # minimun amount of Product units a GAS Member is able to order
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    # how many Product units a GAS Member is able to order
+    order_minimum_amount = models.PositiveIntegerField(default=1)
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product has a fixed step of increment
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+    order_step = models.PositiveSmallIntegerField(default=1)
 
     #TODO: Notify system
 
