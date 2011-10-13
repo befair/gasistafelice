@@ -396,12 +396,17 @@ class ProductMU(models.Model, PermissionResource):
 class Product(models.Model, PermissionResource):
 
     # COMMENT: some producer don't have product codification. 
-    # That's why uuid could be blank AND null. See save() method
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
+    # COMMENT: That's why code could be blank AND null. See save() method
+    code = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name=_('code'), help_text=_("Identification provided by the producer"))
     producer = models.ForeignKey(Supplier, related_name="produced_product_set")
+
     # Resource API
     category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set")
-    mu = models.ForeignKey(ProductMU, blank=True, null=True)
+
+    mu = models.ForeignKey(ProductMU, verbose_name=_("measure unit"))
+    muppu = models.FloatField(verbose_name=_('measure unit per product unit'), help_text=_("How many measure units fit in your product unit?"))
+    pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
+
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     
@@ -409,6 +414,16 @@ class Product(models.Model, PermissionResource):
     
     def __unicode__(self):
         return self.name
+
+    @property
+    def uuid(self):
+        raise NotImplementedError("""UUID stuff MUST be developed as external app: 
+it has to take care of UUIDs for every resource of the platform. To be effective it
+MUST interact with a global UUIDs registry on the Internet. It is useful only if
+the UUID is unique in the world. Annotated as "future todo" see
+http://www.jagom.org/trac/reesgas/ticket/157
+.
+""")
 
     @property
     def referrers(self):
