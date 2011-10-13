@@ -407,6 +407,8 @@ class Product(models.Model, PermissionResource):
     muppu = models.FloatField(verbose_name=_('measure unit per product unit'), help_text=_("How many measure units fit in your product unit?"))
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
 
+    vat_percent = models.FloatField(default=0.2, verbose_name=_('vat percent'))
+
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     
@@ -501,24 +503,17 @@ class SupplierStock(models.Model, PermissionResource):
     supplier_category = models.ForeignKey("SupplierProductCategory", null=True, blank=True)
     image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
 
-    price = CurrencyField(verbose_name=_("price"))
+    net_price = CurrencyField(verbose_name=_("net price"))
+
     code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(verbose_name=_("availability"), default=ALWAYS_AVAILABLE)
 
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS can order 
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1)
+    order_minimum_amount = models.PositiveIntegerField(default=1)
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"), default=1)
-
-    ## constraints posed by the Supplier on orders issued by *every* GASMember
-    ## they act as default when creating a GASSupplierSolidalPact
-    # minimum amount of Product units a GASMember can order 
-    gasmember_order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1)
-    # increment step (in Product units) for amounts exceeding minimum; 
-    # useful when a Product has a fixed step of increment
-    gasmember_order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"), default=1)
+    order_step = models.PositiveSmallIntegerField(verbose_name=_("order step"), default=1)
 
     # How the Product will be delivered
     delivery_notes = models.TextField(blank=True, default='')
@@ -536,6 +531,10 @@ class SupplierStock(models.Model, PermissionResource):
 
     def __unicode__(self):
         return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
+
+    @property
+    def price(self):
+        return self.net_price + self.net_price*self.product.vat_percent
 
     @property
     def icon(self):
