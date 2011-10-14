@@ -159,8 +159,8 @@ class Block(BlockSSDataTables):
 
             form.fields['ordered_amount'].widget.attrs = { 
                             'class' : 'amount',
-                            'step' : el.gasstock.order_step or 1,
-                            'minimum_amount' : el.gasstock.order_minimum_amount or 1,
+                            'step' : el.gasstock.step or 1,
+                            'minimum_amount' : el.gasstock.minimum_amount or 1,
             }
 
             records.append({
@@ -168,7 +168,7 @@ class Block(BlockSSDataTables):
                'product' : el.product,
                'description' : el.product.description,
                'price' : el.gasstock.price,
-               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
+               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
             })
