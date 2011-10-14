@@ -788,10 +788,10 @@ class GASSupplierStock(models.Model, PermissionResource):
     enabled = models.BooleanField(default=True)
 
     # how many Product units a GAS Member is able to order
-    order_minimum_amount = models.PositiveIntegerField(default=1)
+    minimum_amount = models.DecimalField(default=1)
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product has a fixed step of increment
-    order_step = models.PositiveSmallIntegerField(default=1)
+    step = models.DecimalField(default=1)
 
     #TODO: Notify system
 
