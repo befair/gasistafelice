@@ -27,8 +27,18 @@ Il fornitore
 |head2_actions|
 ---------------
 
-* Modifica stock
-* Aggiunge prodotti
-* Modifica scheda del fornitore
-* Modifica categorie
+Modificare lo stock
+^^^^^^^^^^^^^^^^^^^
+
+Aggiungere prodotti
+^^^^^^^^^^^^^^^^^^^
+
+Categorie del DES e categorie del fornitore
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Modificare la scheda del fornitore
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Modificare le categorie
+^^^^^^^^^^^^^^^^^^^^^^^
 
