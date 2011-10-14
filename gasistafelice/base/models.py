@@ -161,7 +161,10 @@ class Resource(object):
     @property
     def created_by_person(self):
         """Returns person bound to the user that created the resource."""
-        return self.created_by.person
+        u = self.created_by
+        if u is not None:
+            return u.person
+        return None
 
     @property
     def last_update_by(self):
@@ -176,7 +179,10 @@ class Resource(object):
     @property
     def last_update_by_person(self):
         """Returns person bound to the user that made the last update the resource."""
-        return self.last_update_by.person
+        u = self.last_update_by
+        if u is not None:
+            return u.person
+        return None
 
     @property
     def updaters(self):
@@ -474,7 +480,7 @@ class Person(models.Model, PermissionResource):
 
     class Meta:
         verbose_name = _("person")
-        verbose_name_plural = _("persons")
+        verbose_name_plural = _("people")
 
     def __unicode__(self):
         return self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}

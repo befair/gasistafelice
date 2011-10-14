@@ -397,17 +397,24 @@ class ProductMU(models.Model, PermissionResource):
 
     #-----------------------------------------------#
 
-    
 
 class Product(models.Model, PermissionResource):
 
     # COMMENT: some producer don't have product codification. 
-    # That's why uuid could be blank AND null. See save() method
-    uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name='UUID', help_text=_("Product code"))
+    # COMMENT: That's why code could be blank AND null. See save() method
+    code = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name=_('code'), help_text=_("Identification provided by the producer"))
     producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
+
     # Resource API
     category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"))
-    mu = models.ForeignKey(ProductMU, blank=True, null=True)
+
+    mu = models.ForeignKey(ProductMU, verbose_name=_("measure unit"))
+    pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
+    muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), help_text=_("How many measure units fit in your product unit?"))
+    muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False)
+
+    vat_percent = models.DecimalField(default=0.2, verbose_name=_('vat percent'))
+
     name = models.CharField(max_length=128, verbose_name = _("name"))
     description = models.TextField(blank=True, verbose_name = _("description"))
     
@@ -419,6 +426,16 @@ class Product(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def uuid(self):
+        raise NotImplementedError("""UUID stuff MUST be developed as external app: 
+it has to take care of UUIDs for every resource of the platform. To be effective it
+MUST interact with a global UUIDs registry on the Internet. It is useful only if
+the UUID is unique in the world. Annotated as "future todo" see
+http://www.jagom.org/trac/reesgas/ticket/157
+.
+""")
 
     @property
     def referrers(self):
@@ -496,24 +513,27 @@ class SupplierStock(models.Model, PermissionResource):
     supplier_category = models.ForeignKey("SupplierProductCategory", null=True, blank=True, verbose_name = _('supplier category'))
     image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name = _('image'))
 
-    price = CurrencyField(verbose_name=_("price"))
+    net_price = CurrencyField(verbose_name=_("net price"))
+
     code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(verbose_name=_("availability"), default=ALWAYS_AVAILABLE)
 
     ## constraints posed by the Supplier on orders issued by *every* GAS
     # minimum amount of Product units a GAS can order 
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1, verbose_name = _('order minimum amount'))
+    units_minimum_amount = models.PositiveIntegerField(default=1, verbose_name = _('units minimum amount'))
+
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"), default=1)
+    units_per_box = models.DecimalField(verbose_name=_("units per box"), default=1)
 
     ## constraints posed by the Supplier on orders issued by *every* GASMember
     ## they act as default when creating a GASSupplierSolidalPact
     # minimum amount of Product units a GASMember can order 
-    gasmember_order_minimum_amount = models.PositiveIntegerField(null=True, blank=True, default=1, verbose_name = _('order minimum amount'))
+    detail_minimum_amount = models.DecimalField(null=True, blank=True, default=1, verbose_name = _('detail minimum amount'))
+
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product has a fixed step of increment
-    gasmember_order_step = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name=_("order step"), default=1)
+    detail_step = models.DecimalField(null=True, blank=True, verbose_name=_("detail step"), default=1)
 
     # How the Product will be delivered
     delivery_notes = models.TextField(blank=True, default='', verbose_name = _('delivery notes'))
@@ -533,6 +553,10 @@ class SupplierStock(models.Model, PermissionResource):
 
     def __unicode__(self):
         return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
+
+    @property
+    def price(self):
+        return self.net_price + self.net_price*self.product.vat_percent
 
     @property
     def icon(self):
