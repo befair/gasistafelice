@@ -672,7 +672,7 @@ class Person(models.Model, PermissionResource):
 class Contact(models.Model):
 
     flavour = models.CharField(max_length=32, choices=const.CONTACT_CHOICES, default=const.EMAIL)
-    value = models.CharField(max_length=32)
+    value = models.CharField(max_length=200)
     is_preferred = models.BooleanField(default=False)
     description = models.CharField(max_length=128, blank=True, default='')
 
