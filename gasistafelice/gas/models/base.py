@@ -956,29 +956,39 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     stock_set = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
     order_minimum_amount = CurrencyField(verbose_name=_('Order minimum amount'), null=True, blank=True)
     order_delivery_cost = CurrencyField(verbose_name=_('Order delivery cost'), null=True, blank=True)
+
     #time needed for the delivery since the GAS issued the order disposition
     order_deliver_interval = models.TimeField(verbose_name=_('Order delivery interval'), null=True, blank=True)
+
     # how much (in percentage) base prices from the Supplier are modified for the GAS
-    order_price_percent_update = models.FloatField(null=True, blank=True,verbose_name=_('Order price percent update'))
+    order_price_percent_update = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=3, verbose_name=_('order price percent update'))
     
-    #domthu: if GAS's configuration use only one 
-    #TODO: see ticket #65
-    default_withdrawal_day = models.CharField(max_length=16, choices=const.DAY_CHOICES, blank=True,
-        help_text=_("Withdrawal week day agreement"),verbose_name=_('default withdrawal day')
+    # default_delivery_day should holds a "datetime string syntax" to be interpreted by software.
+    # It must express "first day of the month", "first day of the first and third week of the month", ... : see ticket #65
+    default_delivery_day = models.CharField(max_length=16, 
+        choices=const.DAY_CHOICES, blank=True, help_text=_("delivery week day agreement"),
+        verbose_name=_('default delivery day')
     )
-    default_withdrawal_time = models.TimeField(null= True, blank=True, \
-        help_text=_("withdrawal time agreement"),verbose_name=_('default withdrawal time')
+    default_delivery_time = models.TimeField(null= True, blank=True, 
+        help_text=_("delivery time agreement"),i verbose_name=_('default delivery time')
     )
 
-    default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), related_name="pact_default_withdrawal_place_set", null=True, blank=True)
+    default_delivery_place = models.ForeignKey(Place, 
+        verbose_name=_('Default delivery place'), 
+        related_name="pact_default_delivery_place_set", null=True, blank=True
+    )
 
     # Field to reflect
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
     # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
-    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"),verbose_name=_('auto populate products'))
+    auto_populate_products = models.BooleanField(default=True, 
+        help_text=_("automatic population of all products bound to a supplier in gas supplier stock"),
+        verbose_name=_('auto populate products')
+    )
+
     #TODO: Field to reflect "il GAS puo stracciare il Patto di Solidarieta."
-    #TODO:is_active = models.BooleanField(default=True, help_text=_("This pact can be broken o removed by one of the partner. If not active no orders can be done and the pact will not appear anymore in the interface"))
-    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("This pact can be suspended when partners are on unavailable (hollidays, closed). The motor use this flag to operate or not some automatisms"))
+    #TODO:is_active = models.BooleanField(default=True, help_text=_("Pact can be broken o removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface"))
+    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("Pact can be suspended when partners are on unavailable (holydays, closed). The motor use this flag to operate or not some automatisms"))
 
     document = models.FileField(upload_to=get_pact_path, null=True, blank=True, verbose_name=_("association act"))
 
@@ -987,7 +997,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     display_fields = (
         display.ResourceList(name="referrers_people", verbose_name=_("Referrers")),
         order_minimum_amount, order_delivery_cost, order_deliver_interval,
-        default_withdrawal_place, document
+        default_delivery_place, document
     )
 
     class Meta:
