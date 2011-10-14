@@ -461,10 +461,17 @@ class Product(models.Model, PermissionResource):
 
     mu = models.ForeignKey(ProductMU, verbose_name=_("measure unit"))
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
-    muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), help_text=_("How many measure units fit in your product unit?"))
-    muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False)
+    muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
+                decimal_places=2, max_digits=5,
+                help_text=_("How many measure units fit in your product unit?")
+    )
+    muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False,
+                help_text=_("Check this if measure units per product unit is not exact")
+    )
 
-    vat_percent = models.DecimalField(default=0.2, verbose_name=_('vat percent'))
+    vat_percent = models.DecimalField(max_digits=3, decimal_places=2, 
+                default=0.2, verbose_name=_('vat percent')
+    )
 
     name = models.CharField(max_length=128, verbose_name = _("name"))
     description = models.TextField(blank=True, verbose_name = _("description"))
@@ -575,16 +582,24 @@ class SupplierStock(models.Model, PermissionResource):
 
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
-    units_per_box = models.DecimalField(verbose_name=_("units per box"), default=1)
+    units_per_box = models.DecimalField(verbose_name=_("units per box"), 
+                        default=1, max_digits=5, decimal_places=2
+    )
 
     ## constraints posed by the Supplier on orders issued by *every* GASMember
     ## they act as default when creating a GASSupplierSolidalPact
     # minimum amount of Product units a GASMember can order 
-    detail_minimum_amount = models.DecimalField(null=True, blank=True, default=1, verbose_name = _('detail minimum amount'))
+    detail_minimum_amount = models.DecimalField(null=True, blank=True, 
+                        default=1, verbose_name = _('detail minimum amount'),
+                        max_digits=5, decimal_places=2
+    )
 
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product has a fixed step of increment
-    detail_step = models.DecimalField(null=True, blank=True, verbose_name=_("detail step"), default=1)
+    detail_step = models.DecimalField(null=True, blank=True, 
+                        max_digits=5, decimal_places=2,
+                        verbose_name=_("detail step"), default=1
+    )
 
     # How the Product will be delivered
     delivery_notes = models.TextField(blank=True, default='', verbose_name = _('delivery notes'))
