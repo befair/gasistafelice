@@ -354,6 +354,8 @@ class ProductMU(models.Model, PermissionResource):
     """Measurement unit for a Product."""
     # Implemented as a separated entity like GasDotto software.
     # Each SupplierAgent has to be able to create its own measurement units.
+    # A measurement unit is recognized as a standard
+    # examples: gr, Kg, Lt, m
     
     name = models.CharField(max_length=32, unique=True, blank=False)
     symbol = models.CharField(max_length=5, unique=True, null=True, blank=True)
@@ -365,8 +367,57 @@ class ProductMU(models.Model, PermissionResource):
         return self.symbol
     
     class Meta():
-        verbose_name="measurement unit"
-        verbose_name_plural="measurement units"
+        verbose_name=_("measurement unit")
+        verbose_name_plural=_("measurement units")
+    
+        #-------------- Authorization API ---------------#
+    
+    # Table-level CREATE permission    
+    @classmethod
+    def can_create(cls, user, context):
+        # Who can create a new unit of measure for products ?
+        # * DES administrators
+        try:            
+            allowed_users = DES.admins_all()
+            return user in allowed_users
+        except KeyError:
+            raise WrongPermissionCheck('CREATE', self, context)   
+ 
+    # Row-level EDIT permission
+    def can_edit(self, user, context):
+        # Who can edit details of an existing unit of measure for products ?
+        # * DES administrators         
+        allowed_users = DES.admins_all()
+        return user in allowed_users 
+    
+    # Row-level DELETE permission
+    def can_delete(self, user, context):
+        # Who can delete an existing unit of measure for products ?
+        # * DES administrators
+        allowed_users = DES.admins_all()
+        return user in allowed_users
+
+    #-----------------------------------------------#
+
+class ProductPU(models.Model, PermissionResource):
+    """Product unit for a Product."""
+    # Implemented as a separated entity like GasDotto software.
+    # Each SupplierAgent has to be able to create its own product units.
+    # examples: box, slice, bottle
+    # it can be also the same as a measurement unit
+    
+    name = models.CharField(max_length=32, unique=True, blank=False)
+    symbol = models.CharField(max_length=5, unique=True, null=True, blank=True)
+    description = models.TextField(blank=True)
+
+    history = HistoricalRecords()
+
+    def __unicode__(self):
+        return self.symbol
+    
+    class Meta():
+        verbose_name=_("product unit")
+        verbose_name_plural=_("product units")
     
         #-------------- Authorization API ---------------#
     

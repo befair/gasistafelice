@@ -206,29 +206,29 @@ class SupplierStockAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('product', 'supplier', 'price', 'amount_available',)
+            'fields': ('product', 'supplier', 'net_price', 'amount_available',)
         }),
         ('Constraints', {
             'classes': ('collapse',),
-            'fields': ('order_minimum_amount', 'order_step', 'delivery_notes',)
+            'fields': ('units_minimum_amount', 'units_per_box', 'delivery_notes',)
          })
         )
 
-    list_display = ('supplier', 'product', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_display = ('supplier', 'product', 'price_pretty', 'amount_avail_pretty', 'units_minimum_amount_pretty', 'units_per_box_pretty',)
     list_editable = ('product',)
     #list_display_links = ('product',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
     
     # FIXME: try to make it more generic !
-    def order_min_amount_pretty(self, obj):
-        return obj.order_minimum_amount or '--'
-    order_min_amount_pretty.short_description = "minimum amount"
+    def units_minimum_amount_pretty(self, obj):
+        return obj.units_minimum_amount or '--'
+    units_minimum_amount_pretty.short_description = "minimum amount"
     
     # FIXME: try to make it more generic !
-    def order_step_pretty(self, obj):
-        return obj.order_step or '--'
-    order_step_pretty.short_description = "increment step"
+    def units_per_box_pretty(self, obj):
+        return obj.units_per_box or '--'
+    units_per_box_pretty.short_description = "units per box"
     
     def amount_avail_pretty(self, obj):
         if obj.amount_available == ALWAYS_AVAILABLE:
@@ -248,29 +248,29 @@ class SupplierStockAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('product', 'price', 'amount_available',)
+            'fields': ('product', 'net_price', 'amount_available',)
         }),
         ('Constraints', {
             'classes': ('collapse',),
-            'fields': ('order_minimum_amount', 'order_step', 'delivery_notes',)
+            'fields': ('units_minimum_amount', 'units_per_box', 'delivery_notes',)
          })
         )
 
-    list_display = ('supplier', 'product', 'price', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
-    list_editable = ('product', 'price')
+    list_display = ('supplier', 'product', 'net_price', 'amount_avail_pretty', 'units_minimum_amount_pretty', 'units_per_box_pretty',)
+    list_editable = ('product', 'net_price')
     list_display_links = ('supplier',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
     
     # FIXME: try to make it more generic !
-    def order_min_amount_pretty(self, obj):
-        return obj.order_minimum_amount or '--'
-    order_min_amount_pretty.short_description = "minimum amount"
+    def units_minimum_amount_pretty(self, obj):
+        return obj.units_minimum_amount or '--'
+    units_minimum_amount_pretty.short_description = "minimum amount"
     
     # FIXME: try to make it more generic !
-    def order_step_pretty(self, obj):
-        return obj.order_step or '--'
-    order_step_pretty.short_description = "increment step"
+    def units_per_box_pretty(self, obj):
+        return obj.units_per_box or '--'
+    units_per_box_pretty.short_description = "units per box"
     
     def amount_avail_pretty(self, obj):
         if obj.amount_available == ALWAYS_AVAILABLE:

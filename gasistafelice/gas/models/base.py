@@ -970,7 +970,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         verbose_name=_('default delivery day')
     )
     default_delivery_time = models.TimeField(null= True, blank=True, 
-        help_text=_("delivery time agreement"),i verbose_name=_('default delivery time')
+        help_text=_("delivery time agreement"), verbose_name=_('default delivery time')
     )
 
     default_delivery_place = models.ForeignKey(Place, 
