@@ -146,8 +146,8 @@ class Block(BlockSSDataTables):
 
             form.fields['ordered_amount'].widget.attrs = { 
                             'class' : 'amount',
-                            'step' : el.ordered_product.gasstock.order_step or 1,
-                            'minimum_amount' : el.ordered_product.gasstock.order_minimum_amount or 1,
+                            'step' : el.ordered_product.gasstock.step or 1,
+                            'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
             }
 
             form2 = formset2[gmo_info[el.pk]['formset_index']]
@@ -158,7 +158,7 @@ class Block(BlockSSDataTables):
                'supplier' : el.supplier,
                'product' : el.product,
                'price' : el.ordered_product.order_price,
-               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
+               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
                'price_changed' : el.has_changed,
                'field_enabled' : form2['enabled'],

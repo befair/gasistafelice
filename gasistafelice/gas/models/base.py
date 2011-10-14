@@ -1032,8 +1032,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         for st in self.supplier.stocks:
             enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
-                                order_minimum_amount=st.gasmember_order_minimum_amount,
-                                order_step=st.gasmember_order_step,
+                                minimum_amount=st.detail_minimum_amount,
+                                step=st.detail_step,
             )
 
     def save(self, *args, **kw):
