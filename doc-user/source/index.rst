@@ -22,6 +22,7 @@ Indice dei contenuti:
     gas_member
     gas_referrer_supplier
     gas_referrer_tech
+    general
     
 .. TODO
     gas_referrer_cash

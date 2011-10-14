@@ -198,7 +198,8 @@ latex_documents = [
 intersphinx_mapping = {'http://docs.python.org/': None}
 
 rst_epilog = u"""
-.. |project_name| replace:: *Gasista Felice*
+.. |project_name| replace:: *Gasista Felice: acquistiamo insieme nel DES*
+.. |project_short_name| replace:: *Gasista Felice*
 .. |sym_gas_conf| replace:: **TODO** mettere la direttiva image con il simbolo usato per dire che una cosa è configurabile
 .. |sym_supplier| replace:: **TODO** icona fornitore
 .. |sym_gas| replace:: **TODO** icona gas

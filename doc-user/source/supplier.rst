@@ -1,30 +1,34 @@
 Il fornitore
 ============
 
-Descrizione
------------
+|head2_descr|
+-------------
 
-Terminologia
-------------
+|head2_terms|
+-------------
 
 * Fornitore/Produttore
 * Stock
 * Prodotto
+* Confezioni per cartone
+* Quantità minima di prodotto
+* Passo di prodotto
 
-Da cosa parte
+|head2_start|
 -------------
 
 * Prodotti già inseriti
+* Categorie di prodotto già inserite
 
-Pagina iniziale
+|head2_homepage|
+----------------
+
+
+|head2_actions|
 ---------------
-
-
-Azioni
-------
 
 * Modifica stock
 * Aggiunge prodotti
 * Modifica scheda del fornitore
-
+* Modifica categorie
 
