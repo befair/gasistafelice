@@ -1,5 +1,7 @@
 [
 
+
+
 {"pk": 1,"model": "supplier.productcategory","fields": {"name": "Abbigliamento ","description": "description for category and subcategory Abbigliamento "}}, 
 {"pk": 2,"model": "supplier.productcategory","fields": {"name": "Abbigliamento::Calzature ","description": "description for category and subcategory Abbigliamento::Calzature "}}, 
 {"pk": 3,"model": "supplier.productcategory","fields": {"name": "Abbigliamento::Calzature::Calzature accessori ","description": "description for category and subcategory Abbigliamento::Calzature::Calzature accessori "}}, 
@@ -17,7 +19,7 @@
 {"pk": 15,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::Caffè ","description": "description for category and subcategory Alimenti::Bevande::Caffè "}}, 
 {"pk": 16,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::Infusi ","description": "description for category and subcategory Alimenti::Bevande::Infusi "}}, 
 {"pk": 17,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::Liquori ","description": "description for category and subcategory Alimenti::Bevande::Liquori "}}, 
-{"pk": 18,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::The ","description": "description for category and subcategory Alimenti::Bevande::The "}}, 
+{"pk": 18,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::Tè","description": "description for category and subcategory Alimenti::Bevande::Tè"}}, 
 {"pk": 19,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::Vino Bianco","description": "description for category and subcategory Alimenti::Bevande::Vino Bianco"}}, 
 {"pk": 20,"model": "supplier.productcategory","fields": {"name": "Alimenti::Bevande::Vino Rosso","description": "description for category and subcategory Alimenti::Bevande::Vino Rosso"}}, 
 {"pk": 21,"model": "supplier.productcategory","fields": {"name": "Alimenti::Carne::Bianca ","description": "description for category and subcategory Alimenti::Carne::Bianca "}}, 
@@ -41,7 +43,7 @@
 {"pk": 39,"model": "supplier.productcategory","fields": {"name": "Alimenti::Pasta ","description": "description for category and subcategory Alimenti::Pasta "}}, 
 {"pk": 40,"model": "supplier.productcategory","fields": {"name": "Alimenti::Pasta::Pasta di semola di grano duro ","description": "description for category and subcategory Alimenti::Pasta::Pasta di semola di grano duro "}}, 
 {"pk": 41,"model": "supplier.productcategory","fields": {"name": "Alimenti::Pasta::Pasta integrale di grano duro ","description": "description for category and subcategory Alimenti::Pasta::Pasta integrale di grano duro "}}, 
-{"pk": 42,"model": "supplier.productcategory","fields": {"name": "Alimenti::Pasta::Pasta semi-integrale di Kamut ","description": "description for category and subcategory Alimenti::Pasta::Pasta semi-integrale di Kamut "}}, 
+{"pk": 42,"model": "supplier.productcategory","fields": {"name": "Alimenti::Pasta::Pasta semi-integrale ","description": "description for category and subcategory Alimenti::Pasta::Pasta semi-integrale "}}, 
 {"pk": 43,"model": "supplier.productcategory","fields": {"name": "Alimenti::Pesce","description": "description for category and subcategory Alimenti::Pesce"}}, 
 {"pk": 44,"model": "supplier.productcategory","fields": {"name": "Alimenti::Prodotti da forno ","description": "description for category and subcategory Alimenti::Prodotti da forno "}}, 
 {"pk": 45,"model": "supplier.productcategory","fields": {"name": "Alimenti::Prodotti da forno::Biscotti ","description": "description for category and subcategory Alimenti::Prodotti da forno::Biscotti "}}, 
@@ -57,16 +59,24 @@
 {"pk": 55,"model": "supplier.productcategory","fields": {"name": "Industria::Carta ","description": "description for category and subcategory Industria::Carta "}}, 
 {"pk": 56,"model": "supplier.productcategory","fields": {"name": "Piante ","description": "description for category and subcategory Piante "}}, 
 {"pk": 57,"model": "supplier.productcategory","fields": {"name": "Piante::Piante aromatiche ","description": "description for category and subcategory Piante::Piante aromatiche "}}, 
+{"pk": 58,"model": "supplier.productcategory","fields": {"name": "Alimenti::Dolci","description": "description for category and subcategory Alimenti::Dolci"}}, 
+{"pk": 59,"model": "supplier.productcategory","fields": {"name": "Alimenti::Dolci::Zucchero","description": "description for category and subcategory Alimenti::Dolci::Zucchero"}}, 
+{"pk": 60,"model": "supplier.productcategory","fields": {"name": "Edilizia","description": "description for category and subcategory Edilizia"}}, 
+{"pk": 61,"model": "supplier.productcategory","fields": {"name": "Alimenti::Gelato","description": "description for category and subcategory Alimenti::Gelato"}}, 
+{"pk": 62,"model": "supplier.productcategory","fields": {"name": "Alimenti::Farine","description": "description for category and subcategory Alimenti::Farine"}}, 
 
 
-{"pk":1,"model":"supplier.certification", "fields": {"name":"NameCertification1","description":"BIO certificate description for Entity1" } },
-{"pk":2,"model":"supplier.certification", "fields": {"name":"NameCertification2","description":"BIO certificate description for Entity2" } },
-{"pk":3,"model":"supplier.certification", "fields": {"name":"NameCertification3","description":"BIO certificate description for Entity3" } },
-{"pk":4,"model":"supplier.certification", "fields": {"name":"NameCertification4","description":"BIO certificate description for Entity4" } },
-{"pk":5,"model":"supplier.certification", "fields": {"name":"NameCertification5","description":"BIO certificate description for Entity5" } },
-{"pk":6,"model":"supplier.certification", "fields": {"name":"NameCertification6","description":"BIO certificate description for Entity6" } },
-{"pk":7,"model":"supplier.certification", "fields": {"name":"NameCertification7","description":"BIO certificate description for Entity7" } },
-{"pk":8,"model":"supplier.certification", "fields": {"name":"NameCertification8","description":"BIO certificate description for Entity8" } }, 
+
+
+
+
+{"pk":1,"model":"supplier.certification", "fields": {"name":"AC","description":"Auto Certificazione" } },
+{"pk":2,"model":"supplier.certification", "fields": {"name":"IMC","description":"Certificato da IMC" } },
+{"pk":3,"model":"supplier.certification", "fields": {"name":"INC","description":"In conversione" } },
+{"pk":4,"model":"supplier.certification", "fields": {"name":"BAD","description":"Convenzionale" } },
+{"pk":5,"model":"supplier.certification", "fields": {"name":"Cert","description":"Certificato" } },
+{"pk":6,"model":"supplier.certification", "fields": {"name":"SES","description":"Certificato da Suolo e Salute" } },
+{"pk":7,"model":"supplier.certification", "fields": {"name":"ICEA","description":"Certificato da ICEA" } },
 
 
 {"pk": 1,"model": "supplier.productmu","fields": {"symbol": "BTL","name": "Bottiglia","description": "description for Bottiglia [BTL]"}}, 
