@@ -74,9 +74,6 @@ class GAS(models.Model, PermissionResource):
 
     #TODO: Notify system
 
-    #COMMENT fero: photogallery and attachments does not go here
-    #they should be managed elsewhere in Wordpress (now, at least)
-
     #-- Managers --#
 
     history = HistoricalRecords()
