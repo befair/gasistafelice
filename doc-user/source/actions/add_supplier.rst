@@ -25,7 +25,7 @@ Sono invece opzionali, ma importanti:
 * I referenti che opereranno nel ruolo di |res_supplier|
 * Le certificazioni
 
-I ruoli che possono aggiugnere un fornitore nel DES sono:
+I ruoli che possono aggiungere un fornitore nel DES sono:
 
 * |sym_supplier_referrer|
 * |sym_gas_referrer_tech|

@@ -30,18 +30,44 @@ abilitato a gestire in tutto e per tutto ciò che riguarda il GAS.
 |head2_actions|
 ---------------
 
-Inserimento del GAS
-^^^^^^^^^^^^^^^^^^^
-
-TODO
-
-Configurazione del GAS
-^^^^^^^^^^^^^^^^^^^^^^
+Configurare il GAS
+^^^^^^^^^^^^^^^^^^
 
 La prima cosa da fare dopo aver inserito il tuo GAS è configurarlo secondo le vostre esigenze.
+Grazie alla configurazione del GAS potrai adeguare il software all'**identità del tuo GAS** preimpostando
+eventuali luogo e giorno predefinito del ritiro dei prodotti, la modalità in cui vengono visualizzati i prodotti,
+e altro.
 
-TODO screenshot
+.. image:: _static/gas_config.png
+    :alt: pannello di configurazione di un GAS
+    :align: right
 
+Un GAS si può configurare:
+
+* andando nella pagina del GAS, nella "Scheda del GAS" e selezionando l'azione `Configura` nel blocco dettagli;
+* da menù contestuale del GAS
+
+Le opzioni di configurazione sono:
+
+* TODO
+* TODO
+* TODO
+
+I ruoli che possono aggiungere un fornitore nel DES sono:
+
+* |sym_supplier_referrer|
+* |sym_gas_referrer_tech|
+* |sym_des_admin|
+
+Abilitare i referenti
+^^^^^^^^^^^^^^^^^^^^^
+
+Per ogni GAS sono previsti vari ruoli cui è importante attribuire i referenti. 
+Si possono impostare in maniera centralizzata i ruoli di referente informatico, referente fornitore, o gasista 
+
+Il referente informatico può gestire tutti i ruoli dei gasisti:
+* andando nella pagina del GAS, nella "Scheda del GAS" e selezionando l'azione `Ruoli` nel blocco dettagli;
+* da menù contestuale del GAS; 
 
 Aggiungere un gasista
 ^^^^^^^^^^^^^^^^^^^^^
