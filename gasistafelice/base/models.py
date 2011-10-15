@@ -171,13 +171,14 @@ class Resource(object):
         """Returns user that has made the last update to the resource."""
        
         # There could be the case that a deleted id is reused, so, do not use .get method
-        self_as_of_last_update = \
-            self._default_history.filter(id=self.pk, history_type="~")
-
-        if self_as_of_last_update.count():
-            return self_as_of_last_update.history_user
-        else:
+        try:
+            self_as_of_last_update = \
+                self._default_history.filter(id=self.pk, history_type="~")[0]
+        except IndexError:
+            # This object has never been update
             return None
+        else:
+            return self_as_of_last_update.history_user
 
     @property
     def last_update_by_person(self):
