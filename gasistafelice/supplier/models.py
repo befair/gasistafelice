@@ -571,7 +571,7 @@ class SupplierStock(models.Model, PermissionResource):
     supplier_category = models.ForeignKey("SupplierProductCategory", null=True, blank=True, verbose_name = _('supplier category'))
     image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name = _('image'))
 
-    net_price = CurrencyField(verbose_name=_("net price"))
+    price = CurrencyField(verbose_name=_("price"))
 
     code = models.CharField(verbose_name=_("code"), max_length=128, null=True, blank=True, help_text=_("Product supplier identifier"))
     amount_available = models.PositiveIntegerField(verbose_name=_("availability"), default=ALWAYS_AVAILABLE)
@@ -621,8 +621,8 @@ class SupplierStock(models.Model, PermissionResource):
         return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
     @property
-    def price(self):
-        return self.net_price + self.net_price*self.product.vat_percent
+    def net_price(self):
+        return self.price/(1 + self.product.vat_percent)
 
     @property
     def icon(self):

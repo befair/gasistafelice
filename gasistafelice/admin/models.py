@@ -206,7 +206,7 @@ class SupplierStockAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('product', 'net_price', 'amount_available',)
+            'fields': ('product', 'price', 'amount_available',)
         }),
         ('Constraints', {
             'classes': ('collapse',),
@@ -214,8 +214,8 @@ class SupplierStockAdmin(admin.ModelAdmin):
          })
         )
 
-    list_display = ('supplier', 'product', 'net_price', 'amount_avail_pretty', 'units_minimum_amount_pretty', 'units_per_box_pretty',)
-    list_editable = ('product', 'net_price')
+    list_display = ('supplier', 'product', 'price', 'amount_avail_pretty', 'units_minimum_amount_pretty', 'units_per_box_pretty',)
+    list_editable = ('product', 'price')
     list_display_links = ('supplier',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
