@@ -172,9 +172,12 @@ class Resource(object):
        
         # There could be the case that a deleted id is reused, so, do not use .get method
         self_as_of_last_update = \
-            self._default_history.filter(id=self.pk, history_type="~")[0]
+            self._default_history.filter(id=self.pk, history_type="~")
 
-        return self_as_of_last_update.history_user
+        if self_as_of_last_update.count():
+            return self_as_of_last_update.history_user
+        else:
+            return None
 
     @property
     def last_update_by_person(self):
