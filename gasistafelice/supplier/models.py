@@ -470,7 +470,7 @@ class Product(models.Model, PermissionResource):
     )
 
     vat_percent = models.DecimalField(max_digits=3, decimal_places=2, 
-                default=0, verbose_name=_('vat percent')
+                default=0.2, verbose_name=_('vat percent')
     )
 
     name = models.CharField(max_length=128, verbose_name = _("name"))
