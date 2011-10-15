@@ -23,9 +23,12 @@ from django.contrib.contenttypes.models import ContentType
 from workflows.utils import get_allowed_transitions, do_transition
 from workflows.models import Transition
 
+from flexi_auth.models import PrincipalParamRoleRelation
+
 from gasistafelice.lib.fields import display
 
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.models import Resource
 from gasistafelice.des.models import Site
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -36,6 +39,8 @@ from gasistafelice.consts import EDIT
 
 from gasistafelice.gas.forms import order as order_forms
 from gasistafelice.gas.forms.pact import EditPactForm
+
+from gasistafelice.consts import GAS_MEMBER
 
 # Roles form: dynamic use in manage_roles
 from gasistafelice.gas.forms.base import GASRoleForm
@@ -111,8 +116,6 @@ class Block(AbstractBlock):
                 )
 
             # Show actions for referrers assignment
-
-            if getattr(request.resource, "referrers"):
                 user_actions.append( 
                     ResourceBlockAction( 
                         block_name = self.BLOCK_NAME,
@@ -148,48 +151,72 @@ class Block(AbstractBlock):
         else:
             raise NotImplementedError("no edit_form_class for a %s" % klass_name)
 
-    def _get_roles_form_class(self):
+    def _get_roles_formset_class(self):
 
         form_name = "%sRoleForm" % self.resource.__class__.__name__
         return formset_factory(
-            form=globals[form_name], 
+            form=globals()[form_name], 
             formset=BaseFormSetWithRequest, 
-            extra=3
+            extra=5
         )
 
     def manage_roles(self, request):
-        form_class = self._get_roles_form_class()
+
+        formset_class = self._get_roles_formset_class()
 
         if request.method == 'POST':
 
-            form = form_class(request, request.POST, instance=request.resource)
-            if form.is_valid():
-                form.save()
+            formset = formset_class(request, request.POST)
+            
+            if formset.is_valid():
+                with transaction.commit_on_success():
+                    for form in formset:
+                        # Check for data: empty formsets are full of empty data ;)
+                        if form.cleaned_data:
+                            form.save()
                 return self.response_success()
         else:
-            form = form_class(request, instance=request.resource)
+            data = {}
+            roles = request.resource.roles
+            # Roles already assigned to resource
+            pprrs = PrincipalParamRoleRelation.objects.filter(role__in=roles)
+            #FIXME: fero - refactory details block
+            pprrs = pprrs.exclude(role__role__name=GAS_MEMBER)
 
-        fields = form.base_fields.keys()
-        fieldsets = form_class.Meta.gf_fieldsets
-        adminForm = helpers.AdminForm(form, fieldsets, {}) 
+            i = 0
+            for i,pprr in enumerate(pprrs):
+
+                key_prefix = 'form-%d' % i
+                data.update({
+                   '%s-id' % key_prefix : pprr.pk,
+                   '%s-person' % key_prefix : pprr.user.person.pk,
+                   '%s-role' % key_prefix : pprr.role.pk,
+                })
+
+            data['form-TOTAL_FORMS'] = i + formset_class.extra
+            data['form-INITIAL_FORMS'] = i
+            data['form-MAX_NUM_FORMS'] = 0
+
+            formset = formset_class(request, data)
 
         context = {
-            'form' : form,
-            'adminform' : adminForm,
-            'opts' : form._meta.model._meta,
-            'add'  : False,
-            'change' : True,
+            "formset": formset,
+            'opts' : PrincipalParamRoleRelation._meta,
             'is_popup': False,
             'save_as' : False,
             'save_on_top': False,
+            #'errors': helpers.AdminErrorList(form, []),
+            #'media': mark_safe(adminForm.media),
+            'form_url' : request.build_absolute_uri(),
+            'add'  : False,
+            'change' : True,
             'has_add_permission': False,
             'has_delete_permission': True,
             'has_change_permission': True,
-            'show_delete' : False,
-            'errors': helpers.AdminErrorList(form, []),
+            'show_delete' : True,
         }
 
-        return render_to_context_response(request, "html/admin_form.html", context)
+        return render_to_context_response(request, "html/formsets.html", context)
 
     def _edit_resource(self, request):
 

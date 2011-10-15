@@ -236,7 +236,8 @@ class GAS(models.Model, PermissionResource):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP.
-        register_parametric_role(name=GAS_REFERRER, gas=self)
+        # COMMENT fero: we do not need GAS_REFERRER role now
+        #register_parametric_role(name=GAS_REFERRER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS

@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
@@ -5,16 +6,15 @@ from gasistafelice.base.models import Person
 
 class BaseRoleForm(forms.ModelForm):
     """Form for role management"""
-    param_role = forms.ModelChoiceField(queryset=ParamRole.objects.none())
-    person = forms.ModelChoiceField(queryset=Person.objects.filter(user__isnull=False))
+    role = forms.ModelChoiceField(queryset=ParamRole.objects.none(), label=_("Role"))
+    person = forms.ModelChoiceField(queryset=Person.objects.filter(user__isnull=False), label=_("Person"))
 
     def __init__(self, request, *args, **kw):
         super(BaseRoleForm, self).__init__(*args, **kw)
         params = {
             request.resource.__class__.__name__ : request.resource
         }
-        self.fields['param_role'].queryset = \
-            ParamRole.objects.get_param_roles.filter(role_name='', **params)
+        self.fields['role'].queryset = request.resource.roles
 
     def save(self):
         self.instance.user = self.cleaned_data['person'].user
@@ -23,10 +23,10 @@ class BaseRoleForm(forms.ModelForm):
     class Meta:
 
         model = PrincipalParamRoleRelation
-        fields = ('param_role',)
+        fields = ('role',)
 
         gf_fieldsets = [(None, { 
             'fields' : (
-                'param_role', 'person',  
+                'role', 'person',  
         )})]
 
