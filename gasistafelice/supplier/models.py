@@ -459,7 +459,7 @@ class Product(models.Model, PermissionResource):
     # Resource API
     category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"))
 
-    mu = models.ForeignKey(ProductMU, verbose_name=_("measure unit"))
+    mu = models.ForeignKey(ProductMU, null=True, verbose_name=_("measure unit"))
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
     muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
                 decimal_places=2, max_digits=5,
