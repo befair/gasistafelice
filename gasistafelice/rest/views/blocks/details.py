@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.admin import helpers
+from django.forms.formsets import formset_factory
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse, HttpResponseRedirect
@@ -18,6 +19,9 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+
+from workflows.utils import get_allowed_transitions, do_transition
+from workflows.models import Transition
 
 from gasistafelice.lib.fields import display
 
@@ -33,8 +37,8 @@ from gasistafelice.consts import EDIT
 from gasistafelice.gas.forms import order as order_forms
 from gasistafelice.gas.forms.pact import EditPactForm
 
-from workflows.utils import get_allowed_transitions, do_transition
-from workflows.models import Transition
+# Roles form: dynamic use in manage_roles
+from gasistafelice.gas.forms.base import GASRoleForm
 
 #from users.models import can_write_to_resource
 
@@ -106,6 +110,19 @@ class Block(AbstractBlock):
                     )
                 )
 
+            # Show actions for referrers assignment
+
+            if getattr(request.resource, "referrers"):
+                user_actions.append( 
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name="manage_roles", verbose_name=_("Manage roles"), 
+                        popup_form=True,
+                    )
+                )
+
+            # Show actions for transition allowed for this resource
 
             for t in get_allowed_transitions(request.resource, request.user):
                 user_actions.append( 
@@ -131,12 +148,55 @@ class Block(AbstractBlock):
         else:
             raise NotImplementedError("no edit_form_class for a %s" % klass_name)
 
+    def _get_roles_form_class(self):
+
+        form_name = "%sRoleForm" % self.resource.__class__.__name__
+        return formset_factory(
+            form=globals[form_name], 
+            formset=BaseFormSetWithRequest, 
+            extra=3
+        )
+
+    def manage_roles(self, request):
+        form_class = self._get_roles_form_class()
+
+        if request.method == 'POST':
+
+            form = form_class(request, request.POST, instance=request.resource)
+            if form.is_valid():
+                form.save()
+                return self.response_success()
+        else:
+            form = form_class(request, instance=request.resource)
+
+        fields = form.base_fields.keys()
+        fieldsets = form_class.Meta.gf_fieldsets
+        adminForm = helpers.AdminForm(form, fieldsets, {}) 
+
+        context = {
+            'form' : form,
+            'adminform' : adminForm,
+            'opts' : form._meta.model._meta,
+            'add'  : False,
+            'change' : True,
+            'is_popup': False,
+            'save_as' : False,
+            'save_on_top': False,
+            'has_add_permission': False,
+            'has_delete_permission': True,
+            'has_change_permission': True,
+            'show_delete' : False,
+            'errors': helpers.AdminErrorList(form, []),
+        }
+
+        return render_to_context_response(request, "html/admin_form.html", context)
+
     def _edit_resource(self, request):
 
         form_class = self._get_edit_form_class()
         if request.method == 'POST':
 
-            form = form_class(request, request.POST, instance=request.resource)
+            form = form_class(request, request.POST, request.FILES, instance=request.resource)
             if form.is_valid():
                 form.save()
                 return self.response_success()
@@ -184,6 +244,8 @@ class Block(AbstractBlock):
             return self.add_new_note(request, resource_type, resource_id)
         elif args == "remove_note":
             return self.remove_note(request, resource_type, resource_id)
+        elif args == "manage_roles":
+            return self.manage_roles(request)
         elif args.startswith("transition"):
             t_name = args.split("/")[1]
             allowed_transitions = get_allowed_transitions(request.resource, request.user)

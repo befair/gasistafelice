@@ -123,7 +123,17 @@ class AbstractBlock(object):
         return HttpResponse(simplejson.dumps(response_dict))
         
     def get_response(self, request, resource_type, resource_id, args):
-        # Entry point for requests
+        """Entry point for requests.
+
+        Suddenly set `resource` attribute for block to `request.resource`
+        and prepare `response_dict` with useful info to return in response.
+
+        Every inherited class SHOULD overload this method instead 
+        of override it. Call to this method in inherited classes 
+        SHOULD happen before doing anything else.
+
+        """
+
         self.request = request
         self.resource = request.resource
         self.response_dict = { 

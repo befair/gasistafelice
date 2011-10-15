@@ -30,8 +30,6 @@ class Block(BlockWithList):
         #come lnx crea errore. 
         #come gasista crea errore: has_perm() got an unexpected keyword argument 'des'
         if request.user.has_perm(CREATE, obj=GAS):
-        #come lnx Ok. 
-        #come gasista crea errore: You need to specify a 'des' argument to perform this permission check.
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
