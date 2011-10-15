@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
+from django.template.defaultfilters import slugify
 from django.conf import settings
 
 from permissions.models import Role
@@ -9,50 +10,27 @@ from workflows.models import Workflow
 from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
-from gasistafelice.lib import ClassProperty
-from gasistafelice.lib.fields.models import CurrencyField
-
-from gasistafelice.base.models import PermissionResource, Person, Place, Contact
-from gasistafelice.base import const
-from gasistafelice.base.utils import get_resource_icon_path
-
-from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 from flexi_auth.utils import register_parametric_role 
 from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
 
+from gasistafelice.lib import ClassProperty
+from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields import display
+
+from gasistafelice.base.models import PermissionResource, Person, Place, Contact
+from gasistafelice.base import const
+from gasistafelice.base import utils as base_utils
+
+from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.des.models import DES
 
-from gasistafelice.lib.fields import display
-from gasistafelice.lib import ClassProperty
-
 from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
-
-#-------------------------------------------------------------------------------    
-# Utility functions to get path for resource documents 
-
-def get_association_act_path(instance, filename):
-    return get_doc_path(instance, filename, "association_act")
-
-def get_intent_act_path(instance, filename):
-    return get_doc_path(instance, filename, "intent_act")
-
-def get_pact_path(instance, filename):
-    return get_doc_path(instance, filename, "pact")
-
-def get_doc_path(instance, filename, flavour):
-
-    if instance.pk:
-        return instance.association_act.name
-
-    ext = filename.split('.')[-1]
-    d = datetime.datetime.today()
-    filename = "%s-%s-%s.%s" % (d.strftime("%Y-%m-%s"), slugify(instance.name), flavour, ext)
-    return os.path.join('docs/%s' % instance.resource_type, filename)
+import datetime
 
 #-------------------------------------------------------------------------------
 
@@ -64,7 +42,7 @@ class GAS(models.Model, PermissionResource):
     """
     name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
-    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+    logo = models.ImageField(upload_to=base_utils.get_resource_icon_path, null=True, blank=True)
     headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False,verbose_name=_('headquarter'))
     description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"),verbose_name=_('description'))
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True,verbose_name=_('membership fee'))
@@ -86,8 +64,8 @@ class GAS(models.Model, PermissionResource):
     #Persons who are active in GAS and can give info about it
     activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True,verbose_name=_('activist set'))
 
-    association_act = models.FileField(upload_to=get_association_act_path, null=True, blank=True, verbose_name=_("association act"))
-    intent_act = models.FileField(upload_to=get_intent_act_path, null=True, blank=True, verbose_name=_("intent act"))
+    association_act = models.FileField(upload_to=base_utils.get_association_act_path, null=True, blank=True, verbose_name=_("association act"))
+    intent_act = models.FileField(upload_to=base_utils.get_intent_act_path, null=True, blank=True, verbose_name=_("intent act"))
 
     note = models.TextField(blank=True,verbose_name =_('notes'))
 
@@ -994,7 +972,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     #TODO:is_active = models.BooleanField(default=True, help_text=_("Pact can be broken o removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface"))
     #TODO:is_suspended = models.BooleanField(default=False, help_text=_("Pact can be suspended when partners are on unavailable (holydays, closed). The motor use this flag to operate or not some automatisms"))
 
-    document = models.FileField(upload_to=get_pact_path, null=True, blank=True, verbose_name=_("association act"))
+    document = models.FileField(upload_to=base_utils.get_pact_path, null=True, blank=True, verbose_name=_("association act"))
 
     history = HistoricalRecords()
 
