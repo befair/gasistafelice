@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 from permissions.models import Role
 from workflows.models import Workflow
@@ -84,8 +85,11 @@ class GAS(models.Model, PermissionResource):
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
-        display.ResourceList(verbose_name=_("referrers"), name="referrers"),
         association_act, intent_act,
+        display.ResourceList(name="info_people", verbose_name=_("for info")),
+        display.ResourceList(name="tech_referrers_people", verbose_name=_("tech referrers")),
+        display.ResourceList(name="supplier_referrers_people", verbose_name=_("supplier referrers")),
+        display.ResourceList(name="cash_referrers_people", verbose_name=_("cash referrers")),
         display.ResourceList(verbose_name=_("created by"), name="created_by_person"),
         display.ResourceList(verbose_name=_("last update by"), name="last_update_by_person"),
     )
@@ -180,32 +184,27 @@ class GAS(models.Model, PermissionResource):
         """
         Return all users being supplier referrers for this GAS
         """
-        # retrieve 'GAS supplier referrer' parametric role for this pact
-        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self)
+        # retrieve 'GAS supplier referrer' parametric role for all pacts of this GAS
+        ctype = ContentType.objects.get_for_model(GASSupplierSolidalPact)
+        params = Param.objects.filter(content_type=ctype, object_id__in=map(lambda x: x.pk, self.pacts))
+        prs = ParamRole.objects.filter(param_set__in=params, role__name=GAS_REFERRER_SUPPLIER)
         # retrieve all Users having this role
-        return pr.get_users()    
+        us = User.objects.none()
+        for pr in prs:
+            us |= pr.get_users() 
+        return us   
 
-    def _get_roles(self):
-        """
-        Return a QuerySet containing all the parametric roles which have been assigned
-        in this GAS.
+    @property
+    def tech_referrers_people(self):
+        return Person.objects.filter(user__in=self.tech_referrers)
         
-        """
-
-        # Roles MUST BE a property because roles are bound to a User 
-        # with `add_principal()` and not directly to a GAS member
-        # costruct the result set by joining partial QuerySets
-        roles = []
-
-        ctype = ContentType.objects.get_for_model(self)
-        params = Param.objects.filter(content_type=ctype, object_id=self.pk)
-        # get all parametric roles assigned to the GAS;
-        return ParamRole.objects.filter(param_set__in=params)
-
-    def _set_roles(self, list):
-        raise NotImplementedError
+    @property
+    def cash_referrers_people(self):
+        return Person.objects.filter(user__in=self.cash_referrers)
         
-    roles = property(_get_roles, _set_roles)
+    @property
+    def supplier_referrers_people(self):
+        return Person.objects.filter(user__in=self.supplier_referrers)
         
     @property
     def city(self):

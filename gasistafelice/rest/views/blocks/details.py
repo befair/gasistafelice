@@ -178,10 +178,16 @@ class Block(AbstractBlock):
         else:
             data = {}
             roles = request.resource.roles
+            #FIXME: fero - refactory details block (this is valid for GAS)
+            if request.resource.resource_type == "gas":
+                for pact in request.resource.pacts:
+                    roles |= pact.roles
+
             # Roles already assigned to resource
             pprrs = PrincipalParamRoleRelation.objects.filter(role__in=roles)
-            #FIXME: fero - refactory details block
+            # FIXME: see above
             pprrs = pprrs.exclude(role__role__name=GAS_MEMBER)
+                
 
             i = 0
             for i,pprr in enumerate(pprrs):

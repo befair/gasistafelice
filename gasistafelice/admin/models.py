@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.forms.models import BaseInlineFormSet
 from django.contrib import admin, messages
+from django.contrib.admin.util import unquote
 from django.core import urlresolvers
 from django import forms
 
@@ -24,6 +26,11 @@ class GASMemberInline(admin.TabularInline):
     verbose_name = _("GAS membership")
     verbose_name_plural = _("GAS memberships")
 
+class GASActivistInline(admin.TabularInline):
+    model = gas_models.GASActivist
+    exclude = ('info_description',)
+    extra = 2
+
 class GASMemberOrderInline(admin.TabularInline):
     model = gas_models.GASMemberOrder
     extra = 1
@@ -37,7 +44,6 @@ class GASSupplierOrderProductInline(admin.TabularInline):
     model = gas_models.GASSupplierOrderProduct
     extra = 10
 
-from django.forms.models import BaseInlineFormSet
 class GASMemberRoleFormset(BaseInlineFormSet):
     pass
 
@@ -104,7 +110,7 @@ class GASAdmin(admin.ModelAdmin):
 #        'classes': ('collapse',)
 #    }),
     )
-    inlines = [ GASMemberInline, ]
+    inlines = [ GASActivistInline, ]
     search_fields = ('^name', '^id_in_des', 'headquarter__city')
 
     def website_with_link(self, obj):
@@ -112,6 +118,16 @@ class GASAdmin(admin.ModelAdmin):
         return u'<a target="_blank" href="%s">%s</a>' % (url, url)
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "contact_set":
+            if hasattr(self, "instance"):
+                kwargs["queryset"] = self.instance.contacts
+        return super(GASAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def change_view(self, request, object_id, extra_context=None):
+        self.instance = self.get_object(request, unquote(object_id))
+        return super(GASAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
 class GASConfigAdmin(admin.ModelAdmin):
 

@@ -17,6 +17,7 @@ from history.models import HistoricalRecords
 
 from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
+from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 from flexi_auth.utils import get_parametric_roles
 
@@ -461,7 +462,25 @@ class PermissionResource(Resource, PermissionBase):
     """
     Just a convenience for classes inheriting both from `Resource` and `PermissionBase`
     """
-    pass
+
+    def _get_roles(self):
+        """
+        Return a QuerySet containing all the parametric roles which have been assigned
+        in this Pact.
+        
+        """
+
+        # Roles MUST BE a property because roles are bound to a User 
+        # with `add_principal()` and not directly to a GAS member
+        # costruct the result set by joining partial QuerySets
+        roles = []
+
+        ctype = ContentType.objects.get_for_model(self)
+        params = Param.objects.filter(content_type=ctype, object_id=self.pk)
+        # get all parametric roles assigned to the GAS;
+        return ParamRole.objects.filter(param_set__in=params)
+
+    roles = property(_get_roles)
 
 class Person(models.Model, PermissionResource):
     """

@@ -175,13 +175,3 @@ class Block(BlockSSDataTables):
 
         return formset, records, {}
 
-#TODO FIXME AFTER 6: understand how to parte gf_moreData!
-#[ data["form-INITIAL_FORMS"], data["form-TOTAL_FORMS"]]
-#{
-#            "1" : "2", "2" : "3"
-#            "form_TOTAL_FORMS"  : '1', #data["form-TOTAL_FORMS"], 
-#            "form_INITIAL_FORMS": '2', #data["form-INITIAL_FORMS"],
-#            "form_MAX_NUM_FORMS": '3', #data["form-MAX_NUM_FORMS"],
-#        }
-
-
