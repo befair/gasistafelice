@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 from permissions.models import Role
 from workflows.models import Workflow
@@ -11,7 +12,7 @@ from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role 
-from flexi_auth.models import ParamRole
+from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.lib import ClassProperty
@@ -184,6 +185,28 @@ class GAS(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()    
 
+    def _get_roles(self):
+        """
+        Return a QuerySet containing all the parametric roles which have been assigned
+        in this GAS.
+        
+        """
+
+        # Roles MUST BE a property because roles are bound to a User 
+        # with `add_principal()` and not directly to a GAS member
+        # costruct the result set by joining partial QuerySets
+        roles = []
+
+        ctype = ContentType.objects.get_for_model(self)
+        params = Param.objects.filter(content_type=ctype, object_id=self.pk)
+        # get all parametric roles assigned to the GAS;
+        return ParamRole.objects.filter(param_set__in=params)
+
+    def _set_roles(self, list):
+        raise NotImplementedError
+        
+    roles = property(_get_roles, _set_roles)
+        
     @property
     def city(self):
         return self.headquarter.city 
@@ -534,7 +557,7 @@ class GASMember(models.Model, PermissionResource):
         Return a QuerySet containing all the parametric roles which have been assigned
         to the User associated with this GAS member.
         
-        Only roles which make sense for the GAS the GAS member belongs to are returned 
+        Only roles which make sense for the GAS member belongs to are returned 
         (excluding roles the User may have been assigned with respect to other GAS).
         """
         # Roles MUST BE a property because roles are bound to a User 
@@ -551,9 +574,9 @@ class GASMember(models.Model, PermissionResource):
         # add  `GAS_REFERRER_ORDER` roles
         roles += [pr for pr in qs if pr.order.pact.gas == self.gas]
         # add  `GAS_REFERRER_DELIVERY` roles
-        roles += [pr for pr in qs if self.gas in pr.delivery.gas_set]
+        roles += [pr for pr in qs if self.gas in pr.delivery.gas_list]
         # add  `GAS_REFERRER_WITHDRAWAL` roles
-        roles += [pr for pr in qs if self.gas in pr.withdrawal.gas_set]
+        roles += [pr for pr in qs if self.gas in pr.withdrawal.gas_list]
         # HACK: convert a list of model instances to a QuerySet by filtering on instance's primary keys
         qs = ParamRole.objects.filter(pk__in=[obj.pk for obj in roles]) 
         return qs 
