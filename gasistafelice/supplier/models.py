@@ -351,15 +351,24 @@ class ProductCategory(models.Model, PermissionResource):
     #-----------------------------------------------#
 
 class ProductMU(models.Model, PermissionResource):
-    """Measurement unit for a Product."""
-    # Implemented as a separated entity like GasDotto software.
-    # Each SupplierAgent has to be able to create its own measurement units.
-    # A measurement unit is recognized as a standard
-    # examples: gr, Kg, Lt, m
+    """Measurement unit for a Product.
+
+    A measure unit is recognized as a standard. So it is provided 
+    as a fixture "as is" and can be changed only by DES admins.
+
+    If a measure unit for a Product is not specified, software will 
+    not able to perform conversions, thus cannot compute price-per-liter,
+    or price-per-kilo. 
     
-    name = models.CharField(max_length=32, unique=True, blank=False)
-    symbol = models.CharField(max_length=5, unique=True, null=True, blank=True)
-    description = models.TextField(blank=True)
+    Implemented as a separated entity like GasDotto software. 
+    Kudos to Roberto `madbob` Guido. 
+    Then we evolved in decoupling Measure Unit from Product Unit.
+    
+    # examples: gr, Kg, Lt, m
+    """
+    
+    name = models.CharField(max_length=32, unique=True)
+    symbol = models.CharField(max_length=5, unique=True)
 
     history = HistoricalRecords()
 
@@ -367,8 +376,8 @@ class ProductMU(models.Model, PermissionResource):
         return self.symbol
     
     class Meta():
-        verbose_name=_("measurement unit")
-        verbose_name_plural=_("measurement units")
+        verbose_name=_("measure unit")
+        verbose_name_plural=_("measure units")
     
         #-------------- Authorization API ---------------#
     
@@ -400,14 +409,21 @@ class ProductMU(models.Model, PermissionResource):
     #-----------------------------------------------#
 
 class ProductPU(models.Model, PermissionResource):
-    """Product unit for a Product."""
-    # Implemented as a separated entity like GasDotto software.
-    # Each SupplierAgent has to be able to create its own product units.
-    # examples: box, slice, bottle
-    # it can be also the same as a measurement unit
+    """Product unit for a Product.
+
+    Represents how the product is sold.
+    Limit ProdutPU creation and update to DES admins 
+    and GAS_REFERRER_TECHs TODO TO BE DONE: seldon
+    If this is not enough, we could evaluate another policy that
+    involves SUPPLIER_REFERRERs.
+
+    examples: box, slice, bottle, tanks
+    it can be also the same as a measure unit.
     
-    name = models.CharField(max_length=32, unique=True, blank=False)
-    symbol = models.CharField(max_length=5, unique=True, null=True, blank=True)
+    """
+
+    name = models.CharField(max_length=32, unique=True)
+    symbol = models.CharField(max_length=5, unique=True)
     description = models.TextField(blank=True)
 
     history = HistoricalRecords()
@@ -451,18 +467,30 @@ class ProductPU(models.Model, PermissionResource):
 
 class Product(models.Model, PermissionResource):
 
-    # COMMENT: some producer don't have product codification. 
-    # COMMENT: That's why code could be blank AND null. See save() method
+    # Some producers don't have product codification. 
+    # That's why code could be blank AND null. See save() method
     code = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name=_('code'), help_text=_("Identification provided by the producer"))
+
     producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
 
     # Resource API
     category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"))
 
-    mu = models.ForeignKey(ProductMU, null=True, verbose_name=_("measure unit"))
+    # Measure unit, it can be null in order to make it easier to define 
+    # a new product. If a user specifies a `pu` which is also a `mu`,
+    # the software assigns:
+    # * `instance.muppu` = 1
+    # * `instance.mu` = `instance.pu`
+    # thus avoiding NULL values for `mu` itself
+    # See `ProductMU` doc for more details
+    mu = models.ForeignKey(ProductMU, null=True, verbose_name=_("measure unit"), blank=True)
+
+    # Product unit: how is sell this product:
+    # box, tanks, bottles, or even a measure unit
+    # This must be specified.
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
     muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
-                decimal_places=2, max_digits=5,
+                decimal_places=2, max_digits=5, default=1, blank=True,
                 help_text=_("How many measure units fit in your product unit?")
     )
     muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False,
