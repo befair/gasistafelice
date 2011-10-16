@@ -23,7 +23,7 @@ urlpatterns = patterns('',
 	(r'^%saccounts/logout/$' % settings.URL_PREFIX, 'django.contrib.auth.views.logout_then_login'),
 
     (r'^gas-admin/', include(gas_admin.urls)),
-    (r'^admin/', include(admin.site.urls)),
+    (r'^%sadmin/' % settings.URL_PREFIX, include(admin.site.urls)),
 
 	(r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
 
