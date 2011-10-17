@@ -206,7 +206,7 @@ class GASSupplierOrderProductForm(forms.Form):
     def save(self):
 
         if not self.cleaned_data.get('enabled'):
-            GASSupplierOrderProduct.objects.delete(pk=self.cleaned_data['id'])
+            GASSupplierOrderProduct.objects.get(pk=self.cleaned_data['id']).delete()
 
 
 GASSupplierOrderProductFormSet = formset_factory(

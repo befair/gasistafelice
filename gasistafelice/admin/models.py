@@ -336,6 +336,8 @@ admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 admin.site.register(supplier_models.Certification)
+admin.site.register(supplier_models.ProductPU)
+admin.site.register(supplier_models.ProductMU)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)

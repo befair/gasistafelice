@@ -53,7 +53,7 @@
 
 {{ formset.management_form }}
 {% for form in formset %}
-    <div class="form-row"> {{ form }}</div>
+    <div class="form-row"> {{ form.as_p }}</div>
 {% endfor %}
 
 
