@@ -492,7 +492,7 @@ class Product(models.Model, PermissionResource):
     # This must be specified.
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
     muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
-                decimal_places=2, max_digits=5, default=1, blank=True,
+                decimal_places=2, max_digits=6, default=1, blank=True,
                 help_text=_("How many measure units fit in your product unit?")
     )
     muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False,
