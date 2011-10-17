@@ -10,3 +10,10 @@ src/
 .settings/
 *.db
 *.db-journal
+gasistafelice/fixtures/auth/import.json
+gasistafelice/fixtures/base/import.json
+gasistafelice/fixtures/gas/import.json
+gasistafelice/fixtures/esupplier/import.json
+gasistafelice/fixtures/supplier/import.json
+*import.json
+
