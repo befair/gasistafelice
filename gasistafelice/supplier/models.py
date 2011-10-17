@@ -26,6 +26,8 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
 
+from decimal import Decimal
+
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
 
@@ -498,7 +500,7 @@ class Product(models.Model, PermissionResource):
     )
 
     vat_percent = models.DecimalField(max_digits=3, decimal_places=2, 
-                default=0.2, verbose_name=_('vat percent')
+                default=Decimal("0.2"), verbose_name=_('vat percent')
     )
 
     name = models.CharField(max_length=128, verbose_name = _("name"))

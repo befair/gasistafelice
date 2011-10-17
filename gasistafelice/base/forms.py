@@ -9,6 +9,8 @@ class BaseRoleForm(forms.ModelForm):
     role = forms.ModelChoiceField(queryset=ParamRole.objects.none(), label=_("Role"))
     person = forms.ModelChoiceField(queryset=Person.objects.filter(user__isnull=False), label=_("Person"))
 
+    delete = forms.BooleanField(label=_("delete"), required=False)
+
     def __init__(self, request, *args, **kw):
         super(BaseRoleForm, self).__init__(*args, **kw)
         params = {
@@ -17,8 +19,12 @@ class BaseRoleForm(forms.ModelForm):
         self.fields['role'].queryset = request.resource.roles
 
     def save(self):
-        self.instance.user = self.cleaned_data['person'].user
-        super(BaseRoleForm, self).save()
+
+        if self.cleaned_data['delete']:
+            self.instance.delete()
+        else:
+            self.instance.user = self.cleaned_data['person'].user
+            super(BaseRoleForm, self).save()
 
     class Meta:
 
