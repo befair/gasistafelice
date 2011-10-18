@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -101,6 +100,12 @@ class GAS(models.Model, PermissionResource):
     #-- Overriding built-in methods --#
     def __unicode__(self):
         return self.name
+
+    def clean(self):
+        self.name = self.name.strip()
+        self.id_in_des = self.id_in_des.strip()
+        self.note = self.note.strip()
+        return super(GAS, self).clean()
 
     #-- Authorization API --#
     
@@ -1044,10 +1049,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     #-- Resource API --#
 
-    def elabore_report(self):
-        #TODO return report like pdf format. Report has to be signed-firmed by partners
-        return ""
-
     @property
     def parent(self):
         return self.gas
@@ -1128,22 +1129,3 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return allowed_users 
     
 
-#-------------------------------------------------------------------------------
-
-def setup_data(sender, instance, created, **kwargs):
-    """
-    Setup proper data after a model instance is saved to the DB for the first time.
-    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
-    actual role-creation/setup logic is encapsulated there.
-    """
-    if created: # Automatic data-setup should happen only at instance-creation time 
-        try:
-            # `instance` is the model instance that has just been created
-            instance.setup_data()
-                                                
-        except AttributeError:
-            # sender model doesn't specify any data-related setup operations, so just ignore the signal
-            pass
-
-# add `setup_data` function as a listener to the `post_save` signal
-post_save.connect(setup_data)

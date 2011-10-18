@@ -193,6 +193,12 @@ class Supplier(models.Model, PermissionResource):
     
     #-----------------------------------------------#       
 
+    def clean(self):
+        self.name = self.name.strip()
+        self.flavour = self.flavour.strip()
+        #TODO placeholder: dominique check flavour is in appropriate choices
+    
+        return super(Supplier, self).clean()
 
     display_fields = (
         seat, vat_number, website, flavour, 
@@ -215,6 +221,11 @@ class SupplierAgent(models.Model, PermissionResource):
     job_description = models.TextField(blank=True)
 
     history = HistoricalRecords()
+
+    def clean(self):
+        self.job_title = self.job_title.strip()
+        self.job_description = self.job_description.strip()
+        return super(SupplierAgent, self).clean()
 
     @property
     def parent(self):
@@ -260,6 +271,7 @@ class SupplierAgent(models.Model, PermissionResource):
 
     
 class Certification(models.Model, PermissionResource):
+
     name = models.CharField(max_length=128, unique=True,verbose_name=_('name')) 
     description = models.TextField(blank=True,verbose_name=_('description'))
 
@@ -267,6 +279,11 @@ class Certification(models.Model, PermissionResource):
 
     def __unicode__(self):
         return self.name
+
+    def clean(self):
+        self.name = self.name.strip()
+        self.description = self.description.strip()
+        return super(Certification, self).clean()
 
     class Meta:
         verbose_name = _("certification")

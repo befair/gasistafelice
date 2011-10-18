@@ -6,11 +6,12 @@ It includes common data on which all (or almost all) other applications rely on.
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db.models import permalink
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
+from django.db.models.signals import post_save, pre_save
 
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
@@ -508,6 +509,14 @@ class Person(models.Model, PermissionResource):
     def __unicode__(self):
         return self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
 
+    def clean(self):
+        self.name = self.name.strip().lower().capitalize()
+        self.surname = self.surname.strip().lower().capitalize()
+        self.display_name = self.display_name.strip()
+        if self.uuid is not None:
+            self.uuid = self.uuid.strip().upper()
+        return super(Person, self).clean()
+
     @property
     def icon(self):
         return self.avatar 
@@ -714,6 +723,14 @@ class Contact(models.Model):
     def __unicode__(self):
         return u"%(t)s: %(v)s" % {'t': self.flavour, 'v': self.value}
 
+    def clean(self):
+        self.flavour = self.flavour.strip()
+        if self.flavour not in const.CONTACT_CHOICES:
+            raise ValidationError(_("Contact flavour MUST be one of %s" % map(lambda x: x[1],  const.CONTACT_CHOICES)))
+        self.value = self.value.strip()
+        self.description = self.description.strip()
+        return super(Contact, self).clean()
+
 class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
     * among the entities arising in the description of GAS' activities,
@@ -725,8 +742,11 @@ class Place(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128, blank=True, help_text=_("You can avoid to specify a name if you specify an address"),verbose_name=_('name'))
     description = models.TextField(blank=True,verbose_name=_('description'))
-    #TODO: ADD place type from CHOICE (HOME, WORK, HEARTHQUARTER, WITHDRAWAL...)     
+
+    #TODO: ADD place type from CHOICE (HOME, WORK, HEADQUARTER, WITHDRAWAL...)     
     address = models.CharField(max_length=128, blank=True,verbose_name=_('address'))
+
+    #Zipcode as a string: see http://stackoverflow.com/questions/747802/integer-vs-string-in-database
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
     city = models.CharField(max_length=128,verbose_name=_('city'))
@@ -741,6 +761,7 @@ class Place(models.Model, PermissionResource):
     class Meta:
         verbose_name = _("place")
         verbose_name_plural = _("places")
+        ordering = ('name', 'address')
 
     def __unicode__(self):
         return _("%(name)s in %(city)s (%(pr)s)") % {
@@ -749,13 +770,23 @@ class Place(models.Model, PermissionResource):
                     'pr' : self.province,
         }
 
-    def save(self, *args, **kw):
+    def clean(self):
 
-        #TODO: check if an already existent place with the same full address exist and in that case force update
+        self.name = self.name.strip().lower().capitalize()
+        self.address = self.address.strip().lower().capitalize()
 
         #TODO: we should compute city and province starting from zipcode using local_flavor in forms
-        self.city = self.city.capitalize()
+        self.city = self.city.lower().capitalize()
         self.province = self.province.upper()
+
+        self.zipcode = self.zipcode.strip()
+        if self.zipcode:
+            try:
+                int(self.zipcode)
+            except ValueError:
+                raise ValidationError(_("Wrong ZIP CODE provided"))
+
+        self.description = self.description.strip()
 
         if not self.name:
             # Separate check for name and address because we must set a name for a place.
@@ -763,7 +794,13 @@ class Place(models.Model, PermissionResource):
             if self.address:
                 self.name = self.address
             else:
-                raise ValueError("Name or address should be set for a Place")
+                raise ValidationError(_("Name or address should be set for a Place"))
+
+        return super(Place, self).clean()
+
+    def save(self, *args, **kw):
+
+        #TODO: check if an already existent place with the same full address exist and in that case force update
 
         super(Place, self).save(*args, **kw)
         
@@ -914,3 +951,35 @@ return True if the specs are fine, False otherwise.
                 raise ImproperlyConfigured("The default Transition for the State %s must be one of its valid Transitions" % state_name)
 
 
+#-------------------------------------------------------------------------------
+
+def validate(sender, instance, **kwargs):
+        try:
+            # `instance` is the model instance that has just been created
+            instance.clean()
+        except AttributeError:
+            # sender model doesn't specify any sanitize operations, so just ignore the signal
+            pass
+
+
+def setup_data(sender, instance, created, **kwargs):
+    """
+    Setup proper data after a model instance is saved to the DB for the first time.
+    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
+    actual role-creation/setup logic is encapsulated there.
+    """
+    if created: # Automatic data-setup should happen only at instance-creation time 
+
+        try:
+            # `instance` is the model instance that has just been created
+            instance.setup_data()
+                                                
+        except AttributeError:
+            # sender model doesn't specify any data-related setup operations, so just ignore the signal
+            pass
+
+# add `validate` function as a listener to the `pre_save` signal
+pre_save.connect(validate)
+
+# add `setup_data` function as a listener to the `post_save` signal
+post_save.connect(setup_data)
