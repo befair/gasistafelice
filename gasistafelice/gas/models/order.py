@@ -348,7 +348,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators
-        allowed_users = self.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.referrers | self.gas.tech_referrers | self.gas.supplier_referrers
         return user in allowed_users 
     
     # Row-level DELETE permission
