@@ -48,6 +48,7 @@ class Supplier(models.Model, PermissionResource):
     class Meta :
         verbose_name = _('supplier')
         verbose_name_plural = _('suppliers')        
+        ordering = ('name',)
 
     def __unicode__(self):
         return unicode(self.name)

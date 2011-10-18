@@ -996,6 +996,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
+        gas, supplier,
         display.ResourceList(name="referrers_people", verbose_name=_("Referrers")),
         order_minimum_amount, order_delivery_cost, order_deliver_interval,
         default_delivery_place, document
