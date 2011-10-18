@@ -492,7 +492,7 @@ class Product(models.Model, PermissionResource):
     # This must be specified.
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
     muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
-                decimal_places=2, max_digits=5, default=1, blank=True,
+                decimal_places=2, max_digits=6, default=Decimal("1.00"),
                 help_text=_("How many measure units fit in your product unit?")
     )
     muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False,
@@ -641,7 +641,8 @@ class SupplierStock(models.Model, PermissionResource):
     class Meta:
         verbose_name = _('supplier stock')
         verbose_name_plural = _('supplier stocks')
-        unique_together = (('code', 'supplier'),)
+        #FIXME: IntegrityError: (1062, "Duplicate entry '20-35' for key 'code'") code 20 for producer 35
+        #unique_together = (('code', 'supplier'),)
 
     def __init__(self, *args, **kw):
         super(SupplierStock, self).__init__(*args, **kw)

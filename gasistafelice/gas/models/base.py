@@ -792,7 +792,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     )
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product has a fixed step of increment
-    step = models.DecimalField(max_digits=3, decimal_places=2,
+    step = models.DecimalField(max_digits=5, decimal_places=2,
                         default=1, verbose_name=_('step of increment')
     )
 
@@ -1028,8 +1028,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
     def setup_data(self):
-
-        #FIXME: Fixtures do not pass "DoesNotExist: Supplier matching query does not exist."
         for st in self.supplier.stocks:
             enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
