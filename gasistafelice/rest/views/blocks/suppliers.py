@@ -7,6 +7,7 @@ from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAct
 from gasistafelice.consts import CREATE
 
 from gasistafelice.supplier.models import Supplier
+from gasistafelice.des.models import Siteattr
 
 #------------------------------------------------------------------------------#
 #                                                                              #

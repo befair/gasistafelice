@@ -175,7 +175,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
         if created:
             self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
-            gsop.order_price = s.price
+            gsop.initial_price = gsop.order_price = s.price
             gsop.save()
         else:
             self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))

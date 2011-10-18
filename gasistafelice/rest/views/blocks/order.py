@@ -35,7 +35,7 @@ class Block(BlockSSDataTables):
         selected_orders = request.GET.getlist('gfCP_order')
         rv = request.resource.orderable_products
         if (selected_orders):
-            rv = rv.filter(order__pk__in=selected_orders)
+            rv = rv.filter(order__pk__in=map(int, selected_orders))
         return rv
 
     def options_response(self, request, resource_type, resource_id):

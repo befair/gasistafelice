@@ -39,7 +39,7 @@ class Block(BlockWithList):
         except NotImplementedError:
             pass
         else:
-            if request.user in gas.referrers | gas.supplier_referrers:
+            if request.user in gas.des.admins | gas.referrers | gas.supplier_referrers:
 
                 user_actions += [
                     ResourceBlockAction( 

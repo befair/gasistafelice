@@ -49,8 +49,8 @@ class Block(BlockSSDataTables):
                '%s-enabled' % key_prefix : el.enabled,
             })
 
-        data['form-TOTAL_FORMS'] = i 
-        data['form-INITIAL_FORMS'] = 0
+        data['form-TOTAL_FORMS'] = i + 1
+        data['form-INITIAL_FORMS'] = i + 1
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = GASSupplierStockFormSet(request, data)

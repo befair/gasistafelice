@@ -1108,7 +1108,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # * GAS administrators
         try:
             gas = context['gas']
-            allowed_users = gas.tech_referrers | gas.referrers | gas.supplier_referrers 
+            allowed_users = gas.tech_referrers | gas.supplier_referrers 
             return allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
