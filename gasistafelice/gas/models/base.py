@@ -63,7 +63,7 @@ class GAS(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, null=True, blank=True,verbose_name=_('web site'))
 
     #Persons who are active in GAS and can give info about it
-    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True,verbose_name=_('activist set'))
+    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True,verbose_name=_('GAS activists'))
 
     association_act = models.FileField(upload_to=base_utils.get_association_act_path, null=True, blank=True, verbose_name=_("association act"))
     intent_act = models.FileField(upload_to=base_utils.get_intent_act_path, null=True, blank=True, verbose_name=_("intent act"))
@@ -85,7 +85,7 @@ class GAS(models.Model, PermissionResource):
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
         association_act, intent_act,
-        display.ResourceList(name="info_people", verbose_name=_("info referrers")),
+        display.ResourceList(name="info_people", verbose_name=_("info people")),
         display.ResourceList(name="tech_referrers_people", verbose_name=_("tech referrers")),
         display.ResourceList(name="supplier_referrers_people", verbose_name=_("supplier referrers")),
         display.ResourceList(name="cash_referrers_people", verbose_name=_("cash referrers")),
@@ -418,7 +418,7 @@ class GASConfig(models.Model, PermissionResource):
 
     order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False, 
         help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
-    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Show only one order at a time'), default=False, 
+    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Select only one order at a time'), default=False, 
         help_text=_("GASMember can select only one open order at a time in order block"))
 
     #TODO: see ticket #65
