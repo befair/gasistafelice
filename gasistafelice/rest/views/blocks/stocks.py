@@ -10,6 +10,8 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.supplier.forms import SingleSupplierStockFormSet
 from django.template.defaultfilters import floatformat
 
+from flexi_auth.models import ObjectWithContext
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -33,7 +35,7 @@ class Block(BlockSSDataTables):
 
         user_actions = []
 
-        if request.user.has_perm(EDIT, obj=request.resource):
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

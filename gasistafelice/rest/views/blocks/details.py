@@ -23,7 +23,7 @@ from django.contrib.contenttypes.models import ContentType
 from workflows.utils import get_allowed_transitions, do_transition
 from workflows.models import Transition
 
-from flexi_auth.models import PrincipalParamRoleRelation
+from flexi_auth.models import PrincipalParamRoleRelation, ObjectWithContext
 
 from gasistafelice.lib.fields import display
 
@@ -88,7 +88,7 @@ class Block(AbstractBlock):
 
         user_actions = []
 
-        if request.user.has_perm(EDIT, obj=request.resource):
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
             klass_name = self.resource.__class__.__name__
             url = None
             if klass_name == "GAS":
@@ -267,7 +267,7 @@ class Block(AbstractBlock):
             return self.render_details_block(request, resource_type, resource_id)
         elif args == EDIT:
             # Server-side check for permission on this view
-            if request.user.has_perm(EDIT, obj=request.resource):
+            if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
                 with transaction.commit_on_success():
                     rv = self._edit_resource(request)
                 return rv

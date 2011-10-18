@@ -505,6 +505,7 @@ class Person(models.Model, PermissionResource):
     class Meta:
         verbose_name = _("person")
         verbose_name_plural = _("people")
+        ordering = ('name',)
 
     def __unicode__(self):
         return self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}

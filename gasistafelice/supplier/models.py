@@ -133,7 +133,7 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def order(self):
-        raise NoSenseException("calling supplier.order is a no-sense. Supplier is related to more than one order")
+        raise NotImplementedError("calling supplier.order is a no-sense. Supplier is related to more than one order")
 
     @property
     def gas_list(self):
@@ -142,7 +142,7 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def gas(self):
-        raise NoSenseException("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
+        raise NotImplementedError("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
 
     @property
     def products(self):
@@ -174,7 +174,7 @@ class Supplier(models.Model, PermissionResource):
             allowed_users = des.admins | all_gas_referrers #TOERASE: | all_gas_referrers_tech 
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -250,7 +250,7 @@ class SupplierAgent(models.Model, PermissionResource):
             allowed_users = des.admins | all_gas_referrers #TOERASE | all_gas_referrers_tech 
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
         
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -300,7 +300,7 @@ class Certification(models.Model, PermissionResource):
             allowed_users = DES.admins_all()
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -352,7 +352,7 @@ class ProductCategory(models.Model, PermissionResource):
             allowed_users = DES.admins_all()          
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -410,7 +410,7 @@ class ProductMU(models.Model, PermissionResource):
             allowed_users = DES.admins_all()
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -466,7 +466,7 @@ class ProductPU(models.Model, PermissionResource):
             allowed_users = DES.admins_all()
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -574,7 +574,7 @@ http://www.jagom.org/trac/reesgas/ticket/157
             allowed_users = supplier.referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -787,7 +787,7 @@ class SupplierStock(models.Model, PermissionResource):
             allowed_users = supplier.referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -831,7 +831,7 @@ class SupplierProductCategory(models.Model):
             allowed_users = supplier.referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):

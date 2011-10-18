@@ -340,7 +340,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -476,7 +476,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -613,7 +613,7 @@ class GASMemberOrder(models.Model, PermissionResource):
             allowed_users = order.gas.members
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -748,7 +748,7 @@ class Delivery(Appointment, PermissionResource):
             allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -898,7 +898,7 @@ class Withdrawal(Appointment, PermissionResource):
             allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):

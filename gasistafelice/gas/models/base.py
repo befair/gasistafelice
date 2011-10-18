@@ -761,7 +761,7 @@ class GASMember(models.Model, PermissionResource):
             allowed_users = gas.tech_referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -899,7 +899,7 @@ class GASSupplierStock(models.Model, PermissionResource):
             allowed_users = pact.gas.tech_referrers | pact.referrers
             return allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -1111,7 +1111,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             allowed_users = gas.tech_referrers | gas.referrers | gas.supplier_referrers 
             return allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
  
     # Row-level EDIT permission
     def can_edit(self, user, context):

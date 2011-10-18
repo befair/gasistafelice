@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
+from flexi_auth.models import ObjectWithContext
+
 from gasistafelice.rest.views.blocks.base import BlockWithList, Action, ResourceBlockAction
 from gasistafelice.consts import CREATE, EDIT
 from gasistafelice.gas.forms import order as order_forms
@@ -28,14 +30,25 @@ class Block(BlockWithList):
 
         user_actions = []
 
-        if request.user.has_perm(CREATE, obj=GASSupplierOrder):
-            user_actions += [
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=CREATE, verbose_name=_("Add order"), 
-                    popup_form=True
-                ),
-             ]
+        #if request.user.has_perm(CREATE, 
+        #    obj=ObjectWithContext(GASSupplierOrder, context={'pact': request.resource.pact})):
+        # Cannot retrieve pact from "site", "supplier" nor "gas"
+        # FIXME: TODO: PATCH:
+        try:
+            gas = request.resource.gas
+        except NotImplementedError:
+            pass
+        else:
+            if request.user in gas.referrers | gas.supplier_referrers:
+
+                user_actions += [
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=CREATE, verbose_name=_("Add order"), 
+                        popup_form=True
+                    ),
+                 ]
+
         return user_actions
 

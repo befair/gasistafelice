@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
+from flexi_auth.models import ObjectWithContext
+
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 from gasistafelice.consts import EDIT, CONFIRM
 

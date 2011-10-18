@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
+from flexi_auth.models import ObjectWithContext
+
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 from gasistafelice.base.models import Person
@@ -22,7 +24,7 @@ class Block(BlockWithList):
 
         user_actions = []
 
-        if request.user.has_perm(CREATE, obj=Person):
+        if request.user.has_perm(CREATE, obj=ObjectWithContext(Person)):
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
