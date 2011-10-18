@@ -641,7 +641,8 @@ class SupplierStock(models.Model, PermissionResource):
     class Meta:
         verbose_name = _('supplier stock')
         verbose_name_plural = _('supplier stocks')
-        unique_together = (('code', 'supplier'),)
+        #FIXME: IntegrityError: (1062, "Duplicate entry '20-35' for key 'code'") code 20 for producer 35
+        #unique_together = (('code', 'supplier'),)
 
     def __init__(self, *args, **kw):
         super(SupplierStock, self).__init__(*args, **kw)
