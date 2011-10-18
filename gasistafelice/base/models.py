@@ -498,7 +498,7 @@ class Person(models.Model, PermissionResource):
     contact_set = models.ManyToManyField('Contact', null=True, blank=True,verbose_name=_('contacts'))
     user = models.OneToOneField(User, null=True, blank=True,verbose_name=_('User'))
     address = models.OneToOneField('Place', null=True, blank=True,verbose_name=_('main address'))
-    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True,verbose_name=_('Avatar'))
+    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
 
     history = HistoricalRecords()
 
@@ -520,7 +520,7 @@ class Person(models.Model, PermissionResource):
 
     @property
     def icon(self):
-        return self.avatar 
+        return self.avatar or super(Person, self).icon
 
     ## START Resource API
     # Note that all the following methods return a QuerySet
@@ -665,7 +665,10 @@ class Person(models.Model, PermissionResource):
     
     @property
     def city(self):
-        return self.address.city 
+        if self.address:
+            return self.address.city 
+        else:
+            return None
 
     def save(self, *args, **kwargs):
         self.name = self.name.capitalize()
@@ -707,6 +710,16 @@ class Person(models.Model, PermissionResource):
     
         
     #-----------------------------------------------------#
+
+    @property
+    def username(self):
+        return self.user.username
+
+    display_fields = (
+        name, surname, 
+        models.CharField(name="city", verbose_name=_("City")),
+        models.CharField(name="username", verbose_name=_("Username")),
+    )
    
 class Contact(models.Model):
 

@@ -201,14 +201,20 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks': [],
     }],
 
-    'pact' : [{
+    'person' : [{
         'name': 'info',
-        'descr': 'Info',
-        'blocks' : ['details', 'open_orders', 'closed_orders'],
-    },{ 
+        'descr': 'Scheda della persona',
+        'blocks' : ['details', 'gasmembers'],
+    }],
+
+    'pact' : [{ 
         'name' : 'stock',
         'descr': 'Prodotti',
         'blocks': ['gasstocks'],
+    },{
+        'name': 'info',
+        'descr': 'Scheda del patto',
+        'blocks' : ['details', 'open_orders', 'closed_orders'],
     }],
 }
    
