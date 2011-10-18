@@ -2,6 +2,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django import forms
 from django.forms import ValidationError
 from django.contrib.admin import widgets as admin_widgets
+from django.conf import settings
 
 from gasistafelice.gas.models.proxy import GASSupplierSolidalPact
 from gasistafelice.base.models import Person
@@ -9,6 +10,8 @@ from gasistafelice.supplier.models import Supplier
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
+
+import datetime
 
 def today():
     return datetime.date.today().strftime(settings.DATE_FMT)
