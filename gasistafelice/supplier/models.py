@@ -12,6 +12,10 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from history.models import HistoricalRecords
 
+from flexi_auth.utils import register_parametric_role
+from flexi_auth.models import ParamRole
+from flexi_auth.exceptions import WrongPermissionCheck
+
 from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib.fields import display
@@ -22,11 +26,12 @@ from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.consts import SUPPLIER_REFERRER
-from flexi_auth.utils import register_parametric_role
-from flexi_auth.models import ParamRole
-from flexi_auth.exceptions import WrongPermissionCheck
+from gasistafelice.gas import signals
 
 from decimal import Decimal
+import logging
+
+log = logging.getLogger(__name__)
 
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
@@ -701,7 +706,7 @@ class SupplierStock(models.Model, PermissionResource):
         try:
             ss = SupplierStock.objects.get(pk=self.pk)
             if not ss is None:
-                return bool(self.price != ss.pirce)
+                return bool(self.price != ss.price)
             else:
                 return False
         except SupplierStock.DoesNotExist:
@@ -729,14 +734,14 @@ class SupplierStock(models.Model, PermissionResource):
                     gss.enabled = self.availability
                     gss.save()
                     if not gss.enabled:
-                        signals.gasstock_product_disabled.send(sender=self)
+                        signals.gasstock_product_disabled.send(sender=gss)
                     else:
-                        signals.gasstock_product_enabled.send(sender=self)
+                        signals.gasstock_product_enabled.send(sender=gss)
                     
-                    if not gss.message is None:
+                    if gss.message is not None:
                         self._msg.extend(gss.message)
             self._msg.append('Ended(%d)' % self.gasstocks.count())
-            print self._msg
+            log.debug(self._msg)
 
         if self.has_changed_price:
             for gsop in self.orderable_products:
