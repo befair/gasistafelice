@@ -739,8 +739,8 @@ class Contact(models.Model):
 
     def clean(self):
         self.flavour = self.flavour.strip()
-        if self.flavour not in const.CONTACT_CHOICES:
-            raise ValidationError(_("Contact flavour MUST be one of %s" % map(lambda x: x[1],  const.CONTACT_CHOICES)))
+        if self.flavour not in map(lambda x: x[0], const.CONTACT_CHOICES):
+            raise ValidationError(_("Contact flavour MUST be one of %s" % map(lambda x: x[0],  const.CONTACT_CHOICES)))
         self.value = self.value.strip()
         self.description = self.description.strip()
         return super(Contact, self).clean()
