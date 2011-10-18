@@ -1,5 +1,5 @@
 [submodule "extra/django-history"]
-    url = git@github.com:feroda/django-pro-history.git
+    url = url = git://github.com/feroda/django-pro-history.git
     path = extra/django-history
 
 [submodule "extra/django-simple-accounting"]
