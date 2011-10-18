@@ -28,12 +28,12 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aaSorting": [[2,"asc"]],
                 "aoColumns": [
-                    null,
-                    null,
-                    { "bSortable" : true },
-                    { "bSortable" : true },
-                    { "bSortable" : true, "sClass": "taright", "sType": "currency"},
-                    { "bSortable" : false,
+                    { "bSearchable" : false },
+                    { "bSearchable" : false, "bSortable" : true },
+                    { "bSortable" : true, "bSearchable" : true },
+                    { "bSortable" : true, "bSearchable" : true },
+                    { "bSortable" : true, "sClass": "taright", "sType": "currency", "bSearchable" : false},
+                    { "bSortable" : false, "bSearchable" : false,
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[5]).attr('step');
                                     var min =  $(oObj.aData[5]).attr('minimum_amount');
@@ -48,7 +48,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                                                 $(\'#total-order\').html(\'&#8364; \' + total); \
                                                 return false"><img src="/static/nui/img/remove.png">\
                                              </a>'; 
-                                    rv += oObj.aData[5]; 
+                                    rv += oObj.aData[5];
                                     rv += '<a href="#" onclick="var el = $(this).prev(\'input\'); \
                                             var prev_row_total = parseInt(el.val())*' + parseFloat(oObj.aData[4].substr(8).replace(',','.')) + '; \
                                             var n = parseInt(el.val()); el.val(n+' + step +'); \
@@ -62,7 +62,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                                     return rv
                                   },
                      },
-                    { "sType": "currency" },
+                    { "sType": "currency", "bSearchable" : false },
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
