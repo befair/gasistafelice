@@ -60,7 +60,7 @@ class Block(BlockSSDataTables):
         for i,form in enumerate(formset):
 
             if i < c:
-                code = querySet[i].stock.code
+                code = querySet[i].stock.code or ''
                 product = querySet[i].stock.product
                 price = querySet[i].stock.price
                 description = querySet[i].stock.product.description

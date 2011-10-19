@@ -172,10 +172,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
+        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, initial_price=s.price)
         if created:
             self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
-            gsop.initial_price = gsop.order_price = s.price
+            gsop.order_price = s.price
             gsop.save()
         else:
             self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
@@ -363,6 +363,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #-----------------------------------------------#
 
     display_fields = (
+        gas, supplier,
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         date_start, date_end, order_minimum_amount, 
         delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),

@@ -22,8 +22,8 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'order__pk', 
-        1: 'gasstock__stock__supplier', 
-        2: 'gasstock__stock__product',
+        1: 'gasstock__stock__supplier__name', 
+        2: 'gasstock__stock__product__name',
         3: 'gasstock__stock__product__description',
         4: 'order_price',
         5: '',

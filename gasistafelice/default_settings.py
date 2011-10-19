@@ -126,8 +126,8 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/auth/'),
     os.path.join(PROJECT_ROOT, 'fixtures/base/'),
     os.path.join(PROJECT_ROOT, 'fixtures/des/'),
-    os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
     os.path.join(PROJECT_ROOT, 'fixtures/supplier/'),
+    os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
 )
 
 LOG_FILE = os.path.join(PROJECT_ROOT, 'gf.log')
