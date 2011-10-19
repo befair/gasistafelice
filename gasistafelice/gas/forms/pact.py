@@ -26,7 +26,7 @@ class GAS_PactForm(BasePactForm):
     """Form for pact management by a GAS resource"""
     date_signed = forms.DateField(label=_('Date signed'), required=True, 
                     help_text=_("date of first meeting GAS - supplier"), widget=admin_widgets.AdminDateWidget, initial=today)
-    gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
+    gas_supplier_referrer = forms.ModelMultipleChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
         super(GAS_PactForm, self).__init__(*args, **kw)
@@ -52,9 +52,10 @@ class GAS_PactForm(BasePactForm):
         self.instance.gas = self._gas
         super(GAS_PactForm, self).save()
 
-        if self.cleaned_data.get('gas_supplier_referrer'):
-            pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
-            PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['gas_supplier_referrer'].user)
+        people = self.cleaned_data.get('gas_supplier_referrer', [])
+        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
+        for p in people:
+            PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=p.user)
 
     class Meta:
 
@@ -122,7 +123,7 @@ class EditPactForm(BasePactForm):
     Support one GAS_REFERRER_SUPPLIER for each pact"""
 
     document = forms.FileField(label=_("Document"), required=False, help_text=_("Document signed by GAS and Supplier"))
-    gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
+    gas_supplier_referrer = forms.ModelMultipleChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
         self.__param_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=kw['instance'])
