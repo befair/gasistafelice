@@ -547,7 +547,7 @@ class GASMember(models.Model, PermissionResource):
         verbose_name = _('GAS member')
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
-        unique_together = (('gas', 'id_in_gas'), )
+        unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
 
     def __unicode__(self):
         rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
@@ -813,6 +813,10 @@ class GASSupplierStock(models.Model, PermissionResource):
         self._msg = None
     
     @property
+    def gasmembers(self):
+        return self.gas.gasmembers
+
+    @property
     def gas(self):
         return self.pact.gas
     
@@ -881,8 +885,6 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     @property
     def orders(self):
-        #TODO FIXME AFTER 6
-        print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact=self.pact)
 
