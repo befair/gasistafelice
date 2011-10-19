@@ -5,7 +5,10 @@ from flexi_auth.models import ParamRole, Param
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import GAS_MEMBER
-from gasistafelice.supplier.models import Supplier
+from gasistafelice.gas.models import GASSupplierSolidalPact
+
+import logging
+log = logging.getLogger(__name__)
 
 class GASRoleForm(BaseRoleForm):
 
@@ -15,7 +18,6 @@ class GASRoleForm(BaseRoleForm):
         self.fields['person'].queryset = \
             self._gas.persons.filter(gasmember__isnull=False)
         self.fields['role'].queryset = self.fields['role'].queryset.exclude(role__name=GAS_MEMBER)
-        
         self.fields['role'].queryset |= self._get_additional_roles()
 
     def _get_additional_roles(self):
@@ -28,10 +30,11 @@ class GASRoleForm(BaseRoleForm):
         # with `add_principal()` and not directly to a GAS member
         # costruct the result set by joining partial QuerySets
 
-        ctype = ContentType.objects.get_for_model(Supplier)
-        params = Param.objects.filter(content_type=ctype, object_id__in=map(lambda x: x['id'], self._gas.suppliers.values('id')))
-        # get all parametric roles assigned to the GAS;
-        return ParamRole.objects.filter(param_set__in=params)
+        ctype = ContentType.objects.get_for_model(GASSupplierSolidalPact)
+        params = Param.objects.filter(content_type=ctype, object_id__in=map(lambda x: x['pk'], self._gas.pacts.values('pk')))
+        qs = ParamRole.objects.filter(param_set__in=params)
+        log.debug("PACT selectable roles %s" % qs.values())
+        return qs
 
 #--------------------------------------------------------------------------------
 
