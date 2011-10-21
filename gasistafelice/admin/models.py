@@ -239,33 +239,17 @@ class SupplierStockAdmin(admin.ModelAdmin):
     # FIXME: try to make it more generic !
     def units_minimum_amount_pretty(self, obj):
         return obj.units_minimum_amount or '--'
-    units_minimum_amount_pretty.short_description = "minimum amount"
-    
+    units_minimum_amount_pretty.short_description = _("minimum amount")
+
     # FIXME: try to make it more generic !
     def units_per_box_pretty(self, obj):
         return obj.units_per_box or '--'
-    units_per_box_pretty.short_description = "units per box"
+    units_per_box_pretty.short_description = _("units per box")
 
-    def order_min_amount_pretty(self, obj):
-        return obj.detail_minimum_amount or '--'
-    order_min_amount_pretty.short_description = "minimum amount"
-    
-    # FIXME: try to make it more generic !
-    def order_step_pretty(self, obj):
-        return obj.detail_step or '--'
-    order_step_pretty.short_description = "increment step"
-    
     def amount_avail_pretty(self, obj):
         if obj.amount_available == ALWAYS_AVAILABLE:
             return 'infinity'
-    amount_avail_pretty.short_description = 'amount available'
-    
-    # FIXME: try to make it more generic !
-    # TODO: 'euro' should be rendered as a currency symbol 
-    def price_pretty(self, obj):
-        return str(obj.price) + ' euro'
-    price_pretty.short_description = "price"
-
+    amount_avail_pretty.short_description = _('amount available')
 
 
 class GASSupplierOrderAdmin(admin.ModelAdmin):
