@@ -30,14 +30,23 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Order report")
     BLOCK_VALID_RESOURCE_TYPES = ["order"] 
 
-    COLUMN_INDEX_NAME_MAP = {
-        0: 'gasstock__stock__product',
-        1: 'gasstock__stock__price', 
-        2: 'tot_gasmembers',
-        3: 'tot_amount',
-        4: 'tot_price',
-        5: 'enabled' 
-    }
+    COLUMN_INDEX_NAME_MAP = {0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability'}
+#        0: 'gasstock__stock__product',
+#        1: 'gasstock__stock__price',
+#        2: 'tot_gasmembers',
+#        3: 'tot_amount',
+#        4: 'tot_price',
+#        5: 'enabled'
+#    }
+
+# 0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability'
+
+#        0: 'gasstock__stock__product',
+#        1: 'gasstock__stock__price',
+#        2: 'tot_gasmembers',
+#        3: 'tot_amount',
+#        4: 'tot_price',
+#        5: 'enabled'
 
     def _get_user_actions(self, request):
   
@@ -55,6 +64,9 @@ class Block(BlockSSDataTables):
         ]
 
         return user_actions
+
+    def _get_resource_list(self, request):
+        return request.resource.stocks
 
     def _get_resource_products(self, request):
         # Maybe we need to switch args KW_DATA, or EDIT_MULTIPLE

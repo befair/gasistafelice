@@ -599,3 +599,33 @@ jQuery.resource_list_block_update = function(block_box_id) {
     alert("vecchia gestione blocco "+block_box_id); 
 }
 
+//------------------------------------------------------------------------------//
+//                          Utils functions for some blocks                     //
+//------------------------------------------------------------------------------//
+
+function fncOrder(x, _step, _min, _price){
+  try {
+    var el = null;
+    _step > 0 ? (el = x.prev('input')) : (el = x.next('input'));
+    var prev_row_total = parseFloat(el.val()*_price);
+    var qta = parseFloat(el.val()); 
+    if (_step > 0)
+        qta == 0 ? el.val(_min) : el.val(qta + _step);
+    else
+        qta <= _min ? el.val(0) : el.val(qta + _step);
+    var next_td = x.parent('td').next(); 
+    var row_total = parseFloat(el.val())* _price;
+    next_td.html('€ ' + String(GetRoundedFloat(row_total)).replace('.',','));
+    var total = parseFloat($('#total-order').html().substr(2).replace(',','.')) + row_total - prev_row_total;
+    $('#total-order').html('€ ' + GetRoundedFloat(total).replace('.',','));
+    }
+  catch(e){//alert(e.message);
+    }
+  return false;
+};
+
+function GetRoundedFloat(v) {
+    if (v == 0) { return 0; }
+    if (v.toString().indexOf('.') == -1) { return v; }
+    return ((v.toFixed) ? v.toFixed(2) : (Math.round(v * 100) / 100));
+} 

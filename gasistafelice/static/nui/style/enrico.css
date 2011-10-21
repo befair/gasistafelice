@@ -36,3 +36,6 @@
 	right:60px;	
 	vertical-align:top;
 }
+
+.hand {cursor: pointer;}
+.dataTables_wrapper{width:95%}
