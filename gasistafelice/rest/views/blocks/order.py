@@ -30,6 +30,7 @@ class Block(BlockSSDataTables):
         6: '', 
         7: '', 
     }
+#        3: 'gasstock__stock__product__description',
 
     def _get_resource_list(self, request):
         selected_orders = request.GET.getlist('gfCP_order')
@@ -166,12 +167,12 @@ class Block(BlockSSDataTables):
             records.append({
                'supplier' : el.supplier,
                'product' : el.product,
-               'description' : el.product.description,
                'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
             })
+#               'description' : el.product.description,
 
         return formset, records, {}
 

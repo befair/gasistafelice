@@ -101,7 +101,7 @@ class Block(AbstractBlock):
                     name=EDIT, verbose_name=_("Edit"), 
                     popup_form=True,
                     url=url
-                )
+                )/blocks/details.py
             )
 
             if klass_name == "GAS":
