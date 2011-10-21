@@ -105,6 +105,10 @@ class GAS(models.Model, PermissionResource):
         self.name = self.name.strip()
         self.id_in_des = self.id_in_des.strip()
         self.note = self.note.strip()
+
+        if self.headquarter is None:
+            raise ValidationError(_("Default headquarter place must be set"))
+
         return super(GAS, self).clean()
 
     #-- Authorization API --#
@@ -382,13 +386,6 @@ class GAS(models.Model, PermissionResource):
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
-
-    def clean(self):
-
-        if self.headquarter is None:
-            raise ValidationError(_("Default headquarter place must be set"))
-
-        return super(GAS, self).clean()
 
 #-----------------------------------------------------------------------------------------------------
 
@@ -963,6 +960,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # which Products GAS members can order from Supplier
     stock_set = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
     order_minimum_amount = CurrencyField(verbose_name=_('Order minimum amount'), null=True, blank=True)
+
+    # Delivery cost. i.e: transport cost
     order_delivery_cost = CurrencyField(verbose_name=_('Order delivery cost'), null=True, blank=True)
 
     #time needed for the delivery since the GAS issued the order disposition
