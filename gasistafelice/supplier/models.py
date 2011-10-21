@@ -171,7 +171,7 @@ class Supplier(models.Model, PermissionResource):
         # * referrers and administrators of every GAS in the DES
         try:
             des = context['des']
-            all_gas_referrers = set()
+            all_gas_referrers = User.objects.none()
             #TOERASE: all_gas_referrers_tech = set()
             for gas in des.gas_list:
                 all_gas_referrers = all_gas_referrers | gas.referrers
