@@ -19,48 +19,30 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         // Init dataTables
+        var iQta = 5;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    { "sType": "currency", "sClass": "taright" },
-                    { "bSortable" : false, "sClass": "taright" ,
+                    {"sWidth": "5%"},
+                    {"sWidth": "5%"},
+                    {"sWidth": "20%"},
+                    {"sWidth": "30%"},
+                    { "sType": "currency", "sClass": "taright", "sWidth": "10%" },
+                    { "bSortable" : false, "sClass": "taright", "sWidth": "15%" ,
                       "fnRender": function ( oObj ) {
-                                    var step = $(oObj.aData[5]).attr('step');
-                                    var min =  $(oObj.aData[5]).attr('minimum_amount');
-                                    var rv = '<a href="#" onclick="var el = $(this).next(\'input\'); \
-                                                var prev_row_total = parseInt(el.val())*' + parseFloat(oObj.aData[4].substr(8).replace(',','.')) + '; \
-                                                var n = parseInt(el.val()); n == ' + min + '? el.val(0) : (n > ' + min +' ? \
-                                                    el.val(n-' + step +') : 0); \
-                                                var next_td = $(this).parent(\'td\').next(); \
-                                                var row_total = parseInt(el.val())*' + parseFloat(oObj.aData[4].substr(8).replace(',','.')) + '; \
-                                                next_td.html(\'&#8364; \' + row_total); \
-                                                var total = parseFloat($(\'#total-order\').html().substr(2).replace(\',\',\'.\')) + row_total - prev_row_total; \
-                                                $(\'#total-order\').html(\'&#8364; \' + total); \
-                                                return false"><img src="/static/nui/img/remove.png">\
-                                             </a>'; 
-                                    rv += oObj.aData[5]; 
-                                    rv += '<a href="#" onclick="var el = $(this).prev(\'input\'); \
-                                            var prev_row_total = parseInt(el.val())*' + parseFloat(oObj.aData[4].substr(8).replace(',','.')) + '; \
-                                            var n = parseInt(el.val()); el.val(n+' + step +'); \
-                                            var next_td = $(this).parent(\'td\').next(); \
-                                            var row_total = parseInt(el.val())*' + parseFloat(oObj.aData[4].substr(8).replace(',','.')) + '; \
-                                            next_td.html(\'&#8364; \' + row_total); \
-                                            var total = parseFloat($(\'#total-order\').html().substr(2).replace(\',\',\'.\')) + row_total - prev_row_total; \
-                                            $(\'#total-order\').html(\'&#8364; \' + total); \
-                                            return false"><img src="/static/nui/img/add.png">\
-                                          </a>';
+                                    var step = $(oObj.aData[iQta]).attr('step');
+                                    var min =  $(oObj.aData[iQta]).attr('minimum_amount');
+                                    var rv = '<span class="hand" onclick="fncOrder($(this),-'+ step +','+ min + ', ' + price + '); return false;"><img src="/static/nui/img/remove.png"></span>'; 
+                                    rv += oObj.aData[iQta];
+                                    rv += '<span class="hand" onclick="fncOrder($(this),+'+ step +','+ min + ', ' + price + '); return false;"><img src="/static/nui/img/add.png"></span>';
                                     return rv
                                   },
                      },
-                    { "sType": "currency", "bSortable" : false, "sClass": "taright" },
-                    null
+                    { "sType": "currency", "bSortable" : false, "sClass": "taright", "sWidth": "10%" },
+                    {"sWidth": "5%"}
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -74,21 +56,16 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     var iTotal = 0;
                     for ( var i=0 ; i<aaData.length ; i++ )
                     {
-                        iTotal += parseFloat(aaData[i][6].substr(8).replace(',','.'));
+                        iTotal += parseFloat(aaData[i][iQta+1].substr(8).replace(',','.'));
                     }
                     
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
-                    $(nCells[1]).html('&#8364; ' + iTotal);
+                    $(nCells[1]).html('&#8364; ' + GetRoundedFloat(iTotal).replace('.',','));
 
                 }
             }); 
 
-//                    { "fnRender": function ( oObj ) {
-//                            return 'TODO';
-//                            },
-//                      "aTargets": [ 0 ]
-//                    }
         return this._super();
 
     }

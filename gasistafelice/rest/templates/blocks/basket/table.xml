@@ -14,8 +14,8 @@
 
 {% block footer %}
     <tr>
-        <th class="totfield" rowspan="1" colspan="6">{% trans "Total" %}:</th>
-        <th class="totvalue" rowspan="1" colspan="1" id="total-order"></th>
+        <th class="totfield" colspan="5">{% trans "Total" %}:</th>
+        <th class="totvalue" colspan="3" id="total-order"></th>
     </tr>
 {% endblock %}
 
