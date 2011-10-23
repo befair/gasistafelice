@@ -607,23 +607,28 @@ function fncOrder(x, _step, _min, _price){
   try {
     var el = null;
     _step > 0 ? (el = x.prev('input')) : (el = x.next('input'));
-    var prev_row_total = parseFloat(el.val()*_price);
-    var qta = parseFloat(el.val()); 
+    var qta = parseFloat(el.val().replace(',','.')); 
+    var prev_row_total = parseFloat(qta*_price);
+    var new_qta = 0
     if (_step > 0)
-        qta == 0 ? el.val(_min) : el.val(qta + _step);
+        qta == 0 ? (new_qta = _min) : (new_qta = qta + _step);
     else
-        qta <= _min ? el.val(0) : el.val(qta + _step);
+        qta <= _min ? (new_qta = 0) : (new_qta = qta + _step);
+    el.val(SetFloat(new_qta))
     var next_td = x.parent('td').next(); 
-    var row_total = parseFloat(el.val())* _price;
-    next_td.html('€ ' + String(GetRoundedFloat(row_total)).replace('.',','));
+    var row_total = new_qta * _price;
+    next_td.html('€ ' + SetFloat(row_total));
     var total = parseFloat($('#total-order').html().substr(2).replace(',','.')) + row_total - prev_row_total;
-    $('#total-order').html('€ ' + GetRoundedFloat(total).replace('.',','));
+    $('#total-order').html('€ ' + SetFloat(total));
     }
   catch(e){//alert(e.message);
     }
   return false;
 };
-
+function SetFloat(_qta){
+    //return String(' ' + GetRoundedFloat(_qta)).replace('.',',') Ko DECIMAL_SEPARATOR = ',' in clean_data()
+    return GetRoundedFloat(_qta);
+}
 function GetRoundedFloat(v) {
     if (v == 0) { return 0; }
     if (v.toString().indexOf('.') == -1) { return v; }

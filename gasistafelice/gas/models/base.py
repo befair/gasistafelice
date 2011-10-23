@@ -1036,7 +1036,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     def setup_data(self):
         for st in self.supplier.stocks:
-            enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            #if stock.amount_available = 1000000000 or positive, GASSupplierStock must be created
+            enabled = [False, self.auto_populate_products][bool(st.amount_available >= 0)]
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
                                 minimum_amount=st.detail_minimum_amount,
                                 step=st.detail_step,

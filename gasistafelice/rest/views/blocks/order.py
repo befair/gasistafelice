@@ -9,6 +9,9 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GASMemberOrder
 from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+import logging
+log = logging.getLogger(__name__)
+
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -158,21 +161,25 @@ class Block(BlockSSDataTables):
                 form = SingleGASMemberOrderForm(self.request)
                 total = 0
 
-            form.fields['ordered_amount'].widget.attrs = { 
-                            'class' : 'amount',
-                            'step' : el.gasstock.step or 1,
-                            'minimum_amount' : el.gasstock.minimum_amount or 1,
-            }
+            try:
+                form.fields['ordered_amount'].widget.attrs = { 
+                                'class' : 'amount',
+                                'step' : el.gasstock.step or 1,
+                                'minimum_amount' : el.gasstock.minimum_amount or 1,
+                }
 
-            records.append({
-               'supplier' : el.supplier,
-               'product' : el.product,
-               'price' : el.gasstock.price,
-               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
-               'ordered_total' : total,
-               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
-            })
-#               'description' : el.product.description,
+                records.append({
+                   'supplier' : el.supplier,
+                   'product' : el.product,
+                   'price' : el.gasstock.price,
+                   'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
+                   'ordered_total' : total,
+                   'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
+                })
+                   #'description' : el.product.description,
+            except KeyError:
+                log.debug("order ordered_amount (%s %s)" % (el.pk, i))
+
 
         return formset, records, {}
 

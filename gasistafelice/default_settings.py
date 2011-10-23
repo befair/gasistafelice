@@ -54,6 +54,8 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
+DECIMAL_SEPARATOR = '.'
+THOUSAND_SEPARATOR = ' '
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

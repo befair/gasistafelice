@@ -65,7 +65,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
-                    $(nCells[1]).html('&#8364; ' + GetRoundedFloat(iTotal).replace('.',','));
+                    $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
 
                     /* Modify Django management form info */
                     /* FIXME TODO AFTER 6 UGLY !!!*/

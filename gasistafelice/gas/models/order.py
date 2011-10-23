@@ -372,10 +372,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     )
 
 #-------------------------------------------------------------------------------
-
 class GASSupplierOrderProduct(models.Model, PermissionResource):
-
-
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
 
@@ -385,7 +382,9 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set",verbose_name=_('gas stock'))
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
-    maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0,verbose_name=_('maximum amount'))
+    maximum_amount = models.DecimalField(null=True, blank=True, verbose_name = _('maximum amount'),
+                        max_digits=8, decimal_places=2
+    )
     # the price of the Product at the time the GASSupplierOrder was created
     initial_price = CurrencyField(verbose_name=_('initial price'))
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
@@ -393,8 +392,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     # the actual price of the Product (as resulting from the invoice)
     delivered_price = CurrencyField(null=True, blank=True,verbose_name=_('delivered price'))
     # how many items were actually delivered by the Supplier 
-    delivered_amount = models.PositiveIntegerField(null=True, blank=True,verbose_name=_('delivered amount'))
-    
+    delivered_amount = models.DecimalField(null=True, blank=True, verbose_name = _('delivered amount'),
+                        max_digits=8, decimal_places=2
+    )
+
     history = HistoricalRecords()
     
     class Meta:
@@ -497,7 +498,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # * GAS administrators    
         allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers        
         return user in allowed_users 
-    
+
 
 class GASMemberOrder(models.Model, PermissionResource):
 
@@ -512,9 +513,13 @@ class GASMemberOrder(models.Model, PermissionResource):
     # price of the Product at order time
     ordered_price = CurrencyField(verbose_name=_('ordered price'))
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.PositiveIntegerField(verbose_name=_('order amount'))
+    ordered_amount = models.DecimalField(null=False, blank=False, verbose_name = _('order amount'),
+                        max_digits=6, decimal_places=2
+    )
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.PositiveIntegerField(null=True, blank=True,verbose_name=_('widthdrawn amount'))
+    withdrawn_amount = models.DecimalField(null=False, blank=False, verbose_name = _('widthdrawn amount'),
+                        max_digits=6, decimal_places=2
+    )
     # gasmember order have to be confirmed if GAS configuration allowed it
     is_confirmed = models.BooleanField(default=False,verbose_name=_('confirmed'))
 

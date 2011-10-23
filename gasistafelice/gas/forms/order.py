@@ -19,6 +19,7 @@ from gasistafelice.consts import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY
 from django.conf import settings
 import datetime, copy
 import logging
+log = logging.getLogger(__name__)
 
 def today():
     return datetime.date.today().strftime(settings.DATE_FMT)
@@ -221,11 +222,12 @@ GASSupplierOrderProductFormSet = formset_factory(
 class SingleGASMemberOrderForm(forms.Form):
     """Return form class for row level operation on GSOP datatable"""
 
-    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    #log.debug('SingleGASMemberOrderForm (%d)' % id)
-    gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    ordered_amount = forms.DecimalField(required=False, initial=0)
-    ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
+    #id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    #log.debug("SingleGASMemberOrderForm (%s)" % id))
+    #print ('SingleGASMemberOrderForm (%s)' % id.Values())
+    #gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    #ordered_amount = forms.DecimalField(required=False, initial=0)
+    #ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
 
     def __init__(self, request, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
@@ -236,8 +238,9 @@ class SingleGASMemberOrderForm(forms.Form):
         id = self.cleaned_data.get('id')
         if id:
             gmo = GASMemberOrder.objects.get(pk=id)
+            qta = self.cleaned_data.get('ordered_amount')
             gmo.ordered_price = self.cleaned_data.get('ordered_price')
-            gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+            gmo.ordered_amount = qta
             if gmo.ordered_amount == 0:
                 gmo.delete()
                 #log.debug("STO CANCELLANDO un ordine gasista da widget quantita")
