@@ -180,6 +180,5 @@ class Block(BlockSSDataTables):
             except KeyError:
                 log.debug("order ordered_amount (%s %s)" % (el.pk, i))
 
-
         return formset, records, {}
 
