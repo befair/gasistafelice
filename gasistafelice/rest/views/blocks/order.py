@@ -108,7 +108,9 @@ class Block(BlockSSDataTables):
         """Return records of rendered table fields."""
 
         # [:] forces evaluation of the querySet
-        gmos = self.__get_gmos(querySet)[:]
+        #gmos Error in formatting: (1235, "This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'")
+        #gmos = self.__get_gmos(querySet)[:]
+        gmos = self.__get_gmos(querySet)
 
         data = {}
         i = 0
@@ -144,7 +146,8 @@ class Block(BlockSSDataTables):
 
 
         data['form-TOTAL_FORMS'] = c 
-        data['form-INITIAL_FORMS'] = gmos.count()
+        #FIXME: 
+        data['form-INITIAL_FORMS'] = 0 # gmos.count()
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)

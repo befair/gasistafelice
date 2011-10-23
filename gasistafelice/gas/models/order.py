@@ -517,7 +517,7 @@ class GASMemberOrder(models.Model, PermissionResource):
                         max_digits=6, decimal_places=2
     )
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.DecimalField(null=False, blank=False, verbose_name = _('widthdrawn amount'),
+    withdrawn_amount = models.DecimalField(null=True, blank=True, verbose_name = _('widthdrawn amount'),
                         max_digits=6, decimal_places=2
     )
     # gasmember order have to be confirmed if GAS configuration allowed it
