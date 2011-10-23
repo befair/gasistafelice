@@ -35,6 +35,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[iQta]).attr('step');
                                     var min =  $(oObj.aData[iQta]).attr('minimum_amount');
+                                    var price =  parseFloat(oObj.aData[iQta-1].replace(',','.').replace('&#8364;',''));
                                     var rv = '<span class="hand" onclick="fncOrder($(this),-'+ step +','+ min + ', ' + price + '); return false;"><img src="/static/nui/img/remove.png"></span>'; 
                                     rv += oObj.aData[iQta];
                                     rv += '<span class="hand" onclick="fncOrder($(this),+'+ step +','+ min + ', ' + price + '); return false;"><img src="/static/nui/img/add.png"></span>';
