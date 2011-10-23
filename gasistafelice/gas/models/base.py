@@ -786,6 +786,8 @@ class GASSupplierStock(models.Model, PermissionResource):
     pact = models.ForeignKey("GASSupplierSolidalPact", related_name="gasstock_set")
     stock = models.ForeignKey(SupplierStock, related_name="gasstock_set")
     # if a Product is available to GAS Members; policy is GAS-specific
+    # A product can be disabled at supplier level. In this case the GASSupplierStock is ALWAYS disabled
+    # else the GASSupplierStock can be enabled or not at the GAS level
     enabled = models.BooleanField(default=True,verbose_name=_('enabled'))
 
     # how many Product units a GAS Member is able to order
@@ -1036,8 +1038,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     def setup_data(self):
         for st in self.supplier.stocks:
-            #if stock.amount_available = 1000000000 or positive, GASSupplierStock must be created
-            enabled = [False, self.auto_populate_products][bool(st.amount_available >= 0)]
+            #see GASSupplierStock.enabled comment
+            #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
+            if not self.auto_populate_products:
+                enabled = false
+            else:
+                enabled = bool(st.amount_available)
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
                                 minimum_amount=st.detail_minimum_amount,
                                 step=st.detail_step,

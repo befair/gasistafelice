@@ -222,12 +222,13 @@ GASSupplierOrderProductFormSet = formset_factory(
 class SingleGASMemberOrderForm(forms.Form):
     """Return form class for row level operation on GSOP datatable"""
 
-    #id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    #log.debug("SingleGASMemberOrderForm (%s)" % id))
+    #Field use in order.py data
+    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    log.debug("SingleGASMemberOrderForm (%s)" % id)
     #print ('SingleGASMemberOrderForm (%s)' % id.Values())
-    #gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    #ordered_amount = forms.DecimalField(required=False, initial=0)
-    #ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
+    gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    ordered_amount = forms.DecimalField(required=False, initial=0)
+    ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
 
     def __init__(self, request, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)

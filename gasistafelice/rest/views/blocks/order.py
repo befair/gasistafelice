@@ -152,7 +152,7 @@ class Block(BlockSSDataTables):
         records = []
 
         for i,el in enumerate(querySet):
-
+            #log.debug("order ordered_amount (%s)" % (i))
             try:
                 form = formset[gmo_info[el.pk]['formset_index']]
                 total = gmo_info[el.pk]['ordered_total']
@@ -161,24 +161,24 @@ class Block(BlockSSDataTables):
                 form = SingleGASMemberOrderForm(self.request)
                 total = 0
 
-            try:
-                form.fields['ordered_amount'].widget.attrs = { 
-                                'class' : 'amount',
-                                'step' : el.gasstock.step or 1,
-                                'minimum_amount' : el.gasstock.minimum_amount or 1,
-                }
+            #try:
+            form.fields['ordered_amount'].widget.attrs = { 
+                            'class' : 'amount',
+                            'step' : el.gasstock.step or 1,
+                            'minimum_amount' : el.gasstock.minimum_amount or 1,
+            }
 
-                records.append({
-                   'supplier' : el.supplier,
-                   'product' : el.product,
-                   'price' : el.gasstock.price,
-                   'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
-                   'ordered_total' : total,
-                   'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
-                })
-                   #'description' : el.product.description,
-            except KeyError:
-                log.debug("order ordered_amount (%s %s)" % (el.pk, i))
+            records.append({
+               'supplier' : el.supplier,
+               'product' : el.product,
+               'price' : el.gasstock.price,
+               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
+               'ordered_total' : total,
+               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
+            })
+               #'description' : el.product.description,
+            #except KeyError:
+            #    log.debug("order ordered_amount (%s %s)" % (el.pk, i))
 
         return formset, records, {}
 

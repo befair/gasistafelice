@@ -154,7 +154,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             self._msg.append(ugettext("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
             return
 
-        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier, enabled =True)
         for s in stocks:
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s, initial_price=s.price, order_price=s.price, delivered_price=s.price)
