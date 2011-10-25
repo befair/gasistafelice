@@ -1,0 +1,24 @@
+{% extends "blocks/base/edit_multiple.json" %}
+
+{% block table_rows %}
+    {% for row in records %}
+    [
+
+        "{{row.id|escapejs}}",
+        "{{row.product|escapejs}}",
+        "&#8364; {{row.price|floatformat:"2"}}",
+        "{{row.price_changed}}",
+        "{{row.tot_gasmembers}}",
+        "{{row.unconfirmed}}",
+        "{{row.ordered_amount|floatformat:"-2"}}",
+        "&#8364; {{ row.ordered_total|floatformat:"2"}}",
+        "{{ row.field_enabled|escapejs }}",
+
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+

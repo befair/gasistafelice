@@ -22,8 +22,6 @@ import cgi, os
 from django.conf import settings
 from datetime import datetime
 
-from django.template.defaultfilters import floatformat
-
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -94,12 +92,12 @@ class Block(BlockSSDataTables):
         gmos = querySet
 
         data = {}
-        data2 = {}
+#        data2 = {}
         i = 0
         c = querySet.count()
         
         # Store mapping between GSSOP-id and neededs info: formset_index and ordered_total
-        gmo_info = { }
+        map_info = { }
 
         gmo =  self.resource #GASMemberOrder()
         av = False
@@ -116,15 +114,15 @@ class Block(BlockSSDataTables):
                '%s-enabled' % key_prefix : bool(av),
             })
 
-            gmo_info[el.pk] = {
+            map_info[el.pk] = {
                 'formset_index' : i,
                 'ordered_total' : el.tot_price, # This is the total computed NOW (with ordered_product.price)
             }
 
-            data2.update({
-               '%s-id' % key_prefix : el.pk,
-               '%s-enabled' % key_prefix : bool(av),
-            })
+#            data2.update({
+#               '%s-id' % key_prefix : el.pk,
+#               '%s-enabled' % key_prefix : bool(av),
+#            })
 
         data['form-TOTAL_FORMS'] = c 
         data['form-INITIAL_FORMS'] = c
@@ -133,16 +131,16 @@ class Block(BlockSSDataTables):
         formset = self._get_edit_multiple_form_class()(request, data)
 
 
-        data2['form-TOTAL_FORMS'] = c 
-        data2['form-INITIAL_FORMS'] = 0
-        data2['form-MAX_NUM_FORMS'] = 0
+#        data2['form-TOTAL_FORMS'] = c 
+#        data2['form-INITIAL_FORMS'] = 0
+#        data2['form-MAX_NUM_FORMS'] = 0
 
         records = []
 
         for i,el in enumerate(querySet):
 
-            form = formset[gmo_info[el.pk]['formset_index']]
-            total = gmo_info[el.pk]['ordered_total']
+            form = formset[map_info[el.pk]['formset_index']]
+            total = map_info[el.pk]['ordered_total']
 
             form.fields['ordered_amount'].widget.attrs = { 
                             'class' : 'amount',

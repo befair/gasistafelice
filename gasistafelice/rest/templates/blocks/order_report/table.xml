@@ -2,14 +2,21 @@
 {% load i18n %}
 
 {% block headers %}
+    <th>{% trans "Id" %}</th>
     <th>{% trans "Product" %}</th>
     <th>{% trans "Price" %}</th>
+    <th>{% trans "Price changed" %}</th>
     <th>{% trans "TOT GAS members" %}</th>
+    <th>{% trans "n° Unconfirmed" %}</th>
     <th>{% trans "TOT amount" %}</th>
     <th>{% trans "TOT price" %}</th>
     <th>{% trans "Available" %}</th>
 {% endblock %}
 
 {% block footer %}
-    <tr><th colspan="4" style="text-align:right" rowspan="1">{% trans "Total" %}:</th><th rowspan="1" colspan="1" id="total-order"> </th></tr>
+    <tr>
+        <th class="totfield" colspan="5">{% trans "Total" %}:</th>
+        <th class="totvalue" colspan="4" id="total-order"></th>
+    </tr>
 {% endblock %}
+

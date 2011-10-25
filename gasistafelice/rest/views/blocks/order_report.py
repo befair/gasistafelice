@@ -7,8 +7,7 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.order import GASSupplierOrderProductFormSet
-from django.template.defaultfilters import floatformat
+from gasistafelice.gas.forms.order import GASSupplierOrderProductForm, BaseFormSetWithRequest, formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -30,23 +29,17 @@ class Block(BlockSSDataTables):
     BLOCK_DESCRIPTION = _("Order report")
     BLOCK_VALID_RESOURCE_TYPES = ["order"] 
 
-    COLUMN_INDEX_NAME_MAP = {0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability'}
-#        0: 'gasstock__stock__product',
-#        1: 'gasstock__stock__price',
-#        2: 'tot_gasmembers',
-#        3: 'tot_amount',
-#        4: 'tot_price',
-#        5: 'enabled'
-#    }
-
-# 0: 'code', 1 : 'product', 2: 'product__description', 3: 'price', 4: 'availability'
-
-#        0: 'gasstock__stock__product',
-#        1: 'gasstock__stock__price',
-#        2: 'tot_gasmembers',
-#        3: 'tot_amount',
-#        4: 'tot_price',
-#        5: 'enabled'
+    COLUMN_INDEX_NAME_MAP = {
+        0: 'pk', 
+        1: 'gasstock__stock__product',
+        2: 'order_price',
+        3: 'has_changed',
+        4: 'tot_gasmembers',
+        5: 'unconfirmed_orders',
+        6: 'tot_amount',
+        7: 'tot_price',
+        8: 'enabled'
+    }
 
     def _get_user_actions(self, request):
   
@@ -66,54 +59,64 @@ class Block(BlockSSDataTables):
         return user_actions
 
     def _get_resource_list(self, request):
-        return request.resource.stocks
-
-    def _get_resource_products(self, request):
-        # Maybe we need to switch args KW_DATA, or EDIT_MULTIPLE
-        # to get GASSupplierOrderProduct or GASSupplierStock respectively
+        #return request.resource.stocks
+        # GASSupplierOrderProduct objects
         return request.resource.orderable_products
 
     def _get_resource_families(self, request):
         return request.resource.ordered_products
 
     def _get_edit_multiple_form_class(self):
-        return GASSupplierOrderProductFormSet
+        qs = self._get_resource_list(self.request)
+        return formset_factory(
+                    form=GASSupplierOrderProductForm,
+                    formset=BaseFormSetWithRequest,
+                    extra=qs.count()
+        )
 
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
 
-#        data = {}
-#        i = 0
-#        
-#        for i,el in enumerate(querySet):
-#
-#            key_prefix = 'form-%d' % i
-#            data.update({
-#               '%s-id' % key_prefix : el.pk,
-#               '%s-enabled' % key_prefix : True,
-#            })
-#
-#        data['form-TOTAL_FORMS'] = i 
-#        data['form-INITIAL_FORMS'] = 0
-#        data['form-MAX_NUM_FORMS'] = 0
-#
-#        formset = GASSupplierOrderProductFormSet(request, data)
-#
-#        records = []
-#        c = querySet.count()
+        data = {}
+        i = 0
+        c = querySet.count()
+        map_info = { }
+        av = True
+
         for i,el in enumerate(querySet):
 
-            records.append({
-               'product' : el.product,
-               'price' : floatformat(el.order_price, 2),
-               'tot_gasmembers' : el.tot_gasmembers,
-               'tot_amount' : el.tot_amount,
-               'tot_price' : el.tot_price,
-#               'field_enabled' : "%s %s" % (form['id'], form['enabled']),
-
+            key_prefix = 'form-%d' % i
+            data.update({
+               '%s-id' % key_prefix : el.pk, 
+               '%s-enabled' % key_prefix : bool(av),
             })
 
-        return None, records, {}
+            map_info[el.pk] = {'formset_index' : i}
+
+        data['form-TOTAL_FORMS'] = c #i 
+        data['form-INITIAL_FORMS'] = c #0
+        data['form-MAX_NUM_FORMS'] = 0
+
+        formset = self._get_edit_multiple_form_class()(request, data)
+
+        records = []
+        for i, el in enumerate(querySet):
+
+            form = formset[map_info[el.pk]['formset_index']]
+
+            records.append({
+               'id' : el.pk,
+               'product' : el.product,
+               'price' : el.order_price,
+               'price_changed' : el.has_changed,
+               'tot_gasmembers' : el.tot_gasmembers,
+               'unconfirmed' : el.unconfirmed_orders,
+               'ordered_amount' : el.tot_amount,
+               'ordered_total' : el.tot_price,
+               'field_enabled' : "%s %s" % (form['id'], form['enabled']),
+            })
+
+        return formset, records, {}
 
 
     def _get_pdfrecords_products(self, querySet):
@@ -204,11 +207,12 @@ class Block(BlockSSDataTables):
     def _create_pdf(self):
 
         # Dati di esempio
-        order = self.resource.order
+        #order = self.resource.order
+        order = self.resource
         fams, total_calc, subTotals = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
         context_dict = {
             'order' : order,
-            'recProd' : self._get_pdfrecords_products(self._get_resource_products(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
+            'recProd' : self._get_pdfrecords_products(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
             'recFam' : fams, 
             'subFam' : subTotals, 
             'user' : self.request.user,

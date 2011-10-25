@@ -200,22 +200,30 @@ class GASSupplierOrderProductForm(forms.Form):
 
     id = forms.IntegerField(required=True, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
+    #log.debug("Create GASSupplierOrderProductForm (%s)" % id)
 
     def __init__(self, request, *args, **kw):
         super(GASSupplierOrderProductForm, self).__init__(*args, **kw)
-        self.__order = request.resource.order
+        #self.__order = request.resource.order
 
     def save(self):
 
-        if not self.cleaned_data.get('enabled'):
-            GASSupplierOrderProduct.objects.get(pk=self.cleaned_data['id']).delete()
+        #log.debug("Save GASSupplierOrderProductForm")
+        id = self.cleaned_data.get('id')
+        log.debug("Save GASSupplierOrderProductForm id(%s)" % id)
+        if id:
+            enabled = self.cleaned_data.get('enabled')
+            log.debug("Save GASSupplierOrderProductForm enabled(%s)" % enabled)
+            #Delete is ok for gsop that have gmo but: 
+            #FIXME: if no gmo associated to gsop the field enabled remain always True?
+            if not enabled:
+                gsop = GASSupplierOrderProduct.objects.get(pk=id)
+                log.debug("STO rendendo indisponibile (fuori stagione) un prodotto da un ordine aperto")
+                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/Qta %s/Gassisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
+                gsop.delete()
 
 
-GASSupplierOrderProductFormSet = formset_factory(
-                                form=GASSupplierOrderProductForm, 
-                                formset=BaseFormSetWithRequest, 
-                                extra=0
-                          )
+
 #-------------------------------------------------------------------------------
 
 
@@ -223,7 +231,7 @@ class SingleGASMemberOrderForm(forms.Form):
     """Return form class for row level operation on GSOP datatable"""
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    log.debug("SingleGASMemberOrderForm (%s)" % id)
+    #log.debug("Create SingleGASMemberOrderForm (%s)" % id)
     gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.DecimalField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
@@ -262,7 +270,7 @@ class BasketGASMemberOrderForm(forms.Form):
     """Return form class for row level operation on GMO datatable"""
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    #log.debug("BasketGASMemberOrderForm (%s)" % id)
+    #log.debug("Create BasketGASMemberOrderForm (%s)" % id)
     gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     gsop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.DecimalField(required=False, initial=0)

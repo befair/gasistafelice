@@ -9,6 +9,7 @@
         "{{row.tot_gasmembers|escapejs}}",
         "{{row.tot_amount|escapejs}}",
         "&#8364; {{ row.tot_price|escapejs }}",
+        "{{row.pippo}}",
 
     ]
     {% if not forloop.last %}

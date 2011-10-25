@@ -409,6 +409,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             rv += " [%s]" % self.pk
         return rv
 
+    @property
+    def has_changed(self):
+        return self.initial_price != self.order_price
+
     # how many items of this kind were ordered (globally by the GAS)
     @property
     def tot_amount(self):
@@ -418,10 +422,14 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         for gmo in gmo_list:         
             amount += gmo['ordered_amount']
         return amount 
-    
+
     @property
     def tot_gasmembers(self):
         return self.gasmember_order_set.count()
+
+    @property
+    def unconfirmed_orders(self):
+        return self.gasmember_order_set.filter(is_confirmed=False).count()
 
     @property
     def tot_price(self):
