@@ -234,4 +234,5 @@ class Block(BlockSSDataTables):
                             (order.supplier, '20110909')
 #                            (order.supplier, '{0:%Y%m%d}'.format(order.delivery.date))
             return response
-        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
+        return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
+

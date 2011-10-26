@@ -8,7 +8,7 @@ from django.contrib.admin import helpers
 from django.forms.formsets import formset_factory
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.db import models #fields types
 from django.db import transaction
 
@@ -37,11 +37,6 @@ from gasistafelice.base.workflows_utils import get_allowed_transitions, do_trans
 
 from gasistafelice.consts import EDIT
 
-from gasistafelice.gas.forms import order as order_forms
-from gasistafelice.gas.forms.pact import EditPactForm
-
-from gasistafelice.consts import GAS_MEMBER
-
 # Roles form: dynamic use in manage_roles
 from gasistafelice.gas.forms.base import GASRoleForm
 
@@ -67,7 +62,6 @@ class Block(AbstractBlock):
         self.description = _("Details")
         
         self.auto_refresh = False
-        
         self.start_open  = True
     
     #------------------------------------------------------------------------------#    
@@ -89,41 +83,28 @@ class Block(AbstractBlock):
         user_actions = []
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+
             klass_name = self.resource.__class__.__name__
             url = None
-            if klass_name == "GAS":
-                url = reverse('admin:gas_gas_change', args=(request.resource.pk,))
             
-            user_actions.append( 
+            user_actions += [
+
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=EDIT, verbose_name=_("Edit"), 
                     popup_form=True,
                     url=url
-                )/blocks/details.py
-            )
+                ),
 
-            if klass_name == "GAS":
-                user_actions.append( 
-                    ResourceBlockAction( 
-                        block_name = self.BLOCK_NAME,
-                        resource = request.resource,
-                        name="configure", verbose_name=_("Configure"), 
-                        popup_form=True,
-                        url=reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,))
-                    )
+                # Referrers assignment
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name="manage_roles", verbose_name=_("Manage roles"), 
+                    popup_form=True,
                 )
-
-            # Show actions for referrers assignment
-                user_actions.append( 
-                    ResourceBlockAction( 
-                        block_name = self.BLOCK_NAME,
-                        resource = request.resource,
-                        name="manage_roles", verbose_name=_("Manage roles"), 
-                        popup_form=True,
-                    )
-                )
+            ]
 
             # Show actions for transition allowed for this resource
 
@@ -144,12 +125,7 @@ class Block(AbstractBlock):
     def _get_edit_form_class(self):
         """Return edit form class. Usually a FormFromModel"""
         klass_name = self.resource.__class__.__name__
-        if klass_name == "GASSupplierSolidalPact":
-            return EditPactForm 
-        if klass_name == "GASSupplierOrder":
-            return order_forms.form_class_factory_for_request(self.request, base=order_forms.EditOrderForm)
-        else:
-            raise NotImplementedError("no edit_form_class for a %s" % klass_name)
+        raise NotImplementedError("No edit_form_class for a %s, Maybe you need a subclass?" % klass_name)
 
     def _get_roles_formset_class(self):
 
@@ -160,6 +136,14 @@ class Block(AbstractBlock):
             extra=5
         )
 
+    def _get_roles_to_manage(self):
+        """Return roles manageable in this block.
+        
+        To be overridden in subclass (i.e. gas_details.Block).
+        """
+
+        return self.resource.roles
+            
     def manage_roles(self, request):
 
         formset_class = self._get_roles_formset_class()
@@ -176,18 +160,12 @@ class Block(AbstractBlock):
                             form.save()
                 return self.response_success()
         else:
+
             data = {}
-            roles = request.resource.roles
-            #FIXME: fero - refactory details block (this is valid for GAS)
-            if request.resource.resource_type == "gas":
-                for pact in request.resource.pacts:
-                    roles |= pact.roles
+            roles = self._get_roles_to_manage()
 
             # Roles already assigned to resource
             pprrs = PrincipalParamRoleRelation.objects.filter(role__in=roles)
-            # FIXME: see above
-            pprrs = pprrs.exclude(role__role__name=GAS_MEMBER)
-                
 
             i = 0
             for i,pprr in enumerate(pprrs):
@@ -206,6 +184,7 @@ class Block(AbstractBlock):
             formset = formset_class(request, data)
 
         context = {
+
             "formset": formset,
             'opts' : PrincipalParamRoleRelation._meta,
             'is_popup': False,
@@ -220,6 +199,7 @@ class Block(AbstractBlock):
             'has_delete_permission': True,
             'has_change_permission': True,
             'show_delete' : True,
+
         }
 
         return render_to_context_response(request, "html/formsets.html", context)
@@ -285,7 +265,7 @@ class Block(AbstractBlock):
             t = Transition.objects.get(name__iexact=t_name, workflow=request.resource.workflow)
             if t in allowed_transitions:
                 request.resource.do_transition(t, request.user)
-                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.id))
+                return self.response_success()
             else:
                 return HttpResponse('')
 
@@ -436,7 +416,7 @@ class Block(AbstractBlock):
                         
             new_comment.save()
 
-            return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
+            return self.response_success()
             
         return HttpResponse('')
             
@@ -453,5 +433,5 @@ class Block(AbstractBlock):
         note = Comment.objects.get(id=note_id)
         note.delete()
 
-        return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
+        return self.response_success()
         
