@@ -1,4 +1,4 @@
-Django>=1.2.3
+Django<1.4
 django-permissions>=1.0
 django-workflows>=1.0
 South>=0.7.3
