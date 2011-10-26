@@ -24,4 +24,37 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
+<style type="text/css">
+.traditional-list { margin-left: 2em; padding:0.2em;}
+ol.traditional-list { list-style-type:upper-roman; }
+ul.traditional-list { list-style-type:circle; }
+</style>
+
+<h1 style="margin-top: 1em; padding:0.2em;">Stiamo lavorando su</h1>
+<ul class="traditional-list">
+<li class="traditional-list"><b>Referente fornitore</b></li>
+<ol class="traditional-list">
+    <li class="traditional-list">Report dell'ordine</li>
+    <li class="traditional-list">Avanzamento di stato per l'ordine</li>
+</ol>
+<li class="traditional-list"><b>Fornitore</b></li>
+<ol class="traditional-list">
+    <li class="traditional-list">Gestione del listino</li>
+    <li class="traditional-list">Visualizzazione degli ordini</li>
+</ol>
+<li class="traditional-list"><b>Referente contabile</b></li>
+<ol class="traditional-list">
+    <li class="traditional-list">Gestione della contabilità</li>
+</ol>
+<li class="traditional-list"><b>Tutti</b></li>
+<ol class="traditional-list">
+    <li class="traditional-list">Associare foto alle categorie dei prodotti del DES</li>
+    <li class="traditional-list">Visualizzazione alternativa dei blocchi</li>
+    <li class="traditional-list">Registrazione dei nuovi utenti</li>
+</ol>
+</ul>
+
+<h3 style="padding:1.3em 0; text-align:center;">Per avere maggiori dettagli sulle attività di sviluppo, consulta <a href="http://www.jagom.org/trac/reesgas/report/1">la pagina dei ticket</a> (non è sempre aggiornata)</h3>
+
+
 {% endblock %}
