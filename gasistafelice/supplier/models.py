@@ -9,6 +9,7 @@ Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/Boz
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from history.models import HistoricalRecords
 
