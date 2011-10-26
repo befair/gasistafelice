@@ -586,9 +586,6 @@ http://www.jagom.org/trac/reesgas/ticket/157
         return self.producer.referrers
   
     def save(self, *args, **kw):
-        # If uuid is blank, make it NULL
-        if not self.uuid:
-            self.uuid = None
 
         created = False
         if not self.pk:

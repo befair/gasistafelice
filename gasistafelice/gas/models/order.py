@@ -371,9 +371,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #-----------------------------------------------#
 
     display_fields = (
-        gas, supplier, 
-        display.Resource(max_length=300, name="gas", verbose_name=_("GAS")),
-        display.Resource(max_length=300, name="supplier", verbose_name=_("Supplier")),
+        display.Resource(name="gas", verbose_name=_("GAS")),
+        display.Resource(name="supplier", verbose_name=_("Supplier")),
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         datetime_start, datetime_end, order_minimum_amount, 
         delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
