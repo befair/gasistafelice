@@ -1,8 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
-from gasistafelice.gas.models import GASMemberOrder
+from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
 from django.forms.formsets import formset_factory
@@ -21,15 +20,26 @@ import datetime, copy
 import logging
 log = logging.getLogger(__name__)
 
-def today():
-    return datetime.date.today().strftime(settings.DATE_FMT)
+def gf_now():
+    dt = datetime.datetime.now()
+    return dt
+
+class GFSplitDateTimeWidget(admin_widgets.AdminSplitDateTime):
+
+    def __init__(self, *args, **kw):
+        super(GFSplitDateTimeWidget, self).__init__(*args, **kw)
+        self.widgets[0].format=settings.DATE_INPUT_FORMATS[0]
+        self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]
 
 class BaseOrderForm(forms.ModelForm):
 
-    date_start = forms.DateField(label=_('Date start'), required=True, 
-                    help_text=_("when the order will be opened"), widget=admin_widgets.AdminDateWidget, initial=today)
-    date_end = forms.DateField(label=_('Date end'), required=False, 
-                    help_text=_("when the order will be closed"), widget=admin_widgets.AdminDateWidget)
+    datetime_start = forms.SplitDateTimeField(label=_('Date start'), required=True, 
+                    help_text=_("when the order will be opened"), widget=GFSplitDateTimeWidget, initial=gf_now)
+
+    datetime_end = forms.SplitDateTimeField(label=_('Date end'), required=False, 
+                    help_text=_("when the order will be closed"), widget=GFSplitDateTimeWidget)
+
+    delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
     delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
     withdrawal_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
@@ -94,12 +104,16 @@ class BaseOrderForm(forms.ModelForm):
 
 class AddOrderForm(BaseOrderForm):
 
-    supplier = forms.ModelChoiceField(label=_('Supplier'), queryset=Supplier.objects.none())
+    supplier = forms.ModelChoiceField(label=_('Supplier'), queryset=Supplier.objects.none(), required=True)
     delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
 
     def __init__(self, request, *args, **kw):
+
         super(AddOrderForm, self).__init__(request, *args, **kw)
-        self.fields['supplier'].queryset = request.resource.suppliers
+
+        suppliers = request.resource.suppliers
+        self.fields['supplier'].queryset = suppliers 
+        self.fields['supplier'].initial = suppliers[0] 
         self.__gas = request.resource.gas
 
     def save(self):
@@ -121,12 +135,12 @@ class AddOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['supplier', 'date_start', 'date_end']
+        fields = ['supplier', 'datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, { 
             'fields' : ['supplier', 
-                            ('date_start', 'date_end'), 
-                            ('delivery_referrer', 'withdrawal_referrer'), 
+                            ('datetime_start', 'datetime_end'), 
+                            ('delivery_datetime', 'delivery_referrer'),
                         'delivery_terms'
             ] 
         })]
@@ -151,10 +165,10 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['date_start', 'date_end']
+        fields = ['datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, { 
-            'fields' : [ ('date_start', 'date_end'), 
+            'fields' : [ ('datetime_start', 'datetime_end'), 
                          ('delivery_referrer', 'withdrawal_referrer'), 
                         'delivery_terms'
             ] 
@@ -170,9 +184,8 @@ def form_class_factory_for_request(request, base):
     gas = request.resource.gas
 
     if gas.config.can_change_delivery_place_on_each_order:
-        gf_fieldsets[0][1]['fields'].append(('delivery_datetime', 'delivery_city', 'delivery_addr_or_place'))
+        gf_fieldsets[0][1]['fields'].append(('delivery_city', 'delivery_addr_or_place'))
         attrs.update({
-            'delivery_datetime' : forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=admin_widgets.AdminSplitDateTime),
             'delivery_city' : forms.CharField(required=True, label=_('Delivery city'), initial=gas.city),
             'delivery_addr_or_place': forms.CharField(required=True, label=_('Delivery address or place'), initial=gas.headquarter),
         })
@@ -218,7 +231,7 @@ class GASSupplierOrderProductForm(forms.Form):
             if not enabled:
                 gsop = GASSupplierOrderProduct.objects.get(pk=id)
                 log.debug("STO rendendo indisponibile (fuori stagione) un prodotto da un ordine aperto")
-                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/Qta %s/Gassisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
+                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/Qta %s/Gasisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
                 gsop.delete()
 
 

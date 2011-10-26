@@ -207,7 +207,9 @@ class Supplier(models.Model, PermissionResource):
 
     def setup_data(self):
         # Needed to be called by fixture import
-        if not self.config:
+        try:
+            self.config
+        except SupplierConfig.DoesNotExist:
             self.config = SupplierConfig.objects.create(supplier=self)
 
     display_fields = (
@@ -229,11 +231,10 @@ class SupplierConfig(models.Model):
 
     receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check here if you want to receive order via mail when finalized"))
 
-    def clean(self):
+    def setup_data(self):
 
-        if self not in self.products_made_by_set.all():
-           self.products_made_by_set.add(self)
-        return super(Supplier, self).clean() 
+        if self.supplier not in self.products_made_by_set.all():
+           self.products_made_by_set.add(self.supplier)
 
 
 class SupplierAgent(models.Model):
@@ -402,6 +403,10 @@ class ProductCategory(models.Model, PermissionResource):
         return user in allowed_users
 
     #-----------------------------------------------#
+
+    @property
+    def categories(self):
+        return ProductCategory.objects.filter(pk=self.pk)
 
 class ProductMU(models.Model, PermissionResource):
     """Measurement unit for a Product.
@@ -594,15 +599,28 @@ http://www.jagom.org/trac/reesgas/ticket/157
         if created:
             self.config = SupplierConfig.objects.create(supplier=self)
 
-    # Resource API
-    #def categories(self):
-    #    # A product belongs to one category
-    #    return self.category
+    #-- Resource API --#
 
-    # Resource API
-    #@property
-    #def suppliers(self):
-    
+    @property
+    def products(self):
+        return Product.objects.filter(pk=self.pk)
+
+    @property
+    def stocks(self):
+        return self.stock_set.all()
+
+    @property
+    def categories(self):
+        return ProductCategory.objects.filter(product_set__in=[self])
+
+    @property
+    def suppliers(self):
+        return Supplier.objects.filter(stock_set__in=self.stocks)
+
+    @property
+    def orders(self):
+        return GASSupplierOrder.objects.filter(stock_set__in=self.stocks)
+
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    
@@ -816,6 +834,13 @@ class SupplierStock(models.Model, PermissionResource):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
+    @property
+    def stocks(self):
+        return SupplierStock.objects.filter(pk=self.pk)
+
+    @property
+    def stock(self):
+        return self
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    

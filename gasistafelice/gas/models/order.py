@@ -40,8 +40,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
-    date_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
-    date_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
+    datetime_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
+    datetime_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
     # Where and when Delivery occurs
     delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
@@ -68,8 +68,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        if self.date_end is not None:
-            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.date_end)
+        if self.datetime_end is not None:
+            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.datetime_end)
             if self.is_active():
                 state = _("close on %(date)s") % { 'date' : fmt_date }
             else:
@@ -294,6 +294,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return self.gas.gasmembers
 
     @property
+    def orders(self):
+        return GASSupplierOrder.objects.filter(pk=self.pk)
+
+    @property
+    def order(self):
+        return self
+
+    @property
     def tot_price(self):
         tot = 0
         for gmo in self.ordered_products:
@@ -305,10 +313,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if not self.pk:
             created = True
             # Create default withdrawal
-            if self.date_end and not self.withdrawal:
+            if self.datetime_end and not self.withdrawal:
                 #TODO: check gasconfig for weekday
                 w = Withdrawal(
-                        date=self.date_end + timedelta(7), 
+                        date=self.datetime_end + timedelta(7), 
                         place=self.gas.config.withdrawal_place
                 )
                 w.save()
@@ -367,7 +375,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         display.Resource(max_length=300, name="gas", verbose_name=_("GAS")),
         display.Resource(max_length=300, name="supplier", verbose_name=_("Supplier")),
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
-        date_start, date_end, order_minimum_amount, 
+        datetime_start, datetime_end, order_minimum_amount, 
         delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
         withdrawal, display.ResourceList(name="withdrawal_referrer_persons", verbose_name=_("Withdrawal referrer")),
     )

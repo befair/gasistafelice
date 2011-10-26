@@ -530,6 +530,14 @@ class Person(models.Model, PermissionResource):
     # Note that all the following methods return a QuerySet
     
     @property
+    def persons(self):
+        return Person.objects.filter(pk=self.pk)
+
+    @property
+    def person(self):
+        return self
+
+    @property
     def gasmembers(self):
         #TODO UNITTEST
         """
@@ -537,7 +545,6 @@ class Person(models.Model, PermissionResource):
         to each of them corresponds a membership of this person in a GAS.        
         """
         return self.gasmember_set.all()
-    
     
     @property
     def gas_list(self):
@@ -547,8 +554,8 @@ class Person(models.Model, PermissionResource):
         (remember that a person may be a member of more than one GAS).
         """ 
         from gasistafelice.gas.models import GAS
-        gas_set = set([member.gas for member in self.gasmembers])
-        return GAS.objects.filter(pk__in=[obj.pk for obj in gas_set])
+        gas_pks = set(member.gas.pk for member in self.gasmembers)
+        return GAS.objects.filter(pk__in=gas_pks)
     
     @property
     def des_list(self):

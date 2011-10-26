@@ -261,7 +261,9 @@ class GAS(models.Model, PermissionResource):
 
     def setup_data(self):
         # Needed to be called by fixture import
-        if not self.config:
+        try:
+            self.config
+        except GASConfig.DoesNotExist:
             self.config = GASConfig.objects.create(gas=self)
 
     def save(self, *args, **kw):
@@ -839,6 +841,14 @@ class GASSupplierStock(models.Model, PermissionResource):
         return self.stock.product
 
     @property
+    def gasstocks(self):
+        return GASSupplierStock.objects.filter(pk=self.pk)
+
+    @property
+    def gasstock(self):
+        return self
+
+    @property
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
@@ -1074,7 +1084,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     @property
     def suppliers(self):
-        return Supplier.objects.filter(pk=self.pk)
+        return Supplier.objects.filter(pk=self.supplier.pk)
 
     @property
     def des(self):

@@ -4,7 +4,7 @@ from django.forms import ValidationError
 from django.contrib.admin import widgets as admin_widgets
 from django.conf import settings
 
-from gasistafelice.gas.models.proxy import GASSupplierSolidalPact
+from gasistafelice.gas.models.base import GASSupplierSolidalPact
 from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import Supplier
 

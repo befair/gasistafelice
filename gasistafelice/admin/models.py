@@ -256,7 +256,7 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
     fieldsets = ((None,
             { 'fields' : (
                 'pact',
-                ('date_start', 'date_end'),   
+                ('datetime_start', 'datetime_end'),   
                 'delivery',  
                 'withdrawal',              
               )
@@ -311,6 +311,14 @@ class UserProfileAdmin(admin.ModelAdmin):
         #see up GASSupplierOrderAdmin class
         pass
     
+class PPRAdmin(admin.ModelAdmin):
+
+    list_filter = ('role__role', 'role',)
+
+class PRAdmin(admin.ModelAdmin):
+
+    list_filter = ('role',)
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact)
@@ -335,6 +343,7 @@ admin.site.register(gas_models.order.Delivery, DeliveryAdmin)
 admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
 admin.site.register(rest_models.HomePage)
 
-admin.site.register(auth_models.PrincipalParamRoleRelation)
+admin.site.register(auth_models.PrincipalParamRoleRelation, PPRAdmin)
+admin.site.register(auth_models.ParamRole, PRAdmin)
 admin.site.register(user_models.UserProfile, UserProfileAdmin)
 

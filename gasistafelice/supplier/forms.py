@@ -12,10 +12,11 @@ class SingleSupplierStockForm(forms.Form):
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     code = forms.CharField(required=False)
-    product = forms.ModelChoiceField(
-                            queryset = Product.objects.all(), 
-                            widget = RelatedFieldWidgetCanAdd(related_model=Product)
-    )
+    product = forms.CharField(required=True)
+#    product = forms.ModelChoiceField(
+#                            queryset = Product.objects.all(), 
+#                            widget = RelatedFieldWidgetCanAdd(related_model=Product)
+#    )
     
     price = CurrencyField()
     availability = forms.BooleanField(required=False)

@@ -119,7 +119,6 @@ class DES(Site, PermissionResource):
     def setup_roles(self):
         # register a new ``DES_ADMIN`` role for this DES
         register_parametric_role(name=DES_ADMIN, des=self)
-    
 
     bound_resource = None
 
@@ -242,7 +241,7 @@ class DES(Site, PermissionResource):
         return []
 
     @property
-    def site(self):
+    def des(self):
         return self
 
     @property

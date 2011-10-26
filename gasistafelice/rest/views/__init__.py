@@ -9,7 +9,7 @@ from gasistafelice.lib.shortcuts import render_to_xml_response
 
 from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 
-from gasistafelice.gas.models.proxy import Siteattr
+from gasistafelice.des.models import Siteattr
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 from flexi_auth.models import ROLES_DICT, ParamRole
