@@ -224,7 +224,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
-        'blocks' : ['details', 'gasmembers']
+        'blocks' : ['gas_details', 'gasmembers']
     }],
     'gasmember': [{
         'name' : 'orders',
@@ -259,7 +259,7 @@ RESOURCE_PAGE_BLOCKS = {
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',
-        'blocks': ['details', 'order_report'],
+        'blocks': ['order_details', 'order_report'],
     },{ 
         'name' : 'delivery',
         'descr': 'Consegna',
@@ -279,7 +279,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name': 'info',
         'descr': 'Scheda del patto',
-        'blocks' : ['details', 'open_orders', 'closed_orders'],
+        'blocks' : ['pact_details', 'open_orders', 'closed_orders'],
     }],
 }
    
