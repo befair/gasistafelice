@@ -12,6 +12,8 @@
         "{{row.ordered_amount|escapejs}}",
         "&#8364; {{ row.ordered_total|floatformat:"2"}}",
         "{{ row.field_enabled|escapejs }}",
+        "{{ row.price_changed}}",
+        "{{ row.order_confirmed}}",
 
     ]
     {% if not forloop.last %}

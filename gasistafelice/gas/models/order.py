@@ -619,7 +619,8 @@ class GASMemberOrder(models.Model, PermissionResource):
             w = self.gas.config.default_workflow_gasmember_order
             set_workflow(self, w)
 
-        if self.purchaser.gas.config.gasmember_auto_confirm_order:
+        #If the GAS's member do not have to confirm is order auto set the flag
+        if not self.purchaser.gas.config.gasmember_auto_confirm_order:
             self.is_confirmed = True
 
         return super(GASMemberOrder, self).save(*args, **kw)
