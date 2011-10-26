@@ -50,18 +50,18 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     {
                         iTotal += parseFloat(aaData[i][iTot].substr(8).replace(',','.'));
                     }
-                    
+
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
                     $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
                 }
-            }); 
+            });
 
 
         return this._super();
 
     }
-    
+
 });
 
 jQuery.BLOCKS["order_report"] = new jQuery.UIBlockOrderReport();

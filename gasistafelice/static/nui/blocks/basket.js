@@ -21,7 +21,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
         // Init dataTables
         var iQta = 5;
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'sPaginationType': 'full_numbers', 
+                'sPaginationType': 'full_numbers',
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
@@ -29,8 +29,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     {"sWidth": "5%"},
                     {"sWidth": "5%"},
                     {"sWidth": "20%"},
-                    {"sWidth": "30%"
-                    },
+                    {"sWidth": "30%"},
                     { "sType": "currency", "sClass": "taright", "sWidth": "10%", "bSearchable" : false },
                     { "bSortable" : false, "sClass": "taright", "sWidth": "15%", "bSearchable" : false, 
                       "fnRender": function ( oObj ) {
@@ -44,11 +43,9 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                                   },
                      },
                     { "sType": "currency", "bSortable" : false, "sClass": "taright", "sWidth": "10%", "bSearchable" : false },
-                    {"sWidth": "5%", "bSearchable" : false} 
-                    ,
-                    {"sWidth": "5%", "bSearchable" : false, "bSortable" : false} 
-                    ,
-                    {"sWidth": "5%", "bSearchable" : false, "bSortable" : false}
+                    {"sWidth": "5%", "bSearchable" : false},
+                    {"sWidth": "5%", "bSearchable" : false, "bSortable" : false},
+                    {"sWidth": "5%", "bSearchable" : false, "bSortable" : false},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -75,7 +72,6 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                 } ,
 
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-
                     var iTotal = 0;
                     for ( var i=0 ; i<aaData.length ; i++ )
                     {
