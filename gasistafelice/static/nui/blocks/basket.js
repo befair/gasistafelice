@@ -63,8 +63,8 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                         var confirmStatus = aaData[iQta+4];
                         $(nRow).addClass(confirmStatus);
                         var nCells = $(nRow).find('tr');
-                        //$(nCells[3]).addClass(confirmStatus);
-                        //$(nCells[4]).addClass(priceStatus);
+                        $(nCells[3]).addClass(confirmStatus);
+                        $(nCells[4]).addClass(priceStatus);
                     }
                     catch(e){alert(e.message);
                     }
