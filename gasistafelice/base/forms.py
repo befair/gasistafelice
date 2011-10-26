@@ -17,9 +17,7 @@ class BaseRoleForm(forms.ModelForm):
             kw['instance'] = PrincipalParamRoleRelation.objects.get(pk=pk)
         
         super(BaseRoleForm, self).__init__(*args, **kw)
-        params = {
-            request.resource.__class__.__name__ : request.resource
-        }
+
         self.fields['role'].queryset = request.resource.roles
         if not self['id'].value():
             self.fields['delete'].widget=forms.HiddenInput()

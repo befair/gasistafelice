@@ -204,7 +204,6 @@ class GASSupplierOrderProductForm(forms.Form):
 
     def __init__(self, request, *args, **kw):
         super(GASSupplierOrderProductForm, self).__init__(*args, **kw)
-        #self.__order = request.resource.order
 
     def save(self):
 

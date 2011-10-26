@@ -467,7 +467,7 @@ class PermissionResource(Resource, PermissionBase):
     def _get_roles(self):
         """
         Return a QuerySet containing all the parametric roles which have been assigned
-        in this Pact.
+        to this Resource.
         
         """
 
@@ -478,7 +478,7 @@ class PermissionResource(Resource, PermissionBase):
 
         ctype = ContentType.objects.get_for_model(self)
         params = Param.objects.filter(content_type=ctype, object_id=self.pk)
-        # get all parametric roles assigned to the GAS;
+        # get all parametric roles assigned to the Resource;
         return ParamRole.objects.filter(param_set__in=params)
 
     roles = property(_get_roles)

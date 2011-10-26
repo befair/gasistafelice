@@ -1,13 +1,14 @@
 """View for block details specialized for a GASSupplierOrder"""
 
-from gasistafelice.rest.views import blocks
+from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+
+from gasistafelice.rest.views.blocks import details
 from gasistafelice.gas.forms import order as order_forms
 
 
-class Block(blocks.details.Block):
+class Block(details.Block):
 
     BLOCK_NAME = "order_details"
-    BLOCK_DESCRIPTION = _("Details")
     BLOCK_VALID_RESOURCE_TYPES = ["order"] 
 
     def _get_edit_form_class(self):

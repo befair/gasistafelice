@@ -139,7 +139,16 @@ class GAS(models.Model, PermissionResource):
         # * administrators of the DES that GAS belongs to
         allowed_users = self.des.admins
         return user in allowed_users
-            
+
+    @property
+    def roles(self):
+        "GAS involves also roles related to pacts"""
+
+        roles = super(GAS, self).roles
+        for pact in self.pacts:
+            roles |= pact.roles
+        return roles
+
     #--------------------------#
     
     #-- Properties --#
@@ -1138,4 +1147,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         allowed_users = self.gas.tech_referrers 
         return allowed_users 
     
+    @property
+    def roles(self):
+        "Pact involves also roles related to Suppliers"""
+
+        roles = super(GASSupplierSolidalPact, self).roles
+        for supplier in self.suppliers:
+            roles |= supplier.roles
+        return roles
 

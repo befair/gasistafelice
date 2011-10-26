@@ -58,7 +58,6 @@ class Block(AbstractBlock):
     def __init__(self):
         super(Block, self).__init__()
 
-        self.name        = "details"            
         self.description = _("Details")
         
         self.auto_refresh = False
@@ -136,14 +135,6 @@ class Block(AbstractBlock):
             extra=5
         )
 
-    def _get_roles_to_manage(self):
-        """Return roles manageable in this block.
-        
-        To be overridden in subclass (i.e. gas_details.Block).
-        """
-
-        return self.resource.roles
-            
     def manage_roles(self, request):
 
         formset_class = self._get_roles_formset_class()
@@ -162,7 +153,7 @@ class Block(AbstractBlock):
         else:
 
             data = {}
-            roles = self._get_roles_to_manage()
+            roles = self.resource.roles
 
             # Roles already assigned to resource
             pprrs = PrincipalParamRoleRelation.objects.filter(role__in=roles)
