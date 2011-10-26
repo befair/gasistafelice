@@ -275,11 +275,11 @@ RESOURCE_PAGE_BLOCKS = {
     'pact' : [{ 
         'name' : 'stock',
         'descr': 'Prodotti',
-        'blocks': ['gasstocks'],
+        'blocks': ['open_orders', 'gasstocks'],
     },{
         'name': 'info',
         'descr': 'Scheda del patto',
-        'blocks' : ['pact_details', 'open_orders', 'closed_orders'],
+        'blocks' : ['pact_details', 'closed_orders'],
     }],
 }
    
