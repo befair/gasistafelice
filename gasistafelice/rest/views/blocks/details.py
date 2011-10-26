@@ -86,7 +86,7 @@ class Block(AbstractBlock):
             klass_name = self.resource.__class__.__name__
             url = None
             
-            user_actions += [
+            user_actions.append(
 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
@@ -94,16 +94,21 @@ class Block(AbstractBlock):
                     name=EDIT, verbose_name=_("Edit"), 
                     popup_form=True,
                     url=url
-                ),
-
-                # Referrers assignment
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name="manage_roles", verbose_name=_("Manage roles"), 
-                    popup_form=True,
                 )
-            ]
+            )
+
+            if self._get_roles_formset_class():
+
+                user_actions.append(
+
+                    # Referrers assignment
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name="manage_roles", verbose_name=_("Manage roles"), 
+                        popup_form=True,
+                    )
+                )
 
             # Show actions for transition allowed for this resource
 
@@ -129,11 +134,17 @@ class Block(AbstractBlock):
     def _get_roles_formset_class(self):
 
         form_name = "%sRoleForm" % self.resource.__class__.__name__
-        return formset_factory(
-            form=globals()[form_name], 
-            formset=BaseFormSetWithRequest, 
-            extra=5
-        )
+        form_class = globals().get(form_name)
+        if form_class:
+            rv = formset_factory(
+                form=form_class, 
+                formset=BaseFormSetWithRequest, 
+                extra=5
+            )
+        else:
+            rv = None
+
+        return rv
 
     def manage_roles(self, request):
 
