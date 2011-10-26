@@ -70,6 +70,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     }
                     return nRow
                 } ,
+
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     var iTotal = 0;
                     for ( var i=0 ; i<aaData.length ; i++ )
