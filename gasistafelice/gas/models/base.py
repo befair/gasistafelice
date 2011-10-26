@@ -250,6 +250,11 @@ class GAS(models.Model, PermissionResource):
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
 
+    def setup_data(self):
+        # Needed to be called by fixture import
+        if not self.config:
+            self.config = GASConfig.objects.create(gas=self)
+
     def save(self, *args, **kw):
 
         if not self.id_in_des:
@@ -267,11 +272,11 @@ class GAS(models.Model, PermissionResource):
         if not self.pk:
             created = True
 
-        # This should never happen, but is it reasonable
-        # that an installation has only one DES
         try:
             self.des
         except DES.DoesNotExist:
+            # This should never happen, but it is reasonable
+            # that an installation has only one DES
             if DES.objects.count() > 1:
                 raise AttributeError(_("You have to bind GAS %s to a DES") % self.name)
             else:
@@ -394,7 +399,7 @@ def get_supplier_order_default():
 def get_gasmember_order_default():
     return Workflow.objects.get(name="GASMemberOrderDefault")
 
-class GASConfig(models.Model, PermissionResource):
+class GASConfig(models.Model):
     """
     Encapsulate here gas settings and configuration facilities
     """
@@ -498,16 +503,14 @@ class GASActivist(models.Model):
 
     history = HistoricalRecords()
 
-    @property
-    def parent(self):
-        return self.gas
-
     class Meta:
         verbose_name = _('GAS activist')
         verbose_name_plural = _('GAS activists')
         app_label = 'gas'
 
-    
+    @property
+    def parent(self):
+        return self.gas
 
 #----------------------------------------------------------------------------------------------------
 

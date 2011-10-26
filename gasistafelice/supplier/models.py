@@ -205,6 +205,11 @@ class Supplier(models.Model, PermissionResource):
     
         return super(Supplier, self).clean()
 
+    def setup_data(self):
+        # Needed to be called by fixture import
+        if not self.config:
+            self.config = SupplierConfig.objects.create(supplier=self)
+
     display_fields = (
         seat, vat_number, website, flavour, 
         display.ResourceList(name="info_people", verbose_name=_("Contacts")),
@@ -212,8 +217,26 @@ class Supplier(models.Model, PermissionResource):
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
 
+class SupplierConfig(models.Model):
+    """
+    Encapsulate here supplier settings and configuration facilities
+    """
 
-class SupplierAgent(models.Model, PermissionResource):
+    # Link to parent class
+    supplier = models.OneToOneField(Supplier, related_name="config")
+
+    products_made_by_set = models.ManyToManyField(Supplier, verbose_name=_("products made by"), help_text=_("Select here producers of products you sell. YOU will be always enabled in this list"))
+
+    receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check here if you want to receive order via mail when finalized"))
+
+    def clean(self):
+
+        if self not in self.products_made_by_set.all():
+           self.products_made_by_set.add(self)
+        return super(Supplier, self).clean() 
+
+
+class SupplierAgent(models.Model):
     """Relation between a `Supplier` and a `Person`.
 
     If you need information on the Supplier, ask this person.
@@ -227,51 +250,56 @@ class SupplierAgent(models.Model, PermissionResource):
 
     history = HistoricalRecords()
 
-    def clean(self):
-        self.job_title = self.job_title.strip()
-        self.job_description = self.job_description.strip()
-        return super(SupplierAgent, self).clean()
+    class Meta:
+        verbose_name = _('supplier agent')
+        verbose_name_plural = _('supplier agents')
 
     @property
     def parent(self):
         return self.supplier
 
-    #-------------- Authorization API ---------------#
-    
-    # Table-level CREATE permission    
-    @classmethod
-    def can_create(cls, user, context):
-        # Who can add a new referrer for an existing supplier in a DES ?
-        # * DES administrators
-        # * referrers and administrators of every GAS in the DES
-        try:
-            des = context['des']
-            all_gas_referrers = set()
-            #TOERASE: new  gas.referrers returns also tech_referrers. Answer to question: who is GAS operator in this platform?
-            #TOERASE: all_gas_referrers_tech = set()
-            for gas in des.gas_list:
-                all_gas_referrers = all_gas_referrers | gas.referrers
-                #TOERASE all_gas_referrers_tech = all_gas_referrers_tech | gas.tech_referrers
-            allowed_users = des.admins | all_gas_referrers #TOERASE | all_gas_referrers_tech 
-            return user in allowed_users
-        except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)
-        
-    # Row-level EDIT permission
-    def can_edit(self, user, context):
-        # Who can edit details of a supplier referrer ?
-        # * DES administrators
-        # * the referrer itself
-        allowed_users = set(self.supplier.des.admins) | set([self.person.user]) 
-        return user in allowed_users 
-    
-    # Row-level DELETE permission
-    def can_delete(self, user, context):
-        # Who can delete a supplier referrer ?
-        # * DES administrators
-        # * other referrers for that supplier  
-        allowed_users = self.supplier.des.admins | self.supplier.referrers
-        return user in allowed_users 
+    def clean(self):
+        self.job_title = self.job_title.strip()
+        self.job_description = self.job_description.strip()
+        return super(SupplierAgent, self).clean()
+
+# COMMENT fero: this should be related to EDIT and CREATE permissions for related Supplier object
+#    #-------------- Authorization API ---------------#
+#    
+#    # Table-level CREATE permission    
+#    @classmethod
+#    def can_create(cls, user, context):
+#        # Who can add a new referrer for an existing supplier in a DES ?
+#        # * DES administrators
+#        # * referrers and administrators of every GAS in the DES
+#        try:
+#            des = context['des']
+#            all_gas_referrers = set()
+#            #TOERASE: new  gas.referrers returns also tech_referrers. Answer to question: who is GAS operator in this platform?
+#            #TOERASE: all_gas_referrers_tech = set()
+#            for gas in des.gas_list:
+#                all_gas_referrers = all_gas_referrers | gas.referrers
+#                #TOERASE all_gas_referrers_tech = all_gas_referrers_tech | gas.tech_referrers
+#            allowed_users = des.admins | all_gas_referrers #TOERASE | all_gas_referrers_tech 
+#            return user in allowed_users
+#        except KeyError:
+#            raise WrongPermissionCheck('CREATE', cls, context)
+#        
+#    # Row-level EDIT permission
+#    def can_edit(self, user, context):
+#        # Who can edit details of a supplier referrer ?
+#        # * DES administrators
+#        # * the referrer itself
+#        allowed_users = set(self.supplier.des.admins) | set([self.person.user]) 
+#        return user in allowed_users 
+#    
+#    # Row-level DELETE permission
+#    def can_delete(self, user, context):
+#        # Who can delete a supplier referrer ?
+#        # * DES administrators
+#        # * other referrers for that supplier  
+#        allowed_users = self.supplier.des.admins | self.supplier.referrers
+#        return user in allowed_users 
     
 
     
@@ -556,7 +584,15 @@ http://www.jagom.org/trac/reesgas/ticket/157
         # If uuid is blank, make it NULL
         if not self.uuid:
             self.uuid = None
+
+        created = False
+        if not self.pk:
+            created = True
+        
         return super(Product, self).save(*args, **kw)
+
+        if created:
+            self.config = SupplierConfig.objects.create(supplier=self)
 
     # Resource API
     #def categories(self):
