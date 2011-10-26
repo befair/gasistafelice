@@ -153,13 +153,13 @@ class Supplier(models.Model, PermissionResource):
     def products(self):
         """All products _supplied_ by this supplier"""
         #TODO: we have to differentiate a way to see all products __produced__ by this supplier
-        return Product.objects.filter(stock_set__in=self.stocks)
+        return Product.objects.filter(stock_set__in=self.stocks).distinct()
 
     @property
     def categories(self):
         """All categories _supplied_ by this supplier"""
         #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
-        return ProductCategory.objects.filter(product_set__in=self.products)
+        return ProductCategory.objects.filter(product_set__in=self.products).distinct()
 
     #-------------- Authorization API ---------------#
     
