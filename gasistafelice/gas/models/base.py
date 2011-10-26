@@ -364,9 +364,8 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def categories(self):
-        #TODO All disctinct categories for all suppliers with solidal pact with the gas
-        #distinct(pk__in=[obj.category.pk for obj in self.Products])
-        return ProductCategory.objects.all()
+        """All disctinct categories for all suppliers with solidal pact with the gas"""
+        return ProductCategory.objects.filter(product_set__in=self.products).distinct()
 
     @property
     def gasstocks(self):
