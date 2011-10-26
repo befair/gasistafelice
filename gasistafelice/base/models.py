@@ -519,6 +519,10 @@ class Person(models.Model, PermissionResource):
         return super(Person, self).clean()
 
     @property
+    def parent(self):
+        return self.des
+
+    @property
     def icon(self):
         return self.avatar or super(Person, self).icon
 
@@ -557,6 +561,10 @@ class Person(models.Model, PermissionResource):
         des_set = set([gas.des for gas in self.gas_list])
         return DES.objects.filter(pk__in=[obj.pk for obj in des_set])
     
+    @property
+    def des(self):
+        from gasistafelice.des.models import Siteattr
+        return Siteattr.get_site()
     
     @property
     def pacts(self):
