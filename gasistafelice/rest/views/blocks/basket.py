@@ -21,7 +21,8 @@ import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
 from datetime import datetime
-
+import logging
+log = logging.getLogger(__name__)
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -41,14 +42,16 @@ class Block(BlockSSDataTables):
         4: 'ordered_price', 
         5: 'ordered_amount', 
         6: 'tot_price', 
-        7: 'enabled'
+        7: 'enabled' ,
+        8: '' ,
+        9: '' 
     }
 
     def _get_user_actions(self, request):
 
         user_actions = []
 
-        if not request.resource.gas.config.gasmember_auto_confirm_order:
+        if request.resource.gas.config.gasmember_auto_confirm_order:
 
             #TODO seldon: does this work for a GASMember?
             #if request.user.has_perm(EDIT, obj=request.resource):
@@ -148,6 +151,13 @@ class Block(BlockSSDataTables):
                             'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
             }
 
+            require_confirm = ""
+            if not el.is_confirmed:
+                require_confirm = "alert"
+            price_changed = ""
+            if el.has_changed:
+                price_changed = "alert"
+
             records.append({
                'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),
                'order' : el.ordered_product.order.pk,
@@ -158,7 +168,12 @@ class Block(BlockSSDataTables):
                'ordered_total' : total,
                'price_changed' : el.has_changed,
                'field_enabled' : form['enabled'],
+               'price_changed' : price_changed,
+               'order_confirmed' : require_confirm,
+               'DT_RowClass': require_confirm,
+               'rowColor': "inherit",
             })
+
                #'description' : el.product.description,
 
         #return records, records, {}
@@ -213,6 +228,7 @@ class Block(BlockSSDataTables):
 
         if args == CONFIRM:
             for gmo in self.resource.basket:
+                log.debug("Sto confermando un ordine gassista(%s)" % gmo)
                 gmo.confirm()
 
             #IMPORTANT: unset args to compute table results!
