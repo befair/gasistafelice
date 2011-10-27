@@ -543,6 +543,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     # gasmember order have to be confirmed if GAS configuration allowed it
     is_confirmed = models.BooleanField(default=False,verbose_name=_('confirmed'))
 
+    note = models.CharField(max_length=64, verbose_name=_('product note'), null=True, blank=True, help_text=_("GAS member can write some short message about this product for the producer"))
+
     history = HistoricalRecords()
 
     class Meta:
