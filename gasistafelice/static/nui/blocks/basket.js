@@ -31,7 +31,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     {"sWidth": "20%"},
                     {"sWidth": "30%"
                     },
-                    { "sType": "currency", "sClass": "taright", "sWidth": "10%", "bSearchable" : false },
+                    { "sType": "currency", "sClass": oTable.get_data_source() , "sWidth": "10%", "bSearchable" : false },
                     { "bSortable" : false, "sClass": "taright", "sWidth": "15%", "bSearchable" : false, 
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[iQta]).attr('step');
@@ -66,8 +66,8 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                         var confirmStatus = aaData[iQta+4];
                         $(nRow).addClass(confirmStatus);
                         var nCells = $(nRow).find('tr');
-                        $(nCells[3]).addClass(confirmStatus);
-                        $(nCells[4]).addClass(priceStatus);
+                        //$(nCells[3]).addClass(confirmStatus);
+                        //$(nCells[4]).addClass(priceStatus);
                     }
                     catch(e){alert(e.message);
                     }
