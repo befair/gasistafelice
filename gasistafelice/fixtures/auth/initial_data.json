@@ -79,6 +79,7 @@
 
     {"pk": 1, "model": "auth.user", "fields": {"username": "admin", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2011-10-16 19:28:39", "groups": [], "user_permissions": [], "password": "sha1$040d8$40efd13c78751faf66c398b292e292e934073565", "email": "admin@a.com", "date_joined": "2011-10-16 19:28:39"}},
 
+    {"pk": 1, "model": "flexi_auth.param", "fields": {"name": "des", "content_type": 76, "object_id": 1}},
     {"pk": 1, "model": "flexi_auth.paramrole", "fields": {"role": 11, "param_set": [1]}},
     {"pk": 1, "model": "flexi_auth.principalparamrolerelation", "fields": {"role": 1, "group": null, "user": 1}},
 

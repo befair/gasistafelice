@@ -50,3 +50,26 @@ From your preferred browser use the follwing links reguardless of your customizz
 http://127.0.0.1:8000/admin/  --> Admin interface for Django 
 http://127.0.0.1:8000/gas-admin/   --> Advancded Django admin interface
 http://127.0.0.1:8000/gasistafelice/rest/   --> SANET interface customization for Gassista use
+
+
+
+Use PostgreSQL database
+-----------------------
+
+If you want to set up a PostgreSQL db follow these steps:
+
+.. sourcecode:: python
+
+    (desmacerata1)fero@archgugu:~/src/gasistafelice/gasistafelice$ psql -U postgres
+    psql (9.1.1)
+    Type "help" for help.
+
+    postgres=# create role desadmin  login password '';
+    CREATE ROLE
+    postgres=# create database desmc owner desadmin encoding 'utf8' template template0;
+    CREATE DATABASE
+    postgres=# grant all privileges on database desmc to desadmin;
+    GRANT
+    postgres=# \q
+
+
