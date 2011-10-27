@@ -543,7 +543,7 @@ class Product(models.Model, PermissionResource):
     producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
 
     # Resource API
-    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"), default=category_catchall)
+    category = models.ForeignKey(ProductCategory, blank=True, related_name="product_set", verbose_name = _("category"), default=category_catchall)
 
     # Measure unit, it can be null in order to make it easier to define 
     # a new product. If a user specifies a `pu` which is also a `mu`,
@@ -582,6 +582,14 @@ class Product(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
+    def clean(self):
+
+        # Set default DES category for a product
+        if not self.category:
+            self.category = category_catchall()
+
+        return super(Product, self).clean()
+        
     @property
     def uuid(self):
         raise NotImplementedError("""UUID stuff MUST be developed as external app: 

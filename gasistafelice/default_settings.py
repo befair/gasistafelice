@@ -302,7 +302,7 @@ locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 
 # default category for all uncategorized products
 # WARNING: this category MUST appear in fixtures!
-DEFAULT_CATEGORY_CATCHALL = 'Senza categoria'
+DEFAULT_CATEGORY_CATCHALL = 'Non definita'
 
 #------ AUTH settings
 from flexi_auth_settings import *

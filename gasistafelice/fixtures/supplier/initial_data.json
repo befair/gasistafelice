@@ -82,12 +82,12 @@
 {"pk": 78,"model": "supplier.productcategory","fields": {"name": "Cosmesi::Saponi e Detergenti intimi","description": ""}}, 
 {"pk": 79,"model": "supplier.productcategory","fields": {"name": "Cosmesi::Olii, crème e uguenti","description": ""}}, 
 {"pk": 80,"model": "supplier.productcategory","fields": {"name": "Cosmesi::Barba","description": ""}}, 
-{"pk": 81,"model": "supplier.productcategory","fields": {"name": "Senza categoria","description": ""}}, 
+{"pk": 81,"model": "supplier.productcategory","fields": {"name": "Non definita","description": ""}}, 
 
 
 
 
-{"pk":1,"model":"supplier.certification", "fields": {"name":"AC","description":"Auto Certificazione" } },
+{"pk":1,"model":"supplier.certification", "fields": {"name":"AC","description":"Autocertificazione" } },
 {"pk":2,"model":"supplier.certification", "fields": {"name":"IMC","description":"Certificato da IMC" } },
 {"pk":3,"model":"supplier.certification", "fields": {"name":"INC","description":"In conversione" } },
 {"pk":4,"model":"supplier.certification", "fields": {"name":"BAD","description":"Convenzionale" } },
