@@ -10,6 +10,7 @@ Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/Boz
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from history.models import HistoricalRecords
 
@@ -530,6 +531,8 @@ class ProductPU(models.Model, PermissionResource):
 
     #-----------------------------------------------#
 
+def category_catchall():
+    return ProductCategory.objects.get(name=settings.DEFAULT_CATEGORY_CATCHALL)
 
 class Product(models.Model, PermissionResource):
 
@@ -540,7 +543,7 @@ class Product(models.Model, PermissionResource):
     producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
 
     # Resource API
-    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"), default=ProductCategory.objects.get(name=settings.DEFAULT_CATEGORY_CATCHALL))
+    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"), default=category_catchall)
 
     # Measure unit, it can be null in order to make it easier to define 
     # a new product. If a user specifies a `pu` which is also a `mu`,
