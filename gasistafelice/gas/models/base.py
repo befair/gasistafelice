@@ -457,15 +457,14 @@ class GASConfig(models.Model):
         help_text=_("default delivery closing hour and minutes")
     )
 
-    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), default=False, 
+    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), default=False,
         help_text=_("If False, GAS never use concept of withdrawal place that is the default")
     )
     can_change_withdrawal_place_on_each_order = models.BooleanField(verbose_name=_('Can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
-    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, 
-        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
+    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
@@ -567,7 +566,6 @@ class GASMember(models.Model, PermissionResource):
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
-   
 
     def _get_roles(self):
         """
