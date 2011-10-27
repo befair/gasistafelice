@@ -372,6 +372,13 @@ class ProductCategory(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
     
+    def save(self, *args, **kw):
+
+        if self.name == settings.DEFAULT_CATEGORY_CATCHALL:
+            raise ValueError(_("Cannot change default category, nor create a new one with the same name"))
+
+        super(ProductCategory, self).save(*args, **kw)
+
     @property
     def icon(self):
         return self.image or super(ProductCategory, self).icon
@@ -533,7 +540,7 @@ class Product(models.Model, PermissionResource):
     producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
 
     # Resource API
-    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"))
+    category = models.ForeignKey(ProductCategory, null=True, blank=True, related_name="product_set", verbose_name = _("category"), default=ProductCategory.objects.get(name=settings.DEFAULT_CATEGORY_CATCHALL))
 
     # Measure unit, it can be null in order to make it easier to define 
     # a new product. If a user specifies a `pu` which is also a `mu`,

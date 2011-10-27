@@ -300,6 +300,9 @@ ENABLE_OLAP_REPORTS = False
 DATE_FMT = "%d/%m/%Y"
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 
+# default category for all uncategorized products
+# WARNING: this category MUST appear in fixtures!
+DEFAULT_CATEGORY_CATCHALL = 'Senza categoria'
 
 #--------------------- AUTH settings ----------------#
 ## QUESTION: Maybe app-specific settings like these should be placed 
@@ -389,3 +392,4 @@ TRANSACTION_TYPES = (
      (consts.GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
      (consts.MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
 )
+

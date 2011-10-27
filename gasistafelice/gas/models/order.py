@@ -42,12 +42,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
     datetime_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
     datetime_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
-    # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
+    # Where and when Delivery occurs
+    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # Where and when Withdrawal occurs
     withdrawal = models.ForeignKey('Withdrawal', verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True)
+
+    # Delivery cost. To be set after delivery has happened
+    delivery_cost = CurrencyField(verbose_name=_('Delivery cost'), null=True, blank=True)
+
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
@@ -700,11 +704,6 @@ class Delivery(Appointment, PermissionResource):
     place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"),verbose_name=_('place'))
     date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"),verbose_name=_('date'))    
 
-    # Person who coordinates delivery appointment (if any) 
-    info_people_set = models.ManyToManyField(Person, null=True, blank=True,verbose_name=_('info people'))
-    
-    # TODO: COSTO DI QUESTA CONSEGNA SPECIFICA?
-    
     history = HistoricalRecords()
 
     class Meta:
@@ -737,12 +736,8 @@ class Delivery(Appointment, PermissionResource):
         return pr.get_users()       
  
     @property
-    def info_people(self):
-        return self.info_people_set.all()
-
-    @property
     def persons(self):
-        return self.info_people | self.referrers_people
+        return self.referrers_people
 
     #-------------------------------------------------------------------------------#   
     # Authorization API
@@ -844,9 +839,6 @@ class Withdrawal(Appointment, PermissionResource):
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
 
-    # Person who coordinates this withdrawal appointment (if any) 
-    info_people_set = models.ManyToManyField(GASMember)
-    
     history = HistoricalRecords()
 
     class Meta:
@@ -886,12 +878,8 @@ class Withdrawal(Appointment, PermissionResource):
         return pr.get_users()       
 
     @property
-    def info_people(self):
-        return self.info_people_set.all()
-
-    @property
     def persons(self):
-        return self.info_people | self.referrers_people
+        return self.referrers_people
 
     #-------------------------------------------------------------------------------#   
     # Authorization API
