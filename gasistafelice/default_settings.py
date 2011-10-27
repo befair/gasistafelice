@@ -304,92 +304,10 @@ locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 # WARNING: this category MUST appear in fixtures!
 DEFAULT_CATEGORY_CATCHALL = 'Senza categoria'
 
-#--------------------- AUTH settings ----------------#
-## QUESTION: Maybe app-specific settings like these should be placed 
-## in an dedicated settings module and imported here ?
+#------ AUTH settings
+from flexi_auth_settings import *
 
-# TODO: DES_REFERRER role (or remove GAS_REFERRER role?)
-ROLES_LIST = (
-#    (consts.NOBODY, _('Nobody')),
-#    (consts.SUPPLIER_REFERRER, _('Supplier')),
-#    (consts.GAS_MEMBER, _('GAS member')),
-#    (consts.GAS_REFERRER, _('GAS referrer')),
-#    (consts.GAS_REFERRER_SUPPLIER, _('GAS supplier referrer')),
-#    (consts.GAS_REFERRER_ORDER, _('GAS order referrer')),
-#    (consts.GAS_REFERRER_WITHDRAWAL, _('GAS withdrawal referrer')),
-#    (consts.GAS_REFERRER_DELIVERY, _('GAS delivery referrer')),
-#    (consts.GAS_REFERRER_CASH, _('GAS cash referrer')),
-#    (consts.GAS_REFERRER_TECH, _('GAS technical referrer')),
-#    (consts.DES_ADMIN, _('DES administrator')),
-    (consts.NOBODY, 'Nessuno'),
-    (consts.SUPPLIER_REFERRER, 'Fornitore'),
-    (consts.GAS_MEMBER, 'Gasista'),
-    (consts.GAS_REFERRER, 'GAS referrer'),
-    (consts.GAS_REFERRER_SUPPLIER, 'Referente fornitore'),
-    (consts.GAS_REFERRER_ORDER, 'Referente di ordine'),
-    (consts.GAS_REFERRER_WITHDRAWAL, 'GAS withdrawal referrer'),
-    (consts.GAS_REFERRER_DELIVERY, 'GAS delivery referrer'),
-    (consts.GAS_REFERRER_CASH, 'Referente economico'),
-    (consts.GAS_REFERRER_TECH, 'Referente informatico'),
-    (consts.DES_ADMIN, 'Amministratore del DES'),
-)
+#------ ACCOUNTING settings
+from simple_accounting_settings import *
 
-PARAM_CHOICES = (
-   ('des', _('DES')),
-   ('gas', _('GAS')),
-   ('supplier', _('Supplier')),
-   ('pact', _('GAS-supplier solidal pact')),
-   ('order', _('GAS-supplier order')),
-   ('withdrawal', _('Withdrawal appointment')),
-   ('delivery', _('Delivery appointment')),  
-)
-
-VALID_PARAMS_FOR_ROLES = {
-    ## format
-    # ``{<role name>: {<parameter name>: <parameter type>, ..}, ..}``
-    # where the parameter type is expressed as a *model label* (i.e. a string of the form ``app_label.model_name``)
-    consts.SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
-    consts.GAS_MEMBER : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER_CASH : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER_TECH : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER_SUPPLIER : {'pact':'gas.GASSupplierSolidalPact'}, 
-    consts.GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
-    consts.GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
-    consts.GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
-    consts.DES_ADMIN: {'des':'des.DES'},                         
-}
-
-## QUESTION: Does the section below is useful/needed by some pieces of code in *Gasista Felice* ?
-PERMISSIONS_CHOICES = (
-    (consts.VIEW, _('View')),
-    (consts.LIST, _('List')),
-    (consts.CREATE, _('Create')),
-    (consts.EDIT, _('Edit')),
-    (consts.EDIT_MULTIPLE, _('Edit multiple')),
-    (consts.DELETE, _('Delete')),
-    (consts.ALL, _('All')), # catchall
-)
-
-#--------------------- ACCOUNTING settings ----------------#
-SUBJECTIVE_MODELS = (
-    'gas.GAS',
-    'gas.GASMember',
-    'supplier.Supplier',                      
-)
-
-ACCOUNT_TYPES = (
-    (consts.INCOME, _('Incomes')),
-    (consts.EXPENSE, _('Expenses')),
-    (consts.ASSET, _('Assets')),
-    (consts.LIABILITY, _('Liabilities')),
-    (consts.EQUITY, _('Equity')),     
-)
-
-TRANSACTION_TYPES = (
-     (consts.INVOICE_PAYMENT, 'Payment of an invoice '),
-     (consts.INVOICE_COLLECTION, 'Collection of an invoice'),
-     (consts.GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
-     (consts.MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
-)
 
