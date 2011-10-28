@@ -20,7 +20,6 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                     null,
                     null,
                     null,
-                    null,
                     { "sType": "currency" },
                     null,
                     null

@@ -13,6 +13,7 @@ class GASSupplierStockForm(forms.Form):
 
     id = forms.IntegerField(required=True, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
+    availability = forms.BooleanField(required=False)
 
     def __init__(self, request, *args, **kw):
         super(GASSupplierStockForm, self).__init__(*args, **kw)
