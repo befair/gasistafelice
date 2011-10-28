@@ -1,4 +1,4 @@
-{% extends "blocks/base/edit_multiple.json" %}
+{% extends "blocks/base/data.json" %}
 {% load basic_tags %}
 
 {% block table_rows %}
@@ -9,8 +9,8 @@
         "{{stock.product|escapejs}}",
         "{{stock.product.description|escapejs}}",
         "&#8364; {{ stock.price|floatformat:2 }}",
-        "{{ stock.availability|escapejs }}{% filter escapejs %}{% bool_img stock.availability %}{% endfilter %}",
-        "{{ stock.field_enabled|escapejs }}",
+        "{% filter escapejs %}{% bool_img stock.availability %}{% endfilter %}",
+        "{% filter escapejs %}{% bool_img stock.field_enabled %}{% endfilter %}",
 
     ]
     {% if not forloop.last %}
@@ -19,4 +19,3 @@
     {% endfor %}
 
 {% endblock %}
-

@@ -8,7 +8,6 @@ from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_respon
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.forms.stocks import GASSupplierStockFormSet
-from django.template.defaultfilters import floatformat
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -22,13 +21,13 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
-        1: 'code', 
-        2: 'product', 
-        3: 'product__description', 
-        4: 'price', 
-        5: 'availability',
-        6: 'enabled' 
+        1: 'product', 
+        2: 'product__description', 
+        3: 'price', 
+        4: 'availability',
+        5: 'enabled' 
     }
+        #1: 'code', 
 
     def _get_resource_list(self, request):
         return request.resource.gasstocks
@@ -47,6 +46,7 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-id' % key_prefix : el.pk,
                '%s-enabled' % key_prefix : el.enabled,
+               '%s-availability' % key_prefix : el.stock.amount_available
             })
 
         data['form-TOTAL_FORMS'] = i + 1
@@ -60,28 +60,28 @@ class Block(BlockSSDataTables):
         for i,form in enumerate(formset):
 
             if i < c:
-                code = querySet[i].stock.code or ''
+                #code = querySet[i].stock.code or ''
                 product = querySet[i].stock.product
                 price = querySet[i].stock.price
                 description = querySet[i].stock.product.description
-                av = querySet[i].stock.amount_available
+                av = querySet[i].enabled #stock.amount_available
             else:
-                code = ""
+                #code = ""
                 product = ""
                 price = ""
-                description = ""
+                description = "" + i.to_s
                 av = False
 
 
             records.append({
-               'id' : form['id'],
-               'code' : code,
+               'id' : "%s %s " % (el.pk, form['id']),
                'product' : product,
                'description' : description,
-               'price' : floatformat(price, 2),
-               'availability' : bool(av),
+               'price' : price,
+               'availability' : form['availability'], 
                'field_enabled' : [_('not available'),form['enabled']][bool(av)],
             })
+               #'code' : code,
 
         return formset, records, {}
 
