@@ -17,7 +17,7 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    null,
+                    {"sWidth": "5%", "bSortable": false,},
                     null,
                     null,
                     { "sType": "currency" },

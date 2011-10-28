@@ -44,6 +44,7 @@ class Block(BlockSSDataTables):
         for i,el in enumerate(querySet):
             key_prefix = 'form-%d' % i
             data.update({
+               '%s-pk' % key_prefix : el.pk,
                '%s-id' % key_prefix : el.pk,
                '%s-enabled' % key_prefix : el.enabled,
                '%s-availability' % key_prefix : el.stock.amount_available
@@ -74,7 +75,7 @@ class Block(BlockSSDataTables):
 
 
             records.append({
-               'id' : "%s %s " % (el.pk, form['id']),
+               'id' : "%s %s " % (form['pk'], form['id']),
                'product' : product,
                'description' : description,
                'price' : price,
