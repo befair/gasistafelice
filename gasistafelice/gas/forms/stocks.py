@@ -11,6 +11,7 @@ from gasistafelice.supplier.models import SupplierStock, Product
 
 class GASSupplierStockForm(forms.Form):
 
+    pk = forms.IntegerField(required=False)
     id = forms.IntegerField(required=True, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
     availability = forms.BooleanField(required=False)
