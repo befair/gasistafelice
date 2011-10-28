@@ -40,8 +40,9 @@ class DES(Site, PermissionResource):
     TODO: cache attributes in order to avoid database operations.
     (stub for validity already done)
 
-    >>> d = Siteattr.get_site()
-    >>> Siteattr.get_attribute_or_empty('name') == d.name
+    #NOTE: doctest fail. Have to use initial_data.json fixture on this
+    >> d = Siteattr.get_site()
+    >> Siteattr.get_attribute_or_empty('name') == d.name
     True
     """
 

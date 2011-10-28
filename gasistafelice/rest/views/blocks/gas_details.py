@@ -36,7 +36,7 @@ class Block(details.Block):
                 # Change URL for action EDIT, insert "configure" action
                 if act.name == EDIT:
                    act.url = reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,)) 
-                   user_actions.insert(i, act_configure)
+                   user_actions.insert(i+1, act_configure)
                    break
                    
         return user_actions
