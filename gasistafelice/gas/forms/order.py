@@ -49,20 +49,25 @@ class BaseOrderForm(forms.ModelForm):
         super(BaseOrderForm, self).__init__(*args, **kw)
         self.fields['delivery_referrer'].queryset = request.resource.gas.persons
         self.fields['withdrawal_referrer'].queryset = request.resource.gas.persons
+        self.__gas = request.resource.gas
 
     def get_appointment_instance(self, name, klass):
 
         ddt = self.cleaned_data['%s_datetime' % name]
-        dc = self.cleaned_data['%s_city' % name] 
-        dp = self.cleaned_data['%s_addr_or_place' % name]
-        try:
-            p = Place.objects.get(city=dc, name__icontains=dp)
-        except Place.DoesNotExist:
+        if self.cleaned_data.get('%s_city' % name):
+            dc =self.cleaned_data['%s_city' % name]
+            dp = self.cleaned_data['%s_addr_or_place' % name]
+
             try:
-                p = Place.objects.get(city=dc, addr__icontains=dp)
+                p = Place.objects.get(city=dc, name__icontains=dp)
             except Place.DoesNotExist:
-                p = Place(city=dc, name=dp)
-                p.save()
+                try:
+                    p = Place.objects.get(city=dc, addr__icontains=dp)
+                except Place.DoesNotExist:
+                    p = Place(city=dc, name=dp)
+                    p.save()
+        else:
+            p = getattr(self.__gas.config, "%s_place" % name)
 
         d, created = klass.objects.get_or_create(date=ddt, place=p)
         return d
@@ -126,7 +131,7 @@ class AddOrderForm(BaseOrderForm):
         if self.cleaned_data.get('delivery_datetime'):
             d = self.get_delivery()
             self.instance.delivery =  d
-               
+                       
         if self.cleaned_data.get('withdrawal_datetime'):
             w = self.get_withdrawal()
             self.instance.withdrawal =  w
@@ -218,6 +223,7 @@ class GASSupplierOrderProductForm(forms.Form):
     def __init__(self, request, *args, **kw):
         super(GASSupplierOrderProductForm, self).__init__(*args, **kw)
 
+    #@transaction.commit_on_success
     def save(self):
 
         #log.debug("Save GASSupplierOrderProductForm")

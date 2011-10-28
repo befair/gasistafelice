@@ -58,6 +58,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     #TODO: Notify system
 
+    inter_gas = models.PositiveIntegerField(verbose_name=_('Is InterGAS'), null=True,  
+        help_text=_("If not null this order will be aggregate with orders from other GAS")
+    )
+
     objects = OrderManager()
 
     history = HistoricalRecords()
@@ -542,6 +546,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     )
     # gasmember order have to be confirmed if GAS configuration allowed it
     is_confirmed = models.BooleanField(default=False,verbose_name=_('confirmed'))
+
+    note = models.CharField(max_length=64, verbose_name=_('product note'), null=True, blank=True, help_text=_("GAS member can write some short message about this product for the producer"))
 
     history = HistoricalRecords()
 
