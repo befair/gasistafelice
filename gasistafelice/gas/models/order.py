@@ -320,15 +320,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
         created = False
         if not self.pk:
             created = True
-            # Create default withdrawal
-            if self.datetime_end and not self.withdrawal:
-                #TODO: check gasconfig for weekday
-                w = Withdrawal(
-                        date=self.datetime_end + timedelta(7), 
-                        place=self.gas.config.withdrawal_place
-                )
-                w.save()
-                self.withdrawal = w
+            if self.gas.config.use_withdrawal_place:
+                # Create default withdrawal
+                if self.datetime_end and not self.withdrawal:
+                    #TODO: check gasconfig for weekday
+                    w = Withdrawal(
+                            date=self.datetime_end + timedelta(7), 
+                            place=self.gas.config.withdrawal_place
+                    )
+                    w.save()
+                    self.withdrawal = w
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -488,9 +489,30 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         if self.delivered_price is None:
             self.delivered_price = self.order_price
         super(GASSupplierOrderProduct, self).save(*args, **kw)
-        
+
+        # CASCADING set until GASMemberOrder
+        if self.has_changed_price:
+            self._msg = []
+            self._msg.append('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
+            for gmo in self.gasmember_order_set:
+                #gmo.order_price = self.order_price
+                gmo.note = _("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.save()
+
+
+    @property
+    def has_changed_price(self):
+        try:
+            gsop = GASSupplierOrderProduct.objects.get(pk=self.pk)
+            if not gsop is None:
+                return bool(self.order_price != gsop.order_price)
+            else:
+                return False
+        except GASSupplierOrderProduct.DoesNotExist:
+            return False
+
     #-------------- Authorization API ---------------#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):

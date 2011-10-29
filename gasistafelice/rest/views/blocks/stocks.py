@@ -69,6 +69,7 @@ class Block(BlockSSDataTables):
             key_prefix = 'form-%d' % i
             data.update({
                '%s-id' % key_prefix : el.pk,
+               '%s-pk' % key_prefix : el.pk,
                '%s-product' % key_prefix : el.product,
                '%s-description' % key_prefix : el.product.description,
                '%s-price' % key_prefix : el.price,
@@ -94,7 +95,7 @@ class Block(BlockSSDataTables):
                 pk = None
 
             records.append({
-                'id' : form['id'],
+                'id' : "%s %s " % (form['pk'], form['id']),
                 'product' : form['product'],
                 'description' : form['description'], #description,
                 'price' : form['price'],

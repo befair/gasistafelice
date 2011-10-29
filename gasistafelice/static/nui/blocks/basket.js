@@ -29,8 +29,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     {"sWidth": "5%"},
                     {"sWidth": "5%"},
                     {"sWidth": "20%"},
-                    {"sWidth": "30%"
-                    },
+                    {"sWidth": "30%"},
                     { "sType": "currency", "sClass": "taright", "sWidth": "10%", "bSearchable" : false },
                     { "bSortable" : false, "sClass": "taright", "sWidth": "15%", "bSearchable" : false, 
                       "fnRender": function ( oObj ) {
