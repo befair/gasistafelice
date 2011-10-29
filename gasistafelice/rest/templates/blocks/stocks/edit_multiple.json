@@ -10,6 +10,7 @@
         "{{stock.description|escapejs}}",
         "{{stock.price|escapejs}}",
         "{{stock.availability|escapejs}}",
+
     ]
     {% if not forloop.last %}
     ,

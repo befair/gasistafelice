@@ -28,7 +28,7 @@ class Block(BlockSSDataTables):
         3: 'price',
         4: 'availability'
     }
-        #1: 'code', 
+        #1: 'code',
 
     def _get_user_actions(self, request):
 
@@ -90,7 +90,7 @@ class Block(BlockSSDataTables):
                 description = querySet[i].product.description
                 pk = querySet[i].pk
             else:
-                description = ""
+                description = "" + i.to_s
                 pk = None
 
             records.append({
