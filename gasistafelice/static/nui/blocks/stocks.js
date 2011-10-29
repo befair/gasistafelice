@@ -15,11 +15,11 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    null,
-                    null,
-                    null,
-                    { "sType": "currency" },
-                    null
+                    { "bSearchable" : true, "sWidth": "5%", "bVisible": true },
+                    { "bSearchable" : true, "sWidth": "30%", "bVisible": true },
+                    { "bSearchable" : true, "sWidth": "40%", "bVisible": true },
+                    { "bSearchable" : true, "sWidth": "15%", "sType": "currency", "sClass": "taright" },
+                    { "bSearchable" : true, "sWidth": "10%",},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

@@ -744,6 +744,11 @@ class SupplierStock(models.Model, PermissionResource):
     def __unicode__(self):
         return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
+#    @property
+#    def description(self):
+#        #Required for editing
+#        return self.product.description
+
     @property
     def net_price(self):
         return self.price/(1 + self.product.vat_percent)

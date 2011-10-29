@@ -3,6 +3,8 @@ from gasistafelice.base.models import Person
 from gasistafelice.admin.models import GASAdmin, GASSupplierOrderAdmin, gas_models, supplier_models
 
 from gasistafelice.consts import EDIT, CREATE
+import logging
+log = logging.getLogger(__name__)
 
 class GASAdmin_GAS(GASAdmin):
     change_list_template = 'gas_admin/change_list.html'

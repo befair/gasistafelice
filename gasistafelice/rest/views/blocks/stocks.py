@@ -23,10 +23,10 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = { 
         0: 'pk',
-        1: 'product', 
-        2: 'product__description', 
-        3: 'price', 
-        4: 'availability' 
+        1: 'product',
+        2: 'product__description',
+        3: 'price',
+        4: 'availability'
     }
         #1: 'code', 
 
@@ -70,12 +70,13 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-id' % key_prefix : el.pk,
                '%s-product' % key_prefix : el.product,
+               '%s-description' % key_prefix : el.product.description,
                '%s-price' % key_prefix : el.price,
                '%s-availability' % key_prefix : el.amount_available,
             })
                #'%s-code' % key_prefix : el.code,
 
-        data['form-TOTAL_FORMS'] = i + 5  #empty form for create new insert data
+        data['form-TOTAL_FORMS'] = i + 1  #empty form for create new insert data
         data['form-INITIAL_FORMS'] = 0
         data['form-MAX_NUM_FORMS'] = 0
 
@@ -89,13 +90,13 @@ class Block(BlockSSDataTables):
                 description = querySet[i].product.description
                 pk = querySet[i].pk
             else:
-                description = "" + i.to_s
+                description = ""
                 pk = None
 
             records.append({
                 'id' : form['id'],
                 'product' : form['product'],
-                'description' : description,
+                'description' : form['description'], #description,
                 'price' : form['price'],
                 'availability' : form['availability'],
             })

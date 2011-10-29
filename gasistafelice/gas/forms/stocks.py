@@ -9,6 +9,9 @@ from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.gas.models.base import GASSupplierStock
 from gasistafelice.supplier.models import SupplierStock, Product
 
+import logging
+log = logging.getLogger(__name__)
+
 class GASSupplierStockForm(forms.Form):
 
     pk = forms.IntegerField(required=False)

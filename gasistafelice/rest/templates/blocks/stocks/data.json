@@ -7,8 +7,8 @@
 
         "{{stock.id|escapejs}}",
         "{{stock.product|escapejs}}",
-        "{{stock.product.description|escapejs}}",
-        "&#8364; {{ stock.price|floatformat:2|escapejs }}",
+        "{{stock.description|escapejs}}",
+        "&#8364; {{stock.price|floatformat:2|escapejs}}",
         "{% filter escapejs %}{% bool_img stock.availability %}{% endfilter %}",
 
     ]

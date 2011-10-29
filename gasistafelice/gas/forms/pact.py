@@ -12,6 +12,8 @@ from gasistafelice.consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 import datetime
+import logging
+log = logging.getLogger(__name__)
 
 def today():
     return datetime.date.today().strftime(settings.DATE_FMT)
