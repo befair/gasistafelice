@@ -3,6 +3,7 @@ from django import forms
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.base.models import Person
+from gasistafelice.consts import GAS_REFERRER_TECH
 
 class BaseRoleForm(forms.ModelForm):
     """Form for role management"""
@@ -25,9 +26,20 @@ class BaseRoleForm(forms.ModelForm):
     def save(self):
 
         if self.cleaned_data.get('delete'):
+            # HACK TODO AFTER 4th nov.
+            if not self.instance.user.is_superuser:
+                self.instance.user.is_staff = False
+
             self.instance.delete()
         else:
             self.instance.user = self.cleaned_data['person'].user
+
+            self.instance.user.is_active = True
+            # HACK TODO AFTER 4th nov.
+            if self.cleaned_data['role'].role.name == GAS_REFERRER_TECH:
+                self.instance.user.is_staff = True
+            self.instance.user.save()
+
             super(BaseRoleForm, self).save()
 
     class Meta:
