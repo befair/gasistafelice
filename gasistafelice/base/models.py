@@ -704,7 +704,9 @@ class Person(models.Model, PermissionResource):
             allowed_users = des.admins            
             return user in allowed_users 
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            #FIXME: Can't check permission CREATE on object <class 'gasistafelice.base.models.Person'> with respect to context (ctx)s
+            #raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
         
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -854,7 +856,9 @@ class Place(models.Model, PermissionResource):
             allowed_users =  des.admins | all_gas_members | all_suppliers
             return user in allowed_users 
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            #FIXME: Can't check permission CREATE on object <class 'gasistafelice.base.models.Person'> with respect to context (ctx)s
+            #raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
                 
     # Row-level EDIT permission
     def can_edit(self, user, context):
