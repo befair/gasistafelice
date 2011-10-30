@@ -19,7 +19,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         // Init dataTables
-        var iQta = 5;
+        var iQta = 6;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers',
                 "bServerSide": true,
@@ -30,22 +30,22 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     {"sWidth": "5%"},
                     {"sWidth": "20%"},
                     {"sWidth": "30%"},
-                    { "sType": "currency", "sClass": "taright", "sWidth": "10%", "bSearchable" : false },
-                    { "bSortable" : false, "sClass": "taright", "sWidth": "15%", "bSearchable" : false, 
+                    { "sType": "currency", "sClass": "taright", "sWidth": "10%","bSearchable":false },
+                    {"sWidth": "5%","bSearchable":false,"bSortable":false},
+                    {"bSortable":false, "sClass": "taright", "sWidth": "15%","bSearchable":false, 
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[iQta]).attr('step');
                                     var min =  $(oObj.aData[iQta]).attr('minimum_amount');
-                                    var price =  parseFloat(oObj.aData[iQta-1].replace(',','.').replace('&#8364;',''));
+                                    var price =  parseFloat(oObj.aData[iQta-2].replace(',','.').replace('&#8364;',''));
                                     var rv = '<span class="hand" onclick="fncOrder($(this),-'+ step +','+ min + ', ' + price + '); return false;"><img src="/static/nui/img/remove.png"></span>'; 
                                     rv += oObj.aData[iQta];
                                     rv += '<span class="hand" onclick="fncOrder($(this),+'+ step +','+ min + ', ' + price + '); return false;"><img src="/static/nui/img/add.png"></span>';
                                     return rv
                                   },
                      },
-                    { "sType": "currency", "bSortable" : false, "sClass": "taright", "sWidth": "10%", "bSearchable" : false },
-                    {"sWidth": "5%", "bSearchable" : false},
-                    {"sWidth": "5%", "bSearchable" : false, "bSortable" : false},
-                    {"sWidth": "5%", "bSearchable" : false, "bSortable" : false},
+                    { "sType": "currency","bSortable":false, "sClass": "taright", "sWidth": "10%","bSearchable":false },
+                    {"sWidth": "5%","bSearchable":false,"bSortable":false},
+                    {"sWidth": "5%","bSearchable":false,"bSortable":false},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -56,15 +56,13 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                 },
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
-                        //var nodes = oTable.fnGetNodes();
-                        //for (var i = 0; i < nodes.length; i++) {
-                        //    nodes[2].setAttribute("class", "alert");
-                        var priceStatus = aaData[iQta+3];
-                        var confirmStatus = aaData[iQta+4];
+                        var priceStatus = $($(aaData[iQta])[1]).attr('eur_chan');
+                        var confirmStatus = $($(aaData[iQta])[1]).attr('req_conf');
+                        //alert("["+ iQta + "]Price has changed: " + priceStatus + ", is confirmed: " + confirmStatus)
                         $(nRow).addClass(confirmStatus);
-                        var nCells = $(nRow).find('tr');
-                        //$(nCells[3]).addClass(confirmStatus);
-                        //$(nCells[4]).addClass(priceStatus);
+                        $(nRow.cells[4]).addClass(priceStatus);
+                        $(nRow.cells[8]).addClass(priceStatus);
+                        $(nRow.cells[9]).addClass(confirmStatus);
                     }
                     catch(e){alert(e.message);
                     }

@@ -40,10 +40,10 @@ class Block(BlockSSDataTables):
         2: 'ordered_product__gasstock__stock__supplier', 
         3: 'ordered_product__gasstock__stock__product', 
         4: 'ordered_price', 
-        5: 'ordered_amount', 
-        6: 'tot_price', 
-        7: 'enabled' ,
-        8: '' ,
+        5: '' ,
+        6: 'ordered_amount', 
+        7: 'tot_price', 
+        8: 'enabled' ,
         9: '' 
     }
 
@@ -141,7 +141,6 @@ class Block(BlockSSDataTables):
         records = []
 
         for i,el in enumerate(querySet):
-
             form = formset[map_info[el.pk]['formset_index']]
             total = map_info[el.pk]['ordered_total']
 
@@ -149,14 +148,9 @@ class Block(BlockSSDataTables):
                             'class' : 'amount',
                             'step' : el.ordered_product.gasstock.step or 1,
                             'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
+                            'eur_chan' : ["", "alert"][bool(el.has_changed)],
+                            'req_conf' : ["alert", ""][bool(el.is_confirmed)],
             }
-
-            require_confirm = ""
-            if not el.is_confirmed:
-                require_confirm = "alert"
-            price_changed = ""
-            if el.has_changed:
-                price_changed = "alert"
 
             records.append({
                'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),
@@ -164,16 +158,12 @@ class Block(BlockSSDataTables):
                'supplier' : el.supplier,
                'product' : el.product,
                'price' : el.ordered_product.order_price,
+               'price_changed' : not el.has_changed,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
-               'price_changed' : el.has_changed,
                'field_enabled' : form['enabled'],
-               'price_changed' : price_changed,
-               'order_confirmed' : require_confirm,
-               'DT_RowClass': require_confirm,
-               'rowColor': "inherit",
+               'order_confirmed' : el.is_confirmed,
             })
-
                #'description' : el.product.description,
 
         #return records, records, {}
