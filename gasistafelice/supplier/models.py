@@ -19,6 +19,7 @@ from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.exceptions import NoSenseException
+from gasistafelice.lib import ClassProperty
 from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib.fields import display
 
@@ -373,6 +374,10 @@ class ProductCategory(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
     
+    @property
+    def icon(self):
+        return self.image or super(ProductCategory, self).icon
+
     def save(self, *args, **kw):
 
         if self.name == settings.DEFAULT_CATEGORY_CATCHALL:
@@ -737,12 +742,17 @@ class SupplierStock(models.Model, PermissionResource):
         #Fixtures do not work: to be checked and then re-enabled TODO
         #unique_together = (('code', 'supplier'),)
 
+    @ClassProperty
+    @classmethod
+    def resource_type(cls):
+        return "stock" 
+
     def __init__(self, *args, **kw):
         super(SupplierStock, self).__init__(*args, **kw)
         self._msg = None
 
     def __unicode__(self):
-        return '%s (by %s)' % (unicode(self.product), unicode(self.supplier))
+        return u'%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
     @property
     def net_price(self):
@@ -750,12 +760,27 @@ class SupplierStock(models.Model, PermissionResource):
 
     @property
     def icon(self):
-        return self.image or self.product.category.image
+        return self.image or self.category.icon
 
     @property
     def producer(self):
         return self.product.producer
 
+    @property
+    def category(self):
+        return self.product.category
+
+    @property
+    def description(self):
+        return self.product.description
+
+    @property
+    def name(self):
+        return unicode(self)
+
+    @property
+    def vat_percent(self):
+        return self.product.vat_percent
     @property
     def availability(self):
         return bool(self.amount_available)
@@ -886,6 +911,25 @@ class SupplierStock(models.Model, PermissionResource):
         return user in allowed_users 
     
     #-----------------------------------------------#
+
+    @property
+    def display_price(self):
+        return u"%(price)s (%(vat_name)s %(vat)s%%)" % {
+            'price' : self.price,
+            'vat_name' : _('VAT'),
+            'vat' : self.vat_percent*100,
+        }
+
+    display_fields = (
+        supplier,
+        models.TextField(name="description", verbose_name=_("Description")),
+        code,
+        models.CharField(max_length=32, name="display_price", verbose_name=_("Price")),
+        display.Resource(name="category", verbose_name=_("Category")),
+        supplier_category,
+        detail_minimum_amount, detail_step, 
+        models.BooleanField(max_length=32, name="availability", verbose_name=_("Availability")),
+    )
 
 
 class SupplierProductCategory(models.Model):
