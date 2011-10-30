@@ -913,8 +913,13 @@ class GASSupplierStock(models.Model, PermissionResource):
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact=self.pact)
 
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open(), gasstock=self)
+
     #-- Authorization API --#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
@@ -943,7 +948,36 @@ class GASSupplierStock(models.Model, PermissionResource):
         # * GAS administrators 
         allowed_users = self.gas.tech_referrers | self.pact.referrers
         return allowed_users
-    
+
+    #-- Production data --#
+
+    # how many items of this gas supplier stock were ordered (globally by the GAS for this GASSupplierProduct)
+    @property
+    def tot_amount(self):
+        amount = 0 
+#        for gsop in self.orderable_products.values('tot_amount'):
+#            amount += gsop['tot_amount']
+        for gsop in self.orderable_products:
+            amount += gsop.tot_amount
+        return amount 
+
+    @property
+    def tot_gasmembers(self):
+        persons = 0
+        for gsop in self.orderable_products:
+            persons += gsop.tot_gasmembers
+        return persons
+
+    @property
+    def tot_price(self):
+        tot = 0
+        for gsop in self.orderable_products:
+            tot += gsop.tot_price
+        return tot
+
+
+
+
 #-----------------------------------------------------------------------------------------------------
     
 class GASSupplierSolidalPact(models.Model, PermissionResource):

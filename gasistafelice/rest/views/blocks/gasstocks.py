@@ -24,10 +24,12 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
         1: 'stock__product',
-        2: 'stock__product__description',
-        3: 'price',
-        4: 'stock__availability',
-        5: 'enabled'
+        2: 'price',
+        3: 'stock__availability',
+        4: 'enabled',
+        5: 'tot_amount',
+        6: 'tot_gasmembers',
+        7: 'tot_price'
     }
 
     def _get_user_actions(self, request):
@@ -87,10 +89,12 @@ class Block(BlockSSDataTables):
             records.append({
                'id' : "%s %s " % (form['pk'], form['id']),
                'product' : querySet[i].stock.product,
-               'description' : querySet[i].stock.product.description,
                'price' : querySet[i].price,
                'availability' : querySet[i].stock.amount_available, 
                'field_enabled' : [_('not available'),form['enabled']][bool(querySet[i].enabled)],
+               'tot_amount' : querySet[i].tot_amount,
+               'tot_gasmembers' : querySet[i].tot_gasmembers,
+               'tot_price' : querySet[i].tot_price,
             })
 
         return formset, records, {}

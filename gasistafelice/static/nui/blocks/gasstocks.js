@@ -18,11 +18,13 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"29%","bVisible": true },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"45%","bVisible": true },
+                    {"bSearchable":true,"bSortable":true,"sWidth":"30%","bVisible": true },
                     {"bSearchable":true,"bSortable":false,"sWidth":"15%", "sType": "currency", "sClass": "taright" },
-                    {"bSearchable":true,"bSortable":false,"sWidth":"8%",},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"8%",},
+                    {"bSearchable":true,"bSortable":false,"sWidth":"10%",},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%",},
                 ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     /* Modify Django management form info */

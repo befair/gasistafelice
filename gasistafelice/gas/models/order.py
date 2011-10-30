@@ -457,10 +457,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         #INFO: and compute tot_price in here.
         
         gmo_list = self.gasmember_order_set.all()
-        amount = 0 
+        tot = 0 
         for gmo in gmo_list:
-            amount += gmo.tot_price
-        return amount 
+            tot += gmo.tot_price
+        return tot 
 
     @property
     def pact(self):
