@@ -427,3 +427,4 @@ jQuery.BLOCKS["details"] = new jQuery.UIBlockDetails("details");
 jQuery.BLOCKS["gas_details"] = new jQuery.UIBlockDetails("gas_details");
 jQuery.BLOCKS["pact_details"] = new jQuery.UIBlockDetails("pact_details");
 jQuery.BLOCKS["order_details"] = new jQuery.UIBlockDetails("order_details");
+jQuery.BLOCKS["stock_details"] = new jQuery.UIBlockDetails("stock_details");

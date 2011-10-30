@@ -289,6 +289,13 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Scheda del patto',
         'blocks' : ['pact_details', 'closed_orders'],
     }],
+
+    'stock' : [{
+        'name': 'info',
+        'descr': 'Scheda del prodotto',
+        'blocks' : ['stock_details'],
+    }],
+
 }
    
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX

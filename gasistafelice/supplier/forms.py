@@ -45,3 +45,12 @@ SingleSupplierStockFormSet = formset_factory(
                                   extra=5,
                               )
 
+
+
+
+
+class EditStockForm(forms.ModelForm):
+
+    class Meta:
+        model = SupplierStock
+        
