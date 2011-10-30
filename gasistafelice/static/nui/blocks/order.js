@@ -19,7 +19,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         var block_obj = this;
-        var iQta = 5;
+        var iQta = 4;
         // Init dataTables
                 //'bPaginate': false, 'sPaginationType': 'full_numbers', 
                 //"oColVis": {"aiExclude": [ 0 ]},
@@ -28,12 +28,11 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
-                "aaSorting": [[2,"asc"]],
+                "aaSorting": [[1,"asc"]],
                 "aoColumns": [
                     { "bSearchable" : false, "sWidth": "4%", "bVisible": true },
                     { "bSearchable" : false, "bSortable" : true, "sWidth": "26%" },
                     { "bSortable" : true, "bSearchable" : true, "sWidth": "35%" },
-                    { "bSortable" : true, "bSearchable" : true, "sWidth": "10%" , "bVisible": true},
                     { "bSortable" : true, "sClass": "taright", "sType": "currency", "bSearchable" : false, "sWidth": "10%"},
                     { "bSortable" : false, "bSearchable" : false, "sWidth": "15%",
                       "fnRender": function ( oObj ) {

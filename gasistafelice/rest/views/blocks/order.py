@@ -27,11 +27,9 @@ class Block(BlockSSDataTables):
         0: 'order__pk', 
         1: 'gasstock__stock__supplier__name', 
         2: 'gasstock__stock__product__name',
-        3: 'gasstock__stock__product__description',
-        4: 'order_price',
-        5: '',
-        6: '', 
-        7: '', 
+        3: 'order_price',
+        4: 'tot_amount',
+        5: 'tot_price',
     }
 #        3: 'gasstock__stock__product__description',
 
@@ -169,12 +167,12 @@ class Block(BlockSSDataTables):
             }
 
             records.append({
+               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),
                'supplier' : el.supplier,
                'product' : el.product,
                'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
-               'ordered_total' : total,
-               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price'])
+               'ordered_total' : total
             })
                #'description' : el.product.description,
             #except KeyError:

@@ -3,10 +3,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("order_report", "table");
-        this.active_view = "edit_multiple";
-        this.default_view = this.active_view;
-        this.submit_name = "Rendi prodotti non disponibili (elimina ordine gasista se esiste)";
+        this.submit_name = "Togli prodotti dall'ordine (elimina ordine gasista)";
     },
+        //this.active_view = "edit_multiple";
+        //this.default_view = this.active_view;
 
     action_handler : function(action_el) {
         if (action_el.attr('name') == 'createpdf') {
