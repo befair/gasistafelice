@@ -11,6 +11,10 @@ from gasistafelice.supplier.models import SupplierStock, Product
 import logging
 log = logging.getLogger(__name__)
 
+
+#--------------------Supplier Stock-----------------------------------------------------------
+
+
 class SingleSupplierStockForm(forms.Form):
 
     #For editing
@@ -45,7 +49,7 @@ class SingleSupplierStockForm(forms.Form):
 
     def save(self):
 
-        log.debug("Save SingleSupplierStockForm")
+        #log.debug("Save SingleSupplierStockForm")
         if self.cleaned_data.get('id'):
             ss = SupplierStock.objects.get(pk=self.cleaned_data['id'])
             #prd = Product.objects.get(pk=ss.product.pk)

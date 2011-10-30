@@ -2,14 +2,14 @@
 {% load basic_tags %}
 
 {% block table_rows %}
-    {% for stock in records %}
+    {% for ss in records %}
     [
 
-        "{{stock.id|escapejs}}",
-        "{{stock.product|escapejs}}",
-        "{{stock.description|escapejs}}",
-        "{{stock.price|escapejs}}",
-        "{{stock.availability|escapejs}}",
+        "{{ss.id|escapejs}}",
+        "{{ss.product|escapejs}}",
+        "{{ss.description|escapejs}}",
+        "{{ss.price|escapejs}}",
+        "{{ss.availability|escapejs}}",
 
     ]
     {% if not forloop.last %}

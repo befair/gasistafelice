@@ -55,6 +55,7 @@ class Block(BlockSSDataTables):
         return user_actions
         
     def _get_resource_list(self, request):
+        #SupplierStock
         return request.resource.stocks
 
     def _get_records(self, request, querySet):

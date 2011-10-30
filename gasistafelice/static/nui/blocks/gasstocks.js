@@ -3,9 +3,9 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("gasstocks", "table");
-        this.active_view = "edit_multiple";
-        this.default_view = this.active_view;
     },
+        //this.active_view = "edit_multiple";
+        //this.default_view = this.active_view;
 
     rendering_table_post_load_handler: function() {
 
@@ -17,12 +17,12 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    {"sWidth": "5%", "bSortable": false,},
-                    null,
-                    null,
-                    { "sType": "currency" },
-                    null,
-                    null
+                    {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true },
+                    {"bSearchable":true,"bSortable":true,"sWidth":"29%","bVisible": true },
+                    {"bSearchable":true,"bSortable":true,"sWidth":"45%","bVisible": true },
+                    {"bSearchable":true,"bSortable":false,"sWidth":"15%", "sType": "currency", "sClass": "taright" },
+                    {"bSearchable":true,"bSortable":false,"sWidth":"8%",},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"8%",},
                 ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     /* Modify Django management form info */

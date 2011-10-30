@@ -32,6 +32,8 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 import datetime
+import logging
+log = logging.getLogger(__name__)
 
 #-------------------------------------------------------------------------------
 
@@ -900,6 +902,7 @@ class GASSupplierStock(models.Model, PermissionResource):
                     order.remove_product(self)
                 if order.message is not None:
                     self._msg.extend(order.message)
+                    log.debug(self._msg)
 
         super(GASSupplierStock, self).save(*args, **kwargs)
 

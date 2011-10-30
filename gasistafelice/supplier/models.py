@@ -32,7 +32,6 @@ from gasistafelice.gas import signals
 
 from decimal import Decimal
 import logging
-
 log = logging.getLogger(__name__)
 
 class Supplier(models.Model, PermissionResource):
