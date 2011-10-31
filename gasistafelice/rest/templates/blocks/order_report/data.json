@@ -14,6 +14,7 @@
         "{{row.tot_amount|floatformat:"-2"}}",
         "&#8364; {{ row.tot_price|floatformat:"2"}}",
         "{% filter escapejs %}{% bool_img row.id %}{% endfilter %}",
+        "{{row.product.urn|escapejs}}",
 
     ]
     {% if not forloop.last %}
