@@ -10,9 +10,9 @@
         "&#8364; {{gss.price|floatformat:2 }}",
         "{% filter escapejs %}{% bool_img gss.availability %}{% endfilter %}",
         "{{gss.field_enabled|escapejs}}",
-        "{{gss.tot_amount|escapejs}}",
+        "{{gss.tot_amount|escapejs|floatformat:"-2"}}",
         "{{gss.tot_gasmembers|escapejs}}",
-        "{{gss.tot_price|escapejs}}",
+        "{{gss.tot_price|escapejs|floatformat:2}}",
 
     ]
     {% if not forloop.last %}

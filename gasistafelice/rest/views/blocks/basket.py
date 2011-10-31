@@ -60,7 +60,7 @@ class Block(BlockSSDataTables):
                     ResourceBlockAction( 
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
-                        name=CONFIRM, verbose_name=_("Confirm all"), 
+                        name=CONFIRM, verbose_name=_("Confirm all"),
                         popup_form=False,
                     ),
 
@@ -150,6 +150,8 @@ class Block(BlockSSDataTables):
                             'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
                             'eur_chan' : ["", "alert"][bool(el.has_changed)],
                             'req_conf' : ["alert", ""][bool(el.is_confirmed)],
+                            's_url' : el.supplier.urn,
+                            'p_url' : el.product.urn,
             }
 
             records.append({

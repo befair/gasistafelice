@@ -28,8 +28,22 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"sWidth": "5%"},
                     {"sWidth": "5%"},
-                    {"sWidth": "20%"},
-                    {"sWidth": "30%"},
+                    {"sWidth": "20%",
+                      "fnRender": function ( oObj ) {
+                                    var url = $(oObj.aData[iQta]).attr('s_url');
+                                    var _name = oObj.aData[ oObj.iDataColumn ];
+                                    res = new jQuery.Resource(url, _name);
+                                    return res.render();
+                                  },
+                    },
+                    {"sWidth": "30%",
+                      "fnRender": function ( oObj ) {
+                                    var url = $(oObj.aData[iQta]).attr('p_url');
+                                    var _name = oObj.aData[ oObj.iDataColumn ];
+                                    res = new jQuery.Resource(url, _name);
+                                    return res.render();
+                                  },
+                    },
                     { "sType": "currency", "sClass": "taright", "sWidth": "10%","bSearchable":false },
                     {"sWidth": "5%","bSearchable":false,"bSortable":false},
                     {"bSortable":false, "sClass": "taright", "sWidth": "15%","bSearchable":false, 

@@ -88,15 +88,16 @@ class Block(BlockSSDataTables):
         c = querySet.count()
         for i,form in enumerate(formset):
 
+
             if i < c:
                 description = querySet[i].product.description
                 pk = querySet[i].pk
             else:
-                description = "" + i.to_s
+                description = ""
                 pk = None
 
             records.append({
-                'id' : "%s %s " % (form['pk'], form['id']),
+                'id' : "%s %s" % (form['pk'], form['id']),
                 'product' : form['product'],
                 'description' : form['description'], #description,
                 'price' : form['price'],
