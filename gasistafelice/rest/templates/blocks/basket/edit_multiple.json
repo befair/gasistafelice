@@ -12,7 +12,7 @@
         "&#8364; {{row.price|floatformat:"2"}}",
         "{% filter escapejs %}{% bool_img row.price_changed %}{% endfilter %}",
         "{{row.ordered_amount|escapejs}}",
-        "&#8364; {{ row.ordered_total|floatformat:"2"}}",
+        "&#8364; {{ row.ordered_total|floatformat:2}}",
         "{{ row.field_enabled|escapejs }}",
         "{% filter escapejs %}{% bool_img row.order_confirmed %}{% endfilter %}",
 

@@ -30,9 +30,23 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aaSorting": [[1,"asc"]],
                 "aoColumns": [
-                    {"bSearchable":false, "sWidth": "4%", "bVisible": true },
-                    {"bSearchable":false,"bSortable":true, "sWidth": "26%" },
-                    {"bSortable":true,"bSearchable":true, "sWidth": "35%" },
+                    {"bSearchable":true, "sWidth": "4%", "bVisible": true },
+                    {"bSearchable":true,"bSortable":true, "sWidth": "26%",
+                      "fnRender": function ( oObj ) {
+                                    var url = $(oObj.aData[iQta]).attr('s_url');
+                                    var _name = oObj.aData[ oObj.iDataColumn ];
+                                    res = new jQuery.Resource(url, _name);
+                                    return res.render();
+                                  },
+                    },
+                    {"bSortable":true,"bSearchable":true, "sWidth": "35%",
+                      "fnRender": function ( oObj ) {
+                                    var url = $(oObj.aData[iQta]).attr('p_url');
+                                    var _name = oObj.aData[ oObj.iDataColumn ];
+                                    res = new jQuery.Resource(url, _name);
+                                    return res.render();
+                                  },
+                    },
                     {"bSortable":true, "sClass": "taright", "sType": "currency","bSearchable":false, "sWidth": "10%"},
                     {"bSortable":false,"bSearchable":false, "sWidth": "15%",
                       "fnRender": function ( oObj ) {

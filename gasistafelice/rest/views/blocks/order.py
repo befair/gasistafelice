@@ -164,6 +164,8 @@ class Block(BlockSSDataTables):
                             'class' : 'amount',
                             'step' : el.gasstock.step or 1,
                             'minimum_amount' : el.gasstock.minimum_amount or 1,
+                            's_url' : el.supplier.urn,
+                            'p_url' : el.product.urn,
             }
 
             records.append({
