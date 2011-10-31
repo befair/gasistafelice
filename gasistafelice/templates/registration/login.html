@@ -4,7 +4,10 @@
 {% block content %}
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+{{ form.non_field_errors }}
+<p>Tieni presente che potresti non accedere perché ancora non hai alcun ruolo nel DES.<br />
+Fatti assegnare un ruolo dal referente informatico di un GAS con cui sei in contatto.
+A presto allora!</p>
 {% endif %}
 
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
