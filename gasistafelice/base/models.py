@@ -508,7 +508,10 @@ class Person(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        return self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+        if self.city:
+            rv += u" (%s)" % self.city
+        return rv
 
     def clean(self):
         self.name = self.name.strip().lower().capitalize()
