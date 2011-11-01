@@ -14,11 +14,17 @@ from gasistafelice.supplier.models import SupplierStock, Product
 import logging
 log = logging.getLogger(__name__)
 
+
+#--------------------Supplier Stock-----------------------------------------------------------
+
 class SingleSupplierStockForm(forms.Form):
 
+    #For editing
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    code = forms.CharField(required=False)
-    product = forms.CharField(required=True)
+    pk = forms.IntegerField(required=False)
+    #code = forms.CharField(required=False)
+    product = forms.CharField(required=True, widget=forms.TextInput(), max_length=200)
+    description = forms.CharField(required=False, widget=forms.TextInput(), max_length=500)
 #    product = forms.ModelChoiceField(
 #                            queryset = Product.objects.all(), 
 #                            widget = RelatedFieldWidgetCanAdd(related_model=Product)
@@ -29,21 +35,55 @@ class SingleSupplierStockForm(forms.Form):
 
     def __init__(self, request, *args, **kw):
         super(SingleSupplierStockForm, self).__init__(*args, **kw)
+        instance = getattr(self, 'instance', None)
+        #if instance and instance.id:
+        #    self.fields['id'].widget.attrs['readonly'] = True
+        self.fields['pk'].widget.attrs['readonly'] = True
+        self.fields['pk'].widget.attrs['disabled'] = 'disabled'
+        self.fields['pk'].widget.attrs['class'] = 'input_small'
+        self.fields['product'].widget.attrs['class'] = 'input_medium'
+        self.fields['description'].widget.attrs['class'] = 'input_long'
+        self.fields['price'].widget.attrs['class'] = 'input_short taright'
         self.__supplier = request.resource
+
+#    def clean_id(self):
+#        return instance.id
 
     def save(self):
 
+        #log.debug("Save SingleSupplierStockForm")
         if self.cleaned_data.get('id'):
-            self.instance = SupplierStock.objects.get(pk=self.cleaned_data['id'])
+            ss = SupplierStock.objects.get(pk=self.cleaned_data['id'])
+            #prd = Product.objects.get(pk=ss.product.pk)
+            prd = ss.product
+            log.debug("Save SingleSupplierStockForm id_ss(%s) id_prd(%s)" % (ss.pk, prd.pk))
+            try:
+                #ss.code = self.cleaned_data.get('code')
+                #ss.supplier = self.__supplier
+                prd.name = self.cleaned_data['product']
+                prd.description = self.cleaned_data['description']
+                prd.save()
+                #"SupplierStock.product" must be a "Product" instance
+                #ss.product = self.cleaned_data['product']
+                #ss.product.description = self.cleaned_data['description']
+                old_price = ss.price
+                ss.price = self.cleaned_data['price']
+                if old_price != ss.price:
+                    #CASCADING price has changed
+                    log.debug("Save SingleSupplierStockForm price changed old(%s) new(%s)" % (old_price, ss.price))
+                old_amount = ss.amount_available
+                ss.amount_available = [0, ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
+                if old_amount != ss.amount_available:
+                    #CASCADING product availability has changed
+                    log.debug("Save SingleSupplierStockForm product availability has changed old(%s) new(%s)" % (old_amount, ss.amount_available))
+                ss.save()
+            except Exception, e:
+                log.debug("Save SingleSupplierStockForm error(%s)" %  str(e))
+                Exception("Save SingleSupplierStockForm error: %s", str(e))
         else:
-            self.instance = SupplierStock()
-
-        self.instance.code = self.cleaned_data.get('code')
-        self.instance.supplier = self.__supplier
-        self.instance.product = self.cleaned_data['product']
-        self.instance.price = self.cleaned_data['price']
-        self.instance.amount_available = [0, ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
-        self.instance.save()
+            #do not create suppliers stock here!
+            #ss = SupplierStock()
+            log.debug("New SingleSupplierStockForm")
 
 SingleSupplierStockFormSet = formset_factory(
                                   form=SingleSupplierStockForm, 

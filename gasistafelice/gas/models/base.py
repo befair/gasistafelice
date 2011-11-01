@@ -32,6 +32,8 @@ from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
 import datetime
+import logging
+log = logging.getLogger(__name__)
 
 #-------------------------------------------------------------------------------
 
@@ -457,12 +459,14 @@ class GASConfig(models.Model):
         help_text=_("default delivery closing hour and minutes")
     )
 
+    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), default=False,
+        help_text=_("If False, GAS never use concept of withdrawal place that is the default")
+    )
     can_change_withdrawal_place_on_each_order = models.BooleanField(verbose_name=_('Can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
-    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, 
-        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
+    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
@@ -547,6 +551,7 @@ class GASMember(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
+        display.Resource(name="gas", verbose_name=_("GAS")),
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
@@ -564,7 +569,6 @@ class GASMember(models.Model, PermissionResource):
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
-   
 
     def _get_roles(self):
         """
@@ -898,6 +902,7 @@ class GASSupplierStock(models.Model, PermissionResource):
                     order.remove_product(self)
                 if order.message is not None:
                     self._msg.extend(order.message)
+                    log.debug(self._msg)
 
         super(GASSupplierStock, self).save(*args, **kwargs)
 
@@ -908,8 +913,13 @@ class GASSupplierStock(models.Model, PermissionResource):
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact=self.pact)
 
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open(), gasstock=self)
+
     #-- Authorization API --#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
@@ -938,7 +948,36 @@ class GASSupplierStock(models.Model, PermissionResource):
         # * GAS administrators 
         allowed_users = self.gas.tech_referrers | self.pact.referrers
         return allowed_users
-    
+
+    #-- Production data --#
+
+    # how many items of this gas supplier stock were ordered (globally by the GAS for this GASSupplierProduct)
+    @property
+    def tot_amount(self):
+        amount = 0 
+#        for gsop in self.orderable_products.values('tot_amount'):
+#            amount += gsop['tot_amount']
+        for gsop in self.orderable_products:
+            amount += gsop.tot_amount
+        return amount 
+
+    @property
+    def tot_gasmembers(self):
+        persons = 0
+        for gsop in self.orderable_products:
+            persons += gsop.tot_gasmembers
+        return persons
+
+    @property
+    def tot_price(self):
+        tot = 0
+        for gsop in self.orderable_products:
+            tot += gsop.tot_price
+        return tot
+
+
+
+
 #-----------------------------------------------------------------------------------------------------
     
 class GASSupplierSolidalPact(models.Model, PermissionResource):
@@ -1020,12 +1059,17 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     #TODO:is_active = models.BooleanField(default=True, help_text=_("Pact can be broken o removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface"))
     #TODO:is_suspended = models.BooleanField(default=False, help_text=_("Pact can be suspended when partners are on unavailable (holydays, closed). The motor use this flag to operate or not some automatisms"))
 
+    is_inter_gas = models.BooleanField(verbose_name=_('Is InterGAS'), default=False, 
+        help_text=_("If true, this supplier can aggregate orders from several GAS")
+    )
+
     document = models.FileField(upload_to=base_utils.get_pact_path, null=True, blank=True, verbose_name=_("association act"))
 
     history = HistoricalRecords()
 
     display_fields = (
-        gas, supplier,
+        display.Resource(name="gas", verbose_name=_("GAS")),
+        display.Resource(name="supplier", verbose_name=_("Supplier")),
         display.ResourceList(name="referrers_people", verbose_name=_("Referrers")),
         order_minimum_amount, order_delivery_cost, order_deliver_interval,
         default_delivery_place, document

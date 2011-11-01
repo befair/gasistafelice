@@ -5,18 +5,18 @@
     <th>{% trans "Id" %}</th>
     <th>{% trans "Product" %}</th>
     <th>{% trans "Price" %}</th>
-    <th>{% trans "Price changed" %}</th>
-    <th>{% trans "TOT GAS members" %}</th>
-    <th>{% trans "n° Unconfirmed" %}</th>
-    <th>{% trans "TOT amount" %}</th>
-    <th>{% trans "TOT price" %}</th>
+    <th title='{% trans "Price changed" %}'>&euro;&lt;&gt;</th>
+    <th title='{% trans "TOT GAS members" %}'>{% trans "GASMember" %}</th>
+    <th title='Numero totale di ordini ceh richiedono conferma'>{% trans "n° UnC" %}</th>
+    <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
+    <th title='{% trans "Ordered total" %}'>{% trans "Total" %}</th>
     <th>{% trans "Available" %}</th>
 {% endblock %}
 
 {% block footer %}
     <tr>
-        <th class="totfield" colspan="5">{% trans "Total" %}:</th>
-        <th class="totvalue" colspan="4" id="total-order"></th>
+        <th class="totfield" colspan="6">{% trans "Total" %}:</th>
+        <th class="totvalue" colspan="3" id="total-order"></th>
     </tr>
 {% endblock %}
 

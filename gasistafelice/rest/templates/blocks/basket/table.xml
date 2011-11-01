@@ -3,19 +3,21 @@
 
 {% block headers %}
     <th>{% trans "Id" %}</th>
-    <th>{% trans "Order" %}</th>
+    <th title='{% trans "Order" %}'>Ord.</th>
     <th>{% trans "Supplier" %}</th>
     <th>{% trans "Product" %}</th>
     <th>{% trans "Price" %}</th>
-    <th>{% trans "Ordered amount" %}</th>
-    <th>{% trans "Ordered total" %}</th>
-    <th>{% trans "Delete" %}</th>
+    <th title='{% trans "Price changed" %}'>&euro;&lt;&gt;</th>
+    <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
+    <th title='{% trans "Ordered total" %}'>{% trans "Total" %}</th>
+    <th title='{% trans "Delete" %}'>Del</th>
+    <th title='Ordine confermato?'>Cf.T</th>
 {% endblock %}
 
 {% block footer %}
     <tr>
         <th class="totfield" colspan="5">{% trans "Total" %}:</th>
-        <th class="totvalue" colspan="3" id="total-order"></th>
+        <th class="totvalue" colspan="5" id="total-order"></th>
     </tr>
 {% endblock %}
 

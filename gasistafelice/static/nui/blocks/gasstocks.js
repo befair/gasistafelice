@@ -3,9 +3,9 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("gasstocks", "table");
-        this.active_view = "edit_multiple";
-        this.default_view = this.active_view;
     },
+        //this.active_view = "edit_multiple";
+        //this.default_view = this.active_view;
 
     rendering_table_post_load_handler: function() {
 
@@ -17,14 +17,28 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    { "sType": "currency" },
-                    null,
-                    null
+                    {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"30%","bVisible": true},
+                    {"bSearchable":true,"bSortable":false,"sWidth":"15%", "sType": "currency", "sClass": "taright" },
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%",},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%","sClass":"taright",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%","sClass":"taright",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"10%","sClass":"taright",},
                 ],
+                "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
+                    try {
+                        var url = aaData[8];
+                        if (url != undefined) {
+                            var _name = aaData[1];
+                            res = new jQuery.Resource(url, _name);
+                            $(nRow.cells[1]).html( res.render() );
+                        }
+                    }
+                    catch(e){alert(e.message);
+                    }
+                    return nRow
+                } ,
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     /* Modify Django management form info */
                     /* FIXME TODO AFTER 6 UGLY !!!*/

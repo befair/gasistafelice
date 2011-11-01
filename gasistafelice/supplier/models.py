@@ -33,7 +33,6 @@ from gasistafelice.gas import signals
 
 from decimal import Decimal
 import logging
-
 log = logging.getLogger(__name__)
 
 class Supplier(models.Model, PermissionResource):
@@ -762,6 +761,11 @@ class SupplierStock(models.Model, PermissionResource):
     def __unicode__(self):
         return u'%s (by %s)' % (unicode(self.product), unicode(self.supplier))
 
+#    @property
+#    def description(self):
+#        #Required for editing
+#        return self.product.description
+
     @property
     def net_price(self):
         return self.price/(1 + self.product.vat_percent)
@@ -846,7 +850,10 @@ class SupplierStock(models.Model, PermissionResource):
             self._msg.append('Ended(%d)' % self.gasstocks.count())
             log.debug(self._msg)
 
+        # CASCADING set until GASMemberOrder
         if self.has_changed_price:
+            self._msg = []
+            self._msg.append('Price has changed for product %s' %  self.product)
             for gsop in self.orderable_products:
                 gsop.order_price = self.price
                 gsop.save()
@@ -875,13 +882,14 @@ class SupplierStock(models.Model, PermissionResource):
 
     @property
     def ordered_products(self):
+        #DOUBT: All API reguarding dynamic data such as order, ordereble product or gas member product should take workflow state as parameter. 
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order__in=self.orders)
+        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders)
 
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order__in=self.orders.open())
+        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders.open())
 
     @property
     def stocks(self):

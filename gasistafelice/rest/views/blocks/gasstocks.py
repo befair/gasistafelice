@@ -8,7 +8,8 @@ from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_respon
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.forms.stocks import GASSupplierStockFormSet
-from django.template.defaultfilters import floatformat
+
+from flexi_auth.models import ObjectWithContext
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -22,15 +23,41 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
-        1: 'code', 
-        2: 'product', 
-        3: 'product__description', 
-        4: 'price', 
-        5: 'availability',
-        6: 'enabled' 
+        1: 'stock__product',
+        2: 'price',
+        3: 'stock__availability',
+        4: 'enabled',
+        5: 'tot_amount',
+        6: 'tot_gasmembers',
+        7: 'tot_price'
     }
 
+    def _get_user_actions(self, request):
+
+        user_actions = []
+
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+            user_actions += [
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=VIEW, verbose_name=_("Show"), 
+                    popup_form=False,
+                    method="get",
+                ),
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
+                    popup_form=False,
+                    method="get",
+                ),
+            ]
+
+        return user_actions
+
     def _get_resource_list(self, request):
+        #GASSupplierStock
         return request.resource.gasstocks
 
     def _get_edit_multiple_form_class(self):
@@ -46,6 +73,7 @@ class Block(BlockSSDataTables):
             key_prefix = 'form-%d' % i
             data.update({
                '%s-id' % key_prefix : el.pk,
+               '%s-pk' % key_prefix : el.pk,
                '%s-enabled' % key_prefix : el.enabled,
             })
 
@@ -56,31 +84,17 @@ class Block(BlockSSDataTables):
         formset = GASSupplierStockFormSet(request, data)
 
         records = []
-        c = querySet.count()
         for i,form in enumerate(formset):
 
-            if i < c:
-                code = querySet[i].stock.code or ''
-                product = querySet[i].stock.product
-                price = querySet[i].stock.price
-                description = querySet[i].stock.product.description
-                av = querySet[i].stock.amount_available
-            else:
-                code = ""
-                product = ""
-                price = ""
-                description = ""
-                av = False
-
-
             records.append({
-               'id' : form['id'],
-               'code' : code,
-               'product' : product,
-               'description' : description,
-               'price' : floatformat(price, 2),
-               'availability' : bool(av),
-               'field_enabled' : [_('not available'),form['enabled']][bool(av)],
+               'id' : "%s %s " % (form['pk'], form['id']),
+               'product' : querySet[i].stock.product,
+               'price' : querySet[i].price,
+               'availability' : querySet[i].stock.amount_available, 
+               'field_enabled' : [_('not available'),form['enabled']][bool(querySet[i].enabled)],
+               'tot_amount' : querySet[i].tot_amount,
+               'tot_gasmembers' : querySet[i].tot_gasmembers,
+               'tot_price' : querySet[i].tot_price,
             })
 
         return formset, records, {}

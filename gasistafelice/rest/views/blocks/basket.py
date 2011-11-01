@@ -21,7 +21,8 @@ import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
 from datetime import datetime
-
+import logging
+log = logging.getLogger(__name__)
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -39,16 +40,18 @@ class Block(BlockSSDataTables):
         2: 'ordered_product__gasstock__stock__supplier', 
         3: 'ordered_product__gasstock__stock__product', 
         4: 'ordered_price', 
-        5: 'ordered_amount', 
-        6: 'tot_price', 
-        7: 'enabled'
+        5: '' ,
+        6: 'ordered_amount', 
+        7: 'tot_price', 
+        8: 'enabled' ,
+        9: '' 
     }
 
     def _get_user_actions(self, request):
 
         user_actions = []
 
-        if not request.resource.gas.config.gasmember_auto_confirm_order:
+        if request.resource.gas.config.gasmember_auto_confirm_order:
 
             #TODO seldon: does this work for a GASMember?
             #if request.user.has_perm(EDIT, obj=request.resource):
@@ -57,7 +60,7 @@ class Block(BlockSSDataTables):
                     ResourceBlockAction( 
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
-                        name=CONFIRM, verbose_name=_("Confirm all"), 
+                        name=CONFIRM, verbose_name=_("Confirm all"),
                         popup_form=False,
                     ),
 
@@ -138,7 +141,6 @@ class Block(BlockSSDataTables):
         records = []
 
         for i,el in enumerate(querySet):
-
             form = formset[map_info[el.pk]['formset_index']]
             total = map_info[el.pk]['ordered_total']
 
@@ -146,6 +148,10 @@ class Block(BlockSSDataTables):
                             'class' : 'amount',
                             'step' : el.ordered_product.gasstock.step or 1,
                             'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
+                            'eur_chan' : ["", "alert"][bool(el.has_changed)],
+                            'req_conf' : ["alert", ""][bool(el.is_confirmed)],
+                            's_url' : el.supplier.urn,
+                            'p_url' : el.product.urn,
             }
 
             records.append({
@@ -154,10 +160,11 @@ class Block(BlockSSDataTables):
                'supplier' : el.supplier,
                'product' : el.product,
                'price' : el.ordered_product.order_price,
+               'price_changed' : not el.has_changed,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
-               'price_changed' : el.has_changed,
                'field_enabled' : form['enabled'],
+               'order_confirmed' : el.is_confirmed,
             })
                #'description' : el.product.description,
 
@@ -213,6 +220,7 @@ class Block(BlockSSDataTables):
 
         if args == CONFIRM:
             for gmo in self.resource.basket:
+                log.debug("Sto confermando un ordine gassista(%s)" % gmo)
                 gmo.confirm()
 
             #IMPORTANT: unset args to compute table results!

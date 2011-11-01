@@ -8,7 +8,6 @@ from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_respon
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.supplier.forms import SingleSupplierStockFormSet
-from django.template.defaultfilters import floatformat
 
 from flexi_auth.models import ObjectWithContext
 
@@ -24,12 +23,12 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = { 
         0: 'pk',
-        1: 'code', 
-        2: 'product', 
-        3: 'product__description', 
-        4: 'price', 
-        5: 'availability' 
+        1: 'product',
+        2: 'product__description',
+        3: 'price',
+        4: 'availability'
     }
+        #1: 'code',
 
     def _get_user_actions(self, request):
 
@@ -56,6 +55,7 @@ class Block(BlockSSDataTables):
         return user_actions
         
     def _get_resource_list(self, request):
+        #SupplierStock
         return request.resource.stocks
 
     def _get_records(self, request, querySet):
@@ -70,13 +70,15 @@ class Block(BlockSSDataTables):
             key_prefix = 'form-%d' % i
             data.update({
                '%s-id' % key_prefix : el.pk,
-               '%s-code' % key_prefix : el.code,
+               '%s-pk' % key_prefix : el.pk,
                '%s-product' % key_prefix : el.product,
-               '%s-price' % key_prefix : floatformat(el.price, 2),
+               '%s-description' % key_prefix : el.product.description,
+               '%s-price' % key_prefix : el.price,
                '%s-availability' % key_prefix : el.amount_available,
             })
+               #'%s-code' % key_prefix : el.code,
 
-        data['form-TOTAL_FORMS'] = i + 5
+        data['form-TOTAL_FORMS'] = i + 1  #empty form for create new insert data
         data['form-INITIAL_FORMS'] = 0
         data['form-MAX_NUM_FORMS'] = 0
 
@@ -86,6 +88,7 @@ class Block(BlockSSDataTables):
         c = querySet.count()
         for i,form in enumerate(formset):
 
+
             if i < c:
                 description = querySet[i].product.description
                 pk = querySet[i].pk
@@ -94,13 +97,13 @@ class Block(BlockSSDataTables):
                 pk = None
 
             records.append({
-                'id' : form['id'],
-                'code' : form['code'],
+                'id' : "%s %s" % (form['pk'], form['id']),
                 'product' : form['product'],
-                'description' : description,
+                'description' : form['description'], #description,
                 'price' : form['price'],
                 'availability' : form['availability'],
             })
+                #'code' : form['code'],
 
         return formset, records, {}
 

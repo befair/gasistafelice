@@ -2,15 +2,15 @@
 {% load basic_tags %}
 
 {% block table_rows %}
-    {% for stock in records %}
+    {% for ss in records %}
     [
 
-        "{{stock.id|escapejs}}",
-        "{{stock.code|default:''|escapejs}}",
-        "{{stock.product|escapejs}}",
-        "{{stock.product.description|escapejs}}",
-        "&#8364; {{ stock.price|floatformat:2|escapejs }}",
-        "{% filter escapejs %}{% bool_img stock.availability %}{% endfilter %}",
+        "{{ss.id|escapejs}}",
+        "{{ss.product|escapejs}}",
+        "{{ss.product.description|escapejs}}",
+        "&#8364; {{ss.price|floatformat:2|escapejs}}",
+        "{% filter escapejs %}{% bool_img ss.availability %}{% endfilter %}",
+        "{{ss.product.urn|escapejs}}",
 
     ]
     {% if not forloop.last %}

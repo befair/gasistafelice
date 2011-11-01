@@ -18,6 +18,7 @@ import cgi, os
 from django.conf import settings
 
 from django.utils.encoding import smart_unicode
+from flexi_auth.models import ObjectWithContext
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -45,17 +46,34 @@ class Block(BlockSSDataTables):
   
         user_actions = []
 
-        # Check if order is in "closed_state"
-        user_actions = [
-
+        #FIXME: Check if order is in "closed_state"  Not in Open STATE
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+            user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=CREATE_PDF, verbose_name=_("Create PDF"), 
                     popup_form=False,
                 ),
-        ]
+            ]
 
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+            user_actions += [
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=VIEW, verbose_name=_("Show"), 
+                    popup_form=False,
+                    method="get",
+                ),
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
+                    popup_form=False,
+                    method="get",
+                ),
+            ]
         return user_actions
 
     def _get_resource_list(self, request):

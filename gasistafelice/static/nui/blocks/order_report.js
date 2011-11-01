@@ -3,10 +3,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("order_report", "table");
-        this.active_view = "edit_multiple";
-        this.default_view = this.active_view;
-        this.submit_name = "Rendi prodotti non disponibili (elimina ordine gasista se esiste)";
+        this.submit_name = "Togli prodotti dall'ordine (elimina ordine gasista)";
     },
+        //this.active_view = "edit_multiple";
+        //this.default_view = this.active_view;
 
     action_handler : function(action_el) {
         if (action_el.attr('name') == 'createpdf') {
@@ -43,6 +43,19 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     "sInfoEmpty": gettext("Showing 0 to 0 of 0 records"),
                     "sInfoFiltered": gettext("(filtered from _MAX_ total records)")
                 },
+                "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
+                    try {
+                        var url = aaData[9];
+                        if (url != undefined) {
+                            var _name = aaData[1];
+                            res = new jQuery.Resource(url, _name);
+                            $(nRow.cells[1]).html( res.render() );
+                        }
+                    }
+                    catch(e){alert(e.message);
+                    }
+                    return nRow
+                } ,
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 
                     var iTotal = 0;
@@ -50,18 +63,18 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     {
                         iTotal += parseFloat(aaData[i][iTot].substr(8).replace(',','.'));
                     }
-                    
+
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
                     $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
                 }
-            }); 
+            });
 
 
         return this._super();
 
     }
-    
+
 });
 
 jQuery.BLOCKS["order_report"] = new jQuery.UIBlockOrderReport();

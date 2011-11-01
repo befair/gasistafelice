@@ -3,6 +3,8 @@ from gasistafelice.base.models import Person
 from gasistafelice.admin.models import GASAdmin, GASSupplierOrderAdmin, gas_models, supplier_models
 
 from gasistafelice.consts import EDIT, CREATE
+import logging
+log = logging.getLogger(__name__)
 
 class GASAdmin_GAS(GASAdmin):
     change_list_template = 'gas_admin/change_list.html'
@@ -54,7 +56,6 @@ class GASAdmin_GASSupplierOrder(GASSupplierOrderAdmin):
         qs = super(GASAdmin_GASSupplierOrder, self).queryset(request)
         p = Person.objects.get(user=request.user)
         #FIXME: error using gas-admin url http://127.0.0.1:8000/gas-admin/gas/gassupplierorder/
-        #FieldError Cannot resolve keyword 'gas' into field. Choices are: date_end, date_start, delivery, gasstock_set, historicalorderable_product_set, id, order_minimum_amount, orderable_product_set, pact, withdrawal
         #rv = qs.filter(gas__in=p.gasmember_set.all())
         rv = qs.filter(pact__gas__in=p.gasmember_set.all())
         return rv

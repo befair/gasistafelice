@@ -1,15 +1,15 @@
 {% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
 
 {% block table_rows %}
-    {% for stock in records %}
+    {% for ss in records %}
     [
 
-        "{{stock.id|escapejs}}",
-        "{{stock.code|escapejs}}",
-        "{{stock.product|escapejs}}",
-        "{{stock.product.description|escapejs}}",
-        "&#8364; {{ stock.price|escapejs }}",
-        "{% filter escapejs %}{{ stock.availability }}{% endfilter %}",
+        "{{ss.id|escapejs}}",
+        "{{ss.product|escapejs}}",
+        "{{ss.description|escapejs}}",
+        "{{ss.price|escapejs}}",
+        "{{ss.availability|escapejs}}",
 
     ]
     {% if not forloop.last %}

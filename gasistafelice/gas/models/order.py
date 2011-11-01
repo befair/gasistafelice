@@ -58,6 +58,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     #TODO: Notify system
 
+    inter_gas = models.PositiveIntegerField(verbose_name=_('Is InterGAS'), null=True,  
+        help_text=_("If not null this order will be aggregate with orders from other GAS")
+    )
+
     objects = OrderManager()
 
     history = HistoricalRecords()
@@ -316,15 +320,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
         created = False
         if not self.pk:
             created = True
-            # Create default withdrawal
-            if self.datetime_end and not self.withdrawal:
-                #TODO: check gasconfig for weekday
-                w = Withdrawal(
-                        date=self.datetime_end + timedelta(7), 
-                        place=self.gas.config.withdrawal_place
-                )
-                w.save()
-                self.withdrawal = w
+            if self.gas.config.use_withdrawal_place:
+                # Create default withdrawal
+                if self.datetime_end and not self.withdrawal:
+                    #TODO: check gasconfig for weekday
+                    w = Withdrawal(
+                            date=self.datetime_end + timedelta(7), 
+                            place=self.gas.config.withdrawal_place
+                    )
+                    w.save()
+                    self.withdrawal = w
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -452,10 +457,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         #INFO: and compute tot_price in here.
         
         gmo_list = self.gasmember_order_set.all()
-        amount = 0 
+        tot = 0 
         for gmo in gmo_list:
-            amount += gmo.tot_price
-        return amount 
+            tot += gmo.tot_price
+        return tot 
 
     @property
     def pact(self):
@@ -484,9 +489,30 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         if self.delivered_price is None:
             self.delivered_price = self.order_price
         super(GASSupplierOrderProduct, self).save(*args, **kw)
-        
+
+        # CASCADING set until GASMemberOrder
+        if self.has_changed_price:
+            self._msg = []
+            self._msg.append('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
+            for gmo in self.gasmember_order_set:
+                #gmo.order_price = self.order_price
+                gmo.note = _("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.save()
+
+
+    @property
+    def has_changed_price(self):
+        try:
+            gsop = GASSupplierOrderProduct.objects.get(pk=self.pk)
+            if not gsop is None:
+                return bool(self.order_price != gsop.order_price)
+            else:
+                return False
+        except GASSupplierOrderProduct.DoesNotExist:
+            return False
+
     #-------------- Authorization API ---------------#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
@@ -542,6 +568,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     )
     # gasmember order have to be confirmed if GAS configuration allowed it
     is_confirmed = models.BooleanField(default=False,verbose_name=_('confirmed'))
+
+    note = models.CharField(max_length=64, verbose_name=_('product note'), null=True, blank=True, help_text=_("GAS member can write some short message about this product for the producer"))
 
     history = HistoricalRecords()
 
@@ -623,7 +651,8 @@ class GASMemberOrder(models.Model, PermissionResource):
             w = self.gas.config.default_workflow_gasmember_order
             set_workflow(self, w)
 
-        if self.purchaser.gas.config.gasmember_auto_confirm_order:
+        #If the GAS's member do not have to confirm is order auto set the flag
+        if not self.purchaser.gas.config.gasmember_auto_confirm_order:
             self.is_confirmed = True
 
         return super(GASMemberOrder, self).save(*args, **kw)
