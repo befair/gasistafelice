@@ -1211,7 +1211,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
                     allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
                 except KeyError:
                     raise WrongPermissionCheck('CREATE', cls, context)
-
         return user in allowed_users
  
     # Row-level EDIT permission

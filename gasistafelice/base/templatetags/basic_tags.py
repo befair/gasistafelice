@@ -29,6 +29,11 @@ def bool_img(value):
         rv = '<img alt="False" src="/media/img/admin/icon-no.gif">'
     return rv
 
+@register.simple_tag
+def bool_img_not(value):
+    return bool_img(not value)
+
+
 #--------------------------------------------------------------------------------
 
 class RenderXmlDetail(template.Node):

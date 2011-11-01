@@ -100,6 +100,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
         super(GASSupplierOrder, self).do_transition(transition, user)
         signals.order_state_update(sender=self, transition=transition)
 
+    def get_valid_name(self):
+        from django.template.defaultfilters import slugify
+        from django.utils.encoding import smart_str
+        n = str(self.pk) + '_'
+        n += smart_str(slugify(self.pact.supplier.name).replace('-', '_'))
+        n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        return n
+        return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
+
     #-- Contacts --#
 
     @property

@@ -8,7 +8,7 @@
         "{{row.id|escapejs}}",
         "{{row.product|escapejs}}",
         "&#8364; {{row.order_price|floatformat:"2"}}",
-        "{% filter escapejs %}{% bool_img row.has_changed_price %}{% endfilter %}",
+        "{% filter escapejs %}{% bool_img_not row.has_changed_price %}{% endfilter %}",
         "{{row.tot_gasmembers}}",
         "{{row.unconfirmed_orders }}",
         "{{row.tot_amount|floatformat:"-2"}}",

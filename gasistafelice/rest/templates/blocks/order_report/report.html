@@ -22,6 +22,10 @@
 .tab{width: 5%;}
 .fam{text-align:center;vertical-align:middle;border-top:solid 1px #000;border-bottom:solid 1px #000;font-weight:bold;}
 .bd{font-weight:bold;}
+div.code {background-color: #E5EECC; border: 1px dashed #D4D4D4; margin: 0; padding: 5px; width: 100%} /*622px;*/
+div.example_code p, div.code p, div.code div {font-family: courier new;}
+div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-family: courier new;
+ font-size: 110%; padding: 4px; width: 100%} /*612px;*/
 {%endblock%}
 
 
@@ -37,11 +41,21 @@
                     <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}</td>
                 {% else %}
                     <td class="sumPricevalue taright alert">&euro; {{total_amount|floatformat:"2"}}   /  calc:{{total_calc|floatformat:"2"}}</td>
-                {% endif %}        
+                {% endif %}
             </tr>
         </table>
    </div>
+{% if have_note %}
+<div class="code">
+    <div>
+        {% for not in order.allnotes %}
+            <p>{{not.comment}}</p>
+        {%  endfor %}
+    </div>
+</div>
+{% endif %}
 <hr />
+
 {%endblock%}
 
 {%block content%}

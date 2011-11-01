@@ -47,15 +47,15 @@ class Block(BlockSSDataTables):
         user_actions = []
 
         #FIXME: Check if order is in "closed_state"  Not in Open STATE
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-            user_actions += [
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=CREATE_PDF, verbose_name=_("Create PDF"), 
-                    popup_form=False,
-                ),
-            ]
+        #if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+        user_actions += [
+            ResourceBlockAction( 
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name=CREATE_PDF, verbose_name=_("Create PDF"), 
+                popup_form=False,
+            ),
+        ]
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
             user_actions += [
@@ -234,8 +234,9 @@ class Block(BlockSSDataTables):
             'recFam' : fams, 
             'subFam' : subTotals, 
             'user' : self.request.user,
-            'total_amount' : self.resource.tot_price, #total da Model
+            'total_amount' : order.tot_price, #total da Model
             'total_calc' : total_calc, #total dal calcolato
+            'have_note' : bool(order.allnotes.count() > 0),
         }
 
         REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME
@@ -248,9 +249,7 @@ class Block(BlockSSDataTables):
         pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result)
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename=GAS_%s_%s.pdf' % \
-                            (order.supplier, '20110909')
-#                            (order.supplier, '{0:%Y%m%d}'.format(order.delivery.date))
+            response['Content-Disposition'] = "attachment; filename=GAS_" + order.get_valid_name() + ".pdf"
             return response
         return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
 
