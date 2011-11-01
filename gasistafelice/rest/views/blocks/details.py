@@ -330,9 +330,7 @@ class Block(AbstractBlock):
                 else: 
                     element_type  = 'str'
                     if display_field.choices:
-                        #TODO: set value to display value. 
-                        # element_value = 
-                        pass 
+                        element_value = getattr(res, "get_%s_display" % display_field.name)()
             else:
                 element_type = 'none'
                 element_value = ''
