@@ -634,3 +634,67 @@ function GetRoundedFloat(v) {
     if (v.toString().indexOf('.') == -1) { return v; }
     return ((v.toFixed) ? v.toFixed(2) : (Math.round(v * 100) / 100));
 } 
+
+//---------------------------------------------
+// Clock
+//---------------------------------------------
+jQuery.Clock = Class.extend({
+
+    init : function (jQel, interval) {
+
+        this.jQel = jQel;
+        this.interval = interval;
+        if (this.interval == undefined)
+            this.interval = 1;
+        
+        this.is_set = false;
+        
+    },
+
+    set_start : function(now) {
+        //Takes in input a string like 
+        //mar 01 nov 2011 18:49:44 
+        //which is split into prefix + hh:mm:ss
+
+        this.start = now;
+        rnow = now.trim().split(' ').reverse().join(' ');
+        i = rnow.indexOf(':')
+        this.hh = parseInt(rnow.slice(0, i));
+        rnow = rnow.slice(i+1);
+        i = rnow.indexOf(':')
+        this.mm = parseInt(rnow.slice(0, i));
+        rnow = rnow.slice(i+1);
+        this.ss = parseInt(rnow.slice(0, i));
+        i = rnow.indexOf(' ')
+        this.prefix = rnow.slice(i+1).trim().split(' ').reverse().join(' ');
+        this.is_set = true;
+        
+    },
+
+    update : function() {
+        if (this.is_set == true) {
+            this.ss = this.ss + this.interval;
+            var ss_mod  = this.ss%60;
+            this.mm = this.mm + (this.ss-ss_mod)/60;
+            var mm_mod  = this.mm%60;
+            this.hh = this.hh + (this.mm-mm_mod)/60;
+            if (this.hh == 24) {
+                //Do not change day now
+                this.hh = 0;
+            }
+            this.mm = mm_mod;
+            this.ss = ss_mod;
+
+            var s = this.prefix+' ';
+            if (this.hh<10) s += '0';
+            s += this.hh + ':';
+            if (this.mm<10) s += '0';
+            s += this.mm + ':';
+            if (this.ss<10) s += '0';
+            s += this.ss;
+            
+            this.jQel.html(s);
+        }
+    }
+});
+        

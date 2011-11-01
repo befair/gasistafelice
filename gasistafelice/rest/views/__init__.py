@@ -106,7 +106,7 @@ def now(request):
     """Get current datetime in format: dow dom mon year - hh:mm"""
     dt = datetime.datetime.now()
 
-    return HttpResponse(dt.strftime("%c")[:-7])
+    return HttpResponse(dt.strftime("%c"))
     #return HttpResponse(dt.strftime("%A, %d %B %Y - %H:%M"))
 
 #------------------------------------------------------------------------------#

@@ -1066,13 +1066,29 @@
         //==============================================================================
 
         var CLOCK_URL = '{% url rest.views.now %}';
-        
-        var APP_CLOCK_TIMEOUT = 120; // 120 seconds
-        
-        function init_clock_timer() {
-            start_generic_update_timer(
-                generic_timers, CLOCK_URL, APP_CLOCK_TIMEOUT, 
-                '#app_clock')
+        var clock;
+
+        function update_clock() {
+            clock.update();
+        }
+        function init_clock() {
+            clock = new jQuery.Clock($('#app_clock'));
+            var ONE_SECOND = 1000;
+            var timer_id = setInterval(update_clock, clock.interval*ONE_SECOND);
+            $.ajax({
+                type:'GET',
+                url: CLOCK_URL,
+                dataType:'text',
+                complete:function(r,s){
+                    if (s == 'success') {
+                        var t = r.responseText;
+                        clock.set_start(t);
+                    }
+                    else {
+                        $('#app_clock').html("ERROR on GET " + url);
+                    }
+                }
+            });
         }
         
     
@@ -1541,7 +1557,7 @@
 
                         //TODO: fero TOCHECK load_usercontainer_tree();
 
-                        init_clock_timer();
+                        init_clock();
 
                         init_search_form();
 
