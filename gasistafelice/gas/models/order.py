@@ -351,13 +351,25 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a supplier order in a GAS ?
         # * GAS administrators
-        # *  referrers for the pact the order is placed against
+        # * Referrers for the pact the order is placed against
         try:
+            # pact context
             pact = context['pact']
-            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
-            return user in allowed_users
+            allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
+            try:
+                # gas context
+                gas = context['gas']
+                allowed_users = gas.tech_referrers | gas.supplier_referrers
+            except KeyError:
+                try:
+                    # des context
+                    des = context['des']
+                    allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+                except KeyError:
+                    raise WrongPermissionCheck('CREATE', cls, context)   
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -782,23 +794,35 @@ class Delivery(Appointment, PermissionResource):
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
+        # TODO: REVIEW NEEDED see below (Withdrawal.can_create)
         # Who can schedule a new delivery appointment for a GAS ?
         # * pact referrers (all)
         # * order referrers (all, if any)
         # * GAS administrators       
+
+        # TODO: order referres: ticket www.jagom.org/trac/reesgas/ticket/185
+        # add.. "evryone is referrer for one active order in GAS
+
+        allowed_users = []
         try:
+            # gas context
             gas = context['gas']
-            pact_referrers_all = list(gas.supplier_referrers)
-            order_referrers_all = []
-            for order in GASSupplierOrder.objects.active(): #TODO: implement ``.active()`` on ``OrderManager``
-                order_referrers_all += order.referrers               
-            allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
-            return user in allowed_users
+            allowed_users = gas.supplier_referrers | gas.tech_referrers
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
+            try:
+                # TODO: ticket www.jagom.org/trac/reesgas/ticket/185
+                # order context
+                order = context['order']
+                raise NotImplementedError("can_create withdrawal in order")
+                allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
+            except KeyError:
+                raise WrongPermissionCheck('CREATE', cls, context)   
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can modify a delivery appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -810,6 +834,8 @@ class Delivery(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+
+        allowed_users = []
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -817,13 +843,12 @@ class Delivery(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can delete a delivery appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -835,6 +860,7 @@ class Delivery(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+        allowed_users = []
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -842,8 +868,6 @@ class Delivery(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
     
@@ -921,27 +945,40 @@ class Withdrawal(Appointment, PermissionResource):
 
 
     #-------------- Authorization API ---------------#
+
+    # COMMENT-fero: now we do not use authoriazion API on this model.
+    # we have to make some consideration for withdrawals shared on more than one order
     
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
         # Who can schedule a new withdrawal appointment for a GAS ?
         # * pact referrers (all)
-        # * order referrers (all, if any)
         # * GAS administrators       
+
+        # TODO: order referres: ticket www.jagom.org/trac/reesgas/ticket/185
+        # add.. "evryone is referrer for one active order in GAS
+
+        allowed_users = []
         try:
+            # gas context
             gas = context['gas']
-            pact_referrers_all = list(gas.supplier_referrers)
-            order_referrers_all = []
-            for order in GASSupplierOrder.objects.active(): #TODO: implement ``.active()`` on ``OrderManager``
-                order_referrers_all += order.referrers               
-            allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
-            return user in allowed_users
+            allowed_users = gas.supplier_referrers | gas.tech_referrers
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
+            try:
+                # TODO: ticket www.jagom.org/trac/reesgas/ticket/185
+                # order context
+                order = context['order']
+                raise NotImplementedError("can_create withdrawal in order")
+                allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
+            except KeyError:
+                raise WrongPermissionCheck('CREATE', cls, context)   
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can modify a withdrawal appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -953,6 +990,7 @@ class Withdrawal(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+        allowed_users = []
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -960,13 +998,12 @@ class Withdrawal(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can delete a withdrawal appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -978,6 +1015,7 @@ class Withdrawal(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+        allowed_users = []
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -985,8 +1023,6 @@ class Withdrawal(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
             

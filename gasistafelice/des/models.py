@@ -114,6 +114,20 @@ class DES(Site, PermissionResource):
         return self.admins
 
     @property
+    def gas_tech_referrers(self):
+        rv = User.objects.none()
+        for g in self.gas_list:
+            rv |= g.tech_referrers
+        return rv
+
+    @property
+    def gas_supplier_referrers(self):
+        rv = User.objects.none()
+        for g in self.gas_list:
+            rv |= g.supplier_referrers
+        return rv
+
+    @property
     def info_people(self):
         return self.info_people_set.all()
         

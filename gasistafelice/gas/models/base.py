@@ -120,26 +120,26 @@ class GAS(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a new GAS in a DES ?
         # * DES administrators
+        allowed_users = []
         try:
             des = context['des']
-            allowed_users =  des.admins
-            return user in allowed_users
         except KeyError:
-            raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
+            raise WrongPermissionCheck('CREATE', cls, context)   
+        return user in allowed_users
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of an existing GAS ?
         # * GAS tech referrers
         # * administrators of the DES that GAS belongs to
-        allowed_users =  self.tech_referrers | self.des.admins
+        allowed_users =  self.tech_referrers 
         return user in allowed_users  
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing GAS from a DES ?
         # * administrators of the DES that GAS belongs to
-        allowed_users = self.des.admins
+        allowed_users = []
         return user in allowed_users
 
     @property
@@ -775,12 +775,14 @@ class GASMember(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can add a new Person to a GAS ?
         # * administrators for that GAS
+        allowed_users = []
         try:
             gas = context['gas']
             allowed_users = gas.tech_referrers
-            return user in allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
+
+        return user in allowed_users
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -931,12 +933,13 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Who can create a new supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators
+        allowed_users = []
         try:
             pact = context['pact']
             allowed_users = pact.gas.tech_referrers | pact.referrers
-            return allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
+        return user in allowed_users
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -944,7 +947,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators 
         allowed_users = self.gas.tech_referrers | self.pact.referrers
-        return allowed_users
+        return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
@@ -952,7 +955,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators 
         allowed_users = self.gas.tech_referrers | self.pact.referrers
-        return allowed_users
+        return user in allowed_users
 
     #-- Production data --#
 
@@ -1185,27 +1188,29 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # Who can create a a new pact for a GAS ?
         # * GAS supplier referrers (of other pacts)
         # * GAS administrators
-        try:
+        allowed_users = []
+        try :
+            # gas context
             gas = context['gas']
+            allowed_users = gas.tech_referrers | gas.supplier_referrers 
         except KeyError:
             try:
+                # supplier context
                 supplier = context['supplier']
+                # all GAS tech referrers and referrers suppliers can create a pact for this supplier
+                # Within the form and authorization check, GAS choices will be limited
+                allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
             except KeyError:
                 try:
+                    # des context
+                    # all GAS tech referrers and referrers suppliers can create a pact in a DES.
+                    # Within the form and authorization check, GAS choices will be limited
                     des = context['des']
+                    allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
                 except KeyError:
                     raise WrongPermissionCheck('CREATE', cls, context)
-                else:
-                    # TODO: all GAS tech referrers and referrers suppliers can create a pact in a DES
-                    # Within the form and authorization check, GAS choices will be limited
-                    allowed_users = des.admins 
-            else:
-                # TODO: all GAS tech referrers and referrers suppliers can create a pact in a DES
-                # Within the form and authorization check, GAS choices will be limited
-                allowed_users = des.admins
-        else:
-            allowed_users = gas.tech_referrers | gas.supplier_referrers 
-        return allowed_users
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -1213,14 +1218,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # * GAS administrators 
         # * referrers for that pact
         allowed_users = self.gas.tech_referrers | self.gas.supplier_referrers 
-        return allowed_users 
+        return user in allowed_users 
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete a pact in a GAS ?
         # * GAS administrators 
         allowed_users = self.gas.tech_referrers 
-        return allowed_users 
+        return user in allowed_users 
     
     @property
     def roles(self):

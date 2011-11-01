@@ -1,4 +1,4 @@
-""""
+"""
 This is the base model for Gasista Felice.
 It includes common data on which all (or almost all) other applications rely on.
 """
@@ -704,10 +704,12 @@ class Person(models.Model, PermissionResource):
         # * DES administrators
         try:
             des = context['des']
-            allowed_users = des.admins            
-            return user in allowed_users 
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
+        else:
+            allowed_users = des.admins            
+
+        return user in allowed_users 
         
     # Row-level EDIT permission
     def can_edit(self, user, context):
