@@ -17,7 +17,7 @@ class GASRoleForm(BaseRoleForm):
         super(GASRoleForm, self).__init__(request, *args, **kw)
         self._gas = request.resource.gas
         self.fields['person'].queryset = \
-            self._gas.persons.filter(gasmember__isnull=False)
+            self._gas.persons.filter(user__isnull=False)
 
         # GAS Members roles are to be excluded from this management
         self.fields['role'].queryset = self.fields['role'].queryset.exclude(role__name=GAS_MEMBER)

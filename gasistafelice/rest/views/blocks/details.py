@@ -39,6 +39,7 @@ from gasistafelice.consts import EDIT
 
 # Roles form: dynamic use in manage_roles
 from gasistafelice.gas.forms.base import GASRoleForm
+from gasistafelice.supplier.forms import SupplierRoleForm
 
 #from users.models import can_write_to_resource
 

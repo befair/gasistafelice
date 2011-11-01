@@ -30,12 +30,13 @@ class Block(details.Block):
                     resource = request.resource,
                     name="configure", verbose_name=_("Configure"), 
                     popup_form=True,
+                    url = reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,)) 
             )
 
             for i,act in enumerate(user_actions):
                 # Change URL for action EDIT, insert "configure" action
                 if act.name == EDIT:
-                   act.url = reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,)) 
+                   act.url = reverse('admin:gas_gas_change', args=(request.resource.pk,)) 
                    user_actions.insert(i+1, act_configure)
                    break
                    

@@ -200,6 +200,14 @@ class SupplierAdmin(admin.ModelAdmin):
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
 
+class SupplierConfigAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    fieldsets = (
+        (None, {
+            'fields' : ('receive_order_via_email_on_finalize',),
+        }),
+    )
 
 class ProductAdmin(admin.ModelAdmin):
 
@@ -324,6 +332,7 @@ admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
+admin.site.register(supplier_models.SupplierConfig, SupplierConfigAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)

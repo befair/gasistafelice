@@ -1,12 +1,18 @@
 from django import forms
 from django.forms.formsets import formset_factory
 
+from flexi_auth.models import ParamRole
 from gasistafelice.lib.widgets import RelatedFieldWidgetCanAdd
 from gasistafelice.lib.fields.forms import CurrencyField
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 
 from gasistafelice.base.const import ALWAYS_AVAILABLE
+from gasistafelice.base.forms import BaseRoleForm
+from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.supplier.models import SupplierStock, Product
+
+import logging
+log = logging.getLogger(__name__)
 
 class SingleSupplierStockForm(forms.Form):
 
@@ -54,3 +60,24 @@ class EditStockForm(forms.ModelForm):
     class Meta:
         model = SupplierStock
         
+
+#------------------------------------------------------------------------------
+
+class SupplierRoleForm(BaseRoleForm):
+
+    def __init__(self, request, *args, **kw):
+
+        self._supplier = request.resource.supplier
+        kw['initial'] = kw.get('initial',{}).update({
+            'role' : ParamRole.get_role(SUPPLIER_REFERRER, supplier=self._supplier)
+        })
+
+        super(SupplierRoleForm, self).__init__(request, *args, **kw)
+
+        if request.user in self._supplier.tech_referrers:
+            # If user if a supplier referrer tech (i.e: gas referrer)
+            self.fields['person'].queryset = \
+                self.fields['person'].queryset.filter(gasmember__gas=request.user.person.gas) 
+
+
+

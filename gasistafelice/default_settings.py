@@ -28,7 +28,7 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-            'django.contrib.auth.backends.ModelBackend',
+            'base.backends.AuthenticationParamRoleBackend',
             'flexi_auth.backends.ParamRoleBackend',
         )
 
@@ -262,7 +262,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
-        'blocks': ['details', 'categories'],
+        'blocks': ['supplier_details', 'categories'],
     }], #must be extended with economic section
     'order' : [{ 
         'name' : 'info',

@@ -102,6 +102,14 @@ class Supplier(models.Model, PermissionResource):
         return self
 
     @property
+    def tech_referrers(self):
+        """GAS tech referrers are also Supplier tech referrers"""
+        rv = User.objects.none()
+        for p in self.pacts:
+            rv |= p.gas.tech_referrers
+        return rv
+
+    @property
     def referrers(self):
         """All User linked as platform operators for this resource.
 
@@ -110,7 +118,7 @@ class Supplier(models.Model, PermissionResource):
         # retrieve 'Supplier Referrer' parametric role for this supplier
         pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=self)
         # retrieve all Users having this role
-        return pr.get_users()
+        return pr.get_users() | self.tech_referrers
 
     @property
     def info_people(self):
