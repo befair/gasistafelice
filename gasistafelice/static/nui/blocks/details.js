@@ -53,9 +53,7 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                         <table border='0'>\n\
                             <tr>\
                                 <td colspan='2'>\
-                                    <span class='resource @@resource_type@@'>					\n\
-                                        <a class='ctx_enabled' href='#rest/@@resource_type@@/@@resource_id@@/'>@@resource_descr@@</a> \n\
-                                    </span>\n\
+                                    <a class='ctx_enabled resource inline @@resource_type@@' href='#rest/@@resource_type@@/@@resource_id@@/'>@@resource_descr@@</a> \n\
                                 </td>\
                             </tr>\
                             @@inforow@@\n\
