@@ -6,6 +6,7 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 from gasistafelice.base.models import Person
+from des.models import Siteattr
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -23,8 +24,8 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
-
-        if request.user.has_perm(CREATE, obj=ObjectWithContext(Person)):
+        ctx = { 'des' : Siteattr.get_site() }
+        if request.user.has_perm(CREATE, obj=ObjectWithContext(Person, context=ctx)):
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
