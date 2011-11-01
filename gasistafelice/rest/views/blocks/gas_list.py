@@ -28,7 +28,7 @@ class Block(BlockWithList):
 
         des = Siteattr.get_site()
 
-        if request.user.has_perm(CREATE, obj=ObjectWithContext(GAS, context={'des' : des})):
+        if request.user.has_perm(CREATE, obj=ObjectWithContext(GAS, context={'site' : des})):
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

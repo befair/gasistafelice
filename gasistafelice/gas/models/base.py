@@ -122,7 +122,7 @@ class GAS(models.Model, PermissionResource):
         # * DES administrators
         allowed_users = User.objects.none()
         try:
-            des = context['des']
+            des = context['site']
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)   
         return user in allowed_users
@@ -176,7 +176,8 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def persons(self):
-        return Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
+        qs = Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
+        return qs.distinct()
 
     @property
     def tech_referrers(self):
@@ -1170,7 +1171,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     
     @property
     def persons(self):
-        return self.gas.persons | self.supplier.persons
+        qs = self.gas.persons | self.supplier.persons
+        return qs.distinct()
 
     @property
     def referrers_people(self):
@@ -1205,7 +1207,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
                     # des context
                     # all GAS tech referrers and referrers suppliers can create a pact in a DES.
                     # Within the form and authorization check, GAS choices will be limited
-                    des = context['des']
+                    des = context['site']
                     allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
                 except KeyError:
                     raise WrongPermissionCheck('CREATE', cls, context)

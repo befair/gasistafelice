@@ -34,6 +34,7 @@ class GAS_PactForm(BasePactForm):
         super(GAS_PactForm, self).__init__(*args, **kw)
         self._gas = request.resource.gas
         self.fields['gas_supplier_referrer'].queryset = self._gas.persons
+        log.debug(self._gas.persons)
         des = self._gas.des
         self.fields['supplier'].queryset = des.suppliers.exclude(pk__in=[obj.pk for obj in self._gas.suppliers])
 

@@ -180,7 +180,7 @@ class Supplier(models.Model, PermissionResource):
         # * DES administrators
         # * referrers and administrators of every GAS in the DES
         try:
-            des = context['des']
+            des = context['site']
             all_gas_referrers = User.objects.none()
             #TOERASE: all_gas_referrers_tech = set()
             for gas in des.gas_list:
@@ -284,7 +284,7 @@ class SupplierAgent(models.Model):
 #        # * DES administrators
 #        # * referrers and administrators of every GAS in the DES
 #        try:
-#            des = context['des']
+#            des = context['site']
 #            all_gas_referrers = set()
 #            #TOERASE: new  gas.referrers returns also tech_referrers. Answer to question: who is GAS operator in this platform?
 #            #TOERASE: all_gas_referrers_tech = set()

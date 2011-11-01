@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, Action, ResourceBlockAction
+from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE, EDIT
 from gasistafelice.gas.forms import order as order_forms
-from gasistafelice.gas.models import GASSupplierOrder, GASSupplierSolidalPact
+from gasistafelice.gas.models import GASSupplierOrder
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -17,7 +17,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "open_orders"
     BLOCK_DESCRIPTION = _("Open orders")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "pact"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact"] 
 
     TEMPLATE_RESOURCE_LIST = "blocks/open_orders.xml"
 
@@ -30,36 +30,12 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
+        ctx = { request.resource.resource_type : request.resource }
 
-        # TODO: refactory needed, has_perm check needed
-        rt = self.resource.resource_type
-        perm = False
-        if rt is not "site":
-            perm = request.user in self.resource.des.referrers
-
-        #if request.user.has_perm(CREATE, 
-        #    obj=ObjectWithContext(GASSupplierOrder, context={'pact': request.resource.pact})):
-        # Cannot retrieve pact from "site", "supplier" nor "gas"
-        # FIXME: TODO: PATCH:
-
-        if not perm:
-            # TODO: Ci piacerebbe che se uno e' un referente di _almeno un_ fornitore 
-            # TODO: ha il pulsante "aggiugni ordine"
-            # TODO: poi le scelte saranno limitate ai suoi diritti nel popup
-            if rt in ["gas","pact"]:
-                perm = request.user in self.resource.referrers | self.resource.gas.referrers
-            elif rt == "supplier":
-                # TODO: following code works, but, in order to make "add order" work
-                # we have to implement supplier.forms.order.SupplierAddOrderForm
-                return []
-#                refs = User.objects.none()
-#                for p in self.resource.pacts:
-#                    refs |= p.referrers
-#                    refs |= p.gas.referrers
-#                perm = request.user in refs
-
-
-        if perm is True:
+        if request.user.has_perm(CREATE, 
+            obj=ObjectWithContext(GASSupplierOrder, context=ctx)
+        ):
+        
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
@@ -70,4 +46,5 @@ class Block(BlockWithList):
              ]
 
         return user_actions
+
 

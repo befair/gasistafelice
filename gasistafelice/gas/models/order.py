@@ -367,7 +367,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             except KeyError:
                 try:
                     # des context
-                    des = context['des']
+                    des = context['site']
                     if des.pacts.count():
                         allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
                 except KeyError:
@@ -794,6 +794,9 @@ class Delivery(Appointment, PermissionResource):
 #-------------------------------------------------------------------------------#
 
     #-------------- Authorization API ---------------#
+    
+    # COMMENT-fero: now we do not use authoriazion API on this model.
+    # we have to make some consideration for deliveries shared on more than one order
     
     # Table-level CREATE permission    
     @classmethod

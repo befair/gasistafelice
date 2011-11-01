@@ -703,7 +703,7 @@ class Person(models.Model, PermissionResource):
         # Who can create a new Person in a DES ?
         # * DES administrators
         try:
-            des = context['des']
+            des = context['site']
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
         else:
@@ -847,7 +847,7 @@ class Place(models.Model, PermissionResource):
         # Everyone belongs to the DES
         
         try:
-            des = context['des']
+            des = context['site']
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
         else:
