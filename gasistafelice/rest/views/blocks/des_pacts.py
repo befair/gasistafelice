@@ -6,13 +6,13 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 from gasistafelice.gas.models.base import GASSupplierSolidalPact
-from gasistafelice.gas.forms.pact import GAS_PactForm, Supplier_PactForm
 
+from gasistafelice.rest.views.blocks import pacts
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
 
-class Block(BlockWithList):
+class Block(pacts.Block):
 
     BLOCK_NAME = "des_pacts"
     BLOCK_VALID_RESOURCE_TYPES = ["site"]

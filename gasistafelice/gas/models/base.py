@@ -120,7 +120,7 @@ class GAS(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a new GAS in a DES ?
         # * DES administrators
-        allowed_users = []
+        allowed_users = User.objects.none()
         try:
             des = context['des']
         except KeyError:
@@ -139,7 +139,7 @@ class GAS(models.Model, PermissionResource):
     def can_delete(self, user, context):
         # Who can delete an existing GAS from a DES ?
         # * administrators of the DES that GAS belongs to
-        allowed_users = []
+        allowed_users = User.objects.none()
         return user in allowed_users
 
     @property
@@ -775,7 +775,7 @@ class GASMember(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can add a new Person to a GAS ?
         # * administrators for that GAS
-        allowed_users = []
+        allowed_users = User.objects.none()
         try:
             gas = context['gas']
             allowed_users = gas.tech_referrers
@@ -933,7 +933,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         # Who can create a new supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators
-        allowed_users = []
+        allowed_users = User.objects.none()
         try:
             pact = context['pact']
             allowed_users = pact.gas.tech_referrers | pact.referrers
@@ -1188,7 +1188,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # Who can create a a new pact for a GAS ?
         # * GAS supplier referrers (of other pacts)
         # * GAS administrators
-        allowed_users = []
+        allowed_users = User.objects.none()
         try :
             # gas context
             gas = context['gas']

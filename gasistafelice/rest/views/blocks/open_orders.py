@@ -17,7 +17,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "open_orders"
     BLOCK_DESCRIPTION = _("Open orders")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas", "pact"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "pact"] 
 
     TEMPLATE_RESOURCE_LIST = "blocks/open_orders.xml"
 

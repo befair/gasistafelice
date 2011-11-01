@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from workflows.models import Workflow, Transition
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition
@@ -352,6 +353,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # Who can create a supplier order in a GAS ?
         # * GAS administrators
         # * Referrers for the pact the order is placed against
+        allowed_users = User.objects.none()
         try:
             # pact context
             pact = context['pact']
@@ -360,12 +362,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
             try:
                 # gas context
                 gas = context['gas']
-                allowed_users = gas.tech_referrers | gas.supplier_referrers
+                if gas.pacts.count():
+                    allowed_users = gas.tech_referrers | gas.supplier_referrers
             except KeyError:
                 try:
                     # des context
                     des = context['des']
-                    allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+                    if des.pacts.count():
+                        allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
                 except KeyError:
                     raise WrongPermissionCheck('CREATE', cls, context)   
 
@@ -803,7 +807,7 @@ class Delivery(Appointment, PermissionResource):
         # TODO: order referres: ticket www.jagom.org/trac/reesgas/ticket/185
         # add.. "evryone is referrer for one active order in GAS
 
-        allowed_users = []
+        allowed_users = User.objects.none()
         try:
             # gas context
             gas = context['gas']
@@ -835,7 +839,7 @@ class Delivery(Appointment, PermissionResource):
         # 3) ELSE:
         #     * DES administrators
 
-        allowed_users = []
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -860,7 +864,7 @@ class Delivery(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
-        allowed_users = []
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -959,7 +963,7 @@ class Withdrawal(Appointment, PermissionResource):
         # TODO: order referres: ticket www.jagom.org/trac/reesgas/ticket/185
         # add.. "evryone is referrer for one active order in GAS
 
-        allowed_users = []
+        allowed_users = User.objects.none()
         try:
             # gas context
             gas = context['gas']
@@ -990,7 +994,7 @@ class Withdrawal(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
-        allowed_users = []
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -1015,7 +1019,7 @@ class Withdrawal(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
-        allowed_users = []
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 

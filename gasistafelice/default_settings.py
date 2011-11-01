@@ -223,7 +223,7 @@ RESOURCE_PAGE_BLOCKS = {
     'gas' : [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery?
+        'blocks': ['gas_open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery?
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
