@@ -49,10 +49,10 @@ class Block(BlockSSDataTables):
         #FIXME: Check if order is in "closed_state"  Not in Open STATE
         #if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
         user_actions += [
-            ResourceBlockAction( 
+            ResourceBlockAction(
                 block_name = self.BLOCK_NAME,
                 resource = request.resource,
-                name=CREATE_PDF, verbose_name=_("Create PDF"), 
+                name=CREATE_PDF, verbose_name=_("Create PDF"),
                 popup_form=False,
             ),
         ]
