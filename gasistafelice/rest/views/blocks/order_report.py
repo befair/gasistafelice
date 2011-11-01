@@ -59,17 +59,17 @@ class Block(BlockSSDataTables):
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
             user_actions += [
-                ResourceBlockAction( 
+                ResourceBlockAction(
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"), 
+                    name=VIEW, verbose_name=_("Show"),
                     popup_form=False,
                     method="get",
                 ),
-                ResourceBlockAction( 
+                ResourceBlockAction(
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
+                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
                     popup_form=False,
                     method="get",
                 ),
