@@ -105,7 +105,7 @@ TEMPLATE_DIRS = (
     PROJECT_ROOT + "/templates",
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'permissions',
     'workflows',
     'history',
@@ -129,8 +129,7 @@ INSTALLED_APPS = (
     'gasistafelice.localejs',
     'gasistafelice.des_notifications',
     #'south',
-    
-)
+]
 
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/auth/'),
@@ -215,7 +214,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'order',
         'descr' : 'Ordini',
-        'blocks' : ['open_orders']
+        'blocks' : ['open_orders', 'des_pacts']
     },{
         'name' : 'info',
         'descr' : 'Scheda del DES',
@@ -228,7 +227,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
-        'blocks': ['pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
+        'blocks': ['gas_pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
@@ -258,11 +257,11 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders'],
+        'blocks': ['open_orders', 'supplier_pacts'],
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
-        'blocks': ['supplier_details', 'categories'],
+        'blocks': ['supplier_details', 'categories', 'closed_orders'],
     }], #must be extended with economic section
     'order' : [{ 
         'name' : 'info',

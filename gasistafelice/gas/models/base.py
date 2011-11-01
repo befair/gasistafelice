@@ -1184,14 +1184,28 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a a new pact for a GAS ?
         # * GAS supplier referrers (of other pacts)
-        # * GAS referrers
         # * GAS administrators
         try:
             gas = context['gas']
-            allowed_users = gas.tech_referrers | gas.supplier_referrers 
-            return allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)
+            try:
+                supplier = context['supplier']
+            except KeyError:
+                try:
+                    des = context['des']
+                except KeyError:
+                    raise WrongPermissionCheck('CREATE', cls, context)
+                else:
+                    # TODO: all GAS tech referrers and referrers suppliers can create a pact in a DES
+                    # Within the form and authorization check, GAS choices will be limited
+                    allowed_users = des.admins 
+            else:
+                # TODO: all GAS tech referrers and referrers suppliers can create a pact in a DES
+                # Within the form and authorization check, GAS choices will be limited
+                allowed_users = des.admins
+        else:
+            allowed_users = gas.tech_referrers | gas.supplier_referrers 
+        return allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
