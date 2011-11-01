@@ -480,8 +480,13 @@ class GASConfig(models.Model):
     use_scheduler = models.BooleanField(default=False)
     gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
 
-    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("The GAS is not available (hollidays, closed). The motor use this flag to operate or not some automatisms"))
     #TODO:notify_days = models.PositiveIntegerField(null=True, default=0, help_text=_("The number of days that the system will notify an event (product changed). If set to 0 the notify system is off."))
+
+    # Fields for suspension management:
+    is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
+    suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this gas was suspended
+    suspend_reason = models.TextField(blank=True, default='', db_index=False)
+    suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     history = HistoricalRecords()
 
@@ -1055,15 +1060,17 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         verbose_name=_('auto populate products')
     )
 
-    #TODO: Field to reflect "il GAS puo stracciare il Patto di Solidarieta."
-    #TODO:is_active = models.BooleanField(default=True, help_text=_("Pact can be broken o removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface"))
-    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("Pact can be suspended when partners are on unavailable (holydays, closed). The motor use this flag to operate or not some automatisms"))
-
-    is_inter_gas = models.BooleanField(verbose_name=_('Is InterGAS'), default=False, 
+    orders_can_be_grouped = models.BooleanField(verbose_name=_('Can be InterGAS'), default=False, 
         help_text=_("If true, this supplier can aggregate orders from several GAS")
     )
 
     document = models.FileField(upload_to=base_utils.get_pact_path, null=True, blank=True, verbose_name=_("association act"))
+
+    # Fields for suspension management:
+    is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("A pact can be broken or removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface. When a pact is suspended you can specify when it could be resumed"))
+    suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this pact was suspended
+    suspend_reason = models.TextField(blank=True, default='', db_index=False)
+    suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     history = HistoricalRecords()
 

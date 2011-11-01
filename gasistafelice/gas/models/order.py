@@ -58,8 +58,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     #TODO: Notify system
 
-    inter_gas = models.PositiveIntegerField(verbose_name=_('Is InterGAS'), null=True,  
-        help_text=_("If not null this order will be aggregate with orders from other GAS")
+    group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
+        help_text=_("If not null this order is aggregate with orders from other GAS")
     )
 
     objects = OrderManager()
