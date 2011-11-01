@@ -707,8 +707,6 @@ class Person(models.Model, PermissionResource):
             allowed_users = des.admins            
             return user in allowed_users 
         except KeyError:
-            #FIXME: Can't check permission CREATE on object <class 'gasistafelice.base.models.Person'> with respect to context (ctx)s
-            #raise WrongPermissionCheck('CREATE', self, context)
             raise WrongPermissionCheck('CREATE', cls, context)
         
     # Row-level EDIT permission
@@ -844,24 +842,17 @@ class Place(models.Model, PermissionResource):
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new Place in a DES ?
-        # * DES administrators
-        # * GAS members
-        # * Suppliers 
+        # Everyone belongs to the DES
         
         try:
             des = context['des']
-            all_gas_members = set()
-            for gas in des.gas_list:
-                all_gas_members = all_gas_members | gas.members 
-            all_suppliers = set()
-            for supplier in des.suppliers:
-                all_suppliers = all_suppliers | supplier.referrers
-            allowed_users =  des.admins | all_gas_members | all_suppliers
-            return user in allowed_users 
         except KeyError:
-            #FIXME: Can't check permission CREATE on object <class 'gasistafelice.base.models.Person'> with respect to context (ctx)s
-            #raise WrongPermissionCheck('CREATE', self, context)
             raise WrongPermissionCheck('CREATE', cls, context)
+        else:
+            # It's ok because only one DES is supported
+            return not user.is_anonymous()
+            # otherwhise it should be
+            # return user in User.objects.filter(person__in=des.persons)
                 
     # Row-level EDIT permission
     def can_edit(self, user, context):
