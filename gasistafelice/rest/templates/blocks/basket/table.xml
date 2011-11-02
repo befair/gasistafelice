@@ -11,7 +11,7 @@
     <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
     <th title='{% trans "Ordered total" %}'>{% trans "Total" %}</th>
     <th title='{% trans "Delete" %}'>Del</th>
-    <th title='Ordine confermato?'>Cf.T</th>
+    <th title='Ordine confermato?'>Ok</th>
 {% endblock %}
 
 {% block footer %}

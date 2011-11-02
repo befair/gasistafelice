@@ -30,21 +30,29 @@
 
 {%block page_header%}
    <div class="head">
-        <h1>{% trans "GASMember" %} {{ gasmember.id_in_gas }}</h1>
-        <h2>{% trans "StampBy" %} {{ user.person }} {% now "l d F Y H:i" %} </h2>
         <table style="width:96%; ">
             <tr>
             <tr>
-                <td rowspan="2"><img alt="{{gasmember}}" src="{{gasmember.icon.url}}" width="100" heigth="100" /></td>
-                <td class="taleft">{{gasmember}}<br />{{ gasmember.id }}</td>
-                <td class="taright">{{gasmember.gas}}<br /></td>
-                <td rowspan="2"><img alt="{{gasmember.gas}}" src="{{gasmember.gas.icon.url}}" width="100" heigth="100" /></td>
+                <td rowspan="2" style="width=20%" ><img alt="{{gasmember}}" src="{{gasmember.icon.url}}" width="100" heigth="100" /></td>
+                <td class="taleft" style="width=30%" >
+                {{gasmember}} ({{ gasmember.id }})<br />
+                {{ gasmember.id_in_gas }}
+                </td>
+                <td class="taright" style="width=30%" >
+                {{gasmember.gas}}<br />
+                {{gasmember.seat}}<br />
+                {% trans "StampBy" %} {{ user.person }}<br />
+                {% now "l d F Y H:i" %}
+                </td>
+                <td rowspan="2" style="width=20%" ><img alt="{{gasmember.gas}}" src="{{gasmember.gas.icon.url}}" width="100" heigth="100" /></td>
             <tr>
             </tr>
                 <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ rec_count }}</h2></td>
                 <td></td>
                 <td class="sumPricefield taright">{% trans "Total cost" %}</td>
-                <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}</td>
+                <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
+<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
+                </td>
             </tr>
         </table>
    </div>
@@ -110,7 +118,9 @@
                 <tr>
                     <td colspan='3'></td>
                     <td class="totProd">&euro; {{row.tot_prod|floatformat:"2"}}</td>
-                    <td></td>
+                    <td>
+<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
+                    </td>
                 </tr>
             {% endif %}
 
