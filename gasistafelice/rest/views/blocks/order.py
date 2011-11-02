@@ -98,6 +98,7 @@ class Block(BlockSSDataTables):
         )
 
     def __get_gmos(self, gssop):
+        log.debug("order block __get_gmos (%s)" % (self.request.resource.gasmember))
         return GASMemberOrder.objects.filter(
                     ordered_product__in=gssop,
                     purchaser=self.request.resource.gasmember

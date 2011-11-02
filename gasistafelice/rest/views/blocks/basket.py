@@ -97,7 +97,7 @@ class Block(BlockSSDataTables):
         data = {}
 #        data2 = {}
         i = 0
-        c = querySet.count()
+        c = gmos.count()
         
         # Store mapping between GSSOP-id and neededs info: formset_index and ordered_total
         map_info = { }
@@ -122,7 +122,7 @@ class Block(BlockSSDataTables):
                 'ordered_total' : el.tot_price, # This is the total computed NOW (with ordered_product.price)
             }
 
-        data['form-TOTAL_FORMS'] = c 
+        data['form-TOTAL_FORMS'] = c
         data['form-INITIAL_FORMS'] = c
         data['form-MAX_NUM_FORMS'] = 0
 

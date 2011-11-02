@@ -19,6 +19,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         // Init dataTables
+        var block_obj = this;
         var iQta = 6;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'bPaginate': false,
@@ -94,6 +95,10 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
                     $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
+
+                    /* Modify Django management form info */
+                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
 
                 }
             });

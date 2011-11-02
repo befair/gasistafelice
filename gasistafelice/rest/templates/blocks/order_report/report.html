@@ -31,6 +31,7 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
 
 
 {%block page_header%}
+{{gas.icon.url}}
    <div class="head">
         <h1>{% trans "Order" %}:  {{ order.id }} - {{ order }}</h1>
         <h2>{% trans "StampBy" %} {{ user.userprofile }} {% now "l d F Y H:i" %} </h2>
