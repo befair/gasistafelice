@@ -13,7 +13,7 @@
         "{{gss.tot_amount|escapejs|floatformat:"-2"}}",
         "{{gss.tot_gasmembers|escapejs}}",
         "{{gss.tot_price|escapejs|floatformat:2}}",
-        "{{gss.stock.product.urn|escapejs}}",
+        "{{gss.stock.urn|escapejs}}",
 
     ]
     {% if not forloop.last %}

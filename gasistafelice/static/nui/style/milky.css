@@ -23,6 +23,9 @@
 .product                                        { list-style-image : url('/static/nui/img/milky/product16x16.png'); }
 .product.inline                                 { background : transparent url('/static/nui/img/milky/product16x16.png') no-repeat scroll left; }
 
+.stock                                        { list-style-image : url('/static/nui/img/milky/product16x16.png'); }
+.stock.inline                                 { background : transparent url('/static/nui/img/milky/product16x16.png') no-repeat scroll left; }
+
 .delivery                                        { list-style-image : url('/static/nui/img/milky/delivery16x16.png'); }
 .delivery.inline                                 { background : transparent url('/static/nui/img/milky/delivery16x16.png') no-repeat scroll left; }
 
