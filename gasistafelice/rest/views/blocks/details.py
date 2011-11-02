@@ -327,6 +327,8 @@ class Block(AbstractBlock):
                         element_value = element_value.url
                     except ValueError:
                         element_value = ''
+                elif isinstance(element_value, bool):
+                    element_type = 'bool'
                 else: 
                     element_type  = 'str'
                     if display_field.choices:

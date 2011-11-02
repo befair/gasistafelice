@@ -14,6 +14,18 @@ var NEW_NOTE_FORM_TEXT= "\
 		</form>\
 		";
 
+jQuery.render_bool = function (val) {
+    var rv;
+    if (val.trim().toLowerCase() == "false") {
+        rv = '<img alt="False" src="/media/img/admin/icon-no.gif">';
+    } else if (val.trim().toLowerCase() == "true") {
+        rv = '<img alt="True" src="/media/img/admin/icon-yes.gif">';
+    } else {
+        alert("Variable of boolean type has nor true or false value");
+    }
+    return rv;
+}
+
 /* Resource management facitilies */
 jQuery.Resource = Class.extend({
 

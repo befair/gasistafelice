@@ -180,6 +180,8 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                 val  = '<a href="' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
             } else if (val_type=='email') {
                 val  = '<a href="mailto:' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
+            } else if (val_type=='bool') {
+                val = jQuery.render_bool(val_obj.text());
             } else if (val_type == 'resource') {
                 
                 var res = $(val_obj.children()[0]);
