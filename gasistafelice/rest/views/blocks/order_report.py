@@ -11,7 +11,9 @@ from gasistafelice.gas.forms.order import GASSupplierOrderProductForm, BaseFormS
 
 from django.http import HttpResponse
 from django.template.loader import get_template
+#from django.template.loader import render_to_string
 from django.template import Context
+#from django.template import RequestContext
 import xhtml2pdf.pisa as pisa
 import cStringIO as StringIO
 import cgi, os
@@ -19,6 +21,9 @@ from django.conf import settings
 
 from django.utils.encoding import smart_unicode
 from flexi_auth.models import ObjectWithContext
+
+import logging
+log = logging.getLogger(__name__)
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -161,6 +166,7 @@ class Block(BlockSSDataTables):
         records = []
         #memorize family, total price and number of products
         subTotals = []
+        fam_count = 0
         actualFamily = -1
         loadedFamily = -1
         rowFam = -1
@@ -183,6 +189,7 @@ class Block(BlockSSDataTables):
                     tot_fam = 0
                     nProducts = 0
                 actualFamily = rowFam
+                fam_count += 1
                 description = smart_unicode(el.purchaser.person)
             product = smart_unicode(el.product)
 
@@ -209,7 +216,7 @@ class Block(BlockSSDataTables):
                'basket_products' : nProducts,
             })
 
-        return records, tot_Ord, subTotals
+        return records, tot_Ord, subTotals, fam_count
 
 
     def get_response(self, request, resource_type, resource_id, args):
@@ -222,17 +229,20 @@ class Block(BlockSSDataTables):
         else:
             return super(Block, self).get_response(request, resource_type, resource_id, args)
 
-
     def _create_pdf(self):
 
         # Dati di esempio
         #order = self.resource.order
         order = self.resource
-        fams, total_calc, subTotals = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
+        #TODO: order_by('somefield')
+        querySet = self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()
+        fams, total_calc, subTotals, fam_count = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
         context_dict = {
             'order' : order,
-            'recProd' : self._get_pdfrecords_products(self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()), 
+            'recProd' : self._get_pdfrecords_products(querySet),
+            'prod_count' : querySet.count(),
             'recFam' : fams, 
+            'fam_count' : fam_count, 
             'subFam' : subTotals, 
             'user' : self.request.user,
             'total_amount' : order.tot_price, #total da Model
@@ -247,10 +257,19 @@ class Block(BlockSSDataTables):
         html = template.render(context)
         result = StringIO.StringIO()
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result)
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=GAS_" + order.get_valid_name() + ".pdf"
             return response
         return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
+
+
+    def fetch_resources(uri, rel):
+        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+        log.debug("Order report Pisa image path (%s)" % path)
+        path = os.path.join(settings.MEDIA_ROOT, '/img/icon_beta3.jpg')
+        log.debug("Order report Pisa image path (%s)" % path)
+        return path
+
 
