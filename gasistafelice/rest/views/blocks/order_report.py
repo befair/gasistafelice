@@ -198,6 +198,7 @@ class Block(BlockSSDataTables):
                'amount' : el.ordered_amount,
                'tot_price' : el.tot_price,
                'family_id' : rowFam,
+               'note' : el.note,
             })
 
         if actualFamily != -1 and tot_fam > 0:
