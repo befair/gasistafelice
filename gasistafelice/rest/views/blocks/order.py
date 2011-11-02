@@ -24,7 +24,7 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'order__pk', 
+        0: 'pk', 
         1: 'gasstock__stock__supplier__name', 
         2: 'gasstock__stock__product__name',
         3: '',
@@ -107,6 +107,7 @@ class Block(BlockSSDataTables):
         """Return records of rendered table fields."""
 
         # [:] forces evaluation of the querySet
+        #FIXME: filtering by purchaser not ok --> return all orders for all gasmembers
         gmos = self.__get_gmos(querySet)[:]
 
         data = {}

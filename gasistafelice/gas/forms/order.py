@@ -273,7 +273,7 @@ class SingleGASMemberOrderForm(forms.Form):
                 #log.debug("STO CANCELLANDO un ordine gasista da widget quantita")
             else:
                 gmo.save()
-                #log.debug("ho aggiornato un ordine gasista")
+                log.debug("Product ho aggiornato un ordine gasista (%s) " % id)
 
         elif self.cleaned_data.get('ordered_amount'):
                 gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
@@ -283,9 +283,11 @@ class SingleGASMemberOrderForm(forms.Form):
                         ordered_product = gssop,
                         ordered_price = self.cleaned_data.get('ordered_price'),
                         ordered_amount = self.cleaned_data.get('ordered_amount'),
+                        note = self.cleaned_data.get('note'),
                         purchaser = self.__gm,
                 )
                 gmo.save()
+                log.debug("Product ho creato un ordine gasista (%s) " % gmo.pk)
 
 class BasketGASMemberOrderForm(forms.Form):
     """Return form class for row level operation on GMO datatable"""
@@ -305,18 +307,16 @@ class BasketGASMemberOrderForm(forms.Form):
     def save(self):
 
         id = self.cleaned_data.get('id')
-        gm_id = self.cleaned_data.get('id')
+        gm_id = self.cleaned_data.get('gm_id')
         gsop_id = self.cleaned_data.get('gsop_id')
-        ordered_amount = self.cleaned_data.get('ordered_amount')
-        ordered_price = self.cleaned_data.get('ordered_price')
         enabled = self.cleaned_data.get('enabled')
         if id:
             gmo = GASMemberOrder.objects.get(pk=id)
 #            if gm_id and gm_id != gmo.purchaser.pk:
 #                print "Qualcosa non va con: GASmember"
 #                return ""
-            gmo.ordered_price = ordered_price
-            gmo.ordered_amount = ordered_amount
+            gmo.ordered_price = self.cleaned_data.get('ordered_price')
+            gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
             #log.debug("BasketGASMemberOrderForm (%s) enabled = %s" % (gmo.pk,enabled))
             if gmo.ordered_amount == 0:
                 gmo.delete()
@@ -326,5 +326,5 @@ class BasketGASMemberOrderForm(forms.Form):
                 log.debug("Basket STO CANCELLANDO un ordine gasista da check enabled")
             else:
                 gmo.save()
-                log.debug("Basket ho aggiornato un ordine gasista")
+                log.debug("Basket ho aggiornato un ordine gasista (%s) " % id)
 

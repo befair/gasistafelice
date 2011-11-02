@@ -21,10 +21,11 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
         // Init dataTables
         var iQta = 6;
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'sPaginationType': 'full_numbers',
+                'bPaginate': false,
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
+                "aaSorting": [[2,"asc"]],
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true, "sWidth": "5%"},
                     {"bSearchable":true,"bSortable":true, "sWidth": "5%"},

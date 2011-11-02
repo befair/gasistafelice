@@ -122,21 +122,11 @@ class Block(BlockSSDataTables):
                 'ordered_total' : el.tot_price, # This is the total computed NOW (with ordered_product.price)
             }
 
-#            data2.update({
-#               '%s-id' % key_prefix : el.pk,
-#               '%s-enabled' % key_prefix : bool(av),
-#            })
-
         data['form-TOTAL_FORMS'] = c 
         data['form-INITIAL_FORMS'] = c
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)
-
-
-#        data2['form-TOTAL_FORMS'] = c 
-#        data2['form-INITIAL_FORMS'] = 0
-#        data2['form-MAX_NUM_FORMS'] = 0
 
         records = []
 

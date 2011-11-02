@@ -21,7 +21,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
         var block_obj = this;
         var iQta = 5;
         // Init dataTables
-                //'bPaginate': false, 'sPaginationType': 'full_numbers', 
+                //'sPaginationType': 'full_numbers', 
                 //"oColVis": {"aiExclude": [ 0 ]},
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'bPaginate': false,
