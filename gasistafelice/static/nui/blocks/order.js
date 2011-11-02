@@ -19,7 +19,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         var block_obj = this;
-        var iQta = 4;
+        var iQta = 5;
         // Init dataTables
                 //'bPaginate': false, 'sPaginationType': 'full_numbers', 
                 //"oColVis": {"aiExclude": [ 0 ]},
@@ -31,7 +31,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "aaSorting": [[1,"asc"]],
                 "aoColumns": [
                     {"bSearchable":true, "sWidth": "4%", "bVisible": true },
-                    {"bSearchable":true,"bSortable":true, "sWidth": "26%",
+                    {"bSearchable":true,"bSortable":true, "sWidth": "16%",
                       "fnRender": function ( oObj ) {
                                     var url = $(oObj.aData[iQta]).attr('s_url');
                                     var _name = oObj.aData[ oObj.iDataColumn ];
@@ -39,7 +39,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                                     return res.render();
                                   },
                     },
-                    {"bSortable":true,"bSearchable":true, "sWidth": "35%",
+                    {"bSortable":true,"bSearchable":true, "sWidth": "25%",
                       "fnRender": function ( oObj ) {
                                     var url = $(oObj.aData[iQta]).attr('p_url');
                                     var _name = oObj.aData[ oObj.iDataColumn ];
@@ -47,6 +47,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                                     return res.render();
                                   },
                     },
+                    {"bSortable":false,"bSearchable":false, "sWidth": "20%"},
                     {"bSortable":true, "sClass": "taright", "sType": "currency","bSearchable":false, "sWidth": "10%"},
                     {"bSortable":false,"bSearchable":false, "sWidth": "15%",
                       "fnRender": function ( oObj ) {

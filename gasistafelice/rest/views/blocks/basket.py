@@ -205,6 +205,7 @@ class Block(BlockSSDataTables):
                'tot_price' : el.tot_price,
                'tot_prod' : tot_prod,
                'order_confirmed' : el.is_confirmed,
+               'note' : el.note,
             })
 
         return records

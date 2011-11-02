@@ -24,6 +24,7 @@
 .totprice{width: 20%; color:darkgray;border: solid 1px #C6D7DE;}
 .product{border: solid 1px #C6D7DE;}
 .tab{width: 5%;}
+.note{font-size:1.0em;font-family:courier new; margin:3px 0px 0px 3px;padding:3px 0px 0px 3px; background-color:#FFFFF0;}
 {%endblock%}
 
 {%block page_header%}
@@ -88,7 +89,11 @@
                 {% endif %}
                 <td class="taright qta">{{row.amount}}</td>
                 <td class="taright totprice">&euro; {{row.tot_price|floatformat:"2"}}</td>
-                <td class="product">{{row.product|truncatewords:"200"}}</td>
+                <td class="product">{{row.product|truncatewords:"200"}}
+                {% if row.note %}
+                    <div class="note">{{row.note|truncatewords:"69"}}</div>
+                {% endif %}
+                </td>
             </tr>
 
 

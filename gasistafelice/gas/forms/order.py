@@ -253,9 +253,11 @@ class SingleGASMemberOrderForm(forms.Form):
     gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.DecimalField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
+    note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
 
     def __init__(self, request, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
+        self.fields['note'].widget.attrs['class'] = 'input_medium'
         self.__gm = request.resource.gasmember
 
     def save(self):
@@ -265,6 +267,7 @@ class SingleGASMemberOrderForm(forms.Form):
             gmo = GASMemberOrder.objects.get(pk=id)
             gmo.ordered_price = self.cleaned_data.get('ordered_price')
             gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+            gmo.note = self.cleaned_data.get('note')
             if gmo.ordered_amount == 0:
                 gmo.delete()
                 #log.debug("STO CANCELLANDO un ordine gasista da widget quantita")

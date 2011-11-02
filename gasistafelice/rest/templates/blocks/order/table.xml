@@ -5,6 +5,7 @@
     <th title='{% trans "Order" %}'>Ord.</th>
     <th>{% trans "Supplier" %}</th>
     <th>{% trans "Product" %}</th>
+    <th>{% trans "Note" %}</th>
     <th>{% trans "Price" %}</th>
     <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
     <th title='{% trans "Ordered total" %}'>{% trans "Total" %}</th>

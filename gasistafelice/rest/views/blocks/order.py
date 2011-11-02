@@ -27,9 +27,10 @@ class Block(BlockSSDataTables):
         0: 'order__pk', 
         1: 'gasstock__stock__supplier__name', 
         2: 'gasstock__stock__product__name',
-        3: 'order_price',
-        4: 'tot_amount',
-        5: 'tot_price',
+        3: '',
+        4: 'order_price',
+        5: 'tot_amount',
+        6: 'tot_price',
     }
 #        3: 'gasstock__stock__product__description',
 
@@ -133,6 +134,7 @@ class Block(BlockSSDataTables):
                '%s-ordered_amount' % key_prefix : gmo.ordered_amount or 0,
                '%s-ordered_price' % key_prefix : el.gasstock.price, #displayed as hiddend field
                '%s-gssop_id' % key_prefix : el.pk, #displayed as hiddend field
+               '%s-note' % key_prefix : gmo.note,
             })
 
             gmo_info[el.pk] = {
@@ -172,6 +174,7 @@ class Block(BlockSSDataTables):
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),
                'supplier' : el.supplier,
                'product' : el.product,
+               'note' : form['note'],
                'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total
