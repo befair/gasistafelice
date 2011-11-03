@@ -135,6 +135,13 @@ class EditStockForm(forms.ModelForm):
         self.fields['product_vat_percent'].initial = int(self._product.vat_percent*100)
         self.fields['product_category'].initial = self._product.category
 
+        # If Supplier is not the Producer ==>
+        # can't change product info!
+        if self._supplier != self._product.producer:
+            for k,v in self.fields.items():
+                 if k.startswith('product_'):
+                    self.fields[k].widget.attrs['disabled'] = 'disabled'
+
     def clean(self):
         cleaned_data = super(EditStockForm, self).clean()
         cleaned_data['supplier'] = self._supplier
