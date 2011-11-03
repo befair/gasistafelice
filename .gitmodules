@@ -1,6 +1,6 @@
 [submodule "extra/django-pro-history"]
-    path = extra/django-pro-history
-    url = git://github.com/feroda/django-pro-history.git
+	path = extra/django-pro-history
+	url = git://github.com/feroda/django-pro-history.git
 [submodule "extra/django-simple-accounting"]
 	path = extra/django-simple-accounting
 	url = git://github.com/seldon/django-simple-accounting.git
