@@ -777,16 +777,18 @@ class Place(models.Model, PermissionResource):
     name = models.CharField(max_length=128, blank=True, help_text=_("You can avoid to specify a name if you specify an address"),verbose_name=_('name'))
     description = models.TextField(blank=True,verbose_name=_('description'))
 
-    #TODO: ADD place type from CHOICE (HOME, WORK, HEADQUARTER, WITHDRAWAL...)     
+    # QUESTION: add place type from CHOICE (HOME, WORK, HEADQUARTER, WITHDRAWAL...)     
+    # ANSWER: no place type here. It is just a point in the map
     address = models.CharField(max_length=128, blank=True,verbose_name=_('address'))
 
-    #Zipcode as a string: see http://stackoverflow.com/questions/747802/integer-vs-string-in-database
+    #zipcode as a string: see http://stackoverflow.com/questions/747802/integer-vs-string-in-database
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
     city = models.CharField(max_length=128,verbose_name=_('city'))
     province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"),verbose_name=_('province')) 
         
-    #TODO geolocation: use GeoDjango PointField?
+    #Geolocation: do not use GeoDjango PointField here. 
+    #We can make a separate geo application maybe in future
     lon = models.FloatField(null=True, blank=True,verbose_name=_('lon'))
     lat = models.FloatField(null=True, blank=True,verbose_name=_('lat'))
 
@@ -795,14 +797,20 @@ class Place(models.Model, PermissionResource):
     class Meta:
         verbose_name = _("place")
         verbose_name_plural = _("places")
-        ordering = ('name', 'address')
+        ordering = ('name', 'address', 'city')
 
     def __unicode__(self):
-        return _("%(name)s in %(city)s (%(pr)s)") % {
-                    'name' : self.name or self.address, 
-                    'city' : self.city,
-                    'pr' : self.province,
-        }
+
+        rv = u"" 
+        if self.name or self.address:
+            rv += (self.name or self.address) + u", "
+
+        rv += self.city
+
+        if self.province:
+            rv += u"(%s)" % self.province
+
+        return rv
 
     def clean(self):
 
@@ -822,19 +830,13 @@ class Place(models.Model, PermissionResource):
 
         self.description = self.description.strip()
 
-        if not self.name:
-            # Separate check for name and address because we must set a name for a place.
-            # Otherwise error occurs.
-            if self.address:
-                self.name = self.address
-            else:
-                raise ValidationError(_("Name or address should be set for a Place"))
-
         return super(Place, self).clean()
 
     def save(self, *args, **kw):
 
-        #TODO: check if an already existent place with the same full address exist and in that case force update
+        #TODO: Copy-on-write model
+        # a) check if an already existent place with the same full address exist and in that case force update
+        # b) if we are updating a Place --> detach it from other stuff pointing to it and clone 
 
         super(Place, self).save(*args, **kw)
         
