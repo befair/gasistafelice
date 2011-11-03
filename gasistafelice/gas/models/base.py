@@ -23,7 +23,7 @@ from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.base import const
 from gasistafelice.base import utils as base_utils
 
-from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
+from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER, GROUP_MEMBERS
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.des.models import DES
@@ -607,9 +607,9 @@ class GASMember(models.Model, PermissionResource):
 
     def _set_roles(self, list):
         raise NotImplementedError
-        
+
     roles = property(_get_roles, _set_roles)
-        
+
     @property
     def verbose_name(self):
         """Return GASMember representation along with his own card number in GAS"""
@@ -700,6 +700,14 @@ class GASMember(models.Model, PermissionResource):
         if not self.id_in_gas:
             self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
+
+    def setup_data(self):
+        #Create GROUP_MEMBERS for this user's Person's GASMember 
+        if self.person.user:
+            try:
+                self.person.user.groups.add(GROUP_MEMBERS)
+            except KeyError:
+                log.debug("GASMember person create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
 
     #-- Resource API --#
 

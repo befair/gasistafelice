@@ -16,7 +16,7 @@ from django.db.models.signals import post_save, pre_save
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
-from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
+from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER, GROUP_USERS
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
@@ -28,6 +28,8 @@ from gasistafelice.base.utils import get_resource_icon_path
 
 from workflows.utils import do_transition
 import os
+import logging
+log = logging.getLogger(__name__)
 
 class Resource(object):
     """Base class for project fundamental objects.
@@ -694,9 +696,17 @@ class Person(models.Model, PermissionResource):
         if self.uuid == '':
             self.uuid = None
         super(Person, self).save(*args, **kwargs)
-        
+
+    def setup_data(self):
+        #Create GROUP_USERS for this user's Person 
+        if self.user:
+            try:
+                self.user.groups.add(GROUP_USERS)
+            except KeyError:
+                log.debug("Person create cannot add %s's group %s(%s)" % (GROUP_USERS, self, self.pk))
+
     #----------------- Authorization API ------------------------#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
