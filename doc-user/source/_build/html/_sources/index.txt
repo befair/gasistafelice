@@ -23,8 +23,6 @@ Indice dei contenuti:
     gas_referrer_supplier
     gas_referrer_tech
     general
-    appendix/migration
-    appendix/list
     
 .. TODO
     gas_referrer_cash

@@ -49,9 +49,6 @@ al software e possa gestire le informazioni e i prodotti associati.
 Facilitazioni
 -------------
 
-.. note:
-    |TODO|
-
 Il software è progettato per richiedere il minor numero di informazioni all'inserimento
 delle informazioni. Tuttavia, ogni mese verrà mandata una mail di notifica 
 di mancato inserimento di informazioni importanti, se si verificherà questa situazione.

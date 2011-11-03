@@ -203,13 +203,15 @@ rst_epilog = u"""
 .. |sym_gas_conf| replace:: **TODO** mettere la direttiva image con il simbolo usato per dire che una cosa è configurabile
 .. |sym_supplier| replace:: **TODO** icona fornitore
 .. |sym_gas| replace:: **TODO** icona gas
+.. |sym_gas_referrer_tech| replace:: **TODO** icona referente informatico
+.. |sym_supplier_referrer| replace:: **TODO** icona fornitore
+.. |sym_des_admin| replace:: **TODO** icona referente informatico del des
 .. |basket| replace:: paniere del gasista
 .. |res_supplier| replace:: fornitore
 .. |res_pds| replace:: patto di solidarietà
 .. |res_gas| replace:: GAS
 .. |res_gasmember| replace:: gasista
 .. |res_des| replace:: DES
-
 .. |head2_descr| replace:: Descrizione
 .. |head2_terms| replace:: Terminologia
 .. |head2_start| replace:: Da cosa parte

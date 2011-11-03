@@ -33,11 +33,8 @@ Modificare lo stock
 Aggiungere prodotti
 ^^^^^^^^^^^^^^^^^^^
 
-Categorie del DES
-&&&&&&&&&&&&&&&&&
-
-Categorie del fornitore
-&&&&&&&&&&&&&&&&&&&&&&&
+Categorie del DES e categorie del fornitore
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 Modificare la scheda del fornitore
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

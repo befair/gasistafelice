@@ -1,0 +1,16 @@
+* \(BTL) Bottiglia
+* \(BOX) Cartone
+* \(CX) Cassa
+* \(Cl) Centilitro
+* \(CF) Confezione
+* \(DAM) Dama
+* \(Dl) Decilitro
+* \(Hg) Etto
+* \(PAN) Fila
+* \(FOR) Forma
+* \(Gr) Grammo
+* \(Kg) Kg
+* \(Lt) Litro
+* \(Ml) Millilitro
+* \(PAC) Pacco
+* \(PZ) Pezzo

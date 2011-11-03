@@ -1,11 +1,6 @@
 Il referente informatico del GAS
 ================================
 
-.. WARNING::
-    Il referente informatico del GAS è un utente che ha ampi margini di azione nel software.
-    Può infatti eseguire quasi tutte le operazioni eseguite dal referente informatico del DES.
-    Tale possibilità richiede quindi una certa attenzione nell'interazione con la piattaforma.
-
 |head2_descr|
 -------------
 
