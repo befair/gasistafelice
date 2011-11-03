@@ -87,13 +87,12 @@
 
 
 
-{"pk":1,"model":"supplier.certification", "fields": {"name":"AC","description":"Autocertificazione" } },
-{"pk":2,"model":"supplier.certification", "fields": {"name":"IMC","description":"Certificato da IMC" } },
-{"pk":3,"model":"supplier.certification", "fields": {"name":"INC","description":"In conversione" } },
-{"pk":4,"model":"supplier.certification", "fields": {"name":"BAD","description":"Convenzionale" } },
-{"pk":5,"model":"supplier.certification", "fields": {"name":"Cert","description":"Certificato" } },
-{"pk":6,"model":"supplier.certification", "fields": {"name":"SES","description":"Certificato da Suolo e Salute" } },
-{"pk":7,"model":"supplier.certification", "fields": {"name":"ICEA","description":"Certificato da ICEA" } },
+{"pk":1,"model":"supplier.certification", "fields": {"symbol":"AC","name":"Autocertificazione" } },
+{"pk":2,"model":"supplier.certification", "fields": {"symbol":"IMC","name":"Certificato da IMC" } },
+{"pk":3,"model":"supplier.certification", "fields": {"symbol":"INC","name":"In conversione" } },
+{"pk":4,"model":"supplier.certification", "fields": {"symbol":"Cert","name":"Certificato" } },
+{"pk":5,"model":"supplier.certification", "fields": {"symbol":"SES","name":"Certificato da Suolo e Salute" } },
+{"pk":6,"model":"supplier.certification", "fields": {"symbol":"ICEA","name":"Certificato da ICEA" } },
 
 
 

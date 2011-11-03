@@ -44,6 +44,7 @@ class Supplier(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
+    n_employers = models.PositiveIntegerField(default=1)
     certifications = models.ManyToManyField('Certification', null=True, blank=True, verbose_name = _('certifications'))
     logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
     contact_set = models.ManyToManyField(Contact, null=True, blank=True)
@@ -319,7 +320,8 @@ class SupplierAgent(models.Model):
 class Certification(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128, unique=True,verbose_name=_('name')) 
-    description = models.TextField(blank=True,verbose_name=_('description'))
+    symbol = models.CharField(max_length=5, unique=True, verbose_name=_('symbol'))
+    description = models.TextField(blank=True, verbose_name=_('description'))
 
     history = HistoricalRecords()
 
@@ -328,6 +330,7 @@ class Certification(models.Model, PermissionResource):
 
     def clean(self):
         self.name = self.name.strip()
+        self.symbol = self.symbol.strip()
         self.description = self.description.strip()
         return super(Certification, self).clean()
 
