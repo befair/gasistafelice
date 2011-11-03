@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
 from django.forms.formsets import formset_factory
 
@@ -9,7 +10,7 @@ from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import SUPPLIER_REFERRER
-from gasistafelice.supplier.models import SupplierStock, Product
+from gasistafelice.supplier.models import SupplierStock, Product, ProductPU, ProductMU, ProductCategory
 
 import logging
 log = logging.getLogger(__name__)
@@ -93,13 +94,83 @@ SingleSupplierStockFormSet = formset_factory(
 
 
 
-
+#--------------------Supplier Stock-----------------------------------------------------------
 
 class EditStockForm(forms.ModelForm):
+    """Edit form for mixed-in Product and SupplierStock attributes.
+
+    WARNIG: this form is valid only in an update-context
+        """
+
+    # product pk
+    # product name
+    # stock price
+    # product vat percent
+    # product category
+    # product
+    product_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    product_name = forms.CharField(required=True, 
+            label=_("Name"), widget=forms.TextInput(attrs={'size':'40'})
+    )
+    price = CurrencyField(label=_("Price"))
+    product_vat_percent = forms.IntegerField(required=True, initial=20, label=_("VAT percent"))
+    availability = forms.BooleanField(required=False, label=_("Availability"))
+    product_description = forms.CharField(required=False, label=_("Description"))
+
+    product_pu = forms.ModelChoiceField(ProductPU.objects.all(), 
+            label=ProductPU._meta.verbose_name)
+    product_mu = forms.ModelChoiceField(ProductMU.objects.all(), required=False,
+            label=ProductMU._meta.verbose_name)
+    product_muppu = forms.DecimalField(label=_('Measure unit per product unit'), initial=1)
+
+    product_category = forms.ModelChoiceField(ProductCategory.objects.all(), 
+            label=ProductCategory._meta.verbose_name)
+    
+    def __init__(self, request, *args, **kw):
+        super(EditStockForm, self).__init__(*args, **kw)
+        self.fields['product_name'].initial = request.resource.product.name
+        self.fields['product_pu'].initial = request.resource.product.pu
+        self.fields['product_mu'].initial = request.resource.product.mu
+        self.fields['product_muppu'].initial = request.resource.product.muppu
+        self.fields['product_vat_percent'].initial = int(request.resource.product.vat_percent*100)
+        self.fields['product_category'].initial = request.resource.product.category
+        self._supplier = request.resource.supplier
+
+    def clean(self):
+        cleaned_data = super(EditStockForm, self).clean()
+        cleaned_data['supplier'] = self._supplier
+        cleaned_data['amount_available'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
+        ppk = self.cleaned_data.get('product_pk')
+        if ppk:
+            cleaned_data['product'] = Product.objects.get(pk=int(ppk))
+        else:
+            cleaned_data['product'] = None
+
+        log.debug(self.errors)
+        return cleaned_data
+
+        
+    def save(self):
+        raise ValueError(self.instance.product)
 
     class Meta:
         model = SupplierStock
+        exclude = ('supplier', 'amount_available', 'product')
         
+        gf_fieldsets = (
+            (None, {
+                'fields': (
+                    'product_name',           
+                    ('price', 'product_vat_percent'),
+                    ('product_pu', 'product_muppu', 'product_mu'),
+                    ('units_minimum_amount', 'units_per_box'),
+                    ('detail_minimum_amount', 'detail_step'), 
+                    'availability',
+                    ('code','product_category', 'supplier_category'),
+                    'delivery_notes', 
+                )
+             }),
+            )
 
 #------------------------------------------------------------------------------
 

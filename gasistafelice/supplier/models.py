@@ -52,7 +52,7 @@ class Supplier(models.Model, PermissionResource):
 
     history = HistoricalRecords()
     
-    class Meta :
+    class Meta:
         verbose_name = _('supplier')
         verbose_name_plural = _('suppliers')        
         ordering = ('name',)
@@ -239,7 +239,9 @@ class SupplierConfig(models.Model):
 
     products_made_by_set = models.ManyToManyField(Supplier, verbose_name=_("products made by"), help_text=_("Select here producers of products you sell. YOU will be always enabled in this list"))
 
-    receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check here if you want to receive order via mail when finalized"))
+    receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check this option if you want to receive order via mail when finalized"))
+
+    use_custom_categories = models.BooleanField(verbose_name=_("use custom categories"), default=False, help_text=_("Check this option if you use your own categories"))
 
     def setup_data(self):
 
@@ -377,6 +379,7 @@ class ProductCategory(models.Model, PermissionResource):
     class Meta:
         verbose_name=_('Product category')
         verbose_name_plural = _("Product categories")
+        ordering = ('name',)
 
     def __unicode__(self):
         return self.name
@@ -452,9 +455,9 @@ class ProductMU(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return self.symbol
+        return self.name
     
-    class Meta():
+    class Meta:
         verbose_name=_("measure unit")
         verbose_name_plural=_("measure units")
     
@@ -508,11 +511,12 @@ class ProductPU(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return self.symbol
+        return self.name
     
-    class Meta():
+    class Meta:
         verbose_name=_("product unit")
         verbose_name_plural=_("product units")
+        ordering = ('name',)
     
         #-------------- Authorization API ---------------#
     
@@ -550,12 +554,20 @@ class Product(models.Model, PermissionResource):
 
     # Some producers don't have product codification. 
     # That's why code could be blank AND null. See save() method
-    code = models.CharField(max_length=128, unique=True, blank=True, null=True, verbose_name=_('code'), help_text=_("Identification provided by the producer"))
+    code = models.CharField(max_length=128, unique=True, blank=True, null=True, 
+                verbose_name=_('code'), 
+                help_text=_("Identification provided by the producer")
+    )
 
-    producer = models.ForeignKey(Supplier, related_name="produced_product_set", verbose_name = _("producer"))
+    producer = models.ForeignKey(Supplier, related_name="produced_product_set", 
+                verbose_name = _("producer")
+    )
 
     # Resource API
-    category = models.ForeignKey(ProductCategory, blank=True, related_name="product_set", verbose_name = _("category"), default=category_catchall)
+    category = models.ForeignKey(ProductCategory, blank=True, 
+                related_name="product_set", verbose_name = _("category"), 
+                default=category_catchall
+    )
 
     # Measure unit, it can be null in order to make it easier to define 
     # a new product. If a user specifies a `pu` which is also a `mu`,
@@ -590,6 +602,7 @@ class Product(models.Model, PermissionResource):
     class Meta:
         verbose_name = _('product')
         verbose_name_plural = _('products')
+        ordering = ('name',)
 
     def __unicode__(self):
         return self.name

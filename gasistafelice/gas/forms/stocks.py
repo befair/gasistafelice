@@ -15,8 +15,6 @@ log = logging.getLogger(__name__)
 
 #----------------------GAS Stock---------------------------------------------------------
 
-
-
 class GASSupplierStockForm(forms.Form):
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
