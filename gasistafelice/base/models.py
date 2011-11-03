@@ -16,11 +16,15 @@ from django.db.models.signals import post_save, pre_save
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
-from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER, GROUP_USERS
+from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 from flexi_auth.utils import get_parametric_roles
+#Temporarly
+from gasistafelice.consts import GROUP_INFORMATICS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GROUP_ECONOMICS, GAS_MEMBER , GAS_REFERRER, GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY, GAS_REFERRER_CASH, GAS_REFERRER_TECH, SUPPLIER_REFERRER, DES_ADMIN
+
+from flexi_auth.models import PrincipalParamRoleRelation
 
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const
@@ -697,14 +701,6 @@ class Person(models.Model, PermissionResource):
             self.uuid = None
         super(Person, self).save(*args, **kwargs)
 
-    def setup_data(self):
-        #Create GROUP_USERS for this user's Person 
-        if self.user:
-            try:
-                self.user.groups.add(GROUP_USERS)
-            except KeyError:
-                log.debug("Person create cannot add %s's group %s(%s)" % (GROUP_USERS, self, self.pk))
-
     #----------------- Authorization API ------------------------#
 
     # Table-level CREATE permission    
@@ -994,6 +990,56 @@ return True if the specs are fine, False otherwise.
 
 #-------------------------------------------------------------------------------
 
+
+#class PrincipalParamRoleRelation(PrincipalParamRoleRelation)
+def setup_data_handler(self, instance, **kwargs):
+    """ Ovverride temporarly for associating some groups to users
+
+    This will be in used until some interface use admin-interface.
+    After this can be removed
+
+    user = models.ForeignKey(User, blank=True, null=True, related_name="principal_param_role_set")
+    group = models.ForeignKey(Group, blank=True, null=True, related_name="principal_param_role_set")
+    role = models.ForeignKey(ParamRole, related_name="principal_param_role_set")
+
+    """
+    #GROUP_INFORMATICS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GROUP_ECONOMICS
+    #Create GROUP_MEMBERS for this user's Person's GASMember 
+    if self.role.name == GAS_MEMBER:
+        try:
+            self.user.groups.add(GROUP_MEMBERS, GROUP_USERS)
+        except KeyError:
+            log.debug("GAS_MEMBER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
+#    elif self.role.name == GAS_REFERRER:
+    elif self.role.name == GAS_REFERRER_SUPPLIER:
+        try:
+            self.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
+        except KeyError:
+            log.debug("AS_REFERRER_SUPPLIER create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, self, self.pk))
+#    elif self.role.name == GAS_REFERRER_ORDER:
+#    elif self.role.name == GAS_REFERRER_WITHDRAWAL:
+#    elif self.role.name == GAS_REFERRER_DELIVERY:
+    elif self.role.name == GAS_REFERRER_CASH:
+        try:
+            self.user.groups.add(GROUP_ECONOMICS, GROUP_USERS)
+        except KeyError:
+            log.debug("GAS_REFERRER_CASH create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, self, self.pk))
+    elif self.role.name == GAS_REFERRER_TECH:
+        try:
+            self.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
+        except KeyError:
+            log.debug("GAS_REFERRER_TECH create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
+    elif self.role.name == SUPPLIER_REFERRER:
+        try:
+            self.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
+        except KeyError:
+            log.debug("SUPPLIER_REFERRER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
+#    elif self.role.name == DES_ADMIN
+
+
+#-------------------------------------------------------------------------------
+
+
 def validate(sender, instance, **kwargs):
         try:
             # `instance` is the model instance that has just been created
@@ -1024,3 +1070,4 @@ pre_save.connect(validate)
 
 # add `setup_data` function as a listener to the `post_save` signal
 post_save.connect(setup_data)
+post_save.connect(setup_data_handler, sender= PrincipalParamRoleRelation)
