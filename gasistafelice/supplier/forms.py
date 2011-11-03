@@ -208,7 +208,7 @@ class EditStockForm(forms.ModelForm):
                     ('detail_minimum_amount', 'detail_step'), 
                     'availability',
                     ('code','product_category', 'supplier_category'),
-                    'delivery_notes', 'product_pk',
+                    'product_pk',
                 )
              }),
             )

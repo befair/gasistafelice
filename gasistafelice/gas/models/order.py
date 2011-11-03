@@ -70,6 +70,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     class Meta:
         verbose_name = _('order issued to supplier')
         verbose_name = _('orders issued to supplier')
+        ordering = ('datetime_end', 'datetime_start')
         app_label = 'gas'
         
     def __init__(self, *args, **kw):

@@ -96,31 +96,31 @@
 
 
 
-{"pk": 1,"model": "supplier.productmu","fields": {"symbol": "ML","name": "Millilitro"}}, 
-{"pk": 2,"model": "supplier.productmu","fields": {"symbol": "CL","name": "Centilitro"}}, 
-{"pk": 3,"model": "supplier.productmu","fields": {"symbol": "DL","name": "Decilitro"}}, 
-{"pk": 4,"model": "supplier.productmu","fields": {"symbol": "LT","name": "Litro"}}, 
-{"pk": 5,"model": "supplier.productmu","fields": {"symbol": "GR","name": "Grammo"}}, 
-{"pk": 6,"model": "supplier.productmu","fields": {"symbol": "HG","name": "Etto"}}, 
-{"pk": 7,"model": "supplier.productmu","fields": {"symbol": "KG","name": "Kilo"}}, 
+{"pk": 1,"model": "supplier.productmu","fields": {"symbol": "Ml","name": "Millilitro"}}, 
+{"pk": 2,"model": "supplier.productmu","fields": {"symbol": "Cl","name": "Centilitro"}}, 
+{"pk": 3,"model": "supplier.productmu","fields": {"symbol": "Dl","name": "Decilitro"}}, 
+{"pk": 4,"model": "supplier.productmu","fields": {"symbol": "Lt","name": "Litro"}}, 
+{"pk": 5,"model": "supplier.productmu","fields": {"symbol": "Gr","name": "Grammo"}}, 
+{"pk": 6,"model": "supplier.productmu","fields": {"symbol": "Hg","name": "Etto"}}, 
+{"pk": 7,"model": "supplier.productmu","fields": {"symbol": "Kg","name": "Kilo"}}, 
 
 
 {"pk": 1,"model": "supplier.productpu","fields": {"symbol": "BTL","name": "Bottiglia","description": ""}}, 
 {"pk": 2,"model": "supplier.productpu","fields": {"symbol": "BOX","name": "Cartone","description": ""}}, 
-{"pk": 3,"model": "supplier.productpu","fields": {"symbol": "CX ","name": "Cassa","description": ""}}, 
-{"pk": 4,"model": "supplier.productpu","fields": {"symbol": "CL ","name": "Centilitro","description": ""}}, 
-{"pk": 5,"model": "supplier.productpu","fields": {"symbol": "Cf ","name": "Confezione","description": ""}}, 
+{"pk": 3,"model": "supplier.productpu","fields": {"symbol": "CX","name": "Cassa","description": ""}}, 
+{"pk": 4,"model": "supplier.productpu","fields": {"symbol": "Cl","name": "Centilitro","description": ""}}, 
+{"pk": 5,"model": "supplier.productpu","fields": {"symbol": "CF","name": "Confezione","description": ""}}, 
 {"pk": 6,"model": "supplier.productpu","fields": {"symbol": "DAM","name": "Dama","description": ""}}, 
-{"pk": 7,"model": "supplier.productpu","fields": {"symbol": "DL ","name": "Decilitro","description": ""}}, 
-{"pk": 8,"model": "supplier.productpu","fields": {"symbol": "Hg ","name": "Etto","description": ""}}, 
+{"pk": 7,"model": "supplier.productpu","fields": {"symbol": "Dl","name": "Decilitro","description": ""}}, 
+{"pk": 8,"model": "supplier.productpu","fields": {"symbol": "Hg","name": "Etto","description": ""}}, 
 {"pk": 9,"model": "supplier.productpu","fields": {"symbol": "PAN","name": "Fila","description": ""}}, 
 {"pk": 10,"model": "supplier.productpu","fields": {"symbol": "FOR","name": "Forma","description": ""}}, 
-{"pk": 11,"model": "supplier.productpu","fields": {"symbol": "Gr ","name": "Grammo","description": ""}}, 
-{"pk": 12,"model": "supplier.productpu","fields": {"symbol": "KG ","name": "Kg","description": ""}}, 
-{"pk": 13,"model": "supplier.productpu","fields": {"symbol": "Lt ","name": "Litro","description": ""}}, 
-{"pk": 14,"model": "supplier.productpu","fields": {"symbol": "ML ","name": "ml","description": ""}}, 
+{"pk": 11,"model": "supplier.productpu","fields": {"symbol": "Gr","name": "Grammo","description": ""}}, 
+{"pk": 12,"model": "supplier.productpu","fields": {"symbol": "Kg","name": "Kg","description": ""}}, 
+{"pk": 13,"model": "supplier.productpu","fields": {"symbol": "Lt","name": "Litro","description": ""}}, 
+{"pk": 14,"model": "supplier.productpu","fields": {"symbol": "Ml","name": "Millilitro","description": ""}}, 
 {"pk": 15,"model": "supplier.productpu","fields": {"symbol": "PAC","name": "Pacco","description": ""}}, 
-{"pk": 16,"model": "supplier.productpu","fields": {"symbol": "PZ ","name": "Pezzo","description": ""}},
+{"pk": 16,"model": "supplier.productpu","fields": {"symbol": "PZ","name": "Pezzo","description": ""}},
 
 
 
