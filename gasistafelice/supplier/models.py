@@ -603,9 +603,13 @@ class Product(models.Model, PermissionResource):
     # box, tanks, bottles, or even a measure unit
     # This must be specified.
     pu = models.ForeignKey(ProductPU, verbose_name=_("product unit"))
+
+    # See help text
+    # Can be null when no measure is specified and pu is not a measure
     muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
                 decimal_places=2, max_digits=6, default=Decimal("1.00"),
-                help_text=_("How many measure units fit in your product unit?")
+                help_text=_("How many measure units fit in your product unit?"),
+                null=True
     )
     muppu_is_variable = models.BooleanField(verbose_name=_("variable volume"), default=False,
                 help_text=_("Check this if measure units per product unit is not exact")

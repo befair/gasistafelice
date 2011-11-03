@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
 from django.forms.formsets import formset_factory
+from django.forms import ValidationError
+from django.db.utils import DatabaseError
 
 from flexi_auth.models import ParamRole
 from gasistafelice.lib.widgets import RelatedFieldWidgetCanAdd
@@ -12,6 +14,7 @@ from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.supplier.models import SupplierStock, Product, ProductPU, ProductMU, ProductCategory
 
+from decimal import Decimal
 import logging
 log = logging.getLogger(__name__)
 
@@ -112,7 +115,7 @@ class EditStockForm(forms.ModelForm):
     product_description = forms.CharField(required=False, label=_("Description"))
 
     product_pu = forms.ModelChoiceField(ProductPU.objects.all(), 
-            label=ProductPU._meta.verbose_name)
+            label=ProductPU._meta.verbose_name, required=True)
     product_mu = forms.ModelChoiceField(ProductMU.objects.all(), required=False,
             label=ProductMU._meta.verbose_name)
     product_muppu = forms.DecimalField(label=_('Measure unit per product unit'), initial=1)
@@ -124,6 +127,7 @@ class EditStockForm(forms.ModelForm):
         super(EditStockForm, self).__init__(*args, **kw)
         self._supplier = request.resource.supplier
         self._product = request.resource.product
+        self.fields['product_pk'].initial = self._product.pk
         self.fields['product_name'].initial = self._product.name
         self.fields['product_pu'].initial = self._product.pu
         self.fields['product_mu'].initial = self._product.mu
@@ -135,16 +139,53 @@ class EditStockForm(forms.ModelForm):
         cleaned_data = super(EditStockForm, self).clean()
         cleaned_data['supplier'] = self._supplier
         cleaned_data['amount_available'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
+        cleaned_data['product_vat_percent'] = Decimal(cleaned_data['product_vat_percent'])/100
+
+        #MU and PU settings must be compatible with UnitsConversion table
+        pu = cleaned_data['product_pu']
+        mu = cleaned_data.get('product_mu')
+        mu_qs = ProductMU.objects.filter(symbol__exact=pu.symbol) 
+
+        if mu:
+            
+            if mu_qs.count() == 1:
+                src_mu = mu_qs[0]
+                muppu = cleaned_data['product_muppu']
+                if muppu != UnitsConversion.objects.get(src=src_mu, dst=mu).amount:
+                    raise ValidationError(_("Units measure %(mu)s for %(pu)s must be %(amount)s") % {
+                            'mu' : mu, 'pu' : pu, 'amount':muppu
+                    })
+                
+            elif not mu_qs.count():
+                pass #do nothing whatever written, it is right
+            else:
+                raise DatabaseError("There are more than one MU for symbol %s" % cleaned_data['pu'].symbol)
+            
+        else:
+
+            if mu_qs.count() == 1:
+                cleaned_data['product_mu'] = mu_qs[0]
+                cleaned_data['product_muppu'] = 1
+            elif not mu_qs.count():
+                cleaned_data['product_mu'] = None
+                cleaned_data['product_muppu'] = None
+            else:
+                raise DatabaseError("There are more than one MU for symbol %s" % cleaned_data['pu'].symbol)
 
         # Update product with new info
         for k,v in cleaned_data.items():
              if k.startswith('product_'):
                 setattr(self._product, k[len('product_'):], v)
+
+        log.debug(self._product.vat_percent)
         cleaned_data['product'] = self._product
         log.debug(self.errors)
 
         return cleaned_data
 
+    def save(self):
+        self.instance.product.save()
+        self.instance.save()
         
     class Meta:
         model = SupplierStock
@@ -160,7 +201,7 @@ class EditStockForm(forms.ModelForm):
                     ('detail_minimum_amount', 'detail_step'), 
                     'availability',
                     ('code','product_category', 'supplier_category'),
-                    'delivery_notes', 
+                    'delivery_notes', 'product_pk',
                 )
              }),
             )

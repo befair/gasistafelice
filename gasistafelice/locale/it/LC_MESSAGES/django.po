@@ -637,7 +637,7 @@ msgstr "Partita IVA"
 
 #: gas/models/base.py:56 supplier/models.py:948
 msgid "VAT"
-msgstr "Partita IVA"
+msgstr "IVA"
 
 #: gas/models/base.py:57
 msgid "Fiscal code card"
