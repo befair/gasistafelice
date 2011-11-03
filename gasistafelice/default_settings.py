@@ -306,9 +306,21 @@ ENABLE_OLAP_REPORTS = False
 DATE_FMT = "%d/%m/%Y"
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 
-# default category for all uncategorized products
-# WARNING: this category MUST appear in fixtures!
-DEFAULT_CATEGORY_CATCHALL = 'Non definita'
+INIT_OPTIONS = {
+    'domain' : "ordini.desmacerata.it",
+    'sitename' : "DES Macerata",
+    'sitedescription' : "Gestione degli ordini per il Distretto di Economia Solidale della Provincia di Macerata (DES-MC)",
+    'su_username' : "admin",
+    'su_name'   : "Referente informatico",
+    'su_surname': "del DES-MC",
+    'su_email'  : "",
+    'su_passwd' : "admin",
+}
+
+# --- WARNING: changing following parameters implies fixtures adaptation --
+# Default category for all uncategorized products
+DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
+# Superuser username
 
 #------ AUTH settings
 from flexi_auth_settings import *
