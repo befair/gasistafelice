@@ -12,7 +12,7 @@ La procedura proposta prevede l'interazione fra l'area comunicazione,
 il gruppo di sviluppo, un formatore, il referente informatico del GAS, e tutti i gasisti.
 Essa è composta dai seguenti passi:
 
-1. Richiesta al referente informatico dei GAS dei dati da importare
+1. Richiesta al referente informatico dei GAS i dati da importare
 2. Importazione dei dati da parte del gruppo di sviluppo
 3. Abilitazione del referente informatico del GAS
 4. Il referente informatico del GAS abilita gli utenti:
@@ -25,9 +25,10 @@ dopo che il gruppo sviluppo abbia creato l'utente ed assegnato il ruolo di *refe
 Dati da importare
 -----------------
 
-L'importazione dei dati si spinge fin dove il referente informatico di ogni GAS intende portarla,
-sulla base delle proprie esigenze, disponibilità di tempo e dei dati del proprio GAS!
-I dati possono essere importati anche in fasi separate.
+.. note::
+    L'importazione dei dati si spinge fin dove il referente informatico di ogni GAS intende portarla,
+    sulla base delle proprie esigenze, disponibilità di tempo e dei dati del proprio GAS!
+    I dati possono essere importati anche in fasi separate.
 
 I documenti da cui si importano i dati sono fogli di calcolo elaborati con il proprio programma
 di foglio di calcolo preferito ed inviati via mail al team operativo del DES.
@@ -40,6 +41,12 @@ Il formato dei documenti di importazione deve essere uno a scelta fra:
 .. note:
     TUTTE le colonne obbligatorie devono essere presenti nel file consegnato anche se vuote.
 
+Vengono messi a disposizione dei file di esempio per facilitare la compilazione
+
+.. note
+    Li sta preparando Peppe di Civitanova che ringraziamo
+
+
 **Programmi per la realizzazione**
 
 In un contesto di economia solidale si privilegiano i programmi liberi di cui citiamo i più diffusi:
@@ -47,7 +54,7 @@ In un contesto di economia solidale si privilegiano i programmi liberi di cui ci
 * `LibreOffice <http://www.libreoffice.org>`__ (su tutti sistemi operativi)
 * `GNUmeric <http://it.wikipedia.org/wiki/Gnumeric>`__ (per sistemi GNU/Linux)
 
-Per ulteriori approfondimenti rimandiamo alla pagina http://it.wikipedia.org/wiki/Software_di_produttivit%C3%A0_personale
+Per ulteriori approfondimenti rimandiamo alla pagina di Wikipedia `Software di produttività personale <http://it.wikipedia.org/wiki/Software_di_produttivit%C3%A0_personale>`__
 
 .. _gasmembers:
 
@@ -68,7 +75,7 @@ Ulteriori campi opzionali:
 7. Numero di telefono
 
 .. note::
-    Il nome utente verrà impostato al nome della persona, seguito da un numero progressivo per evitare duplicati.
+    Il nome utente (username) verrà impostato al nome della persona, seguito da un numero progressivo per evitare duplicati.
 
 Fornitori
 ^^^^^^^^^
@@ -94,14 +101,24 @@ Campo opzionale:
 Soggetto 
 &&&&&&&&
 
-Esistono 2 tipi di soggetti che ruotano intorno al fornitore: chi opera nella piattaforma,
-e la persona che funge da contatto informativo.
+Esistono 2 tipi di soggetti che ruotano intorno al fornitore: 
+
+* chi opera nella piattaforma;
+* la persona che funge da contatto informativo;
 
 I campi obbligatori per l'importazione di questi tipi di soggetti sono:
 
-1. Tipo: a scelta fra ``OPERATORE`` (operatore), ``INFO`` (persona per il contatto), ``OP_INFO`` (entrambi)
+1. Numero di partita IVA del fornitore cui si riferisce: ha il compito di legare questa riga al soggetto giuridico interessato
+2. Tipo: a scelta fra ``OPERATORE`` (operatore), ``INFO`` (persona per il contatto), ``OP_INFO`` (entrambi)
 
 e a seguire gli altri campi previsti per i :ref:`gasmembers`
+
+.. note::
+    Le persone di tipo "INFO" non avranno un utente abilitato all'accesso al sistema
+
+.. note::
+    Si consiglia di mettere in questa scheda solamente le persone che non sono già gasisti.
+    Il referente informatico potrà gestire al meglio l'associazione dei propri gasisti ai propri fornitori.
 
 Prodotti
 ^^^^^^^^
@@ -110,25 +127,38 @@ Per ora parliamo solamente dei produttori, ossia chi vende prodotti realizzati i
 
 I prodotti prevedono vari campi obbligatori:
 
-1. Nome
-2. Prezzo ivato
-3. IVA
-4. Unità di prodotto: a scelta fra :ref:`list-product-units`
+1. Numero di partita IVA del fornitore cui si riferisce: ha il compito di legare questa riga al soggetto giuridico interessato
+2. Nome
+3. Prezzo ivato
+4. IVA
+5. Unità di prodotto: a scelta fra :ref:`list-product-units`
 
 Campi opzionali:
 
-5. Unità di misura: a scelta fra :ref:`list-measure-units`
-6. Unità di misura per unità di prodotto
-7. Categoria di prodotto: a scelta fra :ref:`list-product-categories`
-8. Codice identificativo
-9. Quantità minima ordinabile: espressa in termini di unità di prodotto
-10. Quantità di unità di prodotto per cartone
-11. Quantità minima del dettaglio
-12. Quantità minima di avanzamento
+6. Unità di misura: a scelta fra :ref:`list-measure-units`
+7. Unità di misura per unità di prodotto
+8. Categoria di prodotto: a scelta fra :ref:`list-product-categories`
+9. Codice identificativo
+10. Quantità minima ordinabile: espressa in termini di unità di prodotto
+11. Quantità di unità di prodotto per cartone
+12. Quantità minima del dettaglio
+13. Quantità minima di avanzamento
 
-**Esempio** 
+**Esempi** 
 
-Poniamo il caso del prodotto *1 forma da 10 KG di formaggio pecorino tagliabile a fette di 20gr*. I campi assumono i valori:
+Il caso più semplice è *1 KG di prosciutto crudo*:
+
+* Nome = prosciutto crudo
+* Unità di prodotto = KG
+
+Un caso più interessante è *1 CF da 500 GR di pasta di semola di grano duro*:
+
+* Nome = pasta di semola di grano duro
+* Unità di prodotto = CF (Confezione)
+* Unità di misura = GR
+* Unità di misura per prodotto = 500
+
+Infine poniamo il caso del prodotto *1 forma da 10 KG di formaggio pecorino tagliabile a fette di 20gr*. I campi assumono i valori:
 
 * Nome = formaggio pecorino
 * Unità di prodotto = forma
