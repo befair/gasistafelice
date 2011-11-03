@@ -292,7 +292,7 @@ RESOURCE_PAGE_BLOCKS = {
     'stock' : [{
         'name': 'info',
         'descr': 'Scheda del prodotto',
-        'blocks' : ['stock_details'],
+        'blocks' : ['stock_details', 'open_orders'],
     }],
 
 }

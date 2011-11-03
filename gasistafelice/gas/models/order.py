@@ -371,7 +371,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     if des.pacts.count():
                         allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
                 except KeyError:
-                    raise WrongPermissionCheck('CREATE', cls, context)   
+                    try:
+                        stock = context['stock']
+                    except KeyError:
+                        raise WrongPermissionCheck('CREATE', cls, context)   
 
         return user in allowed_users
  
