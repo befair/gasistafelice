@@ -615,7 +615,7 @@ jQuery.resource_list_block_update = function(block_box_id) {
 //                          Utils functions for some blocks                     //
 //------------------------------------------------------------------------------//
 
-function fncOrder(x, _step, _min, _price){
+function fncOrder(x, _step, _min, _price, _blk){
   try {
     var el = null;
     _step > 0 ? (el = x.prev('input')) : (el = x.next('input'));
@@ -630,8 +630,8 @@ function fncOrder(x, _step, _min, _price){
     var next_td = x.parent('td').next(); 
     var row_total = new_qta * _price;
     next_td.html('€ ' + SetFloat(row_total));
-    var total = parseFloat($('#total-order').html().substr(2).replace(',','.')) + row_total - prev_row_total;
-    $('#total-order').html('€ ' + SetFloat(total));
+    var total = parseFloat($(_blk).html().substr(2).replace(',','.')) + row_total - prev_row_total;
+    $(_blk).html('€ ' + SetFloat(total));
     }
   catch(e){//alert(e.message);
     }

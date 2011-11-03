@@ -17,7 +17,7 @@
 {% block footer %}
     <tr>
         <th class="totfield" colspan="5">{% trans "Total" %}:</th>
-        <th class="totvalue" colspan="5" id="total-order"></th>
+        <th class="totvalue" colspan="5" id="total-basket"></th>
     </tr>
 {% endblock %}
 
