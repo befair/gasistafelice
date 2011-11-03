@@ -992,7 +992,7 @@ return True if the specs are fine, False otherwise.
 
 
 #class PrincipalParamRoleRelation(PrincipalParamRoleRelation)
-def setup_data_handler(self, instance, **kwargs):
+def setup_data_handler(sender, instance, signal, *args, **kwargs):
     """ Ovverride temporarly for associating some groups to users
 
     This will be in used until some interface use admin-interface.
@@ -1005,36 +1005,36 @@ def setup_data_handler(self, instance, **kwargs):
     """
     #GROUP_INFORMATICS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GROUP_ECONOMICS
     #Create GROUP_MEMBERS for this user's Person's GASMember 
-    if self.role.name == GAS_MEMBER:
+    if instance.role.role.name == GAS_MEMBER:
         try:
-            self.user.groups.add(GROUP_MEMBERS, GROUP_USERS)
+            instance.user.groups.add(GROUP_MEMBERS, GROUP_USERS)
         except KeyError:
-            log.debug("GAS_MEMBER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
-#    elif self.role.name == GAS_REFERRER:
-    elif self.role.name == GAS_REFERRER_SUPPLIER:
+            log.debug("GAS_MEMBER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, instance, instance.pk))
+#    elif self.role.role.name == GAS_REFERRER:
+    elif instance.role.role.name == GAS_REFERRER_SUPPLIER:
         try:
-            self.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
+            instance.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
         except KeyError:
-            log.debug("AS_REFERRER_SUPPLIER create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, self, self.pk))
-#    elif self.role.name == GAS_REFERRER_ORDER:
-#    elif self.role.name == GAS_REFERRER_WITHDRAWAL:
-#    elif self.role.name == GAS_REFERRER_DELIVERY:
-    elif self.role.name == GAS_REFERRER_CASH:
+            log.debug("AS_REFERRER_SUPPLIER create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, instance, instance.pk))
+#    elif self.role.role.name == GAS_REFERRER_ORDER:
+#    elif self.role.role.name == GAS_REFERRER_WITHDRAWAL:
+#    elif self.role.role.name == GAS_REFERRER_DELIVERY:
+    elif instance.role.role.name == GAS_REFERRER_CASH:
         try:
-            self.user.groups.add(GROUP_ECONOMICS, GROUP_USERS)
+            instance.user.groups.add(GROUP_ECONOMICS, GROUP_USERS)
         except KeyError:
-            log.debug("GAS_REFERRER_CASH create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, self, self.pk))
-    elif self.role.name == GAS_REFERRER_TECH:
+            log.debug("GAS_REFERRER_CASH create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, instance, instance.pk))
+    elif instance.role.role.name == GAS_REFERRER_TECH:
         try:
-            self.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
+            instance.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
         except KeyError:
-            log.debug("GAS_REFERRER_TECH create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
-    elif self.role.name == SUPPLIER_REFERRER:
+            log.debug("GAS_REFERRER_TECH create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, instance, instance.pk))
+    elif instance.role.role.name == SUPPLIER_REFERRER:
         try:
-            self.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
+            instance.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
         except KeyError:
-            log.debug("SUPPLIER_REFERRER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, self, self.pk))
-#    elif self.role.name == DES_ADMIN
+            log.debug("SUPPLIER_REFERRER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, instance, instance.pk))
+#    elif self.role.role.name == DES_ADMIN
 
 
 #-------------------------------------------------------------------------------
