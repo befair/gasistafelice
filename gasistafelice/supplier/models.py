@@ -793,7 +793,10 @@ class SupplierStock(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        return u'%s (by %s)' % (unicode(self.product), unicode(self.supplier))
+        return _(u"1 %(pu)s of %(name)s") % {
+                    'pu' : self.product.pu.symbol,
+                    'name': self.product,
+               }
 
 #    @property
 #    def description(self):
