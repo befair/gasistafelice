@@ -102,17 +102,11 @@ class EditStockForm(forms.ModelForm):
     WARNIG: this form is valid only in an update-context
         """
 
-    # product pk
-    # product name
-    # stock price
-    # product vat percent
-    # product category
-    # product
     product_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
     product_name = forms.CharField(required=True, 
             label=_("Name"), widget=forms.TextInput(attrs={'size':'40'})
     )
-    price = CurrencyField(label=_("Price"))
+    price = CurrencyField(label=_("Price (vat included)"))
     product_vat_percent = forms.IntegerField(required=True, initial=20, label=_("VAT percent"))
     availability = forms.BooleanField(required=False, label=_("Availability"))
     product_description = forms.CharField(required=False, label=_("Description"))
@@ -128,31 +122,30 @@ class EditStockForm(forms.ModelForm):
     
     def __init__(self, request, *args, **kw):
         super(EditStockForm, self).__init__(*args, **kw)
-        self.fields['product_name'].initial = request.resource.product.name
-        self.fields['product_pu'].initial = request.resource.product.pu
-        self.fields['product_mu'].initial = request.resource.product.mu
-        self.fields['product_muppu'].initial = request.resource.product.muppu
-        self.fields['product_vat_percent'].initial = int(request.resource.product.vat_percent*100)
-        self.fields['product_category'].initial = request.resource.product.category
         self._supplier = request.resource.supplier
+        self._product = request.resource.product
+        self.fields['product_name'].initial = self._product.name
+        self.fields['product_pu'].initial = self._product.pu
+        self.fields['product_mu'].initial = self._product.mu
+        self.fields['product_muppu'].initial = self._product.muppu
+        self.fields['product_vat_percent'].initial = int(self._product.vat_percent*100)
+        self.fields['product_category'].initial = self._product.category
 
     def clean(self):
         cleaned_data = super(EditStockForm, self).clean()
         cleaned_data['supplier'] = self._supplier
         cleaned_data['amount_available'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
-        ppk = self.cleaned_data.get('product_pk')
-        if ppk:
-            cleaned_data['product'] = Product.objects.get(pk=int(ppk))
-        else:
-            cleaned_data['product'] = None
 
+        # Update product with new info
+        for k,v in cleaned_data.items():
+             if k.startswith('product_'):
+                setattr(self._product, k[len('product_'):], v)
+        cleaned_data['product'] = self._product
         log.debug(self.errors)
+
         return cleaned_data
 
         
-    def save(self):
-        raise ValueError(self.instance.product)
-
     class Meta:
         model = SupplierStock
         exclude = ('supplier', 'amount_available', 'product')

@@ -596,7 +596,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         unique_together = (('ordered_product', 'purchaser'),)
 
     def __unicode__(self):
-        return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.purchaser }
+        return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.gasmember }
     
     def confirm(self):
         self.is_confirmed = True
@@ -610,6 +610,10 @@ class GASMemberOrder(models.Model, PermissionResource):
         """Ordered price per ordered amount for this ordered product"""
         #FIXME: we have to use self.ordered_price instead of self.ordered_product.order_price?
         return self.ordered_product.order_price * self.ordered_amount
+
+    @property
+    def gasmember(self):
+        return self.purchaser
 
     @property
     def product(self):

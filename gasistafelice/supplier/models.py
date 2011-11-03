@@ -912,11 +912,12 @@ class SupplierStock(models.Model, PermissionResource):
     @property
     def orderable_products(self):
         from gasistafelice.gas.models import GASSupplierOrderProduct
-        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open(), gasstock__in=self.gasstocks)
 
     @property
     def ordered_products(self):
         #DOUBT: All API reguarding dynamic data such as order, ordereble product or gas member product should take workflow state as parameter. 
+        #ANSWER: GASSupplierOrder manager takes care of this thing, the following should be changed to self.orders.exclude(state="open") 
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders)
 
