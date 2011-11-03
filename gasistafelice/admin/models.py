@@ -327,6 +327,10 @@ class PRAdmin(admin.ModelAdmin):
 
     list_filter = ('role',)
 
+class UnitConvAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'src', 'dst', 'amount')
+    list_editable = ('src', 'dst', 'amount')    
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact)
@@ -339,6 +343,7 @@ admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 admin.site.register(supplier_models.Certification)
 admin.site.register(supplier_models.ProductPU)
 admin.site.register(supplier_models.ProductMU)
+admin.site.register(supplier_models.UnitsConversion, UnitConvAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)

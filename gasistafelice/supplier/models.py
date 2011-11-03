@@ -433,6 +433,7 @@ class ProductCategory(models.Model, PermissionResource):
         return ProductCategory.objects.filter(pk=self.pk)
 
 class ProductMU(models.Model, PermissionResource):
+    #TODO dominique: rename it to MU and place it in base
     """Measurement unit for a Product.
 
     A measure unit is recognized as a standard. So it is provided 
@@ -460,6 +461,7 @@ class ProductMU(models.Model, PermissionResource):
     class Meta:
         verbose_name=_("measure unit")
         verbose_name_plural=_("measure units")
+        ordering = ('name',)
     
         #-------------- Authorization API ---------------#
     
@@ -545,7 +547,26 @@ class ProductPU(models.Model, PermissionResource):
         allowed_users = DES.admins_all()
         return user in allowed_users
 
-    #-----------------------------------------------#
+
+#------------------------------------------------------------------------------
+
+class UnitsConversion(models.Model):
+
+    src = models.ForeignKey(ProductMU, verbose_name=_("source"), related_name="src_conversion_set")
+    dst = models.ForeignKey(ProductMU, verbose_name=_("destination"), related_name="dst_conversion_set")
+    amount = models.DecimalField(max_digits=10, decimal_places=4, verbose_name=_("amount"), default=1)
+
+    def __unicode__(self):
+        return _(u"%(src)s to %(dst)s") % {'src': self.src, 'dst':self.dst}
+
+    class Meta:
+        verbose_name = _("units conversion")
+        verbose_name_plural = _("units conversions")
+        ordering = ('src','dst', 'amount')
+        unique_together = (('src','dst'),)
+
+
+#------------------------------------------------------------------------------
 
 def category_catchall():
     return ProductCategory.objects.get(name=settings.DEFAULT_CATEGORY_CATCHALL)
