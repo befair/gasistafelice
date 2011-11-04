@@ -77,14 +77,9 @@
         }
     },
 
+    {"pk": 1, "model": "flexi_auth.param", "fields": {"name": "des", "content_type": 76, "object_id": 1}},
+    {"pk": 1, "model": "flexi_auth.paramrole", "fields": {"role": 11, "param_set": [1]}},
+    {"pk": 1, "model": "flexi_auth.principalparamrolerelation", "fields": {"role": 1, "group": null, "user": 1}}
 
-{"pk": 1, "model": "auth.group", "fields": {"name": "techs", "permissions": [235, 236, 237, 214, 215, 216, 205, 206, 211, 212, 61, 62, 55, 56, 67, 68, 187, 134, 145, 146, 140, 151, 152, 181, 182, 193, 194, 13, 14, 94, 95, 118, 119, 100, 101, 106, 107, 112, 113, 79, 80, 88, 89, 82, 83, 127, 128, 125, 233, 20]}}, 
-
-{"pk": 2, "model": "auth.group", "fields": {"name": "suppliers", "permissions": [214, 55, 67, 238, 94, 118, 119, 100, 101, 106, 80, 88, 89, 82, 83, 127, 128, 124, 125]}}, 
-
-{"pk": 3, "model": "auth.group", "fields": {"name": "users", "permissions": [214, 61, 62, 55, 56, 67, 68, 238, 239]}}, 
-
-{"pk": 4, "model": "auth.group", "fields": {"name": "gas", "permissions": [235, 61, 55, 67, 68, 187, 188, 134, 145, 146, 139, 140, 151, 152, 181, 182, 169, 170, 175, 176, 163, 164, 157, 158, 193, 194, 94, 95, 118, 119, 100, 101, 106, 107, 112, 113, 79, 80, 82, 83, 127, 128, 124, 125]}}, 
-
-{"pk": 5, "model": "auth.group", "fields": {"name": "economics", "permissions": [248, 249, 254, 255, 245, 246, 251, 252, 235, 236, 214, 215, 238]}}
+]
 

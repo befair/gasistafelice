@@ -989,8 +989,14 @@ return True if the specs are fine, False otherwise.
 #-------------------------------------------------------------------------------
 
 #FIXME TODO This is a TEMP HACK used just because we need these users use parts of the web admin interface
-from gasistafelice.consts import GROUP_TECHS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GAS_MEMBER , GAS_REFERRER_TECH, SUPPLIER_REFERRER
-from django.contrib.auth.models import Group
+from gasistafelice.consts import GAS_MEMBER , GAS_REFERRER_TECH, SUPPLIER_REFERRER
+from django.contrib.auth.models import Group, Permission
+
+# groups for users
+GROUP_TECHS = "techs"
+GROUP_SUPPLIERS = "suppliers"
+GROUP_USERS = "users"
+GROUP_MEMBERS = "gasmembers"
 
 def setup_data_handler(sender, instance, created, **kwargs):
     """ Ovverride temporarly for associating some groups to users
@@ -1001,17 +1007,47 @@ def setup_data_handler(sender, instance, created, **kwargs):
     """
 
     if created:
+
+        # Check that groups exist. Create them the first time
+
+        g_techs, created = Group.objects.get_or_create(name=GROUP_TECHS)
+        g_suppliers, created = Group.objects.get_or_create(name=GROUP_SUPPLIERS)
+        g_gasmembers, created = Group.objects.get_or_create(name=GROUP_MEMBERS)
+        g_users, created = Group.objects.get_or_create(name=GROUP_USERS)
+
+        DJ_PERMS_TECHS = [235, 236, 237, 214, 215, 216, 205, 206, 211, 212, 61, 62, 55, 56, 67, 68, 187, 134, 137, 148,149,143,154,155,156, 115,116,117, 145, 146, 140, 151, 152, 181, 182, 193, 194, 13, 14, 94, 95, 118, 119, 100, 101, 106, 107, 112, 113, 79, 80, 88, 89, 82, 83, 127, 128, 125, 233, 20] 
+        DJ_PERMS_SUPPLIERS = [214, 55, 67, 238, 94, 118, 119, 100, 101, 106, 80, 88, 89, 82, 83, 127, 128, 124, 125]
+        DJ_PERMS_USERS = [214, 61, 62, 55, 56, 67, 68, 238, 239, 63, 69]
+        DJ_PERMS_GASMEMBERS = [235, 61, 55, 67, 68, 187, 188, 134, 145, 146, 139, 140, 151, 152, 181, 182, 169, 170, 175, 176, 163, 164, 157, 158, 193, 194, 94, 95, 118, 119, 100, 101, 106, 107, 112, 113, 79, 80, 82, 83, 127, 128, 124, 125]
+        
+        #DJ_PERMS_ECONOMICS = [248, 249, 254, 255, 245, 246, 251, 252, 235, 236, 214, 215, 238]
+
+        if created:
+            print "gruppi creati %s" % g_techs.pk
+            # Create all groups needed for this hack
+            # Check only last...
+            g_techs.permissions.add(*Permission.objects.filter(pk__in=DJ_PERMS_TECHS))
+            g_suppliers.permissions.add(*Permission.objects.filter(pk__in=DJ_PERMS_SUPPLIERS))
+            g_users.permissions.add(*Permission.objects.filter(pk__in=DJ_PERMS_USERS))
+            g_gasmembers.permissions.add(*Permission.objects.filter(pk__in=DJ_PERMS_GASMEMBERS))
+
+
         role_group_map = {
-            GAS_MEMBER : Group.objects.get(name__exact=GROUP_MEMBERS),
-            GAS_REFERRER_SUPPLIER : Group.objects.get(name__exact=GROUP_SUPPLIERS),
-            SUPPLIER_REFERRER : Group.objects.get(name__exact=GROUP_SUPPLIERS),
-            GAS_REFERRER_TECH : Group.objects.get(name__exact=GROUP_TECHS),
+            GAS_MEMBER : g_gasmembers,
+            GAS_REFERRER_SUPPLIER : g_suppliers,
+            SUPPLIER_REFERRER : g_suppliers,
+            GAS_REFERRER_TECH : g_techs,
         }
 
+        print "assegna gruppo utenti"
         # Every role has GROUP_USERS
-        instance.user.groups.add(Group.objects.get(name__exact=GROUP_USERS))
+        instance.user.groups.add(g_users)
+
+        # Set "is_staff" to access the admin inteface
+        print "salva utente staff"
         instance.user.is_staff = True
         instance.user.save()
+        print "salva utente staff"
 
         role_name = instance.role.role.name
         group = role_group_map.get(role_name)
@@ -1021,6 +1057,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
             except KeyError:
                 log.debug("%s create cannot add %s's group %s(%s)" % (role_name, group, instance, instance.pk))
 
+        
 #-------------------------------------------------------------------------------
 
 
