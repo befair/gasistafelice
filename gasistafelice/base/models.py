@@ -21,8 +21,6 @@ from flexi_auth.models import PermissionBase # mix-in class for permissions mana
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 from flexi_auth.utils import get_parametric_roles
-#Temporarly
-from gasistafelice.consts import GROUP_INFORMATICS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GROUP_ECONOMICS, GAS_MEMBER , GAS_REFERRER, GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY, GAS_REFERRER_CASH, GAS_REFERRER_TECH, SUPPLIER_REFERRER, DES_ADMIN
 
 from flexi_auth.models import PrincipalParamRoleRelation
 
@@ -990,52 +988,38 @@ return True if the specs are fine, False otherwise.
 
 #-------------------------------------------------------------------------------
 
+#FIXME TODO This is a TEMP HACK used just because we need these users use parts of the web admin interface
+from gasistafelice.consts import GROUP_TECHS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GAS_MEMBER , GAS_REFERRER_TECH, SUPPLIER_REFERRER
+from django.contrib.auth.models import Group
 
-#class PrincipalParamRoleRelation(PrincipalParamRoleRelation)
-def setup_data_handler(sender, instance, signal, *args, **kwargs):
+def setup_data_handler(sender, instance, created, **kwargs):
     """ Ovverride temporarly for associating some groups to users
 
-    This will be in used until some interface use admin-interface.
+    This will be in use until some part of the interface use admin-interface.
     After this can be removed
 
-    user = models.ForeignKey(User, blank=True, null=True, related_name="principal_param_role_set")
-    group = models.ForeignKey(Group, blank=True, null=True, related_name="principal_param_role_set")
-    role = models.ForeignKey(ParamRole, related_name="principal_param_role_set")
-
     """
-    #GROUP_INFORMATICS, GROUP_SUPPLIERS, GROUP_USERS, GROUP_MEMBERS, GROUP_ECONOMICS
-    #Create GROUP_MEMBERS for this user's Person's GASMember 
-    if instance.role.role.name == GAS_MEMBER:
-        try:
-            instance.user.groups.add(GROUP_MEMBERS, GROUP_USERS)
-        except KeyError:
-            log.debug("GAS_MEMBER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, instance, instance.pk))
-#    elif self.role.role.name == GAS_REFERRER:
-    elif instance.role.role.name == GAS_REFERRER_SUPPLIER:
-        try:
-            instance.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
-        except KeyError:
-            log.debug("AS_REFERRER_SUPPLIER create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, instance, instance.pk))
-#    elif self.role.role.name == GAS_REFERRER_ORDER:
-#    elif self.role.role.name == GAS_REFERRER_WITHDRAWAL:
-#    elif self.role.role.name == GAS_REFERRER_DELIVERY:
-    elif instance.role.role.name == GAS_REFERRER_CASH:
-        try:
-            instance.user.groups.add(GROUP_ECONOMICS, GROUP_USERS)
-        except KeyError:
-            log.debug("GAS_REFERRER_CASH create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, instance, instance.pk))
-    elif instance.role.role.name == GAS_REFERRER_TECH:
-        try:
-            instance.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
-        except KeyError:
-            log.debug("GAS_REFERRER_TECH create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, instance, instance.pk))
-    elif instance.role.role.name == SUPPLIER_REFERRER:
-        try:
-            instance.user.groups.add(GROUP_SUPPLIERS, GROUP_USERS)
-        except KeyError:
-            log.debug("SUPPLIER_REFERRER create cannot add %s's group %s(%s)" % (GROUP_MEMBERS, instance, instance.pk))
-#    elif self.role.role.name == DES_ADMIN
 
+    if created:
+        role_group_map = {
+            GAS_MEMBER : Group.objects.get(name__exact=GROUP_MEMBERS),
+            GAS_REFERRER_SUPPLIER : Group.objects.get(name__exact=GROUP_SUPPLIERS),
+            SUPPLIER_REFERRER : Group.objects.get(name__exact=GROUP_SUPPLIERS),
+            GAS_REFERRER_TECH : Group.objects.get(name__exact=GROUP_TECHS),
+        }
+
+        # Every role has GROUP_USERS
+        instance.user.groups.add(Group.objects.get(name__exact=GROUP_USERS))
+        instance.user.is_staff = True
+        instance.user.save()
+
+        role_name = instance.role.role.name
+        group = role_group_map.get(role_name)
+        if group:
+            try:
+                instance.user.groups.add(group)
+            except KeyError:
+                log.debug("%s create cannot add %s's group %s(%s)" % (role_name, group, instance, instance.pk))
 
 #-------------------------------------------------------------------------------
 
@@ -1070,4 +1054,4 @@ pre_save.connect(validate)
 
 # add `setup_data` function as a listener to the `post_save` signal
 post_save.connect(setup_data)
-post_save.connect(setup_data_handler, sender= PrincipalParamRoleRelation)
+post_save.connect(setup_data_handler, sender=PrincipalParamRoleRelation)

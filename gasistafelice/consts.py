@@ -38,9 +38,8 @@ GAS_MEMBER_RECHARGE = 'GAS_MEMBER_RECHARGE'
 MEMBERSHIP_FEE_PAYMENT = 'MEMBERSHIP_FEE_PAYMENT' 
 
 # group of Flexi-auth PrincipalParamRoleRelation
-GROUP_INFORMATICS = 1 #"techs"
-GROUP_SUPPLIERS = 2 #"suppliers"
-GROUP_USERS = 3 #"users"
-GROUP_MEMBERS = 4 #"gas"
-GROUP_ECONOMICS = 5 #"economics"
+GROUP_TECHS = "techs"
+GROUP_SUPPLIERS = "suppliers"
+GROUP_USERS = "users"
+GROUP_MEMBERS = "gas"
 
