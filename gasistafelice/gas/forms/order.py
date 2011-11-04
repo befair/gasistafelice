@@ -50,17 +50,6 @@ class BaseOrderForm(forms.ModelForm):
         self.fields['delivery_referrer'].queryset = request.resource.gas.persons
         self.fields['withdrawal_referrer'].queryset = request.resource.gas.persons
         self.__gas = request.resource.gas
-#        if self.__gas:
-#            if self.__gas.config.can_change_delivery_place_on_each_order
-#                log.debug("Init BaseOrderForm (%s) delivery use and set default on each order" % self.__gas.pk)
-#            else
-#                log.debug("Init BaseOrderForm (%s) delivery hide and set unique default" % self.__gas.pk)
-#                #Hide
-#            if self.__gas.config.use_withdrawal_place
-#                log.debug("Init BaseOrderForm (%s) use withdrawal place and date" % self.__gas.pk)
-#            else
-#                log.debug("Init BaseOrderForm (%s) Hide witdrawal concept" % self.__gas.pk)
-#                #Hide
 
     def get_appointment_instance(self, name, klass):
 
@@ -84,55 +73,12 @@ class BaseOrderForm(forms.ModelForm):
         return d
         
     def get_delivery(self):
-        
-        if cc_myself and subject:
-            # Only do something if both fields are valid so far.
-            if "help" not in subject:
-                raise forms.ValidationError("Did not send for 'help' in "
-                        "the subject despite CC'ing yourself.")
         return self.get_appointment_instance('delivery', Delivery)
 
     def get_withdrawal(self):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
     def save(self):
-##        if "help" not in subject:
-##            raise forms.ValidationError("Did not send for 'help' in "
-##                    "the subject despite CC'ing yourself.")
-#        self.__gas = request.resource.gas
-#        if self.__gas:
-#            #DATE open > delivery >= withdrawal
-#            #Control date are valid and incremental
-#            #DELIVERY
-#            if self.__gas.config.can_change_delivery_place_on_each_order
-#                self.
-#            else
-#                log.debug("Init BaseOrderForm (%s) delivery hide and set unique default" % self.__gas.pk)
-#                #Hide
-
-        #REFERER Always give possibility to change it: Turning responsabilities concept
-        if self.cleaned_data.get('delivery_referrer'):
-            pr = ParamRole.get_role(GAS_REFERRER_DELIVERY, delivery=self.instance.delivery)
-            try:
-                ppr = PrincipalParamRoleRelation.objects.get(role=pr)
-                u = self.cleaned_data['delivery_referrer'].user
-                if ppr.user != u:
-                    ppr.user = u
-                    ppr.save()
-                
-            except PrincipalParamRoleRelation.DoesNotExist:
-                PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['delivery_referrer'].user)
-
-
-
-#        #WITHDRAWAL
-#        if self.__gas.config.use_withdrawal_place
-#            log.debug("Init BaseOrderForm (%s) use withdrawal place and date" % self.__gas.pk)
-#        else
-#            log.debug("Init BaseOrderForm (%s) Hide witdrawal concept" % self.__gas.pk)
-#            #Hide
-
-        #Use REFERER only if use concept
         if self.cleaned_data.get('withdrawal_referrer'):
             pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self.instance.withdrawal)
             try:
@@ -145,6 +91,17 @@ class BaseOrderForm(forms.ModelForm):
             except PrincipalParamRoleRelation.DoesNotExist:
                 PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['withdrawal_referrer'].user)
 
+        if self.cleaned_data.get('delivery_referrer'):
+            pr = ParamRole.get_role(GAS_REFERRER_DELIVERY, delivery=self.instance.delivery)
+            try:
+                ppr = PrincipalParamRoleRelation.objects.get(role=pr)
+                u = self.cleaned_data['delivery_referrer'].user
+                if ppr.user != u:
+                    ppr.user = u
+                    ppr.save()
+                
+            except PrincipalParamRoleRelation.DoesNotExist:
+                PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['delivery_referrer'].user)
 
         super(BaseOrderForm, self).save()
 
