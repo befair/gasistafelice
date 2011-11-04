@@ -1023,7 +1023,6 @@ def setup_data_handler(sender, instance, created, **kwargs):
         #DJ_PERMS_ECONOMICS = [248, 249, 254, 255, 245, 246, 251, 252, 235, 236, 214, 215, 238]
 
         if created:
-            print "gruppi creati %s" % g_techs.pk
             # Create all groups needed for this hack
             # Check only last...
             g_techs.permissions.add(*Permission.objects.filter(pk__in=DJ_PERMS_TECHS))
@@ -1039,15 +1038,12 @@ def setup_data_handler(sender, instance, created, **kwargs):
             GAS_REFERRER_TECH : g_techs,
         }
 
-        print "assegna gruppo utenti"
         # Every role has GROUP_USERS
         instance.user.groups.add(g_users)
 
         # Set "is_staff" to access the admin inteface
-        print "salva utente staff"
         instance.user.is_staff = True
         instance.user.save()
-        print "salva utente staff"
 
         role_name = instance.role.role.name
         group = role_group_map.get(role_name)
