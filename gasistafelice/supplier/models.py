@@ -28,7 +28,7 @@ from gasistafelice.base.utils import get_resource_icon_path
 from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.des.models import DES, Siteattr
 
-from gasistafelice.consts import SUPPLIER_REFERRER, GROUP_SUPPLIERS
+from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.gas import signals
 
 from decimal import Decimal
@@ -234,14 +234,6 @@ class Supplier(models.Model, PermissionResource):
             self.config
         except SupplierConfig.DoesNotExist:
             self.config = SupplierConfig.objects.create(supplier=self)
-
-        #Create GROUP_SUPPLIERS for this user's Person's GASMember 
-        for p in self.contact_set.all():
-            try:
-                p.user.groups.add(GROUP_SUPPLIERS)
-            except KeyError:
-                log.debug("Supplier contact set person create cannot add %s's group %s(%s)" % (GROUP_SUPPLIERS, self, self.pk))
-
 
     display_fields = (
         seat, vat_number, website, flavour, 
