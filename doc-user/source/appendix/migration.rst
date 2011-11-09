@@ -2,11 +2,11 @@
 Migrazione dei GAS su Gasista Felice
 ====================================
 
-È opportuno condividere una procedura condivisa di migrazione dei GAS
+In questo documento si definisce una procedura di migrazione dei GAS
 alla piattaforma Gasista Felice. L'obiettivo è ovviamente quello di 
-semplificare la migrazione di ogni GAS e di poter effettuare i test 
+semplificare l'integrazione di ogni GAS e di poter effettuare i test 
 di utilizzo nell'ambiente di produzione minimizzando gli sforzi di chi
-testa e di chi supervisiona il test.
+effettua e di chi supervisiona il test.
 
 La procedura proposta prevede l'interazione fra l'area comunicazione,
 il gruppo di sviluppo, un tutor, il referente informatico del GAS, e tutti i gasisti.
