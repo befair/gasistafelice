@@ -85,15 +85,13 @@
 {"pk": 81,"model": "supplier.productcategory","fields": {"name": "Non definita","description": ""}}, 
 
 
-
-
 {"pk":1,"model":"supplier.certification", "fields": {"symbol":"AC","name":"Autocertificazione" } },
 {"pk":2,"model":"supplier.certification", "fields": {"symbol":"IMC","name":"Certificato da IMC" } },
 {"pk":3,"model":"supplier.certification", "fields": {"symbol":"INC","name":"In conversione" } },
-{"pk":4,"model":"supplier.certification", "fields": {"symbol":"Cert","name":"Certificato" } },
-{"pk":5,"model":"supplier.certification", "fields": {"symbol":"SES","name":"Certificato da Suolo e Salute" } },
-{"pk":6,"model":"supplier.certification", "fields": {"symbol":"ICEA","name":"Certificato da ICEA" } },
-
+{"pk":4,"model":"supplier.certification", "fields": {"symbol":"BAD","name":"Convenzionale" } },
+{"pk":5,"model":"supplier.certification", "fields": {"symbol":"Cert","name":"Certificato" } },
+{"pk":6,"model":"supplier.certification", "fields": {"symbol":"SES","name":"Certificato da Suolo e Salute" } },
+{"pk":7,"model":"supplier.certification", "fields": {"symbol":"ICEA","name":"Certificato da ICEA" } },
 
 
 {"pk": 1,"model": "supplier.productmu","fields": {"symbol": "Ml","name": "Millilitro"}}, 
