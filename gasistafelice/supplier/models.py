@@ -189,20 +189,42 @@ class Supplier(models.Model, PermissionResource):
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
-        # Who can create a new supplier in a DES ?
-        # * DES administrators
-        # * referrers and administrators of every GAS in the DES
-        try:
-            des = context['site']
-            all_gas_referrers = User.objects.none()
-            #TOERASE: all_gas_referrers_tech = set()
-            for gas in des.gas_list:
-                all_gas_referrers = all_gas_referrers | gas.referrers
-                #TOERASE: all_gas_referrers_tech = all_gas_referrers_tech | gas.tech_referrers
-            allowed_users = des.admins | all_gas_referrers #TOERASE: | all_gas_referrers_tech 
-            return user in allowed_users
-        except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
+        """Who can create a new supplier?
+        
+        In general:
+            * DES administrators
+            * referrers and administrators of every GAS in the DES
+        In depth we have to switch among multiple contexts.
+
+        If we are checking for a "unusual key" (not in ctx_keys_to_check),
+        just return False, do not raise an exception.
+        """
+
+        allowed_users = User.objects.none()
+        ctx_keys_to_check = set('gas', 'site')
+        ctx_keys = context.keys()
+
+        if len(ctx_keys) > 1:
+            raise WrongPermissionCheck('CREATE [only one key supported for context]', cls, context)
+
+        k = ctx_keys[0]
+
+        if k not in ctx_keys_to_check:
+            # No user is allowed, just return False 
+            # (user is not in User empty querySet)
+            # Do not raise an exception
+            pass
+
+        # Switch among possible different contexts
+        elif k == 'site':
+            des = context[k]
+            allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
+        elif k == 'gas':
+            gas = context[k]
+            allowed_users = gas.tech_referrers | gas.supplier_referrers
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):

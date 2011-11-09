@@ -1189,30 +1189,53 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
-        # Who can create a a new pact for a GAS ?
-        # * GAS supplier referrers (of other pacts)
-        # * GAS administrators
+        """Who can create a new pact?
+
+        In general:
+            * GAS supplier referrers (of other pacts)
+            * GAS administrators
+        In depth we have to switch among multiple possible contexts
+
+        If we are checking for a "unusual key" (not in ctx_keys_to_check),
+        just return False, do not raise an exception.
+        """
+
         allowed_users = User.objects.none()
-        try :
+        ctx_keys_to_check = set('gas', 'site', 'supplier')
+        ctx_keys = context.keys()
+
+        if len(ctx_keys) > 1:
+            raise WrongPermissionCheck('CREATE [only one key supported for context]', cls, context)
+
+        k = ctx_keys[0]
+
+        if k not in ctx_keys_to_check:
+            # No user is allowed, just return False
+            # (user is not in User empty querySet)
+            # Do not raise an exception
+            pass
+
+        # Switch among possible different contexts
+        elif k == 'gas':
             # gas context
-            gas = context['gas']
+            gas = context[k]
             allowed_users = gas.tech_referrers | gas.supplier_referrers 
-        except KeyError:
-            try:
-                # supplier context
-                supplier = context['supplier']
-                # all GAS tech referrers and referrers suppliers can create a pact for this supplier
-                # Within the form and authorization check, GAS choices will be limited
-                allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
-            except KeyError:
-                try:
-                    # des context
-                    # all GAS tech referrers and referrers suppliers can create a pact in a DES.
-                    # Within the form and authorization check, GAS choices will be limited
-                    des = context['site']
-                    allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
-                except KeyError:
-                    raise WrongPermissionCheck('CREATE', cls, context)
+
+        elif k == 'supplier':
+            # supplier context
+            # Every GAS tech referrers and referrers suppliers can create a pact for this supplier
+            # Within the form and authorization check, GAS choices will be limited
+            supplier = context[k]
+            des = supplier.des
+            allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
+        elif k == 'site': 
+            # des context
+            # all GAS tech referrers and referrers suppliers can create a pact in a DES.
+            # Within the form and authorization check, GAS choices will be limited
+            des = context[k]
+            allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
         return user in allowed_users
 
     # Row-level EDIT permission

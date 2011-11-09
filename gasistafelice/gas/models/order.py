@@ -360,31 +360,58 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
-        # Who can create a supplier order in a GAS ?
-        # * GAS administrators
-        # * Referrers for the pact the order is placed against
+        """Who can create a supplier order?
+
+        In general:
+            * GAS administrators
+            * Referrers for the pact the order is placed against
+        In depth we have to switch among multiple possible contexts
+
+        If we are checking for a "unusual key" (not in ctx_keys_to_check),
+        just return False, do not raise an exception.
+        """
+
         allowed_users = User.objects.none()
-        try:
+        ctx_keys_to_check = set('pact', 'gas', 'site', 'supplier')
+        ctx_keys = context.keys()
+
+        if len(ctx_keys) > 1:
+            raise WrongPermissionCheck('CREATE [only one key supported for context]', cls, context)
+
+        k = ctx_keys[0]
+
+        if k not in ctx_keys_to_check:
+            # No user is allowed, just return False
+            # (user is not in User empty querySet)
+            # Do not raise an exception
+            pass
+
+        # Switch among possible different contexts
+
+        elif k == 'pact':
             # pact context
-            pact = context['pact']
+            pact = context[k]
             allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
-        except KeyError:
-            try:
-                # gas context
-                gas = context['gas']
-                if gas.pacts.count():
-                    allowed_users = gas.tech_referrers | gas.supplier_referrers
-            except KeyError:
-                try:
-                    # des context
-                    des = context['site']
-                    if des.pacts.count():
-                        allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
-                except KeyError:
-                    try:
-                        stock = context['stock']
-                    except KeyError:
-                        raise WrongPermissionCheck('CREATE', cls, context)   
+
+        elif k == 'gas':
+            # gas context
+            gas = context[k]
+            if gas.pacts.count():
+                allowed_users = gas.tech_referrers | gas.supplier_referrers
+
+        elif k == 'site':
+            # des context
+            des = context[k]
+            if des.pacts.count():
+                allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
+        elif k == 'supplier':
+            # supplier context
+            # Every GAS REFERRER SUPPLIER or GAS REFERRER TECH of a GAS 
+            # who has a GASSupplierSolidalPact with this Supplier
+            supplier = context[k]
+            for pact in supplier.pacts:
+                allowed_users |= pact.gas.supplier_referrers | pact.gas.tech_referrers
 
         return user in allowed_users
  
