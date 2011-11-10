@@ -372,7 +372,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """
 
         allowed_users = User.objects.none()
-        ctx_keys_to_check = set('pact', 'gas', 'site', 'supplier')
+        ctx_keys_to_check = set(('pact', 'gas', 'site', 'supplier'))
         ctx_keys = context.keys()
 
         if len(ctx_keys) > 1:
