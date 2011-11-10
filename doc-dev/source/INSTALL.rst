@@ -10,17 +10,17 @@ You must have your github account, set your public SSH ley on github and set loc
 (gasdev)/gasistafelice$ git submodule update --init
 
 3/7 Install requirements
-(gasdev)$ pip install -r gasistafelice/requirements.txt`
+(gasdev)$ pip install -r requirements.txt`
 
 4/7 Set your local settings
 (gasdev)$ cd gasistafelice
-(gasdev)/gasistafelice/gasistafelice$ cp default_settings.py settings.py --> copy the file to customize
+(gasdev)/gasistafelice/gasistafelice$ cp settings.py.dist settings.py --> copy the file to customize
 (gasdev)/gasistafelice/gasistafelice$ gedit settings.py
-The main thing is to set the database connexion
+The main thing is to set the database connection
 ADMINS = (('xxxxx', 'a@a.it'),)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gasdb',                      # Or path to database file if using sqlite3.
         'USER': 'utente',                     # Not used with sqlite3.
         'PASSWORD': 'xxxx',                   # Not used with sqlite3.
@@ -38,7 +38,8 @@ Validating models...
 
 5/7 Sincronizzare database
 create your empty database first
-(gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables and the super user
+(gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables but SAY NO when asked to create the super user (!)
+(gasdev)/gasistafelice/gasistafelice$ python manage.py init_superuser --> Create DES base object and the super user following settings.py 
 Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
 
 6/7 (optional) Load some data for testing

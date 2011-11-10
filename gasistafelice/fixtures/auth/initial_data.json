@@ -75,11 +75,7 @@
         "fields": {
             "name": "DES_ADMIN"
         }
-    },
-
-    {"pk": 1, "model": "flexi_auth.param", "fields": {"name": "des", "content_type": 76, "object_id": 1}},
-    {"pk": 1, "model": "flexi_auth.paramrole", "fields": {"role": 11, "param_set": [1]}},
-    {"pk": 1, "model": "flexi_auth.principalparamrolerelation", "fields": {"role": 1, "group": null, "user": 1}}
+    }
 
 ]
 
