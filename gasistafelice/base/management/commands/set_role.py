@@ -4,11 +4,11 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.middleware import get_resource_by_path
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation, Param
-import os, logging, datetime
 
-from django.db import transaction
+from gasistafelice.middleware import get_resource_by_path
+
+import os, logging
 
 log = logging.getLogger(__name__)
 if settings.LOG_FILE:

@@ -185,6 +185,10 @@ class Supplier(models.Model, PermissionResource):
         #TODO: we have to differentiate a way to see all categories __produced__ by this supplier
         return ProductCategory.objects.filter(product_set__in=self.products).distinct()
 
+    @property
+    def city(self):
+        return self.seat.city
+
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    
