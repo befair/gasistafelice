@@ -73,7 +73,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
 def notify_order_open(sender, **kwargs):
 
     order = sender
-    msg = _("Order related to %(pact)s has been created. Check it at %(url)s") % {
+    msg = _('Order related to %(pact)s has been created. Check it at <a href="%(url)s">%(url)s</a>') % {
             'pact' : order.pact,
             'url' : order.get_absolute_url()
     }
@@ -91,7 +91,7 @@ def notify_order_state_update(sender, **kwargs):
     transition = kwargs['transition']
 
     if transition.destination == "closed":
-        msg = _("Order related to %(pact)s has been closed. Check it at %(url)s") % {
+        msg = _('Order related to %(pact)s has been closed. Check it at <a href="%(url)s">%(url)s</a>') % {
                 'pact' : order.pact,
                 'url' : order.get_absolute_url()
         }
