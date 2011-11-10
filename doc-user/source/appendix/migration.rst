@@ -144,7 +144,7 @@ Per ora parliamo solamente dei produttori, ossia chi vende prodotti realizzati i
 
 I prodotti prevedono vari campi obbligatori:
 
-1. Numero di partita IVA del fornitore cui si riferisce: ha il compito di legare questa riga al soggetto giuridico interessato
+1. IDFORNITORE: v. :ref:`import-company`. Ha il compito di legare questa riga al soggetto giuridico interessato
 2. Nome
 3. Prezzo ivato
 4. IVA
