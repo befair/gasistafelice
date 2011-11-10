@@ -7,3 +7,6 @@
 [submodule "extra/django-flexi-auth"]
 	path = extra/django-flexi-auth
 	url = git://github.com/seldon/django-flexi-auth.git
+[submodule "extra/django-askbot"]
+	path = extra/django-askbot
+	url = git://github.com/ASKBOT/askbot-devel.git
