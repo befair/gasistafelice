@@ -140,7 +140,8 @@ class Supplier(models.Model, PermissionResource):
     @property
     def persons(self):
         """Return evryone (Person) related to this resource."""
-        return self.info_people | self.referrers_people
+        qs = self.info_people | self.referrers_people
+        return qs.distinct()
 
     @property
     def stocks(self):
