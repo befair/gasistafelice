@@ -558,6 +558,7 @@ class GASMember(models.Model, PermissionResource):
         models.CharField(max_length=100, name="fax", verbose_name=_("Fax")),
         models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
     )
+        #display.Resource(name="person", verbose_name=_("Person")),
 
     class Meta:
         verbose_name = _('GAS member')

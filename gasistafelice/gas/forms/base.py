@@ -35,9 +35,7 @@ class EditGASMemberForm(forms.ModelForm):
 
     log.debug("EditGASMemberForm")
     gm_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
-    gm_name = forms.CharField(required=True, 
-            label=_("Name"), widget=forms.TextInput(attrs={'size':'100'})
-    )
+    gm_name = forms.CharField(required=True, label=_("Name"), widget=forms.TextInput(attrs={'size':'100'}))
 
     def __init__(self, request, *args, **kw):
         super(EditGASMemberForm, self).__init__(*args, **kw)
