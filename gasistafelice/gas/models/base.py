@@ -559,6 +559,10 @@ class GASMember(models.Model, PermissionResource):
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
+        models.CharField(max_length=200, name="email", verbose_name=_("Email")),
+        models.CharField(max_length=100, name="phone", verbose_name=_("Phone")),
+        models.CharField(max_length=200, name="www", verbose_name=_("Web site")),
+        models.CharField(max_length=100, name="fax", verbose_name=_("Fax")),
         models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
     )
 
@@ -636,7 +640,19 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def email(self):
-        return self.person.email
+        return self.person.preferred_email_contacts
+
+    @property
+    def phone(self):
+        return self.person.preferred_phone_contacts
+
+    @property
+    def www(self):
+        return self.person.preferred_www_contacts
+
+    @property
+    def fax(self):
+        return self.person.preferred_fax_contacts
 
     @property
     def economic_state(self):
@@ -760,6 +776,11 @@ class GASMember(models.Model, PermissionResource):
         #TODO FIXME AFTER 6: there should be no enry with ordered_amount = 0 in GASMemberOrder table
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
+
+    @property
+    def account(self):
+        #TODO: manage accounting informations here
+        return 0
 
     @property
     def basket_to_be_delivered(self):
