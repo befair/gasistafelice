@@ -147,7 +147,7 @@ I prodotti prevedono vari campi obbligatori:
 1. IDFORNITORE: v. :ref:`import-company`. Ha il compito di legare questa riga al soggetto giuridico interessato
 2. Nome
 3. Prezzo ivato
-4. IVA
+4. IVA: aliquota espressa in intero senza simbolo % (21, 10 o 4 in sostanza)
 5. Unità di prodotto: a scelta fra :ref:`list-product-units`
 
 Campi opzionali:
