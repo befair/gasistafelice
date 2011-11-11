@@ -496,13 +496,13 @@ class Person(models.Model, PermissionResource):
     name = models.CharField(max_length=128,verbose_name=_('Name'))
     surname = models.CharField(max_length=128,verbose_name=_('Surname'))
     display_name = models.CharField(max_length=128, blank=True,verbose_name=_('Display name'))
-    #TODO: Verify if this information is necessary
-    #uuid = models.CharField(max_length=128, unique=True, blank=True, null=True, help_text=_('Write your social security number here'))
-    uuid = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'),verbose_name=_('Social Security Number'))
+    # Leave here ssn, but do not display it
+    ssn = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'),verbose_name=_('Social Security Number'))
     contact_set = models.ManyToManyField('Contact', null=True, blank=True,verbose_name=_('contacts'))
     user = models.OneToOneField(User, null=True, blank=True,verbose_name=_('User'))
     address = models.OneToOneField('Place', null=True, blank=True,verbose_name=_('main address'))
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
+    website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
     history = HistoricalRecords()
 
@@ -521,8 +521,11 @@ class Person(models.Model, PermissionResource):
         self.name = self.name.strip().lower().capitalize()
         self.surname = self.surname.strip().lower().capitalize()
         self.display_name = self.display_name.strip()
-        if self.uuid is not None:
-            self.uuid = self.uuid.strip().upper()
+        if not self.ssn:
+            self.ssn = None
+        else
+            self.ssn = self.ssn.strip().upper()
+
         return super(Person, self).clean()
 
     @property
@@ -695,8 +698,8 @@ class Person(models.Model, PermissionResource):
     def save(self, *args, **kwargs):
         self.name = self.name.capitalize()
         self.surname = self.surname.capitalize()
-        if self.uuid == '':
-            self.uuid = None
+        if self.ssn == '':
+            self.ssn = None
         super(Person, self).save(*args, **kwargs)
 
     #----------------- Authorization API ------------------------#
@@ -746,6 +749,7 @@ class Person(models.Model, PermissionResource):
     )
    
 class Contact(models.Model):
+    """If is a contact, just a contact email or phone"""
 
     flavour = models.CharField(max_length=32, choices=const.CONTACT_CHOICES, default=const.EMAIL,verbose_name=_('flavour'))
     value = models.CharField(max_length=256,verbose_name=_('value'))
