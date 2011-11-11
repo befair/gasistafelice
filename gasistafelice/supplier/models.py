@@ -11,6 +11,7 @@ from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 from history.models import HistoricalRecords
 
@@ -40,16 +41,19 @@ class Supplier(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128, verbose_name=_("name")) 
     seat = models.ForeignKey(Place, null=True, blank=True, verbose_name=_("seat"))
-    vat_number = models.CharField(max_length=128, unique=True, null=True, verbose_name=_("VAT number")) #TODO: perhaps a custom field needed here ? (for validation purposes)
+    vat_number = models.CharField(max_length=128, unique=True, null=True, blank=True, verbose_name=_("VAT number")) #TODO: perhaps a custom field needed here ? (for validation purposes)
+    ssn = models.CharField(max_length=128, unique=True, null=True, blank=True, verbose_name=_("Social Security Number")) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
+    frontman = models.ForeignKey(Person, related_name="supplier_frontman_set")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
-    n_employers = models.PositiveIntegerField(default=1)
+    n_employers = models.PositiveIntegerField(default=None, null=True, blank=True, verbose_name=_("amount of employers"))
     certifications = models.ManyToManyField('Certification', null=True, blank=True, verbose_name = _('certifications'))
-    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
+    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_("logo"))
     contact_set = models.ManyToManyField(Contact, null=True, blank=True)
+    iban = models.CharField(blank=True, max_length=64, verbose_name=_("IBAN"))
+    description = models.TextField(blank=True, default='', verbose_name=_("description"))
 
-    #FUTURE TODO des = models.ManyToManyField(DES, null=True, blank=True)
 
     history = HistoricalRecords()
     
@@ -251,7 +255,19 @@ class Supplier(models.Model, PermissionResource):
     def clean(self):
         self.name = self.name.strip()
         self.flavour = self.flavour.strip()
-        #TODO placeholder: dominique check flavour is in appropriate choices
+
+        if self.flavour not in map(lambda x: x[0], SUPPLIER_FLAVOUR_LIST):
+            raise ValidationError(
+                _("The specified flavour is not valid. Valid choices are %(choices)s" % { 
+                    'supplier' : self, 
+                    'choiches' : SUPPLIER_FLAVOUR_LIST
+                }
+            ))
+
+        if not self.vat_number:
+            self.vat_number = None
+        if not self.ssn:
+            self.ssn = None
     
         return super(Supplier, self).clean()
 
@@ -314,6 +330,8 @@ class SupplierAgent(models.Model):
     def clean(self):
         self.job_title = self.job_title.strip()
         self.job_description = self.job_description.strip()
+        if self.supplier.agent_set.filter(is_referrer).count() > 1:
+            raise ValidationError(_("There can be only one referrer for each supplier"))
         return super(SupplierAgent, self).clean()
 
 # COMMENT fero: this should be related to EDIT and CREATE permissions for related Supplier object

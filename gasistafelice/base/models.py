@@ -523,7 +523,7 @@ class Person(models.Model, PermissionResource):
         self.display_name = self.display_name.strip()
         if not self.ssn:
             self.ssn = None
-        else
+        else:
             self.ssn = self.ssn.strip().upper()
 
         return super(Person, self).clean()
