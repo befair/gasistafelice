@@ -45,7 +45,7 @@ class Supplier(models.Model, PermissionResource):
     ssn = models.CharField(max_length=128, unique=True, null=True, blank=True, verbose_name=_("Social Security Number")) #TODO: perhaps a custom field needed here ? (for validation purposes)
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
     agent_set = models.ManyToManyField(Person, through="SupplierAgent")
-    frontman = models.ForeignKey(Person, related_name="supplier_frontman_set")
+    frontman = models.ForeignKey(Person, null=True, related_name="supplier_frontman_set")
     flavour = models.CharField(max_length=128, choices=SUPPLIER_FLAVOUR_LIST, default=SUPPLIER_FLAVOUR_LIST[0][0], verbose_name=_("flavour"))
     n_employers = models.PositiveIntegerField(default=None, null=True, blank=True, verbose_name=_("amount of employers"))
     certifications = models.ManyToManyField('Certification', null=True, blank=True, verbose_name = _('certifications'))

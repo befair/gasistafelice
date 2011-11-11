@@ -42,7 +42,7 @@ class Command(BaseCommand):
         ctype = ContentType.objects.get_for_model(resource.__class__)
         params = Param.objects.filter(content_type=ctype, object_id=resource.pk)
 
-        pr = ParamRole.objects.get(param_set=params)
+        pr = ParamRole.objects.get(role__name=role_name, param_set=params)
         x, created = PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=u)
         if not created:
             log.info("Role %s for user %s already exists" % (pr, u))
