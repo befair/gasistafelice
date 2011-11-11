@@ -53,15 +53,15 @@ class EditGASMemberForm(forms.ModelForm):
     def save(self):
         self.instance.gasmember.save()
         self.instance.save()
-        
+
     class Meta:
         model = GASMember
         exclude = ('id_in_des')
-        
+
         gf_fieldsets = (
             (None, {
                 'fields': (
-                    'gm_name',           
+                    'gm_name',
                     ('person', 'membership_fee_payed'),
                     ('person_city', 'person_email'),
                     'id_in_gas',
