@@ -33,6 +33,6 @@ class Command(BaseCommand):
 
         for p in qs:
             d = get_instance_dict_from_attrs(p, attr_names)
-            print(tmpl % d)
+            print((tmpl % d).encode('UTF-8'))
             
         return 0
