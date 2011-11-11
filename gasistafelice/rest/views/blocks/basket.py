@@ -31,7 +31,7 @@ class Block(BlockSSDataTables):
 
     BLOCK_NAME = "basket"
     BLOCK_DESCRIPTION = _("Basket")
-    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"]
 
         #3: 'ordered_product__stock__supplier_stock__product', gasstock
     COLUMN_INDEX_NAME_MAP = { 
