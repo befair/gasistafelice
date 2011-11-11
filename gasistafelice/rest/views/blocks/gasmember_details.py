@@ -3,6 +3,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 from gasistafelice.rest.views.blocks import details
+from gasistafelice.gas.forms.base import EditGASMemberForm
 
 class Block(details.Block):
 
@@ -18,3 +19,8 @@ class Block(details.Block):
             'name' : self.resource.person.name,
             'gas' : self.resource.gas,
         }
+
+    def _get_edit_form_class(self):
+        """Return edit form class. Usually a FormFromModel"""
+        return EditGASMemberForm
+
