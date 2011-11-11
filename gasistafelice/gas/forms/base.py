@@ -68,6 +68,7 @@ class EditGASMemberForm(forms.ModelForm):
              }),
             )
 
+
 #display.Resource(name="gas", verbose_name=_("GAS")),
 #display.Resource(name="person", verbose_name=_("Person")),
 #membership_fee_payed,
