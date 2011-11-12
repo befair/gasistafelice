@@ -107,9 +107,14 @@ jQuery.UIBlock = Class.extend({
 
                         jQel.find('field').each( function () {
                             var _ft   = $(this).attr('type');
-                            var _fl   = $(this).attr('label');
                             var _fv   = $(this).attr('var');
                             var _fval = $(this).children('value').text();
+                            var _fl   = $(this).attr('label');
+                            var urn   = $(this).attr('urn');
+                            if (urn != undefined) {
+                                //Display field label as usual
+                                _fl = new jQuery.Resource(urn, _fl).render();
+                            }
                             
                             var checked = '';
                             if (_ft == 'checkbox')
@@ -118,7 +123,7 @@ jQuery.UIBlock = Class.extend({
                                     checked = 'checked="checked"';
                             
                             if(_ft != 'select')
-                                form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+":</label></td></tr>" );
+                                form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+"</label></td></tr>" );
                             else
                                 form.append("<tr><td><label>"+_fl+":</label></td><td><select name='gfCP_"+_fv+"'></select></td></tr>" );
                         });

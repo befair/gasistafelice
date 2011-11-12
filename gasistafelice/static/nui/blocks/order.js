@@ -82,7 +82,6 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
 
                     /* Modify Django management form info */
-                    /* FIXME TODO AFTER 6 UGLY !!!*/
                     $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
                 }
             }); 
