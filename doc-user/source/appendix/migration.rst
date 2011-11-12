@@ -58,7 +58,34 @@ In un contesto di economia solidale si privilegiano i programmi liberi di cui ci
 
 Per ulteriori approfondimenti rimandiamo alla pagina di Wikipedia `Software di produttività personale <http://it.wikipedia.org/wiki/Software_di_produttivit%C3%A0_personale>`__
 
-.. _gasmembers:
+.. _import-GAS:
+
+GAS
+^^^
+
+Le informazioni da comunicare relative al "soggetto" GAS sono poche e non è necessario comunicarle tramite un foglio di calcolo,
+basta inserirle nella mail in cui si comunicano gli altri dati. Esse sono:
+
+* nome del GAS
+* città
+* recapito email per comunicazioni del gestionale (v. sotto) del GAS
+* recapito email informativo del GAS
+* recapito telefonico informativo del GAS
+
+e opzionalmente:
+
+* logo (se ce lo avete. Come immagine allegata o come indirizzo http va bene uguale)
+* i nomi delle persone cui si possono chiedere informazioni sul GAS
+* quanto è la quota di iscrizione annuale
+* entro quanto richiedete che la quota venga pagata: questo ci servirà per poter mandare un reminder a tutti i gasisti, ma non ci sarà nella prima implementazione
+
+Il recapito email per comunicazioni del gestionale verso il GAS è importante 
+per poter inviare alcune (le minime) comunicazioni del gestionale, che potete leggere al capitolo :ref:`notifications`
+
+
+
+
+.. _import-gasmembers:
 
 Gasisti
 ^^^^^^^
@@ -76,6 +103,7 @@ Gasisti
 6. Indirizzo
 7. Nome da visualizzare (a piacere)
 8. Numero di telefono
+9. Numero di tessera nel GAS
 
 .. note::
     Il nome utente (username) verrà impostato al nome della persona, seguito da un numero progressivo per evitare duplicati.
@@ -128,7 +156,7 @@ I campi obbligatori per l'importazione di questi tipi di soggetti sono:
  * ``OP_INFO``: operatore e persona di contatto;
  * ``OP_RAPP``: operatore e rappresentante;
 
-e a seguire gli altri campi previsti per i :ref:`gasmembers`
+e a seguire gli altri campi previsti per i :ref:`import-gasmembers`
 
 .. note::
     Le persone di tipo "RAPPRESENTANTE" e "INFO" non avranno un utente abilitato all'accesso al sistema
