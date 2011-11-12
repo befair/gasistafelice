@@ -75,29 +75,12 @@ class Supplier(models.Model, PermissionResource):
 
     #-- Contacts --#
 
-    #FIXME: wanted SOGGETTIVE person
     @property
     def contacts(self):
-        return self.contact_set.all() | Contact.objects.filter(person__in=self.info_people)
-
-    #FIXME: wanted EMAIL
-    @property
-    def preferred_email_contacts(self):
-        pref_contacts = self.contact_set.filter(is_preferred=True)
-        if pref_contacts.count():
-            return pref_contacts
-        else:
-            return super(GAS, self).preferred_email_contacts()
-
-    #FIXME: wanted phone or cell number
-    @property
-    def preferred_phone_contacts(self):
-        return []
-#        pref_contacts = self.contact_set.filter(is_preferred=True)
-#        if pref_contacts.count():
-#            return pref_contacts
-#        else:
-#            return super(GAS, self).preferred_phone_contacts()
+        cs = self.contact_set.all()
+        if not cs.count():
+            cs = Contact.objects.filter(person__in=self.info_people)
+        return cs
 
     #-- Resource API --#
 

@@ -241,15 +241,10 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def contacts(self):
-        return self.contact_set.all() | Contact.objects.filter(person__in=self.info_people)
-
-    @property
-    def preferred_email_contacts(self):
-        pref_contacts = self.contact_set.filter(is_preferred=True)
-        if pref_contacts.count():
-            return pref_contacts
-        else:
-            return super(GAS, self).preferred_email_contacts()
+        cs = self.contact_set.all()
+        if not cs.count():
+            cs = Contact.objects.filter(person__in=self.info_people)
+        return cs
 
     #-- Methods --#
 
@@ -560,6 +555,7 @@ class GASMember(models.Model, PermissionResource):
 
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
+        person,
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
@@ -665,6 +661,10 @@ class GASMember(models.Model, PermissionResource):
         except AttributeError:
             # Account descriptor is not implemented yet
             return u"(%s + %s)"  % (st1, st2)
+
+    @property
+    def account(self):
+        return 0
 
     @property
     def total_basket(self):
