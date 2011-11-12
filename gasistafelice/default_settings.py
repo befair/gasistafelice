@@ -244,7 +244,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
-        'blocks' : ['details']
+        'blocks' : ['gasmember_details']
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
