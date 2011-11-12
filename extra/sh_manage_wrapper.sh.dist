@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Questo script consente di passare i comandi presi come parametro al manage.py
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <command to pass to manage.py> [parameters,...]"
+    exit 100;
+fi
+
+GF_HOME=/usr/local/gasistafelice
+VENV=desmacerata
+
+sh_start_venv.sh $GF_HOME $VENV
+
+cd $GF_HOME;
+/usr/bin/env python manage.py $@
+

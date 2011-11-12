@@ -18,6 +18,6 @@ fi
 cd $WORKON_HOME
 export WORKON_HOME
 
-source /usr/bin/virtualenvwrapper.sh
+source /usr/local/bin/virtualenvwrapper.sh
 workon $VIRTUALENV
 
