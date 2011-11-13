@@ -573,7 +573,7 @@ class GASMember(models.Model, PermissionResource):
 
     def statistic_name(self):
         rv = _('%(gas)s - %(person)s ') % {'person' : self.person, 'gas': self.gas.id_in_des}
-        rv = _('%(person)s ') % {'person' : self.person}
+        #rv = _('%(person)s ') % {'person' : self.person}
         return rv
 
     def _get_roles(self):
