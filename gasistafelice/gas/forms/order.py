@@ -223,13 +223,13 @@ class AddOrderForm(BaseOrderForm):
 #        fields = ['supplier', 'datetime_start', 'datetime_end']
         fields = ['pact', 'datetime_start', 'datetime_end']
 
-        gf_fieldsets = [(None, { 
-            'fields' : ['pact', 
-                            ('datetime_start', 'datetime_end'), 
+        gf_fieldsets = [(None, {
+            'fields' : ['pact',
+                            ('datetime_start', 'datetime_end'),
                             ('delivery_datetime', 'delivery_referrer')
-            ] 
+            ]
         })]
-#            'fields' : ['supplier', 
+#            'fields' : ['supplier',
 #                        'delivery_terms'
 
 #-------------------------------------------------------------------------------
@@ -259,11 +259,11 @@ class EditOrderForm(BaseOrderForm):
         model = GASSupplierOrder
         fields = ['datetime_start', 'datetime_end']
 
-        gf_fieldsets = [(None, { 
-            'fields' : [ ('datetime_start', 'datetime_end'), 
+        gf_fieldsets = [(None, {
+            'fields' : [ ('datetime_start', 'datetime_end'),
                          ('delivery_referrer', 'withdrawal_referrer')
                         ,'delivery_terms'
-            ] 
+            ]
         })]
 
 def form_class_factory_for_request(request, base):
