@@ -1120,7 +1120,7 @@
         
         var NOTES_PLACEHOLDER = '#all_notes';
         var NOTES_RESOURCE_URL = jQuery.pre + 'rest/list_comments/all';
-        var NOTE_REFRESH_TIME = 20*10;  // 60 seconds
+        var NOTE_REFRESH_TIME = 20*30;  // 180 seconds
         var NOTES_POPUP_DIALOG = '#global_notes_popup_placeholder';
         
         jQuery.new_notes_dialog_open = false;
@@ -1335,7 +1335,7 @@
         // ============================================================================
         
         var STATUS_CHANGE_NOTIFICATION_URL = 'rest/last_status_change/';
-        var STATUS_CHANGE_NOTIFICATION_TIMEOUT = 10 * 1000; // 60 seconds
+        var STATUS_CHANGE_NOTIFICATION_TIMEOUT = 10 * 3000; // 180 seconds
         var status_change_timer_id = undefined;
         var last_log_element = undefined;
         
