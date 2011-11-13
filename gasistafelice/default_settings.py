@@ -269,7 +269,7 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks': ['order_details', 'order_report'],
     },{ 
         'name' : 'delivery',
-        'descr': 'Consegna',
+        'descr': 'Pagamento',
         'blocks': [],
     }],
 
