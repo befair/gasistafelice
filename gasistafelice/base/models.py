@@ -741,7 +741,8 @@ class Person(models.Model, PermissionResource):
         try:
             des = context['site']
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)
+            return User.objects.none()
+            #raise WrongPermissionCheck('CREATE', cls, context)
         else:
             allowed_users = des.gas_tech_referrers            
 

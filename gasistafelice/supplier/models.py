@@ -193,7 +193,7 @@ class Supplier(models.Model, PermissionResource):
         """
 
         allowed_users = User.objects.none()
-        ctx_keys_to_check = set(['gas', 'site'])
+        ctx_keys_to_check = set(('gas', 'site'))
         ctx_keys = context.keys()
 
         if len(ctx_keys) > 1:
