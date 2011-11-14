@@ -2,7 +2,7 @@ from django.db import models
 
 from gasistafelice.consts import *
 from flexi_auth.models import ParamRole
-from gasistafelice.gas.query import OrderQuerySet, AppointmentQuerySet
+from gasistafelice.gas.query import AppointmentQuerySet, OrderQuerySet
 
 class GASMemberManager(models.Manager):
     """
@@ -203,5 +203,4 @@ class OrderManager(models.Manager):
     def canceled(self):
         return self.get_query_set().canceled()
   
-    
 

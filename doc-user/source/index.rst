@@ -22,6 +22,14 @@ Indice dei contenuti:
     gas_member
     gas_referrer_supplier
     gas_referrer_tech
+    general
+    resource_supplier
+    resource_product
+    resource_gas
+    resource_pact
+    resource_order
+    appendix/migration
+    appendix/list
     
 .. TODO
     gas_referrer_cash

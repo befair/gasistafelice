@@ -1,7 +1,13 @@
-{% extends "blocks/stocks/table.xml" %}
+{% extends "blocks/base/table.xml" %}
 {% load i18n %}
 
 {% block headers %}
-    {{ block.super }}
-    <th>{% trans "Enabled by GAS" %}</th>
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "Product" %}</th>
+    <th>{% trans "Price" %}</th>
+    <th>{% trans "Producer" %}</th>
+    <th>{% trans "GAS" %}</th>
+    <th>{% trans "Amount" %}</th>
+    <th>{% trans "Members" %}</th>
+    <th>{% trans "Order" %}</th>
 {% endblock %}

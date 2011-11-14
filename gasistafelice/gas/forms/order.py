@@ -1,8 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.gas.models.proxy import GASSupplierOrder, GASSupplierSolidalPact
-from gasistafelice.gas.models import GASMemberOrder
+from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
 from django.forms.formsets import formset_factory
@@ -18,16 +17,29 @@ from gasistafelice.consts import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY
 
 from django.conf import settings
 import datetime, copy
+import logging
+log = logging.getLogger(__name__)
 
-def today():
-    return datetime.date.today().strftime(settings.DATE_FMT)
+def gf_now():
+    dt = datetime.datetime.now()
+    return dt
+
+class GFSplitDateTimeWidget(admin_widgets.AdminSplitDateTime):
+
+    def __init__(self, *args, **kw):
+        super(GFSplitDateTimeWidget, self).__init__(*args, **kw)
+        self.widgets[0].format=settings.DATE_INPUT_FORMATS[0]
+        self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]
 
 class BaseOrderForm(forms.ModelForm):
 
-    date_start = forms.DateField(label=_('Date start'), required=True, 
-                    help_text=_("when the order will be opened"), widget=admin_widgets.AdminDateWidget, initial=today)
-    date_end = forms.DateField(label=_('Date end'), required=False, 
-                    help_text=_("when the order will be closed"), widget=admin_widgets.AdminDateWidget)
+    datetime_start = forms.SplitDateTimeField(label=_('Date start'), required=True, 
+                    help_text=_("when the order will be opened"), widget=GFSplitDateTimeWidget, initial=gf_now)
+
+    datetime_end = forms.SplitDateTimeField(label=_('Date end'), required=False, 
+                    help_text=_("when the order will be closed"), widget=GFSplitDateTimeWidget)
+
+    delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
     delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
     withdrawal_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
@@ -37,20 +49,25 @@ class BaseOrderForm(forms.ModelForm):
         super(BaseOrderForm, self).__init__(*args, **kw)
         self.fields['delivery_referrer'].queryset = request.resource.gas.persons
         self.fields['withdrawal_referrer'].queryset = request.resource.gas.persons
+        self.__gas = request.resource.gas
 
     def get_appointment_instance(self, name, klass):
 
         ddt = self.cleaned_data['%s_datetime' % name]
-        dc = self.cleaned_data['%s_city' % name] 
-        dp = self.cleaned_data['%s_addr_or_place' % name]
-        try:
-            p = Place.objects.get(city=dc, name__icontains=dp)
-        except Place.DoesNotExist:
+        if self.cleaned_data.get('%s_city' % name):
+            dc =self.cleaned_data['%s_city' % name]
+            dp = self.cleaned_data['%s_addr_or_place' % name]
+
             try:
-                p = Place.objects.get(city=dc, addr__icontains=dp)
+                p = Place.objects.get(city=dc, name__icontains=dp)
             except Place.DoesNotExist:
-                p = Place(city=dc, name=dp)
-                p.save()
+                try:
+                    p = Place.objects.get(city=dc, addr__icontains=dp)
+                except Place.DoesNotExist:
+                    p = Place(city=dc, name=dp)
+                    p.save()
+        else:
+            p = getattr(self.__gas.config, "%s_place" % name)
 
         d, created = klass.objects.get_or_create(date=ddt, place=p)
         return d
@@ -92,39 +109,45 @@ class BaseOrderForm(forms.ModelForm):
 
 class AddOrderForm(BaseOrderForm):
 
-    supplier = forms.ModelChoiceField(label=_('Supplier'), queryset=Supplier.objects.none())
+    supplier = forms.ModelChoiceField(label=_('Supplier'), queryset=Supplier.objects.none(), required=True)
     delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
 
     def __init__(self, request, *args, **kw):
+
         super(AddOrderForm, self).__init__(request, *args, **kw)
-        self.fields['supplier'].queryset = request.resource.suppliers
+
+        suppliers = request.resource.suppliers
+        self.fields['supplier'].queryset = suppliers 
+        self.fields['supplier'].initial = suppliers[0] 
         self.__gas = request.resource.gas
 
     def save(self):
+        _gas = self.__gas
         pact = GASSupplierSolidalPact.objects.get( \
             supplier=self.cleaned_data['supplier'],
-            gas=self.__gas
+            gas=_gas
         )
         self.instance.pact = pact
 
         if self.cleaned_data.get('delivery_datetime'):
             d = self.get_delivery()
             self.instance.delivery =  d
-               
-        if self.cleaned_data.get('withdrawal_datetime'):
-            w = self.get_withdrawal()
-            self.instance.withdrawal =  w
-               
+
+        if _gas.config.use_withdrawal_place:
+            if self.cleaned_data.get('withdrawal_datetime'):
+                w = self.get_withdrawal()
+                self.instance.withdrawal =  w
+
         return super(AddOrderForm, self).save()
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['supplier', 'date_start', 'date_end']
+        fields = ['supplier', 'datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, { 
             'fields' : ['supplier', 
-                            ('date_start', 'date_end'), 
-                            ('delivery_referrer', 'withdrawal_referrer'), 
+                            ('datetime_start', 'datetime_end'), 
+                            ('delivery_datetime', 'delivery_referrer'),
                         'delivery_terms'
             ] 
         })]
@@ -149,10 +172,10 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['date_start', 'date_end']
+        fields = ['datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, { 
-            'fields' : [ ('date_start', 'date_end'), 
+            'fields' : [ ('datetime_start', 'datetime_end'), 
                          ('delivery_referrer', 'withdrawal_referrer'), 
                         'delivery_terms'
             ] 
@@ -168,20 +191,20 @@ def form_class_factory_for_request(request, base):
     gas = request.resource.gas
 
     if gas.config.can_change_delivery_place_on_each_order:
-        gf_fieldsets[0][1]['fields'].append(('delivery_datetime', 'delivery_city', 'delivery_addr_or_place'))
+        gf_fieldsets[0][1]['fields'].append(('delivery_city', 'delivery_addr_or_place'))
         attrs.update({
-            'delivery_datetime' : forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=admin_widgets.AdminSplitDateTime),
             'delivery_city' : forms.CharField(required=True, label=_('Delivery city'), initial=gas.city),
             'delivery_addr_or_place': forms.CharField(required=True, label=_('Delivery address or place'), initial=gas.headquarter),
         })
 
-    if gas.config.can_change_withdrawal_place_on_each_order:
-        gf_fieldsets[0][1]['fields'].append(('withdrawal_datetime', 'withdrawal_city', 'withdrawal_addr_or_place'))
-        attrs.update({
-            'withdrawal_datetime' : forms.SplitDateTimeField(required=False, label=_('Withdrawal on/at'), widget=admin_widgets.AdminSplitDateTime),
-            'withdrawal_city' : forms.CharField(required=True, label=_('Withdrawal city'), initial=gas.city),
-            'withdrawal_addr_or_place': forms.CharField(required=True, label=_('Withdrawal address or place'), initial=gas.headquarter),
-        })
+    if gas.config.use_withdrawal_place:
+        if gas.config.can_change_withdrawal_place_on_each_order:
+            gf_fieldsets[0][1]['fields'].append(('withdrawal_datetime', 'withdrawal_city', 'withdrawal_addr_or_place'))
+            attrs.update({
+                'withdrawal_datetime' : forms.SplitDateTimeField(required=False, label=_('Withdrawal on/at'), widget=admin_widgets.AdminSplitDateTime),
+                'withdrawal_city' : forms.CharField(required=True, label=_('Withdrawal city'), initial=gas.city),
+                'withdrawal_addr_or_place': forms.CharField(required=True, label=_('Withdrawal address or place'), initial=gas.headquarter),
+            })
 
     attrs.update(Meta=type('Meta', (), {
         'model' : GASSupplierOrder,
@@ -198,34 +221,46 @@ class GASSupplierOrderProductForm(forms.Form):
 
     id = forms.IntegerField(required=True, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
+    #log.debug("Create GASSupplierOrderProductForm (%s)" % id)
 
     def __init__(self, request, *args, **kw):
         super(GASSupplierOrderProductForm, self).__init__(*args, **kw)
-        self.__order = request.resource.order
 
+    #@transaction.commit_on_success
     def save(self):
 
-        if not self.cleaned_data.get('enabled'):
-            GASSupplierOrderProduct.objects.delete(pk=self.cleaned_data['id'])
+        #log.debug("Save GASSupplierOrderProductForm")
+        id = self.cleaned_data.get('id')
+        log.debug("Save GASSupplierOrderProductForm id(%s)" % id)
+        if id:
+            enabled = self.cleaned_data.get('enabled')
+            log.debug("Save GASSupplierOrderProductForm enabled(%s)" % enabled)
+            #Delete is ok for gsop that have gmo but: 
+            #FIXME: if no gmo associated to gsop the field enabled remain always True?
+            if not enabled:
+                gsop = GASSupplierOrderProduct.objects.get(pk=id)
+                log.debug("STO rendendo indisponibile (fuori stagione) un prodotto da un ordine aperto")
+                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/Qta %s/Gasisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
+                gsop.delete()
 
 
-GASSupplierOrderProductFormSet = formset_factory(
-                                form=GASSupplierOrderProductForm, 
-                                formset=BaseFormSetWithRequest, 
-                                extra=0
-                          )
+
 #-------------------------------------------------------------------------------
 
 
 class SingleGASMemberOrderForm(forms.Form):
+    """Return form class for row level operation on GSOP datatable"""
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    #log.debug("Create SingleGASMemberOrderForm (%s)" % id)
     gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    ordered_amount = forms.IntegerField(required=False, initial=0)
+    ordered_amount = forms.DecimalField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
+    note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
 
     def __init__(self, request, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
+        self.fields['note'].widget.attrs['class'] = 'input_medium'
         self.__gm = request.resource.gasmember
 
     def save(self):
@@ -235,12 +270,13 @@ class SingleGASMemberOrderForm(forms.Form):
             gmo = GASMemberOrder.objects.get(pk=id)
             gmo.ordered_price = self.cleaned_data.get('ordered_price')
             gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+            gmo.note = self.cleaned_data.get('note')
             if gmo.ordered_amount == 0:
                 gmo.delete()
-                print "STO CANCELLANDO un ordine gasista"
+                #log.debug("STO CANCELLANDO un ordine gasista da widget quantita")
             else:
                 gmo.save()
-                print "ho aggiornato un ordine gasista"
+                log.debug("Product ho aggiornato un ordine gasista (%s) " % id)
 
         elif self.cleaned_data.get('ordered_amount'):
                 gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
@@ -250,8 +286,48 @@ class SingleGASMemberOrderForm(forms.Form):
                         ordered_product = gssop,
                         ordered_price = self.cleaned_data.get('ordered_price'),
                         ordered_amount = self.cleaned_data.get('ordered_amount'),
+                        note = self.cleaned_data.get('note'),
                         purchaser = self.__gm,
                 )
                 gmo.save()
+                log.debug("Product ho creato un ordine gasista (%s) " % gmo.pk)
 
+class BasketGASMemberOrderForm(forms.Form):
+    """Return form class for row level operation on GMO datatable"""
+
+    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    #log.debug("Create BasketGASMemberOrderForm (%s)" % id)
+    gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    gsop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    ordered_amount = forms.DecimalField(required=False, initial=0)
+    ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
+    enabled = forms.BooleanField(required=False)
+
+    def __init__(self, request, *args, **kw):
+        super(BasketGASMemberOrderForm, self).__init__(*args, **kw)
+        #self.__gm = request.resource.gasmember
+
+    def save(self):
+
+        id = self.cleaned_data.get('id')
+        gm_id = self.cleaned_data.get('gm_id')
+        gsop_id = self.cleaned_data.get('gsop_id')
+        enabled = self.cleaned_data.get('enabled')
+        if id:
+            gmo = GASMemberOrder.objects.get(pk=id)
+#            if gm_id and gm_id != gmo.purchaser.pk:
+#                print "Qualcosa non va con: GASmember"
+#                return ""
+            gmo.ordered_price = self.cleaned_data.get('ordered_price')
+            gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+            #log.debug("BasketGASMemberOrderForm (%s) enabled = %s" % (gmo.pk,enabled))
+            if gmo.ordered_amount == 0:
+                gmo.delete()
+                log.debug("Basket STO CANCELLANDO un ordine gasista da widget quantita")
+            elif enabled:
+                gmo.delete()
+                log.debug("Basket STO CANCELLANDO un ordine gasista da check enabled")
+            else:
+                gmo.save()
+                log.debug("Basket ho aggiornato un ordine gasista (%s) " % id)
 

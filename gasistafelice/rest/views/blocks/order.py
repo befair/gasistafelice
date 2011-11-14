@@ -9,7 +9,9 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GASMemberOrder
 from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
-from django.template.defaultfilters import floatformat
+import logging
+log = logging.getLogger(__name__)
+
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -22,21 +24,21 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'id',
-        1: 'supplier', 
-        2: 'gasstock__stock__product',
-        3: 'gasstock__stock__product__description',
+        0: 'pk', 
+        1: 'gasstock__stock__supplier__name', 
+        2: 'gasstock__stock__product__name',
+        3: '',
         4: 'order_price',
-        5: '',
-        6: '', 
-        7: '', 
+        5: 'tot_amount',
+        6: 'tot_price',
     }
+#        3: 'gasstock__stock__product__description',
 
     def _get_resource_list(self, request):
         selected_orders = request.GET.getlist('gfCP_order')
         rv = request.resource.orderable_products
         if (selected_orders):
-            rv = rv.filter(order__pk__in=selected_orders)
+            rv = rv.filter(order__pk__in=map(int, selected_orders))
         return rv
 
     def options_response(self, request, resource_type, resource_id):
@@ -96,6 +98,7 @@ class Block(BlockSSDataTables):
         )
 
     def __get_gmos(self, gssop):
+        log.debug("order block __get_gmos (%s)" % (self.request.resource.gasmember))
         return GASMemberOrder.objects.filter(
                     ordered_product__in=gssop,
                     purchaser=self.request.resource.gasmember
@@ -105,6 +108,7 @@ class Block(BlockSSDataTables):
         """Return records of rendered table fields."""
 
         # [:] forces evaluation of the querySet
+        #FIXME: filtering by purchaser not ok --> return all orders for all gasmembers
         gmos = self.__get_gmos(querySet)[:]
 
         data = {}
@@ -132,6 +136,7 @@ class Block(BlockSSDataTables):
                '%s-ordered_amount' % key_prefix : gmo.ordered_amount or 0,
                '%s-ordered_price' % key_prefix : el.gasstock.price, #displayed as hiddend field
                '%s-gssop_id' % key_prefix : el.pk, #displayed as hiddend field
+               '%s-note' % key_prefix : gmo.note,
             })
 
             gmo_info[el.pk] = {
@@ -149,7 +154,7 @@ class Block(BlockSSDataTables):
         records = []
 
         for i,el in enumerate(querySet):
-
+            #log.debug("order ordered_amount (%s)" % (i))
             try:
                 form = formset[gmo_info[el.pk]['formset_index']]
                 total = gmo_info[el.pk]['ordered_total']
@@ -158,31 +163,27 @@ class Block(BlockSSDataTables):
                 form = SingleGASMemberOrderForm(self.request)
                 total = 0
 
+            #try:
             form.fields['ordered_amount'].widget.attrs = { 
                             'class' : 'amount',
-                            'step' : el.gasstock.order_step or 1,
-                            'minimum_amount' : el.gasstock.order_minimum_amount or 1,
+                            'step' : el.gasstock.step or 1,
+                            'minimum_amount' : el.gasstock.minimum_amount or 1,
+                            's_url' : el.supplier.urn,
+                            'p_url' : el.product.urn,
             }
 
             records.append({
+               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),
                'supplier' : el.supplier,
                'product' : el.product,
-               'description' : el.product.description,
-               'price' : floatformat(el.gasstock.price, 2),
-               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo order_step
-               'ordered_total' : total,
-               'id' : "%s %s %s" % (form['id'], form['gssop_id'], form['ordered_price'])
+               'note' : form['note'],
+               'price' : el.gasstock.price,
+               'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
+               'ordered_total' : total
             })
+               #'description' : el.product.description,
+            #except KeyError:
+            #    log.debug("order ordered_amount (%s %s)" % (el.pk, i))
 
         return formset, records, {}
-
-#TODO FIXME AFTER 6: understand how to parte gf_moreData!
-#[ data["form-INITIAL_FORMS"], data["form-TOTAL_FORMS"]]
-#{
-#            "1" : "2", "2" : "3"
-#            "form_TOTAL_FORMS"  : '1', #data["form-TOTAL_FORMS"], 
-#            "form_INITIAL_FORMS": '2', #data["form-INITIAL_FORMS"],
-#            "form_MAX_NUM_FORMS": '3', #data["form-MAX_NUM_FORMS"],
-#        }
-
 

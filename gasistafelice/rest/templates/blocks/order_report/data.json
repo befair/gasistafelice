@@ -1,14 +1,20 @@
 {% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
 
 {% block table_rows %}
     {% for row in records %}
     [
 
+        "{{row.id|escapejs}}",
         "{{row.product|escapejs}}",
-        "&#8364; {{ row.order_price|floatformat:"2"|escapejs }}",
-        "{{row.tot_gasmembers|escapejs}}",
-        "{{row.tot_amount|escapejs}}",
-        "&#8364; {{ row.tot_price|escapejs }}",
+        "&#8364; {{row.order_price|floatformat:"2"}}",
+        "{% filter escapejs %}{% bool_img_not row.has_changed_price %}{% endfilter %}",
+        "{{row.tot_gasmembers}}",
+        "{{row.unconfirmed_orders }}",
+        "{{row.tot_amount|floatformat:"-2"}}",
+        "&#8364; {{ row.tot_price|floatformat:"2"}}",
+        "{% filter escapejs %}{% bool_img row.id %}{% endfilter %}",
+        "{{row.stock.urn|escapejs}}",
 
     ]
     {% if not forloop.last %}

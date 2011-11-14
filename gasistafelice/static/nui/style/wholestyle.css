@@ -179,15 +179,17 @@ select{
 }
 
 
-#resource_panel {
+.panel {
 	background-color: #eee;
 	/* padding: 10px; */
 	/*margin: 10px;*/
 	width  : 220px;
 	min-width  : 220px;
 	max-width  : 500px;
+}
+
+#resource_panel {
 	float : left;
-	
 }
 
 .resource_panel_expand_button_visible {
@@ -210,7 +212,7 @@ border:0px;
 #separator_button {
 }
 
-#separator {
+#separator, #right_separator {
 	background-color: #eee;
 }
 

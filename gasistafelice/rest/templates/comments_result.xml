@@ -1,0 +1,50 @@
+{% load basic_tags %}
+
+<div class="content">
+<ul>
+	{% for obj_note in notes %} 
+	<li>
+		{% if obj_note.0 %}
+			<!-- <span class="resource {{ obj_note.0.resource_type }} {% ifequal obj_note.0.resource_type 'target' %}{{ obj_note.0.status }}{% endifequal %}" > -->
+			
+			{% with obj_note.0 as r %}
+				<a class="ctx_enabled resource {{ r.resource_type }} inline" 
+				   sanet_urn="{{ r.resource_type }}/{{ r.id }}" 
+				   href="#rest/{{ r.resource_type }}/{{ r.id }}/" 
+				   >
+					{{ r }}
+				</a>
+			{% endwith %}
+			<!-- </span> -->
+		{% else %}
+			Generali		
+		{% endif %}
+		
+		<ul>
+		{% for note in obj_note.1 %}
+			
+			<li class="note_entry" 
+			    style="margin-left: 20px" 
+			    submit_time="{{ note.submit_date }}" 
+			    readable_time="{{ note.submit_date|date:"d/m/Y h:i" }}" 
+			    user="{{ note.user.username }}">
+			    
+				<span id="note-{{note.id}}">
+						<span class="user">
+						{{ note.userinfo.name }} 
+						</span>
+
+						<span>
+						{{ note.comment }}
+						</span>
+				</span>
+			</li>
+			
+		{% endfor %}
+		</ul>
+		
+	</li>
+	{% endfor %}
+</ul>
+</div>
+

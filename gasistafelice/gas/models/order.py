@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from workflows.models import Workflow, Transition
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition
@@ -15,6 +16,7 @@ from gasistafelice.lib import ClassProperty
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
+from gasistafelice.gas import signals
 from gasistafelice.base.models import Person
 from gasistafelice.consts import *
 from flexi_auth.models import ParamRole
@@ -23,6 +25,7 @@ from flexi_auth.exceptions import WrongPermissionCheck
 
 from django.conf import settings
 
+from workflows.utils import do_transition
 from datetime import datetime, timedelta
 
 #from django.utils.encoding import force_unicode
@@ -37,26 +40,37 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     """
     
-    pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set")
-    date_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
-    date_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
-    # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
+    pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
+    datetime_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
+    datetime_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
+    # Where and when Delivery occurs
+    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
     # Where and when Withdrawal occurs
     withdrawal = models.ForeignKey('Withdrawal', verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True)
+
+    # Delivery cost. To be set after delivery has happened
+    delivery_cost = CurrencyField(verbose_name=_('Delivery cost'), null=True, blank=True)
+
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     #TODO: Notify system
 
+    group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
+        help_text=_("If not null this order is aggregate with orders from other GAS")
+    )
+
     objects = OrderManager()
 
     history = HistoricalRecords()
 
     class Meta:
+        verbose_name = _('order issued to supplier')
+        verbose_name = _('orders issued to supplier')
+        ordering = ('datetime_end', 'datetime_start')
         app_label = 'gas'
         
     def __init__(self, *args, **kw):
@@ -64,8 +78,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        if self.date_end is not None:
-            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.date_end)
+        if self.datetime_end is not None:
+            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.datetime_end)
             if self.is_active():
                 state = _("close on %(date)s") % { 'date' : fmt_date }
             else:
@@ -81,6 +95,29 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
+
+    def do_transition(self, transition, user):
+        super(GASSupplierOrder, self).do_transition(transition, user)
+        signals.order_state_update(sender=self, transition=transition)
+
+    def get_valid_name(self):
+        from django.template.defaultfilters import slugify
+        from django.utils.encoding import smart_str
+        n = str(self.pk) + '_'
+        n += smart_str(slugify(self.pact.supplier.name).replace('-', '_'))
+        n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        return n
+        return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
+
+    #-- Contacts --#
+
+    @property
+    def contacts(self):
+        return Contact.objects.filter(person__in=self.info_people)
+
+    @property
+    def info_people(self):
+        return self.pact.info_people
 
     #-------------------------------------------------------------------------------#
     # Model Archive API
@@ -132,10 +169,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
 
         if not self.pact.gas.config.auto_populate_products:
+            self._msg = []
             self._msg.append(ugettext("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
             return
 
-        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier)
+        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier, enabled =True)
         for s in stocks:
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s, initial_price=s.price, order_price=s.price, delivered_price=s.price)
@@ -153,7 +191,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s)
+        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, initial_price=s.price)
         if created:
             self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
             gsop.order_price = s.price
@@ -166,7 +204,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def remove_product(self, s):
         '''
-        A helper function to add product to a GASSupplierOrder.
+        A helper function to remove a product from a GASSupplierOrder.
         '''
         #TODO: Does workflows.utils have method state_in(tupple of state)
         #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
@@ -185,7 +223,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append(ugettext('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                self._msg.append(ugettext('Deleting gas member %(member)s email %(email)s: Unit price(%(price)s) ordered quantity(%(quantity)s) total price(%(price)s) for product %(product)s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                signals.gmo_product_erased.send(sender=self)
                 gmo.delete()
             self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))
             gsop.delete()
@@ -266,6 +305,22 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return self.gasstock_set.all()
 
     @property
+    def gas(self):
+        return self.pact.gas
+
+    @property
+    def gasmembers(self):
+        return self.gas.gasmembers
+
+    @property
+    def orders(self):
+        return GASSupplierOrder.objects.filter(pk=self.pk)
+
+    @property
+    def order(self):
+        return self
+
+    @property
     def tot_price(self):
         tot = 0
         for gmo in self.ordered_products:
@@ -276,15 +331,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
         created = False
         if not self.pk:
             created = True
-            # Create default withdrawal
-            if self.date_end and not self.withdrawal:
-                #TODO: check gasconfig for weekday
-                w = Withdrawal(
-                        date=self.date_end + timedelta(7), 
-                        place=self.gas.config.withdrawal_place
-                )
-                w.save()
-                self.withdrawal = w
+            if self.gas.config.use_withdrawal_place:
+                # Create default withdrawal
+                if self.datetime_end and not self.withdrawal:
+                    #TODO: check gasconfig for weekday
+                    w = Withdrawal(
+                            date=self.datetime_end + timedelta(7), 
+                            place=self.gas.config.withdrawal_place
+                    )
+                    w.save()
+                    self.withdrawal = w
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
@@ -295,6 +351,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if created:
             self.set_default_gasstock_set()
+            #TODO: dispatching order_open is to be moved elsewhere when scheduler works
+            signals.order_open.send(sender=self)
             
         
     #-------------- Authorization API ---------------#
@@ -302,15 +360,60 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
-        # Who can create a supplier order in a GAS ?
-        # * GAS administrators
-        # *  referrers for the pact the order is placed against
-        try:
-            pact = context['pact']
-            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
-            return user in allowed_users
-        except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+        """Who can create a supplier order?
+
+        In general:
+            * GAS administrators
+            * Referrers for the pact the order is placed against
+        In depth we have to switch among multiple possible contexts
+
+        If we are checking for a "unusual key" (not in ctx_keys_to_check),
+        just return False, do not raise an exception.
+        """
+
+        allowed_users = User.objects.none()
+        ctx_keys_to_check = set(('pact', 'gas', 'site', 'supplier'))
+        ctx_keys = context.keys()
+
+        if len(ctx_keys) > 1:
+            raise WrongPermissionCheck('CREATE [only one key supported for context]', cls, context)
+
+        k = ctx_keys[0]
+
+        if k not in ctx_keys_to_check:
+            # No user is allowed, just return False
+            # (user is not in User empty querySet)
+            # Do not raise an exception
+            pass
+
+        # Switch among possible different contexts
+
+        elif k == 'pact':
+            # pact context
+            pact = context[k]
+            allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
+
+        elif k == 'gas':
+            # gas context
+            gas = context[k]
+            if gas.pacts.count():
+                allowed_users = gas.tech_referrers | gas.supplier_referrers
+
+        elif k == 'site':
+            # des context
+            des = context[k]
+            if des.pacts.count():
+                allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
+        elif k == 'supplier':
+            # supplier context
+            # Every GAS REFERRER SUPPLIER or GAS REFERRER TECH of a GAS 
+            # who has a GASSupplierSolidalPact with this Supplier
+            supplier = context[k]
+            for pact in supplier.pacts:
+                allowed_users |= pact.gas.supplier_referrers | pact.gas.tech_referrers
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -318,7 +421,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators
-        allowed_users = self.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.referrers | self.gas.tech_referrers | self.gas.supplier_referrers
         return user in allowed_users 
     
     # Row-level DELETE permission
@@ -333,39 +436,44 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #-----------------------------------------------#
 
     display_fields = (
+        display.Resource(name="gas", verbose_name=_("GAS")),
+        display.Resource(name="supplier", verbose_name=_("Supplier")),
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
-        date_start, date_end, order_minimum_amount, 
+        datetime_start, datetime_end, order_minimum_amount, 
         delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
         withdrawal, display.ResourceList(name="withdrawal_referrer_persons", verbose_name=_("Withdrawal referrer")),
     )
 
 #-------------------------------------------------------------------------------
-
 class GASSupplierOrderProduct(models.Model, PermissionResource):
-
-
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
 
     """
 
-    order = models.ForeignKey(GASSupplierOrder, related_name="orderable_product_set")
-    gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set")
+    order = models.ForeignKey(GASSupplierOrder, related_name="orderable_product_set",verbose_name=_('order'))
+    gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set",verbose_name=_('gas stock'))
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
-    maximum_amount = models.PositiveIntegerField(null=True, blank=True, default=0)
+    maximum_amount = models.DecimalField(null=True, blank=True, verbose_name = _('maximum amount'),
+                        max_digits=8, decimal_places=2
+    )
     # the price of the Product at the time the GASSupplierOrder was created
-    initial_price = CurrencyField()
+    initial_price = CurrencyField(verbose_name=_('initial price'))
     # the price of the Product at the time the GASSupplierOrder was sent to the Supplier
-    order_price = CurrencyField()
+    order_price = CurrencyField(verbose_name=_('order price'))
     # the actual price of the Product (as resulting from the invoice)
-    delivered_price = CurrencyField(null=True, blank=True)
+    delivered_price = CurrencyField(null=True, blank=True,verbose_name=_('delivered price'))
     # how many items were actually delivered by the Supplier 
-    delivered_amount = models.PositiveIntegerField(null=True, blank=True)
-    
+    delivered_amount = models.DecimalField(null=True, blank=True, verbose_name = _('delivered amount'),
+                        max_digits=8, decimal_places=2
+    )
+
     history = HistoricalRecords()
     
     class Meta:
+        verbose_name = _('gas supplier order product')
+        verbose_name_plural = _('gas supplier order products')
         app_label = 'gas'
 
     def __unicode__(self):
@@ -373,6 +481,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
+
+    @property
+    def has_changed(self):
+        return self.initial_price != self.order_price
 
     # how many items of this kind were ordered (globally by the GAS)
     @property
@@ -383,10 +495,14 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         for gmo in gmo_list:         
             amount += gmo['ordered_amount']
         return amount 
-    
+
     @property
     def tot_gasmembers(self):
         return self.gasmember_order_set.count()
+
+    @property
+    def unconfirmed_orders(self):
+        return self.gasmember_order_set.filter(is_confirmed=False).count()
 
     @property
     def tot_price(self):
@@ -397,10 +513,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         #INFO: and compute tot_price in here.
         
         gmo_list = self.gasmember_order_set.all()
-        amount = 0 
+        tot = 0 
         for gmo in gmo_list:
-            amount += gmo.tot_price
-        return amount 
+            tot += gmo.tot_price
+        return tot 
 
     @property
     def pact(self):
@@ -429,9 +545,30 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         if self.delivered_price is None:
             self.delivered_price = self.order_price
         super(GASSupplierOrderProduct, self).save(*args, **kw)
-        
+
+        # CASCADING set until GASMemberOrder
+        if self.has_changed_price:
+            self._msg = []
+            self._msg.append('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
+            for gmo in self.gasmember_order_set:
+                #gmo.order_price = self.order_price
+                gmo.note = _("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.save()
+
+
+    @property
+    def has_changed_price(self):
+        try:
+            gsop = GASSupplierOrderProduct.objects.get(pk=self.pk)
+            if not gsop is None:
+                return bool(self.order_price != gsop.order_price)
+            else:
+                return False
+        except GASSupplierOrderProduct.DoesNotExist:
+            return False
+
     #-------------- Authorization API ---------------#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
@@ -444,7 +581,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -463,7 +600,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # * GAS administrators    
         allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers        
         return user in allowed_users 
-    
+
 
 class GASMemberOrder(models.Model, PermissionResource):
 
@@ -473,16 +610,22 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     """
 
-    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set", null=False, blank=False)
-    ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set", null=False, blank=False)
+    purchaser = models.ForeignKey(GASMember, related_name="gasmember_order_set", null=False, blank=False,verbose_name=_('purchaser'))
+    ordered_product = models.ForeignKey(GASSupplierOrderProduct, related_name="gasmember_order_set", null=False, blank=False,verbose_name=_('order product'))
     # price of the Product at order time
-    ordered_price = CurrencyField()
+    ordered_price = CurrencyField(verbose_name=_('ordered price'))
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.PositiveIntegerField()
+    ordered_amount = models.DecimalField(null=False, blank=False, verbose_name = _('order amount'),
+                        max_digits=6, decimal_places=2
+    )
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.PositiveIntegerField(null=True, blank=True)
+    withdrawn_amount = models.DecimalField(null=True, blank=True, verbose_name = _('widthdrawn amount'),
+                        max_digits=6, decimal_places=2
+    )
     # gasmember order have to be confirmed if GAS configuration allowed it
-    is_confirmed = models.BooleanField(default=False)
+    is_confirmed = models.BooleanField(default=False,verbose_name=_('confirmed'))
+
+    note = models.CharField(max_length=64, verbose_name=_('product note'), null=True, blank=True, help_text=_("GAS member can write some short message about this product for the producer"))
 
     history = HistoricalRecords()
 
@@ -493,7 +636,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         unique_together = (('ordered_product', 'purchaser'),)
 
     def __unicode__(self):
-        return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.purchaser }
+        return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.gasmember }
     
     def confirm(self):
         self.is_confirmed = True
@@ -507,6 +650,10 @@ class GASMemberOrder(models.Model, PermissionResource):
         """Ordered price per ordered amount for this ordered product"""
         #FIXME: we have to use self.ordered_price instead of self.ordered_product.order_price?
         return self.ordered_product.order_price * self.ordered_amount
+
+    @property
+    def gasmember(self):
+        return self.purchaser
 
     @property
     def product(self):
@@ -564,7 +711,8 @@ class GASMemberOrder(models.Model, PermissionResource):
             w = self.gas.config.default_workflow_gasmember_order
             set_workflow(self, w)
 
-        if self.purchaser.gas.config.gasmember_auto_confirm_order:
+        #If the GAS's member do not have to confirm is order auto set the flag
+        if not self.purchaser.gas.config.gasmember_auto_confirm_order:
             self.is_confirmed = True
 
         return super(GASMemberOrder, self).save(*args, **kw)
@@ -581,7 +729,7 @@ class GASMemberOrder(models.Model, PermissionResource):
             allowed_users = order.gas.members
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)   
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -642,14 +790,9 @@ class Delivery(Appointment, PermissionResource):
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
     """
     
-    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"))
-    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"))    
+    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"),verbose_name=_('place'))
+    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"),verbose_name=_('date'))    
 
-    # Person who coordinates delivery appointment (if any) 
-    info_people_set = models.ManyToManyField(Person, null=True, blank=True)
-    
-    # TODO: COSTO DI QUESTA CONSEGNA SPECIFICA?
-    
     history = HistoricalRecords()
 
     class Meta:
@@ -682,12 +825,8 @@ class Delivery(Appointment, PermissionResource):
         return pr.get_users()       
  
     @property
-    def info_people(self):
-        return self.info_people_set.all()
-
-    @property
     def persons(self):
-        return self.info_people | self.referrers_people
+        return self.referrers_people
 
     #-------------------------------------------------------------------------------#   
     # Authorization API
@@ -700,26 +839,41 @@ class Delivery(Appointment, PermissionResource):
 
     #-------------- Authorization API ---------------#
     
+    # COMMENT-fero: now we do not use authoriazion API on this model.
+    # we have to make some consideration for deliveries shared on more than one order
+    
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
+        # TODO: REVIEW NEEDED see below (Withdrawal.can_create)
         # Who can schedule a new delivery appointment for a GAS ?
         # * pact referrers (all)
         # * order referrers (all, if any)
         # * GAS administrators       
+
+        # TODO: order referres: ticket www.jagom.org/trac/reesgas/ticket/185
+        # add.. "evryone is referrer for one active order in GAS
+
+        allowed_users = User.objects.none()
         try:
+            # gas context
             gas = context['gas']
-            pact_referrers_all = list(gas.supplier_referrers)
-            order_referrers_all = []
-            for order in GASSupplierOrder.objects.active(): #TODO: implement ``.active()`` on ``OrderManager``
-                order_referrers_all += order.referrers               
-            allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
-            return user in allowed_users
+            allowed_users = gas.supplier_referrers | gas.tech_referrers
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            try:
+                # TODO: ticket www.jagom.org/trac/reesgas/ticket/185
+                # order context
+                order = context['order']
+                raise NotImplementedError("can_create withdrawal in order")
+                allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
+            except KeyError:
+                raise WrongPermissionCheck('CREATE', cls, context)   
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can modify a delivery appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -731,6 +885,8 @@ class Delivery(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -738,13 +894,12 @@ class Delivery(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can delete a delivery appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -756,6 +911,7 @@ class Delivery(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -763,8 +919,6 @@ class Delivery(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
     
@@ -789,9 +943,6 @@ class Withdrawal(Appointment, PermissionResource):
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
 
-    # Person who coordinates this withdrawal appointment (if any) 
-    info_people_set = models.ManyToManyField(GASMember)
-    
     history = HistoricalRecords()
 
     class Meta:
@@ -831,12 +982,8 @@ class Withdrawal(Appointment, PermissionResource):
         return pr.get_users()       
 
     @property
-    def info_people(self):
-        return self.info_people_set.all()
-
-    @property
     def persons(self):
-        return self.info_people | self.referrers_people
+        return self.referrers_people
 
     #-------------------------------------------------------------------------------#   
     # Authorization API
@@ -849,27 +996,40 @@ class Withdrawal(Appointment, PermissionResource):
 
 
     #-------------- Authorization API ---------------#
+
+    # COMMENT-fero: now we do not use authoriazion API on this model.
+    # we have to make some consideration for withdrawals shared on more than one order
     
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
         # Who can schedule a new withdrawal appointment for a GAS ?
         # * pact referrers (all)
-        # * order referrers (all, if any)
         # * GAS administrators       
+
+        # TODO: order referres: ticket www.jagom.org/trac/reesgas/ticket/185
+        # add.. "evryone is referrer for one active order in GAS
+
+        allowed_users = User.objects.none()
         try:
+            # gas context
             gas = context['gas']
-            pact_referrers_all = list(gas.supplier_referrers)
-            order_referrers_all = []
-            for order in GASSupplierOrder.objects.active(): #TODO: implement ``.active()`` on ``OrderManager``
-                order_referrers_all += order.referrers               
-            allowed_users = pact_referrers_all + order_referrers_all + list(gas.tech_referrers)
-            return user in allowed_users
+            allowed_users = gas.supplier_referrers | gas.tech_referrers
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)   
+            try:
+                # TODO: ticket www.jagom.org/trac/reesgas/ticket/185
+                # order context
+                order = context['order']
+                raise NotImplementedError("can_create withdrawal in order")
+                allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
+            except KeyError:
+                raise WrongPermissionCheck('CREATE', cls, context)   
+
+        return user in allowed_users
  
     # Row-level EDIT permission
     def can_edit(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can modify a withdrawal appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -881,6 +1041,7 @@ class Withdrawal(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -888,13 +1049,12 @@ class Withdrawal(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
+        # TODO: REVIEW NEEDED see above (can_create)
         # Who can delete a withdrawal appointment ?
         # (remember that they can be shared among orders and GASs)
         # 1) If only one supplier order is currently associated with this appointment:
@@ -906,6 +1066,7 @@ class Withdrawal(Appointment, PermissionResource):
         #     * GAS administrators            
         # 3) ELSE:
         #     * DES administrators
+        allowed_users = User.objects.none()
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
@@ -913,8 +1074,6 @@ class Withdrawal(Appointment, PermissionResource):
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
-        else: 
-            allowed_users = self.des.admins
             
         return user in allowed_users
             

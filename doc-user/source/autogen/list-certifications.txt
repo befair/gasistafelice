@@ -1,0 +1,6 @@
+* \(AC) Autocertificazione
+* \(IMC) Certificato da IMC
+* \(INC) In conversione
+* \(Cert) Certificato
+* \(SES) Certificato da Suolo e Salute
+* \(ICEA) Certificato da ICEA

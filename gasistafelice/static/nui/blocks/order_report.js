@@ -3,7 +3,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("order_report", "table");
+        this.submit_name = "Togli prodotti dall'ordine (elimina ordine gasista)";
     },
+        //this.active_view = "edit_multiple";
+        //this.default_view = this.active_view;
 
     action_handler : function(action_el) {
         if (action_el.attr('name') == 'createpdf') {
@@ -16,18 +19,22 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         // Init dataTables
+        var iTot = 7;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    null,
-                    { "sType": "currency", "sClass": "taright" },
-                    { "bSortable" : false, "sClass": "taright" },
-                    { "bSortable" : false, "sClass": "taright" },
-                    { "bSortable" : false, "sType": "currency", "sClass": "taright" },
-                    null,
+                    { "sWidth": "5%"},
+                    { "sWidth": "30%"},
+                    { "sWidth": "10%", "sType": "currency", "sClass": "taright", "bSearchable" : false},
+                    { "sWidth": "5%", "bSortable" : false, "bSortable" : false, "bSearchable" : false},
+                    { "sWidth": "10%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
+                    { "sWidth": "5%", "bSortable" : false, "bSearchable" : false},
+                    { "sWidth": "15%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
+                    { "sWidth": "15%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
+                    { "sWidth": "5%"},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -36,25 +43,38 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     "sInfoEmpty": gettext("Showing 0 to 0 of 0 records"),
                     "sInfoFiltered": gettext("(filtered from _MAX_ total records)")
                 },
+                "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
+                    try {
+                        var url = aaData[9];
+                        if (url != undefined) {
+                            var _name = aaData[1];
+                            res = new jQuery.Resource(url, _name);
+                            $(nRow.cells[1]).html( res.render() );
+                        }
+                    }
+                    catch(e){alert(e.message);
+                    }
+                    return nRow
+                } ,
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 
                     var iTotal = 0;
                     for ( var i=0 ; i<aaData.length ; i++ )
                     {
-                        iTotal += parseFloat(aaData[i][4].substr(8).replace(',','.'));
+                        iTotal += parseFloat(aaData[i][iTot].substr(8).replace(',','.'));
                     }
-                    
+
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
-                    $(nCells[1]).html('&#8364; ' + iTotal);
+                    $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
                 }
-            }); 
+            });
 
 
         return this._super();
 
     }
-    
+
 });
 
 jQuery.BLOCKS["order_report"] = new jQuery.UIBlockOrderReport();

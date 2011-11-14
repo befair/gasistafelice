@@ -2,13 +2,18 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django import forms
 from django.forms import ValidationError
 from django.contrib.admin import widgets as admin_widgets
+from django.conf import settings
 
-from gasistafelice.gas.models.proxy import GASSupplierSolidalPact
+from gasistafelice.gas.models.base import GASSupplierSolidalPact
 from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import Supplier
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
+
+import datetime
+import logging
+log = logging.getLogger(__name__)
 
 def today():
     return datetime.date.today().strftime(settings.DATE_FMT)
@@ -23,12 +28,13 @@ class GAS_PactForm(BasePactForm):
     """Form for pact management by a GAS resource"""
     date_signed = forms.DateField(label=_('Date signed'), required=True, 
                     help_text=_("date of first meeting GAS - supplier"), widget=admin_widgets.AdminDateWidget, initial=today)
-    gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
+    gas_supplier_referrer = forms.ModelMultipleChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
         super(GAS_PactForm, self).__init__(*args, **kw)
         self._gas = request.resource.gas
         self.fields['gas_supplier_referrer'].queryset = self._gas.persons
+        log.debug(self._gas.persons)
         des = self._gas.des
         self.fields['supplier'].queryset = des.suppliers.exclude(pk__in=[obj.pk for obj in self._gas.suppliers])
 
@@ -49,9 +55,10 @@ class GAS_PactForm(BasePactForm):
         self.instance.gas = self._gas
         super(GAS_PactForm, self).save()
 
-        if self.cleaned_data.get('gas_supplier_referrer'):
-            pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
-            PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['gas_supplier_referrer'].user)
+        people = self.cleaned_data.get('gas_supplier_referrer', [])
+        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
+        for p in people:
+            PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=p.user)
 
     class Meta:
 
@@ -119,7 +126,7 @@ class EditPactForm(BasePactForm):
     Support one GAS_REFERRER_SUPPLIER for each pact"""
 
     document = forms.FileField(label=_("Document"), required=False, help_text=_("Document signed by GAS and Supplier"))
-    gas_supplier_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
+    gas_supplier_referrer = forms.ModelMultipleChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
         self.__param_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=kw['instance'])

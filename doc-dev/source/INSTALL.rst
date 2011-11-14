@@ -10,17 +10,17 @@ You must have your github account, set your public SSH ley on github and set loc
 (gasdev)/gasistafelice$ git submodule update --init
 
 3/7 Install requirements
-(gasdev)$ pip install -r gasistafelice/requirements.txt`
+(gasdev)$ pip install -r requirements.txt`
 
 4/7 Set your local settings
 (gasdev)$ cd gasistafelice
-(gasdev)/gasistafelice/gasistafelice$ cp default_settings.py settings.py --> copy the file to customize
+(gasdev)/gasistafelice/gasistafelice$ cp settings.py.dist settings.py --> copy the file to customize
 (gasdev)/gasistafelice/gasistafelice$ gedit settings.py
-The main thing is to set the database connexion
+The main thing is to set the database connection
 ADMINS = (('xxxxx', 'a@a.it'),)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gasdb',                      # Or path to database file if using sqlite3.
         'USER': 'utente',                     # Not used with sqlite3.
         'PASSWORD': 'xxxx',                   # Not used with sqlite3.
@@ -30,16 +30,20 @@ DATABASES = {
 }
 $ export DJANGO_SETTINGS_MODULE=gasistafelice.settings
 (optional)$ export PYTHONPATH=/www
+$ sudo locale-gen it_IT.UTF-8
 $ django-admin.py runserver
 Validating models...
 0 errors found
-Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
+
 
 5/7 Sincronizzare database
-(gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables and the super user
+create your empty database first
+(gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables but SAY NO when asked to create the super user (!)
+(gasdev)/gasistafelice/gasistafelice$ python manage.py init_superuser --> Create DES base object and the super user following settings.py 
+Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
 
-6/7 (facoltativo) Load some data for testing
-(gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata import.json
+6/7 (optional) Load some data for testing
+(gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata test_data.json
 
 7/7 Running
 (gasdev)/gasistafelice/gasistafelice$ python manage.py runserver
@@ -47,3 +51,26 @@ From your preferred browser use the follwing links reguardless of your customizz
 http://127.0.0.1:8000/admin/  --> Admin interface for Django 
 http://127.0.0.1:8000/gas-admin/   --> Advancded Django admin interface
 http://127.0.0.1:8000/gasistafelice/rest/   --> SANET interface customization for Gassista use
+
+
+
+Use PostgreSQL database
+-----------------------
+
+If you want to set up a PostgreSQL db follow these steps:
+
+.. sourcecode:: python
+
+    (desmacerata1)fero@archgugu:~/src/gasistafelice/gasistafelice$ psql -U postgres
+    psql (9.1.1)
+    Type "help" for help.
+
+    postgres=# create role desadmin  login password '';
+    CREATE ROLE
+    postgres=# create database desmc owner desadmin encoding 'utf8' template template0;
+    CREATE DATABASE
+    postgres=# grant all privileges on database desmc to desadmin;
+    GRANT
+    postgres=# \q
+
+

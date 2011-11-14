@@ -1,0 +1,36 @@
+[
+{"pk": 1,"model":"gas.gas","fields": {"des": 1, "name":"Gas S 1","description":"GAS Simple1","birthday":"2011-04-28","vat":"123456789","headquarter": 1,"logo":"","intent_act":"","note":"note per GAS 1","membership_fee":10,"id_in_des":"X01","association_act":"","fcc":""}},
+{"pk": 2,"model":"gas.gas","fields": {"des": 1, "name":"Gas S  C2","description":"Gas Simple Confirm2","birthday":"2010-04-28","vat":"123456790","headquarter": 2,"logo":"","intent_act":"","note":"note per GAS 2","membership_fee":12,"id_in_des":"X02","association_act":"","fcc":""}},
+{"pk": 3,"model":"gas.gas","fields": {"des": 1, "name":"Gas S       M3","description":"Gas Simple Motor(Schedule)3","birthday":"2009-04-28","vat":"123456791","headquarter": 3,"logo":"","intent_act":"","note":"note per GAS 3","membership_fee":20,"id_in_des":"X03","association_act":"","fcc":""}},
+{"pk": 4,"model":"gas.gas","fields": {"des": 1, "name":"Gas S  C        SL4","description":"Gas Simple  Confirm ShowList(Non soggettivo)4","birthday":"2002-04-28","vat":"123456792","headquarter": 4,"logo":"","intent_act":"","note":"note per GAS 4","membership_fee":0,"id_in_des":"X04","association_act":"","fcc":""}},
+
+
+
+{"pk": 1,"model":"gas.gasconfig","fields": {"default_close_day": "TUESDAY", "default_delivery_place": 3,  "use_scheduler": false, "is_active": true,"default_close_time":"14:00:00","default_delivery_time":"8:30:00", "order_show_only_next_delivery":false,"order_show_only_one_at_a_time":false,"default_delivery_day":"THURSDAY","can_change_delivery_place_on_each_order":false,"can_change_withdrawal_place_on_each_order":false, "default_withdrawal_place": 3,"gas":1,"can_change_price":false,"auto_populate_products": true,"default_workflow_gasmember_order": 3,"default_workflow_gassupplier_order": 1,"gasmember_auto_confirm_order": true} },
+{"pk": 2,"model":"gas.gasconfig","fields": {"default_close_day": "WEDNESDAY", "default_delivery_place": 4,  "use_scheduler": false, "is_active": true,"default_close_time":"15:00:00","default_delivery_time":"9:30:00", "order_show_only_next_delivery":true,"order_show_only_one_at_a_time":false,"default_delivery_day":"FRIDAY","can_change_delivery_place_on_each_order":false,"can_change_withdrawal_place_on_each_order":false, "default_withdrawal_place": 4,"gas":2,"can_change_price":false,"auto_populate_products": true,"default_workflow_gasmember_order": 3,"default_workflow_gassupplier_order": 1,"gasmember_auto_confirm_order": false} },
+
+
+
+{"pk": 1,"model": "gas.gasmember","fields": {"person": 101,"gas":1,"id_in_gas": "GAS1-1","available_for_roles": [3, 4, 5, 6, 7, 8, 2, 9, 10], "membership_fee_payed": "2011-04-28" }},
+{"pk": 2,"model": "gas.gasmember","fields": {"person": 102,"gas":1,"id_in_gas": "GAS1-2","available_for_roles": [3], "membership_fee_payed": "2011-04-28" }},
+{"pk": 3,"model": "gas.gasmember","fields": {"person": 103,"gas":1,"id_in_gas": "GAS1-3","available_for_roles": [3], "membership_fee_payed": "2011-04-28" }},
+{"pk": 4,"model": "gas.gasmember","fields": {"person": 104,"gas":1,"id_in_gas": "GAS1-4","available_for_roles": [3], "membership_fee_payed": "2011-04-28" }},
+
+
+{"pk": 1,"model": "gas.gassuppliersolidalpact","fields": {"gas": 1,"supplier":1, "date_signed": "2011-01-12"} } , 
+{"pk": 2,"model": "gas.gassuppliersolidalpact","fields": {"gas": 1,"supplier":2, "date_signed": "2011-01-12"} } , 
+{"pk": 3,"model": "gas.gassuppliersolidalpact","fields": {"gas": 2,"supplier":1, "date_signed": "2011-01-12"} }
+
+
+{"pk": 101,"model":"base.person", "fields": {"display_name": "personGasista 1","uuid": "12345679001","contact_set": [],"user":102,"surname": "gasista","name": "gm1","address": 121} },
+{"pk": 102,"model":"base.person", "fields": {"display_name": "personGasista 2","uuid": "12345679002","contact_set": [],"user":103,"surname": "gasista","name": "gm2","address": 122} },
+{"pk": 103,"model":"base.person", "fields": {"display_name": "personGasista 3","uuid": "12345679003","contact_set": [],"user":104,"surname": "gasista","name": "gm3","address": 123} },
+{"pk": 104,"model":"base.person", "fields": {"display_name": "personGasista 4","uuid": "12345679004","contact_set": [],"user":105,"surname": "gasista","name": "gm4","address": 124} },
+{"pk": 105,"model":"base.person", "fields": {"display_name": "personGasista 5","uuid": "12345679005","contact_set": [],"user":106,"surname": "gasista","name": "gm5","address": 125} },
+{"pk": 106,"model":"base.person", "fields": {"display_name": "personGasista 6","uuid": "12345679006","contact_set": [],"user":107,"surname": "gasista","name": "gm6","address": 126} }
+
+
+
+
+
+]

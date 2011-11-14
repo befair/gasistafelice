@@ -1,36 +1,43 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.template.defaultfilters import slugify
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 from permissions.models import Role
 from workflows.models import Workflow
 from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
+from flexi_auth.utils import register_parametric_role 
+from flexi_auth.models import ParamRole, Param
+from flexi_auth.exceptions import WrongPermissionCheck
+
 from gasistafelice.lib import ClassProperty
 from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields import display
 
-from gasistafelice.base.models import PermissionResource, Person, Place
-from gasistafelice.base.const import DAY_CHOICES
-from gasistafelice.base.utils import get_resource_icon_path
+from gasistafelice.base.models import PermissionResource, Person, Place, Contact
+from gasistafelice.base import const
+from gasistafelice.base import utils as base_utils
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
-from flexi_auth.utils import register_parametric_role 
-from flexi_auth.models import ParamRole
-from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.des.models import DES
 
-from gasistafelice.lib.fields import display
-from gasistafelice.lib import ClassProperty
-
 from gasistafelice.exceptions import NoSenseException
 
 from decimal import Decimal
+import datetime
+import logging
+log = logging.getLogger(__name__)
+
+
+#-------------------------------------------------------------------------------
 
 class GAS(models.Model, PermissionResource):
 
@@ -38,45 +45,38 @@ class GAS(models.Model, PermissionResource):
 
     Every GAS member has a Role where the basic Role is just to be a member of the GAS.
     """
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
     id_in_des = models.CharField(_("GAS code"), max_length=8, null=False, blank=False, unique=True, help_text=_("GAS unique identifier in the DES. Example: CAMERINO--> CAM"))
-    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
-    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False)
-    description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"))
-    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True)
+    logo = models.ImageField(upload_to=base_utils.get_resource_icon_path, null=True, blank=True)
+    headquarter = models.ForeignKey(Place, related_name="gas_headquarter_set", help_text=_("main address"), null=False, blank=False,verbose_name=_('headquarter'))
+    description = models.TextField(blank=True, help_text=_("Who are you? What are yours specialties?"),verbose_name=_('description'))
+    membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True,verbose_name=_('membership fee'))
 
-    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"))
+    supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"),verbose_name=_('Suppliers'))
     
-    #active = models.BooleanField()
-    birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text=_("Born"))
-    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"))
-    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"))
+    birthday = models.DateField(null=True, blank=True, help_text=_("Born"),verbose_name=_('birthday'))
+    vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"),verbose_name=_('VAT'))
+    fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"),verbose_name=_('Fiscal code card'))
 
-    email_gas = models.EmailField(null=True, blank=True)
+    contact_set = models.ManyToManyField(Contact, null=True, blank=True,verbose_name=_('contacts'))
 
-    #COMMENT fero: imho email_referrer should be a property
-    #that retrieve email contact from GAS_REFERRER (role just added). GAS REFERRER usually is GAS President
-    #COMMENT domthu: The president 
-    email_referrer = models.EmailField(null=True, blank=True, help_text=_("Email president"))
-    phone = models.CharField(max_length=50, blank=True)
-    website = models.URLField(verify_exists=True, null=True, blank=True)
+    # Orders email contact is the mailing-list where we can send notification about orders
+    orders_email_contact = models.ForeignKey(Contact, limit_choices_to = { 'flavour' : const.EMAIL }, null=True, blank=True, related_name="gas_use_for_orders_set")
 
-    #Persons include relative associated resources to GAS class
-    #gas.gas: 'activist_set' specifies an m2m relation through model GASActivist, which has not been installed
-    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True)
+    website = models.URLField(verify_exists=True, null=True, blank=True,verbose_name=_('web site'))
 
-    association_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
-    intent_act = models.FileField(upload_to='gas/docs', null=True, blank=True)
+    #Persons who are active in GAS and can give info about it
+    activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True,verbose_name=_('GAS activists'))
 
-    note = models.TextField(blank=True)
+    association_act = models.FileField(upload_to=base_utils.get_association_act_path, null=True, blank=True, verbose_name=_("association act"))
+    intent_act = models.FileField(upload_to=base_utils.get_intent_act_path, null=True, blank=True, verbose_name=_("intent act"))
+
+    note = models.TextField(blank=True,verbose_name =_('notes'))
 
     # Resource API
-    des = models.ForeignKey(DES)
+    des = models.ForeignKey(DES,verbose_name=_('des'))
 
     #TODO: Notify system
-
-    #COMMENT fero: photogallery and attachments does not go here
-    #they should be managed elsewhere in Wordpress (now, at least)
 
     #-- Managers --#
 
@@ -87,8 +87,13 @@ class GAS(models.Model, PermissionResource):
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
         headquarter, birthday, description, 
         membership_fee, vat, fcc,
-        display.ResourceList(verbose_name=_("referrers"), name="referrers"),
-        association_act,
+        association_act, intent_act,
+        display.ResourceList(name="info_people", verbose_name=_("info people")),
+        display.ResourceList(name="tech_referrers_people", verbose_name=_("tech referrers")),
+        display.ResourceList(name="supplier_referrers_people", verbose_name=_("supplier referrers")),
+        display.ResourceList(name="cash_referrers_people", verbose_name=_("cash referrers")),
+        display.ResourceList(verbose_name=_("created by"), name="created_by_person"),
+        display.ResourceList(verbose_name=_("last update by"), name="last_update_by_person"),
     )
 
     #-- Meta --#
@@ -100,6 +105,16 @@ class GAS(models.Model, PermissionResource):
     def __unicode__(self):
         return self.name
 
+    def clean(self):
+        self.name = self.name.strip()
+        self.id_in_des = self.id_in_des.strip()
+        self.note = self.note.strip()
+
+        if self.headquarter is None:
+            raise ValidationError(_("Default headquarter place must be set"))
+
+        return super(GAS, self).clean()
+
     #-- Authorization API --#
     
     # Table-level CREATE permission    
@@ -107,37 +122,46 @@ class GAS(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a new GAS in a DES ?
         # * DES administrators
+        allowed_users = User.objects.none()
         try:
-            des = context['des']
-            allowed_users =  des.admins
-            return user in allowed_users
+            des = context['site']
         except KeyError:
-            raise SyntaxError("You need to specify a 'des' argument to perform this permission check.")
+            raise WrongPermissionCheck('CREATE', cls, context)   
+        return user in allowed_users
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of an existing GAS ?
         # * GAS tech referrers
         # * administrators of the DES that GAS belongs to
-        allowed_users =  self.tech_referrers | self.des.admins
+        allowed_users =  self.tech_referrers 
         return user in allowed_users  
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing GAS from a DES ?
         # * administrators of the DES that GAS belongs to
-        allowed_users = self.des.admins
+        allowed_users = User.objects.none()
         return user in allowed_users
-            
+
+    @property
+    def roles(self):
+        "GAS involves also roles related to pacts"""
+
+        roles = super(GAS, self).roles
+        for pact in self.pacts:
+            roles |= pact.roles
+        return roles
+
     #--------------------------#
     
     #-- Properties --#
 
-    #-- Referrers API --#
-
     @property
     def icon(self):
-        return self.logo 
+        return self.logo or super(GAS, self).icon
+
+    #-- Referrers API --#
 
     @property
     def referrers(self):
@@ -150,11 +174,12 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def info_people(self):
-        return Person.objects.filter(gasactivist_set__in=self.activist_set.all())
+        return Person.objects.filter(gasactivist__in=self.activist_set.all())
 
     @property
     def persons(self):
-        return Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
+        qs = Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
+        return qs.distinct()
 
     @property
     def tech_referrers(self):
@@ -181,18 +206,45 @@ class GAS(models.Model, PermissionResource):
         """
         Return all users being supplier referrers for this GAS
         """
-        # retrieve 'GAS supplier referrer' parametric role for this pact
-        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, gas=self)
+        # retrieve 'GAS supplier referrer' parametric role for all pacts of this GAS
+        ctype = ContentType.objects.get_for_model(GASSupplierSolidalPact)
+        params = Param.objects.filter(content_type=ctype, object_id__in=map(lambda x: x.pk, self.pacts))
+        prs = ParamRole.objects.filter(param_set__in=params, role__name=GAS_REFERRER_SUPPLIER)
         # retrieve all Users having this role
-        return pr.get_users()    
+        us = User.objects.none()
+        for pr in prs:
+            us |= pr.get_users() 
+        return us   
 
+    @property
+    def tech_referrers_people(self):
+        return Person.objects.filter(user__in=self.tech_referrers)
+        
+    @property
+    def cash_referrers_people(self):
+        return Person.objects.filter(user__in=self.cash_referrers)
+        
+    @property
+    def supplier_referrers_people(self):
+        return Person.objects.filter(user__in=self.supplier_referrers)
+        
     @property
     def city(self):
         return self.headquarter.city 
 
     @property
     def economic_state(self):
-        return u"%s - %s" % (self.account, self.liquidity)
+        return "0"
+        #return u"%s - %s" % (self.account, self.liquidity)
+
+    #-- Contacts --#
+
+    @property
+    def contacts(self):
+        cs = self.contact_set.all()
+        if not cs.count():
+            cs = Contact.objects.filter(person__in=self.info_people)
+        return cs
 
     #-- Methods --#
 
@@ -200,11 +252,19 @@ class GAS(models.Model, PermissionResource):
         # register a new `GAS_MEMBER` Role for this GAS
         register_parametric_role(name=GAS_MEMBER, gas=self)
         # register a new `GAS_REFERRER` Role for this GAS. This is the President of the GAS or other VIP.
-        register_parametric_role(name=GAS_REFERRER, gas=self)
+        # COMMENT fero: we do not need GAS_REFERRER role now
+        #register_parametric_role(name=GAS_REFERRER, gas=self)
         # register a new `GAS_REFERRER_TECH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_TECH, gas=self)
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
+
+    def setup_data(self):
+        # Needed to be called by fixture import
+        try:
+            self.config
+        except GASConfig.DoesNotExist:
+            self.config = GASConfig.objects.create(gas=self)
 
     def save(self, *args, **kw):
 
@@ -223,11 +283,11 @@ class GAS(models.Model, PermissionResource):
         if not self.pk:
             created = True
 
-        # This should never happen, but is it reasonable
-        # that an installation has only one DES
         try:
             self.des
         except DES.DoesNotExist:
+            # This should never happen, but it is reasonable
+            # that an installation has only one DES
             if DES.objects.count() > 1:
                 raise AttributeError(_("You have to bind GAS %s to a DES") % self.name)
             else:
@@ -320,9 +380,8 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def categories(self):
-        #TODO All disctinct categories for all suppliers with solidal pact with the gas
-        #distinct(pk__in=[obj.category.pk for obj in self.Products])
-        return ProductCategory.objects.all()
+        """All disctinct categories for all suppliers with solidal pact with the gas"""
+        return ProductCategory.objects.filter(product_set__in=self.products).distinct()
 
     @property
     def gasstocks(self):
@@ -343,13 +402,6 @@ class GAS(models.Model, PermissionResource):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
-    def clean(self):
-
-        if self.headquarter is None:
-            raise ValidationError(_("Default headquarter place must be set"))
-
-        return super(GAS, self).clean()
-
 #-----------------------------------------------------------------------------------------------------
 
 def get_supplier_order_default():
@@ -358,7 +410,7 @@ def get_supplier_order_default():
 def get_gasmember_order_default():
     return Workflow.objects.get(name="GASMemberOrderDefault")
 
-class GASConfig(models.Model, PermissionResource):
+class GASConfig(models.Model):
     """
     Encapsulate here gas settings and configuration facilities
     """
@@ -383,16 +435,16 @@ class GASConfig(models.Model, PermissionResource):
 
     order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False, 
         help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
-    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Show only one order at a time'), default=False, 
+    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Select only one order at a time'), default=False, 
         help_text=_("GASMember can select only one open order at a time in order block"))
 
     #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-        help_text=_("default closing order day of the week")
+    default_close_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        help_text=_("default closing order day of the week"),verbose_name=_('default close day')
     )
     #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, blank=True, choices=DAY_CHOICES, 
-        help_text=_("default delivery day of the week")
+    default_delivery_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        help_text=_("default delivery day of the week"),verbose_name=_('default delivery day')
     )
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
@@ -405,12 +457,14 @@ class GASConfig(models.Model, PermissionResource):
         help_text=_("default delivery closing hour and minutes")
     )
 
+    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), default=False,
+        help_text=_("If False, GAS never use concept of withdrawal place that is the default")
+    )
     can_change_withdrawal_place_on_each_order = models.BooleanField(verbose_name=_('Can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
-    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, 
-        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
+    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
@@ -424,8 +478,13 @@ class GASConfig(models.Model, PermissionResource):
     use_scheduler = models.BooleanField(default=False)
     gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
 
-    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("The GAS is not available (hollidays, closed). The motor use this flag to operate or not some automatisms"))
     #TODO:notify_days = models.PositiveIntegerField(null=True, default=0, help_text=_("The number of days that the system will notify an event (product changed). If set to 0 the notify system is off."))
+
+    # Fields for suspension management:
+    is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
+    suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this gas was suspended
+    suspend_reason = models.TextField(blank=True, default='', db_index=False)
+    suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     history = HistoricalRecords()
 
@@ -455,23 +514,21 @@ class GASActivist(models.Model):
     This is not necessarily a user in the system. You can consider it just as a contact.
     """
 
-    gas = models.ForeignKey(GAS)
-    person = models.ForeignKey(Person)
+    gas = models.ForeignKey(GAS,verbose_name=_('gas'))
+    person = models.ForeignKey(Person,verbose_name=_('person'))
     info_title = models.CharField(max_length=256, blank=True)
     info_description = models.TextField(blank=True)
 
     history = HistoricalRecords()
-
-    @property
-    def parent(self):
-        return self.gas
 
     class Meta:
         verbose_name = _('GAS activist')
         verbose_name_plural = _('GAS activists')
         app_label = 'gas'
 
-    
+    @property
+    def parent(self):
+        return self.gas
 
 #----------------------------------------------------------------------------------------------------
 
@@ -483,12 +540,13 @@ class GASMember(models.Model, PermissionResource):
     
     """
     # Resource API
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(Person,verbose_name=_('person'))
     # Resource API
-    gas = models.ForeignKey(GAS)
+    gas = models.ForeignKey(GAS,verbose_name=_('gas'))
     id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
-    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set")
+    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set",verbose_name=_('available for roles'))
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
+
     #TODO: Notify system
 
     objects = GASMemberManager()
@@ -496,6 +554,8 @@ class GASMember(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     display_fields = (
+        display.Resource(name="gas", verbose_name=_("GAS")),
+        person,
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
@@ -503,22 +563,23 @@ class GASMember(models.Model, PermissionResource):
     )
 
     class Meta:
+        verbose_name = _('GAS member')
+        verbose_name_plural = _('GAS members')
         app_label = 'gas'
-        unique_together = (('gas', 'id_in_gas'), )
+        unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
 
     def __unicode__(self):
         rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
-   
 
     def _get_roles(self):
         """
         Return a QuerySet containing all the parametric roles which have been assigned
         to the User associated with this GAS member.
         
-        Only roles which make sense for the GAS the GAS member belongs to are returned 
+        Only roles which make sense for the GAS member belongs to are returned 
         (excluding roles the User may have been assigned with respect to other GAS).
         """
         # Roles MUST BE a property because roles are bound to a User 
@@ -535,18 +596,18 @@ class GASMember(models.Model, PermissionResource):
         # add  `GAS_REFERRER_ORDER` roles
         roles += [pr for pr in qs if pr.order.pact.gas == self.gas]
         # add  `GAS_REFERRER_DELIVERY` roles
-        roles += [pr for pr in qs if self.gas in pr.delivery.gas_set]
+        roles += [pr for pr in qs if self.gas in pr.delivery.gas_list]
         # add  `GAS_REFERRER_WITHDRAWAL` roles
-        roles += [pr for pr in qs if self.gas in pr.withdrawal.gas_set]
+        roles += [pr for pr in qs if self.gas in pr.withdrawal.gas_list]
         # HACK: convert a list of model instances to a QuerySet by filtering on instance's primary keys
         qs = ParamRole.objects.filter(pk__in=[obj.pk for obj in roles]) 
         return qs 
 
     def _set_roles(self, list):
         raise NotImplementedError
-        
+
     roles = property(_get_roles, _set_roles)
-        
+
     @property
     def verbose_name(self):
         """Return GASMember representation along with his own card number in GAS"""
@@ -600,6 +661,10 @@ class GASMember(models.Model, PermissionResource):
         except AttributeError:
             # Account descriptor is not implemented yet
             return u"(%s + %s)"  % (st1, st2)
+
+    @property
+    def account(self):
+        return 0
 
     @property
     def total_basket(self):
@@ -713,12 +778,14 @@ class GASMember(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can add a new Person to a GAS ?
         # * administrators for that GAS
+        allowed_users = User.objects.none()
         try:
             gas = context['gas']
             allowed_users = gas.tech_referrers
-            return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
+
+        return user in allowed_users
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
@@ -746,13 +813,20 @@ class GASSupplierStock(models.Model, PermissionResource):
     pact = models.ForeignKey("GASSupplierSolidalPact", related_name="gasstock_set")
     stock = models.ForeignKey(SupplierStock, related_name="gasstock_set")
     # if a Product is available to GAS Members; policy is GAS-specific
-    enabled = models.BooleanField(default=True)
-    ## constraints on what a single GAS Member is able to order
-    # minimun amount of Product units a GAS Member is able to order
-    order_minimum_amount = models.PositiveIntegerField(null=True, blank=True)
+    # A product can be disabled at supplier level. In this case the GASSupplierStock is ALWAYS disabled
+    # else the GASSupplierStock can be enabled or not at the GAS level
+    enabled = models.BooleanField(default=True,verbose_name=_('enabled'))
+
+    # how many Product units a GAS Member is able to order
+    minimum_amount = models.DecimalField(max_digits=5, decimal_places=2, 
+                        default=1, verbose_name=_('minimum order amount')
+    )
     # increment step (in Product units) for amounts exceeding minimum;
-    # useful when a Product ships in packages containing multiple units.
-    order_step = models.PositiveSmallIntegerField(null=True, blank=True)
+    # useful when a Product has a fixed step of increment
+    step = models.DecimalField(max_digits=5, decimal_places=2,
+                        default=1, verbose_name=_('step of increment')
+    )
+
     #TODO: Notify system
 
     history = HistoricalRecords()
@@ -765,6 +839,10 @@ class GASSupplierStock(models.Model, PermissionResource):
         self._msg = None
     
     @property
+    def gasmembers(self):
+        return self.gas.gasmembers
+
+    @property
     def gas(self):
         return self.pact.gas
     
@@ -775,6 +853,14 @@ class GASSupplierStock(models.Model, PermissionResource):
     @property
     def product(self):
         return self.stock.product
+
+    @property
+    def gasstocks(self):
+        return GASSupplierStock.objects.filter(pk=self.pk)
+
+    @property
+    def gasstock(self):
+        return self
 
     @property
     def price(self):
@@ -826,6 +912,7 @@ class GASSupplierStock(models.Model, PermissionResource):
                     order.remove_product(self)
                 if order.message is not None:
                     self._msg.extend(order.message)
+                    log.debug(self._msg)
 
         super(GASSupplierStock, self).save(*args, **kwargs)
 
@@ -833,42 +920,75 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     @property
     def orders(self):
-        #TODO FIXME AFTER 6
-        print "AAAA: sto recuperando tutti gli ordini, ma vorrei solo quelli aperti. Correggere __alla chiamata__ aggiungendo .open()"
         from gasistafelice.gas.models.order import GASSupplierOrder
         return GASSupplierOrder.objects.filter(pact=self.pact)
 
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open(), gasstock=self)
+
     #-- Authorization API --#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators
+        allowed_users = User.objects.none()
         try:
             pact = context['pact']
-            allowed_users = pact.gas.tech_referrers | pact.gas_supplier_referrers
-            return allowed_users
+            allowed_users = pact.gas.tech_referrers | pact.referrers
         except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
+            raise WrongPermissionCheck('CREATE', cls, context)
+        return user in allowed_users
     
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details for an existing supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators 
-        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
-        return allowed_users
+        allowed_users = self.gas.tech_referrers | self.pact.referrers
+        return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
         # * GAS administrators 
-        allowed_users = self.gas.tech_referrers | self.pact.gas_supplier_referrers
-        return allowed_users
-    
+        allowed_users = self.gas.tech_referrers | self.pact.referrers
+        return user in allowed_users
+
+    #-- Production data --#
+
+    # how many items of this gas supplier stock were ordered (globally by the GAS for this GASSupplierProduct)
+    @property
+    def tot_amount(self):
+        amount = 0 
+#        for gsop in self.orderable_products.values('tot_amount'):
+#            amount += gsop['tot_amount']
+        for gsop in self.orderable_products:
+            amount += gsop.tot_amount
+        return amount 
+
+    @property
+    def tot_gasmembers(self):
+        persons = 0
+        for gsop in self.orderable_products:
+            persons += gsop.tot_gasmembers
+        return persons
+
+    @property
+    def tot_price(self):
+        tot = 0
+        for gsop in self.orderable_products:
+            tot += gsop.tot_price
+        return tot
+
+
+
+
 #-----------------------------------------------------------------------------------------------------
     
 class GASSupplierSolidalPact(models.Model, PermissionResource):
@@ -906,46 +1026,66 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     """
 
-    gas = models.ForeignKey(GAS, related_name="pact_set")
-    supplier = models.ForeignKey(Supplier, related_name="pact_set")
+    gas = models.ForeignKey(GAS, related_name="pact_set",verbose_name=_('GAS'))
+    supplier = models.ForeignKey(Supplier, related_name="pact_set",verbose_name=_('Supplier'))
     date_signed = models.DateField(verbose_name=_('Date signed'), auto_now=False, auto_now_add=False, blank=True, null=True, default=None, help_text=_("date of first meeting GAS-Producer"))
 
     # which Products GAS members can order from Supplier
     stock_set = models.ManyToManyField(SupplierStock, through=GASSupplierStock, null=True, blank=True)
     order_minimum_amount = CurrencyField(verbose_name=_('Order minimum amount'), null=True, blank=True)
+
+    # Delivery cost. i.e: transport cost
     order_delivery_cost = CurrencyField(verbose_name=_('Order delivery cost'), null=True, blank=True)
+
     #time needed for the delivery since the GAS issued the order disposition
     order_deliver_interval = models.TimeField(verbose_name=_('Order delivery interval'), null=True, blank=True)
+
     # how much (in percentage) base prices from the Supplier are modified for the GAS
-    order_price_percent_update = models.FloatField(null=True, blank=True)
+    order_price_percent_update = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=3, verbose_name=_('order price percent update'))
     
-    #domthu: if GAS's configuration use only one 
-    #TODO: see ticket #65
-    default_withdrawal_day = models.CharField(max_length=16, choices=DAY_CHOICES, blank=True,
-        help_text=_("Withdrawal week day agreement")
+    # default_delivery_day should holds a "datetime string syntax" to be interpreted by software.
+    # It must express "first day of the month", "first day of the first and third week of the month", ... : see ticket #65
+    default_delivery_day = models.CharField(max_length=16, 
+        choices=const.DAY_CHOICES, blank=True, help_text=_("delivery week day agreement"),
+        verbose_name=_('default delivery day')
     )
-    default_withdrawal_time = models.TimeField(null= True, blank=True, \
-        help_text=_("withdrawal time agreement")
+    default_delivery_time = models.TimeField(null= True, blank=True, 
+        help_text=_("delivery time agreement"), verbose_name=_('default delivery time')
     )
 
-    default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), related_name="pact_default_withdrawal_place_set", null=True, blank=True)
+    default_delivery_place = models.ForeignKey(Place, 
+        verbose_name=_('Default delivery place'), 
+        related_name="pact_default_delivery_place_set", null=True, blank=True
+    )
 
     # Field to reflect
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
     # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
-    auto_populate_products = models.BooleanField(default=True, help_text=_("automatic population of all products bound to a supplier in gas supplier stock"))
-    #TODO: Field to reflect "il GAS puo stracciare il Patto di Solidarieta."
-    #TODO:is_active = models.BooleanField(default=True, help_text=_("This pact can be broken o removed by one of the partner. If not active no orders can be done and the pact will not appear anymore in the interface"))
-    #TODO:is_suspended = models.BooleanField(default=False, help_text=_("This pact can be suspended when partners are on unavailable (hollidays, closed). The motor use this flag to operate or not some automatisms"))
+    auto_populate_products = models.BooleanField(default=True, 
+        help_text=_("automatic population of all products bound to a supplier in gas supplier stock"),
+        verbose_name=_('auto populate products')
+    )
 
-    #document = models.FileField(upload_to="/pacts/", null=True, blank=True)
+    orders_can_be_grouped = models.BooleanField(verbose_name=_('Can be InterGAS'), default=False, 
+        help_text=_("If true, this supplier can aggregate orders from several GAS")
+    )
+
+    document = models.FileField(upload_to=base_utils.get_pact_path, null=True, blank=True, verbose_name=_("association act"))
+
+    # Fields for suspension management:
+    is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("A pact can be broken or removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface. When a pact is suspended you can specify when it could be resumed"))
+    suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this pact was suspended
+    suspend_reason = models.TextField(blank=True, default='', db_index=False)
+    suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     history = HistoricalRecords()
 
     display_fields = (
-        display.ResourceList(name="gas_supplier_referrers_persons", verbose_name=_("Referrers")),
+        display.Resource(name="gas", verbose_name=_("GAS")),
+        display.Resource(name="supplier", verbose_name=_("Supplier")),
+        display.ResourceList(name="referrers_people", verbose_name=_("Referrers")),
         order_minimum_amount, order_delivery_cost, order_deliver_interval,
-        default_withdrawal_place,
+        default_delivery_place, document
     )
 
     class Meta:
@@ -961,7 +1101,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return "pact"
 
     @property
-    def gas_supplier_referrers(self):
+    def referrers(self):
         """
         Return all users being referrers for this solidal pact (GAS-to-Supplier interface).
         """
@@ -975,11 +1115,17 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
     def setup_data(self):
-
         for st in self.supplier.stocks:
+            #see GASSupplierStock.enabled comment
             #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
-            enabled = bool(st.amount_available)
-            GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled)
+            if not self.auto_populate_products:
+                enabled = false
+            else:
+                enabled = bool(st.amount_available)
+            GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
+                                minimum_amount=st.detail_minimum_amount,
+                                step=st.detail_step,
+            )
 
     def save(self, *args, **kw):
         if self.gas.config.auto_populate_products:
@@ -989,17 +1135,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     #-- Resource API --#
 
-    def elabore_report(self):
-        #TODO return report like pdf format. Report has to be signed-firmed by partners
-        return ""
-
     @property
     def parent(self):
         return self.gas
 
     @property
     def suppliers(self):
-        return Supplier.objects.filter(pk=self.pk)
+        return Supplier.objects.filter(pk=self.supplier.pk)
 
     @property
     def des(self):
@@ -1031,60 +1173,92 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     
     @property
     def persons(self):
-        return self.gas.persons | self.supplier.persons
+        qs = self.gas.persons | self.supplier.persons
+        return qs.distinct()
 
     @property
-    def gas_supplier_referrers_persons(self):
-        return self.persons.filter(user__in=self.gas_supplier_referrers)
+    def referrers_people(self):
+        return self.persons.filter(user__in=self.referrers)
+
+    @property
+    def info_people(self):
+        return self.gas.info_people | self.supplier.info_people
 
     #-- Authorization API --#
     
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
-        # Who can create a a new pact for a GAS ?
-        # * GAS supplier referrers (of other pacts)
-        # * GAS referrers
-        # * GAS administrators
-        try:
-            gas = context['gas']
-            allowed_users = gas.tech_referrers | gas.referrers | gas.supplier_referrers 
-            return allowed_users
-        except KeyError:
-            raise WrongPermissionCheck('CREATE', self, context)
- 
+        """Who can create a new pact?
+
+        In general:
+            * GAS supplier referrers (of other pacts)
+            * GAS administrators
+        In depth we have to switch among multiple possible contexts
+
+        If we are checking for a "unusual key" (not in ctx_keys_to_check),
+        just return False, do not raise an exception.
+        """
+
+        allowed_users = User.objects.none()
+        ctx_keys_to_check = set(('gas', 'site', 'supplier'))
+        ctx_keys = context.keys()
+
+        if len(ctx_keys) > 1:
+            raise WrongPermissionCheck('CREATE [only one key supported for context]', cls, context)
+
+        k = ctx_keys[0]
+
+        if k not in ctx_keys_to_check:
+            # No user is allowed, just return False
+            # (user is not in User empty querySet)
+            # Do not raise an exception
+            pass
+
+        # Switch among possible different contexts
+        elif k == 'gas':
+            # gas context
+            gas = context[k]
+            allowed_users = gas.tech_referrers | gas.supplier_referrers 
+
+        elif k == 'supplier':
+            # supplier context
+            # Every GAS tech referrers and referrers suppliers can create a pact for this supplier
+            # Within the form and authorization check, GAS choices will be limited
+            supplier = context[k]
+            des = supplier.des
+            allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
+        elif k == 'site': 
+            # des context
+            # all GAS tech referrers and referrers suppliers can create a pact in a DES.
+            # Within the form and authorization check, GAS choices will be limited
+            des = context[k]
+            allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
+
+        return user in allowed_users
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details for a pact in a GAS ?
         # * GAS administrators 
         # * referrers for that pact
         allowed_users = self.gas.tech_referrers | self.gas.supplier_referrers 
-        return allowed_users 
+        return user in allowed_users 
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete a pact in a GAS ?
         # * GAS administrators 
         allowed_users = self.gas.tech_referrers 
-        return allowed_users 
+        return user in allowed_users 
     
+    @property
+    def roles(self):
+        "Pact involves also roles related to Suppliers"""
 
-#-------------------------------------------------------------------------------
+        roles = super(GASSupplierSolidalPact, self).roles
+        for supplier in self.suppliers:
+            roles |= supplier.roles
+        return roles
 
-def setup_data(sender, instance, created, **kwargs):
-    """
-    Setup proper data after a model instance is saved to the DB for the first time.
-    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
-    actual role-creation/setup logic is encapsulated there.
-    """
-    if created: # Automatic data-setup should happen only at instance-creation time 
-        try:
-            # `instance` is the model instance that has just been created
-            instance.setup_data()
-                                                
-        except AttributeError:
-            # sender model doesn't specify any data-related setup operations, so just ignore the signal
-            pass
-
-# add `setup_data` function as a listener to the `post_save` signal
-post_save.connect(setup_data)

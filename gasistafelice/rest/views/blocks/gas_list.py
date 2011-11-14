@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
+from flexi_auth.models import ObjectWithContext
+
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 from gasistafelice.gas.models import GAS
@@ -25,13 +27,8 @@ class Block(BlockWithList):
         user_actions = []
 
         des = Siteattr.get_site()
-        #se accedo al des (http://127.0.0.1:8000/gasistafelice/rest/site/1/gas_list/?render_as=list)
-        #if request.user.has_perm(CREATE, obj=GAS, des=des):
-        #come lnx crea errore. 
-        #come gasista crea errore: has_perm() got an unexpected keyword argument 'des'
-        if request.user.has_perm(CREATE, obj=GAS):
-        #come lnx Ok. 
-        #come gasista crea errore: You need to specify a 'des' argument to perform this permission check.
+
+        if request.user.has_perm(CREATE, obj=ObjectWithContext(GAS, context={'site' : des})):
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

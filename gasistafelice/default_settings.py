@@ -28,7 +28,7 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-            'django.contrib.auth.backends.ModelBackend',
+            'base.backends.AuthenticationParamRoleBackend',
             'flexi_auth.backends.ParamRoleBackend',
         )
 
@@ -54,6 +54,16 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
+DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M', '%Y-%m-%d %H:%M:%S', 
+'%Y-%m-%d %H:%M', '%Y-%m-%d', '%m/%d/%Y %H:%M:%S', '%m/%d/%Y',
+'%m/%d/%y %H:%M:%S', '%m/%d/%y %H:%M', '%m/%d/%y')
+TIME_INPUT_FORMATS = ('%H:%M', '%H:%M:%S')
+DATE_INPUT_FORMATS = ('%m/%d/%Y', '%Y-%m-%d', '%m/%d/%y', '%b %d %Y',
+'%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
+'%B %d, %Y', '%d %B %Y', '%d %B, %Y')
+
+DECIMAL_SEPARATOR = '.'
+THOUSAND_SEPARATOR = ' '
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -95,7 +105,7 @@ TEMPLATE_DIRS = (
     PROJECT_ROOT + "/templates",
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'permissions',
     'workflows',
     'history',
@@ -117,17 +127,80 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.comments',
     'gasistafelice.localejs',
+    'gasistafelice.des_notifications',
     #'south',
-    
-)
+]
 
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/auth/'),
     os.path.join(PROJECT_ROOT, 'fixtures/base/'),
     os.path.join(PROJECT_ROOT, 'fixtures/des/'),
-    os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
     os.path.join(PROJECT_ROOT, 'fixtures/supplier/'),
+    os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
 )
+
+LOG_FILE = os.path.join(PROJECT_ROOT, 'gf.log')
+LOG_FILE_DEBUG = os.path.join(PROJECT_ROOT, 'gf_debug.log')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'logfile':{
+            'level':'INFO',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': LOG_FILE,
+            'maxBytes': 1048576,
+            'backupCount' : 5,
+            'formatter': 'simple'
+        },
+        'logfile_debug':{
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': LOG_FILE_DEBUG,
+            'maxBytes': 1048576,
+            'backupCount' : 10,
+            'formatter': 'verbose'
+        },
+#        'mail_admins': {
+#            'level': 'ERROR',
+#            'class': 'django.utils.log.AdminEmailHandler',
+#        }
+    },
+    'loggers': {
+        'django': {
+            'handlers':['null'],
+            'propagate': True,
+            'level':'INFO',
+        },
+        'django.request': {
+            'handlers': ['logfile'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'gasistafelice': {
+            'handlers': ['console', 'logfile', 'logfile_debug'],
+            'level': 'DEBUG',
+        }
+    }
+}
 
 THEME = "milky"
 AUTH_PROFILE_MODULE = 'users.UserProfile'
@@ -141,7 +214,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'order',
         'descr' : 'Ordini',
-        'blocks' : ['open_orders']
+        'blocks' : ['open_orders', 'des_pacts']
     },{
         'name' : 'info',
         'descr' : 'Scheda del DES',
@@ -154,11 +227,11 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
-        'blocks': ['pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
+        'blocks': ['gas_pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
-        'blocks' : ['details', 'gasmembers']
+        'blocks' : ['gas_details', 'gasmembers']
     }],
     'gasmember': [{
         'name' : 'orders',
@@ -171,7 +244,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
-        'blocks' : ['details']
+        'blocks' : ['gasmember_details']
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
@@ -184,31 +257,44 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders'],
+        'blocks': ['open_orders', 'supplier_pacts'],
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
-        'blocks': ['details', 'categories'],
+        'blocks': ['supplier_details', 'categories', 'closed_orders'],
     }], #must be extended with economic section
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',
-        'blocks': ['details', 'order_report'],
+        'blocks': ['order_details', 'order_report'],
     },{ 
         'name' : 'delivery',
         'descr': 'Consegna',
         'blocks': [],
     }],
 
-    'pact' : [{
+    'person' : [{
         'name': 'info',
-        'descr': 'Info',
-        'blocks' : ['details', 'open_orders', 'closed_orders'],
-    },{ 
+        'descr': 'Scheda della persona',
+        'blocks' : ['details', 'gasmembers'],
+    }],
+
+    'pact' : [{ 
         'name' : 'stock',
         'descr': 'Prodotti',
-        'blocks': ['gasstocks'],
+        'blocks': ['open_orders', 'gasstocks'],
+    },{
+        'name': 'info',
+        'descr': 'Scheda del patto',
+        'blocks' : ['pact_details', 'closed_orders'],
     }],
+
+    'stock' : [{
+        'name': 'info',
+        'descr': 'Scheda del prodotto',
+        'blocks' : ['stock_details', 'open_orders'],
+    }],
+
 }
    
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
@@ -220,81 +306,26 @@ ENABLE_OLAP_REPORTS = False
 DATE_FMT = "%d/%m/%Y"
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 
-
-#--------------------- AUTH settings ----------------#
-## QUESTION: Maybe app-specific settings like these should be placed 
-## in an dedicated settings module and imported here ?
-
-# TODO: DES_REFERRER role (or remove GAS_REFERRER role?)
-ROLES_LIST = (
-    (consts.NOBODY, _('Nobody')),
-    (consts.SUPPLIER_REFERRER, _('Supplier')),
-    (consts.GAS_MEMBER, _('GAS member')),
-    (consts.GAS_REFERRER, _('GAS referrer')),
-    (consts.GAS_REFERRER_SUPPLIER, _('GAS supplier referrer')),
-    (consts.GAS_REFERRER_ORDER, _('GAS order referrer')),
-    (consts.GAS_REFERRER_WITHDRAWAL, _('GAS withdrawal referrer')),
-    (consts.GAS_REFERRER_DELIVERY, _('GAS delivery referrer')),
-    (consts.GAS_REFERRER_CASH, _('GAS cash referrer')),
-    (consts.GAS_REFERRER_TECH, _('GAS technical referrer')),
-    (consts.DES_ADMIN, _('DES administrator')),
-)
-
-PARAM_CHOICES = (
-   ('des', _('DES')),
-   ('gas', _('GAS')),
-   ('supplier', _('Supplier')),
-   ('pact', _('GAS-supplier solidal pact')),
-   ('order', _('GAS-supplier order')),
-   ('withdrawal', _('Withdrawal appointment')),
-   ('delivery', _('Delivery appointment')),  
-)
-
-VALID_PARAMS_FOR_ROLES = {
-    ## format
-    # ``{<role name>: {<parameter name>: <parameter type>, ..}, ..}``
-    # where the parameter type is expressed as a *model label* (i.e. a string of the form ``app_label.model_name``)
-    consts.SUPPLIER_REFERRER : {'supplier':'supplier.Supplier'},
-    consts.GAS_MEMBER : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER_CASH : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER_TECH : {'gas':'gas.GAS'},
-    consts.GAS_REFERRER_SUPPLIER : {'pact':'gas.GASSupplierSolidalPact'}, 
-    consts.GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
-    consts.GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
-    consts.GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
-    consts.DES_ADMIN: {'des':'des.DES'},                         
+INIT_OPTIONS = {
+    'domain' : "ordini.desmacerata.it",
+    'sitename' : "DES Macerata",
+    'sitedescription' : "Gestione degli ordini per il Distretto di Economia Solidale della Provincia di Macerata (DES-MC)",
+    'su_username' : "admin",
+    'su_name'   : "Referente informatico",
+    'su_surname': "del DES-MC",
+    'su_email'  : "",
+    'su_passwd' : "admin",
 }
 
-## QUESTION: Does the section below is useful/needed by some pieces of code in *Gasista Felice* ?
-PERMISSIONS_CHOICES = (
-    (consts.VIEW, _('View')),
-    (consts.LIST, _('List')),
-    (consts.CREATE, _('Create')),
-    (consts.EDIT, _('Edit')),
-    (consts.EDIT_MULTIPLE, _('Edit multiple')),
-    (consts.DELETE, _('Delete')),
-    (consts.ALL, _('All')), # catchall
-)
+# --- WARNING: changing following parameters implies fixtures adaptation --
+# Default category for all uncategorized products
+DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
+# Superuser username
 
-#--------------------- ACCOUNTING settings ----------------#
-SUBJECTIVE_MODELS = (
-    'gas.GAS',
-    'gas.GASMember',
-    'supplier.Supplier',                      
-)
+#------ AUTH settings
+from flexi_auth_settings import *
 
-ACCOUNT_TYPES = (
-    (consts.INCOME, _('Incomes')),
-    (consts.EXPENSE, _('Expenses')),
-    (consts.ASSET, _('Assets')),
-    (consts.LIABILITY, _('Liabilities')),
-    (consts.EQUITY, _('Equity')),     
-)
+#------ ACCOUNTING settings
+from simple_accounting_settings import *
 
-TRANSACTION_TYPES = (
-     (consts.INVOICE_PAYMENT, 'Payment of an invoice '),
-     (consts.INVOICE_COLLECTION, 'Collection of an invoice'),
-     (consts.GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
-     (consts.MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
-)
+

@@ -26,7 +26,7 @@ class PlaceSaveTest(TestCase):
     '''Tests for the Place save override method'''
     def testCapitalize(self):
         '''Verify city and province are capitalized on save'''
-        p = Place.objects.create(city='senigallia', province='an')
+        p = Place.objects.create(name="foo", city='senigallia', province='an')
         self.assertEqual(p.city, 'Senigallia')
         self.assertEqual(p.province, 'AN')
     def testNameAutoset(self):

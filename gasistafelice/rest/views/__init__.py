@@ -9,7 +9,7 @@ from gasistafelice.lib.shortcuts import render_to_xml_response
 
 from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 
-from gasistafelice.gas.models.proxy import Siteattr
+from gasistafelice.des.models import Siteattr
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 from flexi_auth.models import ROLES_DICT, ParamRole
@@ -106,7 +106,7 @@ def now(request):
     """Get current datetime in format: dow dom mon year - hh:mm"""
     dt = datetime.datetime.now()
 
-    return HttpResponse(dt.strftime("%c")[:-7])
+    return HttpResponse(dt.strftime("%c"))
     #return HttpResponse(dt.strftime("%A, %d %B %Y - %H:%M"))
 
 #------------------------------------------------------------------------------#
@@ -327,32 +327,29 @@ def quick_search(request):
 
 @login_required()
 def list_comments(request):
-    #
-    # FIX: GESTIRE LA VISIBILITA' DELLE NOTE DEGLI ALTRI UTENTI
-    #
-    user = request.user
-    res = Siteattr.get_site()
+
+    resources = []
+    for prr in request.user.principal_param_role_set.all():
+        resources += [ r.value.as_dict() for r in prr.role.params ]
+
+    #TODO: REENABLE AFTER 9 oct.
+    #rnotes = get_notes_for(resources)
     
-    if not user.is_superuser:
-        res = res.filter(user)
-
-    rnotes = []
-    if not request.user.is_superuser:
-        #TODO fero: check if required
-        rnotes.extend(get_notes_for([res]))
-        rnotes.extend(get_notes_for(res.containers))
-        rnotes.extend(get_notes_for(res.nodes))
-        rnotes.extend(get_notes_for(res.ifaces))
-        rnotes.extend(get_notes_for(res.targets))
-        rnotes.extend(get_notes_for(res.measures))
-    else:
-        rnotes = get_all_notes()
-
+    rnotes = get_all_notes()
     context = {
         'notes': rnotes
     }
     return render_to_xml_response("comments_result.xml", context)
 
+#------------------------------------------------------------------------------#
+
+@login_required()
+def list_notifications(request):
+
+    context = {
+        'notifications': request.user.message_set.all()
+    }
+    return render_to_xml_response("notifications_result.xml", context)
 
 
 

@@ -1,10 +1,13 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
+from flexi_auth.models import ObjectWithContext
+
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 
 from gasistafelice.supplier.models import Supplier
+from gasistafelice.des.models import Siteattr
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -22,8 +25,11 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
+        des = Siteattr.get_site()
 
-        if request.user.has_perm(CREATE, obj=Supplier):
+        if request.user.has_perm(CREATE, \
+            obj=ObjectWithContext(Supplier, context={'site':des})):
+
             user_actions.append( 
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,

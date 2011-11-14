@@ -281,7 +281,7 @@ class GASSupplierOrderTest(TestCase):
     def testDefaultProductSet(self):
         '''Verify that the default product set is correctly generated'''
         order = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=self.now)
-        order.set_default_stock_set()
+        order.set_default_gasstock_set()
         self.assertEqual(set(order.stock_set.all()), set((self.gas_stock_1, self.gas_stock_2)))
         
 class GASMemberManagerTest(TestCase):
@@ -333,7 +333,7 @@ class GASMemberManagerTest(TestCase):
         self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=today)
         self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, date_start=today)
         
-        self.place = Place.objects.create(city='senigallia', province='AN')
+        self.place = Place.objects.create(name="foo", city='senigallia', province='AN')
         
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         

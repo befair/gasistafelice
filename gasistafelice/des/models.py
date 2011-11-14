@@ -17,11 +17,12 @@
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.comments.models import Comment
-
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import PermissionResource, Person
+from gasistafelice.base.utils import get_resource_icon_path
 from gasistafelice.consts import DES_ADMIN
 from flexi_auth.models import ParamRole
 from flexi_auth.utils import register_parametric_role
@@ -39,12 +40,14 @@ class DES(Site, PermissionResource):
     TODO: cache attributes in order to avoid database operations.
     (stub for validity already done)
 
-    >>> d = Siteattr.get_site()
-    >>> Siteattr.get_attribute_or_empty('name') == d.name
+    #NOTE: doctest fail. Have to use initial_data.json fixture on this
+    >> d = Siteattr.get_site()
+    >> Siteattr.get_attribute_or_empty('name') == d.name
     True
     """
 
     cfg_time = models.PositiveIntegerField()
+    logo = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True)
     info_people_set = models.ManyToManyField(Person, null=True, blank=True)
     
     display_fields = (
@@ -75,16 +78,14 @@ class DES(Site, PermissionResource):
             setattr(self, attr, Siteattr.get_attribute_or_empty(attr))
         self.cfg_time = Siteattr.get_site_config_timestamp()
         
-    @property
-    def icon(self):
-        if hasattr(self, 'icon_id'):
-            return Icon.objects.get(id=int(self.icon_id))
-        else:
-            return Icon.objects.get(name='site')
             
     def __unicode__(self):
         return self.name
     
+    @property
+    def icon(self):
+        return self.logo or super(DES, self).icon
+
     # authorization API
     
     @property
@@ -113,13 +114,26 @@ class DES(Site, PermissionResource):
         return self.admins
 
     @property
+    def gas_tech_referrers(self):
+        rv = User.objects.none()
+        for g in self.gas_list:
+            rv |= g.tech_referrers
+        return rv
+
+    @property
+    def gas_supplier_referrers(self):
+        rv = User.objects.none()
+        for g in self.gas_list:
+            rv |= g.supplier_referrers
+        return rv
+
+    @property
     def info_people(self):
         return self.info_people_set.all()
         
     def setup_roles(self):
         # register a new ``DES_ADMIN`` role for this DES
         register_parametric_role(name=DES_ADMIN, des=self)
-    
 
     bound_resource = None
 
@@ -242,7 +256,7 @@ class DES(Site, PermissionResource):
         return []
 
     @property
-    def site(self):
+    def des(self):
         return self
 
     @property

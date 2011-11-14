@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
+from flexi_auth.models import ObjectWithContext
+
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 from gasistafelice.gas.models.base import GASMember
@@ -22,15 +24,24 @@ class Block(BlockWithList):
 
         user_actions = []
 
-        if request.user.has_perm(CREATE, obj=GASMember):
-            user_actions.append( 
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=CREATE, verbose_name=_("Add GAS member"), 
-                    url=urlresolvers.reverse('admin:gas_gasmember_add')
+        try:
+            #TODO: block refactory needed!
+            # We need this control because gas attribute is a NoSense in "site" resource (DES)
+            gas = request.resource.gas
+        except NotImplementedError:
+            pass
+        else:
+            if request.user.has_perm(CREATE, 
+                obj=ObjectWithContext(GASMember, context={ 'gas' : gas})):
+
+                user_actions.append( 
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=CREATE, verbose_name=_("Add GAS member"), 
+                        url=urlresolvers.reverse('admin:gas_gasmember_add')
+                    )
                 )
-            )
 
         return user_actions
         

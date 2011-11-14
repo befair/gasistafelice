@@ -94,6 +94,16 @@ Struttura classi del modello
 * Poi le property
 * Poi i metodi
 
+Metodi clean, save, setup_data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nella `clean` ci vanno tutte le operazioni di validazione e sanitizzazione. La clean viene chiamata prima del salvataggio del modello (segnale `pre_save`)
+
+Nella `save` ci vanno tutte le altre operazioni di gestione che non vanno nella `clean`
+
+La `setup_data` è da considerarsi un "palliativo" per l'import delle fixture. Per ora duplichiamo il codice della `save` se necessario. C'è da dire che questo metodo viene chiamato dopo il salvataggio (segnale `post_save`), potremmo usarlo in modo ufficiale posto che ne cambiamo il nome perché il rischio di usare estensivamente i segnali è quello di "perdersi". Se lo chiamassimo `post_save` potremmo in pratica eliminare la `save`.
+
+
 Convenzioni
 ^^^^^^^^^^^
 

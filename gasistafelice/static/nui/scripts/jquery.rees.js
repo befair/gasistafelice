@@ -14,6 +14,18 @@ var NEW_NOTE_FORM_TEXT= "\
 		</form>\
 		";
 
+jQuery.render_bool = function (val) {
+    var rv;
+    if (val.trim().toLowerCase() == "false") {
+        rv = '<img alt="False" src="/media/img/admin/icon-no.gif">';
+    } else if (val.trim().toLowerCase() == "true") {
+        rv = '<img alt="True" src="/media/img/admin/icon-yes.gif">';
+    } else {
+        alert("Variable of boolean type has nor true or false value");
+    }
+    return rv;
+}
+
 /* Resource management facitilies */
 jQuery.Resource = Class.extend({
 
@@ -95,9 +107,14 @@ jQuery.UIBlock = Class.extend({
 
                         jQel.find('field').each( function () {
                             var _ft   = $(this).attr('type');
-                            var _fl   = $(this).attr('label');
                             var _fv   = $(this).attr('var');
                             var _fval = $(this).children('value').text();
+                            var _fl   = $(this).attr('label');
+                            var urn   = $(this).attr('urn');
+                            if (urn != undefined) {
+                                //Display field label as usual
+                                _fl = new jQuery.Resource(urn, _fl).render();
+                            }
                             
                             var checked = '';
                             if (_ft == 'checkbox')
@@ -106,7 +123,7 @@ jQuery.UIBlock = Class.extend({
                                     checked = 'checked="checked"';
                             
                             if(_ft != 'select')
-                                form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+":</label></td></tr>" );
+                                form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+"</label></td></tr>" );
                             else
                                 form.append("<tr><td><label>"+_fl+":</label></td><td><select name='gfCP_"+_fv+"'></select></td></tr>" );
                         });
@@ -599,3 +616,102 @@ jQuery.resource_list_block_update = function(block_box_id) {
     alert("vecchia gestione blocco "+block_box_id); 
 }
 
+//------------------------------------------------------------------------------//
+//                          Utils functions for some blocks                     //
+//------------------------------------------------------------------------------//
+
+function fncOrder(x, _step, _min, _price, _blk){
+  try {
+    var el = null;
+    _step > 0 ? (el = x.prev('input')) : (el = x.next('input'));
+    var qta = parseFloat(el.val().replace(',','.')); 
+    var prev_row_total = parseFloat(qta*_price);
+    var new_qta = 0
+    if (_step > 0)
+        qta == 0 ? (new_qta = _min) : (new_qta = qta + _step);
+    else
+        qta <= _min ? (new_qta = 0) : (new_qta = qta + _step);
+    el.val(SetFloat(new_qta))
+    var next_td = x.parent('td').next(); 
+    var row_total = new_qta * _price;
+    next_td.html('€ ' + SetFloat(row_total));
+    var total = parseFloat($(_blk).html().substr(2).replace(',','.')) + row_total - prev_row_total;
+    $(_blk).html('€ ' + SetFloat(total));
+    }
+  catch(e){//alert(e.message);
+    }
+  return false;
+};
+function SetFloat(_qta){
+    //return String(' ' + GetRoundedFloat(_qta)).replace('.',',') Ko DECIMAL_SEPARATOR = ',' in clean_data()
+    return GetRoundedFloat(_qta);
+}
+function GetRoundedFloat(v) {
+    if (v == 0) { return 0; }
+    if (v.toString().indexOf('.') == -1) { return v; }
+    return ((v.toFixed) ? v.toFixed(2) : (Math.round(v * 100) / 100));
+} 
+
+//---------------------------------------------
+// Clock
+//---------------------------------------------
+jQuery.Clock = Class.extend({
+
+    init : function (jQel, interval) {
+
+        this.jQel = jQel;
+        this.interval = interval;
+        if (this.interval == undefined)
+            this.interval = 1;
+        
+        this.is_set = false;
+        
+    },
+
+    set_start : function(now) {
+        //Takes in input a string like 
+        //mar 01 nov 2011 18:49:44 
+        //which is split into prefix + hh:mm:ss
+
+        this.start = now;
+        rnow = now.trim().split(' ').reverse().join(' ');
+        i = rnow.indexOf(':')
+        this.hh = parseInt(rnow.slice(0, i));
+        rnow = rnow.slice(i+1);
+        i = rnow.indexOf(':')
+        this.mm = parseInt(rnow.slice(0, i));
+        rnow = rnow.slice(i+1);
+        this.ss = parseInt(rnow.slice(0, i));
+        i = rnow.indexOf(' ')
+        this.prefix = rnow.slice(i+1).trim().split(' ').reverse().join(' ');
+        this.is_set = true;
+        
+    },
+
+    update : function() {
+        if (this.is_set == true) {
+            this.ss = this.ss + this.interval;
+            var ss_mod  = this.ss%60;
+            this.mm = this.mm + (this.ss-ss_mod)/60;
+            var mm_mod  = this.mm%60;
+            this.hh = this.hh + (this.mm-mm_mod)/60;
+            if (this.hh == 24) {
+                //Do not change day now
+                this.hh = 0;
+            }
+            this.mm = mm_mod;
+            this.ss = ss_mod;
+
+            var s = this.prefix+' ';
+            if (this.hh<10) s += '0';
+            s += this.hh + ':';
+            if (this.mm<10) s += '0';
+            s += this.mm + ':';
+            if (this.ss<10) s += '0';
+            s += this.ss;
+            
+            this.jQel.html(s);
+        }
+    }
+});
+        

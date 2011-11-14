@@ -3,6 +3,9 @@
     {%for field in fields%}
     <field type="{{field.field_type}}"
            label="{{field.field_label}}"
+           {% if field.field_label.urn %}
+           urn="{{field.field_label.urn}}"
+           {% endif %}
            var="{{field.field_name}}">
         
        {%for field_value in field.field_values%}

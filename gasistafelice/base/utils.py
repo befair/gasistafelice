@@ -1,7 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
 
-import os, datetime
+import os
+import datetime
 
 def get_ctype_from_model_label(label):
     """
@@ -20,14 +21,32 @@ def get_ctype_from_model_label(label):
     except:
         return None 
 
+#-------------------------------------------------------------------------------
+# Icon and file path management for resources
 
 def get_resource_icon_path(instance, filename):
+    return get_attr_file_path(instance, filename, "icon", base_path="images")
+
+def get_association_act_path(instance, filename):
+    return get_attr_file_path(instance, filename, "association_act")
+
+def get_intent_act_path(instance, filename):
+    return get_attr_file_path(instance, filename, "intent_act")
+
+def get_pact_path(instance, filename):
+    return get_attr_file_path(instance, filename, "pact")
+
+def get_attr_file_path(instance, filename, attr_name, base_path="docs"):
 
     if instance.pk:
-        return instance.icon.name
+        old_instance = instance.__class__.objects.get(pk=instance.pk)
+        old_name = getattr(old_instance, attr_name).name
+        if old_name:
+            return old_name
 
     ext = filename.split('.')[-1]
     d = datetime.datetime.today()
-    filename = "%s-%s.%s" % (d.strftime("%Y-%m-%s"), slugify(instance.name), ext)
-    return os.path.join('images/%s' % instance.resource_type, filename)
+    filename = "%s-%s-%s.%s" % (d.strftime("%Y-%m-%s"), slugify(instance.name), attr_name, ext)
+    return '%s/%s/%s' % (base_path, instance.resource_type, filename)
+
 

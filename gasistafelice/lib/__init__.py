@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with GASISTA FELICE. If not, see <http://www.gnu.org/licenses/>.
 
+import re
 
 class ClassProperty(property):
     def __get__(self, cls, owner):
@@ -66,3 +67,12 @@ def ordered_uniq(seq): # Dave Kirby
 #        if not os.path.exists(current_dir):
 #            os.mkdir(current_dir, 0755)
         
+def get_params_from_template(tmpl):
+
+    # split python template
+    expr = r"%\((.*?)\)"
+    r = re.compile(expr)
+    # find attributes
+    attr_names = r.findall(tmpl)
+    return attr_names
+

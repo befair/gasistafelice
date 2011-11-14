@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-06 06:49+0200\n"
+"POT-Creation-Date: 2011-10-18 11:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,6 +61,31 @@ msgstr ""
 msgid "An error occurred while retring the data from server"
 msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
+#: static/nui/blocks/basket.js:65 static/nui/blocks/order.js:68
+#: static/nui/blocks/order_report.js:32 static/nui/blocks/stocks.js:26
+msgid "Display _MENU_ records per page"
+msgstr ""
+
+#: static/nui/blocks/basket.js:66 static/nui/blocks/order.js:69
+#: static/nui/blocks/order_report.js:33 static/nui/blocks/stocks.js:27
+msgid "Nothing found"
+msgstr ""
+
+#: static/nui/blocks/basket.js:67 static/nui/blocks/order.js:70
+#: static/nui/blocks/order_report.js:34 static/nui/blocks/stocks.js:28
+msgid "Showing _START_ to _END_ of _TOTAL_ records"
+msgstr ""
+
+#: static/nui/blocks/basket.js:68 static/nui/blocks/order.js:71
+#: static/nui/blocks/order_report.js:35 static/nui/blocks/stocks.js:29
+msgid "Showing 0 to 0 of 0 records"
+msgstr ""
+
+#: static/nui/blocks/basket.js:69 static/nui/blocks/order.js:72
+#: static/nui/blocks/order_report.js:36 static/nui/blocks/stocks.js:30
+msgid "(filtered from _MAX_ total records)"
+msgstr ""
+
 #: static/nui/blocks/calendar.js:44
 msgid "Target"
 msgstr "Destinazione"
@@ -85,7 +110,7 @@ msgstr "Descrizione"
 msgid "Add note"
 msgstr "Aggiungi nota"
 
-#: static/nui/blocks/details.js:335
+#: static/nui/blocks/details.js:336
 #: static/nui/blocks/periodicreports_list.js:29
 #: static/nui/blocks/reports_list.js:35 static/nui/blocks/states_logack.js:155
 #: static/nui/blocks/states_logack.js:557
@@ -93,11 +118,11 @@ msgstr "Aggiungi nota"
 msgid "Confirm"
 msgstr "Conferma"
 
-#: static/nui/blocks/details.js:345
+#: static/nui/blocks/details.js:346
 msgid "New note"
 msgstr "Nuova nota"
 
-#: static/nui/blocks/details.js:369
+#: static/nui/blocks/details.js:370
 msgid "Do you really want to delete this note?"
 msgstr "Sei sicuro di voler cancellare la nota?"
 
@@ -451,26 +476,6 @@ msgstr "Rimuovi"
 msgid "There aren't measures linked to this resource"
 msgstr "Non ci sono misure associate alla risorsa"
 
-#: static/nui/blocks/order.js:72 static/nui/blocks/stocks.js:24
-msgid "Display _MENU_ records per page"
-msgstr ""
-
-#: static/nui/blocks/order.js:73 static/nui/blocks/stocks.js:25
-msgid "Nothing found"
-msgstr ""
-
-#: static/nui/blocks/order.js:74 static/nui/blocks/stocks.js:26
-msgid "Showing _START_ to _END_ of _TOTAL_ records"
-msgstr ""
-
-#: static/nui/blocks/order.js:75 static/nui/blocks/stocks.js:27
-msgid "Showing 0 to 0 of 0 records"
-msgstr ""
-
-#: static/nui/blocks/order.js:76 static/nui/blocks/stocks.js:28
-msgid "(filtered from _MAX_ total records)"
-msgstr ""
-
 #: static/nui/blocks/periodicreports_list.js:38
 #: static/nui/blocks/periodicreports_list.js:83
 #: static/nui/blocks/reports_list.js:44 static/nui/blocks/reports_list.js:88
@@ -782,8 +787,8 @@ msgstr "Target dipendenti"
 #: static/nui/blocks/targets.js:227
 msgid "WARNING: some targets are not listed here due to block's configuration"
 msgstr ""
-"ATTENZIONE: Alcuni target non sono visualizzati per via della configurazione del blocco"
-""
+"ATTENZIONE: Alcuni target non sono visualizzati per via della configurazione "
+"del blocco"
 
 #: static/nui/blocks/targets.js:238 static/nui/blocks/targets2.js:803
 msgid "Show target's timeline"

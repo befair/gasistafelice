@@ -1,10 +1,13 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.contrib.auth.models import User
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, Action, ResourceBlockAction
+from flexi_auth.models import ObjectWithContext
+
+from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE, EDIT
 from gasistafelice.gas.forms import order as order_forms
-from gasistafelice.gas.models import GASSupplierOrder, GASSupplierSolidalPact
+from gasistafelice.gas.models import GASSupplierOrder
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -14,7 +17,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "open_orders"
     BLOCK_DESCRIPTION = _("Open orders")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "stock"] 
 
     TEMPLATE_RESOURCE_LIST = "blocks/open_orders.xml"
 
@@ -27,8 +30,12 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
+        ctx = { request.resource.resource_type : request.resource }
 
-        if request.user.has_perm(CREATE, obj=GASSupplierOrder):
+        if request.user.has_perm(CREATE, 
+            obj=ObjectWithContext(GASSupplierOrder, context=ctx)
+        ):
+        
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
@@ -37,5 +44,7 @@ class Block(BlockWithList):
                     popup_form=True
                 ),
              ]
+
         return user_actions
+
 

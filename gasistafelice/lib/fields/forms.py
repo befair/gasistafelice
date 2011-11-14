@@ -19,4 +19,5 @@ class CurrencyField(DecimalField):
             new_value = value
 
         return super(CurrencyField, self).clean(new_value)
-        
+
+

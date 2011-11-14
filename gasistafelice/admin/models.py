@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.forms.models import BaseInlineFormSet
 from django.contrib import admin, messages
+from django.contrib.admin.util import unquote
 from django.core import urlresolvers
 from django import forms
 
@@ -12,6 +14,11 @@ from gasistafelice.rest.models import pages as rest_models
 from gasistafelice.users import models as user_models
 
 ########################## Inlines #######################
+
+class ContactInline(admin.TabularInline):
+    model = base_models.Contact
+    extra = 2
+
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
     extra = 0
@@ -19,20 +26,24 @@ class GASMemberInline(admin.TabularInline):
     verbose_name = _("GAS membership")
     verbose_name_plural = _("GAS memberships")
 
+class GASActivistInline(admin.TabularInline):
+    model = gas_models.GASActivist
+    exclude = ('info_description',)
+    extra = 2
+
 class GASMemberOrderInline(admin.TabularInline):
     model = gas_models.GASMemberOrder
     extra = 1
 
 class SupplierStockInline(admin.TabularInline):
     model = supplier_models.SupplierStock
-    exclude = ('delivery_terms',)
+    exclude = ('delivery_notes',)
     extra = 1
     
 class GASSupplierOrderProductInline(admin.TabularInline):
     model = gas_models.GASSupplierOrderProduct
     extra = 10
 
-from django.forms.models import BaseInlineFormSet
 class GASMemberRoleFormset(BaseInlineFormSet):
     pass
 
@@ -89,9 +100,9 @@ class PlaceAdmin(admin.ModelAdmin):
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    list_display = ('__unicode__', 'id_in_des', 'city', 'email_gas', 'website_with_link', 'economic_state')
+    list_display = ('__unicode__', 'id_in_des', 'city', 'website_with_link', 'economic_state')
     fieldsets = ((_('Identity'),
-            { 'fields' : ('name', 'id_in_des', 'email_gas', 'phone', 'logo', 'headquarter', 'description')
+            { 'fields' : ('name', 'id_in_des', 'headquarter', 'contact_set', 'logo', 'description', 'association_act', 'intent_act')
     }),
 # COMMENT fero: Economic state is disabled right now
 #    (_("Economic"), {
@@ -99,8 +110,8 @@ class GASAdmin(admin.ModelAdmin):
 #        'classes': ('collapse',)
 #    }),
     )
-    inlines = [ GASMemberInline, ]
-    search_fields = ('^name', '^id_in_des','email_gas', 'headquarter__city')
+    inlines = [ GASActivistInline, ]
+    search_fields = ('^name', '^id_in_des', 'headquarter__city')
 
     def website_with_link(self, obj):
         url = obj.website
@@ -108,12 +119,22 @@ class GASAdmin(admin.ModelAdmin):
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "contact_set":
+            if hasattr(self, "instance"):
+                kwargs["queryset"] = self.instance.contacts
+        return super(GASAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def change_view(self, request, object_id, extra_context=None):
+        self.instance = self.get_object(request, unquote(object_id))
+        return super(GASAdmin, self).change_view(request, object_id, extra_context=extra_context)
+
 class GASConfigAdmin(admin.ModelAdmin):
 
     save_on_top = True
     list_display = ('default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
     fieldsets = ((_("Configuration"), {
-        'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'gasmember_auto_confirm_order', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active'),
+        'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'gasmember_auto_confirm_order', 'auto_populate_products', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active'),
     }),
     )
 
@@ -179,6 +200,14 @@ class SupplierAdmin(admin.ModelAdmin):
     website_with_link.allow_tags = True
     website_with_link.short_description = "website"
 
+class SupplierConfigAdmin(admin.ModelAdmin):
+
+    save_on_top = True
+    fieldsets = (
+        (None, {
+            'fields' : ('receive_order_via_email_on_finalize',),
+        }),
+    )
 
 class ProductAdmin(admin.ModelAdmin):
 
@@ -201,90 +230,41 @@ class SupplierStockAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('product', 'supplier', 'price', 'amount_available',)
-        }),
-        ('Constraints', {
-            'classes': ('collapse',),
-            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
-         })
-        )
-
-    list_display = ('supplier', 'product', 'price_pretty', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
-    list_editable = ('product',)
-    #list_display_links = ('product',)
-    list_filter = ('supplier',)
-    search_fields = ['product', 'supplier__name',]
-    
-    # FIXME: try to make it more generic !
-    def order_min_amount_pretty(self, obj):
-        return obj.order_minimum_amount or '--'
-    order_min_amount_pretty.short_description = "minimum amount"
-    
-    # FIXME: try to make it more generic !
-    def order_step_pretty(self, obj):
-        return obj.order_step or '--'
-    order_step_pretty.short_description = "increment step"
-    
-    def amount_avail_pretty(self, obj):
-        if obj.amount_available == ALWAYS_AVAILABLE:
-            return 'infinity'
-    amount_avail_pretty.short_description = 'amount available'
-    
-    # FIXME: try to make it more generic !
-    # TODO: 'euro' should be rendered as a currency symbol 
-    def price_pretty(self, obj):
-        return str(obj.price) + ' euro'
-    price_pretty.short_description = "price"
-
-
-class SupplierStockAdmin(admin.ModelAdmin):
-
-    save_on_top = True
-    
-    fieldsets = (
-        (None, {
             'fields': ('product', 'price', 'amount_available',)
         }),
         ('Constraints', {
             'classes': ('collapse',),
-            'fields': ('order_minimum_amount', 'order_step', 'delivery_terms',)
+            'fields': ('units_minimum_amount', 'units_per_box', 'detail_minimum_amount', 'detail_step', 'delivery_notes',)
          })
         )
 
-    list_display = ('supplier', 'product', 'price', 'amount_avail_pretty', 'order_min_amount_pretty', 'order_step_pretty',)
+    list_display = ('supplier', 'product', 'price', 'amount_avail_pretty', 'units_minimum_amount_pretty', 'units_per_box_pretty',)
     list_editable = ('product', 'price')
     list_display_links = ('supplier',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
     
     # FIXME: try to make it more generic !
-    def order_min_amount_pretty(self, obj):
-        return obj.order_minimum_amount or '--'
-    order_min_amount_pretty.short_description = "minimum amount"
-    
+    def units_minimum_amount_pretty(self, obj):
+        return obj.units_minimum_amount or '--'
+    units_minimum_amount_pretty.short_description = _("minimum amount")
+
     # FIXME: try to make it more generic !
-    def order_step_pretty(self, obj):
-        return obj.order_step or '--'
-    order_step_pretty.short_description = "increment step"
-    
+    def units_per_box_pretty(self, obj):
+        return obj.units_per_box or '--'
+    units_per_box_pretty.short_description = _("units per box")
+
     def amount_avail_pretty(self, obj):
         if obj.amount_available == ALWAYS_AVAILABLE:
             return 'infinity'
-    amount_avail_pretty.short_description = 'amount available'
-    
-    # FIXME: try to make it more generic !
-    # TODO: 'euro' should be rendered as a currency symbol 
-    def price_pretty(self, obj):
-        return str(obj.price) + ' euro'
-    price_pretty.short_description = "price"
-
+    amount_avail_pretty.short_description = _('amount available')
 
 
 class GASSupplierOrderAdmin(admin.ModelAdmin):
     fieldsets = ((None,
             { 'fields' : (
                 'pact',
-                ('date_start', 'date_end'),   
+                ('datetime_start', 'datetime_end'),   
                 'delivery',  
                 'withdrawal',              
               )
@@ -339,15 +319,31 @@ class UserProfileAdmin(admin.ModelAdmin):
         #see up GASSupplierOrderAdmin class
         pass
     
+class PPRAdmin(admin.ModelAdmin):
+
+    list_filter = ('role__role', 'role',)
+
+class PRAdmin(admin.ModelAdmin):
+
+    list_filter = ('role',)
+
+class UnitConvAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'src', 'dst', 'amount')
+    list_editable = ('src', 'dst', 'amount')    
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
+admin.site.register(supplier_models.SupplierConfig, SupplierConfigAdmin)
 admin.site.register(supplier_models.Product, ProductAdmin)
 admin.site.register(supplier_models.ProductCategory)
 admin.site.register(supplier_models.SupplierStock, SupplierStockAdmin)
 admin.site.register(supplier_models.Certification)
+admin.site.register(supplier_models.ProductPU)
+admin.site.register(supplier_models.ProductMU)
+admin.site.register(supplier_models.UnitsConversion, UnitConvAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
@@ -361,6 +357,7 @@ admin.site.register(gas_models.order.Delivery, DeliveryAdmin)
 admin.site.register(gas_models.order.Withdrawal, WithdrawalAdmin)
 admin.site.register(rest_models.HomePage)
 
-admin.site.register(auth_models.PrincipalParamRoleRelation)
+admin.site.register(auth_models.PrincipalParamRoleRelation, PPRAdmin)
+admin.site.register(auth_models.ParamRole, PRAdmin)
 admin.site.register(user_models.UserProfile, UserProfileAdmin)
 

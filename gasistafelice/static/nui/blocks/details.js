@@ -53,9 +53,7 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                         <table border='0'>\n\
                             <tr>\
                                 <td colspan='2'>\
-                                    <span class='resource @@resource_type@@'>					\n\
-                                        <a class='ctx_enabled' href='#rest/@@resource_type@@/@@resource_id@@/'>@@resource_descr@@</a> \n\
-                                    </span>\n\
+                                    <a class='ctx_enabled resource inline @@resource_type@@' href='#rest/@@resource_type@@/@@resource_id@@/'>@@resource_descr@@</a> \n\
                                 </td>\
                             </tr>\
                             @@inforow@@\n\
@@ -178,9 +176,12 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                     val = "<span style='color:red'>" + val_obj.text() + "</a>";
                 else
                     val  = val_obj.text();
-            }
-            if (val_type=='email') {
+            } else if (val_type=='file') {
+                val  = '<a href="' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
+            } else if (val_type=='email') {
                 val  = '<a href="mailto:' +val_obj.text() + '" > ' + val_obj.text() + '</a>';
+            } else if (val_type=='bool') {
+                val = jQuery.render_bool(val_obj.text());
             } else if (val_type == 'resource') {
                 
                 var res = $(val_obj.children()[0]);
@@ -417,3 +418,15 @@ jQuery.remove_note2 = function(note_id)
 
 
 jQuery.BLOCKS["details"] = new jQuery.UIBlockDetails("details");
+
+// FIXME
+// Nest here other registering calls: this can be done without losing performance
+// because blocks are not autorefreshing. This is a temporary solution to avoid
+// trickeries like http://www.phpied.com/javascript-include/
+
+jQuery.BLOCKS["gas_details"] = new jQuery.UIBlockDetails("gas_details");
+jQuery.BLOCKS["pact_details"] = new jQuery.UIBlockDetails("pact_details");
+jQuery.BLOCKS["order_details"] = new jQuery.UIBlockDetails("order_details");
+jQuery.BLOCKS["stock_details"] = new jQuery.UIBlockDetails("stock_details");
+jQuery.BLOCKS["supplier_details"] = new jQuery.UIBlockDetails("supplier_details");
+jQuery.BLOCKS["gasmember_details"] = new jQuery.UIBlockDetails("gasmember_details");
