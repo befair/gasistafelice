@@ -775,8 +775,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        #TODO FIXME AFTER 6: there should be no enry with ordered_amount = 0 in GASMemberOrder table
-        return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
+        #TODO FIXME AFTER 6: there should be no entry with ordered_amount = 0 in GASMemberOrder table
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
 
     @property
