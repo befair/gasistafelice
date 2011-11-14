@@ -5,6 +5,9 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 
 from permissions.models import Role
 from workflows.models import Workflow
@@ -15,6 +18,10 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
+from accounting.models import economic_subject, Account, AccountingDescriptor 
+from accounting import types
+
+
 from gasistafelice.lib import ClassProperty
 from gasistafelice.lib.fields.models import CurrencyField
 from gasistafelice.lib.fields import display
@@ -22,6 +29,8 @@ from gasistafelice.lib.fields import display
 from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.base import const
 from gasistafelice.base import utils as base_utils
+
+from gasistafelice.accounting_proxies import GasAccountingProxy
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
@@ -38,7 +47,7 @@ log = logging.getLogger(__name__)
 
 
 #-------------------------------------------------------------------------------
-
+@economic_subject
 class GAS(models.Model, PermissionResource):
 
     """A group of people who makes some purchases together.
@@ -79,7 +88,7 @@ class GAS(models.Model, PermissionResource):
     #TODO: Notify system
 
     #-- Managers --#
-
+    accounting =  AccountingDescriptor(GasAccountingProxy)
     history = HistoricalRecords()
 
     display_fields = (
@@ -401,6 +410,25 @@ class GAS(models.Model, PermissionResource):
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
+
+
+## Signals
+@receiver(post_save, sender=GAS)
+def setup_gas_accounting(sender, instance, created, **kwargs):
+    if created:
+        instance.subject.init_accounting_system()
+        system = instance.accounting_system
+        ## setup a base account hierarchy
+        # GAS's cash       
+        system.add_account(parent_path='/', name='cash', kind=types.asset) 
+        # root for GAS members' accounts 
+        system.add_account(parent_path='/', name='members', kind=types.asset, is_placeholder=True)
+        # a placeholder for organizing transactions representing payments to suppliers
+        system.add_account(parent_path='/expenses', name='suppliers', kind=types.expense, is_placeholder=True)
+        # recharges made by GAS members to their own account
+        system.add_account(parent_path='/incomes', name='recharges', kind=types.income)
+        # membership fees
+        system.add_account(parent_path='/incomes', name='fees', kind=types.income)
 
 #-----------------------------------------------------------------------------------------------------
 
@@ -771,6 +799,14 @@ class GASMember(models.Model, PermissionResource):
         from gasistafelice.gas.models import GASSupplierOrderProduct
         return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
     
+    @property
+    def issued_orders(self):
+        """
+        The queryset of orders this member has issued against his/her GAS. 
+        """
+        return self.gasmember_order_set.all()
+        
+    
     #-- Authorization API --#
     
     # Table-level CREATE permission    
@@ -803,6 +839,27 @@ class GASMember(models.Model, PermissionResource):
         return user in allowed_users
          
     #--------------------------#
+## Signals
+@receiver(post_save, sender=GASMember)
+def setup_gas_member_accounting(sender, instance, created, **kwargs):
+    if created:    
+        person_system = instance.person.subject.accounting_system
+        gas_system = instance.gas.subject.accounting_system
+        ## account creation
+        ## Person-side
+        # placeholder for payments made by this person to GASs (s)he belongs to
+        try:
+            person_system['/expenses/gas'] 
+        except Account.DoesNotExist:
+            person_system.add_account(parent_path='/expenses', name='gas', kind=types.expense, is_placeholder=True)
+        # base account for expenses related to this GAS membership
+        person_system.add_account(parent_path='/expenses/', name=str(instance.gas.name), kind=types.expense, is_placeholder=True)
+        # recharges
+        person_system.add_account(parent_path='/expenses/' + str(instance.gas.name), name='recharges', kind=types.expense)
+        # membership fees
+        person_system.add_account(parent_path='/expenses/' + str(instance.gas.name), name='fees', kind=types.expense)
+        ## GAS-side   
+        gas_system.add_account(parent_path='/members', name=str(instance.person.full_name), kind=types.asset)
     
 
 #-----------------------------------------------------------------------------------------------------
@@ -1262,3 +1319,15 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             roles |= supplier.roles
         return roles
 
+
+## Signals
+@receiver(post_save, sender=Person)
+def setup_pact_accounting(sender, instance, created, **kwargs):
+    if created:
+        ## create accounts for logging GAS <-> Supplier transactions
+        # GAS-side
+        gas_system = instance.gas.subject.accounting_system
+        gas_system.add_account(parent_path='/expenses/suppliers', name=str(instance.supplier.name), kind=types.expense)
+        # Supplier-side
+        supplier_system = instance.supplier.subject.accounting_system
+        supplier_system.add_account(parent_path='/incomes/gas', name=str(instance.gas.name), kind=types.income)

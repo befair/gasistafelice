@@ -12,12 +12,17 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
+
+from accounting import types
+from accounting.models import economic_subject, AccountingDescriptor
 
 from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib import ClassProperty
@@ -30,12 +35,14 @@ from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.consts import SUPPLIER_REFERRER
+from gasistafelice.accounting_proxies import SupplierAccountingProxy
 from gasistafelice.gas import signals
 
 from decimal import Decimal
 import logging
 log = logging.getLogger(__name__)
 
+@economic_subject
 class Supplier(models.Model, PermissionResource):
     """An actor having a stock of Products for sale to the DES."""
 
@@ -54,7 +61,7 @@ class Supplier(models.Model, PermissionResource):
     iban = models.CharField(blank=True, max_length=64, verbose_name=_("IBAN"))
     description = models.TextField(blank=True, default='', verbose_name=_("description"))
 
-
+    accounting =  AccountingDescriptor(SupplierAccountingProxy)
     history = HistoricalRecords()
     
     class Meta:
@@ -267,6 +274,18 @@ class Supplier(models.Model, PermissionResource):
         display.ResourceList(name="referrers_people", verbose_name=_("Platform referrers")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
+
+## Signals
+@receiver(post_save, sender=Supplier)
+def setup_supplier_accounting(sender, instance, created, **kwargs):
+    if created:
+        instance.subject.init_accounting_system()
+        system = instance.accounting_system
+        ## setup a base account hierarchy   
+        # a generic asset-type account (a sort of "virtual wallet")        
+        system.add_account(parent_path='/', name='wallet', kind=types.asset)  
+        # a placeholder for organizing transactions representing GAS payments
+        system.add_account(parent_path='/incomes', name='gas', kind=types.income, is_placeholder=True)
 
 class SupplierConfig(models.Model):
     """

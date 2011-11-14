@@ -1,27 +1,10 @@
-
-# IMHO this does not work
 from django.utils.translation import ugettext_lazy as _
-import consts
-
-SUBJECTIVE_MODELS = (
-    'gas.GAS',
-    'gas.GASMember',
-    'supplier.Supplier',                      
-)
-
-ACCOUNT_TYPES = (
-    (consts.INCOME, _('Incomes')),
-    (consts.EXPENSE, _('Expenses')),
-    (consts.ASSET, _('Assets')),
-    (consts.LIABILITY, _('Liabilities')),
-    (consts.EQUITY, _('Equity')),     
-)
-
 TRANSACTION_TYPES = (
-     (consts.INVOICE_PAYMENT, 'Payment of an invoice '),
-     (consts.INVOICE_COLLECTION, 'Collection of an invoice'),
-     (consts.GAS_MEMBER_RECHARGE, _('Re-charge from a GAS member')),
-     (consts.MEMBERSHIP_FEE_PAYMENT, _('Payment of annual membership fee by a GAS member')),
+                     ('INVOICE_PAYMENT', _("Payment of an invoice")),
+                     ('INVOICE_COLLECTION', _("Collection of an invoice")),
+                     ('RECHARGE', _("Recharge made by a GAS member")),
+                     ('MEMBERSHIP_FEE', _("Payment of a membership fee by a GAS member")),
+                     ('PAYMENT', _("A generic payment")),
+                     ('GAS_WITHDRAWAL', _("A withdrawal from a member's account made by a GAS")),
+                     ('REFUND', _("A money refund made by a supplier to a GAS")),
 )
-
-

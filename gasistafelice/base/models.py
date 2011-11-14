@@ -11,6 +11,7 @@ from django.db.models import permalink
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
+from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from workflows.models import Workflow, Transition, State
@@ -24,9 +25,13 @@ from flexi_auth.utils import get_parametric_roles
 
 from flexi_auth.models import PrincipalParamRoleRelation
 
+from accounting.models import economic_subject, AccountingDescriptor 
+from accounting import types 
+
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const
 from gasistafelice.base.utils import get_resource_icon_path
+from gasistafelice.accounting_proxies import PersonAccountingProxy
 
 from workflows.utils import do_transition
 import os
@@ -487,6 +492,7 @@ class PermissionResource(Resource, PermissionBase):
 
     roles = property(_get_roles)
 
+@economic_subject
 class Person(models.Model, PermissionResource):
     """
     A Person is an anagraphic record of a human being.
@@ -504,8 +510,11 @@ class Person(models.Model, PermissionResource):
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
+    accounting =  AccountingDescriptor(PersonAccountingProxy)
     history = HistoricalRecords()
-
+    
+    
+    
     class Meta:
         verbose_name = _("person")
         verbose_name_plural = _("people")
@@ -747,6 +756,38 @@ class Person(models.Model, PermissionResource):
         models.CharField(name="city", verbose_name=_("City")),
         models.CharField(name="username", verbose_name=_("Username")),
     )
+    
+    def is_member(self, gas):
+        """
+        Return ``True`` if this person is member of GAS ``gas``, ``False`` otherwise. 
+        
+        If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
+        """
+        from gasistafelice.gas.models import GAS 
+        if not isinstance(self, GAS):
+            raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
+        return gas in [member.gas for member in self.gas_memberships]        
+    
+    @property
+    def full_name(self):
+        return self.name + self.surname
+    
+    @property
+    def gas_memberships(self):
+        """
+        The queryset of all incarnations of this person as a GAS member.
+        """
+        return self.gas_membership_set.all()
+    
+## Signals
+@receiver(post_save, sender=Person)
+def setup_accounting(sender, instance, created, **kwargs):
+    if created:
+        instance.subject.init_accounting_system()
+        system = instance.accounting_system
+        # create a generic asset-type account (a sort of "virtual wallet")
+        system.add_account(parent_path='/', name='wallet', kind=types.asset)
+    
    
 class Contact(models.Model):
     """If is a contact, just a contact email or phone"""
