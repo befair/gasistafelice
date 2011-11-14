@@ -349,9 +349,14 @@ class SingleGASMemberOrderForm(forms.Form):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
         self.fields['note'].widget.attrs['class'] = 'input_medium'
         self.__gm = request.resource.gasmember
+        self.__gmusr = request.resource.gasmember.person.user
+        self.__loggedusr = request.user
 
     def save(self):
 
+        if not self.__gmusr or self.__gmusr != self.__loggedusr:
+            log.debug("------SingleGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
+            return
         id = self.cleaned_data.get('id')
         if id:
             gmo = GASMemberOrder.objects.get(pk=id)
@@ -393,9 +398,15 @@ class BasketGASMemberOrderForm(forms.Form):
     def __init__(self, request, *args, **kw):
         super(BasketGASMemberOrderForm, self).__init__(*args, **kw)
         #self.__gm = request.resource.gasmember
+        self.__gmusr = request.resource.gasmember.person.user
+        self.__loggedusr = request.user
+
 
     def save(self):
 
+        if not self.__gmusr or self.__gmusr != self.__loggedusr:
+            log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
+            return
         id = self.cleaned_data.get('id')
         gm_id = self.cleaned_data.get('gm_id')
         gsop_id = self.cleaned_data.get('gsop_id')
