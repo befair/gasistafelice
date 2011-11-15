@@ -1,0 +1,23 @@
+{% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for row in records %}
+    [
+
+        "{{row.ordered_product__order|escapejs}}",
+        "{{row.purchaser|escapejs}}",
+        "{{row.tot_product}}",
+        "{{row.sum_qta}}",
+        "{{row.sum_price}}",
+        "&#8364; {{row.sum_amount|floatformat:"2"}}",
+        "{{row.amounted|escapejs}}",
+
+    ]
+    {% if not forloop.last %}
+        ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+
