@@ -31,7 +31,7 @@ from accounting import types
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const
 from gasistafelice.base.utils import get_resource_icon_path
-from gasistafelice.accounting_proxies import PersonAccountingProxy
+from gasistafelice.base.accounting_proxies import PersonAccountingProxy
 
 from workflows.utils import do_transition
 import os
@@ -513,8 +513,6 @@ class Person(models.Model, PermissionResource):
     accounting =  AccountingDescriptor(PersonAccountingProxy)
     history = HistoricalRecords()
     
-    
-    
     class Meta:
         verbose_name = _("person")
         verbose_name_plural = _("people")
@@ -779,16 +777,13 @@ class Person(models.Model, PermissionResource):
         """
         return self.gas_membership_set.all()
     
-## Signals
-@receiver(post_save, sender=Person)
-def setup_accounting(sender, instance, created, **kwargs):
-    if created:
-        instance.subject.init_accounting_system()
-        system = instance.accounting_system
+    def setup_accounting(self):
+        self.subject.init_accounting_system()
+        system = self.accounting_system
         # create a generic asset-type account (a sort of "virtual wallet")
         system.add_account(parent_path='/', name='wallet', kind=types.asset)
-    
-   
+
+        
 class Contact(models.Model):
     """If is a contact, just a contact email or phone"""
 

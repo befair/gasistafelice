@@ -30,7 +30,7 @@ from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.base import const
 from gasistafelice.base import utils as base_utils
 
-from gasistafelice.accounting_proxies import GasAccountingProxy
+from gasistafelice.gas.accounting_proxies import GasAccountingProxy
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
@@ -275,6 +275,23 @@ class GAS(models.Model, PermissionResource):
         except GASConfig.DoesNotExist:
             self.config = GASConfig.objects.create(gas=self)
 
+    def setup_accounting(self):
+        self.subject.init_accounting_system()
+        system = self.accounting_system
+
+        ## setup a base account hierarchy
+        # GAS's cash       
+        system.add_account(parent_path='/', name='cash', kind=types.asset) 
+        # root for GAS members' accounts 
+        system.add_account(parent_path='/', name='members', kind=types.asset, is_placeholder=True)
+        # a placeholder for organizing transactions representing payments to suppliers
+        system.add_account(parent_path='/expenses', name='suppliers', kind=types.expense, is_placeholder=True)
+        # recharges made by GAS members to their own account
+        system.add_account(parent_path='/incomes', name='recharges', kind=types.income)
+        # membership fees
+        system.add_account(parent_path='/incomes', name='fees', kind=types.income)
+
+
     def save(self, *args, **kw):
 
         if not self.id_in_des:
@@ -411,24 +428,6 @@ class GAS(models.Model, PermissionResource):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
-
-## Signals
-@receiver(post_save, sender=GAS)
-def setup_gas_accounting(sender, instance, created, **kwargs):
-    if created:
-        instance.subject.init_accounting_system()
-        system = instance.accounting_system
-        ## setup a base account hierarchy
-        # GAS's cash       
-        system.add_account(parent_path='/', name='cash', kind=types.asset) 
-        # root for GAS members' accounts 
-        system.add_account(parent_path='/', name='members', kind=types.asset, is_placeholder=True)
-        # a placeholder for organizing transactions representing payments to suppliers
-        system.add_account(parent_path='/expenses', name='suppliers', kind=types.expense, is_placeholder=True)
-        # recharges made by GAS members to their own account
-        system.add_account(parent_path='/incomes', name='recharges', kind=types.income)
-        # membership fees
-        system.add_account(parent_path='/incomes', name='fees', kind=types.income)
 
 #-----------------------------------------------------------------------------------------------------
 
@@ -1321,7 +1320,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
 
 ## Signals
-@receiver(post_save, sender=Person)
+@receiver(post_save, sender=GASSupplierSolidalPact)
 def setup_pact_accounting(sender, instance, created, **kwargs):
     if created:
         ## create accounts for logging GAS <-> Supplier transactions
