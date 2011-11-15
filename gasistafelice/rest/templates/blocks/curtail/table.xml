@@ -1,0 +1,22 @@
+{% extends "blocks/stocks/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "GASMember" %}</th>
+    <th title='{% trans "TOT Ordered Products" %}'>{% trans "n° Art." %}</th>
+    <th title='{% trans "SUM Ordered Quantity" %}'>{% trans "Sum Qta" %}</th>
+    <th title='{% trans "SUM ordered Price" %}'>{% trans "Sum Price" %}</th>
+    <th title='{% trans "SUM ordered amount" %}'>{% trans "Sum Amount" %}</th>
+    <th title='{% trans "Withdrawal amounted" %}'>{% trans "Amounted" %}</th>
+{% endblock %}
+
+
+{% block footer %}
+    <tr>
+        <th class="totfield" colspan="5">{% trans "Total" %}:</th>
+        <th class="totvalue" colspan="1" id="total-ordered"></th>
+        <th class="totvalue" colspan="1" id="total-amounted"></th>
+    </tr>
+{% endblock %}
+

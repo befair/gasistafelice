@@ -280,7 +280,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def supplier(self):
         """Return the supplier this order is placed against."""
-        return self.pact.supplier        
+        return self.pact.supplier
     
     @property
     def suppliers(self):
@@ -292,6 +292,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #ERROR: An unexpected error occurred while tokenizing input
     #The following traceback may be corrupted or invalid
     #The error message is: ('EOF in multi-line statement', (390, 0))
+
+    @property
+    def ordered_gasmembers(self):
+        from django.db.models import Count, Sum
+        #Cannot resolve keyword 'order' into field. Choices are: id, is_confirmed, note, ordered_amount, ordered_price, ordered_product, purchaser, withdrawn_amount
+        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+        return self.ordered_products.values('ordered_product__order', 'purchaser').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+        #GASMemberOrder.objects.raw("SELECT ... from <GASMemberOrder_table_name> where ...")
+        #self.line_items.extra(select=("lineprice": "orderline__price*orderline__qty")).aggregate(Sum('lineprice'))
+
 
     @property
     def ordered_products(self):

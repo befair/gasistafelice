@@ -270,7 +270,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{ 
         'name' : 'delivery',
         'descr': 'Pagamento',
-        'blocks': [],
+        'blocks': ['curtail'],
     }],
 
     'person' : [{
