@@ -10,3 +10,6 @@
 [submodule "submodules/django-askbot"]
 	path = submodules/django-askbot
 	url = git://github.com/feroda/askbot-devel.git
+[submodule "submodules/django-notification"]
+	path = extra/django-notification
+	url = https://github.com/brosner/django-notification.git

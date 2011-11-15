@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.comments',
     'gasistafelice.localejs',
+    'notification',
     'gasistafelice.des_notifications',
     #'south',
 ]
@@ -350,4 +351,10 @@ from flexi_auth_settings import *
 #------ ACCOUNTING settings
 from simple_accounting_settings import *
 
+#------ NOTIFICATION settings
+
+DEFAULT_FROM_EMAIL = "gasistafelice@desmacerata.it"
+NOTIFICATION_BACKENDS = (
+    ("email", "des_notification.backends.email.EmailBackend"),
+)
 
