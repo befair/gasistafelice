@@ -257,7 +257,7 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'accounting',
         'descr' : 'Conto',
         'blocks' : [] #Transact_Gasmember
-    }], 
+    }],
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
@@ -274,7 +274,7 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'accounting',
         'descr' : 'Conto',
         'blocks' : [] #Transact_supplier for all pact
-    }], 
+    }],
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',
