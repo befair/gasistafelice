@@ -165,7 +165,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     #'debug_toolbar',
     'askbot',
-    'askbot.deps.django_authopenid',
+    #'askbot.deps.django_authopenid',
     #'askbot.importers.stackexchange', #se loader
     'south',
     'askbot.deps.livesettings',
