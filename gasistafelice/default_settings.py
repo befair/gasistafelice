@@ -273,7 +273,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : [] #Transact_supplier
+        'blocks' : [] #Transact_supplier for all pact
     }], 
     'order' : [{ 
         'name' : 'info',
@@ -299,6 +299,14 @@ RESOURCE_PAGE_BLOCKS = {
         'name': 'info',
         'descr': 'Scheda del patto',
         'blocks' : ['pact_details', 'closed_orders'],
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : [] #Transact_supplier for one pact
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : [] #Archivied Orders
     }],
 
     'stock' : [{
