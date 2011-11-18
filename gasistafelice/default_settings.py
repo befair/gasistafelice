@@ -232,6 +232,14 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr' : 'Scheda del GAS',
         'blocks' : ['gas_details', 'gasmembers']
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : [] #Finalize Orders, Transact_Casa, Transact_Borselino
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : [] #Archivied Orders, Transact_gasmembers, Transact_suppliers
     }],
     'gasmember': [{
         'name' : 'orders',
@@ -248,8 +256,8 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : []
-    }], #must be extended with economic section
+        'blocks' : [] #Transact_Gasmember
+    }], 
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
@@ -262,7 +270,11 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr': 'Scheda del fornitore',
         'blocks': ['supplier_details', 'categories', 'closed_orders'],
-    }], #must be extended with economic section
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : [] #Transact_supplier
+    }], 
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',
@@ -296,7 +308,8 @@ RESOURCE_PAGE_BLOCKS = {
     }],
 
 }
-   
+
+
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
 LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
