@@ -9,4 +9,4 @@
 	url = git://github.com/seldon/django-flexi-auth.git
 [submodule "extra/django-askbot"]
 	path = extra/django-askbot
-	url = git://github.com/ASKBOT/askbot-devel.git
+	url = git://github.com/feroda/askbot-devel.git
