@@ -709,12 +709,13 @@ class Person(models.Model, PermissionResource):
     def can_create(cls, user, context):
         # Who can create a new Person in a DES ?
         # * DES administrators
+        allowed_users = User.objects.none()
         try:
             des = context['site']
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
         else:
-            allowed_users = des.admins            
+            allowed_users = des.gas_tech_referrers            
 
         return user in allowed_users 
         
