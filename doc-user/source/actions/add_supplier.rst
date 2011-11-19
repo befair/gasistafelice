@@ -5,10 +5,7 @@ Aggiungere un fornitore nel DES vuol dire integrare nella piattaforma un nuovo s
 che può compilare il proprio listino di prodotti e vendere ai GAS **posto che entri in relazione** con loro
 attraverso un |res_pds|.
 
-Un fornitore si può aggiungere:
-
-* andando nella pagina del DES e selezionando l'azione `Aggiungi fornitore` nel blocco fornitori;
-* da menù contestuale del DES
+Un fornitore si può aggiungere andando nella pagina del DES e selezionando l'azione `Aggiungi fornitore` nel blocco fornitori.
 
 Per aggiungere un fornitore è obbligatorio specificare:
 
