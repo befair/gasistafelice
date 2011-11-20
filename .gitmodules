@@ -7,3 +7,9 @@
 [submodule "extra/django-flexi-auth"]
 	path = extra/django-flexi-auth
 	url = git://github.com/seldon/django-flexi-auth.git
+[submodule "submodules/django-pro-history"]
+	path = submodules/django-pro-history
+	url = git://github.com/feroda/django-pro-history.git
+[submodule "submodules/django-simple-accounting"]
+	path = submodules/django-simple-accounting
+	url = git://github.com/feroda/django-simple-accounting.git
