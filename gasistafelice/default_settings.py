@@ -320,6 +320,8 @@ INIT_OPTIONS = {
 # --- WARNING: changing following parameters implies fixtures adaptation --
 # Default category for all uncategorized products
 DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
+JUNK_EMAIL = 'devnull@desmacerata.it'
+
 # Superuser username
 
 #------ AUTH settings

@@ -14,14 +14,15 @@ from pprint import pprint
 import logging
 
 log = logging.getLogger(__name__)
-if settings.LOG_FILE:
+#if settings.LOG_FILE:
+#
+#    if not log.handlers:
+#        log.setLevel( logging.INFO )
+#        hdlr = logging.FileHandler(settings.LOG_FILE)
+#        hdlr.setFormatter( logging.Formatter('%(asctime)s %(levelname)s %(message)s') )
+#        log.addHandler(hdlr)
 
-    if not log.handlers:
-        log.setLevel( logging.INFO )
-        hdlr = logging.FileHandler(settings.LOG_FILE)
-        hdlr.setFormatter( logging.Formatter('%(asctime)s %(levelname)s %(message)s') )
-        log.addHandler(hdlr)
-
+ENCODING = "iso-8859-1"
 
 class Command(BaseCommand):
     args = "<gas_pk> <csv_file> [delimiter] [python_template]"
@@ -56,7 +57,7 @@ class Command(BaseCommand):
         f.close()
 
         fieldnames = get_params_from_template(tmpl)
-        m = CSVManager(fieldnames=fieldnames, delimiter=delimiter)
+        m = CSVManager(fieldnames=fieldnames, delimiter=delimiter, encoding=ENCODING)
         data = m.read(csvdata)
         log.debug(pprint(m.read(csvdata)))
 
@@ -74,7 +75,7 @@ class Command(BaseCommand):
                     try:
                         assert user.person
                         # This is a user of an already created person
-                        log.info(("PERSON %s ALREADY EXISTENT. SKIP IT" % user.person).encode('utf-8')) 
+                        log.info(("PERSON %s ALREADY EXISTENT. SKIP IT" % user.person).decode(ENCODING)) 
                     except Person.DoesNotExist:
                         contacts = self._get_or_create_contacts(d)
                         place = self._get_or_create_place(d)
@@ -90,7 +91,7 @@ class Command(BaseCommand):
 
                 gm, created = GASMember.objects.get_or_create(person=pers, gas=g)
                 gm.save()
-                log.info(("CREATED GASMEMBER %s" % gm).encode('utf-8')) 
+                log.info(("CREATED GASMEMBER %s" % gm).decode(ENCODING)) 
         return 0
 
     def _get_or_create_contacts(self, d):
@@ -99,7 +100,8 @@ class Command(BaseCommand):
         * phone: optional
         """
 
-        c_email, created = Contact.objects.get_or_create(flavour="EMAIL", value=d['email'])
+        email = d['email'] or settings.JUNK_EMAIL
+        c_email, created = Contact.objects.get_or_create(flavour="EMAIL", value=email)
         c_email.save()
         log.debug("CREATED EMAIL CONTACT %s" % c_email)
 
@@ -128,7 +130,7 @@ class Command(BaseCommand):
         pl, created = Place.objects.get_or_create(**kw)
         pl.save()
         if created:
-            log.debug((u"CREATED PLACE %s" % pl).encode('utf-8'))
+            log.debug((u"CREATED PLACE %s" % pl).decode(ENCODING))
 
         return pl
 
@@ -146,19 +148,19 @@ class Command(BaseCommand):
             pers.display_name = d['display_name']
 
         if created:
-            log.info(("CREATED PERSON %s" % pers).encode('utf-8'))
+            log.info(("CREATED PERSON %s" % pers).decode(ENCODING))
         else:
             if pers.address:
                 ans = raw_input("Found address %s for person %s. Overwrite [y/N]?" % (pers.address, pers))
                 if ans.upper() == "Y":
                     pers.address = place
 
-            log.debug(("FOUND PERSON %s" % pers).encode('utf-8'))
+            log.debug(("FOUND PERSON %s" % pers).decode(ENCODING))
 
         # Upload image
         if not pers.avatar and d.has_key('image'):
 
-            log.info(("Setting image %s for person %s" % (d['image'], pers)).encode('utf-8'))
+            log.info(("Setting image %s for person %s" % (d['image'], pers)).decode(ENCODING))
             f = File(file(d['image'], "rb"))
             pers.avatar = f
 
