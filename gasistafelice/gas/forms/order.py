@@ -75,8 +75,12 @@ class BaseOrderForm(forms.ModelForm):
 
     delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
+<<<<<<< HEAD
     delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), 
         required=False, label=_("Delivery referrer"))
+=======
+    delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=True)
+>>>>>>> EditOrderForm
     withdrawal_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
@@ -278,13 +282,23 @@ class AddOrderForm(BaseOrderForm):
 class EditOrderForm(BaseOrderForm):
 
     log.debug("EditOrderForm")
-    delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
+    #delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
 
     def __init__(self, request, *args, **kw):
 
         super(EditOrderForm, self).__init__(request, *args, **kw)
 
-        #TODO retrieve data from existing data onto database
+        #SOLIDAL PACT
+        pact = request.resource.pact
+        delivery = request.resource.delivery
+        refs = request.resource.delivery_referrer_persons
+        refs = request.resource.delivery_referrer_persons
+        if refs:
+            self.fields['delivery_referrer'].initial = refs[0]
+        if request.resource.datetime_end:
+            self.fields['datetime_end'].initial = request.resource.datetime_end
+        if delivery and delivery.date:
+            self.fields['delivery_datetime'].initial = delivery.date
 
     def save(self):
 
@@ -304,10 +318,16 @@ class EditOrderForm(BaseOrderForm):
 
         gf_fieldsets = [(None, {
             'fields' : [ ('datetime_start', 'datetime_end'),
+<<<<<<< HEAD
                          ('delivery_referrer', 'withdrawal_referrer')
                         ,'delivery_terms'
+=======
+                       ('delivery_datetime', 'delivery_referrer')
+>>>>>>> EditOrderForm
             ]
         })]
+                       #,'withdrawal_referrer'
+                       #,'delivery_terms'
 
 def form_class_factory_for_request(request, base):
     """Return appropriate form class basing on GAS configuration
