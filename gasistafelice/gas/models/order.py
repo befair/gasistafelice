@@ -151,6 +151,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()       
 
+    @property
+    def supplier_referrers_people(self):
+        prs = Person.objects.none()
+        if self.referrers:
+            prs = Person.objects.filter(user__in=self.referrers)
+        return prs
+
+
     #-------------------------------------------------------------------------------#
 
     @property
