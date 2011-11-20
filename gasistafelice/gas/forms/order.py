@@ -80,13 +80,8 @@ class BaseOrderForm(forms.ModelForm):
     def __init__(self, request, *args, **kw):
         #Strip request arg
         super(BaseOrderForm, self).__init__(*args, **kw)
-        #self.fields['delivery_referrer'].queryset = request.resource.gas.persons
-        #self.fields['delivery_referrer'].queryset = request.resource.gas.referrers_people
         self.fields['delivery_referrer'].queryset = request.resource.supplier_referrers_people
         self.fields['withdrawal_referrer'].queryset = request.resource.supplier_referrers_people
-        #FIXME: NotImplementedError class: DES method: gas
-        #TODO Replace gas with pact
-        #self.__gas = request.resource.gas
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -98,18 +93,10 @@ class BaseOrderForm(forms.ModelForm):
         if dt_start and dt_end:
             if dt_start >= dt_end:
                  raise forms.ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
-                 #raise ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
 
         if dt_end and dt_close:
             if dt_end >= dt_close:
                  raise forms.ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
-                 #raise ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
-
-        if cc_myself and subject:
-            # Only do something if both fields are valid so far.
-            if "help" not in subject:
-                raise forms.ValidationError("Did not send for 'help' in "
-                        "the subject despite CC'ing yourself.")
 
         # Always return the full collection of cleaned data.
         return cleaned_data
@@ -133,7 +120,6 @@ class BaseOrderForm(forms.ModelForm):
         else:
             pact = self.cleaned_data['pact']
             p = getattr(pact.gas.config, "%s_place" % name)
-            #p = getattr(self.__gas.config, "%s_place" % name)
 
         d, created = klass.objects.get_or_create(date=ddt, place=p)
         return d
@@ -181,19 +167,14 @@ class AddOrderForm(BaseOrderForm):
             Solidal Pact    OneSupplier     OneGAS    ChooseReferrer
     """
     log.debug("AddOrderForm")
-    #supplier = forms.ModelChoiceField(label=_('Supplier'), queryset=Supplier.objects.none(), required=True)
     pact = forms.ModelChoiceField(label=_('Supplier'), queryset=GASSupplierSolidalPact.objects.none(), required=True)
-
-    #delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
+    email_gas = forms.BooleanField(label=_('Send email at the FORUM of the GAS?'), required=False)
 
     def __init__(self, request, *args, **kw):
 
         super(AddOrderForm, self).__init__(request, *args, **kw)
 
         #SOLIDAL PACT
-#        suppliers = request.resource.suppliers
-#        self.fields['supplier'].queryset = suppliers
-#        self.fields['supplier'].initial = suppliers[0]
         pacts = request.resource.pacts
         self.fields['pact'].queryset = pacts
         self.fields['pact'].initial = pacts[0]
@@ -203,20 +184,20 @@ class AddOrderForm(BaseOrderForm):
             self.fields['delivery_referrer'].initial = request.user.person
         elif self.fields['delivery_referrer'].queryset.count() > 0:
             self.fields['delivery_referrer'].initial = self.fields['delivery_referrer'].queryset[0]
-        #Replace gas with pact
-        #self.__gas = request.resource.gas
+
         if pacts[0]:
             gas = pacts[0].gas
             #Next week by default
             dt = datetime.now()+timedelta(days=7)
             dt = first_day_on_or_after(6, dt)
+
             #Close
             if gas.config.default_close_day:
                 dt = first_day_on_or_after(get_day_from_choice(gas.config.default_close_day), dt)
             if gas.config.default_close_time:
                 dt = dt.replace(hour=gas.config.default_close_time.hour, minute=gas.config.default_close_time.minute)
             self.fields['datetime_end'].initial = dt
-            #log.debug("AddOrderForm close %s" % (d, dt))
+
             #Delivery
             if gas.config.default_delivery_day:
                 dt = first_day_on_or_after(get_day_from_choice(gas.config.default_delivery_day), dt)
@@ -225,27 +206,11 @@ class AddOrderForm(BaseOrderForm):
             self.fields['delivery_datetime'].initial = dt
             #log.debug("AddOrderForm delivery %s --> %s" % (d, dt))
 
-    def save(self):
-#        _gas = self.__gas
-#        pact = GASSupplierSolidalPact.objects.get( \
-#            supplier=self.cleaned_data['supplier'],
-#            gas=_gas
-#        )
-#        self.instance.pact = pact
+    #def save(self, commit=True):
+    def save(self, *args, **kwargs):
         self.instance.pact = self.cleaned_data['pact']
         _gas = self.instance.pact.gas
-#        dt_start = self.cleaned_data['datetime_start']
-#        dt_end = self.cleaned_data['datetime_end']
-#        dt_close = self.cleaned_data['delivery_datetime']
-#        log.debug("AddOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_close))
-#        if (dt_start and dt_end) and (dt_start >= dt_end):
-#             raise forms.ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
-#             #raise ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
-#        if dt_end and dt_close and dt_end >= dt_close:
-#             raise forms.ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
-#             #raise ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
 
-        #TODO: Always create delivery until no order type
         if self.cleaned_data.get('delivery_datetime'):
             d = self.get_delivery()
             self.instance.delivery = d
@@ -255,28 +220,38 @@ class AddOrderForm(BaseOrderForm):
                 w = self.get_withdrawal()
                 self.instance.withdrawal = w
 
-        return super(AddOrderForm, self).save()
+        log.debug("AddOrderForm CREATED pre_save")
+        _created_order = super(AddOrderForm, self).save(*args, **kwargs)
+        if self.instance:
+            _send_email = self.cleaned_data['email_gas']
+            new_id = self.instance.pk
+            log.debug("AddOrderForm CREATED Ord. %s" % (new_id))
+            if _send_email and bool(_send_email):
+                _msg = _('Created order %s' % (new_id))
+                log.debug("AddOrderForm CREATED send email %s" % (_msg))
+
+        return _created_order
+
 
     class Meta:
         model = GASSupplierOrder
-#        fields = ['supplier', 'datetime_start', 'datetime_end']
-        fields = ['pact', 'datetime_start', 'datetime_end']
+        fields = ['pact', 'datetime_start', 'datetime_end', 'delivery_datetime', 'delivery_referrer']
 
-        gf_fieldsets = [(None, { 
-            'fields' : ['pact', 
-                            ('datetime_start', 'datetime_end'), 
-                            ('delivery_datetime', 'delivery_referrer')
-            ] 
+        gf_fieldsets = [(None, {
+            'fields' : ['pact'
+                            , 'datetime_start'
+                            , 'datetime_end'
+                            , 'delivery_datetime'
+                            , 'delivery_referrer'
+                            , 'email_gas'
+            ]
         })]
-#            'fields' : ['supplier', 
-#                        'delivery_terms'
 
 #-------------------------------------------------------------------------------
 
 class EditOrderForm(BaseOrderForm):
 
     log.debug("EditOrderForm")
-    #delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
 
     def __init__(self, request, *args, **kw):
 
@@ -316,7 +291,6 @@ class EditOrderForm(BaseOrderForm):
             ]
         })]
                        #,'withdrawal_referrer'
-                       #,'delivery_terms'
 
 def form_class_factory_for_request(request, base):
     """Return appropriate form class basing on GAS configuration
