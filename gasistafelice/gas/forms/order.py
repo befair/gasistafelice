@@ -171,7 +171,7 @@ class AddOrderForm(BaseOrderForm):
         log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['delivery_referrer'].queryset)
         if request.user.person in self.fields['delivery_referrer'].queryset:
             self.fields['delivery_referrer'].initial = request.user.person
-        else:
+        elif self.fields['delivery_referrer'].queryset.count() > 0:
             self.fields['delivery_referrer'].initial = self.fields['delivery_referrer'].queryset[0]
         #Replace gas with pact
         #self.__gas = request.resource.gas
