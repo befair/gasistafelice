@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 try:
                     user = self._get_or_create_user(d)
                     try:
-                        assert user.person
+                        pers = user.person
                         # This is a user of an already created person
                         log.info(("PERSON %s ALREADY EXISTENT. SKIP IT" % user.person).decode(ENCODING)) 
                     except Person.DoesNotExist:
