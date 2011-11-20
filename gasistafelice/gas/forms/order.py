@@ -23,6 +23,9 @@ from datetime import tzinfo, timedelta, datetime
 import logging
 log = logging.getLogger(__name__)
 
+from django.core import validators
+from django.core.exceptions import ValidationError
+
 def gf_now():
     dt = datetime.now()
     dt.minutes = (dt.minutes/15)*15
@@ -86,6 +89,33 @@ class BaseOrderForm(forms.ModelForm):
         #FIXME: NotImplementedError class: DES method: gas
         #TODO Replace gas with pact
         #self.__gas = request.resource.gas
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        dt_start = cleaned_data.get("datetime_start")
+        dt_end = cleaned_data.get("datetime_end")
+        dt_close = cleaned_data.get("delivery_datetime")
+        #log.debug("AddOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_close))
+        # Only do something if both fields are valid so far.
+        if dt_start and dt_end:
+            if dt_start >= dt_end:
+                 raise forms.ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
+                 #raise ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
+
+        if dt_end and dt_close:
+            if dt_end >= dt_close:
+                 raise forms.ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
+                 #raise ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
+
+        if cc_myself and subject:
+            # Only do something if both fields are valid so far.
+            if "help" not in subject:
+                raise forms.ValidationError("Did not send for 'help' in "
+                        "the subject despite CC'ing yourself.")
+
+        # Always return the full collection of cleaned data.
+        return cleaned_data
+
 
     def get_appointment_instance(self, name, klass):
 
@@ -179,7 +209,8 @@ class AddOrderForm(BaseOrderForm):
         #self.__gas = request.resource.gas
         if pacts[0]:
             gas = pacts[0].gas
-            dt = datetime.now()
+            #Next week by default
+            dt = datetime.now()+timedelta(days=7)
             dt = first_day_on_or_after(6, dt)
             #Close
             if gas.config.default_close_day:
@@ -205,6 +236,16 @@ class AddOrderForm(BaseOrderForm):
 #        self.instance.pact = pact
         self.instance.pact = self.cleaned_data['pact']
         _gas = self.instance.pact.gas
+#        dt_start = self.cleaned_data['datetime_start']
+#        dt_end = self.cleaned_data['datetime_end']
+#        dt_close = self.cleaned_data['delivery_datetime']
+#        log.debug("AddOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_close))
+#        if (dt_start and dt_end) and (dt_start >= dt_end):
+#             raise forms.ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
+#             #raise ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
+#        if dt_end and dt_close and dt_end >= dt_close:
+#             raise forms.ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
+#             #raise ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
 
         #TODO: Always create delivery until no order type
         if self.cleaned_data.get('delivery_datetime'):
@@ -240,7 +281,9 @@ class EditOrderForm(BaseOrderForm):
     delivery_terms = forms.CharField(label=_('Delivery terms'), required=False, widget=widgets.Textarea)
 
     def __init__(self, request, *args, **kw):
-        super(AddOrderForm, self).__init__(request, *args, **kw)
+
+        super(EditOrderForm, self).__init__(request, *args, **kw)
+
         #TODO retrieve data from existing data onto database
 
     def save(self):
