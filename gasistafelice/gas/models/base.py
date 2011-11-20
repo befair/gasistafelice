@@ -1193,7 +1193,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             #see GASSupplierStock.enabled comment
             #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             if not self.auto_populate_products:
-                enabled = false
+                enabled = False
             else:
                 enabled = bool(st.amount_available)
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
