@@ -864,13 +864,7 @@ class GASMember(models.Model, PermissionResource):
         return user in allowed_users
          
     #--------------------------#
-## Signals
-@receiver(post_save, sender=GASMember)
-def setup_gas_member_accounting(sender, instance, created, **kwargs):
-    if created:    
-        instance.setup_accounting()
 
-#-----------------------------------------------------------------------------------------------------
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -1335,10 +1329,3 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         for supplier in self.suppliers:
             roles |= supplier.roles
         return roles
-
-
-## Signals
-@receiver(post_save, sender=GASSupplierSolidalPact)
-def setup_pact_accounting(sender, instance, created, **kwargs):
-    if created:
-        instance.setup_accounting()
