@@ -5,17 +5,14 @@
     {% for row in records %}
     [
 
-        "{{row.pk|escapejs}}",
+        "{{row.order_id|escapejs}}",
         "{{row.gasmember|escapejs}}",
-        "{{row.tot_product}}",
-        "{{row.sum_qta}}",
-        "{{row.sum_price}}",
         "&#8364; {{row.sum_amount|floatformat:"2"}}",
         "{{row.amounted|escapejs}}",
 
     ]
     {% if not forloop.last %}
-    ,
+        ,
     {% endif %}
     {% endfor %}
 

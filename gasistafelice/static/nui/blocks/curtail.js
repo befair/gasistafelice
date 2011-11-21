@@ -12,18 +12,15 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
         // Init dataTables
 //                'sPaginationType': 'full_numbers', 
-        var iTot = 5;
+        var iTot = 2;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'bPaginate': false,
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    { "sWidth": "5%"},
-                    { "sWidth": "25%"},
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
-                    { "sWidth": "10%", "sType": "currency", "bSearchable" : false},
-                    { "sWidth": "10%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
+                    { "sWidth": "50%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
                 ],

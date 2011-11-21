@@ -30,10 +30,12 @@ class EcoGASMemberForm(forms.Form):
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     log.debug("EcoGASMemberForm (%s)" % id)
     gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    amounted = forms.DecimalField(required=False, initial=0)
+    amounted = forms.DecimalField(required=False, initial=0) #, widget=forms.TextInput())
+    #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
 
     def __init__(self, request, *args, **kw):
         super(EcoGASMemberForm, self).__init__(*args, **kw)
+        self.fields['amounted'].widget.attrs['class'] = 'taright'
         self.__loggedusr = request.user
 
     def save(self):
