@@ -3,6 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
+
 from notification import models as notification
         
 from gasistafelice.gas.models import GAS
@@ -135,7 +136,7 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     
     notification.create_notice_type(
         "supplier_order_close", _("Order Sent by a GAS"), 
-        _("an order has been sent by a GAS")
+        _("an order has been sent by a GAS to involved supplier")
     )
     
-signals.post_syncdb.connect(create_notice_types, sender=notification)
+models.signals.post_syncdb.connect(create_notice_types, sender=notification)
