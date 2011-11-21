@@ -17,6 +17,9 @@ from datetime import datetime
 import logging
 log = logging.getLogger(__name__)
 
+from django.core import validators
+from django.core.exceptions import ValidationError
+
 
 #-------------------------------------------------------------------------------
 
@@ -40,26 +43,40 @@ class EcoGASMemberForm(forms.Form):
 
     def save(self):
 
-        #Control is CASH REFERRER
-        if not self.__loggedusr or self.__gmusr != self.__loggedusr:
-            log.debug("------SingleGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
+        #Control logged user
+        if not self.__loggedusr:
+            raise forms.ValidationError(_('cannot identify the logged in user. Please try loggin. Cannot continue'))
+            log.debug("EcoGASMemberForm cannot identify the logged in user.")
             return
-        id = self.cleaned_data.get('id')
+
+        gm_id = self.cleaned_data.get('purchaser_id')
+        ord_id = self.cleaned_data.get('order_id')
+        if not gm_id or not ord_id:
+            raise forms.ValidationError(_('cannot retrieve GASMember and Order identifiers. Cannot continue'))
+            log.debug("EcoGASMemberForm cannot retrieve GASMember and Order identifiers")
+            return
+        order = GASSupplierOrder.objects.get(pk=ord_id)
+        gm = GASMember.objects.get(pk=gm_id)
+        if not gm or not order:
+            raise forms.ValidationError(_('cannot retrieve GASMember and Order datas. Cannot continue'))
+            log.debug("EcoGASMemberForm cannot retrieve GASMember and Order datas. Identifiers (%s/%s)." % (ord_id,gm_id))
+            return
+        #TODO: Seldon or Fero. Control if Order is in the rigth Woflow STATE
+
+        #TODO: Control is CASH REFERRER for this GAS
+        if self.__loggedusr not in order.pact.gas.cash_referrers:
+            raise forms.ValidationError(_('Not authorized'))
+            log.warn("!!!!EcoGASMemberForm (%s) Not authorized %s. Identifiers (%s/%s)" % (self.__loggedusr,gm,ord_id,gm_id))
+            return
+
+        #Do work
         amounted = self.cleaned_data.get('amounted')
-        if id:
-            gm = GASMember.objects.get(pk=id)
-            amounted = self.cleaned_data.get('amounted')
-            if amounted == 0:
-                #Find existing movment and delete it
-                log.error("ECO Order GasMember(%s) - Delete? - (%s) " % (gm, amounted))
-            else:
-                #Find existing movment 
-                #If exist UPDATE
-                #    log.warn("ECO Order GasMember(%s) - Update - (%s) " % (gm, amounted))
-                #Else CREATE Movement between GASMember.account --> GAS.account
-                log.warn("ECO Order GasMember(%s) - Create - (%s) " % (gm, amounted))
-
+        if amounted == 0:
+            #Find existing movment and delete it
+            log.error("ECO Order GasMember(%s) - Delete? - (%s) " % (gm, amounted))
         else:
-            log.warn("ECO Order GasMember(%s) - ?? - (%s) " % (self.__loggedusr, amounted))
-
-
+            #Find existing movment
+            #If exist UPDATE
+            #    log.warn("ECO Order GasMember(%s) - Update - (%s) " % (gm, amounted))
+            #Else CREATE Movement between GASMember.account --> GAS.account
+            log.warn("ECO Order GasMember(%s) - Create - (%s) " % (gm, amounted))
