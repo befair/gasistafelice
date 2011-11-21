@@ -34,20 +34,18 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = {
         0: 'ordered_product__order', 
         1: 'purchaser',
-        2: 'tot_product',
-        3: 'sum_qta',
-        4: 'sum_price',
-        5: 'sum_amount',
-        6: ''
+        2: 'sum_amount',
+        3: ''
     }
-
-#        "{{row.ordered_product__order|escapejs}}",
-#        "{{row.purchaser|escapejs}}",
+#        2: 'tot_product',
+#        3: 'sum_qta',
+#        4: 'sum_price',
 #        "{{row.tot_product}}",
 #        "{{row.sum_qta}}",
 #        "{{row.sum_price}}",
-#        "&#8364; {{row.sum_amount|floatformat:"2"}}",
-#        "{{row.amounted|escapejs}}",
+#    <th title='{% trans "TOT Ordered Products" %}'>{% trans "n Art." %}</th>
+#    <th title='{% trans "SUM Ordered Quantity" %}'>{% trans "Sum Qta" %}</th>
+#    <th title='{% trans "SUM ordered Price" %}'>{% trans "Sum Price" %}</th>
 
     def _get_user_actions(self, request):
   
@@ -75,75 +73,97 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         #return GASMember objects
-        return request.resource.ordered_gasmembers
+        #return request.resource.ordered_gasmembers
+        return request.resource.ordered_gasmembers_sql
 
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
-        cnt = 0
-        if qs:
-            cnt = qs.count()
+        #cnt = qs.count() #QuerySet
+        cnt = len(qs)  #List
         return formset_factory(
                     form=EcoGASMemberForm,
                     formset=BaseFormSetWithRequest,
                     extra=cnt
         )
 
-#    def __get_gmos(self, gso):
-#        #log.debug("order block __get_gmos (%s)" % (self.request.resource.gasmember))
-#        return GASMemberOrder.objects.filter(purchaser=1,ordered_product=1)
+    def _getItem(self, pairs, colname, default):
+        for value, key in pairs:
+            if bool(key == colname):
+                return value
+        return default
 
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
 
-        # [:] forces evaluation of the querySet
-        #gmos = self.__get_gmos(querySet)[:]
-
         data = {}
-        i = 0
-        c = 0
-        log.debug("Curtails enumerate (%s)" % querySet[:])
-        if querySet:
-            c = querySet.count()
+#       c = querySet.count()
+
         map_info = { }
 
-        #TODO Retrieve Accounting movments list to set id in hiddenField
-        for i,el in enumerate(querySet):
-            log.debug("Curtails enumerate (%s) - %s" % (i, el))
+#{'purchaser': 7L, 'sum_price': Decimal('98.0400'), 'ordered_product__order': 10L, 'tot_product': 5, 'sum_qta': Decimal('5.00')}
 
+        #for i,el in enumerate(querySet):
+        i = 0
+        for item in querySet:
+            i += 1
+            log.debug("Curtails enumerate (%s) - %s" % (i, item))
+            pairs = [(v, k) for (k, v) in item.iteritems()]
+            pk = self._getItem(pairs, 'purchaser_id', 0)
             key_prefix = 'form-%d' % i
-            #FIXME: in editing --> querySet? 'dict' object has no attribute 'id'
+            #querySet? 'dict' object has no attribute 'id' or 'order_id'
+
             data.update({
-               '%s-id' % key_prefix : el.id, 
-               '%s-gm_id' % key_prefix : el.purchaser, 
-               '%s-amounted' % key_prefix : 3,
+               '%s-id' % key_prefix : self._getItem(pairs, 'order_id', 0),
+               '%s-gm_id' % key_prefix : pk,
+               '%s-amounted' % key_prefix : self._getItem(pairs, 'sum_amount', 0),
             })
+#               '%s-id' % key_prefix : el.order_id,
+#               '%s-gm_id' % key_prefix : el.purchaser_id, # 'dict' object has no attribute 'purchaser'
+#               '%s-amounted' % key_prefix : el.sum_amount,
 
 #Cannot resolve keyword 'puchaser' into field. Choices are: id, is_confirmed, note, ordered_amount, ordered_price, ordered_product, purchaser, withdrawn_amount
 
+            map_info[pk] = {'formset_index' : i}
+            #map_info[i] = {'formset_index' : i}
 
-            map_info[el.pk] = {'formset_index' : i}
-
-        data['form-TOTAL_FORMS'] = c #i 
-        data['form-INITIAL_FORMS'] = c #0
+        data['form-TOTAL_FORMS'] = i + 1
+        data['form-INITIAL_FORMS'] = 0
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)
 
         records = []
-        for i, el in enumerate(querySet):
+        #for i, el in enumerate(querySet):
+        i = 0
+        for item in querySet:
+            i += 1
+            log.debug("Curtails enumerate (%s) - %s" % (i, item))
+            pairs = [(v, k) for (k, v) in item.iteritems()]
+            pk = self._getItem(pairs, 'purchaser_id', 0)
 
-            form = formset[map_info[el.pk]['formset_index']]
-            gasmember = GASMember.objects.get(id=el.purchaser)
+            form = formset[map_info[pk]['formset_index']]
+            #form = formset[map_info[i]['formset_index']]
+            gasmember = GASMember.objects.get(id=pk)
+            log.debug("Curtails gasmember -%s--%s->  %s" % (i, pk, gasmember))
+            print "Curtails gasmember -%s--%s-> %s" % (i, pk, gasmember)
+
             records.append({
-               'pk' : 1, #el.id,
+               'pk' : self._getItem(pairs, 'order_id', 0),
                'gasmember' : gasmember,
-               'tot_product' : el.tot_product,
-               'sum_qta' : el.sum_qta,
-               'sum_pice' : el.sum_price,
-               'sum_amount' : el.sum_amount,
+               'tot_product' : self._getItem(pairs, 'tot_product', 0),
+               'sum_qta' : self._getItem(pairs, 'sum_qta', 0),
+               'sum_pice' : self._getItem(pairs, 'sum_price', 0),
+               'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
                'amounted' : "%s %s" % (form['id'], form['amounted']),
             })
 
+#               'pk' : el.order_id,
+#               'gasmember' : gasmember,
+#               'tot_product' : el.tot_product,
+#               'sum_qta' : el.sum_qta,
+#               'sum_pice' : el.sum_price,
+#               'sum_amount' : el.sum_amount,
+#               'amounted' : "%s %s" % (form['id'], form['amounted']),
 #               'gasmember_pk' : el.purchaser,
 #        "{{row.ordered_product__order|escapejs}}",
 #        "{{row.purchaser|escapejs}}",
