@@ -286,8 +286,10 @@ class EditOrderForm(BaseOrderForm):
         fields = ['datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, {
-            'fields' : [ ('datetime_start', 'datetime_end'),
-                       ('delivery_datetime', 'delivery_referrer')
+            'fields' : [ 'datetime_start'
+                            , 'datetime_end'
+                            , 'delivery_datetime'
+                            , 'delivery_referrer'
             ]
         })]
                        #,'withdrawal_referrer'

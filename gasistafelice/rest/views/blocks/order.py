@@ -47,6 +47,8 @@ class Block(BlockSSDataTables):
         so you have to reset self.request and self.resource attribute if you want
         """
 
+        log.debug("order options_response")
+
         self.request = request
         self.resource = request.resource
 
@@ -62,7 +64,7 @@ class Block(BlockSSDataTables):
             else:
                 orders.filter(delivery__date__isnull=True)
 
-        elif gas.config.order_show_only_one_at_a_time:
+        if gas.config.order_show_only_one_at_a_time:
             field_type = "radio"
 
         fields = []
