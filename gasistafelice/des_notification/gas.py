@@ -1,9 +1,11 @@
 
+from django.contrib.auth.models import User
 import notification
-import datetime
 
 from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
 from gasistafelice.des_notification.models import FakeRecipient
+
+import datetime
 
 #-------------------------------------------------------------------------------
 
@@ -16,7 +18,12 @@ def send_gas_notification(gas):
 
     closing_orders = gas.orders.filter(datetime_end__range=(start_date, end_date))
 
-    notification.send([FakeRecipient(gas.orders_email_contact)], "gas_notification", {
+    if not settings.DEBUG:
+        recipients = [FakeRecipient(gas.orders_email_contact)]
+    else:
+        recipients = User.objects.filter(is_superuser=True)
+    
+    notification.send(recipients, "gas_notification", {
         'gas' : gas,
         'closing_orders' : closing_orders,
     }, on_site=False)
@@ -40,8 +47,12 @@ def send_gas_newsletter(gas):
     new_gasmembers = GASMember.history.filter(history_type="+", history_date__range=(start_date, end_date))
     old_gasmembers = GASMember.history.filter(history_type="-", history_date__range=(start_date, end_date))
 
+    if not settings.DEBUG:
+        recipients = [FakeRecipient(gas.orders_email_contact)]
+    else:
+        recipients = User.objects.filter(is_superuser=True)
 
-    notification.send([FakeRecipient(gas.orders_email_contact)], "gas_newsletter", {
+    notification.send(recipients, "gas_newsletter", {
         'gas' : gas,
         'closing_orders' : closing_orders,
         'open_orders' : open_orders,

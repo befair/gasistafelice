@@ -21,12 +21,17 @@ class FakeRecipient(object):
 def notify_gmo_product_erased(sender, **kwargs):
 
     gmo = sender
-    msg = _("Product %(product)s: has been erased from order %(order)s") % {
-            'product' : gmo.product,
-            'order' : gmo.order,
+    extra_content = {
+        'order' : gmo.order,
+        'product' : gmo.product,
+        'action' : _("erased"),
     }
 
-    gmo.gasmember.person.user.message_set.create(message=msg)
+    recipients = [gmo.gasmember.person.user]
+
+    notification.send(recipients, "ordered_product_update", 
+        extra_content, on_site=True
+    )
 
 #-------------------------------------------------------------------------------
 
@@ -35,58 +40,57 @@ def notify_gmo_price_update(sender, **kwargs):
     gmo = sender
     old_price = gmo.ordered_price
     new_price = gmo.ordered_product.order_price
-    msg = _("Product %(product)s: updated price from %(old_price)s to %(new_price)s") % {
-            'product' : gmo.product,
-            'old_price' : old_price,
-            'new_price' : new_price,
+    extra_content = {
+        'order' : gmo.order,
+        'product' : gmo.product,
+        'action' : _("price changed"),
+        'extra_append' : _("from %(old)s to %(new)s") % (old_price, new_price),
     }
 
-    gmo.gasmember.person.user.message_set.create(message=msg)
+    recipients = [gmo.gasmember.person.user]
+
+    notification.send(recipients, "ordered_product_update", 
+        extra_content, on_site=True
+    )
 
 #-------------------------------------------------------------------------------
 
 def notify_gasstock_product_enabled(sender, **kwargs):
 
     gasstock = sender
-    msg = _("Product %(product)s is now available for %(gas)s") % {
-            'product' : gasstock.product,
-            'gas' : gasstock.gas
+    extra_content = {
+        'gas' : gasstock.gas,
+        'product' : gasstock.product,
+        'action' : _("enabled"),
     }
 
-    for gm in gasstock.gasmembers:
-        #TODO: check for user settings and see if user wants to be notified
-        # via messages, mail or both
-        gm.person.user.message_set.create(message=msg)
+    recipients = User.objects.filter(
+        person.gasmember_set__in=gasstock.gasmembers
+    ).distinct()
+
+    notification.send(recipients, "gasstock_update", 
+        extra_content, on_site=True
+    )
 
 #-------------------------------------------------------------------------------
 
 def notify_gasstock_product_disabled(sender, **kwargs):
 
     gasstock = sender
-    msg = _("Product %(product)s has been disabled for %(gas)s") % {
-            'product' : gasstock.product,
-            'gas' : gasstock.gas
+    extra_content = {
+        'gas' : gasstock.gas,
+        'product' : gasstock.product,
+        'action' : _("disabled"),
     }
 
-    for gm in gasstock.gasmembers:
-        #TODO: check for user settings and see if user wants to be notified
-        # via messages, mail or both
-        gm.person.user.message_set.create(message=msg)
+    recipients = User.objects.filter(
+        person.gasmember_set__in=gasstock.gasmembers
+    ).distinct()
 
-#-------------------------------------------------------------------------------
+    notification.send(recipients, "gasstock_update", 
+        extra_content, on_site=True
+    )
 
-def notify_order_open(sender, **kwargs):
-
-    order = sender
-    msg = _('Order related to %(pact)s has been created. Check it at <a href="%(url)s">%(url)s</a>') % {
-            'pact' : order.pact,
-            'url' : order.get_absolute_url()
-    }
-
-    for gm in order.gasmembers:
-        #TODO: check for user settings and see if user wants to be notified
-        # via messages, mail or both
-        gm.person.user.message_set.create(message=msg)
 
 #-------------------------------------------------------------------------------
 
@@ -98,26 +102,21 @@ def notify_order_state_update(sender, **kwargs):
     extra_content = {
         'gas' : order.gas,
         'order' : order,
+        'action' : transition.name,
+        'state' : transition.destination,
     }
 
-    if transition.destination == "closed":
-        msg = _('Order related to %(pact)s has been closed. Check it at <a href="%(url)s">%(url)s</a>') % {
-                'pact' : order.pact,
-                'url' : order.get_absolute_url()
-        }
+    if transition.destination in ["open", "closed"]:
+        recipients = order.referrers
+    else:
+        recipients = order.referrers | order.supplier.referrers
 
-        notification.send(order.referrers, "order_closed", 
-            extra_content, on_site=True
-        )
-        #WAS: refs.message_set.create(message=msg)
-
-    elif transition.destination == "finalized":
-
-        notification.send(order.referrers | order.supplier.referrers, 
-            "order_sent", extra_content, on_site=True
-        )
+    notification.send(recipients, "order_state_update", 
+        extra_content, on_site=True
+    )
 
 #-------------------------------------------------------------------------------
+
 
 gas_signals.order_open.connect(notify_order_open)
 gas_signals.order_state_update.connect(notify_order_state_update)
@@ -139,6 +138,7 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     changed by User in notification preferences panel.
     """
     
+    # Mail notifications
     notification.create_notice_type(
         "gasmember_notification", _("Notification Received"), 
         _("you have received a notification"), default=2,
@@ -155,43 +155,19 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     )
     
     notification.create_notice_type(
-        "order_sent", _("Order Sent by a GAS"), 
-        _("an order has been sent by a GAS to involved supplier"), default=2
+        "order_state_update", _("Order state updated"), 
+        _("an order has been updated"), default=2
+    )
+    
+    # Web notifications
+    notification.create_notice_type(
+        "ordered_product_update", _("Ordered product update"), 
+        _("an ordered product has changed"), default=3
     )
     
     notification.create_notice_type(
-        "order_open", _("Order open"), 
-        _("an order has been opened"), default=3
-    )
-    
-    notification.create_notice_type(
-        "order_closed", _("Order closed"), 
-        _("an order has been closed"), default=3
-    )
-    
-    notification.create_notice_type(
-        "gmo_product_erased", _("Product erased from order"), 
-        _("an ordered product is not available anymore"), default=3
-    )
-    
-    notification.create_notice_type(
-        "gmo_price_update", _("Product changed price"), 
-        _("an ordered product has changed price"), default=3
-    )
-    
-    notification.create_notice_type(
-        "order_state_update", _("Order state update"), 
-        _("an order has been updated"), default=3
-    )
-    
-    notification.create_notice_type(
-        "gasstock_product_enabled", _("Product enabled for GAS"), 
-        _("a product has been enabled for GAS"), default=3
-    )
-    
-    notification.create_notice_type(
-        "gasstock_product_disabled", _("Product disabled for GAS"), 
-        _("a product has been disabled for GAS"), default=3
+        "gasstock_update", _("Product update for GAS"), 
+        _("a product has been updated for GAS"), default=3
     )
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
