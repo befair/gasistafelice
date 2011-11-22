@@ -46,8 +46,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
-    datetime_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
-    datetime_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
+    datetime_start = models.DateTimeField(verbose_name=_('Date open'), default=datetime.now, help_text=_("when the order will be opened"))
+    datetime_end = models.DateTimeField(verbose_name=_('Date close'), help_text=_("when the order will be closed"), null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
     # Where and when Delivery occurs

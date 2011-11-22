@@ -1,0 +1,15 @@
+I prossini ordini in chiusura del GAS {{ gas }} sono:
+
+<ul>
+    {% for order in closing_orders %}
+        <li><a href="{% url order %}">{{ order }}</a></li>
+    {% endfor %}
+</ul>
+
+
+Il sistema verifica ogni giorno alle 8:00 se ci sono ordini in prossima chiusura.
+Per vedere tutte le tue notifiche <a href="{{ notices_url }}">clicca qui</a>.
+
+Gasista Felice
+
+P.S: non rispondere a questo indirizzo email. Per chiarimenti puoi chiedere a <a href="mailto:{{ site_contact }}">{{ site_contact }}</a>

@@ -1,0 +1,13 @@
+
+<ul>
+{% for notice in notices %}
+    <li>{{ notice.added }} - {{ notice }}</li> 
+{% endfor %}
+</ul>
+
+Il sistema verifica ogni giorno alle 8:00 se ci sono notifiche per i gasisti.
+Per vedere tutte le tue notifiche <a href="{{ notices_url}}">clicca qui</a>.
+
+Gasista Felice
+
+P.S: non rispondere a questo indirizzo email. Per chiarimenti puoi chiedere a <a href="mailto:{{ site_contact }}">{{ site_contact }}</a>

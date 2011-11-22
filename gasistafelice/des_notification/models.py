@@ -3,18 +3,20 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
-
 from notification import models as notification
         
 from gasistafelice.gas.models import GAS
 from gasistafelice.gas import signals as gas_signals
 
-#class GASOrderNotifications(models.Model):
-#
-#    gas = models.ForeignKey(GAS)
-#    order_mailing_list = models.EmailField()
-#    
 #-------------------------------------------------------------------------------
+
+class FakeRecipient(object):
+
+    def __init__(self, email):
+        self.email = email
+
+#-------------------------------------------------------------------------------
+
 
 def notify_gmo_product_erased(sender, **kwargs):
 
@@ -137,6 +139,36 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     notification.create_notice_type(
         "supplier_order_close", _("Order Sent by a GAS"), 
         _("an order has been sent by a GAS to involved supplier")
+    )
+    
+    notification.create_notice_type(
+        "order_open", _("Order open"), 
+        _("an order has been opened in GAS")
+    )
+    
+    notification.create_notice_type(
+        "gmo_product_erased", _("Product erased from order"), 
+        _("an ordered product is not available anymore")
+    )
+    
+    notification.create_notice_type(
+        "gmo_price_update", _("Product changed price"), 
+        _("an ordered product has changed price")
+    )
+    
+    notification.create_notice_type(
+        "order_state_update", _("Order state update"), 
+        _("an order has been updated")
+    )
+    
+    notification.create_notice_type(
+        "gasstock_product_enabled", _("Product enabled for GAS"), 
+        _("a product has been enabled for GAS")
+    )
+    
+    notification.create_notice_type(
+        "gasstock_product_disabled", _("Product disabled for GAS"), 
+        _("a product has been disabled for GAS")
     )
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)

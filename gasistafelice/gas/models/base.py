@@ -470,16 +470,25 @@ class GASConfig(models.Model):
 
     auto_populate_products = models.BooleanField(verbose_name=_('Auto populate products'), default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(verbose_name=_('Is active'), default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
-    use_scheduler = models.BooleanField(default=False)
+    use_scheduler = models.BooleanField(default=False, verbose_name=_("Use scheduler"), help_text=_("Enable scheduler for automatic and planned operations"))
     gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
-
-    #TODO:notify_days = models.PositiveIntegerField(null=True, default=0, help_text=_("The number of days that the system will notify an event (product changed). If set to 0 the notify system is off."))
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
     suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this gas was suspended
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
+
+    notice_days_before_order_close = models.PositiveIntegerField(
+        verbose_name=_("Notice days before order close"),
+        null=True, default=1, 
+        help_text=_("How many days before do you want your GAS receive reminder on closing orders?"),
+    )
+    
+    #notice_days_after_gmo_update = models.PositiveIntegerField(
+    #   null=True, default=1, help_text=_("After how many days do 
+    #   you want a gasmember receive updates on his own orders?")
+    #)
 
     history = HistoricalRecords()
 
