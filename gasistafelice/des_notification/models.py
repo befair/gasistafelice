@@ -95,16 +95,27 @@ def notify_order_state_update(sender, **kwargs):
     order = sender
     transition = kwargs['transition']
 
+    extra_content = {
+        'gas' : order.gas,
+        'order' : order,
+    }
+
     if transition.destination == "closed":
         msg = _('Order related to %(pact)s has been closed. Check it at <a href="%(url)s">%(url)s</a>') % {
                 'pact' : order.pact,
                 'url' : order.get_absolute_url()
         }
 
-        for gm in order.gasmembers:
-            #TODO: check for user settings and see if user wants to be notified
-            # via messages, mail or both
-            gm.person.user.message_set.create(message=msg)
+        notification.send(order.referrers, "order_closed", 
+            extra_content, on_site=True
+        )
+        #WAS: refs.message_set.create(message=msg)
+
+    elif transition.destination == "finalized":
+
+        notification.send(order.referrers | order.supplier.referrers, 
+            "order_sent", extra_content, on_site=True
+        )
 
 #-------------------------------------------------------------------------------
 
@@ -116,59 +127,71 @@ gas_signals.gasstock_product_enabled.connect(notify_gasstock_product_enabled)
 gas_signals.gasstock_product_disabled.connect(notify_gasstock_product_disabled)
 
 def create_notice_types(app, created_models, verbosity, **kwargs):
+    """Define notice types and default 'spam_sensitivity'.
+
+    `spam_sensitivity` states default for sending message through a `backend`.
+    If `spam_sensitivity` if > than `backend.spam_sensitivity`, then message is
+    not sent through that medium.
+
+    `EmailBackend.spam_sensitivity` = 2
+
+    This in turn is saved as a default `NoticeSetting` that could be (eventually)
+    changed by User in notification preferences panel.
+    """
+    
     notification.create_notice_type(
         "gasmember_notification", _("Notification Received"), 
-        _("you have received a notification")
+        _("you have received a notification"), default=2,
     )
 
     notification.create_notice_type(
         "gas_notification", _("Notification Received"), 
-        _("this GAS has received a notification")
+        _("this GAS has received a notification"), default=2
     )
     
     notification.create_notice_type(
         "gas_newsletter", _("Newsletter Received"), 
-        _("this GAS has received the newsletter")
+        _("this GAS has received the newsletter"), default=2
     )
     
     notification.create_notice_type(
-        "gas_referrer_supplier_order_close", _("Order Closed"), 
-        _("an order has been closed")
-    )
-    
-    notification.create_notice_type(
-        "supplier_order_close", _("Order Sent by a GAS"), 
-        _("an order has been sent by a GAS to involved supplier")
+        "order_sent", _("Order Sent by a GAS"), 
+        _("an order has been sent by a GAS to involved supplier"), default=2
     )
     
     notification.create_notice_type(
         "order_open", _("Order open"), 
-        _("an order has been opened in GAS")
+        _("an order has been opened"), default=3
+    )
+    
+    notification.create_notice_type(
+        "order_closed", _("Order closed"), 
+        _("an order has been closed"), default=3
     )
     
     notification.create_notice_type(
         "gmo_product_erased", _("Product erased from order"), 
-        _("an ordered product is not available anymore")
+        _("an ordered product is not available anymore"), default=3
     )
     
     notification.create_notice_type(
         "gmo_price_update", _("Product changed price"), 
-        _("an ordered product has changed price")
+        _("an ordered product has changed price"), default=3
     )
     
     notification.create_notice_type(
         "order_state_update", _("Order state update"), 
-        _("an order has been updated")
+        _("an order has been updated"), default=3
     )
     
     notification.create_notice_type(
         "gasstock_product_enabled", _("Product enabled for GAS"), 
-        _("a product has been enabled for GAS")
+        _("a product has been enabled for GAS"), default=3
     )
     
     notification.create_notice_type(
         "gasstock_product_disabled", _("Product disabled for GAS"), 
-        _("a product has been disabled for GAS")
+        _("a product has been disabled for GAS"), default=3
     )
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
