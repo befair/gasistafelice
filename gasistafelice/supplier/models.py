@@ -673,7 +673,14 @@ class Product(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        return self.name
+        rv = u"%(muppu)s %(mu)s %(of)s %(name)s" % {
+            'muppu' : self.muppu,
+            'mu' : self.mu,
+            'of' : ugettext('of'),
+            'name': self.name
+        }
+        
+        return rv
 
     def clean(self):
 
