@@ -675,7 +675,7 @@ class Product(models.Model, PermissionResource):
     def __unicode__(self):
         rv = u"%(muppu)s %(mu)s %(of)s %(name)s" % {
             'muppu' : self.muppu,
-            'mu' : self.mu,
+            'mu' : self.mu.symbol,
             'of' : ugettext('of'),
             'name': self.name
         }
