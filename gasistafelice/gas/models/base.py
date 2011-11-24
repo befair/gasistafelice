@@ -405,7 +405,7 @@ class GAS(models.Model, PermissionResource):
 #-----------------------------------------------------------------------------------------------------
 
 def get_supplier_order_default():
-    return Workflow.objects.get(name="SupplierOrderDefault")
+    return Workflow.objects.get(name="SimpleSupplierOrderDefault")
 
 def get_gasmember_order_default():
     return Workflow.objects.get(name="GASMemberOrderDefault")
@@ -1169,6 +1169,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     def pact(self):
         return self
     
+    @property
+    def pacts(self):
+        return GASSupplierSolidalPact.objects.filter(pk=self.pk)
+
     @property
     def persons(self):
         qs = self.gas.persons | self.supplier.persons
