@@ -244,7 +244,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
-        'blocks' : ['gasmember_details']
+        'blocks' : ['gasmember_details', 'person_details']
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
@@ -276,7 +276,7 @@ RESOURCE_PAGE_BLOCKS = {
     'person' : [{
         'name': 'info',
         'descr': 'Scheda della persona',
-        'blocks' : ['details', 'gasmembers'],
+        'blocks' : ['person_details', 'person_gasmembers'],
     }],
 
     'pact' : [{ 
