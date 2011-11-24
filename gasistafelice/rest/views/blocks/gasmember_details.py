@@ -1,4 +1,4 @@
-"""View for block details specialized for a GAS"""
+"""View for block details specialized for a GASMember"""
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
@@ -12,3 +12,9 @@ class Block(details.Block):
     def _get_user_actions(self, request):
 
         return []
+
+    def get_description(self):
+        return _("%(name)s's details in %(gas)s") % {
+            'name' : self.resource.person.name,
+            'gas' : self.resource.gas,
+        }
