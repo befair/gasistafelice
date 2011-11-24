@@ -465,6 +465,9 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         
         if (jQel.children('error').length > 0)
             return jQel.text()
+        if (jQel.children('sysmsg').length > 0) 
+            return jQel.text()
+            
         
         // Resource ID
         var resource_type =  jQel.attr('resource_type');

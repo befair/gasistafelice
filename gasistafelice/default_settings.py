@@ -58,7 +58,7 @@ DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M', '%Y-%m-%d %H:%M:%S',
 '%Y-%m-%d %H:%M', '%Y-%m-%d', '%m/%d/%Y %H:%M:%S', '%m/%d/%Y',
 '%m/%d/%y %H:%M:%S', '%m/%d/%y %H:%M', '%m/%d/%y')
 TIME_INPUT_FORMATS = ('%H:%M', '%H:%M:%S')
-DATE_INPUT_FORMATS = ('%m/%d/%Y', '%Y-%m-%d', '%m/%d/%y', '%b %d %Y',
+DATE_INPUT_FORMATS = ('%d/%m/%Y', '%Y-%m-%d', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y')
 

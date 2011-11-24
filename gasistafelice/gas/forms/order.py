@@ -41,7 +41,8 @@ class BaseOrderForm(forms.ModelForm):
 
     delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
-    delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
+    delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), 
+        required=False, label=_("Delivery referrer"))
     withdrawal_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
 
     def __init__(self, request, *args, **kw):
