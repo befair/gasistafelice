@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 from flexi_auth.models import ObjectWithContext
 
@@ -47,4 +48,16 @@ class Block(BlockWithList):
 
         return user_actions
 
+
+    def get_response(self, request, resource_type, resource_id, args):
+
+        self.request = request
+        self.resource = resource = request.resource
+
+        if not resource.pacts:
+
+            msg = _("There are no pact in this %s, please sign at least one pact to open an order" % resource_type)
+            return HttpResponse('<root><sysmsg>%s</sysmsg></root>' % msg)
+
+        return super(Block, self).get_response(request, resource_type, resource_id, args)
 
