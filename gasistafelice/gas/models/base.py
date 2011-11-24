@@ -16,7 +16,7 @@ from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.lib import ClassProperty
-from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 
 from gasistafelice.base.models import PermissionResource, Person, Place, Contact
@@ -816,12 +816,12 @@ class GASSupplierStock(models.Model, PermissionResource):
     enabled = models.BooleanField(default=True,verbose_name=_('enabled'))
 
     # how many Product units a GAS Member is able to order
-    minimum_amount = models.DecimalField(max_digits=5, decimal_places=2, 
+    minimum_amount = PrettyDecimalField(max_digits=5, decimal_places=2, 
                         default=1, verbose_name=_('minimum order amount')
     )
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product has a fixed step of increment
-    step = models.DecimalField(max_digits=5, decimal_places=2,
+    step = PrettyDecimalField(max_digits=5, decimal_places=2,
                         default=1, verbose_name=_('step of increment')
     )
 

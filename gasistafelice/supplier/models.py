@@ -21,7 +21,7 @@ from flexi_auth.exceptions import WrongPermissionCheck
 
 from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib import ClassProperty
-from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 
 from gasistafelice.base.const import SUPPLIER_FLAVOUR_LIST, ALWAYS_AVAILABLE
@@ -597,7 +597,7 @@ class UnitsConversion(models.Model):
 
     src = models.ForeignKey(ProductMU, verbose_name=_("source"), related_name="src_conversion_set")
     dst = models.ForeignKey(ProductMU, verbose_name=_("destination"), related_name="dst_conversion_set")
-    amount = models.DecimalField(max_digits=10, decimal_places=4, verbose_name=_("amount"), default=1)
+    amount = PrettyDecimalField(max_digits=10, decimal_places=4, verbose_name=_("amount"), default=1)
 
     def __unicode__(self):
         return _(u"%(src)s to %(dst)s") % {'src': self.src, 'dst':self.dst}
@@ -652,7 +652,7 @@ class Product(models.Model, PermissionResource):
 
     # See help text
     # Can be null when no measure is specified and pu is not a measure
-    muppu = models.DecimalField(verbose_name=_('measure unit per product unit'), 
+    muppu = PrettyDecimalField(verbose_name=_('measure unit per product unit'), 
                 decimal_places=2, max_digits=6, default=Decimal("1.00"),
                 help_text=_("How many measure units fit in your product unit?"),
                 null=True
@@ -813,21 +813,21 @@ class SupplierStock(models.Model, PermissionResource):
 
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product ships in packages containing multiple units.
-    units_per_box = models.DecimalField(verbose_name=_("units per box"), 
+    units_per_box = PrettyDecimalField(verbose_name=_("units per box"), 
                         default=1, max_digits=5, decimal_places=2
     )
 
     ## constraints posed by the Supplier on orders issued by *every* GASMember
     ## they act as default when creating a GASSupplierSolidalPact
     # minimum amount of Product units a GASMember can order 
-    detail_minimum_amount = models.DecimalField(null=True, blank=True, 
+    detail_minimum_amount = PrettyDecimalField(null=True, blank=True, 
                         default=1, verbose_name = _('detail minimum amount'),
                         max_digits=5, decimal_places=2
     )
 
     # increment step (in Product units) for amounts exceeding minimum; 
     # useful when a Product has a fixed step of increment
-    detail_step = models.DecimalField(null=True, blank=True, 
+    detail_step = PrettyDecimalField(null=True, blank=True, 
                         max_digits=5, decimal_places=2,
                         verbose_name=_("detail step"), default=1
     )

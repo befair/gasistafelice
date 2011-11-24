@@ -10,7 +10,7 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
-from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 from gasistafelice.lib import ClassProperty
 from gasistafelice.supplier.models import Supplier
@@ -56,8 +56,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # STATUS is MANAGED BY WORKFLOWS APP: 
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
-
-    #TODO: Notify system
 
     group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
         help_text=_("If not null this order is aggregate with orders from other GAS")
@@ -329,11 +327,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def save(self, *args, **kw):
         created = False
+
         if not self.pk:
             created = True
             if self.gas.config.use_withdrawal_place:
+
                 # Create default withdrawal
                 if self.datetime_end and not self.withdrawal:
+
                     #TODO: check gasconfig for weekday
                     w = Withdrawal(
                             date=self.datetime_end + timedelta(7), 
@@ -351,9 +352,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if created:
             self.set_default_gasstock_set()
-            #TODO: dispatching order_open is to be moved elsewhere when scheduler works
-            signals.order_open.send(sender=self)
-            
         
     #-------------- Authorization API ---------------#
     
@@ -455,7 +453,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set",verbose_name=_('gas stock'))
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
-    maximum_amount = models.DecimalField(null=True, blank=True, verbose_name = _('maximum amount'),
+    maximum_amount = PrettyDecimalField(null=True, blank=True, verbose_name = _('maximum amount'),
                         max_digits=8, decimal_places=2
     )
     # the price of the Product at the time the GASSupplierOrder was created
@@ -465,7 +463,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     # the actual price of the Product (as resulting from the invoice)
     delivered_price = CurrencyField(null=True, blank=True,verbose_name=_('delivered price'))
     # how many items were actually delivered by the Supplier 
-    delivered_amount = models.DecimalField(null=True, blank=True, verbose_name = _('delivered amount'),
+    delivered_amount = PrettyDecimalField(null=True, blank=True, verbose_name = _('delivered amount'),
                         max_digits=8, decimal_places=2
     )
 
@@ -615,11 +613,11 @@ class GASMemberOrder(models.Model, PermissionResource):
     # price of the Product at order time
     ordered_price = CurrencyField(verbose_name=_('ordered price'))
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.DecimalField(null=False, blank=False, verbose_name = _('order amount'),
+    ordered_amount = PrettyDecimalField(null=False, blank=False, verbose_name = _('order amount'),
                         max_digits=6, decimal_places=2
     )
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.DecimalField(null=True, blank=True, verbose_name = _('widthdrawn amount'),
+    withdrawn_amount = PrettyDecimalField(null=True, blank=True, verbose_name = _('widthdrawn amount'),
                         max_digits=6, decimal_places=2
     )
     # gasmember order have to be confirmed if GAS configuration allowed it
