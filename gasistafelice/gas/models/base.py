@@ -547,8 +547,6 @@ class GASMember(models.Model, PermissionResource):
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set",verbose_name=_('available for roles'))
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
-    #TODO: Notify system
-
     objects = GASMemberManager()
 
     history = HistoricalRecords()

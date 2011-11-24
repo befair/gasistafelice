@@ -198,8 +198,9 @@ class Resource(object):
     def updaters(self):
         """Returns User QuerySet of who has updated the resource."""
        
-        self_updaters = \
-            unordered_uniq(self._default_history.filter(id=self.pk, history_type="~").values_list('history_user'))
+        self_updaters = unordered_uniq(
+                self._default_history.filter(id=self.pk, history_type="~").values_list('history_user')
+            )
 
         return User.objects.filter(pk__in=map(lambda x: x[0].pk, self_updaters))
 
@@ -408,7 +409,7 @@ class Resource(object):
 
         Usually you SHOULD NOT NEED TO OVERRIDE IT in subclasses
         """
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_email_contacts.values_list('value'))))
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_email_contacts.values_list('value'))))
 
     @property
     def preferred_email_contacts(self):
