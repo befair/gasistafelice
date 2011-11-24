@@ -616,6 +616,9 @@ def category_catchall():
 
 class Product(models.Model, PermissionResource):
 
+    MU_SEPARATOR   = _("MU_SEP")
+    PROD_SEPARATOR = _("PROD_SEP")
+
     # Some producers don't have product codification. 
     # That's why code could be blank AND null. See save() method
     code = models.CharField(max_length=128, unique=True, blank=True, null=True, 
@@ -673,10 +676,15 @@ class Product(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = u"%(muppu)s %(mu)s %(of)s %(name)s" % {
-            'muppu' : self.muppu,
-            'mu' : self.mu.symbol,
-            'of' : ugettext('of'),
+        rv = self.pu.symbol
+        if self.mu and (self.mu.symbol != self.pu.symbol):
+            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
+                'mu_sep' : Product.MU_SEPARATOR,
+                'muppu'  : self.muppu,
+                'mu'     : self.mu.symbol,
+            }
+        rv += u" %(prod_sep)s %(name)s" % {
+            'prod_sep' : Product.PROD_SEPARATOR,
             'name': self.name
         }
         
@@ -827,8 +835,6 @@ class SupplierStock(models.Model, PermissionResource):
     # How the Product will be delivered
     delivery_notes = models.TextField(blank=True, default='', verbose_name = _('delivery notes'))
 
-    #TODO: Notify system
-
     history = HistoricalRecords()
 
     class Meta:
@@ -847,10 +853,11 @@ class SupplierStock(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        return _(u"1 %(pu)s of %(name)s") % {
-                    'pu' : self.product.pu.symbol,
-                    'name': self.product,
-               }
+        return u"%(detail_step)s %(product)s" % {
+            'detail_step' : self.detail_step,
+            'product': self.product,
+        }
+        
 
 #    @property
 #    def description(self):
@@ -961,6 +968,11 @@ class SupplierStock(models.Model, PermissionResource):
     def gasstocks(self):
         return self.gasstock_set.all()
     
+    @property
+    def pacts(self):
+        from gasistafelice.gas.models import GASSupplierSolidalPact
+        return GASSupplierSolidalPact.objects.filter(order_set__in=self.orders.open())
+
     @property
     def orders(self):
         from gasistafelice.gas.models import GASSupplierOrder
