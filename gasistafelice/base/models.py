@@ -500,7 +500,7 @@ class Person(models.Model, PermissionResource):
     ssn = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'),verbose_name=_('Social Security Number'))
     contact_set = models.ManyToManyField('Contact', null=True, blank=True,verbose_name=_('contacts'))
     user = models.OneToOneField(User, null=True, blank=True,verbose_name=_('User'))
-    address = models.OneToOneField('Place', null=True, blank=True,verbose_name=_('main address'))
+    address = models.ForeignKey('Place', null=True, blank=True,verbose_name=_('main address'))
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
