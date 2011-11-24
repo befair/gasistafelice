@@ -110,7 +110,7 @@ INSTALLED_APPS = [
     'workflows',
     'history',
     'flexi_auth',
-    'accounting',
+    'simple_accounting',
     'gasistafelice.base',
     'gasistafelice.supplier',
     'gasistafelice.gas',

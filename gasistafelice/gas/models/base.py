@@ -18,8 +18,8 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from accounting.models import economic_subject, Account, AccountingDescriptor 
-from accounting.models import account_type
+from simple_accounting.models import economic_subject, Account, AccountingDescriptor 
+from simple_accounting.models import account_type
 
 
 from gasistafelice.lib import ClassProperty

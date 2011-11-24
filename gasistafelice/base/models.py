@@ -25,8 +25,8 @@ from flexi_auth.utils import get_parametric_roles
 
 from flexi_auth.models import PrincipalParamRoleRelation
 
-from accounting.models import economic_subject, AccountingDescriptor 
-from accounting.models import account_type 
+from simple_accounting.models import economic_subject, AccountingDescriptor 
+from simple_accounting.models import account_type 
 
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const

@@ -21,8 +21,8 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from accounting.models import account_type
-from accounting.models import economic_subject, AccountingDescriptor
+from simple_accounting.models import account_type
+from simple_accounting.models import economic_subject, AccountingDescriptor
 
 from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib import ClassProperty

@@ -1,6 +1,6 @@
-from accounting.exceptions import MalformedTransaction
-from accounting.models import AccountingProxy
-from accounting.utils import register_transaction, register_simple_transaction
+from simple_accounting.exceptions import MalformedTransaction
+from simple_accounting.models import AccountingProxy
+from simple_accounting.utils import register_transaction, register_simple_transaction
 
 
 class PersonAccountingProxy(AccountingProxy):
@@ -167,7 +167,7 @@ class GasAccountingProxy(AccountingProxy):
         If ``order`` has not been placed by the GAS owning this accounting system,
         raise ``TypeError``.   
         """
-        from accounting.models import Transaction
+        from simple_accounting.models import Transaction
         gas = self.subject.instance
         if order.pact.gas == gas:
             members = set()
