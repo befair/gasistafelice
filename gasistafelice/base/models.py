@@ -31,7 +31,7 @@ from simple_accounting.models import account_type
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const
 from gasistafelice.base.utils import get_resource_icon_path
-from gasistafelice.accounting_proxies import PersonAccountingProxy
+from gasistafelice.base.accounting import PersonAccountingProxy
 
 from workflows.utils import do_transition
 import os

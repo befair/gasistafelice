@@ -35,7 +35,7 @@ from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.des.models import DES, Siteattr
 
 from gasistafelice.consts import SUPPLIER_REFERRER
-from gasistafelice.accounting_proxies import SupplierAccountingProxy
+from gasistafelice.supplier.accounting import SupplierAccountingProxy
 from gasistafelice.gas import signals
 
 from decimal import Decimal

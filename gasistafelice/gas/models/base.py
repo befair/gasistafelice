@@ -30,7 +30,7 @@ from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.base import const
 from gasistafelice.base import utils as base_utils
 
-from gasistafelice.accounting_proxies import GasAccountingProxy
+from gasistafelice.gas.accounting import GasAccountingProxy
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
