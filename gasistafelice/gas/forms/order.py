@@ -22,6 +22,7 @@ log = logging.getLogger(__name__)
 
 def gf_now():
     dt = datetime.datetime.now()
+    dt.minutes = (dt.minutes/15)*15
     return dt
 
 class GFSplitDateTimeWidget(admin_widgets.AdminSplitDateTime):
