@@ -28,7 +28,11 @@ from django.core.exceptions import ValidationError
 
 def gf_now():
     dt = datetime.now()
-    dt.minutes = (dt.minutes/15)*15
+    #dt.minutes = (dt.minutes/15)*15
+    dt += timedelta(minutes=5)
+    dt -= timedelta(minutes=dt.minute % 10,
+                     seconds=dt.second,
+                     microseconds=dt.microsecond)
     return dt
 
 def get_day_from_choice(choice):
@@ -97,7 +101,7 @@ class BaseOrderForm(forms.ModelForm):
                  raise forms.ValidationError("some problem with date start and close date [%s<%s]" % (dt_start, dt_end))
 
         if dt_end and dt_close:
-            if dt_end >= dt_close:
+            if dt_end > dt_close:
                  raise forms.ValidationError("some problem with close and delivery date [%s<%s]" % (dt_end, dt_close))
 
         # Always return the full collection of cleaned data.
