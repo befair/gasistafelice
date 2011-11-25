@@ -87,10 +87,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             state = _("open")
 
-        rv = _("Order %(gas)s to %(supplier)s (%(state)s)") % {
+        if self.delivery and self.delivery.date is not None:
+            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
+            if self.is_active():
+                mdate = _(" --> consegna prevista il %(date)s") % { 'date' : del_date }
+            else:
+                mdate = _(" consegnato %(date)s") % { 'date' : del_date }
+        else:
+            mdate = ""
+
+        rv = _("Order %(gas)s to %(supplier)s (%(state)s %(deldate)s)") % {
                     'gas' : self.gas,
                     'supplier' : self.supplier,
-                    'state' : state
+                    'state' : state,
+                    'deldate' : mdate
         }
         if settings.DEBUG:
             rv += " [%s]" % self.pk
