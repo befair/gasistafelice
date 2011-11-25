@@ -7,7 +7,6 @@
 
         "{{ss.id|escapejs}}",
         "{{ss.product|escapejs}}",
-        "{{ss.description|escapejs}}",
         "{{ss.price|escapejs}}",
         "{{ss.availability|escapejs}}",
 

@@ -9,18 +9,17 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
         var block_obj = this;
         // Init dataTables
+//                    {"bSearchable":true,"bSortable":true,"sWidth":"40%","bVisible":true},
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible":true},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"30%","bVisible":true
-                    },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"40%","bVisible":true},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"15%","sType":"currency","sClass": "taright" },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"10%",},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%","bVisible":true},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"50%","bVisible":true},
+                   {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%",},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

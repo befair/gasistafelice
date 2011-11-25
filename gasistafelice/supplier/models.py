@@ -59,11 +59,14 @@ class Supplier(models.Model, PermissionResource):
     
     class Meta:
         verbose_name = _('supplier')
-        verbose_name_plural = _('suppliers')        
+        verbose_name_plural = _('suppliers')
         ordering = ('name',)
 
     def __unicode__(self):
-        return unicode(self.name)
+        rv = unicode(self.name)
+        if settings.DEBUG:
+            rv += " [%s]" % self.pk
+        return rv
 
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
@@ -930,6 +933,7 @@ class SupplierStock(models.Model, PermissionResource):
             if not ss is None:
                 return bool(self.amount_available != ss.amount_available)
             else:
+                log.debug('SS.has_changed_availability cannot find pk %s ' % self.pk)
                 return False
         except SupplierStock.DoesNotExist:
             return False
@@ -941,6 +945,7 @@ class SupplierStock(models.Model, PermissionResource):
             if not ss is None:
                 return bool(self.price != ss.price)
             else:
+                log.debug('SS.has_changed_price cannot find pk %s ' % self.pk)
                 return False
         except SupplierStock.DoesNotExist:
             return False
