@@ -23,11 +23,12 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = { 
         0: 'pk',
-        1: 'stock',
+        1: 'product',
         2: 'product__description',
         3: 'price',
         4: 'availability'
     }
+        #1: 'stock',
         #1: 'code',
 
     def _get_user_actions(self, request):
@@ -71,11 +72,12 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-id' % key_prefix : el.pk,
                '%s-pk' % key_prefix : el.pk,
-               '%s-stock_regex' % key_prefix : el,
+               '%s-product' % key_prefix : el.product.name,
                '%s-description' % key_prefix : el.product.description,
                '%s-price' % key_prefix : el.price,
                '%s-availability' % key_prefix : el.amount_available,
             })
+               #'%s-stock_regex' % key_prefix : el,
                #'%s-code' % key_prefix : el.code,
 
         data['form-TOTAL_FORMS'] = i + 1  #empty form for create new insert data
@@ -98,11 +100,12 @@ class Block(BlockSSDataTables):
 
             records.append({
                 'id' : "%s %s" % (form['pk'], form['id']),
-                'stock' : form['stock_regex'],
+                'product' : form['product'],
                 'description' : form['description'], #description,
                 'price' : form['price'],
                 'availability' : form['availability'],
             })
+                #'stock' : form['stock_regex'],
                 #'code' : form['code'],
 
         return formset, records, {}
