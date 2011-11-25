@@ -6,27 +6,6 @@ import decimal
 
 #-----------------------------------------------------------------------------
 
-class CurrencyField(models.DecimalField):
-    """Subclass of DecimalField.
-    It must be positive.
-
-    We do not want to round up to second decimal here.
-    We will do it in a place suitable for views.
-    """
-
-    def __init__(self, *args, **kw):
-        kw['max_digits'] = 10
-        kw['decimal_places'] = 4
-        super(CurrencyField, self).__init__(*args, **kw)
-
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], [
-    "^gasistafelice\.base\.fields\.CurrencyField",
-    "^current_user\.models\.CurrentUserField",
-])
-
-#-----------------------------------------------------------------------------
-
 class PyPrettyDecimal(decimal.Decimal):
 
     def __unicode__(self):
@@ -50,4 +29,26 @@ class PrettyDecimalField(models.DecimalField):
         except decimal.InvalidOperation:
             raise exceptions.ValidationError(self.error_messages['invalid'])
 
+
+#-----------------------------------------------------------------------------
+
+class CurrencyField(PrettyDecimalField):
+    """Subclass of DecimalField.
+    It must be positive.
+
+    We do not want to round up to second decimal here.
+    We will do it in a place suitable for views.
+    """
+
+    def __init__(self, *args, **kw):
+        kw['max_digits'] = 10
+        kw['decimal_places'] = 4
+        super(CurrencyField, self).__init__(*args, **kw)
+
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], [
+    "^gasistafelice\.lib\.fields\.models\.CurrencyField",
+    "^gasistafelice\.lib\.fields\.models\.PrettyDecimalField",
+    "^current_user\.models\.CurrentUserField",
+])
 
