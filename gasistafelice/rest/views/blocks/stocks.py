@@ -23,7 +23,7 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = { 
         0: 'pk',
-        1: 'product',
+        1: 'stock',
         2: 'product__description',
         3: 'price',
         4: 'availability'
@@ -55,7 +55,7 @@ class Block(BlockSSDataTables):
         return user_actions
         
     def _get_resource_list(self, request):
-        #SupplierStock
+        # SupplierStock list
         return request.resource.stocks
 
     def _get_records(self, request, querySet):
@@ -71,7 +71,7 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-id' % key_prefix : el.pk,
                '%s-pk' % key_prefix : el.pk,
-               '%s-product' % key_prefix : el.product,
+               '%s-stock_regex' % key_prefix : el,
                '%s-description' % key_prefix : el.product.description,
                '%s-price' % key_prefix : el.price,
                '%s-availability' % key_prefix : el.amount_available,
@@ -98,7 +98,7 @@ class Block(BlockSSDataTables):
 
             records.append({
                 'id' : "%s %s" % (form['pk'], form['id']),
-                'product' : form['product'],
+                'stock' : form['stock_regex'],
                 'description' : form['description'], #description,
                 'price' : form['price'],
                 'availability' : form['availability'],
