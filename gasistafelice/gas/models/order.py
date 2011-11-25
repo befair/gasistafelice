@@ -96,14 +96,22 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             mdate = ""
 
-        rv = _("Order %(gas)s to %(supplier)s (%(state)s %(deldate)s)") % {
-                    'gas' : self.gas,
+        refs = self.delivery_referrer_persons
+        if refs and refs is not None and refs.count() > 0:
+            ref = " Ref: %s " % refs[0]
+        else:
+            ref = ""
+
+        rv = _("Ord. %(order_num)s %(gas)s..%(supplier)s (%(state)s %(deldate)s) %(ref)s") % {
+                    'gas' : self.gas.id_in_des,
                     'supplier' : self.supplier,
                     'state' : state,
-                    'deldate' : mdate
+                    'deldate' : mdate,
+                    'order_num' : self.pk,
+                    'ref' : ref
         }
-        if settings.DEBUG:
-            rv += " [%s]" % self.pk
+        #if settings.DEBUG:
+        #    rv += " [%s]" % self.pk
         return rv
 
     def do_transition(self, transition, user):
