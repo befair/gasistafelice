@@ -276,11 +276,11 @@ class EditOrderForm(BaseOrderForm):
         if self.cleaned_data.get('delivery_datetime'):
             d = self.get_delivery()
             self.instance.delivery = d
-               
+
         if self.cleaned_data.get('withdrawal_datetime'):
             w = self.get_withdrawal()
             self.instance.withdrawal = w
-               
+
         return super(EditOrderForm, self).save()
 
     class Meta:
