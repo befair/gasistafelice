@@ -54,7 +54,7 @@ class GAS(models.Model, PermissionResource):
 
     supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"),verbose_name=_('Suppliers'))
     
-    birthday = models.DateField(null=True, blank=True, help_text=_("Born"),verbose_name=_('birthday'))
+    birthday = models.DateField(null=True, blank=True, help_text=_("When this GAS is born"), verbose_name=_('birthday'))
     vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"),verbose_name=_('VAT'))
     fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"),verbose_name=_('Fiscal code card'))
 
@@ -100,6 +100,7 @@ class GAS(models.Model, PermissionResource):
     class Meta:
         verbose_name_plural = _('GAS')
         app_label = 'gas'
+        ordering = ('-birthday',)
 
     #-- Overriding built-in methods --#
     def __unicode__(self):
@@ -294,12 +295,6 @@ class GAS(models.Model, PermissionResource):
                 self.des = DES.objects.all()[0]
 
         super(GAS, self).save(*args, **kw)
-
-        if created:
-
-            self.config = GASConfig.objects.create(gas=self)
-            #TODO self.account = Account.objects.create()
-            #TODO self.liquidity = Account.objects.create()
 
     #-- Resource API --#
 
