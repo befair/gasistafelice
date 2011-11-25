@@ -858,6 +858,9 @@ class SupplierStock(models.Model, PermissionResource):
             'product': self.product,
         }
         
+    @property
+    def parent(self):
+        return self.supplier
 
 #    @property
 #    def description(self):
