@@ -338,8 +338,8 @@ class SupplierAgent(models.Model):
     def clean(self):
         self.job_title = self.job_title.strip()
         self.job_description = self.job_description.strip()
-        if self.supplier.agent_set.filter(is_referrer).count() > 1:
-            raise ValidationError(_("There can be only one referrer for each supplier"))
+#        if self.supplier.agent_set.filter(is_referrer).count() > 1:
+#            raise ValidationError(_("There can be only one referrer for each supplier"))
         return super(SupplierAgent, self).clean()
 
 # COMMENT fero: this should be related to EDIT and CREATE permissions for related Supplier object
