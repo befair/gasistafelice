@@ -29,6 +29,8 @@ from workflows.utils import do_transition
 from datetime import datetime, timedelta
 
 #from django.utils.encoding import force_unicode
+import logging
+log = logging.getLogger(__name__)
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -212,13 +214,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, initial_price=s.price)
+        log.debug("GSOP add (%s) price(%s)" % (s, s.price))
+        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, order_price=s.price, initial_price=s.price)
         if created:
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
+            self._msg.append('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
             gsop.order_price = s.price
             gsop.save()
         else:
-            self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            self._msg.append('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
             if gsop.delivered_price != s.price:
                 gsop.delivered_price = s.price
                 gsop.save()
