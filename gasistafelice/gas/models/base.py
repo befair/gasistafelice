@@ -568,13 +568,13 @@ class GASMember(models.Model, PermissionResource):
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
-        rv = _('%(gas)s - %(person)s') % {'person' : self.person, 'gas': self.gas.id_in_des}
+        rv = '%(gas)s - %(person)s' % {'person' : self.person, 'gas': self.gas.id_in_des}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
 
     def statistic_name(self):
-        rv = _('%(gas)s - %(person)s ') % {'person' : self.person, 'gas': self.gas.id_in_des}
+        rv = '%(gas)s - %(person)s ' % {'person' : self.person, 'gas': self.gas.id_in_des}
         #rv = _('%(person)s ') % {'person' : self.person}
         return rv
 

@@ -173,8 +173,8 @@ class AddOrderForm(BaseOrderForm):
             Solidal Pact    OneSupplier     OneGAS    ChooseReferrer
     """
     log.debug("AddOrderForm")
-    pact = forms.ModelChoiceField(label=_('Supplier'), queryset=GASSupplierSolidalPact.objects.none(), required=True)
-    email_gas = forms.BooleanField(label=_('Send email at the FORUM of the GAS?'), required=False)
+    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True)
+    email_gas = forms.BooleanField(label=_('Send email at the LIST of the GAS?'), required=False)
 
     def __init__(self, request, *args, **kw):
 
@@ -253,8 +253,7 @@ class AddOrderForm(BaseOrderForm):
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
-                            , 'datetime_start'
-                            , 'datetime_end'
+                            , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
                             , 'delivery_referrer'
                             , 'email_gas'
@@ -300,8 +299,7 @@ class EditOrderForm(BaseOrderForm):
         fields = ['datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, {
-            'fields' : [ 'datetime_start'
-                            , 'datetime_end'
+            'fields' : [ ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
                             , 'delivery_referrer'
             ]

@@ -93,9 +93,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if self.delivery and self.delivery.date is not None:
             del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
             if self.is_active():
-                mdate = _(" --> consegna prevista il %(date)s") % { 'date' : del_date }
+                mdate = _(" --> to be delivered on %(date)s") % { 'date' : del_date }
             else:
-                mdate = _(" consegnato %(date)s") % { 'date' : del_date }
+                mdate = _(" delivered on %(date)s") % { 'date' : del_date }
         else:
             mdate = ""
 
@@ -105,9 +105,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = _("Ord. %(order_num)s %(gas)s..%(supplier)s (%(state)s %(deldate)s) %(ref)s") % {
-                    'gas' : self.gas.id_in_des,
-                    'supplier' : self.supplier,
+        rv = _("Ord. %(order_num)s %(pact)s (%(state)s%(deldate)s) %(ref)s") % {
+                    'pact' : self.pact,
                     'state' : state,
                     'deldate' : mdate,
                     'order_num' : self.pk,
