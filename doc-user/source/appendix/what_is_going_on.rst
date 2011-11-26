@@ -58,7 +58,7 @@ Le cose non citate qui sopra sono da considerarsi non funzionanti o non realizza
 
 1. Registrazione nuova persona
 2. Cambio password
-3. Facilità di navigazione
+3. Alcuni link per semplificare la navigazione
 4. Visualizzazione ad immagini di prodotti e categorie
 5. Filtro dei prodotti
 6. Filtro dei produttori
@@ -70,6 +70,7 @@ Quali problemi segnalare
 ------------------------
 
 In questa fase di primo utilizzo del software, vi chiediamo il piacere di segnalare esclusivamente problemi relativi alle parti:
+
 * che sono ritenute funzionanti :ref:`what_works_now` e/o 
 * ad altre parti che sono **bloccanti** per portare avanti la vostra attività di routine
 
