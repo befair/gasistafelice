@@ -65,7 +65,7 @@ def notify_gasstock_product_enabled(sender, **kwargs):
     }
 
     recipients = User.objects.filter(
-        person.gasmember_set__in=gasstock.gasmembers
+        person__gasmember_set__in=gasstock.gasmembers
     ).distinct()
 
     notification.send(recipients, "gasstock_update", 
@@ -84,7 +84,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
     }
 
     recipients = User.objects.filter(
-        person.gasmember_set__in=gasstock.gasmembers
+        person__gasmember_set__in=gasstock.gasmembers
     ).distinct()
 
     notification.send(recipients, "gasstock_update", 
@@ -118,7 +118,6 @@ def notify_order_state_update(sender, **kwargs):
 #-------------------------------------------------------------------------------
 
 
-gas_signals.order_open.connect(notify_order_open)
 gas_signals.order_state_update.connect(notify_order_state_update)
 gas_signals.gmo_price_update.connect(notify_gmo_price_update)
 gas_signals.gmo_product_erased.connect(notify_gmo_product_erased)
