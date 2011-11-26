@@ -2,6 +2,7 @@
 This module contains workflow-related data needed for GAS' order management.
 """
 
+#FIXME: translation SHOULD happen at run-time!
 from django.utils.translation import ugettext as _
 
 from gasistafelice.base.models import WorkflowDefinition
@@ -144,15 +145,17 @@ workflow_dict[name] = WorkflowDefinition(name, state_list, transition_list, stat
 
 #----------------------------------------------------------------------------- 
 ## default Workflow for a SupplierOrder 
-name="VerySimpleSupplierOrderDefault"
+name="SimpleSupplierOrderDefault"
  
 ## States in which a SupplierOrder can be
 state_list = (
           # (key, state name),
-           ('open', "Open"), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
-           ('closed', "Closed"), # SupplierOrder is closed; GasMemberOrders are disabled 
-           ('archived', "Archived"), # SupplierOrder was delivered to and processed by the GAS
-           ('canceled', "Canceled"),# SupplierOrder was canceled
+           ('prepared', _("Prepared")), # SupplierOrder has been created
+           ('open', _("Open")), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
+           ('closed', _("Closed")), # SupplierOrder is closed; GasMemberOrders are disabled 
+           ('sent', _("Sent")), # SupplierOrder is sent; no more changes allowed other than pay
+           ('paid', _("Paid")), # SupplierOrder is paid 
+           ('canceled', _("Canceled")),# SupplierOrder was canceled
            #(exception_raised,"Exception raised")
 )
 
@@ -161,23 +164,25 @@ state_list = (
  
 transition_list = ( 
                  # (key, transition name, destination state), 
-                 ('close', "Close", 'closed'), # close the SupplierOrder
-                 ('archive', "Archive", 'archived'), # mark the SupplierOrder as "archived" (do not display anymore)
-                 ('cancel', "Cancel", 'canceled'), # cancel the SupplierOrder                                     
+                 ('open', _("Open"), 'open'), # close the SupplierOrder
+                 ('close', _("Close"), 'closed'), # close the SupplierOrder
+                 ('pay', _("Pay"), 'paid'), # mark the SupplierOrder as "paid" 
+                 ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder                                     
 )
  
 ## Transitions-to-States map
 # FIXME: should be a dictionary
 state_transition_map = (
                            # (state name, transition name), 
+                           ('prepared', 'open'),
                            ('open', 'close'),
-                           ('closed', 'archive'),
+                           ('closed', 'pay'),
                            # SupplierOrder may be canceled at any time before delivery happens
                            ('open', 'cancel'),
                            ('closed', 'cancel'),
-                           )
+)
        
-initial_state_name = 'open'
+initial_state_name = 'prepared'
  
 ## define default Transitions for States in a Workflow, 
 ## so we can suggest to end-users what the next "logical" State could be   

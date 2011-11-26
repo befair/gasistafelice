@@ -5,7 +5,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from workflows.models import Workflow, Transition
-from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition
+from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
 from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
@@ -27,6 +27,9 @@ from django.conf import settings
 
 from workflows.utils import do_transition
 from datetime import datetime, timedelta
+import logging
+
+log = logging.getLogger(__name__)
 
 #from django.utils.encoding import force_unicode
 
@@ -96,7 +99,21 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)
-        signals.order_state_update(sender=self, transition=transition)
+        signals.order_state_update.send(sender=self, transition=transition)
+
+    def open_if_needed(self):
+        """Check datetime_start and open order if needed."""
+
+        if self.datetime_start <= datetime.datetime.now():
+
+            # Act as superuser
+            user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+            t_name = "open"
+            t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+            if t in get_allowed_transitions(self, user):
+                log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
+                self.do_transition(t, user)
 
     def get_valid_name(self):
         from django.template.defaultfilters import slugify
@@ -344,11 +361,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     self.withdrawal = w
 
         super(GASSupplierOrder, self).save(*args, **kw)
-
-        if not self.workflow:
-            # Set default workflow
-            w = self.gas.config.default_workflow_gassupplier_order
-            set_workflow(self, w)
 
         if created:
             self.set_default_gasstock_set()
