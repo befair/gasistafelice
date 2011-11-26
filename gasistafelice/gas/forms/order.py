@@ -182,6 +182,11 @@ class AddOrderForm(BaseOrderForm):
 
         #SOLIDAL PACT
         pacts = request.resource.pacts
+
+        if not pacts.count():
+            #TODO: is it the right exception?
+            raise PermissionDenied(_("You cannot open an order on a resource with no pacts"))
+
         self.fields['pact'].queryset = pacts
         self.fields['pact'].initial = pacts[0]
         #Person is the current user: referers
@@ -191,7 +196,10 @@ class AddOrderForm(BaseOrderForm):
         elif self.fields['delivery_referrer'].queryset.count() > 0:
             self.fields['delivery_referrer'].initial = self.fields['delivery_referrer'].queryset[0]
 
-        if pacts[0]:
+        if pacts.count() == pacts.filter(gas=pacts[0].gas):
+            # If we are managing some pacts (even 1) of the same GAS,
+            # we can set some additional defaults
+
             gas = pacts[0].gas
             #Next week by default
             dt = datetime.now()+timedelta(days=7)
@@ -241,7 +249,7 @@ class AddOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['pact', 'datetime_start', 'datetime_end', 'delivery_datetime', 'delivery_referrer']
+        fields = ['pact', 'datetime_start', 'datetime_end']
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
