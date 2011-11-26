@@ -5,8 +5,8 @@
     {% for row in records %}
     [
 
-        "{{row.order_id|escapejs}}",
-        "{{row.purchaser_id|escapejs}} - {{row.gasmember.upper|escapejs}}",
+        "{{row.purchaser_id|escapejs}}",
+        "{{row.gasmember.upper|escapejs}}",
         "&#8364; {{row.sum_amount|floatformat:"2"}}",
         "{{row.amounted|escapejs}}",
 

@@ -84,7 +84,6 @@ class SingleSupplierStockForm(forms.Form):
             except Exception, e:
                 log.debug("Save SingleSupplierStockForm error(%s)" %  str(e))
                 Exception("Save SingleSupplierStockForm error: %s", str(e))
-                #error((1048, "Column 'initial_price' cannot be null"))
         else:
             #do not create suppliers stock here!
             #ss = SupplierStock()

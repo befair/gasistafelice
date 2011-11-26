@@ -113,7 +113,7 @@ class Block(BlockSSDataTables):
             #querySet? 'dict' object has no attribute 'id' or 'order_id'
 
             data.update({
-               '%s-id' % key_prefix : self._getItem(pairs, 'order_id', 0),
+               '%s-ord_id' % key_prefix : self._getItem(pairs, 'order_id', 0),
                '%s-gm_id' % key_prefix : pk,
                '%s-amounted' % key_prefix : self._getItem(pairs, 'sum_amount', 0),
             })
@@ -148,13 +148,13 @@ class Block(BlockSSDataTables):
             print "Curtails gasmember -%s--%s-> %s" % (i, pk, gasmember)
 
             records.append({
-               'pk' : self._getItem(pairs, 'order_id', 0),
+               'purchaser_id' : pk, #self._getItem(pairs, 'order_id', 0), #request.ressource.pk
                'gasmember' : gasmember,
                'tot_product' : self._getItem(pairs, 'tot_product', 0),
                'sum_qta' : self._getItem(pairs, 'sum_qta', 0),
-               'sum_pice' : self._getItem(pairs, 'sum_price', 0),
+               'sum_price' : self._getItem(pairs, 'sum_price', 0),
                'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
-               'amounted' : "%s %s" % (form['id'], form['amounted']),
+               'amounted' : "%s %s %s" % (form['ord_id'], form['gm_id'], form['amounted']),
             })
 
 #               'pk' : el.order_id,

@@ -32,6 +32,8 @@ import logging
 log = logging.getLogger(__name__)
 
 #from django.utils.encoding import force_unicode
+import logging
+log = logging.getLogger(__name__)
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -97,14 +99,22 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             mdate = ""
 
-        rv = _("Order %(gas)s to %(supplier)s (%(state)s %(deldate)s)") % {
-                    'gas' : self.gas,
+        refs = self.delivery_referrer_persons
+        if refs and refs is not None and refs.count() > 0:
+            ref = " Ref: %s " % refs[0]
+        else:
+            ref = ""
+
+        rv = _("Ord. %(order_num)s %(gas)s..%(supplier)s (%(state)s %(deldate)s) %(ref)s") % {
+                    'gas' : self.gas.id_in_des,
                     'supplier' : self.supplier,
                     'state' : state,
-                    'deldate' : mdate
+                    'deldate' : mdate,
+                    'order_num' : self.pk,
+                    'ref' : ref
         }
-        if settings.DEBUG:
-            rv += " [%s]" % self.pk
+        #if settings.DEBUG:
+        #    rv += " [%s]" % self.pk
         return rv
 
     def do_transition(self, transition, user):
@@ -229,13 +239,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, initial_price=s.price)
+        log.debug("GSOP add (%s) price(%s)" % (s, s.price))
+        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, order_price=s.price, initial_price=s.price)
         if created:
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
+            self._msg.append('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
             gsop.order_price = s.price
             gsop.save()
         else:
-            self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            self._msg.append('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
             if gsop.delivered_price != s.price:
                 gsop.delivered_price = s.price
                 gsop.save()

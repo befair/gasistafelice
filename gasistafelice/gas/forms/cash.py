@@ -30,7 +30,8 @@ class EcoGASMemberForm(forms.Form):
     Movement between GASMember.account --> GAS.account
     """
 
-    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    purchaser_id = forms.IntegerField(required=False)
+    ord_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     log.debug("EcoGASMemberForm (%s)" % id)
     gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     amounted = forms.DecimalField(required=False, initial=0) #, widget=forms.TextInput())
@@ -39,6 +40,9 @@ class EcoGASMemberForm(forms.Form):
     def __init__(self, request, *args, **kw):
         super(EcoGASMemberForm, self).__init__(*args, **kw)
         self.fields['amounted'].widget.attrs['class'] = 'taright'
+        self.fields['purchaser_id'].widget.attrs['readonly'] = True
+        self.fields['purchaser_id'].widget.attrs['disabled'] = 'disabled'
+        self.fields['purchaser_id'].widget.attrs['class'] = 'input_small'
         self.__loggedusr = request.user
 
     def save(self):
@@ -49,8 +53,10 @@ class EcoGASMemberForm(forms.Form):
             log.debug("EcoGASMemberForm cannot identify the logged in user.")
             return
 
-        gm_id = self.cleaned_data.get('purchaser_id')
-        ord_id = self.cleaned_data.get('order_id')
+        gm_id = self.cleaned_data.get('gm_id')
+        ord_id = self.cleaned_data.get('ord_id')
+        #FIXME DEBUG EcoGASMemberForm identifiers [None/None]
+        log.debug("EcoGASMemberForm identifiers [%s/%s]", ord_id, gm_id )
         if not gm_id or not ord_id:
             raise forms.ValidationError(_('cannot retrieve GASMember and Order identifiers. Cannot continue'))
             log.debug("EcoGASMemberForm cannot retrieve GASMember and Order identifiers")
@@ -61,7 +67,7 @@ class EcoGASMemberForm(forms.Form):
             raise forms.ValidationError(_('cannot retrieve GASMember and Order datas. Cannot continue'))
             log.debug("EcoGASMemberForm cannot retrieve GASMember and Order datas. Identifiers (%s/%s)." % (ord_id,gm_id))
             return
-        #TODO: Seldon or Fero. Control if Order is in the rigth Woflow STATE
+        #TODO: Seldon or Fero. Control if Order is in the rigth Workflow STATE
 
         #TODO: Control is CASH REFERRER for this GAS
         if self.__loggedusr not in order.pact.gas.cash_referrers:
