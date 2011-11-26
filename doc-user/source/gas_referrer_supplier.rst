@@ -22,4 +22,10 @@ Il referente fornitore
 ---------------
 
 * Apre l'ordine
+* Decide all'apertura dell'ordine se inviare o no un email al FORUM del GAS
+
+* Chiude ordine
+* Decide alla chiusura se mandare o no un email al produttore
+
+* CRON: esiste un automantismo che permette di inviare un email sul FORUM del GAS per avvertire della prossima chiusura di un ordine. L'evento aggrega varie ordini che soddisfanno la stessa regola.
 

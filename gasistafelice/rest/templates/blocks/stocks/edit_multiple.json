@@ -6,8 +6,7 @@
     [
 
         "{{ss.id|escapejs}}",
-        "{{ss.stock|escapejs}}",
-        "{{ss.description|escapejs}}",
+        "{{ss.product|escapejs}}",
         "{{ss.price|escapejs}}",
         "{{ss.availability|escapejs}}",
 

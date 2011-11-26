@@ -88,10 +88,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             state = _("open")
 
-        rv = _("Order %(gas)s to %(supplier)s (%(state)s)") % {
+        if self.delivery and self.delivery.date is not None:
+            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
+            if self.is_active():
+                mdate = _(" --> consegna prevista il %(date)s") % { 'date' : del_date }
+            else:
+                mdate = _(" consegnato %(date)s") % { 'date' : del_date }
+        else:
+            mdate = ""
+
+        rv = _("Order %(gas)s to %(supplier)s (%(state)s %(deldate)s)") % {
                     'gas' : self.gas,
                     'supplier' : self.supplier,
-                    'state' : state
+                    'state' : state,
+                    'deldate' : mdate
         }
         if settings.DEBUG:
             rv += " [%s]" % self.pk
@@ -120,9 +130,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         from django.utils.encoding import smart_str
         n = str(self.pk) + '_'
         n += smart_str(slugify(self.pact.supplier.name).replace('-', '_'))
-        n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        #n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        #TODO: Auto create appointment for delivery date (Discuss about order type implementation)
+        if self.delivery and self.delivery.date:
+            n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        else:
+            n += '_{0:%Y%m%d}'.format(datetime.now())
         return n
-        return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
+        #return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
 
     #-- Contacts --#
 
@@ -160,6 +175,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         pr = ParamRole.get_role(GAS_REFERRER_ORDER, order=self)
         # retrieve all Users having this role
         return pr.get_users()       
+
+    @property
+    def supplier_referrers_people(self):
+        prs = Person.objects.none()
+        if self.referrers:
+            prs = Person.objects.filter(user__in=self.referrers)
+        return prs
+
 
     #-------------------------------------------------------------------------------#
 
@@ -292,7 +315,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def supplier(self):
         """Return the supplier this order is placed against."""
-        return self.pact.supplier        
+        return self.pact.supplier
     
     @property
     def suppliers(self):
@@ -304,6 +327,78 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #ERROR: An unexpected error occurred while tokenizing input
     #The following traceback may be corrupted or invalid
     #The error message is: ('EOF in multi-line statement', (390, 0))
+
+    @property
+    def ordered_gasmembers(self):
+        from django.db.models import Count, Sum
+        #Cannot resolve keyword 'order' into field. Choices are: id, is_confirmed, note, ordered_amount, ordered_price, ordered_product, purchaser, withdrawn_amount
+        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+#        return self.ordered_products.values('ordered_product__order', 'purchaser').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+        #GASMemberOrder.objects.raw("SELECT ... from <GASMemberOrder_table_name> where ...")
+        #self.line_items.extra(select=("lineprice": "orderline__price*orderline__qty")).aggregate(Sum('lineprice'))
+
+        #return self.ordered_products.annotate('purchaser', tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+
+        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+
+        #Do not use string formatting on raw queries!
+        return GASMemberOrder.objects.raw("SELECT distinct gmo.purchaser_id AS purchaser \
+, gsop.order_id AS porder \
+, SUM(gmo.ordered_price) AS sum_price \
+, COUNT(gmo.ordered_product_id) AS tot_product \
+, SUM(gmo.ordered_amount) AS sum_qta \
+FROM gas_gasmemberorder AS gmo \
+INNER JOIN gas_gassupplierorderproduct AS gsop \
+ON gmo.ordered_product_id = gsop.id \
+WHERE order_id = 10")
+
+        #<RawQuerySet: 'SELECT * from GASMemberOrder'>
+
+    @property
+    def ordered_gasmembers_sql(self):
+        from django.db import connection, transaction
+        cursor = connection.cursor()
+        #Using psycopg2:
+        #import psycopg2.extras
+        #cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        #Using Mysqldb:
+        #import MySQLdb.cursors
+        #cursor = connection.cursor(MySQLdb.DictCursor)
+        #cursor.execute() will then return a dictionary like object. 
+
+#TODO: Verify
+#mysql    : SELECT a,b,c,d,e                 FROM table GROUP BY a
+#postgres : SELECT DISTINCT ON (a) a,b,c,d,e FROM table ORDER BY a,b,c
+        # Data retrieval operation - no commit required
+        # p.name || ' ' || p.surname --> POSTGRES
+        cursor.execute("SELECT tmp.* , (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+FROM (SELECT gmo.purchaser_id AS purchaser_id \
+, gsop.order_id AS order_id \
+, SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
+, SUM(gmo.ordered_price) AS sum_price \
+, COUNT(gmo.ordered_product_id) AS tot_product \
+, SUM(gmo.ordered_amount) AS sum_qta \
+FROM gas_gasmemberorder AS gmo \
+INNER JOIN gas_gassupplierorderproduct AS gsop \
+ON gmo.ordered_product_id = gsop.id \
+WHERE order_id = %s \
+GROUP BY gmo.purchaser_id, gsop.order_id \
+) AS tmp", [self.pk])
+        #row = cursor.fetchall()
+        #>>> cursor.fetchall()    ((5L, None), (6L, None))
+        #write custom SQL queries wich would return dicts instead of tuples
+        #row = dictfetchall(cursor)  --> Update Django??? Not Available
+        #row = cursor.dictfetchall() 
+        #>>> dictfetchall(cursor) [{'parent_id': None, 'id': 5L}, {'parent_id': None, 'id': 6L}]
+        desc = cursor.description 
+        row = [
+            dict(zip([col[0] for col in desc], row))
+            for row in cursor.fetchall()
+        ]
+#{'purchaser': 7L, 'sum_amount': Decimal('98.040000'), 'porder': 10L, 'sum_qta': Decimal('5.00'), 'tot_product': 5L, 'sum_price': Decimal('98.0400')}
+#{'purchaser': 11L, 'sum_amount': Decimal('54.840000'), 'porder': 10L, 'sum_qta': Decimal('2.00'), 'tot_product': 2L, 'sum_price': Decimal('54.8400')}
+
+        return row
 
     @property
     def ordered_products(self):

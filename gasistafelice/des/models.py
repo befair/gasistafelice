@@ -128,6 +128,13 @@ class DES(Site, PermissionResource):
         return rv
 
     @property
+    def supplier_referrers_people(self):
+        prs = Person.objects.none()
+        for g in self.gas_list:
+            prs |= g.supplier_referrers_people
+        return prs
+
+    @property
     def info_people(self):
         return self.info_people_set.all()
         
@@ -264,6 +271,12 @@ class DES(Site, PermissionResource):
         return self.gas_set.all()
 
     @property
+    def gas(self):
+        #Use in OpenOrderForm
+        #TODO: if none the form must retrieve the gas related user logged in. What happend if superuser is the logged in?
+        return None
+
+    @property
     def persons(self):
         return Person.objects.all()
 
@@ -289,7 +302,7 @@ class DES(Site, PermissionResource):
         """Return pacts bound to all GAS in DES"""
         from gasistafelice.gas.models.base import GASSupplierSolidalPact
         tmp = self.gas_list
-        return GASSupplierSolidalPact.objects.filter(gas__in=tmp)
+        return GASSupplierSolidalPact.objects.filter(gas__in=tmp).order_by('gas', 'supplier')
 
     @property
     def suppliers(self):

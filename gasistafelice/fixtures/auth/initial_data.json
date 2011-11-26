@@ -75,7 +75,8 @@
         "fields": {
             "name": "DES_ADMIN"
         }
-    }
+    },
+
+    {"pk": 1, "model": "auth.user", "fields": {"username": "admin", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2011-10-16 19:28:39", "groups": [], "user_permissions": [], "password": "sha1$040d8$40efd13c78751faf66c398b292e292e934073565", "email": "admin@a.com", "date_joined": "2011-10-16 19:28:39"}}
 
 ]
-

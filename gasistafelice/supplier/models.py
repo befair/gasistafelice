@@ -59,11 +59,14 @@ class Supplier(models.Model, PermissionResource):
     
     class Meta:
         verbose_name = _('supplier')
-        verbose_name_plural = _('suppliers')        
+        verbose_name_plural = _('suppliers')
         ordering = ('name',)
 
     def __unicode__(self):
-        return unicode(self.name)
+        rv = unicode(self.name)
+        if settings.DEBUG:
+            rv += " [%s]" % self.pk
+        return rv
 
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
@@ -120,6 +123,26 @@ class Supplier(models.Model, PermissionResource):
         return pr.get_users() | self.tech_referrers
 
     @property
+    def supplier_referrers(self):
+        """
+        Return all users being supplier referrers for this Supplier for all pacts it have
+        """
+        rv = User.objects.none()
+        for p in self.pacts:
+            rv |= p.gas.supplier_referrers
+        return rv
+
+    @property
+    def supplier_referrers_people(self):
+        """
+        Return all users being supplier referrers for this Supplier for all pacts it have
+        """
+        prs = Person.objects.none()
+        for p in self.pacts:
+            prs |= p.gas.supplier_referrers_people
+        return prs
+
+    @property
     def info_people(self):
         """Return Person that can give info on this resource QuerySet."""
         return self.agent_set.all()
@@ -136,7 +159,7 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def pacts(self):
-        return self.pact_set.all()
+        return self.pact_set.all().order_by('gas')
 
     @property
     def pact(self):
@@ -158,7 +181,12 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def gas(self):
-        raise NotImplementedError("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
+        #raise NotImplementedError("calling supplier.gas is a no-sense. Supplier is related to more than one gas")
+        #Use in OpenOrderForm
+        #TODO: if none the form must retrieve the gas related user logged in. What happend if superuser is the logged in?
+        return None
+
+
 
     @property
     def products(self):
@@ -193,7 +221,7 @@ class Supplier(models.Model, PermissionResource):
         """
 
         allowed_users = User.objects.none()
-        ctx_keys_to_check = set(['gas', 'site'])
+        ctx_keys_to_check = set(('gas', 'site'))
         ctx_keys = context.keys()
 
         if len(ctx_keys) > 1:
@@ -313,8 +341,8 @@ class SupplierAgent(models.Model):
     def clean(self):
         self.job_title = self.job_title.strip()
         self.job_description = self.job_description.strip()
-        if self.supplier.agent_set.filter(is_referrer).count() > 1:
-            raise ValidationError(_("There can be only one referrer for each supplier"))
+#        if self.supplier.agent_set.filter(is_referrer).count() > 1:
+#            raise ValidationError(_("There can be only one referrer for each supplier"))
         return super(SupplierAgent, self).clean()
 
 # COMMENT fero: this should be related to EDIT and CREATE permissions for related Supplier object
@@ -905,6 +933,7 @@ class SupplierStock(models.Model, PermissionResource):
             if not ss is None:
                 return bool(self.amount_available != ss.amount_available)
             else:
+                log.debug('SS.has_changed_availability cannot find pk %s ' % self.pk)
                 return False
         except SupplierStock.DoesNotExist:
             return False
@@ -916,6 +945,7 @@ class SupplierStock(models.Model, PermissionResource):
             if not ss is None:
                 return bool(self.price != ss.price)
             else:
+                log.debug('SS.has_changed_price cannot find pk %s ' % self.pk)
                 return False
         except SupplierStock.DoesNotExist:
             return False

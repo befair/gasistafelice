@@ -21,11 +21,11 @@ class Block(BlockSSDataTables):
 
     BLOCK_NAME = "order"
     BLOCK_DESCRIPTION = _("Order")
-    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"]
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'pk', 
-        1: 'gasstock__stock__supplier__name', 
+        0: 'pk',
+        1: 'gasstock__stock__supplier__name',
         2: 'gasstock__stock__product__name',
         3: '',
         4: 'order_price',
@@ -47,6 +47,8 @@ class Block(BlockSSDataTables):
         so you have to reset self.request and self.resource attribute if you want
         """
 
+        log.debug("order options_response")
+
         self.request = request
         self.resource = request.resource
 
@@ -62,7 +64,7 @@ class Block(BlockSSDataTables):
             else:
                 orders.filter(delivery__date__isnull=True)
 
-        elif gas.config.order_show_only_one_at_a_time:
+        if gas.config.order_show_only_one_at_a_time:
             field_type = "radio"
 
         fields = []

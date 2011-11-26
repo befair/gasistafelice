@@ -6,8 +6,7 @@
     [
 
         "{{ss.id|escapejs}}",
-        "{{ss.stock|escapejs}}",
-        "{{ss.product.description|escapejs}}",
+        "{{ss.product|escapejs}}",
         "&#8364; {{ss.price|floatformat:2|escapejs}}",
         "{% filter escapejs %}{% bool_img ss.availability %}{% endfilter %}",
         "{{ss.urn|escapejs}}",

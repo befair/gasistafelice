@@ -4,7 +4,6 @@
 {% block headers %}
 <th>{% trans "Id" %}</th>
 <th>{% trans "Product" %}</th>
-<th>{% trans "Description" %}</th>
 <th>{% trans "Price" %}</th>
 <th>{% trans "Availability" %}</th>
 {% endblock %}

@@ -9,6 +9,7 @@ from django.utils import simplejson
 import os
 from django.conf import settings
 
+#TODO: Fero def prepare_datatables_list
 def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
     """
     Retrieve querySet to be displayed in datatables..
@@ -23,8 +24,11 @@ def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
             - iTotalRecords: total data before filtering
             - iTotalDisplayRecords: total data after filtering
     """
-    iTotalRecords = querySet.count() #count how many records are in queryset before matching final criteria
-    
+    try:
+        iTotalRecords = querySet.count() #count how many records are in queryset before matching final criteria
+    except:
+        return prepare_datatables_list(request, querySet, columnIndexNameMap, *args)
+
     cols = int(request.GET.get('iColumns',0)) # Get the number of columns
     iDisplayLength =  min(int(request.GET.get('iDisplayLength',10)),100)     #Safety measure. If someone messes with iDisplayLength manually, we clip it to the max value of 100.
     startRecord = int(request.GET.get('iDisplayStart',0)) # Where the data starts from (page)
@@ -75,6 +79,35 @@ def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
     return querySet, {
         'iTotalRecords' : iTotalRecords,
         'iTotalDisplayRecords' : iTotalDisplayRecords,
+    }
+
+def prepare_datatables_list(request, queryList, columnIndexNameMap, *args):
+    """
+    Retrieve list of objects to be displayed in datatables..
+
+    Usage: 
+        queryList: raw list of objects set to draw data from.
+        columnIndexNameMap: field names in order to be displayed.
+
+    Return a tuple:
+        queryList: data to be displayed after this request
+        datatables parameters: a dict which includes
+            - iTotalRecords: total data before filtering
+            - iTotalDisplayRecords: total data after filtering
+    """
+    iTotalRecords = len(queryList)
+
+    # Ordering data
+
+    # Determine which columns are searchable
+
+    # Apply filtering by value sent by user
+
+    # Individual column search 
+
+    return queryList, {
+        'iTotalRecords' : iTotalRecords,
+        'iTotalDisplayRecords' : iTotalRecords,
     }
 
 def render_datatables(request, records, dt_params, jsonTemplatePath, moreData=None):

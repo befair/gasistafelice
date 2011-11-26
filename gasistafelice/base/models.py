@@ -423,6 +423,33 @@ class Resource(object):
                     self.contacts.filter(flavour=const.EMAIL)
 
     @property
+    def preferred_phone_address(self):
+        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_phone_contacts.values_list('value'))))
+
+    @property
+    def preferred_phone_contacts(self):
+        return self.contacts.filter(flavour=const.PHONE, is_preferred=True) or \
+                    self.contacts.filter(flavour=const.PHONE)
+
+    @property
+    def preferred_www_address(self):
+        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_www_contacts.values_list('value'))))
+
+    @property
+    def preferred_www_contacts(self):
+        return self.contacts.filter(flavour=const.WWW, is_preferred=True) or \
+                    self.contacts.filter(flavour=const.WWW)
+
+    @property
+    def preferred_fax_address(self):
+        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_fax_contacts.values_list('value'))))
+
+    @property
+    def preferred_fax_contacts(self):
+        return self.contacts.filter(flavour=const.FAX, is_preferred=True) or \
+                    self.contacts.filter(flavour=const.FAX)
+
+    @property
     def icon(self):
         "Returns default icon for resource"""
         icon = models.ImageField(upload_to="fake")
@@ -714,7 +741,8 @@ class Person(models.Model, PermissionResource):
         try:
             des = context['site']
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)
+            return User.objects.none()
+            #raise WrongPermissionCheck('CREATE', cls, context)
         else:
             allowed_users = des.gas_tech_referrers            
 
@@ -748,6 +776,9 @@ class Person(models.Model, PermissionResource):
         name, surname, 
         models.CharField(name="city", verbose_name=_("City")),
         models.CharField(name="username", verbose_name=_("Username")),
+        user,
+        contact_set,
+        address,
     )
    
 class Contact(models.Model):

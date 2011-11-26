@@ -215,7 +215,7 @@ class GAS(models.Model, PermissionResource):
         us = User.objects.none()
         for pr in prs:
             us |= pr.get_users() 
-        return us   
+        return us
 
     @property
     def tech_referrers_people(self):
@@ -352,7 +352,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def pacts(self):
         # Return pacts bound to a GAS
-        return self.pact_set.all()
+        return self.pact_set.all().order_by('supplier')
 
     @property
     def suppliers(self):
@@ -552,8 +552,13 @@ class GASMember(models.Model, PermissionResource):
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
+        models.CharField(max_length=200, name="email", verbose_name=_("Email")),
+        models.CharField(max_length=100, name="phone", verbose_name=_("Phone")),
+#        models.CharField(max_length=200, name="www", verbose_name=_("Web site")),
+        models.CharField(max_length=100, name="fax", verbose_name=_("Fax")),
         models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
     )
+        #display.Resource(name="person", verbose_name=_("Person")),
 
     class Meta:
         verbose_name = _('GAS member')
@@ -562,9 +567,15 @@ class GASMember(models.Model, PermissionResource):
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
 
     def __unicode__(self):
-        rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
+        #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
+        rv = _('%(gas)s - %(person)s') % {'person' : self.person, 'gas': self.gas.id_in_des}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
+        return rv
+
+    def statistic_name(self):
+        rv = _('%(gas)s - %(person)s ') % {'person' : self.person, 'gas': self.gas.id_in_des}
+        #rv = _('%(person)s ') % {'person' : self.person}
         return rv
 
     def _get_roles(self):
@@ -629,7 +640,15 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def email(self):
-        return self.person.email
+        return self.person.preferred_email_contacts
+
+    @property
+    def phone(self):
+        return self.person.preferred_phone_contacts
+
+    @property
+    def fax(self):
+        return self.person.preferred_fax_contacts
 
     @property
     def economic_state(self):
@@ -750,9 +769,13 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        #TODO FIXME AFTER 6: there should be no enry with ordered_amount = 0 in GASMemberOrder table
+        #TODO FIXME AFTER 6: there should be no entry with ordered_amount = 0 in GASMemberOrder table
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
-        return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
+
+    @property
+    def account(self):
+        #TODO: manage accounting informations here
+        return 0
 
     @property
     def basket_to_be_delivered(self):
@@ -1086,8 +1109,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         unique_together = (('gas', 'supplier'),)
 
     def __unicode__(self):
-        return _("Pact between %(gas)s and %(supplier)s") % \
-                      { 'gas' : self.gas, 'supplier' : self.supplier}
+#        return _("Pact between %(gas)s and %(supplier)s") % \
+#                      { 'gas' : self.gas, 'supplier' : self.supplier}
+        return _("%(gas)s - %(supplier)s") % \
+                      { 'gas' : self.gas.id_in_des, 'supplier' : self.supplier}
+
     @ClassProperty
     @classmethod
     def resource_type(cls):
@@ -1102,6 +1128,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
         # retrieve all Users having this role
         return pr.get_users()    
+
+    @property
+    def supplier_referrers_people(self):
+        prs = Person.objects.none()
+        if self.referrers:
+            prs = Person.objects.filter(user__in=self.referrers)
+        return prs
 
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
@@ -1159,6 +1192,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def gasstock(self):
         raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one gas stock")
+
+    @property
+    def pacts(self):
+        # itself in queryset
+        return GASSupplierSolidalPact.objects.filter(pk=self.pk)
 
     @property
     def pact(self):
