@@ -30,6 +30,7 @@ Indice dei contenuti:
     resource_order
     appendix/migration
     appendix/list
+    appendix/what_is_going_on
     
 .. TODO
     gas_referrer_cash
