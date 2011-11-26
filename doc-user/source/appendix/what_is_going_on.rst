@@ -2,9 +2,10 @@
 Stato dei lavori e segnalazione dei problemi
 ============================================
 
-Questa pagina è mantenuta aggiornata per illustrare, alla versione attuale, 
-cosa funziona nel software, e cosa non funziona nella piattaforma *Gasista Felice*
-O meglio, cosa si può fare e cosa non si può fare. Il che riguarda anche **quali problemi segnalare**.
+Questa pagina è mantenuta aggiornata per illustrare, alla versione attuale (**NOTA: da pubblicare lunedì 28/11/2011**), 
+cosa funziona nel software, e cosa non funziona nella piattaforma *Gasista Felice* disponibile su http://ordini.desmacerata.it
+
+Nella pagina si specificano anche **quali problemi segnalare**.
 
 .. _what_works_now:
 
