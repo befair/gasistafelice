@@ -946,6 +946,11 @@ class WorkflowDefinition(object):
             self.transitions[key] = Transition.objects.create(name=transition_name, workflow=self.workflow, destination=dest_state)
         ## associate Transitions to States
         for (state_name, transition_name) in self.state_transition_map:
+            log.debug("Workflow %(w)s, adding state=%(s)s transition=%(t)s" % {
+                'w' : self.workflow_name,
+                's' : state_name, 
+                't' : transition_name,
+            })
             state = self.states[state_name]
             transition = self.transitions[transition_name]
             state.transitions.add(transition)
@@ -961,10 +966,11 @@ class WorkflowDefinition(object):
             self.workflow.default_transition_set.add(DefaultTransition(state=state, transition=transition))
     
     def check_workflow_specs(self):
+        """Check the provided workflow specifications for internal consistency.
+
+        Return True if the specs are fine, False otherwise.
         """
-Check the provided workflow specifications for internal consistency;
-return True if the specs are fine, False otherwise.
-"""
+
         state_names = [key for (key, name) in self.state_list]
         transition_names = [key for (key, transition_name, destination_name) in self.transition_list]
         ## States have to be unique
@@ -994,7 +1000,7 @@ return True if the specs are fine, False otherwise.
 
 #-------------------------------------------------------------------------------
 
-#FIXME TODO This is a TEMP HACK used just because we need these users use parts of the web admin interface
+#This is an HACK used just because we need these users use parts of the web admin interface
 from gasistafelice.consts import GAS_MEMBER , GAS_REFERRER_TECH, SUPPLIER_REFERRER
 from django.contrib.auth.models import Group, Permission
 

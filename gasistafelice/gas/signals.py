@@ -9,4 +9,3 @@ gmo_product_erased = django.dispatch.Signal(providing_args=[])
 gasstock_product_disabled = django.dispatch.Signal(providing_args=[])
 gasstock_product_enabled = django.dispatch.Signal(providing_args=[])
 
-

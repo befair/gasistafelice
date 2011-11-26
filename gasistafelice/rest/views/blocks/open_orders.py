@@ -31,20 +31,21 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
-        ctx = { request.resource.resource_type : request.resource }
+        ctx = { self.resource.resource_type : self.resource }
 
         if request.user.has_perm(CREATE, 
             obj=ObjectWithContext(GASSupplierOrder, context=ctx)
         ):
         
-            user_actions += [
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=CREATE, verbose_name=_("Add order"), 
-                    popup_form=True
-                ),
-             ]
+            if self.resource.resource_type in ["gas", "supplier", "pact", "stock"]:
+                user_actions += [
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=CREATE, verbose_name=_("Add order"), 
+                        popup_form=True
+                    ),
+                 ]
 
         return user_actions
 
@@ -56,7 +57,7 @@ class Block(BlockWithList):
 
         if not resource.pacts:
 
-            msg = _("There are no pact in this %s, please sign at least one pact to open an order" % resource_type)
+            msg = _("There are no pacts related to this %s, no order can exist") % resource_type
             return HttpResponse('<root><sysmsg>%s</sysmsg></root>' % msg)
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
