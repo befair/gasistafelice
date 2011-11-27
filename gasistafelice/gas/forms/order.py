@@ -267,7 +267,7 @@ class EditOrderForm(BaseOrderForm):
         delivery = request.resource.delivery
         ref = request.resource.delivery_referrer_person
         if ref:
-            #control if queryset not empty. 
+            #control if queryset not empty.
             self.fields['delivery_referrer_person'].initial = ref
         if request.resource.datetime_end:
             self.fields['datetime_end'].initial = request.resource.datetime_end
