@@ -143,7 +143,7 @@ class AddOrderForm(BaseOrderForm):
     """
     log.debug("AddOrderForm")
     pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True)
-    email_gas = forms.BooleanField(label=_('Send email at the LIST of the GAS?'), required=False)
+    email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
 
     def __init__(self, request, *args, **kw):
 
@@ -164,6 +164,11 @@ class AddOrderForm(BaseOrderForm):
             self.fields['delivery_referrer_person'].initial = request.user.person
         elif self.fields['delivery_referrer_person'].queryset.count() > 0:
             self.fields['delivery_referrer_person'].initial = self.fields['delivery_referrer_person'].queryset[0]
+
+        if request.user.person in self.fields['referrer_person'].queryset:
+            self.fields['referrer_person'].initial = request.user.person
+        elif self.fields['referrer_person'].queryset.count() > 0:
+            self.fields['referrer_person'].initial = self.fields['referrer_person'].queryset[0]
 
         if pacts.count() == pacts.filter(gas=pacts[0].gas):
             # If we are managing some pacts (even 1) of the same GAS,

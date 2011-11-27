@@ -127,7 +127,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def open_if_needed(self):
         """Check datetime_start and open order if needed."""
 
-        if self.datetime_start <= datetime.datetime.now():
+        if self.datetime_start <= datetime.now():
 
             # Act as superuser
             user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
