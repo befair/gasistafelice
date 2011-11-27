@@ -165,10 +165,11 @@ class AddOrderForm(BaseOrderForm):
         elif self.fields['delivery_referrer_person'].queryset.count() > 0:
             self.fields['delivery_referrer_person'].initial = self.fields['delivery_referrer_person'].queryset[0]
 
-        if request.user.person in self.fields['referrer_person'].queryset:
-            self.fields['referrer_person'].initial = request.user.person
-        elif self.fields['referrer_person'].queryset.count() > 0:
-            self.fields['referrer_person'].initial = self.fields['referrer_person'].queryset[0]
+#Order referrer is not needed: pact referrers are enough!
+#        if request.user.person in self.fields['referrer_person'].queryset:
+#            self.fields['referrer_person'].initial = request.user.person
+#        elif self.fields['referrer_person'].queryset.count() > 0:
+#            self.fields['referrer_person'].initial = self.fields['referrer_person'].queryset[0]
 
         if pacts.count() == pacts.filter(gas=pacts[0].gas):
             # If we are managing some pacts (even 1) of the same GAS,
@@ -223,13 +224,12 @@ class AddOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['pact', 'datetime_start', 'datetime_end', 'referrer_person', 'delivery_referrer_person']
+        fields = ['pact', 'datetime_start', 'datetime_end', 'delivery_referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
-                            , 'referrer_person'
                             , 'delivery_referrer_person'
                             , 'email_gas'
             ]
@@ -270,12 +270,11 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['datetime_start', 'datetime_end', 'referrer_person', 'delivery_referrer_person']
+        fields = ['datetime_start', 'datetime_end', 'delivery_referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : [ ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
-                            , 'referrer_person'
                             , 'delivery_referrer_person'
             ]
         })]
