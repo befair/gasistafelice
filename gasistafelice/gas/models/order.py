@@ -139,6 +139,21 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
                 self.do_transition(t, user)
 
+    def close_if_needed(self):
+        """Check for datetime_end and close order if needed."""
+
+        if self.datetime_end:
+            if self.datetime_end >= datetime.now():
+
+                # Act as superuser
+                user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+                t_name = "close"
+                t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+                if t in get_allowed_transitions(self, user):
+                    log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
+                    self.do_transition(t, user)
+
     def get_valid_name(self):
         from django.template.defaultfilters import slugify
         from django.utils.encoding import smart_str

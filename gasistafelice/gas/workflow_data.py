@@ -166,7 +166,7 @@ transition_list = (
                  # (key, transition name, destination state), 
                  ('open', _("Open"), 'open'), # close the SupplierOrder
                  ('close', _("Close"), 'closed'), # close the SupplierOrder
-                 ('send mail', _("Send mail"), 'sent'), # mark the SupplierOrder as "paid" 
+                 ('send mail', _("Send mail"), 'sent'), # mark the SupplierOrder as "sent" 
                  ('pay', _("Pay"), 'paid'), # mark the SupplierOrder as "paid" 
                  ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder                                     
 )
