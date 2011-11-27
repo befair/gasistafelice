@@ -166,6 +166,7 @@ transition_list = (
                  # (key, transition name, destination state), 
                  ('open', _("Open"), 'open'), # close the SupplierOrder
                  ('close', _("Close"), 'closed'), # close the SupplierOrder
+                 ('send mail', _("Send mail"), 'sent'), # mark the SupplierOrder as "paid" 
                  ('pay', _("Pay"), 'paid'), # mark the SupplierOrder as "paid" 
                  ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder                                     
 )
@@ -177,6 +178,7 @@ state_transition_map = (
                            ('prepared', 'open'),
                            ('open', 'close'),
                            ('closed', 'pay'),
+                           ('closed', 'send mail'),
                            # SupplierOrder may be canceled at any time before delivery happens
                            ('open', 'cancel'),
                            ('closed', 'cancel'),

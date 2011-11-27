@@ -85,6 +85,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
+
         if self.datetime_end is not None:
             fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.datetime_end)
             if self.is_active():

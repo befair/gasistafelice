@@ -19,6 +19,9 @@ class OrderQuerySet(QuerySet):
         orders = self.filter(pk__in=[sor.content_id for sor in sors])
         return orders
     
+    def prepared(self):
+        return self.get_by_state('Prepared')
+
     def open(self):
         return self.get_by_state('Open')
 
@@ -30,6 +33,9 @@ class OrderQuerySet(QuerySet):
     
     def finalized(self):
         return self.get_by_state('Finalized')
+    
+    def paid(self):
+        return self.get_by_state('Paid')
     
     def sent(self):
         return self.get_by_state('Sent')
