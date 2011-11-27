@@ -458,7 +458,18 @@
                 }
             });
                    
-
+            //prepare translation to be used in page head banner
+            type_string_d = {
+                'site' : gettext('DES'),
+                'pact' : gettext('Pact'),
+                'gasmember' : gettext('Gasmember'),
+                'order' : gettext('Order'),
+                'gas' : 'GAS',
+                'supplier' : gettext('Supplier'),
+                'stock' : gettext('Product'),
+                'person' : gettext('Person'),
+            }
+                            
             var resource       = $(t).find('resource');
             var resource_urn   = resource.attr('sanet_urn');
             if (resource_urn != undefined) {
@@ -469,11 +480,11 @@
                     var resource_id   = parts[1];
                     //alert('resource: ' + resource_urn + " " + resource_descr);
                     add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
-                    $('#page_resource').html(gettext(resource_type));
+                    $('#page_resource').html(type_string_d[resource_type] + " " + new jQuery.Resource(resource_urn, resource_descr).render());
                     document.title = "GF - Gestione " + gettext(resource_type);
                 }
             }
-                            
+
             fill_navigation_bar();
             
             //
