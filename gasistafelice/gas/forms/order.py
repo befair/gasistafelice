@@ -248,9 +248,9 @@ class EditOrderForm(BaseOrderForm):
         #SOLIDAL PACT
         pact = request.resource.pact
         delivery = request.resource.delivery
-        refs = request.resource.delivery_referrer_persons
-        if refs:
-            self.fields['delivery_referrer_person'].initial = refs[0]
+        ref = request.resource.delivery_referrer_person
+        if ref:
+            self.fields['delivery_referrer_person'].initial = ref
         if request.resource.datetime_end:
             self.fields['datetime_end'].initial = request.resource.datetime_end
         if delivery and delivery.date:

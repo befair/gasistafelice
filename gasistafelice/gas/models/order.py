@@ -146,13 +146,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """Check for datetime_end and close order if needed."""
 
         if self.datetime_end:
-            if self.datetime_end >= datetime.now():
+            if self.datetime_end <= datetime.now():
 
                 # Act as superuser
                 user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
                 t_name = "close"
                 t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
+                log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
                 if t in get_allowed_transitions(self, user):
                     log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
                     self.do_transition(t, user)
