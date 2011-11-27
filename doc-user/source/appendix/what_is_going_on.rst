@@ -56,7 +56,7 @@ Cosa è in fase di test
 8. Gestione delle email per le notifiche
 9. Trattamento economico 2/3 decurtare le singole famiglie per un dato ordine
 10. Gestione ruoli della scheda del fornitore rest/supplier/id/
-11. Rimuover i ruoli riguardante il fornitore della lista della gestione ruoli della scheda del GAS rest/gas/id/
+11. Rimuovere i ruoli riguardante il fornitore della lista della gestione ruoli della scheda del GAS rest/gas/id/
 
 .. _what_does_not_work:
 
