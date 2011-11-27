@@ -24,8 +24,10 @@ Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel
 
 1. Apertura nuovo ordine e sua gestione (avanzamento --> chiusura)
 2. Definire il listino dei prodotti di quel produttore per un GAS (nel patto)
-3. Aggiustare l'ordine fatto prima di inviarlo al fornitore
-4. Produzione del documento PDF per l'ordine fatto
+3. Aggiustare il listino prezzo del fornitore a livello DES e a Livello GAS (CASCADING)
+3. Aggiustare la disponibilità del listino del fornitore a livello DES e a Livello GAS (CASCADING)
+3. Aggiustare l'ordine fatto prima di inviarlo al fornitore?
+4. Generazione del documento PDF per l'ordine. Sia in stato aperto che chiuso: (Ridurre solo allo stato chiuso?1)
 
 **Per tutti**:
 
@@ -49,6 +51,10 @@ Cosa è in fase di test
 3. Aggiungi/Modifica categoria
 4. Aggiungi/Modifica GAS
 5. Gestione economica: nel software sono presenti alcune griglie per la gestione economica, danno un'idea di come saranno gestiti i conti nel GAS, ma non funzionano ora
+6. Apertura in automatico degli ordini
+7. Avvanzamento in automatico dei stati degli ordini con chiusura e invio PDF
+8. Gestione delle email per le notifiche
+9. Trattamento economico 2/3 decurtare le singole famiglie per un dato ordine
 
 .. _what_does_not_work:
 
@@ -63,6 +69,20 @@ Le cose non citate qui sopra sono da considerarsi non funzionanti o non realizza
 4. Visualizzazione ad immagini di prodotti e categorie
 5. Filtro dei prodotti
 6. Filtro dei produttori
+7. Disaccopiare il CASCADING abilitazione prodotto dalla gestione "non c'è" (eliminare ordini gasisti)
+8. Insoluti. Lista degli ordini chiusi ed consegnati ma non pagatti: gestione insoluti
+9. Archivio. Lista degli ordini archiviati
+10. Trattamento economico 1/3 registrare la fattura emmessa dal produttore per un dato ordine
+11. Trattamento economico 3/3 a) pagamento di un produttore per un dato ordine
+12. Trattamento economico 3/3 b) pagamento di un produttore per più ordini cumulati = gestione insoluti
+13. Trattamento economico Anagrafiche - Lista flussi economici per i gasisti
+14. Trattamento economico Anagrafiche - Lista flussi economici per i supplier
+15. Trattamento economico Anagrafiche - Lista flussi economici per i gas (Borsellino + Deposito)
+16. Trattamento economico Conti - Saldo gassista. Calcolo e Vissualizzazione grafica
+17. Trattamento economico Conti - Saldo supplier. Livello GAS. Calcolo e Vissualizzazione grafica
+18. Trattamento economico Conti - Saldo supplier. Livello DES. Multi Calcolo e Multi Vissualizzazione grafica
+19. Trattamento economico Conti - Saldo GAS. Calcolo e Vissualizzazione grafica per Borsellino e Deposito
+20. Trattamento economico manipulazione - modifica di un flusso economico esistente (tra 2 soggetti)
 
 
 .. _which_problems:
