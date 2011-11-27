@@ -16,7 +16,7 @@ from django.db.models.signals import post_save, pre_save
 from workflows.models import Workflow, Transition, State
 from history.models import HistoricalRecords
 
-from gasistafelice.consts import GAS_REFERRER_ORDER, GAS_REFERRER_SUPPLIER
+from gasistafelice.consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
@@ -659,17 +659,6 @@ class Person(models.Model, PermissionResource):
         for gas in self.gas_list:
             qs = qs | gas.orders
         
-        if self.user: #if a Person has not an account, he can't have any role in the system
-            # retrieve all parametric roles assigned to this person
-            roles = get_parametric_roles(self.user)
-            for pr in roles:
-                # add the supplier orders for which this person is a referrer
-                if pr.role.name == GAS_REFERRER_ORDER:
-                    qs = qs | GASSupplierOrder.objects.get(pk=pr.order.pk)
-                # add orders to suppliers for which this person is a referrer
-                if pr.role.name == GAS_REFERRER_SUPPLIER:
-                    GASSupplierOrder.objects.filter(pact__gas=pr.gas, pact__supplier=pr.supplier)
-                
         return qs
         
     

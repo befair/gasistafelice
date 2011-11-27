@@ -62,6 +62,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
+    referrer_person = models.ForeignKey(Person, null=True, blank=True, related_name="order_set", verbose_name=_("order referrer"))
+    delivery_referrer_person = models.ForeignKey(Person, null=True, related_name="delivery_for_order_set", blank=True, verbose_name=_("delivery referrer"))
+    withdrawal_referrer_person = models.ForeignKey(Person, null=True, related_name="withdrawal_for_order_set", blank=True, verbose_name=_("withdrawal referrer"))
+
     group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
         help_text=_("If not null this order is aggregate with orders from other GAS")
     )
@@ -177,13 +181,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def referrers(self):
+        """Return all users being referrers for this order.
+
+        Thus, referrer for order pact
         """
-        Return all users being referrers for this order.
-        """
-        # retrieve 'order referrer' parametric role for this order
-        pr = ParamRole.get_role(GAS_REFERRER_ORDER, order=self)
-        # retrieve all Users having this role
-        return pr.get_users()       
+        return self.pact.referrers
 
     @property
     def supplier_referrers_people(self):
@@ -280,10 +282,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
             gsop.delete()
 
 
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
-        register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
-        
     # Workflow management
 
     @property
@@ -945,12 +943,6 @@ class Delivery(Appointment, PermissionResource):
     def persons(self):
         return self.referrers_people
 
-    #-------------------------------------------------------------------------------#   
-    # Authorization API
-        
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)      
     
 #-------------------------------------------------------------------------------#
 
@@ -1102,12 +1094,6 @@ class Withdrawal(Appointment, PermissionResource):
     def persons(self):
         return self.referrers_people
 
-    #-------------------------------------------------------------------------------#   
-    # Authorization API
-
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)  
          
 #-------------------------------------------------------------------------------#
 
