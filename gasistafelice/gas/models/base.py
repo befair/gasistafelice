@@ -1199,6 +1199,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     @property
     def supplier_referrers_people(self):
+        #return Person.objects.all()
         prs = Person.objects.none()
         if self.referrers:
             prs = Person.objects.filter(user__in=self.referrers)
