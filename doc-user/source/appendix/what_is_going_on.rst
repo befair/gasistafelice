@@ -41,7 +41,6 @@ Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel
 8. Configurazione del GAS. **È la prima cosa che i referenti informatici devono fare**
 9. Assegnazione dei ruoli *referente informatico*, *referente economico*, *referente fornitore* e *fornitore*
 
-
 .. _what_is_in_testing:
 
 Cosa è in fase di test
