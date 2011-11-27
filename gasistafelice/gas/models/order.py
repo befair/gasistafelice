@@ -93,7 +93,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
             else:
                 state = _("closed on %(date)s") % { 'date' : fmt_date }
         else:
-            state = _("open")
+            if self.is_prepared():
+                state = _("prepared")
+            else:
+                state = _("open")
 
         if self.delivery and self.delivery.date is not None:
             del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
@@ -110,7 +113,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = _("Ord. %(order_num)s %(pact)s (%(state)s%(deldate)s) %(ref)s") % {
+        rv = _("Ord. %(order_num)s %(pact)s (%(state)s%(deldate)s)") % {
                     'pact' : self.pact,
                     'state' : state,
                     'deldate' : mdate,
@@ -181,6 +184,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #-------------------------------------------------------------------------------#
     # Model Archive API
 
+    def is_prepared(self):
+        """
+        Return `True` if the GAS supplier order is prepared; `False` otherwise.
+        """
+        return self in GASSupplierOrder.objects.prepared()
+    
     def is_active(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.

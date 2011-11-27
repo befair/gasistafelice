@@ -164,6 +164,9 @@ class OrderManager(models.Manager):
     def get_query_set(self):
         return OrderQuerySet(self.model)
 
+    def prepared(self):
+        return self.get_query_set().prepared()
+
     def open(self):
         return self.get_query_set().open()
 
@@ -179,6 +182,9 @@ class OrderManager(models.Manager):
     def sent(self):
         return self.get_query_set().sent()
     
+    def paid(self):
+        return self.get_query_set().paid()
+
     def delivered(self):
         return self.get_query_set().delivered()
     

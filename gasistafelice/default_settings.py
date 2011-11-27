@@ -223,11 +223,11 @@ RESOURCE_PAGE_BLOCKS = {
     'gas' : [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery?
+        'blocks': ['open_orders', 'closed_orders', 'prepared_orders'], 
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
-        'blocks': ['gas_pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
+        'blocks': ['gas_pacts', 'categories'], 
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
@@ -265,7 +265,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'supplier_pacts'],
+        'blocks': ['open_orders', 'prepared_orders', 'supplier_pacts'],
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
