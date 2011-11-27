@@ -58,6 +58,7 @@ Cosa è in fase di test
 10. Gestione ruoli della scheda del fornitore rest/supplier/id/
 11. Rimuovere i ruoli riguardante il fornitore della lista della gestione ruoli della scheda del GAS rest/gas/id/
 
+
 .. _what_does_not_work:
 
 Cosa non funziona / non c'è
