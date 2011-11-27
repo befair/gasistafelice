@@ -13,7 +13,6 @@ from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
 from gasistafelice.gas.models import Delivery, Withdrawal
 from gasistafelice.base.models import Place, Person
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
-from gasistafelice.consts import GAS_REFERRER_WITHDRAWAL, GAS_REFERRER_DELIVERY
 
 from gasistafelice.base import const
 
@@ -79,15 +78,12 @@ class BaseOrderForm(forms.ModelForm):
 
     delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
-    delivery_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), 
-        required=True, label=_("Delivery referrer"))
-    withdrawal_referrer = forms.ModelChoiceField(queryset=Person.objects.none(), required=False)
-
     def __init__(self, request, *args, **kw):
         #Strip request arg
         super(BaseOrderForm, self).__init__(*args, **kw)
-        self.fields['delivery_referrer'].queryset = request.resource.supplier_referrers_people
-        self.fields['withdrawal_referrer'].queryset = request.resource.supplier_referrers_people
+        self.fields['delivery_referrer_person'].queryset = request.resource.supplier_referrers_people
+        if self.fields.get('withdrawal_referrer_person'):
+            self.fields['withdrawal_referrer_person'].queryset = request.resource.supplier_referrers_people
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -136,33 +132,6 @@ class BaseOrderForm(forms.ModelForm):
     def get_withdrawal(self):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
-    def save(self):
-        if self.cleaned_data.get('withdrawal_referrer'):
-            pr = ParamRole.get_role(GAS_REFERRER_WITHDRAWAL, withdrawal=self.instance.withdrawal)
-            try:
-                ppr = PrincipalParamRoleRelation.objects.get(role=pr)
-                u = self.cleaned_data['withdrawal_referrer'].user
-                if ppr.user != u:
-                    ppr.user = u
-                    ppr.save()
-                
-            except PrincipalParamRoleRelation.DoesNotExist:
-                PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['withdrawal_referrer'].user)
-
-        if self.cleaned_data.get('delivery_referrer'):
-            pr = ParamRole.get_role(GAS_REFERRER_DELIVERY, delivery=self.instance.delivery)
-            try:
-                ppr = PrincipalParamRoleRelation.objects.get(role=pr)
-                u = self.cleaned_data['delivery_referrer'].user
-                if ppr.user != u:
-                    ppr.user = u
-                    ppr.save()
-                
-            except PrincipalParamRoleRelation.DoesNotExist:
-                PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['delivery_referrer'].user)
-
-        super(BaseOrderForm, self).save()
-
 #-------------------------------------------------------------------------------
 
 class AddOrderForm(BaseOrderForm):
@@ -190,11 +159,11 @@ class AddOrderForm(BaseOrderForm):
         self.fields['pact'].queryset = pacts
         self.fields['pact'].initial = pacts[0]
         #Person is the current user: referers
-        log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['delivery_referrer'].queryset)
-        if request.user.person in self.fields['delivery_referrer'].queryset:
-            self.fields['delivery_referrer'].initial = request.user.person
-        elif self.fields['delivery_referrer'].queryset.count() > 0:
-            self.fields['delivery_referrer'].initial = self.fields['delivery_referrer'].queryset[0]
+        log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['delivery_referrer_person'].queryset)
+        if request.user.person in self.fields['delivery_referrer_person'].queryset:
+            self.fields['delivery_referrer_person'].initial = request.user.person
+        elif self.fields['delivery_referrer_person'].queryset.count() > 0:
+            self.fields['delivery_referrer_person'].initial = self.fields['delivery_referrer_person'].queryset[0]
 
         if pacts.count() == pacts.filter(gas=pacts[0].gas):
             # If we are managing some pacts (even 1) of the same GAS,
@@ -249,13 +218,14 @@ class AddOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['pact', 'datetime_start', 'datetime_end']
+        fields = ['pact', 'datetime_start', 'datetime_end', 'referrer_person', 'delivery_referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
-                            , 'delivery_referrer'
+                            , 'referrer_person'
+                            , 'delivery_referrer_person'
                             , 'email_gas'
             ]
         })]
@@ -274,9 +244,8 @@ class EditOrderForm(BaseOrderForm):
         pact = request.resource.pact
         delivery = request.resource.delivery
         refs = request.resource.delivery_referrer_persons
-        refs = request.resource.delivery_referrer_persons
         if refs:
-            self.fields['delivery_referrer'].initial = refs[0]
+            self.fields['delivery_referrer_person'].initial = refs[0]
         if request.resource.datetime_end:
             self.fields['datetime_end'].initial = request.resource.datetime_end
         if delivery and delivery.date:
@@ -296,15 +265,15 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['datetime_start', 'datetime_end']
+        fields = ['datetime_start', 'datetime_end', 'referrer_person', 'delivery_referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : [ ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
-                            , 'delivery_referrer'
+                            , 'referrer_person'
+                            , 'delivery_referrer_person'
             ]
         })]
-                       #,'withdrawal_referrer'
 
 def form_class_factory_for_request(request, base):
     """Return appropriate form class basing on GAS configuration
@@ -317,6 +286,12 @@ def form_class_factory_for_request(request, base):
     gas = request.resource.gas
 
     if gas:
+        if gas.config.use_withdrawal_place:
+            gf_fieldsets[0][1]['fields'].append('withdrawal_referrer_person')
+            attrs.update({
+                'withdrawal_referrer' : forms.ModelChoiceField(queryset=Person.objects.none(), required=False),
+            })
+
         if gas.config.can_change_delivery_place_on_each_order:
             gf_fieldsets[0][1]['fields'].append(('delivery_city', 'delivery_addr_or_place'))
             attrs.update({
@@ -325,6 +300,7 @@ def form_class_factory_for_request(request, base):
             })
 
         if gas.config.use_withdrawal_place:
+
             if gas.config.can_change_withdrawal_place_on_each_order:
                 gf_fieldsets[0][1]['fields'].append(('withdrawal_datetime', 'withdrawal_city', 'withdrawal_addr_or_place'))
                 attrs.update({
@@ -332,6 +308,7 @@ def form_class_factory_for_request(request, base):
                     'withdrawal_city' : forms.CharField(required=True, label=_('Withdrawal city'), initial=gas.city),
                     'withdrawal_addr_or_place': forms.CharField(required=True, label=_('Withdrawal address or place'), initial=gas.headquarter),
                 })
+
 
         attrs.update(Meta=type('Meta', (), {
             'model' : GASSupplierOrder,

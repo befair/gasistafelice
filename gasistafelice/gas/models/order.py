@@ -103,9 +103,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             mdate = ""
 
-        refs = self.delivery_referrer_persons
-        if refs and refs is not None and refs.count() > 0:
-            ref = " Ref: %s " % refs[0]
+        ref = self.delivery_referrer_person
+        if ref:
+            ref = " Ref: %s " % ref
         else:
             ref = ""
 
@@ -196,18 +196,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
 
     #-------------------------------------------------------------------------------#
-
-    @property
-    def delivery_referrer_persons(self):
-        if self.delivery:
-            return self.delivery.referrers_people
-        return Person.objects.none()
-
-    @property
-    def withdrawal_referrer_persons(self):
-        if self.withdrawal:
-            return self.withdrawal.referrers_people
-        return Person.objects.none()
 
     def set_default_gasstock_set(self):
         '''
@@ -555,8 +543,8 @@ GROUP BY gmo.purchaser_id, gsop.order_id \
         display.Resource(name="supplier", verbose_name=_("Supplier")),
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         datetime_start, datetime_end, order_minimum_amount, 
-        delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
-        withdrawal, display.ResourceList(name="withdrawal_referrer_persons", verbose_name=_("Withdrawal referrer")),
+        delivery, display.Resource(name="delivery_referrer_person", verbose_name=_("Delivery referrer")),
+        withdrawal, display.Resource(name="withdrawal_referrer_person", verbose_name=_("Withdrawal referrer")),
     )
 
 #-------------------------------------------------------------------------------
