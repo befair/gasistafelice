@@ -129,8 +129,13 @@ class BaseOrderForm(forms.ModelForm):
                     p = Place(city=dc, name=dp)
                     p.save()
         else:
-            pact = self.cleaned_data['pact']
-            p = getattr(pact.gas.config, "%s_place" % name)
+            if self.cleaned_data.get('pact'):
+                pact = self.cleaned_data['pact']
+                if not pact:
+                    return None
+                p = getattr(pact.gas.config, "%s_place" % name)
+            else:
+                return None
 
         d, created = klass.objects.get_or_create(date=ddt, place=p)
         return d
