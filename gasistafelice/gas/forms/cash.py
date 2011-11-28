@@ -30,9 +30,9 @@ class EcoGASMemberForm(forms.Form):
     Movement between GASMember.account --> GAS.account
     """
 
+    log.debug("    --------------       EcoGASMemberForm")
     purchaser_id = forms.IntegerField(required=False)
     ord_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    log.debug("EcoGASMemberForm (%s)" % id)
     gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     amounted = forms.DecimalField(required=False, initial=0) #, widget=forms.TextInput())
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
