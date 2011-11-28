@@ -22,7 +22,9 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "50%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
-                    { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
+                    { "sWidth": "20%", "bSortable" : false, "bSearchable" : false
+                        , "sClass": "taright"
+                    },
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
