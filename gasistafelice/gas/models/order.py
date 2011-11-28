@@ -408,6 +408,14 @@ ON gmo.ordered_product_id = gsop.id \
 WHERE order_id = %s \
 GROUP BY gmo.purchaser_id, gsop.order_id \
 ) AS tmp", [self.pk])
+
+
+
+        #TODO: Add new field account_amounted
+        #Field are retrieve from the Accounting system
+
+
+
         #row = cursor.fetchall()
         #>>> cursor.fetchall()    ((5L, None), (6L, None))
         #write custom SQL queries wich would return dicts instead of tuples
