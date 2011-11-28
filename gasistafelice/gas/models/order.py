@@ -395,7 +395,20 @@ WHERE order_id = 10")
 #postgres : SELECT DISTINCT ON (a) a,b,c,d,e FROM table ORDER BY a,b,c
         # Data retrieval operation - no commit required
         # p.name || ' ' || p.surname --> POSTGRES
-        cursor.execute("SELECT tmp.* , (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+
+#TODO: Verify
+#mysql    : CAST(-125.823123123 AS DECIMAL(30, 2)) AS account_amounted
+#postgres : to_char(-125.8, '9999.99') AS account_amounted
+
+        cursor.execute("SELECT \
+tmp.order_id \
+, tmp.purchaser_id \
+, tmp.sum_amount \
+, tmp.sum_price \
+, tmp.tot_product \
+, tmp.sum_qta \
+, (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+, CAST(0 AS DECIMAL(30, 2)) AS account_amounted \
 FROM (SELECT gmo.purchaser_id AS purchaser_id \
 , gsop.order_id AS order_id \
 , SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
