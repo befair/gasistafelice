@@ -164,7 +164,7 @@ class Block(BlockSSDataTables):
                'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
                'amounted' : "%s %s %s" % (form['ord_id'], form['gm_id'], form['amounted']),
             })
-
+#"{{row.amounted|escapejs}}"  --> "{{row.amounted|floatformat:"2"}}" cannot be done because is widget input
 #               'pk' : el.order_id,
 #               'gasmember' : gasmember,
 #               'tot_product' : el.tot_product,
