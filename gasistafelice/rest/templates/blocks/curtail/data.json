@@ -8,7 +8,7 @@
         "{{row.purchaser_id|escapejs}}",
         "{{row.gasmember.upper|escapejs}}",
         "&#8364; {{row.sum_amount|floatformat:"2"}}",
-        "{{row.amounted|escapejs}}",
+        "{{row.account_amounted|escapejs}}",
 
     ]
     {% if not forloop.last %}
