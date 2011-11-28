@@ -53,7 +53,7 @@ class DES(Site, PermissionResource):
     display_fields = (
         models.PositiveIntegerField(verbose_name=_("GAS"), name="tot_gas"),
         models.PositiveIntegerField(verbose_name=_("Gasmembers"), name="tot_gasmembers"),
-        models.PositiveIntegerField(verbose_name=_("Suppliers"), name="tot_gasmembers"),
+        models.PositiveIntegerField(verbose_name=_("Suppliers"), name="tot_suppliers"),
         models.PositiveIntegerField(verbose_name=_("Pacts"), name="tot_pacts"),
         models.PositiveIntegerField(verbose_name=_("Orders"), name="tot_orders"),
         models.PositiveIntegerField(verbose_name=_("Money"), name="tot_money"),
