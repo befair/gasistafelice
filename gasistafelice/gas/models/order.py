@@ -220,6 +220,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             prs = Person.objects.filter(user__in=self.referrers)
         return prs
 
+    @property
+    def cash_referrers(self):
+        return self.pact.gas.cash_referrers
 
     #-------------------------------------------------------------------------------#
 
