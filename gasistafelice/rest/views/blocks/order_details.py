@@ -52,10 +52,10 @@ class Block(details.Block):
             ]
 
 
-#            act_configure = ResourceBlockAction( 
+#            act_configure = ResourceBlockAction(
 #                    block_name = self.BLOCK_NAME,
 #                    resource = request.resource,
-#                    name="configure", verbose_name=_("Configure"), 
+#                    name="configure", verbose_name=_("Configure"),
 #                    popup_form=True,
 #                    url = reverse('admin:gas_gasconfig_change', args=(request.resource.config.pk,)) 
 #            )
