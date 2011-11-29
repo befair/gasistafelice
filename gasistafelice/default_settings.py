@@ -220,6 +220,10 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr' : 'Scheda del DES',
         'blocks' : ['details', 'categories']
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : ['stored_orders']
     }],
     'gas' : [{
         'name' : 'orders',
@@ -240,7 +244,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
-        'blocks' : [] #Archivied Orders, Transact_gasmembers, Transact_suppliers
+        'blocks' : ['stored_orders'] #Transact_gasmembers, Transact_suppliers
     }],
     'gasmember': [{
         'name' : 'orders',
@@ -275,6 +279,10 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'accounting',
         'descr' : 'Conto',
         'blocks' : [] #Transact_supplier for all pact
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : ['stored_orders']
     }],
     'order' : [{ 
         'name' : 'info',
@@ -307,9 +315,8 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
-        'blocks' : [] #Archivied Orders
+        'blocks' : ['stored_orders']
     }],
-
     'stock' : [{
         'name': 'info',
         'descr': 'Scheda del prodotto',

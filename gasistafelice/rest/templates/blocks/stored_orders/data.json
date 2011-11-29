@@ -1,0 +1,18 @@
+{% extends "blocks/base/data.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for gso in records %}
+    [
+
+        "{{gso.id|escapejs}}",
+        "{{gso|escapejs}}",
+        "{{gso.urn|escapejs}}",
+
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
