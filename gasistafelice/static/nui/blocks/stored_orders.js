@@ -22,7 +22,7 @@ jQuery.UIBlockOrdersStoredList = jQuery.UIBlockWithList.extend({
 //        7: 'Payment'
 
 //TODO Payment urn
-        var iUrn = 2
+        var iUrn = 5
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
@@ -30,13 +30,13 @@ jQuery.UIBlockOrdersStoredList = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"20%","bVisible": true}
-//                    {"bSearchable":true,"bSortable":false,"sWidth":"10%", "sType": "currency", "sClass": "taright" },
-//                    {"bSearchable":false,"bSortable":false,"sWidth":"10%",},
-//                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass": "taright","sClass":"taright"},
-//                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass": "taright","sClass":"taright"},
-//                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass": "taright","sClass":"taright"},
-//                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass": "taright","sClass":"taright"}
+                    {"bSearchable":false,"bSortable":false,"sWidth":"45%","bVisible": true},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright" },
+                    {"bSearchable":false,"bSortable":false,"sWidth":"5%",},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright","sClass":"taright"},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright","sClass":"taright"},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright","sClass":"taright"},
+                    {"bSearchable":false,"bSortable":false,"sWidth":"25%", "sType": "currency", "sClass": "taright","sClass":"taright"}
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
