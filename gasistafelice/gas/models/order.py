@@ -514,6 +514,54 @@ GROUP BY gmo.purchaser_id, gsop.order_id \
             tot += gmo.tot_price
         return tot
 
+    @property
+    def tot_amount(self):
+        tot = 0
+        #for gmo in self.ordered_products:
+        #    tot += gmo.tot_amount
+        if self.ordered_products:
+            from django.db.models import Count, Sum
+            qry = self.ordered_products.values('purchaser').annotate(sum_qta = Sum('ordered_amount')).order_by('purchaser').filter( is_confirmed = True)
+            #tot = self.ordered_products.annotate('purchaser').count()
+            #tot = len(self.ordered_products.annotate('purchaser'))
+            for agg_gmo in qry:
+                tot += agg_gmo.sum_qta
+        return tot
+
+    @property
+    def tot_gasmembers(self):
+        tot = 0
+        #for gmo in self.ordered_products:
+        #    tot += gmo.tot_amount
+        if self.ordered_products:
+            from django.db.models import Count, Sum
+            qry = self.ordered_products.values('purchaser').annotate(sum_qta = Sum('ordered_amount')).order_by('purchaser').filter( is_confirmed = True)
+            #tot = self.ordered_products.annotate('purchaser').count()
+            #tot = len(self.ordered_products.annotate('purchaser'))
+            tot = qry.count()
+        return tot
+
+    @property
+    def tot_curtail(self):
+        tot = 0
+        #TODO: ECO Accounting retrieve all GASMember for this order that have curtail payment
+        return tot
+
+    @property
+    def payment(self):
+        mvt = 'TODO: ECO'
+        #TODO: ECO Accounting retrieve the payment for this order
+        return mvt
+
+    @property
+    def payment_urn(self):
+        mvt_urn = 'order/%s' % self.pk
+        #TODO: ECO Accounting retrieve the payment for this order and get the urn
+        #This is wright? Accounting is not a ressource...
+        #So we have to go to the order details in EDIT mode?
+        return mvt_urn
+
+
     def save(self, *args, **kw):
         created = False
 
