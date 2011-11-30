@@ -262,7 +262,7 @@ class Supplier(models.Model, PermissionResource):
         return False
 
     #-------------- Authorization API ---------------#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
