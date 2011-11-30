@@ -320,6 +320,16 @@ class Supplier(models.Model, PermissionResource):
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
 
+    #--------------------------#
+
+    @property
+    def transactions(self):
+        #TODO: ECO return accounting Transaction or LedgerEntry
+        return self.none()
+
+
+#------------------------------------------------------------------------------
+
 
 class SupplierConfig(models.Model):
     """

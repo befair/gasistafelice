@@ -428,8 +428,16 @@ class GAS(models.Model, PermissionResource):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
+    #--------------------------#
 
-#-----------------------------------------------------------------------------------------------------
+    @property
+    def transactions(self):
+        #TODO: ECO return accounting Transaction or LedgerEntry
+        return self.none()
+
+
+#------------------------------------------------------------------------------
+
 
 def get_supplier_order_default():
     return Workflow.objects.get(name="SimpleSupplierOrderDefault")
@@ -887,8 +895,16 @@ class GASMember(models.Model, PermissionResource):
         # * tech referrers for that GAS
         allowed_users = self.gas.tech_referrers  
         return user in allowed_users
-         
+
     #--------------------------#
+
+    @property
+    def transactions(self):
+        #TODO: ECO return accounting Transaction or LedgerEntry
+        return self.none()
+
+
+#------------------------------------------------------------------------------
 
 
 class GASSupplierStock(models.Model, PermissionResource):
@@ -1374,3 +1390,17 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         for supplier in self.suppliers:
             roles |= supplier.roles
         return roles
+
+
+    #--------------------------#
+
+    @property
+    def transactions(self):
+        #TODO: ECO return accounting Transaction or LedgerEntry
+        return self.none()
+
+
+#------------------------------------------------------------------------------
+
+
+

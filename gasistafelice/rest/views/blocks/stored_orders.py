@@ -26,7 +26,6 @@ class Block(BlockSSDataTables):
         6: 'pk',
         7: 'pk'
     }
-#Caught FieldError while rendering: Cannot resolve keyword 'order' into field. Choices are: datetime_end, datetime_start, delivery, delivery_cost, delivery_referrer_person, gasstock_set, group_id, historicalorderable_product_set, id, order_minimum_amount, orderable_product_set, pact, referrer_person, withdrawal, withdrawal_referrer_person
 
 #        1: 'order',
 #        2: 'tot_amount',
@@ -38,6 +37,6 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         #GASSupplierOrder
-#        return request.resource.orders.archived()
-        return request.resource.orders.closed()
+        return request.resource.orders.archived()
+        #return request.resource.orders.closed()  #Only for test purpose
 
