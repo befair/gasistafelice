@@ -429,7 +429,7 @@ class Resource(object):
 
     @property
     def preferred_phone_address(self):
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_phone_contacts.values_list('value'))))
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_phone_contacts.values_list('value'))))
 
     @property
     def preferred_phone_contacts(self):

@@ -235,4 +235,34 @@ class SupplierRoleForm(BaseRoleForm):
                 self.fields['person'].queryset.filter(gasmember__gas=request.user.person.gas) 
 
 
+#-------------------------------------------------------------------------------
+
+
+class SupplierForm(forms.Form):
+
+    id = forms.IntegerField(required=True, widget=forms.HiddenInput)
+    enabled = forms.BooleanField(required=False)
+    log.debug("Create SupplierForm (%s)" % id)
+
+    def __init__(self, request, *args, **kw):
+        super(SupplierForm, self).__init__(*args, **kw)
+
+    #@transaction.commit_on_success
+    def save(self):
+
+        #log.debug("Save SupplierForm")
+        id = self.cleaned_data.get('id')
+        log.debug("Save SupplierForm id(%s)" % id)
+        if id:
+            enabled = self.cleaned_data.get('enabled')
+            log.debug("Save SupplierForm enabled(%s)" % enabled)
+            #Suspend all pact related to this producer
+            #if not enabled:
+
+            self.instance.save()
+
+
+
+#-------------------------------------------------------------------------------
+
 

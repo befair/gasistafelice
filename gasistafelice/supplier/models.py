@@ -25,7 +25,7 @@ from simple_accounting.models import account_type
 from simple_accounting.models import economic_subject, AccountingDescriptor
 
 from gasistafelice.exceptions import NoSenseException
-from gasistafelice.lib import ClassProperty
+from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 
@@ -37,6 +37,8 @@ from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.supplier.accounting import SupplierAccountingProxy
 from gasistafelice.gas import signals
+
+from gasistafelice.base import const
 
 from decimal import Decimal
 import logging
@@ -182,8 +184,24 @@ class Supplier(models.Model, PermissionResource):
         return self.stock_set.all()
 
     @property
+    def tot_stocks(self):
+        """count All stocks _supplied_ by this supplier"""
+        tot = 0
+        if self.stocks:
+            tot = self.stocks.count()
+        return tot
+
+    @property
     def pacts(self):
         return self.pact_set.all().order_by('gas')
+
+    @property
+    def tot_pacts(self):
+        """count All pacts _supplied_ by this supplier"""
+        tot = 0
+        if self.pacts:
+            tot = self.pacts.count()
+        return tot
 
     @property
     def pact(self):
@@ -210,8 +228,6 @@ class Supplier(models.Model, PermissionResource):
         #TODO: if none the form must retrieve the gas related user logged in. What happend if superuser is the logged in?
         return None
 
-
-
     @property
     def products(self):
         """All products _supplied_ by this supplier"""
@@ -227,6 +243,13 @@ class Supplier(models.Model, PermissionResource):
     @property
     def city(self):
         return self.seat.city
+
+    @property
+    def certifications_list(self):
+        #Value symbol, name and description
+        #TODO: add PRIVATE
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.certifications.values_list('description'))))
+
 
     #-------------- Authorization API ---------------#
     
@@ -326,6 +349,12 @@ class Supplier(models.Model, PermissionResource):
     def transactions(self):
         #TODO: ECO return accounting Transaction or LedgerEntry
         return self.none()
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this supplier"""
+        acc_tot = 0
+        return acc_tot
 
 
 #------------------------------------------------------------------------------
