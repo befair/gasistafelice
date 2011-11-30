@@ -1,0 +1,26 @@
+{% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for row in records %}
+    [
+
+        "{{row.id|escapejs}}",
+        "{{row.name|escapejs}}",
+        "{{row.frontman.name|escapejs}} {{row.frontman.surname.upper|escapejs}}",
+        "{{row.city|escapejs}}",
+        "{{row.preferred_email_address|escapejs }}",
+        "{{row.preferred_phone_address|escapejs }}",
+        "{{row.tot_stocks|floatformat:"-2"}}",
+        "{{row.tot_pacts|floatformat:"-2"}}",
+        "&#8364; {{ row.tot_eco|floatformat:"2"}}",
+        "{{row.certifications_list|escapejs }}",
+
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+

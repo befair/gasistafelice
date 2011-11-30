@@ -1,0 +1,19 @@
+{% extends "blocks/stocks/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Agent" %}</th>
+    <th title='{% trans "Address" %}'>{% trans "City" %}</th>
+    <th title='{% trans "Email" %}'>{% trans "Email" %}</th>
+    <th title='{% trans "Phone" %}'>{% trans "Phone" %}</th>
+    <th title='{% trans "TOT products" %}'>{% trans "Total products" %}</th>
+    <th title='{% trans "TOT pacts" %}'>{% trans "Total Pacts" %}</th>
+    <th title='{% trans "TOT account" %}'>&euro;</th>
+    <th title='{% trans "List of certifications" %}'>{% trans "Certification" %}</th>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
