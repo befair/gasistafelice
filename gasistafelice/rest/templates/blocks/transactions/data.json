@@ -1,0 +1,22 @@
+{% extends "blocks/base/data.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for tr in records %}
+    [
+
+        "{{tr.pk|escapejs}}",
+        "{{tr.date|escapejs}}",
+        "{{tr.issuer|escapejs}}",
+        "{{tr.source|escapejs}}",
+        "{{tr.kind|escapejs}}",
+        "{{tr.description|escapejs}}",
+        "{{tr.is_confirmed|escapejs}}",
+
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}

@@ -371,8 +371,17 @@ class DES(Site, PermissionResource):
         # Who can delete a DES ?
         # "DESs shouldn't die, only born" !  
         return False
-            
-    #---------------------------------------------------#
+
+    #--------------------------#
+
+    @property
+    def transactions(self):
+        #TODO: ECO return accounting Transaction or LedgerEntry
+        return self.none()
+
+
+#------------------------------------------------------------------------------
+
 
 class Siteattr(models.Model):
 
