@@ -18,11 +18,20 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
-        1: 'order'
+        1: 'pk',
+        2: 'pk',
+        3: 'pk',
+        4: 'pk',
+        5: 'pk',
+        6: 'pk',
+        7: 'pk'
     }
+#Caught FieldError while rendering: Cannot resolve keyword 'order' into field. Choices are: datetime_end, datetime_start, delivery, delivery_cost, delivery_referrer_person, gasstock_set, group_id, historicalorderable_product_set, id, order_minimum_amount, orderable_product_set, pact, referrer_person, withdrawal, withdrawal_referrer_person
+
+#        1: 'order',
 #        2: 'tot_amount',
 #        3: 'tot_gasmembers',
-#        4: 'tot_price',
+#        4: 'tot_price'
 #        5: 'Invoice',
 #        6: 'tot_curtail',
 #        7: 'Payment'
@@ -31,19 +40,4 @@ class Block(BlockSSDataTables):
         #GASSupplierOrder
 #        return request.resource.orders.archived()
         return request.resource.orders.closed()
-
-#        "{{gso.tot_amount|escapejs|floatformat:"-2"}}",
-#        "{{gso.tot_gasmembers|escapejs}}",
-#        "&#8364; {{gso.tot_price|escapejs|floatformat:2}}",
-#        "&#8364; {{gso.delivery_cost|escapejs|floatformat:2}}",
-#        "&#8364; {{gso.tot_curtail|escapejs|floatformat:2}}",
-#        "{{gso.payment|escapejs}}",
-
-
-#    <th>{% trans "Amount" %}</th>
-#    <th>{% trans "Members" %}</th>
-#    <th>{% trans "Ordered price" %}</th>
-#    <th>{% trans "Invoice" %}</th>
-#    <th>{% trans "Gasmember's curtail sum" %}</th>
-#    <th>{% trans "Payment" %}</th>
 
