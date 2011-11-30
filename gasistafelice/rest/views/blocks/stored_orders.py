@@ -37,5 +37,6 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         #GASSupplierOrder
+
         return request.resource.orders.archived()
         #return request.resource.orders.closed()  #Only for test purpose
