@@ -1,0 +1,89 @@
+{% extends "blocks/base/report.html" %}
+{% load i18n %}
+{% load basic_tags %}
+
+{% block customstyle %}
+.head{font-family: Monospace, Arial;}
+.sumQta{width:30%}
+.sumPricefield{width:40%; font-size:14px;font-weight:bolder;}
+.sumPricevalue{width:30%; color: #006400;font-size:18px;font-weight:bold;}
+.empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
+.taright{text-align:right;}
+.taright th{margin-right:17px; padding-right:17px;}
+.tacenter{text-align:center;}
+.taleft{text-align:left;}
+.tbl{width:96%; padding:3px 3px 0px 3px; marging:3px 3px 0px 3px; font-size:12px; vertical-align middle;}
+.Prod{border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;}
+.totProd{border: solid 2px #344960; font-size:14px; text-align: right;}
+.alert{color:red;}
+.uprice{width: 15%; color:darkgray; border: solid 1px #C6D7DE;}
+.qta{width: 10%; border: solid 1px #C6D7DE;}
+.totprice{width: 20%; color:#000;border: solid 1px #C6D7DE;}
+.product{border: solid 1px #C6D7DE;}
+.tab{width: 5%;}
+.fam{text-align:center;vertical-align:middle;border-top:solid 1px #000;border-bottom:solid 1px #000;font-weight:bold;}
+.bd{font-weight:bold;}
+div.code {background-color: #E5EECC; border: 1px dashed #D4D4D4; margin: 0; padding: 5px; width: 100%} /*622px;*/
+div.example_code p, div.code p, div.code div {font-family: courier new;}
+div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-family: courier new;
+ font-size: 110%; padding: 4px; width: 100%} /*612px;*/
+.note{font-size:1.0em;font-family:courier new; margin:3px 0px 0px 3px;padding:3px 0px 0px 3px; background-color:#FFFFF0;}
+{%endblock%}
+
+
+{%block page_header%}
+   <div class="head">
+        <h1>{% trans "Suppliers" %}:  {{ xres.id }} - {{ xres }}</h1>
+        <h2>{% trans "Suppliers count" %}:  {{ Suppliers_count }} </h2>
+        <h2>{% trans "Products count" %}:  {{ products_count }} </h2>
+        <h2>{% trans "Pacts count" %}:  {{ pacts_count }} </h2>
+
+   </div>
+<hr />
+
+{%endblock%}
+
+{%block content%}
+
+<table class="tbl" border="0" cellpadding="1" cellspacing="1">
+<thead>
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Agent" %}</th>
+    <th>{% trans "City" %}</th>
+    <th>{% trans "Email" %}</th>
+    <th>{% trans "Phone" %}</th>
+    <th>{% trans "Total products" %}</th>
+    <th>{% trans "Total Pacts" %}</th>
+    <th>&euro;</th>
+    <th>{% trans "Certification" %}</th>
+</thead>
+<tbody>
+    {% for row in recSup %}
+        <tr>
+            <td class="">{{row.id|escapejs}}</td>
+            <td class="product">{{row.name|escapejs}}</td>
+            <td class="">{{row.frontman_name|escapejs}} {{row.frontman.surname.upper|escapejs}}</td>
+            <td class="">{{row.city|escapejs}}</td>
+            <td class="">{{row.email|escapejs }}</td>
+            <td class="">{{row.phone|escapejs }}</td>
+            <td class="taright qta">{{row.tot_stocks|floatformat:"-2"}}</td>
+            <td class="taright qta">{{row.tot_pacts|floatformat:"-2"}}</td>
+            <td class="taright totprice">&nbsp;&euro;&nbsp;{{row.tot_eco|floatformat:"2"}}</td>
+            <td>{{row.certs|escapejs}}</td>
+        </tr>
+    {%  endfor %}
+</tbody>
+</table>
+{%endblock%}
+
+{%block page_foot%}
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td class="taleft">{{ user }}: {% now "l d F Y H:i" %}</td>
+        <td class="taright"><pdf:pagenumber></td>
+    </tr>
+</table>
+{%endblock%}
+
+
