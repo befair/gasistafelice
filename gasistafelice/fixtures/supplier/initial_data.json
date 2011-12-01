@@ -95,6 +95,7 @@
 {"pk": 6 ,"model":"supplier.certification", "fields": {"name":" SES ","description":" Certificato::Certificato da Suolo e Salute ", "symbol":" SES " } },
 {"pk": 7 ,"model":"supplier.certification", "fields": {"name":" ICEA ","description":" Certificato::Certificato da ICEA ", "symbol":" ICEA " } },
 {"pk": 8 ,"model":"supplier.certification", "fields": {"name":" PGS ","description":" Certificato::PGS ", "symbol":" PGS " } },
+{"pk": 9 ,"model":"supplier.certification", "fields": {"name":"PRIVA","description":" Privato ", "symbol":"PRIVA" } },
 
 
 
