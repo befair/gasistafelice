@@ -6,6 +6,8 @@ SUPPLIER_FLAVOUR_LIST = [
     ('FREELANCE', _('Freelance')),
 ]
 
+PRIVATE = 'PRIVA'
+
 MU_CHOICES = [('Km', 'Km')]
 ALWAYS_AVAILABLE = 1000000000
 
