@@ -99,16 +99,11 @@ class Block(BlockSSDataTables):
         return user_actions
 
     def _get_resource_list(self, request):
-<<<<<<< HEAD
         # Suppliers objects filtered without PRIVATE
         qry = request.resource.suppliers.order_by('name')
         #FIXME: change queryset into list
         #qry = filter(lambda t: not t.is_private, qry)
         return qry
-=======
-        # Suppliers objects
-        return request.resource.suppliers.order_by('name')
->>>>>>> Grid Suppliers for report
 
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
