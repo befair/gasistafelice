@@ -221,11 +221,21 @@ class Supplier(models.Model, PermissionResource):
         return self.seat.city
 
     @property
+    def address(self):
+        return self.seat
+
+    @property
     def certifications_list(self):
         #Value symbol, name and description
         #TODO: add PRIVATE
         return ", ".join(unordered_uniq(map(lambda x: x[0], self.certifications.values_list('description'))))
 
+    @property
+    def is_private(self):
+        x = self.certifications.filter(symbol=const.PRIVATE)
+        if x and x.count() > 0:
+            return True
+        return False
 
     #-------------- Authorization API ---------------#
     

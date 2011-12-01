@@ -431,18 +431,18 @@ class Resource(object):
         return self.contacts.filter(flavour=const.PHONE, is_preferred=True) or \
                     self.contacts.filter(flavour=const.PHONE)
 
-    @property
-    def preferred_www_address(self):
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_www_contacts.values_list('value'))))
+#    @property
+#    def preferred_www_address(self):
+#        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_www_contacts.values_list('value'))))
 
-    @property
-    def preferred_www_contacts(self):
-        return self.contacts.filter(flavour=const.WWW, is_preferred=True) or \
-                    self.contacts.filter(flavour=const.WWW)
+#    @property
+#    def preferred_www_contacts(self):
+#        return self.contacts.filter(flavour=const.WWW, is_preferred=True) or \
+#                    self.contacts.filter(flavour=const.WWW)
 
     @property
     def preferred_fax_address(self):
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_fax_contacts.values_list('value'))))
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_fax_contacts.values_list('value'))))
 
     @property
     def preferred_fax_contacts(self):
@@ -540,14 +540,17 @@ class Person(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name.capitalize(), 'surname': self.surname.upper()}
         if self.city:
             rv += u" (%s)" % self.city
         return rv
 
+    def report_name(self):
+        return u'%(name)s %(surname)s' % {'name' : self.name.capitalize(), 'surname': self.surname.upper()}
+
     def clean(self):
         self.name = self.name.strip().lower().capitalize()
-        self.surname = self.surname.strip().lower().capitalize()
+        self.surname = self.surname.strip().upper() #.lower().capitalize()
         self.display_name = self.display_name.strip()
         if not self.ssn:
             self.ssn = None
@@ -832,13 +835,18 @@ class Place(models.Model, PermissionResource):
     def __unicode__(self):
 
         rv = u"" 
-        if self.name or self.address:
-            rv += (self.name or self.address) + u", "
+#        if self.name or self.address:
+#            rv += (self.name or self.address) + u", "
+        if self.address:
+            rv += self.address + u", "
 
-        rv += self.city
+        if self.zipcode:
+            rv += u"%s " % self.zipcode
+
+        rv += self.city.lower().capitalize()
 
         if self.province:
-            rv += u"(%s)" % self.province
+            rv += u" (%s)" % self.province.upper()
 
         return rv
 
