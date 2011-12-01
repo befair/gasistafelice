@@ -8,6 +8,10 @@ from notification import models as notification
 from gasistafelice.gas.models import GAS
 from gasistafelice.gas import signals as gas_signals
 
+import logging
+
+log = logging.getLogger(__name__)
+
 #-------------------------------------------------------------------------------
 
 class FakeRecipient(object):
@@ -103,14 +107,19 @@ def notify_order_state_update(sender, **kwargs):
         'gas' : order.gas,
         'order' : order,
         'action' : transition.name,
-        'state' : transition.destination,
+        'state' : transition.destination.name,
     }
 
-    if transition.destination in ["open", "closed"]:
+    #--- Transition name ---#
+
+    recipients = []
+    if transition.destination.name.lower() in ["open", "closed"]:
         recipients = order.referrers
-    else:
+    elif transition.destination.name.lower() in ["sent", "paid"]:
         recipients = order.referrers | order.supplier.referrers
 
+    log.debug("Transition to: %s" % transition.destination.name)
+    log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))
     notification.send(recipients, "order_state_update", 
         extra_content, on_site=True
     )
