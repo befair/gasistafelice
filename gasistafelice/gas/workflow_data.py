@@ -179,6 +179,7 @@ state_transition_map = (
                            ('open', 'close'),
                            ('closed', 'pay'),
                            ('closed', 'send mail'),
+                           ('sent', 'pay'),
                            # SupplierOrder may be canceled at any time before delivery happens
                            ('open', 'cancel'),
                            ('closed', 'cancel'),
