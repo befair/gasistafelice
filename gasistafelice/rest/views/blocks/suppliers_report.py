@@ -99,8 +99,11 @@ class Block(BlockSSDataTables):
         return user_actions
 
     def _get_resource_list(self, request):
-        # Suppliers objects
-        return request.resource.suppliers.order_by('name')
+        # Suppliers objects filtered without PRIVATE
+        qry = request.resource.suppliers.order_by('name')
+        #FIXME: change queryset into list
+        #qry = filter(lambda t: not t.is_private, qry)
+        return qry
 
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
@@ -164,23 +167,31 @@ class Block(BlockSSDataTables):
         nProducts = 0
 
         for el in querySet:
+            if el.pk in (5, 12, 73):
+                continue
             pact_count += el.tot_pacts
             nProducts += el.tot_stocks
 
             records.append({
                'id' : el.pk,
                'name' : el.name,
-               'frontman_name' : el.frontman.name,
-               'city' : el.city,
-               'mail' : el.preferred_email_address,
+               'frontman' : el.frontman.report_name,
+               'address' : el.address,
+               'email' : el.preferred_email_address,
                'phone' : el.preferred_phone_address,
+               'fax' : el.preferred_fax_address,
                'tot_stocks' : el.tot_stocks,
                'tot_pacts' : el.tot_pacts,
                'tot_eco' : el.tot_eco,
                'certs' : el.certifications_list,
             })
 
-        return records, nSup, nProducts, pact_count
+#            <td class="taright qta">{{row.tot_stocks|floatformat:"-2"}}</td>
+#            <td class="taright qta">{{row.tot_pacts|floatformat:"-2"}}</td>
+#            <td class="taright totprice">&nbsp;&euro;&nbsp;{{row.tot_eco|floatformat:"2"}}</td>
+#            <td>{{row.certs|escapejs}}</td>
+
+        return records, nSup -3 , nProducts, pact_count
 
 
     def get_response(self, request, resource_type, resource_id, args):
