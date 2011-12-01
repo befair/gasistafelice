@@ -5,6 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerEr
 from django.contrib.auth.decorators import login_required
 from django.utils import simplejson
 
+from notification.models import Notice
+from flexi_auth.models import ROLES_DICT, ParamRole
+
 from gasistafelice.lib.shortcuts import render_to_xml_response
 
 from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
@@ -12,7 +15,6 @@ from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 from gasistafelice.des.models import Siteattr
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
-from flexi_auth.models import ROLES_DICT, ParamRole
 
 import time, datetime
 
@@ -332,7 +334,7 @@ def list_comments(request):
     for prr in request.user.principal_param_role_set.all():
         resources += [ r.value.as_dict() for r in prr.role.params ]
 
-    #TODO: REENABLE AFTER 9 oct.
+    #TODO: REENABLE ?
     #rnotes = get_notes_for(resources)
     
     rnotes = get_all_notes()
@@ -347,7 +349,7 @@ def list_comments(request):
 def list_notifications(request):
 
     context = {
-        'notifications': request.user.message_set.all()
+        'notifications': Notice.objects.notices_for(request.user, on_site=True)
     }
     return render_to_xml_response("notifications_result.xml", context)
 
