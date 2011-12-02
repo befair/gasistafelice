@@ -455,6 +455,35 @@ GROUP BY gmo.purchaser_id, gsop.order_id \
         return self
 
     @property
+    def purchasers(self):
+        """
+        The set of GAS members participating to this supplier order.
+        """
+        # FIXME: for consistency, the return value should be a ``QuerySet``
+        purchasers = set([order.purchaser for order in self.member_orders])
+        return purchasers
+    
+    @property
+    def member_orders(self):
+        """
+        The queryset of GAS members' orders issued against this supplier order.
+        """
+        member_orders = GASMemberOrder.objects.filter(ordered_product__order=self)
+        return member_orders
+    
+    @property
+    def total_amount(self):
+        """
+        The total expense for this order, as resulting from the invoice. 
+        """
+        amount = 0 
+        for order_product in self.orderable_products:
+            price = order_product.delivered_price
+            quantity = order_product.delivered_amount
+            amount += price * quantity
+        return amount    
+    
+    @property
     def tot_price(self):
         tot = 0
         for gmo in self.ordered_products:
