@@ -713,7 +713,7 @@ msgstr "Attivisti del GAS"
 
 #: gas/models/base.py:71 gas/models/base.py:1089
 msgid "association act"
-msgstr "Dati di configurazione"
+msgstr "atto di associazione"
 
 #: gas/models/base.py:72
 msgid "intent act"
