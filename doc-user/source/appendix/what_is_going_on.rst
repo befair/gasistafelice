@@ -15,9 +15,10 @@ Cosa funziona
 **Per i referenti fornitori e i fornitori**:
 
 1. Modificare disponibilità e prezzo nel *listino fornitore* associato al fornitore.
+2. Modifica prodotto
 
 *NOTA: una modifica in questo punto del software comporterà il cambiamento per tutto il DES.
-Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa al :ref:`resource_pact`.*
+Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa a* :ref:`resource_pact`.
 
 **Per i referenti fornitori**:
 
@@ -43,7 +44,7 @@ Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel
 Cosa è in fase di test
 ----------------------
 
-1. Aggiungi/Modifica prodotto
+1. Aggiungi prodotto
 2. Aggiungi/Modifica fornitore
 3. Aggiungi/Modifica categoria
 4. Aggiungi/Modifica GAS

@@ -8,7 +8,7 @@
 Benvenuto nel manuale utente di |project_name|
 ==============================================
 
-NOTA: Il manuale utente deve essere scritto dal punto di vista dell'utente. Quindi lo strutturiamo per ruoli.
+NOTA: Il manuale utente è scritto dal punto di vista dell'utente. Quindi lo strutturiamo per ruoli.
 
 Indice dei contenuti:
 
@@ -24,15 +24,16 @@ Indice dei contenuti:
     gas_referrer_tech
     general
     resource_supplier
-    resource_product
     resource_gas
     resource_pact
     resource_order
+    appendix/criteria
     appendix/migration
     appendix/list
     appendix/what_is_going_on
     
 .. TODO
+    resource_product
     gas_referrer_cash
     gas_referrer_order
     gas_referrer_withdrawal
