@@ -541,8 +541,6 @@ class Person(models.Model, PermissionResource):
     accounting =  AccountingDescriptor(PersonAccountingProxy)
     history = HistoricalRecords()
     
-    
-    
     class Meta:
         verbose_name = _("person")
         verbose_name_plural = _("people")
@@ -782,13 +780,15 @@ class Person(models.Model, PermissionResource):
 
     @property
     def username(self):
-        return self.user.username
+        if self.user:
+            return self.user.username
+        else:
+            return ugettext("has not an account in the system")
 
     display_fields = (
         name, surname, 
         models.CharField(name="city", verbose_name=_("City")),
         models.CharField(name="username", verbose_name=_("Username")),
-        user,
         contact_set,
         address,
     )
