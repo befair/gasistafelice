@@ -167,8 +167,6 @@ class Block(BlockSSDataTables):
         nProducts = 0
 
         for el in querySet:
-            if el.pk in (5, 12, 73):
-                continue
             pact_count += el.tot_pacts
             nProducts += el.tot_stocks
 
