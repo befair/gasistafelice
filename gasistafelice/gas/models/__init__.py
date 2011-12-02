@@ -36,3 +36,15 @@ def setup_order_workflow(sender, instance, created, **kwargs):
         instance.open_if_needed()
         
 post_save.connect(setup_order_workflow, sender=GASSupplierOrder)
+
+## Signals
+# setup accounting-related things for *every* model
+# implementing a ``.setup_accounting()`` method.
+def setup_non_subject_accounting(sender, instance, created, **kwargs):
+    if created:
+        # call the ``.setup_accounting()`` method on the sender model, if defined
+        if getattr(instance, 'setup_accounting', None):     
+            instance.setup_accounting()
+        
+post_save.connect(setup_non_subject_accounting, sender=GASMember)
+post_save.connect(setup_non_subject_accounting, sender=GASSupplierSolidalPact)
