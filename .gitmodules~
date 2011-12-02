@@ -10,6 +10,6 @@
 [submodule "submodules/django-notification"]
 	path = submodules/django-notification
 	url = https://github.com/feroda/django-notification.git
-[submodule "submodules/django-simple-accounting"]
-	path = submodules/django-simple-accounting
+[submodule "django-simple-accounting"]
+	path = django-simple-accounting
 	url = git://github.com/seldon/django-simple-accounting.git

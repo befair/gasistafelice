@@ -461,7 +461,7 @@ class SupplierAgent(models.Model):
     
 class Certification(models.Model, PermissionResource):
 
-    name = models.CharField(max_length=128, unique=True,verbose_name=_('name')) 
+    name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
     symbol = models.CharField(max_length=5, unique=True, verbose_name=_('symbol'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 
