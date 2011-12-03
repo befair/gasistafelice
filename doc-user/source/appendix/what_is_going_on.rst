@@ -85,14 +85,6 @@ Le cose non citate qui sopra sono da considerarsi non funzionanti o non realizza
 18. Trattamento economico Conti - Saldo supplier. Livello DES. Multi Calcolo e Multi Vissualizzazione grafica
 19. Trattamento economico Conti - Saldo GAS. Calcolo e Vissualizzazione grafica per Borsellino e Deposito
 20. Trattamento economico manipulazione - modifica di un flusso economico esistente (tra 2 soggetti)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> Extend doc user
-=======
-
->>>>>>> Extend doc user
 
 .. _which_problems:
 

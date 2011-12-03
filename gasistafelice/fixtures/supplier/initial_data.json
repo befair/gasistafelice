@@ -85,17 +85,16 @@
 
 
 
+{"pk":1,"model":"supplier.certification", "fields": {"name":"Certificato::Auto Certificazione","description":"Certificato::Auto Certificazione", "symbol":"AC" } },
+{"pk":2,"model":"supplier.certification", "fields": {"name":"Certificato::Certificato da IMC","description":"Certificato::Certificato da IMC", "symbol":"IMC" } },
+{"pk":3,"model":"supplier.certification", "fields": {"name":"In conversione","description":"In conversione", "symbol":"INC" } },
+{"pk":4,"model":"supplier.certification", "fields": {"name":"Convenzionale","description":"Convenzionale", "symbol":"BAD" } },
+{"pk":5,"model":"supplier.certification", "fields": {"name":"Certificato","description":"Certificato", "symbol":"Cert" } },
+{"pk":6,"model":"supplier.certification", "fields": {"name":"Certificato::Certificato da Suolo e Salute","description":"Certificato::Certificato da Suolo e Salute", "symbol":"SES" } },
+{"pk":7,"model":"supplier.certification", "fields": {"name":"Certificato::Certificato da ICEA","description":"Certificato::Certificato da ICEA", "symbol":"ICEA" } },
+{"pk":8,"model":"supplier.certification", "fields": {"name":"Certificato::PGS","description":"Certificato::PGS", "symbol":"PGS" } },
+{"pk":9,"model":"supplier.certification", "fields": {"name":"Privato","description":"Privato", "symbol":"PRIVA" } },
 
-
-{"pk": 1 ,"model":"supplier.certification", "fields": {"name":" AC ","description":" Certificato::Auto Certificazione ", "symbol":" AC " } },
-{"pk": 2 ,"model":"supplier.certification", "fields": {"name":" IMC ","description":" Certificato::Certificato da IMC ", "symbol":" IMC " } },
-{"pk": 3 ,"model":"supplier.certification", "fields": {"name":" INC ","description":" In conversione ", "symbol":" INC " } },
-{"pk": 4 ,"model":"supplier.certification", "fields": {"name":" BAD ","description":" Convenzionale ", "symbol":" BAD " } },
-{"pk": 5 ,"model":"supplier.certification", "fields": {"name":" Cert ","description":" Certificato ", "symbol":" Cert " } },
-{"pk": 6 ,"model":"supplier.certification", "fields": {"name":" SES ","description":" Certificato::Certificato da Suolo e Salute ", "symbol":" SES " } },
-{"pk": 7 ,"model":"supplier.certification", "fields": {"name":" ICEA ","description":" Certificato::Certificato da ICEA ", "symbol":" ICEA " } },
-{"pk": 8 ,"model":"supplier.certification", "fields": {"name":" PGS ","description":" Certificato::PGS ", "symbol":" PGS " } },
-{"pk": 9 ,"model":"supplier.certification", "fields": {"name":"PRIVA","description":" Privato ", "symbol":"PRIVA" } },
 
 
 

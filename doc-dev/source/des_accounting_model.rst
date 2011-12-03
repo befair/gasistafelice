@@ -75,7 +75,7 @@ From an accounting point of view, a person-like subject can be abstracted as:
 						 | 			  |
 						 |  			  +--- recharges [E]
 						 | ..			  |	 
-						 | 			  +--- fees [E]
+						 |  			  +--- fees [E]
 						 | 
 						 | 
       		      				 +--- <UID gas #n>  [P, E]

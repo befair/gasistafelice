@@ -39,6 +39,3 @@ class Block(BlockSSDataTables):
         #GASSupplierOrder
         return request.resource.orders.archived()
         #return request.resource.orders.closed()  #Only for test purpose
-
-        return request.resource.orders.archived()
-        #return request.resource.orders.closed()  #Only for test purpose
