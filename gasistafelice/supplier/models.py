@@ -81,15 +81,24 @@ class Supplier(models.Model, PermissionResource):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
     
-    def setup_accounting(self):   
+    def setup_accounting(self):
         self.subject.init_accounting_system()
         system = self.accounting.system
-        ## setup a base account hierarchy   
-        # a generic asset-type account (a sort of "virtual wallet")        
-        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)  
+#SUPPLIER
+#	. ROOT (/)
+#	|----------- wallet [A]
+#	|
+#	+----------- incomes [P,I]+
+#					+--- gas [P, I] +
+#							+--- <UID gas #1>  [P, I]
+#							| ..
+#							+--- <UID gas #n>  [P, I]
+        ## setup a base account hierarchy
+        # a generic asset-type account (a sort of "virtual wallet")
+        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
         # a placeholder for organizing transactions representing GAS payments
         system.add_account(parent_path='/incomes', name='gas', kind=account_type.income, is_placeholder=True)
-    
+
     @property
     def uid(self):
         """
