@@ -323,6 +323,7 @@ class GAS(models.Model, PermissionResource):
 #		|				| ..
 #		|				+--- <UID member #n>  [A]
 #		+----------- expenses [P,E]+
+#		|				+--- TODO: OutOfNetwork
 #		|				+--- suppliers [P, E] +
 #		|						+--- <UID supplier #1>  [E]
 #		|						| ..
@@ -330,6 +331,7 @@ class GAS(models.Model, PermissionResource):
 #		+----------- incomes [P,I]+
 #		|				+--- recharges [I] 
 #		|				+--- fees [I]
+#		|				+--- TODO: Other
         # GAS's cash
         system.add_account(parent_path='/', name='cash', kind=account_type.asset) 
         # root for GAS members' accounts

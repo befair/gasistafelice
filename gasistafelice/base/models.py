@@ -740,6 +740,12 @@ class Person(models.Model, PermissionResource):
     def setup_accounting(self):
         self.subject.init_accounting_system()
         system = self.accounting.system
+#		. ROOT (/)
+#		|----------- wallet [A]
+#		+----------- incomes [P,I]	+
+#		|				+--- TODO: Other (Private order, correction, Deposit)
+#		+----------- expenses [P,E]	+
+#						+--- TODO: Other (Correction, Donation, )
         # create a generic asset-type account (a sort of "virtual wallet")
         system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
 

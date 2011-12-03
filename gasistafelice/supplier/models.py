@@ -87,12 +87,14 @@ class Supplier(models.Model, PermissionResource):
 #SUPPLIER
 #	. ROOT (/)
 #	|----------- wallet [A]
-#	|
 #	+----------- incomes [P,I]+
-#					+--- gas [P, I] +
-#							+--- <UID gas #1>  [P, I]
-#							| ..
-#							+--- <UID gas #n>  [P, I]
+#	|				+--- gas [P, I] +
+#	|						+--- <UID gas #1>  [P, I]
+#	|						| ..
+#	|						+--- <UID gas #n>  [P, I]
+#	|				+--- TODO: Other (Bonus? Subvention? Investment?)
+#	+----------- expenses [P,E]	+
+#					+--- TODO: Other (Correction?, Donation?, )
         ## setup a base account hierarchy
         # a generic asset-type account (a sort of "virtual wallet")
         system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
