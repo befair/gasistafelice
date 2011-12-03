@@ -70,7 +70,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         help_text=_("If not null this order is aggregate with orders from other GAS")
     )
 
-    invoice_amount = models.CurrencyField(null=True, blank=True, verbose_name=_("invoice amount")) 
+    invoice_amount = CurrencyField(null=True, blank=True, verbose_name=_("invoice amount")) 
     invoice_note = models.TextField(blank=True, verbose_name=_("invoice number")) 
 
     objects = OrderManager()
