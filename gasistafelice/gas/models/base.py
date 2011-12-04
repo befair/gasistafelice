@@ -624,10 +624,10 @@ class GASMember(models.Model, PermissionResource):
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
-        models.CharField(max_length=200, name="email", verbose_name=_("Email")),
-        models.CharField(max_length=100, name="phone", verbose_name=_("Phone")),
+#        models.CharField(max_length=200, name="email", verbose_name=_("Email")),
+#        models.CharField(max_length=100, name="phone", verbose_name=_("Phone")),
 #        models.CharField(max_length=200, name="www", verbose_name=_("Web site")),
-        models.CharField(max_length=100, name="fax", verbose_name=_("Fax")),
+#        models.CharField(max_length=100, name="fax", verbose_name=_("Fax")),
         models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
     )
         #display.Resource(name="person", verbose_name=_("Person")),
