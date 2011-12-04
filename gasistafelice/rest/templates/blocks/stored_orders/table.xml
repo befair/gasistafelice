@@ -1,0 +1,17 @@
+{% extends "blocks/base/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "Order" %}</th>
+    <th>{% trans "Amount" %}</th>
+    <th>{% trans "Members" %}</th>
+    <th>{% trans "Ordered price" %}</th>
+    <th>{% trans "Invoice" %}</th>
+    <th>{% trans "Gasmember's curtail sum" %}</th>
+    <th>{% trans "Payment" %}</th>
+{% endblock %}
+
+
+
+

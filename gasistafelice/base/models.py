@@ -429,25 +429,25 @@ class Resource(object):
 
     @property
     def preferred_phone_address(self):
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_phone_contacts.values_list('value'))))
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_phone_contacts.values_list('value'))))
 
     @property
     def preferred_phone_contacts(self):
         return self.contacts.filter(flavour=const.PHONE, is_preferred=True) or \
                     self.contacts.filter(flavour=const.PHONE)
 
-    @property
-    def preferred_www_address(self):
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_www_contacts.values_list('value'))))
+#    @property
+#    def preferred_www_address(self):
+#        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_www_contacts.values_list('value'))))
 
-    @property
-    def preferred_www_contacts(self):
-        return self.contacts.filter(flavour=const.WWW, is_preferred=True) or \
-                    self.contacts.filter(flavour=const.WWW)
+#    @property
+#    def preferred_www_contacts(self):
+#        return self.contacts.filter(flavour=const.WWW, is_preferred=True) or \
+#                    self.contacts.filter(flavour=const.WWW)
 
     @property
     def preferred_fax_address(self):
-        return ", ".join(ordered_uniq(map(lambda x: x[0], self.preferred_fax_contacts.values_list('value'))))
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_fax_contacts.values_list('value'))))
 
     @property
     def preferred_fax_contacts(self):
@@ -538,7 +538,7 @@ class Person(models.Model, PermissionResource):
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
-    accounting =  AccountingDescriptor(PersonAccountingProxy)
+    accounting = AccountingDescriptor(PersonAccountingProxy)
     history = HistoricalRecords()
     
     class Meta:
@@ -547,14 +547,17 @@ class Person(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name.capitalize(), 'surname': self.surname.upper()}
         if self.city:
             rv += u" (%s)" % self.city
         return rv
 
+    def report_name(self):
+        return u'%(name)s %(surname)s' % {'name' : self.name.capitalize(), 'surname': self.surname.upper()}
+
     def clean(self):
         self.name = self.name.strip().lower().capitalize()
-        self.surname = self.surname.strip().lower().capitalize()
+        self.surname = self.surname.strip().upper() #.lower().capitalize()
         self.display_name = self.display_name.strip()
         if not self.ssn:
             self.ssn = None
@@ -737,12 +740,18 @@ class Person(models.Model, PermissionResource):
     def setup_accounting(self):
         self.subject.init_accounting_system()
         system = self.accounting.system
+#		. ROOT (/)
+#		|----------- wallet [A]
+#		+----------- incomes [P,I]	+
+#		|				+--- TODO: Other (Private order, correction, Deposit)
+#		+----------- expenses [P,E]	+
+#						+--- TODO: Other (Correction, Donation, )
         # create a generic asset-type account (a sort of "virtual wallet")
         system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
 
     #----------------- Authorization API ------------------------#
 
-    # Table-level CREATE permission    
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new Person in a DES ?
@@ -754,7 +763,7 @@ class Person(models.Model, PermissionResource):
             return User.objects.none()
             #raise WrongPermissionCheck('CREATE', cls, context)
         else:
-            allowed_users = des.gas_tech_referrers            
+            allowed_users = des.gas_tech_referrers
 
         return user in allowed_users 
         
@@ -799,10 +808,10 @@ class Person(models.Model, PermissionResource):
         
         If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
         """
-        from gasistafelice.gas.models import GAS 
+        from gasistafelice.gas.models import GAS
         if not isinstance(self, GAS):
             raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
-        return gas in [member.gas for member in self.gas_memberships]        
+        return gas in [member.gas for member in self.gas_memberships]
     
     @property
     def full_name(self):
@@ -877,13 +886,18 @@ class Place(models.Model, PermissionResource):
     def __unicode__(self):
 
         rv = u"" 
-        if self.name or self.address:
-            rv += (self.name or self.address) + u", "
+#        if self.name or self.address:
+#            rv += (self.name or self.address) + u", "
+        if self.address:
+            rv += self.address + u", "
 
-        rv += self.city
+        if self.zipcode:
+            rv += u"%s " % self.zipcode
+
+        rv += self.city.lower().capitalize()
 
         if self.province:
-            rv += u"(%s)" % self.province
+            rv += u" (%s)" % self.province.upper()
 
         return rv
 

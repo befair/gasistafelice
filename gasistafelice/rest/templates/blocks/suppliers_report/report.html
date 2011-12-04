@@ -1,0 +1,80 @@
+{% extends "blocks/base/report.html" %}
+{% load i18n %}
+{% load basic_tags %}
+
+{% block customstyle %}
+.head{font-family: Monospace, Arial; font-size: 10px; text-align: left;}
+.empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
+.taright{text-align:right;}
+.taright th{margin-right:17px; padding-right:17px;}
+.tacenter{text-align:center;}
+.taleft{text-align:left;}
+.tbl{width:96%; padding:3px 3px 0px 3px; marging:3px 3px 0px 3px; font-size:12px; vertical-align middle;}
+.xid{width:5%; font-size:smaller; font-style:italic;}
+.txt1{width:20%; font-size:12px;font-weight:bolder;}
+.txt2{width:15%; color: #006400; font-size:11px;font-weight:bold;}
+.txt3{font-size:11px;}
+.ctc2{width:16%; text-align: right; font-family: courier new;}
+.ctc3{width:40%; font-family:courier new;}
+.alert{color:red;}
+.tab{border-bottom: solid 1px #C6D7DE; }
+.bd{border-right: dashed 1px #C6D7DE; }
+.fam{text-align:center;vertical-align:middle;border-top:solid 1px #000;border-bottom:solid 1px #000;font-weight:bold;}
+.bd{font-weight:bold;}
+.stat{font-size:1.0em;font-family:courier new; margin:3px 0px 0px 3px;padding:3px 0px 0px 3px; background-color:#FFFFF0;}
+{%endblock%}
+
+
+{%block page_header%}
+   <div class="head">
+        <h1>{% trans "Suppliers" %} - {{ xres }} ({{ user }}) {% now "l d F Y H:i" %}</h1>
+        <table class="tbl" border="0" cellpadding="1" cellspacing="1">
+            <tr>
+                <td class="stat">{% trans "Suppliers count" %}:  {{ Suppliers_count }}</td>
+                <td class="stat">{% trans "Products count" %}:  {{ products_count }}</td>
+                <td class="stat">{% trans "Pacts count" %}:  {{ pacts_count }}</td>
+            </tr>
+        </table>
+   </div>
+<hr />
+
+{%endblock%}
+
+{%block content%}
+
+<table class="tbl" border="0" cellpadding="1" cellspacing="1">
+<thead>
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Person" %}</th>
+    <th>{% trans "Address" %} - {% trans "Email" %}</th>
+    <th>{% trans "Phone" %} - {% trans "Fax" %}</th>
+</thead>
+<tbody>
+    {% for row in recSup %}
+        <tr>
+            <td class="tab xid" rowspan="2">{{row.id|escapejs}}</td>
+            <td class="tab txt1" rowspan="2">{{row.name|escapejs}}</td>
+            <td class="tab txt2" rowspan="2">{{row.frontman|escapejs}}</td>
+            <td class="tab txt3">{{row.address|escapejs}}</td>
+            <td class="tab ctc2 bd">{{row.phone|escapejs }}</td>
+        </tr>
+        <tr>
+            <td class="tab ctc3 bd">{{row.email|escapejs }}</td>
+            <td class="tab bd">{{row.fax|escapejs }}</td>
+        </tr>
+    {%  endfor %}
+</tbody>
+</table>
+{%endblock%}
+
+{%block page_foot%}
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td class="taleft"></td>
+        <td class="taright"><pdf:pagenumber></td>
+    </tr>
+</table>
+{%endblock%}
+
+

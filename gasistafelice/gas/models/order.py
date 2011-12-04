@@ -70,7 +70,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         help_text=_("If not null this order is aggregate with orders from other GAS")
     )
 
-    invoice_amount = models.CurrencyField(null=True, blank=True, verbose_name=_("invoice amount")) 
+    invoice_amount = CurrencyField(null=True, blank=True, verbose_name=_("invoice amount")) 
     invoice_note = models.TextField(blank=True, verbose_name=_("invoice number")) 
 
     objects = OrderManager()
@@ -113,6 +113,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         ref = self.delivery_referrer_person
         if ref:
             ref = " Ref: %s " % ref
+        elif self.referrer_person:
+            ref = " Ref: %s " % self.referrer_person
         else:
             ref = ""
 
@@ -212,9 +214,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def referrers(self):
         """Return all users being referrers for this order.
 
-        Thus, referrer for order pact
+        Thus, referrer for order pact, if not take all gas referrers
+        GAS teorie doesn't accept that one person is referrer for one person 
+        but intend to turn the referrer work bettwen several persons.
+        In the GAS you have one communicative referrer in order to centralize information
         """
-        return self.pact.referrers
+        pact_refs = self.pact.referrers
+        if not pact_refs:
+            pact_refs = self.pact.gas.referrers
+        return pact_refs
 
     @property
     def supplier_referrers_people(self):
@@ -223,6 +231,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             prs = Person.objects.filter(user__in=self.referrers)
         return prs
 
+    @property
+    def cash_referrers(self):
+        return self.pact.gas.cash_referrers
 
     #-------------------------------------------------------------------------------#
 
@@ -398,7 +409,20 @@ WHERE order_id = 10")
 #postgres : SELECT DISTINCT ON (a) a,b,c,d,e FROM table ORDER BY a,b,c
         # Data retrieval operation - no commit required
         # p.name || ' ' || p.surname --> POSTGRES
-        cursor.execute("SELECT tmp.* , (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+
+#TODO: Verify
+#mysql    : CAST(-125.823123123 AS DECIMAL(30, 2)) AS account_amounted
+#postgres : to_char(-125.8, '9999.99') AS account_amounted
+
+        cursor.execute("SELECT \
+tmp.order_id \
+, tmp.purchaser_id \
+, tmp.sum_amount \
+, tmp.sum_price \
+, tmp.tot_product \
+, tmp.sum_qta \
+, (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+, CAST(0 AS DECIMAL(30, 2)) AS account_amounted \
 FROM (SELECT gmo.purchaser_id AS purchaser_id \
 , gsop.order_id AS order_id \
 , SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
@@ -411,6 +435,14 @@ ON gmo.ordered_product_id = gsop.id \
 WHERE order_id = %s \
 GROUP BY gmo.purchaser_id, gsop.order_id \
 ) AS tmp", [self.pk])
+
+
+
+        #TODO: Add new field account_amounted
+        #Field are retrieve from the Accounting system
+
+
+
         #row = cursor.fetchall()
         #>>> cursor.fetchall()    ((5L, None), (6L, None))
         #write custom SQL queries wich would return dicts instead of tuples
@@ -493,6 +525,54 @@ GROUP BY gmo.purchaser_id, gsop.order_id \
             tot += gmo.tot_price
         return tot
 
+    @property
+    def tot_amount(self):
+        tot = 0
+        #for gmo in self.ordered_products:
+        #    tot += gmo.tot_amount
+        if self.ordered_products:
+            from django.db.models import Count, Sum
+            qry = self.ordered_products.values('purchaser').annotate(sum_qta = Sum('ordered_amount')).order_by('purchaser').filter( is_confirmed = True)
+            #tot = self.ordered_products.annotate('purchaser').count()
+            #tot = len(self.ordered_products.annotate('purchaser'))
+            for agg_gmo in qry:
+                tot += agg_gmo.sum_qta
+        return tot
+
+    @property
+    def tot_gasmembers(self):
+        tot = 0
+        #for gmo in self.ordered_products:
+        #    tot += gmo.tot_amount
+        if self.ordered_products:
+            from django.db.models import Count, Sum
+            qry = self.ordered_products.values('purchaser').annotate(sum_qta = Sum('ordered_amount')).order_by('purchaser').filter( is_confirmed = True)
+            #tot = self.ordered_products.annotate('purchaser').count()
+            #tot = len(self.ordered_products.annotate('purchaser'))
+            tot = qry.count()
+        return tot
+
+    @property
+    def tot_curtail(self):
+        tot = 0
+        #TODO: ECO Accounting retrieve all GASMember for this order that have curtail payment
+        return tot
+
+    @property
+    def payment(self):
+        mvt = 'TODO: ECO'
+        #TODO: ECO Accounting retrieve the payment for this order
+        return mvt
+
+    @property
+    def payment_urn(self):
+        mvt_urn = 'order/%s' % self.pk
+        #TODO: ECO Accounting retrieve the payment for this order and get the urn
+        #This is wright? Accounting is not a ressource...
+        #So we have to go to the order details in EDIT mode?
+        return mvt_urn
+
+
     def save(self, *args, **kw):
         created = False
 
@@ -515,6 +595,12 @@ GROUP BY gmo.purchaser_id, gsop.order_id \
 
         if created:
             self.set_default_gasstock_set()
+
+        if not self.referrer_person and self.delivery_referrer_person:
+            self.referrer_person = self.delivery_referrer_person
+        if not self.delivery_referrer_person and self.referrer_person:
+            self.delivery_referrer_person = self.referrer_person
+
         
     #-------------- Authorization API ---------------#
     
@@ -742,16 +828,16 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
- 
+            raise WrongPermissionCheck('CREATE', cls, context)
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of product associated with a supplier order in a GAS ?
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators        
-        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
-        return user in allowed_users 
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
@@ -890,8 +976,8 @@ class GASMemberOrder(models.Model, PermissionResource):
             allowed_users = order.gas.members
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
- 
+            raise WrongPermissionCheck('CREATE', cls, context)
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can modify an order placed by a GAS member ?
@@ -899,8 +985,8 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
-        return user in allowed_users 
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
@@ -909,7 +995,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
         return user in allowed_users
     
     #---------------------------------------------------#
@@ -1022,7 +1108,7 @@ class Delivery(Appointment, PermissionResource):
                 raise NotImplementedError("can_create withdrawal in order")
                 allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
             except KeyError:
-                raise WrongPermissionCheck('CREATE', cls, context)   
+                raise WrongPermissionCheck('CREATE', cls, context)
 
         return user in allowed_users
  
@@ -1172,10 +1258,10 @@ class Withdrawal(Appointment, PermissionResource):
                 raise NotImplementedError("can_create withdrawal in order")
                 allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
             except KeyError:
-                raise WrongPermissionCheck('CREATE', cls, context)   
+                raise WrongPermissionCheck('CREATE', cls, context)
 
         return user in allowed_users
- 
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # TODO: REVIEW NEEDED see above (can_create)

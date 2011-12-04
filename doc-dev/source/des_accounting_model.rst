@@ -64,26 +64,24 @@ From an accounting point of view, a person-like subject can be abstracted as:
 
 ::
 
-      . ROOT (/)
-      |----------- wallet [A]
-      |
-      +----------- expenses [P,E]+
-				 |
-      			         +--- gas [P, E] +
-				      	      	 |
-      				     	       	 +--- <UID gas #1>  [P, E]+
-						 | 			  |
-						 |  			  +--- recharges [E]
-						 | ..			  |	 
-						 | 			  +--- fees [E]
-						 | 
-						 | 
-      		      				 +--- <UID gas #n>  [P, E]
-						 			  |
-						  			  +--- recharges [E]
-						 			  |	 
-						 			  +--- fees [E]
-						 
+		. ROOT (/)
+		|--- wallet [A]
+		|
+		+--- expenses [P,E]+
+				|
+				+--- gas [P, E] +
+						|
+						+--- <UID gas #1>  [P, E]+
+						|			|
+						|			+--- recharges [E]
+						|			|
+						|			+--- fees [E]
+						| ..
+						+--- <UID gas #n>  [P, E]
+									|
+									+--- recharges [E]
+									|
+									+--- fees [E]
 
 
 GASs
@@ -103,31 +101,30 @@ The supplier-facing interface is made of two accounts:
 
 ::
 
-      . ROOT (/)
-      |----------- cash [A]
-      |
-      +----------- members [P,A]+
-      |				|
-      |				+--- <UID member #1>  [A]
-      |		      		| ..
-      |		      		+--- <UID member #n>  [A]
-      |
-      +----------- incomes [P,I]+
-      |				|
-      |			        +--- recharges [I] 
-      |				|     
-      |			        +--- fees [I]
-      |
-      |
-      +----------- expenses [P,E]+
-				 |
-      			         +--- suppliers [P, E] +
-				      		       |
-      				     	       	       +--- <UID supplier #1>  [E]
-						       | ..
-      		      				       +--- <UID supplier #n>  [E]
+	. ROOT (/)
+	|----------- cash [A]
+	|
+	+----------- members [P,A]	+
+	|							|
+	|							+--- <UID member #1>  [A]
+	|							| ..
+	|							+--- <UID member #n>  [A]
+	|
+	+----------- incomes [P,I]	+
+	|							|
+	|							+--- recharges [I]
+	|							|
+	|							+--- fees [I]
+	|
+	+----------- expenses [P,E]	+
+								|
+								+----------- suppliers [P, E]	+
+												|
+												+--- <UID supplier #1>  [E]
+												| ..
+												+--- <UID supplier #n>  [E]
 
-    
+
 
 Suppliers
 ---------
@@ -138,23 +135,16 @@ From an accounting point of view, a supplier-like subject can be abstracted as:
 
 ::
 
-      . ROOT (/)
-      |----------- wallet [A]
-      |
-      +----------- incomes [P,I]+
-				 |
-      			         +--- gas [P, I] +
-				      	      	 |
-      				     	       	 +--- <UID gas #1>  [P, I]
-						 | 			  
-						 |  			  
-						 | ..			  
-						 | 			  
-						 | 
-						 | 
-      		      				 +--- <UID gas #n>  [P, I]
-						 			  
-						  			 
+	. ROOT (/)
+	|----------- wallet [A]
+	|
+	+----------- incomes [P,I]	+
+								|
+								+--- gas [P, I] +
+												|
+												+--- <UID gas #1>  [P, I]
+												| ..
+												+--- <UID gas #n>  [P, I]
 
 
 Common transactions
@@ -386,19 +376,19 @@ confirm_invoice_payment
   *exceptions*
 	If ``invoice`` isn't an ``Invoice`` model instance, or if it was issued by another subject, raise ``ValueError``.
 
-        
+
 
 accounted_amount_by_gas_member
 ------------------------------
 *description*
   Given a supplier order ``order``, return an annotated set of GAS members  partecipating to that order.
-        
+
   Each GAS member instance will have an ``.accounted_amount`` attribute, representing the total amount of money already accounted for with respect 
   to the entire set of orders placed by that GAS member within ``order``.
-        
+
    A (member) order is considered to be "accounted" iff a transaction recording it
    exists within that GAS's accounting system.
-        
+
 
 *usage*
   If ``gas`` is the GAS who issued the supplier order, call ``gas.accounting.accounted_amount_by_gas_member(self, order)``

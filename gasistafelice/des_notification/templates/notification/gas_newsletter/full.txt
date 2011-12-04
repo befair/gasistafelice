@@ -1,3 +1,5 @@
+{% load i18n %}
+
 Caro gasista del GAS {{ gas }}, 
 gli aggiornamenti della settimana sono:
 

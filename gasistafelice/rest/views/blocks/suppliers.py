@@ -17,7 +17,7 @@ class Block(BlockWithList):
 
     BLOCK_NAME = "suppliers"
     BLOCK_DESCRIPTION = _("Suppliers")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas"]
 
     def _get_resource_list(self, request):
         return request.resource.suppliers

@@ -65,6 +65,7 @@ class Block(BlockSSDataTables):
                     ),
 
                 ]
+
         user_actions += [
             ResourceBlockAction(
                 block_name = self.BLOCK_NAME,

@@ -211,7 +211,7 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'people',
         'descr' : 'Partecipanti',
-        'blocks' : ['gas_list', 'suppliers', 'persons']
+        'blocks' : ['gas_list', 'suppliers_report', 'persons']  #, 'suppliers'
     },{
         'name' : 'order',
         'descr' : 'Ordini',
@@ -220,6 +220,14 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr' : 'Scheda del DES',
         'blocks' : ['details', 'categories']
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : ['transactions']
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : ['stored_orders']
     }],
     'gas' : [{
         'name' : 'orders',
@@ -236,11 +244,11 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : [] #Finalize Orders, Transact_Casa, Transact_Borselino
+        'blocks' : ['transactions'] #Finalize Orders, transactions explode in Transact_Casa, Transact_Borselino
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
-        'blocks' : [] #Archivied Orders, Transact_gasmembers, Transact_suppliers
+        'blocks' : ['stored_orders'] #TODO transactions for Transact_gasmembers, Transact_suppliers
     }],
     'gasmember': [{
         'name' : 'orders',
@@ -257,7 +265,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : [] #Transact_Gasmember
+        'blocks' : ['transactions']
     }],
     'supplier' : [{
         'name' : 'products',
@@ -274,7 +282,11 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : [] #Transact_supplier for all pact
+        'blocks' : ['transactions']
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : ['stored_orders']
     }],
     'order' : [{ 
         'name' : 'info',
@@ -283,7 +295,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{ 
         'name' : 'delivery',
         'descr': 'Pagamento',
-        'blocks': ['curtail'],
+        'blocks': ['curtail'] #, 'unsolved'
     }],
 
     'person' : [{
@@ -303,13 +315,12 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : [] #Transact_supplier for one pact
+        'blocks' : ['transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
-        'blocks' : [] #Archivied Orders
+        'blocks' : ['stored_orders']
     }],
-
     'stock' : [{
         'name': 'info',
         'descr': 'Scheda del prodotto',

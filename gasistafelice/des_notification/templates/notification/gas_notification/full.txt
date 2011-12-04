@@ -1,3 +1,5 @@
+{% load i18n %}
+
 I prossini ordini in chiusura del GAS {{ gas }} sono:
 
 <ul>

@@ -1,6 +1,6 @@
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy
-from simple_accounting.utils import register_transaction, register_simple_transaction
+from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
+from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
 
 
 class PersonAccountingProxy(AccountingProxy):
@@ -34,12 +34,12 @@ class PersonAccountingProxy(AccountingProxy):
         description = "Membership fee for year %(year)s" % {'year': year,}
         issuer = person 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
-        transaction.add_references([person, gas])  
+        transaction.add_references([person, gas])
         
     def do_recharge(self, gas, amount):
         """
-        Do a recharge of amount ``amount`` to the corresponding member account 
-        in the GAS ``gas``. 
+        Do a recharge of amount ``amount`` to the corresponding member account
+        in the GAS ``gas``.
         
         If this person is not a member of GAS ``gas``, or if ``amount`` is a negative number
         a ``MalformedTransaction`` exception is raised.
@@ -55,7 +55,28 @@ class PersonAccountingProxy(AccountingProxy):
             entry_point =  gas.system['/incomes/recharges']
             target_account = gas.system['/members/' + person.uid]
             description = "GAS member account recharge"
-            issuer = person 
+            issuer = person
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])
+
+    def movements(self, gas=None):
+        """
+        List all transactions. Return LedgerEntry (account, transaction, amount)
+        """
+        return LedgerEntry.objects.all()
+        person = self.subject.instance
+        if gas:
+            #return all transactions for a specific gas
+            return None
+        else:
+            #return all transactions for each gas the person participate
+            return None
+
+        #util.transaction_details(transaction) return string
+        #class AccountingProxy(object):
+        #    def __init__(self, subject):
+        #    def account(self):
+        #    def make_transactions_for_invoice_payment(self, invoice, is_being_payed):
+        #    def pay_invoice(self, invoice):
+        #    def set_invoice_payed(self, invoice):
 

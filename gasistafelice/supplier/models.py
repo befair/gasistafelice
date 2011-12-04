@@ -25,7 +25,7 @@ from simple_accounting.models import account_type
 from simple_accounting.models import economic_subject, AccountingDescriptor
 
 from gasistafelice.exceptions import NoSenseException
-from gasistafelice.lib import ClassProperty
+from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 
@@ -37,6 +37,8 @@ from gasistafelice.des.models import DES, Siteattr
 from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.supplier.accounting import SupplierAccountingProxy
 from gasistafelice.gas import signals
+
+from gasistafelice.base import const
 
 from decimal import Decimal
 import logging
@@ -79,15 +81,26 @@ class Supplier(models.Model, PermissionResource):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
     
-    def setup_accounting(self):   
+    def setup_accounting(self):
         self.subject.init_accounting_system()
         system = self.accounting.system
-        ## setup a base account hierarchy   
-        # a generic asset-type account (a sort of "virtual wallet")        
-        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)  
+#SUPPLIER
+#	. ROOT (/)
+#	|----------- wallet [A]
+#	+----------- incomes [P,I]+
+#	|				+--- gas [P, I] +
+#	|						+--- <UID gas #1>  [P, I]
+#	|						| ..
+#	|						+--- <UID gas #n>  [P, I]
+#	|				+--- TODO: Other (Bonus? Subvention? Investment?)
+#	+----------- expenses [P,E]	+
+#					+--- TODO: Other (Correction?, Donation?, )
+        ## setup a base account hierarchy
+        # a generic asset-type account (a sort of "virtual wallet")
+        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
         # a placeholder for organizing transactions representing GAS payments
         system.add_account(parent_path='/incomes', name='gas', kind=account_type.income, is_placeholder=True)
-    
+
     @property
     def uid(self):
         """
@@ -182,8 +195,24 @@ class Supplier(models.Model, PermissionResource):
         return self.stock_set.all()
 
     @property
+    def tot_stocks(self):
+        """count All stocks _supplied_ by this supplier"""
+        tot = 0
+        if self.stocks:
+            tot = self.stocks.count()
+        return tot
+
+    @property
     def pacts(self):
         return self.pact_set.all().order_by('gas')
+
+    @property
+    def tot_pacts(self):
+        """count All pacts _supplied_ by this supplier"""
+        tot = 0
+        if self.pacts:
+            tot = self.pacts.count()
+        return tot
 
     @property
     def pact(self):
@@ -210,8 +239,6 @@ class Supplier(models.Model, PermissionResource):
         #TODO: if none the form must retrieve the gas related user logged in. What happend if superuser is the logged in?
         return None
 
-
-
     @property
     def products(self):
         """All products _supplied_ by this supplier"""
@@ -228,8 +255,25 @@ class Supplier(models.Model, PermissionResource):
     def city(self):
         return self.seat.city
 
+    @property
+    def address(self):
+        return self.seat
+
+    @property
+    def certifications_list(self):
+        #Value symbol, name and description
+        #TODO: add PRIVATE
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.certifications.values_list('description'))))
+
+    @property
+    def is_private(self):
+        x = self.certifications.filter(symbol=const.PRIVATE)
+        if x and x.count() > 0:
+            return True
+        return False
+
     #-------------- Authorization API ---------------#
-    
+
     # Table-level CREATE permission    
     @classmethod
     def can_create(cls, user, context):
@@ -319,6 +363,23 @@ class Supplier(models.Model, PermissionResource):
         display.ResourceList(name="referrers_people", verbose_name=_("Platform referrers")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
+
+    #--------------------------#
+
+    @property
+    def transactions(self):
+        #TODO: ECO return accounting Transaction or LedgerEntry
+        return self.none()
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this supplier"""
+        acc_tot = 0
+        return acc_tot
+
+
+#------------------------------------------------------------------------------
+
 
 class SupplierConfig(models.Model):
     """
@@ -411,7 +472,7 @@ class SupplierAgent(models.Model):
     
 class Certification(models.Model, PermissionResource):
 
-    name = models.CharField(max_length=128, unique=True,verbose_name=_('name')) 
+    name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
     symbol = models.CharField(max_length=5, unique=True, verbose_name=_('symbol'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 

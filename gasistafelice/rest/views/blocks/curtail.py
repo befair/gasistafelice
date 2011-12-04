@@ -74,7 +74,14 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         #return GASMember objects
         #return request.resource.ordered_gasmembers
-        return request.resource.ordered_gasmembers_sql
+        q_sql = request.resource.ordered_gasmembers_sql
+#        i = 0
+#        for item in q_sql:
+#            i += 1
+#            log.debug("Curtails enumerate (%s) - %s" % (i, item))
+#            print("---------Curtails sql  (%s) - %s" % (i, item))
+#{'gasmember': u'Thual', 'purchaser_id': 1L, 'order_id': 1L, 'sum_amount': Decimal('23.660000'), 'sum_qta': Decimal('1.75'), 'tot_product': 2L, 'sum_price': Decimal('25.4800')}
+        return q_sql
 
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
@@ -102,6 +109,13 @@ class Block(BlockSSDataTables):
 
 #{'purchaser': 7L, 'sum_price': Decimal('98.0400'), 'ordered_product__order': 10L, 'tot_product': 5, 'sum_qta': Decimal('5.00')}
 
+        #Retrieve gasmembers orders curtails
+        order = request.resource
+        accounting_data = order.pact.gas.accounting.accounted_amount_by_gas_member(order)
+        for trx in accounting_data:
+            print trx
+
+
         #for i,el in enumerate(querySet):
         i = 0
         for item in querySet:
@@ -112,16 +126,18 @@ class Block(BlockSSDataTables):
             key_prefix = 'form-%d' % i
             #querySet? 'dict' object has no attribute 'id' or 'order_id'
 
+            #TODO: account_amounted must replace sum_amount if exist one accounting transaction
+            ordered_tot_price =  self._getItem(pairs, 'sum_amount', 0)
+            accounted_wallet =  self._getItem(pairs, 'account_amounted', 0)
+            if accounted_wallet == 0:
+                accounted_wallet = ordered_tot_price
+
             data.update({
                '%s-ord_id' % key_prefix : self._getItem(pairs, 'order_id', 0),
                '%s-gm_id' % key_prefix : pk,
-               '%s-amounted' % key_prefix : self._getItem(pairs, 'sum_amount', 0),
+               '%s-eco_id' % key_prefix : pk,
+               '%s-amounted' % key_prefix : accounted_wallet,
             })
-#               '%s-id' % key_prefix : el.order_id,
-#               '%s-gm_id' % key_prefix : el.purchaser_id, # 'dict' object has no attribute 'purchaser'
-#               '%s-amounted' % key_prefix : el.sum_amount,
-
-#Cannot resolve keyword 'puchaser' into field. Choices are: id, is_confirmed, note, ordered_amount, ordered_price, ordered_product, purchaser, withdrawn_amount
 
             map_info[pk] = {'formset_index' : i}
             #map_info[i] = {'formset_index' : i}
@@ -154,9 +170,9 @@ class Block(BlockSSDataTables):
                'sum_qta' : self._getItem(pairs, 'sum_qta', 0),
                'sum_price' : self._getItem(pairs, 'sum_price', 0),
                'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
-               'amounted' : "%s %s %s" % (form['ord_id'], form['gm_id'], form['amounted']),
+               'amounted' : "%s %s %s %s" % (form['ord_id'], form['gm_id'], form['amounted'], form['eco_id']),
             })
-
+#"{{row.amounted|escapejs}}"  --> "{{row.amounted|floatformat:"2"}}" cannot be done because is widget input
 #               'pk' : el.order_id,
 #               'gasmember' : gasmember,
 #               'tot_product' : el.tot_product,
