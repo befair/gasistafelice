@@ -415,12 +415,12 @@ WHERE order_id = 10")
 #postgres : to_char(-125.8, '9999.99') AS account_amounted
 
         cursor.execute("SELECT \
-tmp.order_id \
-, tmp.purchaser_id \
-, tmp.sum_amount \
-, tmp.sum_price \
-, tmp.tot_product \
-, tmp.sum_qta \
+tmp.order_id AS order_id\
+, tmp.purchaser_id AS purchaser_id \
+, tmp.sum_amount AS sum_amount \
+, tmp.sum_price AS sum_price \
+, tmp.tot_product AS tot_product \
+, tmp.sum_qta AS sum_qta \
 , (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
 , CAST(0 AS DECIMAL(30, 2)) AS account_amounted \
 FROM (SELECT gmo.purchaser_id AS purchaser_id \
