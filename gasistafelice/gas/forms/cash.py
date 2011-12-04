@@ -79,7 +79,7 @@ class EcoGASMemberForm(forms.Form):
         #Do economic work
         #TODO: gas.accounting.withdraw_from_member_account(self, member, amount, refs=None):
         amounted = self.cleaned_data.get('amounted')
-        try
+        try:
             if amounted == 0:
                 #Find existing movment and delete it
                 log.error("ECO Order GasMember(%s) - Delete? - (%s) " % (gm, amounted))
