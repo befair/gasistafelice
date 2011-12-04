@@ -27,8 +27,8 @@ class SingleSupplierStockForm(forms.Form):
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     pk = forms.IntegerField(required=False)
     #code = forms.CharField(required=False)
-    product = forms.CharField(required=True, widget=forms.TextInput(), max_length=200)
-    description = forms.CharField(required=False, widget=forms.TextInput(), max_length=500)
+    product = forms.CharField(required=True, widget=forms.TextInput(attrs={'size':'95'},), max_length=200)
+#    description = forms.CharField(required=False, widget=forms.TextInput(), max_length=500)
 #    product = forms.ModelChoiceField(
 #                            queryset = Product.objects.all(), 
 #                            widget = RelatedFieldWidgetCanAdd(related_model=Product)
@@ -45,8 +45,8 @@ class SingleSupplierStockForm(forms.Form):
         self.fields['pk'].widget.attrs['readonly'] = True
         self.fields['pk'].widget.attrs['disabled'] = 'disabled'
         self.fields['pk'].widget.attrs['class'] = 'input_small'
-        self.fields['product'].widget.attrs['class'] = 'input_medium'
-        self.fields['description'].widget.attrs['class'] = 'input_long'
+#        self.fields['product'].widget.attrs['class'] = 'input_medium'
+#        self.fields['description'].widget.attrs['class'] = 'input_long'
         self.fields['price'].widget.attrs['class'] = 'input_short taright'
         self.__supplier = request.resource
 
@@ -65,7 +65,7 @@ class SingleSupplierStockForm(forms.Form):
                 #ss.code = self.cleaned_data.get('code')
                 #ss.supplier = self.__supplier
                 prd.name = self.cleaned_data['product']
-                prd.description = self.cleaned_data['description']
+#                prd.description = self.cleaned_data['description']
                 prd.save()
                 #"SupplierStock.product" must be a "Product" instance
                 #ss.product = self.cleaned_data['product']
@@ -107,12 +107,12 @@ class EditStockForm(forms.ModelForm):
 
     product_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
     product_name = forms.CharField(required=True, 
-            label=_("Name"), widget=forms.TextInput(attrs={'size':'40'})
+            label=_("Name"), widget=forms.TextInput(attrs={'size':'40'},), max_length=200
     )
     price = CurrencyField(label=_("Price (vat included)"))
     product_vat_percent = forms.IntegerField(required=True, initial=20, label=_("VAT percent"))
     availability = forms.BooleanField(required=False, label=_("Availability"))
-    product_description = forms.CharField(required=False, label=_("Description"))
+    product_description = forms.CharField(required=False, label=_("Description"), widget=forms.TextInput(), max_length=500)
 
     product_pu = forms.ModelChoiceField(ProductPU.objects.all(), 
             label=ProductPU._meta.verbose_name, required=True)
@@ -129,6 +129,8 @@ class EditStockForm(forms.ModelForm):
         self._product = request.resource.product
         self.fields['product_pk'].initial = self._product.pk
         self.fields['product_name'].initial = self._product.name
+        self.fields['product_name'].widget.attrs['class'] = 'input_medium'
+        self.fields['product_description'].widget.attrs['class'] = 'input_long'
         self.fields['product_pu'].initial = self._product.pu
         self.fields['product_mu'].initial = self._product.mu
         self.fields['product_muppu'].initial = self._product.muppu
@@ -201,7 +203,8 @@ class EditStockForm(forms.ModelForm):
         gf_fieldsets = (
             (None, {
                 'fields': (
-                    'product_name',           
+                    'product_name',
+                    'product_description',
                     ('price', 'product_vat_percent'),
                     ('product_pu', 'product_muppu', 'product_mu'),
                     ('units_minimum_amount', 'units_per_box'),

@@ -5,12 +5,12 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from workflows.models import Workflow, Transition
-from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition
+from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
 from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
-from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 from gasistafelice.lib import ClassProperty
 from gasistafelice.supplier.models import Supplier
@@ -27,8 +27,13 @@ from django.conf import settings
 
 from workflows.utils import do_transition
 from datetime import datetime, timedelta
+import logging
+
+log = logging.getLogger(__name__)
 
 #from django.utils.encoding import force_unicode
+import logging
+log = logging.getLogger(__name__)
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -41,8 +46,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
-    datetime_start = models.DateTimeField(verbose_name=_('Date start'), default=datetime.now, help_text=_("when the order will be opened"))
-    datetime_end = models.DateTimeField(verbose_name=_('Date end'), help_text=_("when the order will be closed"), null=True, blank=True)
+    datetime_start = models.DateTimeField(verbose_name=_('Date open'), default=datetime.now, help_text=_("when the order will be opened"))
+    datetime_end = models.DateTimeField(verbose_name=_('Date close'), help_text=_("when the order will be closed"), null=True, blank=True)
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
     order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
     # Where and when Delivery occurs
@@ -57,11 +62,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
-    #TODO: Notify system
+    referrer_person = models.ForeignKey(Person, null=True, blank=True, related_name="order_set", verbose_name=_("order referrer"))
+    delivery_referrer_person = models.ForeignKey(Person, null=True, related_name="delivery_for_order_set", blank=True, verbose_name=_("delivery referrer"))
+    withdrawal_referrer_person = models.ForeignKey(Person, null=True, related_name="withdrawal_for_order_set", blank=True, verbose_name=_("withdrawal referrer"))
 
     group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
         help_text=_("If not null this order is aggregate with orders from other GAS")
     )
+
+    invoice_amount = models.CurrencyField(null=True, blank=True, verbose_name=_("invoice amount")) 
+    invoice_note = models.TextField(blank=True, verbose_name=_("invoice number")) 
 
     objects = OrderManager()
 
@@ -78,6 +88,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
+
         if self.datetime_end is not None:
             fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.datetime_end)
             if self.is_active():
@@ -85,29 +96,84 @@ class GASSupplierOrder(models.Model, PermissionResource):
             else:
                 state = _("closed on %(date)s") % { 'date' : fmt_date }
         else:
-            state = _("open")
+            if self.is_prepared():
+                state = _("prepared")
+            else:
+                state = _("open")
 
-        rv = _("Order %(gas)s to %(supplier)s (%(state)s)") % {
-                    'gas' : self.gas,
-                    'supplier' : self.supplier,
-                    'state' : state
+        if self.delivery and self.delivery.date is not None:
+            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
+            if self.is_active():
+                mdate = _(" --> to be delivered on %(date)s") % { 'date' : del_date }
+            else:
+                mdate = _(" delivered on %(date)s") % { 'date' : del_date }
+        else:
+            mdate = ""
+
+        ref = self.delivery_referrer_person
+        if ref:
+            ref = " Ref: %s " % ref
+        else:
+            ref = ""
+
+        rv = _("Ord. %(order_num)s %(pact)s (%(state)s%(deldate)s)") % {
+                    'pact' : self.pact,
+                    'state' : state,
+                    'deldate' : mdate,
+                    'order_num' : self.pk,
+                    'ref' : ref
         }
-        if settings.DEBUG:
-            rv += " [%s]" % self.pk
+        #if settings.DEBUG:
+        #    rv += " [%s]" % self.pk
         return rv
 
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)
-        signals.order_state_update(sender=self, transition=transition)
+        signals.order_state_update.send(sender=self, transition=transition)
+
+    def open_if_needed(self):
+        """Check datetime_start and open order if needed."""
+
+        if self.datetime_start <= datetime.now():
+
+            # Act as superuser
+            user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+            t_name = "open"
+            t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+            if t in get_allowed_transitions(self, user):
+                log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
+                self.do_transition(t, user)
+
+    def close_if_needed(self):
+        """Check for datetime_end and close order if needed."""
+
+        if self.datetime_end:
+            if self.datetime_end <= datetime.now():
+
+                # Act as superuser
+                user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+                t_name = "close"
+                t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+                log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
+                if t in get_allowed_transitions(self, user):
+                    log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
+                    self.do_transition(t, user)
 
     def get_valid_name(self):
         from django.template.defaultfilters import slugify
         from django.utils.encoding import smart_str
         n = str(self.pk) + '_'
         n += smart_str(slugify(self.pact.supplier.name).replace('-', '_'))
-        n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        #n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        #TODO: Auto create appointment for delivery date (Discuss about order type implementation)
+        if self.delivery and self.delivery.date:
+            n += '_{0:%Y%m%d}'.format(self.delivery.date)
+        else:
+            n += '_{0:%Y%m%d}'.format(datetime.now())
         return n
-        return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
+        #return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
 
     #-- Contacts --#
 
@@ -122,6 +188,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #-------------------------------------------------------------------------------#
     # Model Archive API
 
+    def is_prepared(self):
+        """
+        Return `True` if the GAS supplier order is prepared; `False` otherwise.
+        """
+        return self in GASSupplierOrder.objects.prepared()
+    
     def is_active(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.
@@ -138,27 +210,21 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def referrers(self):
+        """Return all users being referrers for this order.
+
+        Thus, referrer for order pact
         """
-        Return all users being referrers for this order.
-        """
-        # retrieve 'order referrer' parametric role for this order
-        pr = ParamRole.get_role(GAS_REFERRER_ORDER, order=self)
-        # retrieve all Users having this role
-        return pr.get_users()       
+        return self.pact.referrers
+
+    @property
+    def supplier_referrers_people(self):
+        prs = Person.objects.none()
+        if self.referrers:
+            prs = Person.objects.filter(user__in=self.referrers)
+        return prs
+
 
     #-------------------------------------------------------------------------------#
-
-    @property
-    def delivery_referrer_persons(self):
-        if self.delivery:
-            return self.delivery.referrers_people
-        return Person.objects.none()
-
-    @property
-    def withdrawal_referrer_persons(self):
-        if self.withdrawal:
-            return self.withdrawal.referrers_people
-        return Person.objects.none()
 
     def set_default_gasstock_set(self):
         '''
@@ -191,13 +257,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, initial_price=s.price)
+        log.debug("GSOP add (%s) price(%s)" % (s, s.price))
+        gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, order_price=s.price, initial_price=s.price)
         if created:
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
+            self._msg.append('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
             gsop.order_price = s.price
             gsop.save()
         else:
-            self._msg.append('Product already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            self._msg.append('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
             if gsop.delivered_price != s.price:
                 gsop.delivered_price = s.price
                 gsop.save()
@@ -230,10 +299,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
             gsop.delete()
 
 
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_ORDER` Role for this GASSupplierOrder
-        register_parametric_role(name=GAS_REFERRER_ORDER, order=self)
-        
     # Workflow management
 
     @property
@@ -277,7 +342,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def supplier(self):
         """Return the supplier this order is placed against."""
-        return self.pact.supplier        
+        return self.pact.supplier
     
     @property
     def suppliers(self):
@@ -289,6 +354,78 @@ class GASSupplierOrder(models.Model, PermissionResource):
     #ERROR: An unexpected error occurred while tokenizing input
     #The following traceback may be corrupted or invalid
     #The error message is: ('EOF in multi-line statement', (390, 0))
+
+    @property
+    def ordered_gasmembers(self):
+        from django.db.models import Count, Sum
+        #Cannot resolve keyword 'order' into field. Choices are: id, is_confirmed, note, ordered_amount, ordered_price, ordered_product, purchaser, withdrawn_amount
+        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+#        return self.ordered_products.values('ordered_product__order', 'purchaser').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+        #GASMemberOrder.objects.raw("SELECT ... from <GASMemberOrder_table_name> where ...")
+        #self.line_items.extra(select=("lineprice": "orderline__price*orderline__qty")).aggregate(Sum('lineprice'))
+
+        #return self.ordered_products.annotate('purchaser', tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+
+        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
+
+        #Do not use string formatting on raw queries!
+        return GASMemberOrder.objects.raw("SELECT distinct gmo.purchaser_id AS purchaser \
+, gsop.order_id AS porder \
+, SUM(gmo.ordered_price) AS sum_price \
+, COUNT(gmo.ordered_product_id) AS tot_product \
+, SUM(gmo.ordered_amount) AS sum_qta \
+FROM gas_gasmemberorder AS gmo \
+INNER JOIN gas_gassupplierorderproduct AS gsop \
+ON gmo.ordered_product_id = gsop.id \
+WHERE order_id = 10")
+
+        #<RawQuerySet: 'SELECT * from GASMemberOrder'>
+
+    @property
+    def ordered_gasmembers_sql(self):
+        from django.db import connection, transaction
+        cursor = connection.cursor()
+        #Using psycopg2:
+        #import psycopg2.extras
+        #cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        #Using Mysqldb:
+        #import MySQLdb.cursors
+        #cursor = connection.cursor(MySQLdb.DictCursor)
+        #cursor.execute() will then return a dictionary like object. 
+
+#TODO: Verify
+#mysql    : SELECT a,b,c,d,e                 FROM table GROUP BY a
+#postgres : SELECT DISTINCT ON (a) a,b,c,d,e FROM table ORDER BY a,b,c
+        # Data retrieval operation - no commit required
+        # p.name || ' ' || p.surname --> POSTGRES
+        cursor.execute("SELECT tmp.* , (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+FROM (SELECT gmo.purchaser_id AS purchaser_id \
+, gsop.order_id AS order_id \
+, SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
+, SUM(gmo.ordered_price) AS sum_price \
+, COUNT(gmo.ordered_product_id) AS tot_product \
+, SUM(gmo.ordered_amount) AS sum_qta \
+FROM gas_gasmemberorder AS gmo \
+INNER JOIN gas_gassupplierorderproduct AS gsop \
+ON gmo.ordered_product_id = gsop.id \
+WHERE order_id = %s \
+GROUP BY gmo.purchaser_id, gsop.order_id \
+) AS tmp", [self.pk])
+        #row = cursor.fetchall()
+        #>>> cursor.fetchall()    ((5L, None), (6L, None))
+        #write custom SQL queries wich would return dicts instead of tuples
+        #row = dictfetchall(cursor)  --> Update Django??? Not Available
+        #row = cursor.dictfetchall() 
+        #>>> dictfetchall(cursor) [{'parent_id': None, 'id': 5L}, {'parent_id': None, 'id': 6L}]
+        desc = cursor.description 
+        row = [
+            dict(zip([col[0] for col in desc], row))
+            for row in cursor.fetchall()
+        ]
+#{'purchaser': 7L, 'sum_amount': Decimal('98.040000'), 'porder': 10L, 'sum_qta': Decimal('5.00'), 'tot_product': 5L, 'sum_price': Decimal('98.0400')}
+#{'purchaser': 11L, 'sum_amount': Decimal('54.840000'), 'porder': 10L, 'sum_qta': Decimal('2.00'), 'tot_product': 2L, 'sum_price': Decimal('54.8400')}
+
+        return row
 
     @property
     def ordered_products(self):
@@ -358,11 +495,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def save(self, *args, **kw):
         created = False
+
         if not self.pk:
             created = True
             if self.gas.config.use_withdrawal_place:
+
                 # Create default withdrawal
                 if self.datetime_end and not self.withdrawal:
+
                     #TODO: check gasconfig for weekday
                     w = Withdrawal(
                             date=self.datetime_end + timedelta(7), 
@@ -373,16 +513,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
-        if not self.workflow:
-            # Set default workflow
-            w = self.gas.config.default_workflow_gassupplier_order
-            set_workflow(self, w)
-
         if created:
             self.set_default_gasstock_set()
-            #TODO: dispatching order_open is to be moved elsewhere when scheduler works
-            signals.order_open.send(sender=self)
-            
         
     #-------------- Authorization API ---------------#
     
@@ -469,8 +601,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         display.Resource(name="supplier", verbose_name=_("Supplier")),
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         datetime_start, datetime_end, order_minimum_amount, 
-        delivery, display.ResourceList(name="delivery_referrer_persons", verbose_name=_("Delivery referrer")),
-        withdrawal, display.ResourceList(name="withdrawal_referrer_persons", verbose_name=_("Withdrawal referrer")),
+        delivery, display.Resource(name="delivery_referrer_person", verbose_name=_("Delivery referrer")),
+        withdrawal, display.Resource(name="withdrawal_referrer_person", verbose_name=_("Withdrawal referrer")),
     )
 
 #-------------------------------------------------------------------------------
@@ -484,7 +616,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     gasstock = models.ForeignKey(GASSupplierStock, related_name="orderable_product_set",verbose_name=_('gas stock'))
     # how many units of Product a GAS Member can request during this GASSupplierOrder
     # useful for Products with a low availability
-    maximum_amount = models.DecimalField(null=True, blank=True, verbose_name = _('maximum amount'),
+    maximum_amount = PrettyDecimalField(null=True, blank=True, verbose_name = _('maximum amount'),
                         max_digits=8, decimal_places=2
     )
     # the price of the Product at the time the GASSupplierOrder was created
@@ -494,7 +626,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     # the actual price of the Product (as resulting from the invoice)
     delivered_price = CurrencyField(null=True, blank=True,verbose_name=_('delivered price'))
     # how many items were actually delivered by the Supplier 
-    delivered_amount = models.DecimalField(null=True, blank=True, verbose_name = _('delivered amount'),
+    delivered_amount = PrettyDecimalField(null=True, blank=True, verbose_name = _('delivered amount'),
                         max_digits=8, decimal_places=2
     )
 
@@ -644,11 +776,11 @@ class GASMemberOrder(models.Model, PermissionResource):
     # price of the Product at order time
     ordered_price = CurrencyField(verbose_name=_('ordered price'))
     # how many Product units were ordered by the GAS member
-    ordered_amount = models.DecimalField(null=False, blank=False, verbose_name = _('order amount'),
+    ordered_amount = PrettyDecimalField(null=False, blank=False, verbose_name = _('order amount'),
                         max_digits=6, decimal_places=2
     )
     # how many Product units were withdrawn by the GAS member 
-    withdrawn_amount = models.DecimalField(null=True, blank=True, verbose_name = _('widthdrawn amount'),
+    withdrawn_amount = PrettyDecimalField(null=True, blank=True, verbose_name = _('widthdrawn amount'),
                         max_digits=6, decimal_places=2
     )
     # gasmember order have to be confirmed if GAS configuration allowed it
@@ -857,12 +989,6 @@ class Delivery(Appointment, PermissionResource):
     def persons(self):
         return self.referrers_people
 
-    #-------------------------------------------------------------------------------#   
-    # Authorization API
-        
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_DELIVERY` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_DELIVERY, delivery=self)      
     
 #-------------------------------------------------------------------------------#
 
@@ -1014,12 +1140,6 @@ class Withdrawal(Appointment, PermissionResource):
     def persons(self):
         return self.referrers_people
 
-    #-------------------------------------------------------------------------------#   
-    # Authorization API
-
-    def setup_roles(self):
-        # register a new `GAS_REFERRER_WITHDRAWAL` Role for this GAS
-        register_parametric_role(name=GAS_REFERRER_WITHDRAWAL, withdrawal=self)  
          
 #-------------------------------------------------------------------------------#
 

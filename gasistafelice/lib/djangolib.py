@@ -34,7 +34,13 @@ def get_instance_dict_from_attrs(obj, attr_names):
     
     for attr_name in attr_names:
         # retrieve attributes and build dict for template
-        attr = getattr(obj, attr_name)
+        
+        # Support for nested attributes
+        nested_attrs = attr_name.split('.')
+        attr = obj
+        for nested_attr in nested_attrs:
+            attr = getattr(attr, nested_attr)
+
         if callable(attr):
             v = attr()
         else:

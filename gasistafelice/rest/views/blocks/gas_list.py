@@ -46,27 +46,3 @@ class Block(BlockWithList):
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
-
-# Unuseful code below        
-
-# TODO fero CHECK
-#        elif args == "new_note":
-#            return self.add_new_note(request, resource_type, resource_id)
-#        elif args == "remove_note":
-#            return self.remove_note(request, resource_type, resource_id)
-
-#    #------------------------------------------------------------------------------#    
-#    #                                                                              #     
-#    #------------------------------------------------------------------------------#
-#            
-#    def remove_note(self, request, resource_type, resource_id):
-#        
-#        resource = request.resource
-#        
-#        note_id = request.REQUEST.get('note_id')
-#        
-#        note = Comment.objects.get(id=note_id)
-#        note.delete()
-#
-#        return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (resource.resource_type, resource.id))
-        

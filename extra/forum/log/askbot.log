@@ -1,0 +1,759 @@
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,173 MSG: generic.py:execute:145 south execute "CREATE TABLE "django_authopenid_nonce" ("timestamp" integer NOT NULL, "salt" varchar(40) NOT NULL, "id" serial NOT NULL PRIMARY KEY, "server_url" varchar(255) NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,228 MSG: generic.py:execute:145 south execute "CREATE TABLE "django_authopenid_association" ("handle" varchar(255) NOT NULL, "issued" integer NOT NULL, "server_url" text NOT NULL, "assoc_type" text NOT NULL, "secret" text NOT NULL, "lifetime" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,319 MSG: generic.py:execute:145 south execute "CREATE TABLE "django_authopenid_userassociation" ("user_id" integer NOT NULL UNIQUE, "id" serial NOT NULL PRIMARY KEY, "openid_url" varchar(255) NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,395 MSG: generic.py:execute:145 south execute "CREATE TABLE "django_authopenid_userpasswordqueue" ("new_password" varchar(30) NOT NULL, "confirm_key" varchar(40) NOT NULL, "id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL UNIQUE);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,471 MSG: generic.py:execute:145 south execute "CREATE TABLE "django_authopenid_externallogindata" ("external_username" varchar(40) NOT NULL UNIQUE, "id" serial NOT NULL PRIMARY KEY, "external_session_data" text NOT NULL, "user_id" integer NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,597 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ADD CONSTRAINT "user_id_refs_id_f63a9e7163d208d" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,600 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userpasswordqueue" ADD CONSTRAINT "user_id_refs_id_7f488ca76bcaaa4" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,601 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_externallogindata" ADD CONSTRAINT "user_id_refs_id_462c0ee2c3e5e139" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,603 MSG: generic.py:execute:145 south execute "CREATE INDEX "django_authopenid_externallogindata_user_id" ON "django_authopenid_externallogindata" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,683 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ADD COLUMN "provider_name" varchar(64) NOT NULL DEFAULT 'unknown';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,774 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ALTER COLUMN "provider_name" TYPE varchar(64), ALTER COLUMN "provider_name" SET NOT NULL, ALTER COLUMN "provider_name" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,775 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', 'django_authopenid_userassociation', 'UNIQUE']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,784 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" DROP CONSTRAINT "django_authopenid_userassociation_user_id_key"" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,785 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ADD CONSTRAINT "django_authopenid_userassoc_provider_name_60320a9d7b967c81_uniq" UNIQUE ("provider_name", "user_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,919 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ADD COLUMN "last_used_timestamp" timestamp with time zone NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,920 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ALTER COLUMN "last_used_timestamp" TYPE timestamp with time zone, ALTER COLUMN "last_used_timestamp" DROP NOT NULL, ALTER COLUMN "last_used_timestamp" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:17,920 MSG: generic.py:execute:145 south execute "ALTER TABLE "django_authopenid_userassociation" ADD CONSTRAINT "django_authopenid_userassoc_provider_name_7f52f3ec93c15fc8_uniq" UNIQUE ("provider_name", "openid_url")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,006 MSG: generic.py:execute:145 south execute "DROP TABLE "django_authopenid_externallogindata" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,307 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "website" varchar(200) NOT NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,309 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "about" text NOT NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,310 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "hide_ignored_questions" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,477 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ALTER COLUMN "hide_ignored_questions" TYPE boolean, ALTER COLUMN "hide_ignored_questions" SET NOT NULL, ALTER COLUMN "hide_ignored_questions" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,492 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "gold" smallint NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,493 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "email_isvalid" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,494 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "real_name" varchar(100) NOT NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,496 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "location" varchar(100) NOT NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,497 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "email_key" varchar(32) NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,498 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "date_of_birth" date NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,499 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "reputation" integer CHECK ("reputation" >= 0) NOT NULL DEFAULT 1;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,500 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "gravatar" varchar(32) NOT NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,501 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "bronze" smallint NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,502 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "tag_filter_setting" varchar(16) NOT NULL DEFAULT 'ignored';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,620 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ALTER COLUMN "tag_filter_setting" TYPE varchar(16), ALTER COLUMN "tag_filter_setting" SET NOT NULL, ALTER COLUMN "tag_filter_setting" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,642 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "last_seen" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:18.642245';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,644 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "silver" smallint NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,645 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "questions_per_page" smallint NOT NULL DEFAULT 10;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,646 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "response_count" integer NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,763 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ALTER COLUMN "response_count" TYPE integer, ALTER COLUMN "response_count" SET NOT NULL, ALTER COLUMN "response_count" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,777 MSG: generic.py:execute:145 south execute "CREATE TABLE "vote" ("object_id" integer CHECK ("object_id" >= 0) NOT NULL, "voted_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:18.776091', "user_id" integer NOT NULL, "content_type_id" integer NOT NULL, "vote" smallint NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,821 MSG: generic.py:execute:145 south execute "ALTER TABLE "vote" ADD CONSTRAINT "vote_content_type_id_79714e5173c504b6_uniq" UNIQUE ("content_type_id", "object_id", "user_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,874 MSG: generic.py:execute:145 south execute "CREATE TABLE "flagged_item" ("object_id" integer CHECK ("object_id" >= 0) NOT NULL, "flagged_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:18.872333', "id" serial NOT NULL PRIMARY KEY, "content_type_id" integer NOT NULL, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,915 MSG: generic.py:execute:145 south execute "ALTER TABLE "flagged_item" ADD CONSTRAINT "flagged_item_content_type_id_1e8cf1a103eeaabe_uniq" UNIQUE ("content_type_id", "object_id", "user_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,951 MSG: generic.py:execute:145 south execute "CREATE TABLE "comment" ("comment" varchar(300) NOT NULL, "object_id" integer CHECK ("object_id" >= 0) NOT NULL, "added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:18.949757', "content_type_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:18,994 MSG: generic.py:execute:145 south execute "CREATE TABLE "tag" ("name" varchar(255) NOT NULL UNIQUE, "deleted" boolean NOT NULL DEFAULT False, "created_by_id" integer NOT NULL, "deleted_by_id" integer NULL, "used_count" integer CHECK ("used_count" >= 0) NOT NULL DEFAULT 0, "deleted_at" timestamp with time zone NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,060 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_markedtag" ("reason" varchar(16) NOT NULL, "tag_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,120 MSG: generic.py:execute:145 south execute "CREATE TABLE "question" ("wiki" boolean NOT NULL DEFAULT False, "vote_up_count" integer NOT NULL DEFAULT 0, "answer_accepted" boolean NOT NULL DEFAULT False, "offensive_flag_count" smallint NOT NULL DEFAULT 0, "closed_at" timestamp with time zone NULL, "deleted_at" timestamp with time zone NULL, "id" serial NOT NULL PRIMARY KEY, "last_activity_by_id" integer NOT NULL, "view_count" integer CHECK ("view_count" >= 0) NOT NULL DEFAULT 0, "locked_at" timestamp with time zone NULL, "score" integer NOT NULL DEFAULT 0, "author_id" integer NOT NULL, "comment_count" integer CHECK ("comment_count" >= 0) NOT NULL DEFAULT 0, "html" text NOT NULL, "vote_down_count" integer NOT NULL DEFAULT 0, "closed" boolean NOT NULL DEFAULT False, "last_edited_by_id" integer NULL, "favourite_count" integer CHECK ("favourite_count" >= 0) NOT NULL DEFAULT 0, "deleted" boolean NOT NULL DEFAULT False, "summary" varchar(180) NOT NULL, "answer_count" integer CHECK ("answer_count" >= 0) NOT NULL DEFAULT 0, "last_activity_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.116727', "closed_by_id" integer NULL, "close_reason" smallint NULL, "locked" boolean NOT NULL DEFAULT False, "tagnames" varchar(125) NOT NULL, "locked_by_id" integer NULL, "added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.118641', "deleted_by_id" integer NULL, "wikified_at" timestamp with time zone NULL, "title" varchar(300) NOT NULL, "last_edited_at" timestamp with time zone NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,195 MSG: generic.py:execute:145 south execute "CREATE TABLE "question_followed_by" ("id" serial NOT NULL PRIMARY KEY, "question_id" integer NOT NULL, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,235 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_followed_by" ADD CONSTRAINT "question_followed_by_question_id_32ff9ff72ee2b8ae_uniq" UNIQUE ("question_id", "user_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,270 MSG: generic.py:execute:145 south execute "CREATE TABLE "question_tags" ("id" serial NOT NULL PRIMARY KEY, "question_id" integer NOT NULL, "tag_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,311 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_tags" ADD CONSTRAINT "question_tags_question_id_1b523a4dc84d0bd8_uniq" UNIQUE ("question_id", "tag_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,363 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_questionview" ("when" timestamp with time zone NOT NULL, "who_id" integer NOT NULL, "question_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,405 MSG: generic.py:execute:145 south execute "CREATE TABLE "favorite_question" ("question_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.404881', "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,449 MSG: generic.py:execute:145 south execute "CREATE TABLE "question_revision" ("author_id" integer NOT NULL, "tagnames" varchar(125) NOT NULL, "text" text NOT NULL, "title" varchar(300) NOT NULL, "question_id" integer NOT NULL, "revised_at" timestamp with time zone NOT NULL, "summary" varchar(300) NOT NULL, "id" serial NOT NULL PRIMARY KEY, "revision" integer CHECK ("revision" >= 0) NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,524 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_anonymousquestion" ("wiki" boolean NOT NULL DEFAULT False, "ip_addr" inet NOT NULL, "author_id" integer NULL, "tagnames" varchar(125) NOT NULL, "text" text NOT NULL, "title" varchar(300) NOT NULL, "added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.523624', "summary" varchar(180) NOT NULL, "session_key" varchar(40) NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,613 MSG: generic.py:execute:145 south execute "CREATE TABLE "answer" ("wiki" boolean NOT NULL DEFAULT False, "vote_up_count" integer NOT NULL DEFAULT 0, "offensive_flag_count" smallint NOT NULL DEFAULT 0, "deleted_at" timestamp with time zone NULL, "id" serial NOT NULL PRIMARY KEY, "locked_at" timestamp with time zone NULL, "score" integer NOT NULL DEFAULT 0, "author_id" integer NOT NULL, "question_id" integer NOT NULL, "comment_count" integer CHECK ("comment_count" >= 0) NOT NULL DEFAULT 0, "html" text NOT NULL, "vote_down_count" integer NOT NULL DEFAULT 0, "last_edited_by_id" integer NULL, "accepted_at" timestamp with time zone NULL, "deleted" boolean NOT NULL DEFAULT False, "accepted" boolean NOT NULL DEFAULT False, "locked" boolean NOT NULL DEFAULT False, "locked_by_id" integer NULL, "added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.612160', "deleted_by_id" integer NULL, "wikified_at" timestamp with time zone NULL, "last_edited_at" timestamp with time zone NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,684 MSG: generic.py:execute:145 south execute "CREATE TABLE "answer_revision" ("author_id" integer NOT NULL, "text" text NOT NULL, "revised_at" timestamp with time zone NOT NULL, "summary" varchar(300) NOT NULL, "answer_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "revision" integer CHECK ("revision" >= 0) NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,778 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_anonymousanswer" ("wiki" boolean NOT NULL DEFAULT False, "ip_addr" inet NOT NULL, "author_id" integer NULL, "text" text NOT NULL, "question_id" integer NOT NULL, "added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.777846', "summary" varchar(180) NOT NULL, "session_key" varchar(40) NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,862 MSG: generic.py:execute:145 south execute "CREATE TABLE "activity" ("is_auditted" boolean NOT NULL DEFAULT False, "object_id" integer CHECK ("object_id" >= 0) NOT NULL, "user_id" integer NOT NULL, "content_type_id" integer NOT NULL, "active_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:19.861629', "id" serial NOT NULL PRIMARY KEY, "activity_type" smallint NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,904 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_emailfeedsetting" ("reported_at" timestamp with time zone NULL, "added_at" timestamp with time zone NOT NULL, "subscriber_id" integer NOT NULL, "feed_type" varchar(16) NOT NULL, "frequency" varchar(8) NOT NULL DEFAULT 'n', "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:19,946 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_validationhash" ("hash_code" varchar(255) NOT NULL UNIQUE, "seed" varchar(12) NOT NULL, "expiration" timestamp with time zone NOT NULL DEFAULT '2010-04-25 13:14:41.581000', "type" varchar(12) NOT NULL, "id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,036 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_validationhash" ADD CONSTRAINT "askbot_validationhash_user_id_3cd15d1d486c2c71_uniq" UNIQUE ("user_id", "type")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,071 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_authkeyuserassociation" ("added_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:20.070444', "user_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "key" varchar(255) NOT NULL UNIQUE, "provider" varchar(64) NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,148 MSG: generic.py:execute:145 south execute "CREATE TABLE "badge" ("multiple" boolean NOT NULL DEFAULT False, "description" varchar(300) NOT NULL, "id" serial NOT NULL PRIMARY KEY, "awarded_count" integer CHECK ("awarded_count" >= 0) NOT NULL DEFAULT 0, "type" smallint NOT NULL, "slug" varchar(50) NOT NULL, "name" varchar(50) NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,188 MSG: generic.py:execute:145 south execute "ALTER TABLE "badge" ADD CONSTRAINT "badge_name_65202afc444f7a05_uniq" UNIQUE ("name", "type")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,224 MSG: generic.py:execute:145 south execute "CREATE TABLE "award" ("awarded_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:20.222154', "notified" boolean NOT NULL DEFAULT False, "object_id" integer CHECK ("object_id" >= 0) NOT NULL, "user_id" integer NOT NULL, "content_type_id" integer NOT NULL, "badge_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,267 MSG: generic.py:execute:145 south execute "CREATE TABLE "repute" ("positive" smallint NOT NULL DEFAULT 0, "question_id" integer NOT NULL, "negative" smallint NOT NULL DEFAULT 0, "reputation_type" smallint NOT NULL, "user_id" integer NOT NULL, "reputed_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:20.266035', "id" serial NOT NULL PRIMARY KEY, "reputation" integer NOT NULL DEFAULT 1);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,309 MSG: generic.py:execute:145 south execute "CREATE TABLE "book" ("publication" varchar(255) NOT NULL, "short_name" varchar(255) NOT NULL, "author" varchar(255) NOT NULL, "cover_img" varchar(255) NOT NULL, "price" numeric(6, 2) NOT NULL, "title" varchar(255) NOT NULL, "added_at" timestamp with time zone NOT NULL, "pages" smallint NOT NULL, "tagnames" varchar(125) NOT NULL, "published_at" timestamp with time zone NOT NULL, "user_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "last_edited_at" timestamp with time zone NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,375 MSG: generic.py:execute:145 south execute "CREATE TABLE "book_question" ("id" serial NOT NULL PRIMARY KEY, "book_id" integer NOT NULL, "question_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,415 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_question" ADD CONSTRAINT "book_question_book_id_601a792ba3b647fa_uniq" UNIQUE ("book_id", "question_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,451 MSG: generic.py:execute:145 south execute "CREATE TABLE "book_author_info" ("added_at" timestamp with time zone NOT NULL, "book_id" integer NOT NULL, "user_id" integer NOT NULL, "blog_url" varchar(255) NOT NULL, "id" serial NOT NULL PRIMARY KEY, "last_edited_at" timestamp with time zone NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,502 MSG: generic.py:execute:145 south execute "CREATE TABLE "book_author_rss" ("title" varchar(255) NOT NULL, "url" varchar(255) NOT NULL, "added_at" timestamp with time zone NOT NULL, "book_id" integer NOT NULL, "user_id" integer NOT NULL, "rss_created_at" timestamp with time zone NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,576 MSG: generic.py:execute:145 south execute "ALTER TABLE "vote" ADD CONSTRAINT "user_id_refs_id_3ce5b20589f5b210" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,579 MSG: generic.py:execute:145 south execute "CREATE INDEX "vote_user_id" ON "vote" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,618 MSG: generic.py:execute:145 south execute "ALTER TABLE "vote" ADD CONSTRAINT "content_type_id_refs_id_77dc6ffafedbbec" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,620 MSG: generic.py:execute:145 south execute "CREATE INDEX "vote_content_type_id" ON "vote" ("content_type_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,652 MSG: generic.py:execute:145 south execute "ALTER TABLE "flagged_item" ADD CONSTRAINT "content_type_id_refs_id_261d26c8891bb28c" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,654 MSG: generic.py:execute:145 south execute "CREATE INDEX "flagged_item_content_type_id" ON "flagged_item" ("content_type_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,699 MSG: generic.py:execute:145 south execute "ALTER TABLE "flagged_item" ADD CONSTRAINT "user_id_refs_id_92ae9d35e3c608" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,701 MSG: generic.py:execute:145 south execute "CREATE INDEX "flagged_item_user_id" ON "flagged_item" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,736 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ADD CONSTRAINT "content_type_id_refs_id_89a4b13ec5a7994" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,738 MSG: generic.py:execute:145 south execute "CREATE INDEX "comment_content_type_id" ON "comment" ("content_type_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,770 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ADD CONSTRAINT "user_id_refs_id_5ba842626be725e8" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,772 MSG: generic.py:execute:145 south execute "CREATE INDEX "comment_user_id" ON "comment" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,804 MSG: generic.py:execute:145 south execute "ALTER TABLE "tag" ADD CONSTRAINT "created_by_id_refs_id_6ae4d97547205d6d" FOREIGN KEY ("created_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,806 MSG: generic.py:execute:145 south execute "CREATE INDEX "tag_created_by_id" ON "tag" ("created_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,837 MSG: generic.py:execute:145 south execute "ALTER TABLE "tag" ADD CONSTRAINT "deleted_by_id_refs_id_6ae4d97547205d6d" FOREIGN KEY ("deleted_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,840 MSG: generic.py:execute:145 south execute "CREATE INDEX "tag_deleted_by_id" ON "tag" ("deleted_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,879 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_markedtag" ADD CONSTRAINT "tag_id_refs_id_1bd32e505d45d523" FOREIGN KEY ("tag_id") REFERENCES "tag" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,881 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_markedtag_tag_id" ON "askbot_markedtag" ("tag_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,924 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_markedtag" ADD CONSTRAINT "user_id_refs_id_50746cd7e9db75e5" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,926 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_markedtag_user_id" ON "askbot_markedtag" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,963 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD CONSTRAINT "last_activity_by_id_refs_id_5159d9f3a9162ff4" FOREIGN KEY ("last_activity_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,966 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_last_activity_by_id" ON "question" ("last_activity_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,997 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD CONSTRAINT "author_id_refs_id_5159d9f3a9162ff4" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:20,999 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_author_id" ON "question" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,031 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD CONSTRAINT "last_edited_by_id_refs_id_5159d9f3a9162ff4" FOREIGN KEY ("last_edited_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,034 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_last_edited_by_id" ON "question" ("last_edited_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,073 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD CONSTRAINT "closed_by_id_refs_id_5159d9f3a9162ff4" FOREIGN KEY ("closed_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,075 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_closed_by_id" ON "question" ("closed_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,106 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD CONSTRAINT "locked_by_id_refs_id_5159d9f3a9162ff4" FOREIGN KEY ("locked_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,108 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_locked_by_id" ON "question" ("locked_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,150 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD CONSTRAINT "deleted_by_id_refs_id_5159d9f3a9162ff4" FOREIGN KEY ("deleted_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,152 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_deleted_by_id" ON "question" ("deleted_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,191 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_followed_by" ADD CONSTRAINT "question_id_refs_id_6ea9c52125c22aae" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,193 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_followed_by_question_id" ON "question_followed_by" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,224 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_followed_by" ADD CONSTRAINT "user_id_refs_id_49cca2976d30712d" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,226 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_followed_by_user_id" ON "question_followed_by" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,258 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_tags" ADD CONSTRAINT "question_id_refs_id_35d758e3d99eb83a" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,260 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_tags_question_id" ON "question_tags" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,292 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_tags" ADD CONSTRAINT "tag_id_refs_id_3b0ddddfbc0346ad" FOREIGN KEY ("tag_id") REFERENCES "tag" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,294 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_tags_tag_id" ON "question_tags" ("tag_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,327 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_questionview" ADD CONSTRAINT "who_id_refs_id_3707a582beda49e5" FOREIGN KEY ("who_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,329 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_questionview_who_id" ON "askbot_questionview" ("who_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,375 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_questionview" ADD CONSTRAINT "question_id_refs_id_294f6697aa52f66" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,377 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_questionview_question_id" ON "askbot_questionview" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,411 MSG: generic.py:execute:145 south execute "ALTER TABLE "favorite_question" ADD CONSTRAINT "question_id_refs_id_2cafd2f21ebe1cc3" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,413 MSG: generic.py:execute:145 south execute "CREATE INDEX "favorite_question_question_id" ON "favorite_question" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,445 MSG: generic.py:execute:145 south execute "ALTER TABLE "favorite_question" ADD CONSTRAINT "user_id_refs_id_1632ce11ad7ac7de" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,447 MSG: generic.py:execute:145 south execute "CREATE INDEX "favorite_question_user_id" ON "favorite_question" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,478 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ADD CONSTRAINT "author_id_refs_id_79de7cc0b077fdb1" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,480 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_revision_author_id" ON "question_revision" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,512 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ADD CONSTRAINT "question_id_refs_id_61316ec87bef5296" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,514 MSG: generic.py:execute:145 south execute "CREATE INDEX "question_revision_question_id" ON "question_revision" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,546 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_anonymousquestion" ADD CONSTRAINT "author_id_refs_id_204cbc2cc24a2a4c" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,548 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_anonymousquestion_author_id" ON "askbot_anonymousquestion" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,579 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ADD CONSTRAINT "author_id_refs_id_6573e62f192b0170" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,582 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_author_id" ON "answer" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,630 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ADD CONSTRAINT "question_id_refs_id_2300e0297d6550c9" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,632 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_question_id" ON "answer" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,663 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ADD CONSTRAINT "last_edited_by_id_refs_id_6573e62f192b0170" FOREIGN KEY ("last_edited_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,666 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_last_edited_by_id" ON "answer" ("last_edited_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,697 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ADD CONSTRAINT "locked_by_id_refs_id_6573e62f192b0170" FOREIGN KEY ("locked_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,699 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_locked_by_id" ON "answer" ("locked_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,731 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ADD CONSTRAINT "deleted_by_id_refs_id_6573e62f192b0170" FOREIGN KEY ("deleted_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,733 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_deleted_by_id" ON "answer" ("deleted_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,756 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD CONSTRAINT "author_id_refs_id_2c17693c3ccc055f" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,758 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_revision_author_id" ON "answer_revision" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,790 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD CONSTRAINT "answer_id_refs_id_47145eaebe77d8fe" FOREIGN KEY ("answer_id") REFERENCES "answer" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,792 MSG: generic.py:execute:145 south execute "CREATE INDEX "answer_revision_answer_id" ON "answer_revision" ("answer_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,848 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_anonymousanswer" ADD CONSTRAINT "author_id_refs_id_2598007f83822c10" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,851 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_anonymousanswer_author_id" ON "askbot_anonymousanswer" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,882 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_anonymousanswer" ADD CONSTRAINT "question_id_refs_id_1374e6750823dcb7" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,884 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_anonymousanswer_question_id" ON "askbot_anonymousanswer" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,916 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ADD CONSTRAINT "user_id_refs_id_6015206347c8583f" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,918 MSG: generic.py:execute:145 south execute "CREATE INDEX "activity_user_id" ON "activity" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,941 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ADD CONSTRAINT "content_type_id_refs_id_78877d15efa8edfd" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,943 MSG: generic.py:execute:145 south execute "CREATE INDEX "activity_content_type_id" ON "activity" ("content_type_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,966 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_emailfeedsetting" ADD CONSTRAINT "subscriber_id_refs_id_649da7e254b5c5aa" FOREIGN KEY ("subscriber_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,968 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_emailfeedsetting_subscriber_id" ON "askbot_emailfeedsetting" ("subscriber_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,992 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_validationhash" ADD CONSTRAINT "user_id_refs_id_1eed1a7321d07897" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:21,994 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_validationhash_user_id" ON "askbot_validationhash" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,034 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_authkeyuserassociation" ADD CONSTRAINT "user_id_refs_id_1d98803a5b50ba3f" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,036 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_authkeyuserassociation_user_id" ON "askbot_authkeyuserassociation" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,067 MSG: generic.py:execute:145 south execute "CREATE INDEX "badge_slug" ON "badge" ("slug");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,101 MSG: generic.py:execute:145 south execute "CREATE INDEX "badge_slug_like" ON "badge" ("slug" varchar_pattern_ops);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,126 MSG: generic.py:execute:145 south execute "ALTER TABLE "award" ADD CONSTRAINT "user_id_refs_id_5d197ea32d83e9b6" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,128 MSG: generic.py:execute:145 south execute "CREATE INDEX "award_user_id" ON "award" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,153 MSG: generic.py:execute:145 south execute "ALTER TABLE "award" ADD CONSTRAINT "content_type_id_refs_id_72f17e2d83bbde26" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,155 MSG: generic.py:execute:145 south execute "CREATE INDEX "award_content_type_id" ON "award" ("content_type_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,187 MSG: generic.py:execute:145 south execute "ALTER TABLE "award" ADD CONSTRAINT "badge_id_refs_id_4237a025651af0e1" FOREIGN KEY ("badge_id") REFERENCES "badge" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,189 MSG: generic.py:execute:145 south execute "CREATE INDEX "award_badge_id" ON "award" ("badge_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,221 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" ADD CONSTRAINT "question_id_refs_id_4749166abeb39c4e" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,223 MSG: generic.py:execute:145 south execute "CREATE INDEX "repute_question_id" ON "repute" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,268 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" ADD CONSTRAINT "user_id_refs_id_fcf719405a426cd" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,270 MSG: generic.py:execute:145 south execute "CREATE INDEX "repute_user_id" ON "repute" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,313 MSG: generic.py:execute:145 south execute "ALTER TABLE "book" ADD CONSTRAINT "user_id_refs_id_607b4cfdf0283c8d" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,315 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_user_id" ON "book" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,347 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_question" ADD CONSTRAINT "book_id_refs_id_535ac8946a43c4d1" FOREIGN KEY ("book_id") REFERENCES "book" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,349 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_question_book_id" ON "book_question" ("book_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,380 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_question" ADD CONSTRAINT "question_id_refs_id_372b7e81c7aff6d8" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,382 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_question_question_id" ON "book_question" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,414 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_author_info" ADD CONSTRAINT "book_id_refs_id_688c8f047c49bbf8" FOREIGN KEY ("book_id") REFERENCES "book" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,416 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_author_info_book_id" ON "book_author_info" ("book_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,448 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_author_info" ADD CONSTRAINT "user_id_refs_id_3781e2a5fbe1cfda" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,450 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_author_info_user_id" ON "book_author_info" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,493 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_author_rss" ADD CONSTRAINT "book_id_refs_id_f64066171717121" FOREIGN KEY ("book_id") REFERENCES "book" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,495 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_author_rss_book_id" ON "book_author_rss" ("book_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,532 MSG: generic.py:execute:145 south execute "ALTER TABLE "book_author_rss" ADD CONSTRAINT "user_id_refs_id_1fd25dcf3596f741" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,534 MSG: generic.py:execute:145 south execute "CREATE INDEX "book_author_rss_user_id" ON "book_author_rss" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,699 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ADD COLUMN "text" text NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,701 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ALTER COLUMN "text" TYPE text, ALTER COLUMN "text" DROP NOT NULL, ALTER COLUMN "text" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,701 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.constraint_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'answer', 'CHECK']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,853 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'answer', 'FOREIGN KEY']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,863 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer" ALTER COLUMN "html" TYPE text, ALTER COLUMN "html" DROP NOT NULL, ALTER COLUMN "html" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,864 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD COLUMN "text" text NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,865 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ALTER COLUMN "text" TYPE text, ALTER COLUMN "text" DROP NOT NULL, ALTER COLUMN "text" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,866 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.constraint_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'question', 'CHECK']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,952 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'question', 'FOREIGN KEY']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:22,963 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ALTER COLUMN "html" TYPE text, ALTER COLUMN "html" DROP NOT NULL, ALTER COLUMN "html" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:23,872 MSG: generic.py:execute:145 south execute "CREATE TABLE "mention" ("mentioned_by_id" integer NOT NULL, "mentioned_at" timestamp with time zone NOT NULL DEFAULT '2011-11-18 15:44:23.871127', "object_id" integer CHECK ("object_id" >= 0) NOT NULL, "content_type_id" integer NOT NULL, "mentioned_whom_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:23,958 MSG: generic.py:execute:145 south execute "ALTER TABLE "mention" ADD CONSTRAINT "mentioned_by_id_refs_id_28248dfce17ec975" FOREIGN KEY ("mentioned_by_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:23,960 MSG: generic.py:execute:145 south execute "CREATE INDEX "mention_mentioned_by_id" ON "mention" ("mentioned_by_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,008 MSG: generic.py:execute:145 south execute "ALTER TABLE "mention" ADD CONSTRAINT "content_type_id_refs_id_401218387679723f" FOREIGN KEY ("content_type_id") REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,010 MSG: generic.py:execute:145 south execute "CREATE INDEX "mention_content_type_id" ON "mention" ("content_type_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,042 MSG: generic.py:execute:145 south execute "ALTER TABLE "mention" ADD CONSTRAINT "mentioned_whom_id_refs_id_28248dfce17ec975" FOREIGN KEY ("mentioned_whom_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,043 MSG: generic.py:execute:145 south execute "CREATE INDEX "mention_mentioned_whom_id" ON "mention" ("mentioned_whom_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,204 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ADD COLUMN "html" varchar(2048) NOT NULL DEFAULT '';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,436 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ALTER COLUMN "html" TYPE varchar(2048), ALTER COLUMN "html" SET NOT NULL, ALTER COLUMN "html" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,437 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.constraint_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'comment', 'CHECK']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,521 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'comment', 'FOREIGN KEY']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:24,529 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ALTER COLUMN "comment" TYPE varchar(2048), ALTER COLUMN "comment" SET NOT NULL, ALTER COLUMN "comment" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,080 MSG: generic.py:execute:145 south execute "CREATE TABLE "activity_receiving_users" ("id" serial NOT NULL PRIMARY KEY, "activity_id" integer NOT NULL, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,173 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity_receiving_users" ADD CONSTRAINT "activity_receiving_users_activity_id_5c37fb194fab449d_uniq" UNIQUE ("activity_id", "user_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,214 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity_receiving_users" ADD CONSTRAINT "activity_id_refs_id_4c59be126e3bb7cb" FOREIGN KEY ("activity_id") REFERENCES "activity" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,216 MSG: generic.py:execute:145 south execute "CREATE INDEX "activity_receiving_users_activity_id" ON "activity_receiving_users" ("activity_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,248 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity_receiving_users" ADD CONSTRAINT "user_id_refs_id_7c620079a9201ee1" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,249 MSG: generic.py:execute:145 south execute "CREATE INDEX "activity_receiving_users_user_id" ON "activity_receiving_users" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,591 MSG: generic.py:execute:145 south execute "DROP TABLE "askbot_authkeyuserassociation" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,594 MSG: generic.py:execute:145 south execute "DROP TABLE "book_author_info" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,596 MSG: generic.py:execute:145 south execute "DROP TABLE "mention" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,600 MSG: generic.py:execute:145 south execute "DROP TABLE "book" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,603 MSG: generic.py:execute:145 south execute "DROP TABLE "book_question" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,605 MSG: generic.py:execute:145 south execute "DROP TABLE "book_author_rss" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,794 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "response_count" integer NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:25,890 MSG: generic.py:execute:145 south execute "ALTER TABLE "forum_anonymousanswer" RENAME TO "askbot_anonymousanswer";" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,091 MSG: generic.py:execute:145 south execute "DROP TABLE "askbot_validationhash" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,300 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "status" varchar(2) NOT NULL DEFAULT 'w';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,500 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" ADD COLUMN "comment" varchar(128) NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,501 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" ALTER COLUMN "comment" TYPE varchar(128), ALTER COLUMN "comment" DROP NOT NULL, ALTER COLUMN "comment" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,502 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.constraint_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'repute', 'CHECK']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,575 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'repute', 'FOREIGN KEY']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,581 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" DROP CONSTRAINT "question_id_refs_id_4749166abeb39c4e"" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,583 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" ALTER COLUMN "question_id" TYPE integer, ALTER COLUMN "question_id" DROP NOT NULL, ALTER COLUMN "question_id" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,674 MSG: generic.py:execute:145 south execute "ALTER TABLE "repute" ADD CONSTRAINT "question_id_refs_id_4749166abeb39c4e" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,779 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ADD COLUMN "score" integer NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:26,920 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ALTER COLUMN "score" TYPE integer, ALTER COLUMN "score" SET NOT NULL, ALTER COLUMN "score" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,253 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_activityauditstatus" ("status" smallint NOT NULL DEFAULT 0, "activity_id" integer NOT NULL, "id" serial NOT NULL PRIMARY KEY, "user_id" integer NOT NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,286 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ADD COLUMN "question_id" integer NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,287 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ALTER COLUMN "question_id" TYPE integer, ALTER COLUMN "question_id" DROP NOT NULL, ALTER COLUMN "question_id" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,287 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_activityauditstatus" ADD CONSTRAINT "activity_id_refs_id_696be6085ca7a801" FOREIGN KEY ("activity_id") REFERENCES "activity" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,289 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_activityauditstatus_activity_id" ON "askbot_activityauditstatus" ("activity_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,361 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_activityauditstatus" ADD CONSTRAINT "user_id_refs_id_8d4370d1ee79215" FOREIGN KEY ("user_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,363 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_activityauditstatus_user_id" ON "askbot_activityauditstatus" ("user_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,424 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ADD CONSTRAINT "question_id_refs_id_4e3a5456906018a8" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,426 MSG: generic.py:execute:145 south execute "CREATE INDEX "activity_question_id" ON "activity" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:27,822 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "new_response_count" integer NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,030 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" DROP COLUMN "response_count" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,269 MSG: generic.py:execute:145 south execute "DROP TABLE "flagged_item" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,443 MSG: generic.py:execute:145 south execute "ALTER TABLE "badge" RENAME TO "askbot_badgedata";" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,523 MSG: generic.py:execute:145 south execute "ALTER TABLE "badge_id_seq" RENAME TO "askbot_badgedata_id_seq";" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,532 MSG: generic.py:execute:145 south execute "ALTER TABLE "badge_pkey" RENAME TO "askbot_badgedata_pkey";" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,540 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" ADD CONSTRAINT "askbot_badgedata_type_3f67eb706cba3c63_uniq" UNIQUE ("type", "name")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,589 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.constraint_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'award', 'CHECK']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,598 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'award', 'FOREIGN KEY']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,605 MSG: generic.py:execute:145 south execute "ALTER TABLE "award" DROP CONSTRAINT "badge_id_refs_id_4237a025651af0e1"" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,606 MSG: generic.py:execute:145 south execute "ALTER TABLE "award" ALTER COLUMN "badge_id" TYPE integer, ALTER COLUMN "badge_id" SET NOT NULL, ALTER COLUMN "badge_id" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,639 MSG: generic.py:execute:145 south execute "ALTER TABLE "award" ADD CONSTRAINT "badge_id_refs_id_785aa490f7ae0085" FOREIGN KEY ("badge_id") REFERENCES "askbot_badgedata" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,854 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" DROP COLUMN "multiple" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,855 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" DROP COLUMN "description" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,856 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" DROP COLUMN "type" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,859 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" DROP COLUMN "name" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,860 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.constraint_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', 'askbot_badgedata', 'CHECK']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,870 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', 'askbot_badgedata', 'FOREIGN KEY']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:28,875 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" ALTER COLUMN "slug" TYPE varchar(50), ALTER COLUMN "slug" SET NOT NULL, ALTER COLUMN "slug" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,015 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_badgedata" ADD CONSTRAINT "askbot_badgedata_slug_uniq" UNIQUE ("slug")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,151 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "consecutive_days_visit_count" integer NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,255 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "has_custom_avatar" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,359 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ALTER COLUMN "has_custom_avatar" TYPE boolean, ALTER COLUMN "has_custom_avatar" SET NOT NULL, ALTER COLUMN "has_custom_avatar" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,469 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "country" varchar(2) NULL;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,574 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_anonymousquestion" ADD COLUMN "is_anonymous" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,685 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_anonymousquestion" ALTER COLUMN "is_anonymous" TYPE boolean, ALTER COLUMN "is_anonymous" SET NOT NULL, ALTER COLUMN "is_anonymous" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,686 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ADD COLUMN "is_anonymous" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,828 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ALTER COLUMN "is_anonymous" TYPE boolean, ALTER COLUMN "is_anonymous" SET NOT NULL, ALTER COLUMN "is_anonymous" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:29,829 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ADD COLUMN "is_anonymous" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,091 MSG: generic.py:execute:145 south execute "ALTER TABLE "question" ALTER COLUMN "is_anonymous" TYPE boolean, ALTER COLUMN "is_anonymous" SET NOT NULL, ALTER COLUMN "is_anonymous" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,218 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "interesting_tags" text NOT NULL DEFAULT '';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,318 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "email_tag_filter_strategy" smallint NOT NULL DEFAULT 1;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,526 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" DROP COLUMN "hide_ignored_questions" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,527 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" DROP COLUMN "tag_filter_setting" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,634 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ADD COLUMN "offensive_flag_count" integer NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,800 MSG: generic.py:execute:145 south execute "ALTER TABLE "comment" ALTER COLUMN "offensive_flag_count" TYPE integer, ALTER COLUMN "offensive_flag_count" SET NOT NULL, ALTER COLUMN "offensive_flag_count" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:30,914 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ADD COLUMN "summary" text NOT NULL DEFAULT '';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,111 MSG: generic.py:execute:145 south execute "ALTER TABLE "activity" ALTER COLUMN "summary" TYPE text, ALTER COLUMN "summary" SET NOT NULL, ALTER COLUMN "summary" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,234 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" ADD COLUMN "avatar_type" varchar(1) NOT NULL DEFAULT 'n';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,446 MSG: generic.py:execute:145 south execute "ALTER TABLE "auth_user" DROP COLUMN "has_custom_avatar" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,560 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_emailfeedsetting" ADD CONSTRAINT "askbot_emailfeedsetting_feed_type_6786f2f16da6fdcd_uniq" UNIQUE ("feed_type", "subscriber_id")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,714 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD COLUMN "revision_type" smallint NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,854 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ALTER COLUMN "revision_type" TYPE smallint, ALTER COLUMN "revision_type" SET NOT NULL, ALTER COLUMN "revision_type" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:31,856 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD COLUMN "title" varchar(300) NOT NULL DEFAULT '';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,001 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ALTER COLUMN "title" TYPE varchar(300), ALTER COLUMN "title" SET NOT NULL, ALTER COLUMN "title" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,003 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD COLUMN "tagnames" varchar(125) NOT NULL DEFAULT '';" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,158 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ALTER COLUMN "tagnames" TYPE varchar(125), ALTER COLUMN "tagnames" SET NOT NULL, ALTER COLUMN "tagnames" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,160 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD COLUMN "is_anonymous" boolean NOT NULL DEFAULT False;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,301 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ALTER COLUMN "is_anonymous" TYPE boolean, ALTER COLUMN "is_anonymous" SET NOT NULL, ALTER COLUMN "is_anonymous" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,302 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" ADD CONSTRAINT "answer_revision_answer_id_5b3f2b6e44ac3a4f_uniq" UNIQUE ("answer_id", "revision")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,334 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ADD COLUMN "revision_type" smallint NOT NULL DEFAULT 0;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,470 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ALTER COLUMN "revision_type" TYPE smallint, ALTER COLUMN "revision_type" SET NOT NULL, ALTER COLUMN "revision_type" DROP DEFAULT;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:32,471 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" ADD CONSTRAINT "question_revision_question_id_16bb15c256f4adef_uniq" UNIQUE ("question_id", "revision")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,003 MSG: generic.py:execute:145 south execute "CREATE TABLE "askbot_postrevision" ("id" serial NOT NULL PRIMARY KEY, "revision_type" smallint NOT NULL, "revision" integer CHECK ("revision" >= 0) NOT NULL, "author_id" integer NOT NULL, "revised_at" timestamp with time zone NOT NULL, "summary" varchar(300) NOT NULL, "text" text NOT NULL, "title" varchar(300) NOT NULL DEFAULT '', "tagnames" varchar(125) NOT NULL DEFAULT '', "is_anonymous" boolean NOT NULL DEFAULT False, "answer_id" integer NULL, "question_id" integer NULL);" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,145 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_postrevision" ADD CONSTRAINT "askbot_postrevision_answer_id_186f4bf04016cc8f_uniq" UNIQUE ("answer_id", "revision")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,170 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_postrevision" ADD CONSTRAINT "askbot_postrevision_question_id_68343be6c45c4b41_uniq" UNIQUE ("question_id", "revision")" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,195 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_postrevision" ADD CONSTRAINT "author_id_refs_id_61d6d221df12af7f" FOREIGN KEY ("author_id") REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,198 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_postrevision_author_id" ON "askbot_postrevision" ("author_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,229 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_postrevision" ADD CONSTRAINT "answer_id_refs_id_7ea024b0118dc424" FOREIGN KEY ("answer_id") REFERENCES "answer" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,231 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_postrevision_answer_id" ON "askbot_postrevision" ("answer_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,263 MSG: generic.py:execute:145 south execute "ALTER TABLE "askbot_postrevision" ADD CONSTRAINT "question_id_refs_id_793ea769bd499018" FOREIGN KEY ("question_id") REFERENCES "question" ("id") DEFERRABLE INITIALLY DEFERRED;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,265 MSG: generic.py:execute:145 south execute "CREATE INDEX "askbot_postrevision_question_id" ON "askbot_postrevision" ("question_id");" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,523 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'question_revision', 'UNIQUE']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,529 MSG: generic.py:execute:145 south execute "ALTER TABLE "question_revision" DROP CONSTRAINT "question_revision_question_id_16bb15c256f4adef_uniq"" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,530 MSG: generic.py:execute:145 south execute "
+            SELECT kc.constraint_name, kc.column_name
+            FROM information_schema.key_column_usage AS kc
+            JOIN information_schema.table_constraints AS c ON
+                kc.table_schema = c.table_schema AND
+                kc.table_name = c.table_name AND
+                kc.constraint_name = c.constraint_name
+            WHERE
+                kc.table_schema = %s AND
+                kc.table_name = %s AND
+                c.constraint_type = %s
+        " with params "['public', u'answer_revision', 'UNIQUE']"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,536 MSG: generic.py:execute:145 south execute "ALTER TABLE "answer_revision" DROP CONSTRAINT "answer_revision_answer_id_5b3f2b6e44ac3a4f_uniq"" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,537 MSG: generic.py:execute:145 south execute "DROP TABLE "answer_revision" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/south/db/generic.py TIME: 2011-11-18 15:44:33,540 MSG: generic.py:execute:145 south execute "DROP TABLE "question_revision" CASCADE;" with params "[]"
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 17:53:46,705 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 17:53:47,060 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 89, in get_response
+    response = middleware_method(request)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/middleware/common.py", line 67, in process_request
+    if (not _is_valid_path(request.path_info, urlconf) and
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/middleware/common.py", line 154, in _is_valid_path
+    urlresolvers.resolve(path, urlconf)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 342, in resolve
+    return get_resolver(urlconf).resolve(path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 17:53:47,145 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 89, in get_response
+    response = middleware_method(request)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/middleware/common.py", line 67, in process_request
+    if (not _is_valid_path(request.path_info, urlconf) and
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/middleware/common.py", line 154, in _is_valid_path
+    urlresolvers.resolve(path, urlconf)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 342, in resolve
+    return get_resolver(urlconf).resolve(path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 17:54:17,080 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 17:55:50,029 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /forum/
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 17:55:53,232 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 18:01:39,854 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 18:01:42,480 MSG: base.py:handle_uncaught_exception:209 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.
+/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py TIME: 2011-11-18 18:04:02,709 MSG: base.py:handle_uncaught_exception:210 Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    request.path_info)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 252, in resolve
+    sub_match = pattern.resolve(new_path)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 250, in resolve
+    for pattern in self.url_patterns:
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 279, in _get_url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/core/urlresolvers.py", line 274, in _get_urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+    __import__(name)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/urls.py", line 15, in <module>
+    update_media_revision()#needs to be run once, so put it here
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/skins/utils.py", line 192, in update_media_revision
+    askbot_settings.update('MEDIA_RESOURCE_REVISION', resource_revision + 1)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/conf/settings_wrapper.py", line 62, in update
+    setting.update(value)
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/values.py", line 365, in update
+    s.save()
+  File "/home/fero/src/gasistafelice/submodules/django-askbot/askbot/deps/livesettings/models.py", line 122, in save
+    self.site = Site.objects.get_current()
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/contrib/sites/models.py", line 25, in get_current
+    current_site = self.get(pk=sid)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/home/fero/.virtualenvs/desmacerata1/lib/python2.7/site-packages/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Site matching query does not exist.

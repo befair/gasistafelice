@@ -18,12 +18,13 @@ def get_allowed_transitions(obj, user):
     """
     from gasistafelice.gas.models import GASSupplierOrder, GASMemberOrder
     from flexi_auth.models import ParamRole
-    from gasistafelice.consts import GAS_MEMBER, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH
+    from gasistafelice.consts import GAS_MEMBER, GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, DES_ADMIN
         
     if isinstance(obj, GASSupplierOrder):
         param_roles =  [
              ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=obj.pact),
              ParamRole.get_role(GAS_REFERRER_TECH, gas=obj.gas),
+             ParamRole.get_role(DES_ADMIN, des=obj.des),
         ]
     elif isinstance(obj, GASMemberOrder):
         param_roles = [

@@ -27,7 +27,8 @@ class AuthenticationParamRoleBackend(ModelBackend):
         """
         This is an authenticate-only backend, so it's good to be here! ;)
         """
-        
+
+        username = username.lower()
         rv = user = super(AuthenticationParamRoleBackend, self).authenticate(username, password)
 
         if not PrincipalParamRoleRelation.objects.filter(user=user).count():

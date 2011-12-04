@@ -21,9 +21,6 @@ ROLES_LIST = (
     (consts.GAS_MEMBER, 'Gasista'),
     (consts.GAS_REFERRER, 'GAS referrer'),
     (consts.GAS_REFERRER_SUPPLIER, 'Referente fornitore'),
-    (consts.GAS_REFERRER_ORDER, 'Referente di ordine'),
-    (consts.GAS_REFERRER_WITHDRAWAL, 'GAS withdrawal referrer'),
-    (consts.GAS_REFERRER_DELIVERY, 'GAS delivery referrer'),
     (consts.GAS_REFERRER_CASH, 'Referente economico'),
     (consts.GAS_REFERRER_TECH, 'Referente informatico'),
     (consts.DES_ADMIN, 'Amministratore del DES'),
@@ -34,9 +31,6 @@ PARAM_CHOICES = (
    ('gas', _('GAS')),
    ('supplier', _('Supplier')),
    ('pact', _('GAS-supplier solidal pact')),
-   ('order', _('GAS-supplier order')),
-   ('withdrawal', _('Withdrawal appointment')),
-   ('delivery', _('Delivery appointment')),  
 )
 
 VALID_PARAMS_FOR_ROLES = {
@@ -49,9 +43,6 @@ VALID_PARAMS_FOR_ROLES = {
     consts.GAS_REFERRER_CASH : {'gas':'gas.GAS'},
     consts.GAS_REFERRER_TECH : {'gas':'gas.GAS'},
     consts.GAS_REFERRER_SUPPLIER : {'pact':'gas.GASSupplierSolidalPact'}, 
-    consts.GAS_REFERRER_ORDER : {'order':'gas.GASSupplierOrder'},
-    consts.GAS_REFERRER_WITHDRAWAL: {'withdrawal':'gas.Withdrawal'},
-    consts.GAS_REFERRER_DELIVERY: {'delivery':'gas.Delivery'},
     consts.DES_ADMIN: {'des':'des.DES'},                         
 }
 

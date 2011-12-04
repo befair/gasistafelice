@@ -1,3 +1,5 @@
+.. _resource_pact:
+
 Il patto di solidarietà
 =======================
 

@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 from flexi_auth.models import ObjectWithContext
 
@@ -30,21 +31,34 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
-        ctx = { request.resource.resource_type : request.resource }
+        ctx = { self.resource.resource_type : self.resource }
 
         if request.user.has_perm(CREATE, 
             obj=ObjectWithContext(GASSupplierOrder, context=ctx)
         ):
         
-            user_actions += [
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=CREATE, verbose_name=_("Add order"), 
-                    popup_form=True
-                ),
-             ]
+            if self.resource.resource_type in ["gas", "supplier", "pact", "stock"]:
+                user_actions += [
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=CREATE, verbose_name=_("Add order"), 
+                        popup_form=True
+                    ),
+                 ]
 
         return user_actions
 
+
+    def get_response(self, request, resource_type, resource_id, args):
+
+        self.request = request
+        self.resource = resource = request.resource
+
+        if not resource.pacts:
+
+            msg = _("There are no pacts related to this %s, no order can exist") % resource_type
+            return HttpResponse('<root><sysmsg>%s</sysmsg></root>' % msg)
+
+        return super(Block, self).get_response(request, resource_type, resource_id, args)
 

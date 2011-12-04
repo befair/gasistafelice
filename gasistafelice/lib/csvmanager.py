@@ -31,6 +31,7 @@ class CSVManager:
         csvr = csv.DictReader(csvfile, fieldnames=self.fieldnames, delimiter=self.delimiter)
         rows = []
         for r in csvr:
+            #print("DEBUG", r)
             for k,v in r.items():
                 r[k] = v.decode(self.encoding)
             rows.append(r)

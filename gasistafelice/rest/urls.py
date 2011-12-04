@@ -40,7 +40,7 @@ urlpatterns = patterns('',
 
     # Global methods
     (r'^list_comments',                      'rest.views.list_comments'),
-    (r'^list_notifications',                      'rest.views.list_notifications'),
+    (r'^list_notifications',                 'rest.views.list_notifications'),
 
     (r'^blocks/(?P<resource_type>\w+)/$'                     , 'rest.views.list'),  
     (r'^blocks/(?P<resource_type>\w+)/(?P<resource_id>\d+)/$', 'rest.views.parts'), 

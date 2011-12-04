@@ -96,54 +96,39 @@ class GASMemberManager(models.Manager):
         If a `order` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_ORDER, order)
-        # initialize the return QuerySet to an EmptyQuerySet
-        qs = self.model.objects.none()
-        # costruct the result set by joining partial QuerySets
-        # (one for each parametric role of interest)
-        for pr in p_roles:
-            # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas=pr.order.pact.gas)
+        if order is None:
+            people = Person.objects.filter(order_set__isnull=False)
+        else:
+            people = [order.referrer_person]
+        return self.model.objects.filter(person__in=people)
 
-        return qs
-
-    def delivery_referrers(self, delivery=None):
+    def delivery_referrers(self, order=None):
         """
         Return a QuerySet containing all GAS members who have been assigned the 'Delivery Referrer'
         role for the GAS they belong to.    
         
-        If a `delivery` argument is provided, the result set is filtered accordingly.
+        If a `order` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_DELIVERY, delivery)
-        # initialize the return QuerySet to an EmptyQuerySet
-        qs = self.model.objects.none()
-        # costruct the result set by joining partial QuerySets
-        # (one for each parametric role of interest)
-        for pr in p_roles:
-            # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas__in=pr.delivery.gas_set)
+        if order is None:
+            people = Person.objects.filter(delivery_for_order_set__isnull=False)
+        else:
+            people = [order.referrer_person]
+        return self.model.objects.filter(person__in=people)
 
-        return qs
-
-    def withdrawal_referrers(self, withdrawal=None):
+    def withdrawal_referrers(self, order=None):
         """
         Return a QuerySet containing all GAS members who have been assigned the 'Withdrawal Referrer'
         role for the GAS they belong to.
         
-        If a `withdrawal` argument is provided, the result set is filtered accordingly.    
+        If an `order` argument is provided, the result set is filtered accordingly.    
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_WITHDRAWAL, withdrawal)
-        # initialize the return QuerySet to an EmptyQuerySet
-        qs = self.model.objects.none()
-        # costruct the result set by joining partial QuerySets
-        # (one for each parametric role of interest)
-        for pr in p_roles:
-            # filter out spurious GAS members arising when a Person belongs to multiple GAS
-            qs = qs | self.model.objects.filter(person__user__in= pr.get_users(), gas__in=pr.withdrawal.gas_set)
-
-        return qs
+        if order is None:
+            people = Person.objects.filter(withdrawal_for_order_set__isnull=False)
+        else:
+            people = [order.referrer_person]
+        return self.model.objects.filter(person__in=people)
 
 #-------------------------------------------------------------------------------
 
@@ -179,6 +164,9 @@ class OrderManager(models.Manager):
     def get_query_set(self):
         return OrderQuerySet(self.model)
 
+    def prepared(self):
+        return self.get_query_set().prepared()
+
     def open(self):
         return self.get_query_set().open()
 
@@ -194,6 +182,9 @@ class OrderManager(models.Manager):
     def sent(self):
         return self.get_query_set().sent()
     
+    def paid(self):
+        return self.get_query_set().paid()
+
     def delivered(self):
         return self.get_query_set().delivered()
     

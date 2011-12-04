@@ -37,7 +37,16 @@ class AbstractBlock(object):
         self.refresh_rate = 0
 
         self.start_open   = True
+        self._resource    = None
     
+    @property
+    def resource(self):
+        return self._resource
+
+    @resource.setter
+    def resource(self, value):
+        self._resource = value
+
     #------------------------------------------------------------------------------#
     #                                                                              #
     #------------------------------------------------------------------------------#
@@ -156,8 +165,11 @@ class AbstractBlock(object):
         return self.create_block_signature_from_resource(resource)
         
     def create_block_signature_from_resource(self, resource):
-        
-        block_urn = '%s/%s/%s/' % (resource.resource_type, resource.id, self.name)
+
+        self.resource = resource
+        # WARNING: se self.resource rather than resource! 
+        # It is a property and getter and setter could be overridden
+        block_urn = '%s/%s/%s/' % (self.resource.resource_type, self.resource.id, self.name)
         
         return '<block \
                      block_name="%s" \
@@ -173,7 +185,7 @@ class AbstractBlock(object):
             self.block_name,
             '%s' % (self.get_description()),
             block_urn,
-            str(resource),
+            str(self.resource),
             self.refresh_rate,
             str(self.auto_refresh).lower(),
             str(self.start_open).lower(),

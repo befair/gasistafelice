@@ -1,9 +1,15 @@
-[submodule "extra/django-pro-history"]
-	path = extra/django-pro-history
+[submodule "submodules/django-pro-history"]
+	path = submodules/django-pro-history
 	url = git://github.com/feroda/django-pro-history.git
-[submodule "extra/django-simple-accounting"]
-	path = extra/django-simple-accounting
+[submodule "submodules/django-simple-accounting"]
+	path = submodules/django-simple-accounting
 	url = git://github.com/seldon/django-simple-accounting.git
-[submodule "extra/django-flexi-auth"]
-	path = extra/django-flexi-auth
+[submodule "submodules/django-flexi-auth"]
+	path = submodules/django-flexi-auth
 	url = git://github.com/seldon/django-flexi-auth.git
+[submodule "submodules/django-askbot"]
+	path = submodules/django-askbot
+	url = git://github.com/feroda/askbot-devel.git
+[submodule "submodules/django-notification"]
+	path = submodules/django-notification
+	url = https://github.com/feroda/django-notification.git

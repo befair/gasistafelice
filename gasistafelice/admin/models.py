@@ -63,21 +63,8 @@ class PersonAdmin(admin.ModelAdmin):
     list_editable = ('name', 'surname') 
     list_display_links = ('__unicode__', 'display_name')
     search_fields = ('^name','^surname', 'address__city')
-    
-class PlaceForm(forms.ModelForm):
-
-    class Meta:
-        model = base_models.Place
-
-    def clean_address(self):
-        if not self.cleaned_data["name"]:
-            if not self.cleaned_data["address"]:
-                raise forms.ValidationError("Name field and Address field cannot be empty at the same time. Please set at least one of them.")
-                
-        return self.cleaned_data["address"]
 
 class PlaceAdmin(admin.ModelAdmin):
-    form = PlaceForm
 
     save_on_top = True 
     fieldsets = ((None,

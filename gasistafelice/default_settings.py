@@ -58,7 +58,7 @@ DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M', '%Y-%m-%d %H:%M:%S',
 '%Y-%m-%d %H:%M', '%Y-%m-%d', '%m/%d/%Y %H:%M:%S', '%m/%d/%Y',
 '%m/%d/%y %H:%M:%S', '%m/%d/%y %H:%M', '%m/%d/%y')
 TIME_INPUT_FORMATS = ('%H:%M', '%H:%M:%S')
-DATE_INPUT_FORMATS = ('%m/%d/%Y', '%Y-%m-%d', '%m/%d/%y', '%b %d %Y',
+DATE_INPUT_FORMATS = ('%d/%m/%Y', '%Y-%m-%d', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y')
 
@@ -110,7 +110,7 @@ INSTALLED_APPS = [
     'workflows',
     'history',
     'flexi_auth',
-    'accounting',
+    'simple_accounting',
     'gasistafelice.base',
     'gasistafelice.supplier',
     'gasistafelice.gas',
@@ -127,7 +127,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.comments',
     'gasistafelice.localejs',
-    'gasistafelice.des_notifications',
+    'notification',
+    'gasistafelice.des_notification',
     #'south',
 ]
 
@@ -223,15 +224,23 @@ RESOURCE_PAGE_BLOCKS = {
     'gas' : [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders'], #products_to_order for GAS with GASConfig that want to show only one available order/delivery?
+        'blocks': ['open_orders', 'closed_orders', 'prepared_orders'], 
     },{
         'name' : 'suppliers',
         'descr': 'Fornitori',
-        'blocks': ['gas_pacts', 'categories'], #categorie presenti sul des ma non acquistate dal GAS
+        'blocks': ['gas_pacts', 'categories'], 
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
         'blocks' : ['gas_details', 'gasmembers']
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : [] #Finalize Orders, Transact_Casa, Transact_Borselino
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : [] #Archivied Orders, Transact_gasmembers, Transact_suppliers
     }],
     'gasmember': [{
         'name' : 'orders',
@@ -244,12 +253,12 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
-        'blocks' : ['gasmember_details']
+        'blocks' : ['gasmember_details', 'person_details']
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : []
-    }], #must be extended with economic section
+        'blocks' : [] #Transact_Gasmember
+    }],
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
@@ -257,26 +266,30 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'supplier_pacts'],
+        'blocks': ['open_orders', 'prepared_orders', 'supplier_pacts'],
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
         'blocks': ['supplier_details', 'categories', 'closed_orders'],
-    }], #must be extended with economic section
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : [] #Transact_supplier for all pact
+    }],
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',
         'blocks': ['order_details', 'order_report'],
     },{ 
         'name' : 'delivery',
-        'descr': 'Consegna',
-        'blocks': [],
+        'descr': 'Pagamento',
+        'blocks': ['curtail'],
     }],
 
     'person' : [{
         'name': 'info',
         'descr': 'Scheda della persona',
-        'blocks' : ['details', 'gasmembers'],
+        'blocks' : ['person_details', 'person_gasmembers'],
     }],
 
     'pact' : [{ 
@@ -287,6 +300,14 @@ RESOURCE_PAGE_BLOCKS = {
         'name': 'info',
         'descr': 'Scheda del patto',
         'blocks' : ['pact_details', 'closed_orders'],
+    },{
+        'name' : 'accounting',
+        'descr' : 'Conto',
+        'blocks' : [] #Transact_supplier for one pact
+    },{
+        'name' : 'archive',
+        'descr' : 'Archivio',
+        'blocks' : [] #Archivied Orders
     }],
 
     'stock' : [{
@@ -294,9 +315,9 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Scheda del prodotto',
         'blocks' : ['stock_details', 'open_orders'],
     }],
-
 }
-   
+
+
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
 LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
 LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
@@ -320,6 +341,8 @@ INIT_OPTIONS = {
 # --- WARNING: changing following parameters implies fixtures adaptation --
 # Default category for all uncategorized products
 DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
+JUNK_EMAIL = 'devnull@desmacerata.it'
+
 # Superuser username
 
 #------ AUTH settings
@@ -328,4 +351,10 @@ from flexi_auth_settings import *
 #------ ACCOUNTING settings
 from simple_accounting_settings import *
 
+#------ NOTIFICATION settings
+
+DEFAULT_FROM_EMAIL = "gasistafelice@desmacerata.it"
+NOTIFICATION_BACKENDS = (
+    ("email", "notification.backends.email.EmailBackend"),
+)
 

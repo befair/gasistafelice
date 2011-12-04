@@ -18,19 +18,19 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from accounting.models import economic_subject, Account, AccountingDescriptor 
-from accounting import types
+from simple_accounting.models import economic_subject, Account, AccountingDescriptor 
+from simple_accounting.models import account_type
 
 
 from gasistafelice.lib import ClassProperty
-from gasistafelice.lib.fields.models import CurrencyField
+from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 
 from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.base import const
 from gasistafelice.base import utils as base_utils
 
-from gasistafelice.gas.accounting_proxies import GasAccountingProxy
+from gasistafelice.gas.accounting import GasAccountingProxy
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
@@ -63,7 +63,7 @@ class GAS(models.Model, PermissionResource):
 
     supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"),verbose_name=_('Suppliers'))
     
-    birthday = models.DateField(null=True, blank=True, help_text=_("Born"),verbose_name=_('birthday'))
+    birthday = models.DateField(null=True, blank=True, help_text=_("When this GAS is born"), verbose_name=_('birthday'))
     vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"),verbose_name=_('VAT'))
     fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"),verbose_name=_('Fiscal code card'))
 
@@ -109,6 +109,7 @@ class GAS(models.Model, PermissionResource):
     class Meta:
         verbose_name_plural = _('GAS')
         app_label = 'gas'
+        ordering = ('-birthday',)
 
     #-- Overriding built-in methods --#
     def __unicode__(self):
@@ -165,7 +166,14 @@ class GAS(models.Model, PermissionResource):
     #--------------------------#
     
     #-- Properties --#
-
+    
+    @property
+    def uid(self):
+        """
+        A unique (database independent) ID (an ASCII string) for ``GAS`` model instances.
+        """
+        return self.id_in_des
+    
     @property
     def icon(self):
         return self.logo or super(GAS, self).icon
@@ -223,7 +231,7 @@ class GAS(models.Model, PermissionResource):
         us = User.objects.none()
         for pr in prs:
             us |= pr.get_users() 
-        return us   
+        return us
 
     @property
     def tech_referrers_people(self):
@@ -321,11 +329,20 @@ class GAS(models.Model, PermissionResource):
 
         super(GAS, self).save(*args, **kw)
 
-        if created:
-
-            self.config = GASConfig.objects.create(gas=self)
-            #TODO self.account = Account.objects.create()
-            #TODO self.liquidity = Account.objects.create()
+    def setup_accounting(self):
+        self.subject.init_accounting_system()
+        system = self.accounting.system
+        ## setup a base account hierarchy
+        # GAS's cash       
+        system.add_account(parent_path='/', name='cash', kind=account_type.asset) 
+        # root for GAS members' accounts 
+        system.add_account(parent_path='/', name='members', kind=account_type.asset, is_placeholder=True)
+        # a placeholder for organizing transactions representing payments to suppliers
+        system.add_account(parent_path='/expenses', name='suppliers', kind=account_type.expense, is_placeholder=True)
+        # recharges made by GAS members to their own account
+        system.add_account(parent_path='/incomes', name='recharges', kind=account_type.income)
+        # membership fees
+        system.add_account(parent_path='/incomes', name='fees', kind=account_type.income)
 
     #-- Resource API --#
 
@@ -383,7 +400,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def pacts(self):
         # Return pacts bound to a GAS
-        return self.pact_set.all()
+        return self.pact_set.all().order_by('supplier')
 
     @property
     def suppliers(self):
@@ -432,7 +449,7 @@ class GAS(models.Model, PermissionResource):
 #-----------------------------------------------------------------------------------------------------
 
 def get_supplier_order_default():
-    return Workflow.objects.get(name="SupplierOrderDefault")
+    return Workflow.objects.get(name="SimpleSupplierOrderDefault")
 
 def get_gasmember_order_default():
     return Workflow.objects.get(name="GASMemberOrderDefault")
@@ -502,16 +519,25 @@ class GASConfig(models.Model):
 
     auto_populate_products = models.BooleanField(verbose_name=_('Auto populate products'), default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
     is_active = models.BooleanField(verbose_name=_('Is active'), default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
-    use_scheduler = models.BooleanField(default=False)
+    use_scheduler = models.BooleanField(default=False, verbose_name=_("Use scheduler"), help_text=_("Enable scheduler for automatic and planned operations"))
     gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
-
-    #TODO:notify_days = models.PositiveIntegerField(null=True, default=0, help_text=_("The number of days that the system will notify an event (product changed). If set to 0 the notify system is off."))
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
     suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this gas was suspended
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
+
+    notice_days_before_order_close = models.PositiveIntegerField(
+        verbose_name=_("Notice days before order close"),
+        null=True, default=1, 
+        help_text=_("How many days before do you want your GAS receive reminder on closing orders?"),
+    )
+    
+    #notice_days_after_gmo_update = models.PositiveIntegerField(
+    #   null=True, default=1, help_text=_("After how many days do 
+    #   you want a gasmember receive updates on his own orders?")
+    #)
 
     history = HistoricalRecords()
 
@@ -574,8 +600,6 @@ class GASMember(models.Model, PermissionResource):
     available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set",verbose_name=_('available for roles'))
     membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
-    #TODO: Notify system
-
     objects = GASMemberManager()
 
     history = HistoricalRecords()
@@ -586,8 +610,13 @@ class GASMember(models.Model, PermissionResource):
         membership_fee_payed,
         id_in_gas,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
+        models.CharField(max_length=200, name="email", verbose_name=_("Email")),
+        models.CharField(max_length=100, name="phone", verbose_name=_("Phone")),
+#        models.CharField(max_length=200, name="www", verbose_name=_("Web site")),
+        models.CharField(max_length=100, name="fax", verbose_name=_("Fax")),
         models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
     )
+        #display.Resource(name="person", verbose_name=_("Person")),
 
     class Meta:
         verbose_name = _('GAS member')
@@ -596,9 +625,15 @@ class GASMember(models.Model, PermissionResource):
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
 
     def __unicode__(self):
-        rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
+        #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
+        rv = '%(gas)s - %(person)s' % {'person' : self.person, 'gas': self.gas.id_in_des}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
+        return rv
+
+    def statistic_name(self):
+        rv = '%(gas)s - %(person)s ' % {'person' : self.person, 'gas': self.gas.id_in_des}
+        #rv = _('%(person)s ') % {'person' : self.person}
         return rv
 
     def _get_roles(self):
@@ -663,7 +698,15 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def email(self):
-        return self.person.email
+        return self.person.preferred_email_contacts
+
+    @property
+    def phone(self):
+        return self.person.preferred_phone_contacts
+
+    @property
+    def fax(self):
+        return self.person.preferred_fax_contacts
 
     @property
     def economic_state(self):
@@ -729,6 +772,27 @@ class GASMember(models.Model, PermissionResource):
         if not self.id_in_gas:
             self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
+        
+    def setup_accounting(self):
+        person_system = self.person.accounting.system
+        gas_system = self.gas.accounting.system
+        
+        ## account creation
+        ## Person-side
+        # placeholder for payments made by this person to GASs (s)he belongs to
+        try:
+            person_system['/expenses/gas'] 
+        except Account.DoesNotExist:
+            person_system.add_account(parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True)
+        # base account for expenses related to this GAS membership
+        person_system.add_account(parent_path='/expenses/', name=self.gas.uid, kind=account_type.expense, is_placeholder=True)
+        # recharges
+        person_system.add_account(parent_path='/expenses/' + self.gas.uid, name='recharges', kind=account_type.expense)
+        # membership fees
+        person_system.add_account(parent_path='/expenses/' + self.gas.uid, name='fees', kind=account_type.expense)
+        ## GAS-side   
+        gas_system.add_account(parent_path='/members', name=self.member.uid, kind=account_type.asset)
+    
 
     #-- Resource API --#
 
@@ -784,9 +848,13 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        #TODO FIXME AFTER 6: there should be no enry with ordered_amount = 0 in GASMemberOrder table
+        #TODO FIXME AFTER 6: there should be no entry with ordered_amount = 0 in GASMemberOrder table
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
-        return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
+
+    @property
+    def account(self):
+        #TODO: manage accounting informations here
+        return 0
 
     @property
     def basket_to_be_delivered(self):
@@ -838,30 +906,7 @@ class GASMember(models.Model, PermissionResource):
         return user in allowed_users
          
     #--------------------------#
-## Signals
-@receiver(post_save, sender=GASMember)
-def setup_gas_member_accounting(sender, instance, created, **kwargs):
-    if created:    
-        person_system = instance.person.subject.accounting_system
-        gas_system = instance.gas.subject.accounting_system
-        ## account creation
-        ## Person-side
-        # placeholder for payments made by this person to GASs (s)he belongs to
-        try:
-            person_system['/expenses/gas'] 
-        except Account.DoesNotExist:
-            person_system.add_account(parent_path='/expenses', name='gas', kind=types.expense, is_placeholder=True)
-        # base account for expenses related to this GAS membership
-        person_system.add_account(parent_path='/expenses/', name=str(instance.gas.name), kind=types.expense, is_placeholder=True)
-        # recharges
-        person_system.add_account(parent_path='/expenses/' + str(instance.gas.name), name='recharges', kind=types.expense)
-        # membership fees
-        person_system.add_account(parent_path='/expenses/' + str(instance.gas.name), name='fees', kind=types.expense)
-        ## GAS-side   
-        gas_system.add_account(parent_path='/members', name=str(instance.person.full_name), kind=types.asset)
-    
 
-#-----------------------------------------------------------------------------------------------------
 
 class GASSupplierStock(models.Model, PermissionResource):
     """A Product as available to a given GAS (including price, order constraints and availability information)."""
@@ -874,12 +919,12 @@ class GASSupplierStock(models.Model, PermissionResource):
     enabled = models.BooleanField(default=True,verbose_name=_('enabled'))
 
     # how many Product units a GAS Member is able to order
-    minimum_amount = models.DecimalField(max_digits=5, decimal_places=2, 
+    minimum_amount = PrettyDecimalField(max_digits=5, decimal_places=2, 
                         default=1, verbose_name=_('minimum order amount')
     )
     # increment step (in Product units) for amounts exceeding minimum;
     # useful when a Product has a fixed step of increment
-    step = models.DecimalField(max_digits=5, decimal_places=2,
+    step = PrettyDecimalField(max_digits=5, decimal_places=2,
                         default=1, verbose_name=_('step of increment')
     )
 
@@ -1149,8 +1194,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         unique_together = (('gas', 'supplier'),)
 
     def __unicode__(self):
-        return _("Pact between %(gas)s and %(supplier)s") % \
-                      { 'gas' : self.gas, 'supplier' : self.supplier}
+#        return _("Pact between %(gas)s and %(supplier)s") % \
+#                      { 'gas' : self.gas, 'supplier' : self.supplier}
+        return _("%(gas)s - %(supplier)s") % \
+                      { 'gas' : self.gas.id_in_des, 'supplier' : self.supplier}
+
     @ClassProperty
     @classmethod
     def resource_type(cls):
@@ -1166,16 +1214,32 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()    
 
+    @property
+    def supplier_referrers_people(self):
+        prs = Person.objects.none()
+        if self.referrers:
+            prs = Person.objects.filter(user__in=self.referrers)
+        return prs
+
     def setup_roles(self):
         # register a new `GAS_REFERRER_SUPPLIER` Role for this solidal pact
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
+        
+    def setup_accounting(self):
+        ## create accounts for logging GAS <-> Supplier transactions
+        # GAS-side
+        gas_system = self.gas.accounting.system
+        gas_system.add_account(parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense)
+        # Supplier-side
+        supplier_system = self.supplier.accounting.system
+        supplier_system.add_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
 
     def setup_data(self):
         for st in self.supplier.stocks:
             #see GASSupplierStock.enabled comment
             #enabled = [False, self.auto_populate_products][bool(st.amount_available)]
             if not self.auto_populate_products:
-                enabled = false
+                enabled = False
             else:
                 enabled = bool(st.amount_available)
             GASSupplierStock.objects.create(pact=self, stock=st, enabled=enabled, \
@@ -1224,9 +1288,18 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one gas stock")
 
     @property
+    def pacts(self):
+        # itself in queryset
+        return GASSupplierSolidalPact.objects.filter(pk=self.pk)
+
+    @property
     def pact(self):
         return self
     
+    @property
+    def pacts(self):
+        return GASSupplierSolidalPact.objects.filter(pk=self.pk)
+
     @property
     def persons(self):
         qs = self.gas.persons | self.supplier.persons
@@ -1317,16 +1390,3 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         for supplier in self.suppliers:
             roles |= supplier.roles
         return roles
-
-
-## Signals
-@receiver(post_save, sender=GASSupplierSolidalPact)
-def setup_pact_accounting(sender, instance, created, **kwargs):
-    if created:
-        ## create accounts for logging GAS <-> Supplier transactions
-        # GAS-side
-        gas_system = instance.gas.subject.accounting_system
-        gas_system.add_account(parent_path='/expenses/suppliers', name=str(instance.supplier.name), kind=types.expense)
-        # Supplier-side
-        supplier_system = instance.supplier.subject.accounting_system
-        supplier_system.add_account(parent_path='/incomes/gas', name=str(instance.gas.name), kind=types.income)

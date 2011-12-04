@@ -29,33 +29,7 @@
 {%endblock%}
 
 {%block page_header%}
-   <div class="head">
-        <table style="width:96%; ">
-            <tr>
-            <tr>
-                <td rowspan="2" style="width=20%" ><img alt="{{gasmember}}" src="{{gasmember.icon.url}}" width="100" heigth="100" /></td>
-                <td class="taleft" style="width=30%" >
-                {{gasmember}} ({{ gasmember.id }})<br />
-                {{ gasmember.id_in_gas }}
-                </td>
-                <td class="taright" style="width=30%" >
-                {{gasmember.gas}}<br />
-                {{gasmember.seat}}<br />
-                {% trans "StampBy" %} {{ user.person }}<br />
-                {% now "l d F Y H:i" %}
-                </td>
-                <td rowspan="2" style="width=20%" ><img alt="{{gasmember.gas}}" src="{{gasmember.gas.icon.url}}" width="100" heigth="100" /></td>
-            <tr>
-            </tr>
-                <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ rec_count }}</h2></td>
-                <td></td>
-                <td class="sumPricefield taright">{% trans "Total cost" %}</td>
-                <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
-<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
-                </td>
-            </tr>
-        </table>
-   </div>
+<h1>{% trans "Basket" %}  {{ user.person }} - {{gasmember.gas}} - {% now "l d F Y H:i" %} ({{ user }}) </h1>
 <hr />
 {%endblock%}
 
@@ -88,7 +62,7 @@
                 {% set ActualProduttore = row.order %}
                 <tr><td colspan="5"></td></tr>
                 <tr>
-                    <td colspan='5' class="Prod">(ord.{{row.order}}) {{row.supplier}} {{row.order_description}}</td>
+                    <td colspan='5' class="Prod">{{row.order_description}}</td>
                 </tr>
             {% endif %}
 
@@ -132,6 +106,11 @@
 {%endblock%}
 
 {%block page_foot%}
-<pdf:pagenumber>
-
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td class="taleft"></td>
+        <td class="taright"><pdf:pagenumber></td>
+    </tr>
+</table>
 {%endblock%}
+

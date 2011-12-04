@@ -1,0 +1,63 @@
+Caro gasista del GAS {{ gas }}, 
+gli aggiornamenti della settimana sono:
+
+{% if closing_orders %}
+    <h2>Ordini in chiusura</h2>
+
+    <ul>
+        {% for order in closing_orders %}
+            <li><a href="{% url order %}">{{ order }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        Nessun nuovo ordine aperto
+{% endif %}
+
+<h2>Ordini aperti</h2>
+
+{% if open_orders %}
+    <ul>
+        {% for order in open_orders %}
+            <li><a href="{% url order %}">{{ order }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        Nessun nuovo ordine aperto
+{% endif %}
+
+{% if new_pacts %}
+<h2>Nuovi patti di solidarietà</h2>
+
+<ul>
+    {% for pact in new_pacts %}
+        <li><a href="{% url pact %}">{{ pact }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if new_gasmembers %}
+    <h2>Diamo il benvenuto ai nuovi gasisti</h2>
+
+    <ul>
+        {% for gm in new_gasmembers %}
+            <li><a href="{% url gm %}">{{ gm }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if old_gasmembers %}
+    <h2>Salutiamo i gasisti che se ne vanno</h2>
+
+    <ul>
+        {% for gm in old_gasmembers %}
+            <li><a href="{% url gm %}">{{ gm }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+Il sistema verifica ogni lunedì alle 8:00 gli aggiornamenti della settimana e li invia al GAS
+
+Gasista Felice
+
+P.S: non rispondere a questo indirizzo email. Per chiarimenti puoi chiedere a <a href="mailto:{{ site_contact }}">{{ site_contact }}</a>

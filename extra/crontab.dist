@@ -1,0 +1,11 @@
+# Crontab example for sending notifications
+
+WORKON_HOME=/var/lib/virtualenvs
+
+# Once a day at 8:00 am
+0 8 * * * root /usr/local/gasistafelice/extra/sh_manage_wrapper.sh send_gasmembers_notification
+0 8 * * * root /usr/local/gasistafelice/extra/sh_manage_wrapper.sh send_gas_notification
+
+# Once a week
+0 8 * * 0 root /usr/local/gasistafelice/extra/sh_manage_wrapper.sh send_gas_newsletter
+

@@ -1,6 +1,7 @@
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
+from django.db.models.query import QuerySet
 
 from gasistafelice.base.models import Person
 from gasistafelice.lib.djangolib import get_qs_filter_dict_from_str, get_instance_dict_from_attrs
@@ -14,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         try:
-            tmpl = args[0]
+            tmpl = unicode(args[0])
         except:
             raise CommandError("Usage search_people: %s" % (self.args))
 
@@ -33,6 +34,12 @@ class Command(BaseCommand):
 
         for p in qs:
             d = get_instance_dict_from_attrs(p, attr_names)
-            print((tmpl % d).encode('UTF-8'))
+            for k,v in d.items():
+                if isinstance(v, QuerySet):
+                    qs = []
+                    for el in v:
+                        qs.append(el.__unicode__())
+                    d[k] = qs
+            print(tmpl % d).encode('utf-8')
             
         return 0

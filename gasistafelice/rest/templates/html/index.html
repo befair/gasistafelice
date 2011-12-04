@@ -71,8 +71,8 @@
     <!-- 2010-01-11 (dbilli) form submit/post handling -->
     <script src="{{ MEDIA_URL }}nui/scripts/jquery.form.js"                type="text/javascript"></script>
 
-    <!-- 2010-01-20 (dbilli) context menu -->
-    <script src="{{ MEDIA_URL }}nui/scripts/jquery.contextmenu.r2.js"      type="text/javascript"></script>
+    <!-- 2010-01-20 (dbilli) context menu
+    <script src="{{ MEDIA_URL }}nui/scripts/jquery.contextmenu.r2.js"      type="text/javascript"></script> -->
 
     <script src="{{ MEDIA_URL }}nui/scripts/jquery.cookie.js"              type="text/javascript"></script>
 
@@ -88,6 +88,7 @@
     <script src="{{ MEDIA_URL }}nui/scripts/jquery.rees.js"                type="text/javascript"></script>
     <script src="{{ MEDIA_URL }}nui/scripts/jquery.dataTables.min.js"          type="text/javascript"></script>
     <script src="{{ MEDIA_URL }}nui/scripts/dataTables.sorting.js"          type="text/javascript"></script>
+    <script src="{{ MEDIA_URL }}nui/scripts/jquery-ui-timepicker-addon.js"          type="text/javascript"></script>
 
     <!-- end fero -->
     {# TODO fero TOCHECK <script src="{{ MEDIA_URL }}nui/scripts/jquery.labs.tree.js"           type="text/javascript"></script> #}
@@ -457,7 +458,18 @@
                 }
             });
                    
-
+            //prepare translation to be used in page head banner
+            type_string_d = {
+                'site' : gettext('DES'),
+                'pact' : gettext('Pact'),
+                'gasmember' : gettext('Gasmember'),
+                'order' : gettext('Order'),
+                'gas' : 'GAS',
+                'supplier' : gettext('Supplier'),
+                'stock' : gettext('Product'),
+                'person' : gettext('Person'),
+            }
+                            
             var resource       = $(t).find('resource');
             var resource_urn   = resource.attr('sanet_urn');
             if (resource_urn != undefined) {
@@ -468,11 +480,11 @@
                     var resource_id   = parts[1];
                     //alert('resource: ' + resource_urn + " " + resource_descr);
                     add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
-                    $('#page_resource').html(gettext(resource_type));
+                    $('#page_resource').html(type_string_d[resource_type] + " " + new jQuery.Resource(resource_urn, resource_descr).render());
                     document.title = "GF - Gestione " + gettext(resource_type);
                 }
             }
-                            
+
             fill_navigation_bar();
             
             //
@@ -1119,7 +1131,7 @@
         
         var NOTES_PLACEHOLDER = '#all_notes';
         var NOTES_RESOURCE_URL = jQuery.pre + 'rest/list_comments/all';
-        var NOTE_REFRESH_TIME = 20*10;  // 60 seconds
+        var NOTE_REFRESH_TIME = 20*30;  // 180 seconds
         var NOTES_POPUP_DIALOG = '#global_notes_popup_placeholder';
         
         jQuery.new_notes_dialog_open = false;
@@ -1334,7 +1346,7 @@
         // ============================================================================
         
         var STATUS_CHANGE_NOTIFICATION_URL = 'rest/last_status_change/';
-        var STATUS_CHANGE_NOTIFICATION_TIMEOUT = 10 * 1000; // 60 seconds
+        var STATUS_CHANGE_NOTIFICATION_TIMEOUT = 10 * 3000; // 180 seconds
         var status_change_timer_id = undefined;
         var last_log_element = undefined;
         
@@ -1431,6 +1443,30 @@
                 // Move user focus on the datepicker
                 $(this).focus();
             });  
+
+            $('.vTimeField').live('click', function () {
+                // Create a datepicker
+                $(this).timepicker({
+                    showOn: 'focus' ,
+                    showAnim: '',
+                    duration: 0,
+                    timeOnlyTitle: 'Scegli l\'orario',
+                    timeText: 'Orario',
+                    hourText: 'Ore',
+                    minuteText: 'Minuti',
+                    secondText: 'Secondi',
+                    currentText: 'Ora',
+                    closeText: 'Chiudi',
+                    stepMinute: 15,
+                    minute: 0,
+                    hourGrid: 4,
+                    minuteGrid: 15,
+                    timeFormat: 'h:m',
+                });
+                        
+                // Move user focus on the datepicker
+                $(this).focus();
+            });
         
         }                      
 

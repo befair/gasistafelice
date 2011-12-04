@@ -3,8 +3,8 @@ Il referente informatico del GAS
 
 .. WARNING::
     Il referente informatico del GAS è un utente che ha ampi margini di azione nel software.
-    Può infatti eseguire quasi tutte le operazioni eseguite dal referente informatico del DES.
-    Tale possibilità richiede quindi una certa attenzione nell'interazione con la piattaforma.
+    Può infatti eseguire molte delle operazioni eseguibili dal referente informatico del DES.
+    Tale possibilità richiede una certa attenzione nell'interazione con la piattaforma.
 
 |head2_descr|
 -------------
@@ -27,10 +27,13 @@ abilitato a gestire in tutto e per tutto ciò che riguarda il GAS.
 |head2_start|
 -------------
 
-* GAS già inserito
+Il referente informatico del GAS trova già inserito nel sistema il proprio GAS.
 
 |head2_homepage|
 -----------------
+
+La sua pagina iniziale è quella relativa al GAS. Nel pannello "Scheda del GAS" 
+egli può modificare le opzioni del GAS e gestire i ruoli dei gasisti.
 
 |head2_actions|
 ---------------
@@ -70,15 +73,18 @@ Abilitare i referenti
 Per ogni GAS sono previsti vari ruoli cui è importante attribuire i referenti. 
 Si possono impostare in maniera centralizzata i ruoli di referente informatico, referente fornitore, o gasista 
 
-Il referente informatico può gestire tutti i ruoli dei gasisti:
-* andando nella pagina del GAS, nella "Scheda del GAS" e selezionando l'azione `Ruoli` nel blocco dettagli;
-* da menù contestuale del GAS; 
+Il referente informatico può gestire tutti i ruoli dei gasisti
+andando nella pagina del GAS, nella "Scheda del GAS" e selezionando l'azione `Gestisci ruoli` nel blocco dettagli.
+ 
 
 Aggiungere un gasista
 ^^^^^^^^^^^^^^^^^^^^^
+
+TODO
 
 .. include:: actions/add_supplier.rst
 
 Aggiungere un patto di solidarietà
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
