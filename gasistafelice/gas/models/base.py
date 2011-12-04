@@ -170,9 +170,9 @@ class GAS(models.Model, PermissionResource):
     @property
     def uid(self):
         """
-        A unique (database independent) ID (an ASCII string) for ``GAS`` model instances.
+        A unique ID (an ASCII string) for ``GAS`` model instances.
         """
-        return self.id_in_des
+        return self.urn.replace('/','-')
     
     @property
     def icon(self):
@@ -283,23 +283,6 @@ class GAS(models.Model, PermissionResource):
         except GASConfig.DoesNotExist:
             self.config = GASConfig.objects.create(gas=self)
 
-    def setup_accounting(self):
-        self.subject.init_accounting_system()
-        system = self.accounting_system
-
-        ## setup a base account hierarchy
-        # GAS's cash       
-        system.add_account(parent_path='/', name='cash', kind=types.asset) 
-        # root for GAS members' accounts 
-        system.add_account(parent_path='/', name='members', kind=types.asset, is_placeholder=True)
-        # a placeholder for organizing transactions representing payments to suppliers
-        system.add_account(parent_path='/expenses', name='suppliers', kind=types.expense, is_placeholder=True)
-        # recharges made by GAS members to their own account
-        system.add_account(parent_path='/incomes', name='recharges', kind=types.income)
-        # membership fees
-        system.add_account(parent_path='/incomes', name='fees', kind=types.income)
-
-
     def save(self, *args, **kw):
 
         if not self.id_in_des:
@@ -330,25 +313,28 @@ class GAS(models.Model, PermissionResource):
         super(GAS, self).save(*args, **kw)
 
     def setup_accounting(self):
+        """ Accounting hierachy for GAS.
+
+		. ROOT (/)
+		|----------- cash [A]
+		+----------- members [P,A]+
+		|				+--- <UID member #1>  [A]
+		|				| ..
+		|				+--- <UID member #n>  [A]
+		+----------- expenses [P,E]+
+		|				+--- TODO: OutOfNetwork
+		|				+--- suppliers [P, E] +
+		|						+--- <UID supplier #1>  [E]
+		|						| ..
+		|						+--- <UID supplier #n>  [E]
+		+----------- incomes [P,I]+
+		|				+--- recharges [I] 
+		|				+--- fees [I]
+		|				+--- TODO: Other
+        """
+
         self.subject.init_accounting_system()
         system = self.accounting.system
-        ## setup a base account hierarchy
-#		. ROOT (/)
-#		|----------- cash [A]
-#		+----------- members [P,A]+
-#		|				+--- <UID member #1>  [A]
-#		|				| ..
-#		|				+--- <UID member #n>  [A]
-#		+----------- expenses [P,E]+
-#		|				+--- TODO: OutOfNetwork
-#		|				+--- suppliers [P, E] +
-#		|						+--- <UID supplier #1>  [E]
-#		|						| ..
-#		|						+--- <UID supplier #n>  [E]
-#		+----------- incomes [P,I]+
-#		|				+--- recharges [I] 
-#		|				+--- fees [I]
-#		|				+--- TODO: Other
         # GAS's cash
         system.add_account(parent_path='/', name='cash', kind=account_type.asset) 
         # root for GAS members' accounts
@@ -787,7 +773,9 @@ class GASMember(models.Model, PermissionResource):
     def clean(self):
         # Clean method is for validation. Validation errors are meant to be
         # catched in forms
-        if not self.person.user: # GAS members must have an account on the system
+        try:
+            assert self.person.user # GAS members must have an account on the system
+        except User.DoesNotExist:
             raise ValidationError(_("GAS Members must be registered users"))
         return super(GASMember, self).clean()
 
@@ -801,38 +789,40 @@ class GASMember(models.Model, PermissionResource):
             self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
 
-#    @property
-#    def uid(self):
-#        """
-#        A unique (database independent) ID (an ASCII string) for ``GASMember`` model instances.
-#        """
-#        #FIXME: Cannot be used because not unique in GASMember model
-#        #return self.id_in_gas
-#        return self.pk
-
     def setup_accounting(self):
+        """ GASMember contributes to GAS and Person accounting hierarchies.
+
+        #GAS-side
+        . ROOT (/)
+        +----------- members [P,A]+
+        |				+--- <UID member #1>  [A]
+        |				| ..
+        |				+--- <UID member #n>  [A]
+
+        #Person-side
+        . ROOT (/)
+        |--- wallet [A]
+        +--- expenses [P,E]+
+                +--- gas [P, E] +
+                        +--- <UID gas #1>  [P, E]+
+                        |			+--- recharges [E]
+                        |			+--- fees [E]
+                        | ..
+                        +--- <UID gas #n>  [P, E]
+                                    +--- recharges [E]
+                                    +--- fees [E]
+        """
+
         person_system = self.person.accounting.system
         gas_system = self.gas.accounting.system
         
-        ## account creation
         ## Person-side
         # placeholder for payments made by this person to GASs (s)he belongs to
         try:
             person_system['/expenses/gas']
         except Account.DoesNotExist:
             person_system.add_account(parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True)
-#PEOPLE
-#		. ROOT (/)
-#		|--- wallet [A]
-#		+--- expenses [P,E]+
-#				+--- gas [P, E] +
-#						+--- <UID gas #1>  [P, E]+
-#						|			+--- recharges [E]
-#						|			+--- fees [E]
-#						| ..
-#						+--- <UID gas #n>  [P, E]
-#									+--- recharges [E]
-#									+--- fees [E]
+
         # base account for expenses related to this GAS membership
         person_system.add_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense, is_placeholder=True)
         # recharges
@@ -840,12 +830,6 @@ class GASMember(models.Model, PermissionResource):
         # membership fees
         person_system.add_account(parent_path='/expenses/gas/' + self.gas.uid, name='fees', kind=account_type.expense)
 
-#GAS
-#	. ROOT (/)
-#	+----------- members [P,A]+
-#	|				+--- <UID member #1>  [A]
-#	|				| ..
-#	|				+--- <UID member #n>  [A]
         ## GAS-side
         gas_system.add_account(parent_path='/members', name=self.person.uid, kind=account_type.asset)
 
@@ -1288,26 +1272,28 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         register_parametric_role(name=GAS_REFERRER_SUPPLIER, pact=self)
 
     def setup_accounting(self):
-        ## create accounts for logging GAS <-> Supplier transactions
+        """ GASSupplierSolidalPact contributes to GAS and Supplier accounting hierarchies.
+
         # GAS-side
+		. ROOT (/)
+		+----------- expenses [P,E]+
+		|				+--- suppliers [P, E] +
+		|						+--- <UID supplier #1>  [E]
+		|						| ..
+		|						+--- <UID supplier #n>  [E]
+
+        # SUPPLIER-side
+        . ROOT (/)
+        +----------- incomes [P,I]+
+                        +--- gas [P, I] +
+                                +--- <UID gas #1>  [P, I]
+                                | ..
+                                +--- <UID gas #n>  [P, I]
+        """
+
         gas_system = self.gas.accounting.system
-#GAS
-#		. ROOT (/)
-#		+----------- expenses [P,E]+
-#		|				+--- suppliers [P, E] +
-#		|						+--- <UID supplier #1>  [E]
-#		|						| ..
-#		|						+--- <UID supplier #n>  [E]
         gas_system.add_account(parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense)
-        # Supplier-side
         supplier_system = self.supplier.accounting.system
-#SUPPLIER
-#	. ROOT (/)
-#	+----------- incomes [P,I]+
-#					+--- gas [P, I] +
-#							+--- <UID gas #1>  [P, I]
-#							| ..
-#							+--- <UID gas #n>  [P, I]
         supplier_system.add_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
 
     def setup_data(self):
