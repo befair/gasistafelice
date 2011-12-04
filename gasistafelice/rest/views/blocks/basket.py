@@ -66,14 +66,14 @@ class Block(BlockSSDataTables):
 
                 ]
 
-                user_actions += [
-                    ResourceBlockAction(
-                        block_name = self.BLOCK_NAME,
-                        resource = request.resource,
-                        name=CREATE_PDF, verbose_name=_("Create PDF"),
-                        popup_form=False,
-                    ),
-                ]
+        user_actions += [
+            ResourceBlockAction(
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name=CREATE_PDF, verbose_name=_("Create PDF"),
+                popup_form=False,
+            ),
+        ]
 
         return user_actions
         

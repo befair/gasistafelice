@@ -79,7 +79,7 @@ class BaseOrderForm(forms.ModelForm):
 
     delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
-    delivery_referrer_person = forms.ModelChoiceField(queryset=Person.objects.none(), required=True, error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')})
+    delivery_referrer_person = forms.ModelChoiceField(label=_('referrer'), queryset=Person.objects.none(), required=True, error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')})
 
     def __init__(self, request, *args, **kw):
         #Strip request arg

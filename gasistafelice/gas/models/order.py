@@ -113,6 +113,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         ref = self.delivery_referrer_person
         if ref:
             ref = " Ref: %s " % ref
+        elif self.referrer_person:
+            ref = " Ref: %s " % self.referrer_person
         else:
             ref = ""
 
@@ -212,9 +214,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def referrers(self):
         """Return all users being referrers for this order.
 
-        Thus, referrer for order pact
+        Thus, referrer for order pact, if not take all gas referrers
+        GAS teorie doesn't accept that one person is referrer for one person 
+        but intend to turn the referrer work bettwen several persons.
+        In the GAS you have one communicative referrer in order to centralize information
         """
-        return self.pact.referrers
+        pact_refs = self.pact.referrers
+        if not pact_refs:
+            pact_refs = self.pact.gas.referrers
+        return pact_refs
 
     @property
     def supplier_referrers_people(self):
@@ -587,6 +595,12 @@ GROUP BY gmo.purchaser_id, gsop.order_id \
 
         if created:
             self.set_default_gasstock_set()
+
+        if not self.referrer_person and self.delivery_referrer_person:
+            self.referrer_person = self.delivery_referrer_person
+        if not self.delivery_referrer_person and self.referrer_person:
+            self.delivery_referrer_person = self.referrer_person
+
         
     #-------------- Authorization API ---------------#
     
