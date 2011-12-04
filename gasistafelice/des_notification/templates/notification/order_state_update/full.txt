@@ -1,3 +1,4 @@
+{% load i18n %}
 
 L' <a href="{% url order %}">{{order|lower}}</a> è stato {{ action }}.
 
