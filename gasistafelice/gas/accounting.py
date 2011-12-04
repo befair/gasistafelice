@@ -1,6 +1,6 @@
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
-from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
+from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
 
 class GasAccountingProxy(AccountingProxy):
     """
@@ -38,9 +38,15 @@ class GasAccountingProxy(AccountingProxy):
         if refs:
             transaction.add_references(refs)
         
-    def withdraw_from_member_account(self, member, amount, refs=None):
+    def withdraw_from_member_account_update(self, member, updated_amount, refs):
+
+        tx = Transaction.objects.get_by_reference(refs).get(kind='GAS_WITHDRAWAL')
+        update_transaction(tx, amount=updated_amount)
+        
+
+    def withdraw_from_member_account(self, member, new_amount, refs=None):
         """
-        Withdraw a given amount ``amount`` of money from the account of a member
+        Withdraw a given amount ``new_amount`` of money from the account of a member
         of this GAS and bestow it to the GAS's cash.
         
         If this operation would make that member's account negative, raise a warning.
@@ -58,7 +64,7 @@ class GasAccountingProxy(AccountingProxy):
         target_account = self.system['/cash']
         description = "Withdrawal from member %(member)s account by GAS %(gas)s" % {'gas': gas, 'member': member,}
         issuer = gas 
-        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
+        transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:
             transaction.add_references(refs)
     
