@@ -547,17 +547,17 @@ class Person(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name.capitalize(), 'surname': self.surname.upper()}
+        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
         if self.city:
             rv += u" (%s)" % self.city
         return rv
 
     def report_name(self):
-        return u'%(name)s %(surname)s' % {'name' : self.name.capitalize(), 'surname': self.surname.upper()}
+        return u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
 
     def clean(self):
         self.name = self.name.strip().lower().capitalize()
-        self.surname = self.surname.strip().upper() #.lower().capitalize()
+        self.surname = self.surname.strip().lower().capitalize()
         self.display_name = self.display_name.strip()
         if not self.ssn:
             self.ssn = None
@@ -729,13 +729,6 @@ class Person(models.Model, PermissionResource):
         else:
             return None
 
-    def save(self, *args, **kwargs):
-        self.name = self.name.capitalize()
-        self.surname = self.surname.capitalize()
-        if self.ssn == '':
-            self.ssn = None
-        super(Person, self).save(*args, **kwargs)
-        
     def setup_accounting(self):
         """ Accounting hierarchy for Person.
 
