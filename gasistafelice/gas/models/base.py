@@ -154,6 +154,10 @@ class GAS(models.Model, PermissionResource):
         allowed_users = User.objects.none()
         return user in allowed_users
 
+    def can_cash(self, user, context):
+        return user in self.cash_referrers
+        
+
     @property
     def roles(self):
         "GAS involves also roles related to pacts"""

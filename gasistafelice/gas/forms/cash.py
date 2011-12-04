@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.core.exceptions import PermissionDenied
 
 from gasistafelice.gas.models import GAS, GASMember, GASMemberOrder, GASSupplierOrder
 from gasistafelice.supplier.models import Supplier
@@ -11,7 +12,8 @@ from django.contrib.admin import widgets as admin_widgets
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
-from gasistafelice.consts import GAS_REFERRER_CASH, GAS_REFERRER_SUPPLIER
+from flexi_auth.models import ObjectWithContext
+from gasistafelice.consts import CASH
 
 from datetime import datetime
 import logging
@@ -32,7 +34,6 @@ class EcoGASMemberForm(forms.Form):
 
     log.debug("    --------------       EcoGASMemberForm")
     purchaser_id = forms.IntegerField(required=False)
-    ord_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     eco_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     amounted = forms.DecimalField(required=False, initial=0) #, widget=forms.TextInput())
@@ -45,38 +46,35 @@ class EcoGASMemberForm(forms.Form):
         self.fields['purchaser_id'].widget.attrs['disabled'] = 'disabled'
         self.fields['purchaser_id'].widget.attrs['class'] = 'input_small'
         self.__loggedusr = request.user
+        self.__order = request.resource.order
 
     def save(self):
 
         #Control logged user
-        if not self.__loggedusr:
-            raise forms.ValidationError(_('cannot identify the logged in user. Please try loggin. Cannot continue'))
-            log.debug("EcoGASMemberForm cannot identify the logged in user.")
-            return
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__order.gas)
+        ):
+
+            log.debug("PermissionDenied %s in cash order form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
         _gm_id = self.cleaned_data.get('gm_id')
-        _ord_id = self.cleaned_data.get('ord_id')
         _eco_id = self.cleaned_data.get('eco_id')
         #FIXME DEBUG EcoGASMemberForm identifiers [None/None]
-        log.debug("EcoGASMemberForm identifiers [%s/%s]", _ord_id, _gm_id )
-        print "EcoGASMemberForm identifiers [%s/%s]" % (_ord_id, _gm_id)
-        if not _gm_id or not _ord_id:
-            raise forms.ValidationError(_('cannot retrieve GASMember and Order identifiers. Cannot continue'))
+        log.debug("EcoGASMemberForm identifiers [%s/%s]" % (self.__order.pk, _gm_id ))
+        print "EcoGASMemberForm identifiers [%s/%s]" % (self.__order.pk, _gm_id)
+        if not _gm_id:
             log.debug("EcoGASMemberForm cannot retrieve GASMember and Order identifiers")
-            return
-        order = GASSupplierOrder.objects.get(pk=_ord_id)
-        gm = GASMember.objects.get(pk=_gm_id)
-        if not gm or not order:
-            raise forms.ValidationError(_('cannot retrieve GASMember and Order datas. Cannot continue'))
-            log.debug("EcoGASMemberForm cannot retrieve GASMember and Order datas. Identifiers (%s/%s)." % (_ord_id,_gm_id))
-            return
-        #TODO: Seldon or Fero. Control if Order is in the rigth Workflow STATE
+            raise forms.ValidationError(_('cannot retrieve GASMember and Order identifiers. Cannot continue'))
 
-        #TODO: Control is CASH REFERRER for this GAS
-        if self.__loggedusr not in order.pact.gas.cash_referrers:
-            log.warn("!!!!EcoGASMemberForm (%s) Not authorized %s. Identifiers (%s/%s)" % (self.__loggedusr,gm,_ord_id,_gm_id))
-            raise forms.ValidationError(_('Not authorized'))
-            return
+        try:
+            gm = GASMember.objects.get(pk=_gm_id)
+        except GASMember.DoesNotExist:
+            log.debug("EcoGASMemberForm cannot retrieve GASMember and Order datas. Identifiers (%s)." % _gm_id)
+            raise forms.ValidationError(_('cannot retrieve GASMember and Order datas. Cannot continue'))
+
+        #TODO: Seldon or Fero. Control if Order is in the rigth Workflow STATE
 
         #Do economic work
         #TODO: gas.accounting.withdraw_from_member_account(self, member, amount, refs=None):

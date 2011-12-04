@@ -107,10 +107,10 @@ class Block(BlockSSDataTables):
 
         map_info = { }
 
-#{'purchaser': 7L, 'sum_price': Decimal('98.0400'), 'ordered_product__order': 10L, 'tot_product': 5, 'sum_qta': Decimal('5.00')}
+        #{'purchaser': 7L, 'sum_price': Decimal('98.0400'), 'ordered_product__order': 10L, 'tot_product': 5, 'sum_qta': Decimal('5.00')}
 
         #Retrieve gasmembers orders curtails
-        order = request.resource
+        order = request.resource.order
         accounting_data = order.pact.gas.accounting.accounted_amount_by_gas_member(order)
         for trx in accounting_data:
             print trx
@@ -133,7 +133,6 @@ class Block(BlockSSDataTables):
                 accounted_wallet = ordered_tot_price
 
             data.update({
-               '%s-ord_id' % key_prefix : self._getItem(pairs, 'order_id', 0),
                '%s-gm_id' % key_prefix : pk,
                '%s-eco_id' % key_prefix : pk,
                '%s-amounted' % key_prefix : accounted_wallet,
@@ -170,7 +169,7 @@ class Block(BlockSSDataTables):
                'sum_qta' : self._getItem(pairs, 'sum_qta', 0),
                'sum_price' : self._getItem(pairs, 'sum_price', 0),
                'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
-               'amounted' : "%s %s %s %s" % (form['ord_id'], form['gm_id'], form['amounted'], form['eco_id']),
+               'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['eco_id']),
             })
 #"{{row.amounted|escapejs}}"  --> "{{row.amounted|floatformat:"2"}}" cannot be done because is widget input
 #               'pk' : el.order_id,

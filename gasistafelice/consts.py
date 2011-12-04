@@ -19,6 +19,7 @@ DELETE = 'delete'
 ALL = 'all' # catchall
 EDIT_MULTIPLE = 'edit_multiple'
 CONFIRM = 'confirm'
+CASH = 'cash'
 
 ## accounting-related constants
 # account types
