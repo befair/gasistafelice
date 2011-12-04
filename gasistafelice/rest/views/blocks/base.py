@@ -223,7 +223,7 @@ class BlockSSDataTables(BlockWithList):
 
                 form_class = self._get_edit_multiple_form_class()
                 formset = form_class(request, request.POST)
-                
+
                 if formset.is_valid():
                     with transaction.commit_on_success():
                         for form in formset:

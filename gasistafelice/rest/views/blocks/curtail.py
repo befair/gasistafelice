@@ -84,13 +84,10 @@ class Block(BlockSSDataTables):
         return q_sql
 
     def _get_edit_multiple_form_class(self):
-        qs = self._get_resource_list(self.request)
-        #cnt = qs.count() #QuerySet
-        cnt = len(qs)  #List
         return formset_factory(
-                    form=EcoGASMemberForm,
-                    formset=BaseFormSetWithRequest,
-                    extra=cnt
+            form=EcoGASMemberForm,
+            formset=BaseFormSetWithRequest,
+            extra=0
         )
 
     def _getItem(self, pairs, colname, default):
@@ -118,8 +115,7 @@ class Block(BlockSSDataTables):
 
         #for i,el in enumerate(querySet):
         i = 0
-        for item in querySet:
-            i += 1
+        for i, item in enumerate(querySet):
             log.debug("Curtails enumerate (%s) - %s" % (i, item))
             pairs = [(v, k) for (k, v) in item.iteritems()]
             pk = self._getItem(pairs, 'purchaser_id', 0)
@@ -134,7 +130,7 @@ class Block(BlockSSDataTables):
 
             data.update({
                '%s-gm_id' % key_prefix : pk,
-               '%s-eco_id' % key_prefix : pk,
+               '%s-entry_id' % key_prefix : pk,
                '%s-amounted' % key_prefix : accounted_wallet,
             })
 
@@ -142,7 +138,7 @@ class Block(BlockSSDataTables):
             #map_info[i] = {'formset_index' : i}
 
         data['form-TOTAL_FORMS'] = i + 1
-        data['form-INITIAL_FORMS'] = 0
+        data['form-INITIAL_FORMS'] = i + 1
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)
@@ -169,7 +165,7 @@ class Block(BlockSSDataTables):
                'sum_qta' : self._getItem(pairs, 'sum_qta', 0),
                'sum_price' : self._getItem(pairs, 'sum_price', 0),
                'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
-               'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['eco_id']),
+               'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['entry_id']),
             })
 #"{{row.amounted|escapejs}}"  --> "{{row.amounted|floatformat:"2"}}" cannot be done because is widget input
 #               'pk' : el.order_id,
@@ -191,11 +187,4 @@ class Block(BlockSSDataTables):
 
         return formset, records, {}
 
-
-    def get_response(self, request, resource_type, resource_id, args):
-
-        self.request = request
-        self.resource = resource = request.resource
-
-        return super(Block, self).get_response(request, resource_type, resource_id, args)
 

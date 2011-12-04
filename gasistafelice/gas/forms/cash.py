@@ -10,6 +10,7 @@ from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from gasistafelice.lib.fields.forms import CurrencyField
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 from flexi_auth.models import ObjectWithContext
@@ -32,21 +33,42 @@ class EcoGASMemberForm(forms.Form):
     Movement between GASMember.account --> GAS.account
     """
 
-    log.debug("    --------------       EcoGASMemberForm")
-    purchaser_id = forms.IntegerField(required=False)
-    gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    eco_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    amounted = forms.DecimalField(required=False, initial=0) #, widget=forms.TextInput())
+    gm_id = forms.IntegerField(widget=forms.HiddenInput)
+    entry_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    amounted = CurrencyField(required=False, initial=0) #, widget=forms.TextInput())
+
+    #TODO: domthu: note and delete
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
 
     def __init__(self, request, *args, **kw):
+        log.debug("    --------------       EcoGASMemberForm")
         super(EcoGASMemberForm, self).__init__(*args, **kw)
         self.fields['amounted'].widget.attrs['class'] = 'taright'
-        self.fields['purchaser_id'].widget.attrs['readonly'] = True
-        self.fields['purchaser_id'].widget.attrs['disabled'] = 'disabled'
-        self.fields['purchaser_id'].widget.attrs['class'] = 'input_small'
         self.__loggedusr = request.user
         self.__order = request.resource.order
+
+    def clean(self):
+
+        cleaned_data = super(EcoGASMemberForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
+        except KeyError:
+            log.debug("EcoGASMemberForm: cannot retrieve GASMember identifier. FORM ATTACK!")
+            raise 
+        except GASMember.DoesNotExist:
+            log.debug("EcoGASMemberForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
+            raise
+           
+        try:
+            cleaned_data['entry'] = LedgerEntry.objects.get(pk=cleaned_data['entry_id'])
+        except LedgerEntry.DoesNotExist:
+            log.debug("EcoGASMemberForm: ledger entry not found for order %s and gasmember %s" % (
+                self.__order.pk, cleaned_data['gasmember'].pk)
+            )
+            cleaned_data['entry'] = None
+
+        return cleaned_data
 
     def save(self):
 
@@ -59,37 +81,27 @@ class EcoGASMemberForm(forms.Form):
             log.debug("PermissionDenied %s in cash order form" % self.__loggedusr)
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
-        _gm_id = self.cleaned_data.get('gm_id')
-        _eco_id = self.cleaned_data.get('eco_id')
-        #FIXME DEBUG EcoGASMemberForm identifiers [None/None]
-        log.debug("EcoGASMemberForm identifiers [%s/%s]" % (self.__order.pk, _gm_id ))
-        print "EcoGASMemberForm identifiers [%s/%s]" % (self.__order.pk, _gm_id)
-        if not _gm_id:
-            log.debug("EcoGASMemberForm cannot retrieve GASMember and Order identifiers")
-            raise forms.ValidationError(_('cannot retrieve GASMember and Order identifiers. Cannot continue'))
-
-        try:
-            gm = GASMember.objects.get(pk=_gm_id)
-        except GASMember.DoesNotExist:
-            log.debug("EcoGASMemberForm cannot retrieve GASMember and Order datas. Identifiers (%s)." % _gm_id)
-            raise forms.ValidationError(_('cannot retrieve GASMember and Order datas. Cannot continue'))
+        gm = self.cleaned_data['gasmember']
+        entry = self.cleaned_data['entry']
 
         #TODO: Seldon or Fero. Control if Order is in the rigth Workflow STATE
 
         #Do economic work
-        #TODO: gas.accounting.withdraw_from_member_account(self, member, amount, refs=None):
         amounted = self.cleaned_data.get('amounted')
-        try:
-            if amounted == 0:
-                #Find existing movment and delete it
-                log.error("ECO Order GasMember(%s) - Delete? - (%s) " % (gm, amounted))
+
+        if amounted:
+            # This kind of amount is ever POSITIVE!
+            amounted = abs(amounted)
+
+            refs = [gm, self.__order]
+
+            if entry:
+                # A ledger entry already exists
+                if entry.amount != amounted:
+                    gm.gas.accounting.withdraw_from_member_account_update(
+                        gm, amounted, refs
+                    )
+
             else:
-                #Find existing movment
-                #If exist UPDATE
-                #    log.warn("ECO Order GasMember(%s) - Update - (%s) " % (gm, amounted))
-                #Else CREATE Movement between GASMember.account --> GAS.account
-                log.warn("ECO Order GasMember(%s) - Create - (%s) " % (gm, amounted))
-        except:
-            log.error("ERR: EcoGASMemberForm (%s) Not authorized %s. Identifiers (%s/%s) Euro: %s." % (self.__loggedusr,gm,_ord_id,_gm_id, amounted))
-            raise forms.ValidationError(_('ERR: EcoGASMemberForm. Context not satisfied'))
+                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs)
 

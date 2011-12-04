@@ -13,6 +13,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
         // Init dataTables
 //                'sPaginationType': 'full_numbers', 
         var iTot = 2;
+        var block_obj = this;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'bPaginate': false,
                 "bServerSide": true,
@@ -47,6 +48,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     var nCells = $(nRow).find('th');
                     $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
                     $(nCells[2]).html('&#8364; ' + String(GetRoundedFloat(iOrdered)).replace('.',','));
+
+                    /* Modify Django management form info */
+                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
                 }
             });
 
