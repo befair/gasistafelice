@@ -784,14 +784,14 @@ class GASMember(models.Model, PermissionResource):
             self.id_in_gas = None
         super(GASMember, self).save(*args, **kw)
 
-    @property
-    def uid(self):
-        """
-        A unique (database independent) ID (an ASCII string) for ``GASMember`` model instances.
-        """
-        #FIXME: Cannot be used because not unique in GASMember model
-        #return self.id_in_gas
-        return self.pk
+#    @property
+#    def uid(self):
+#        """
+#        A unique (database independent) ID (an ASCII string) for ``GASMember`` model instances.
+#        """
+#        #FIXME: Cannot be used because not unique in GASMember model
+#        #return self.id_in_gas
+#        return self.pk
 
     def setup_accounting(self):
         person_system = self.person.accounting.system
@@ -809,13 +809,13 @@ class GASMember(models.Model, PermissionResource):
 #		|--- wallet [A]
 #		+--- expenses [P,E]+
 #				+--- gas [P, E] +
-#					+--- <UID gas #1>  [P, E]+
-#					|			+--- recharges [E]
-#					|			+--- fees [E]
-#					| ..
-#					+--- <UID gas #n>  [P, E]
-#								+--- recharges [E]
-#								+--- fees [E]
+#						+--- <UID gas #1>  [P, E]+
+#						|			+--- recharges [E]
+#						|			+--- fees [E]
+#						| ..
+#						+--- <UID gas #n>  [P, E]
+#									+--- recharges [E]
+#									+--- fees [E]
         # base account for expenses related to this GAS membership
         person_system.add_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense, is_placeholder=True)
         # recharges
@@ -826,12 +826,11 @@ class GASMember(models.Model, PermissionResource):
 #GAS
 #	. ROOT (/)
 #	+----------- members [P,A]+
-#	|				|
 #	|				+--- <UID member #1>  [A]
 #	|				| ..
 #	|				+--- <UID member #n>  [A]
         ## GAS-side
-        gas_system.add_account(parent_path='/members', name=self.uid, kind=account_type.asset)
+        gas_system.add_account(parent_path='/members', name=self.person.uid, kind=account_type.asset)
 
     @property
     def des(self):

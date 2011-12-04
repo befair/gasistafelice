@@ -1,6 +1,6 @@
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy
-from simple_accounting.utils import register_transaction, register_simple_transaction
+from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
+from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
 
 class GasAccountingProxy(AccountingProxy):
     """
@@ -107,9 +107,8 @@ class GasAccountingProxy(AccountingProxy):
         exists within that GAS's accounting system.
         
         If ``order`` has not been placed by the GAS owning this accounting system,
-        raise ``TypeError``.   
+        raise ``TypeError``.
         """
-        from simple_accounting.models import Transaction
         gas = self.subject.instance
         if order.pact.gas == gas:
             members = set()
@@ -117,8 +116,31 @@ class GasAccountingProxy(AccountingProxy):
                 # retrieve transactions related to this GAS member and order,
                 # including only withdrawals made by the GAS from members' accounts
                 txs = Transaction.objects.get_by_reference([member, order]).filter(kind='GAS_WITHDRAWAL')
+                #FIXME: No!  One Order = One GASMember amount
                 member.accounted_amount = sum([tx.source.amount for tx in txs])
                 members.add(member)
             return members
         else:
             raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas, 'order': order})
+
+    def movements(self):
+        """
+        List all transactions. Return LedgerEntry (account, transaction, amount)
+        Show transactions for suppliers link to GAS  kind='PAYMENT' + another kind?
+        Show transactions for gasmembers link to GAS kind='GAS_WITHDRAWAL' + another kind?
+        Show transactions for GAS  from CASH system what kind?
+        Explode for DES and GAS resourse?
+        """
+        return LedgerEntry.objects.all()
+        gas = self.subject.instance
+        #return all transactions for this gas. (all gas in des)
+        return None
+
+        #util.transaction_details(transaction) return string
+        #class AccountingProxy(object):
+        #    def __init__(self, subject):
+        #    def account(self):
+        #    def make_transactions_for_invoice_payment(self, invoice, is_being_payed):
+        #    def pay_invoice(self, invoice):
+        #    def set_invoice_payed(self, invoice):
+

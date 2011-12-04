@@ -1,6 +1,6 @@
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy
-from simple_accounting.utils import register_transaction, register_simple_transaction
+from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
+from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
 
 
 class SupplierAccountingProxy(AccountingProxy):
@@ -11,7 +11,7 @@ class SupplierAccountingProxy(AccountingProxy):
     Since it's a subclass of  ``AccountingProxy``, it inherits from its parent 
     all the methods and attributes comprising the *generic* accounting API;
     here, you can add whatever logic is needed to augment that generic API,
-    tailoring it to the specific needs of the ``Supplier``' model.    
+    tailoring it to the specific needs of the ``Supplier``' model.
     """
     
     def confirm_invoice_payment(self, invoice):
@@ -40,7 +40,7 @@ class SupplierAccountingProxy(AccountingProxy):
         
         if supplier not in gas.suppliers:
             msg = "An active solidal pact must be in place between a supplier and the GAS (s)he is refunding"
-            raise MalformedTransaction(msg)        
+            raise MalformedTransaction(msg)
         
         source_account = self.system['/wallet']
         exit_point = self.system['/incomes/gas/' + gas.uid]
@@ -51,3 +51,14 @@ class SupplierAccountingProxy(AccountingProxy):
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='REFUND')
         if refs:
             transaction.add_references(refs)
+
+    def movements(self):
+        """
+        List all transactions. Return LedgerEntry (account, transaction, amount)
+        Show transactions for suppliers
+        Explode for DES and Supplier resourse?
+        """
+        return LedgerEntry.objects.all()
+        supplier = self.subject.instance
+        return None
+

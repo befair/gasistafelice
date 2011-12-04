@@ -814,16 +814,16 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
- 
+            raise WrongPermissionCheck('CREATE', cls, context)
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of product associated with a supplier order in a GAS ?
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators        
-        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
-        return user in allowed_users 
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
@@ -962,8 +962,8 @@ class GASMemberOrder(models.Model, PermissionResource):
             allowed_users = order.gas.members
             return user in allowed_users
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
- 
+            raise WrongPermissionCheck('CREATE', cls, context)
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can modify an order placed by a GAS member ?
@@ -971,8 +971,8 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
-        return user in allowed_users 
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        return user in allowed_users
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
@@ -981,7 +981,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers                    
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
         return user in allowed_users
     
     #---------------------------------------------------#
@@ -1094,7 +1094,7 @@ class Delivery(Appointment, PermissionResource):
                 raise NotImplementedError("can_create withdrawal in order")
                 allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
             except KeyError:
-                raise WrongPermissionCheck('CREATE', cls, context)   
+                raise WrongPermissionCheck('CREATE', cls, context)
 
         return user in allowed_users
  
@@ -1244,10 +1244,10 @@ class Withdrawal(Appointment, PermissionResource):
                 raise NotImplementedError("can_create withdrawal in order")
                 allowed_users = order.referrers | order.gas.supplier_referrers | order.gas.tech_referrers
             except KeyError:
-                raise WrongPermissionCheck('CREATE', cls, context)   
+                raise WrongPermissionCheck('CREATE', cls, context)
 
         return user in allowed_users
- 
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # TODO: REVIEW NEEDED see above (can_create)

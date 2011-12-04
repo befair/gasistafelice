@@ -65,23 +65,23 @@ From an accounting point of view, a person-like subject can be abstracted as:
 ::
 
 		. ROOT (/)
-		|----------- wallet [A]
+		|--- wallet [A]
 		|
-		+----------- expenses [P,E]+
-		|
-		+--- gas [P, E] +
-					|
-					+--- <UID gas #1>  [P, E]+
-					|			|
-					|			+--- recharges [E]
-					|			|
-					|			+--- fees [E]
-					| ..
-					+--- <UID gas #n>  [P, E]
-								|
-								+--- recharges [E]
-								|
-								+--- fees [E]
+		+--- expenses [P,E]+
+				|
+				+--- gas [P, E] +
+						|
+						+--- <UID gas #1>  [P, E]+
+						|			|
+						|			+--- recharges [E]
+						|			|
+						|			+--- fees [E]
+						| ..
+						+--- <UID gas #n>  [P, E]
+									|
+									+--- recharges [E]
+									|
+									+--- fees [E]
 
 
 GASs
@@ -118,11 +118,11 @@ The supplier-facing interface is made of two accounts:
 	|
 	+----------- expenses [P,E]	+
 								|
-								+----------- suppliers [P, E] +
-								|
-								+--- <UID supplier #1>  [E]
-								| ..
-								+--- <UID supplier #n>  [E]
+								+----------- suppliers [P, E]	+
+												|
+												+--- <UID supplier #1>  [E]
+												| ..
+												+--- <UID supplier #n>  [E]
 
 
 

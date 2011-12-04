@@ -109,6 +109,13 @@ class Block(BlockSSDataTables):
 
 #{'purchaser': 7L, 'sum_price': Decimal('98.0400'), 'ordered_product__order': 10L, 'tot_product': 5, 'sum_qta': Decimal('5.00')}
 
+        #Retrieve gasmembers orders curtails
+        order = request.resource
+        accounting_data = order.pact.gas.accounting.accounted_amount_by_gas_member(order)
+        for trx in accounting_data:
+            print trx
+
+
         #for i,el in enumerate(querySet):
         i = 0
         for item in querySet:
@@ -128,6 +135,7 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-ord_id' % key_prefix : self._getItem(pairs, 'order_id', 0),
                '%s-gm_id' % key_prefix : pk,
+               '%s-gm_id' % key_prefix : None,
                '%s-amounted' % key_prefix : accounted_wallet,
             })
 

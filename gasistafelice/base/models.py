@@ -538,7 +538,7 @@ class Person(models.Model, PermissionResource):
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
-    accounting =  AccountingDescriptor(PersonAccountingProxy)
+    accounting = AccountingDescriptor(PersonAccountingProxy)
     history = HistoricalRecords()
     
     class Meta:
@@ -751,7 +751,7 @@ class Person(models.Model, PermissionResource):
 
     #----------------- Authorization API ------------------------#
 
-    # Table-level CREATE permission    
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new Person in a DES ?
@@ -763,7 +763,7 @@ class Person(models.Model, PermissionResource):
             return User.objects.none()
             #raise WrongPermissionCheck('CREATE', cls, context)
         else:
-            allowed_users = des.gas_tech_referrers            
+            allowed_users = des.gas_tech_referrers
 
         return user in allowed_users 
         
@@ -808,10 +808,10 @@ class Person(models.Model, PermissionResource):
         
         If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
         """
-        from gasistafelice.gas.models import GAS 
+        from gasistafelice.gas.models import GAS
         if not isinstance(self, GAS):
             raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
-        return gas in [member.gas for member in self.gas_memberships]        
+        return gas in [member.gas for member in self.gas_memberships]
     
     @property
     def full_name(self):
