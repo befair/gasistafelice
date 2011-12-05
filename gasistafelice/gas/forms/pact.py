@@ -39,7 +39,7 @@ class GAS_PactForm(BasePactForm):
         super(GAS_PactForm, self).__init__(*args, **kw)
         self._gas = request.resource.gas
         self.fields['pact_referrer'].queryset = self._gas.persons
-        log.debug(self._gas.persons)
+        log.debug("Availables gas people to be set as referrers: %s" % self._gas.persons)
         des = self._gas.des
         self.fields['supplier'].queryset = des.suppliers.exclude(pk__in=[obj.pk for obj in self._gas.suppliers])
 
@@ -61,6 +61,7 @@ class GAS_PactForm(BasePactForm):
         super(GAS_PactForm, self).save()
 
         people = self.cleaned_data.get('pact_referrer', [])
+        log.debug("Selected referrers: %s" % people)
         pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
         for p in people:
             PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=p.user)
@@ -146,8 +147,18 @@ class EditPactForm(BasePactForm):
     def save(self):
         super(EditPactForm, self).save()
         
-        #TODO placeholder seldon-dev. Replace GAS_SUPPLIER_REFERRER
-        #In add stage was: PrincipalParamRoleRelation.objects.create(role=pr, user=self.cleaned_data['pact_referrer'].user)
+        people = self.cleaned_data.get('pact_referrer', [])
+        log.debug("Selected referrers: %s" % people)
+        pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
+        referrers_users = []
+        for p in people:
+            p, created = PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=p.user)
+            referrers_users.append(p.user)
+
+        for u in pr.get_users():
+            if u not in referrers_users:
+                PrincipalParamRoleRelation.objects.delete(role=pr, user=u)
+
 
     class Meta:
 
