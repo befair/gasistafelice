@@ -34,11 +34,8 @@ class OrderQuerySet(QuerySet):
     def finalized(self):
         return self.get_by_state('Finalized')
     
-    def paid(self):
-        return self.get_by_state('Paid')
-    
-    def sent(self):
-        return self.get_by_state('Sent')
+    def unpaid(self):
+        return self.get_by_state('Unpaid')
     
     def delivered(self):
         return self.get_by_state('Delivered')

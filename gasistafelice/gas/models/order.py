@@ -625,6 +625,8 @@ WHERE order_id = %s \
         In general:
             * GAS administrators
             * Referrers for the pact the order is placed against
+        Cannot create order if resource related gas have no supplier_referrers.
+
         In depth we have to switch among multiple possible contexts
 
         If we are checking for a "unusual key" (not in ctx_keys_to_check),
@@ -651,12 +653,13 @@ WHERE order_id = %s \
         elif k == 'pact':
             # pact context
             pact = context[k]
-            allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
+            if pact.gas.supplier_referrers.count():
+                allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
 
         elif k == 'gas':
             # gas context
             gas = context[k]
-            if gas.pacts.count():
+            if gas.pacts.count() and gas.supplier_referrers.count():
                 allowed_users = gas.tech_referrers | gas.supplier_referrers
 
         elif k == 'site':

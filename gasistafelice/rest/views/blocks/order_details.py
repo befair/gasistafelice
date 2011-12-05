@@ -26,10 +26,23 @@ class Block(details.Block):
 
         user_actions = super(Block, self)._get_user_actions(request)
 
-        refs = request.resource.cash_referrers
-        log.debug("    --------------       order_details actions refs.count() = %s- " % (refs.count()))
+        refs = [] #request.resource.cash_referrers
+
+        # REMOVE programmatically managed transitions
+        for action in ['make_unpaid']:
+            try:
+                user_actions.remove(action)
+            except ValueError:
+                pass
+
+        #FIXME: disabled actions until implemented
+        try:
+            user_actions.remove('close_and_send')
+        except ValueError:
+            pass
 
         if refs and request.user in refs:
+            log.debug("--------------       order_details actions refs.count() = %s- " % (refs.count()))
 
             user_actions += [
                 #TODO: ECO 1 way for inserting economic data popup form for order.delivery_cost set

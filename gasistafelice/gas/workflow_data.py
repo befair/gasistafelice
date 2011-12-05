@@ -153,8 +153,8 @@ state_list = (
            ('prepared', _("Prepared")), # SupplierOrder has been created
            ('open', _("Open")), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
            ('closed', _("Closed")), # SupplierOrder is closed; GasMemberOrders are disabled 
-           ('sent', _("Sent")), # SupplierOrder is sent; no more changes allowed other than pay
-           ('paid', _("Paid")), # SupplierOrder is paid 
+           ('unpaid', _("Unpaid")), # SupplierOrder is unpaid (gas cash registered, but not paid to supplier)
+           ('archived', _("Archived")), # SupplierOrder is archived 
            ('canceled', _("Canceled")),# SupplierOrder was canceled
            #(exception_raised,"Exception raised")
 )
@@ -163,26 +163,29 @@ state_list = (
 ## Transitions allowed among States defined for a SupplierOrder
  
 transition_list = ( 
-                 # (key, transition name, destination state), 
-                 ('open', _("Open"), 'open'), # close the SupplierOrder
-                 ('close', _("Close"), 'closed'), # close the SupplierOrder
-                 ('send mail', _("Send mail"), 'sent'), # mark the SupplierOrder as "sent" 
-                 ('pay', _("Pay"), 'paid'), # mark the SupplierOrder as "paid" 
-                 ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder                                     
+    # (key, transition name, destination state), 
+    ('open', _("Open"), 'open'), # close the SupplierOrder
+    ('close', _("Close"), 'closed'), # close the SupplierOrder
+    ('close_and_send', _("Close and send email"), 'closed'), # close the SupplierOrder
+    ('archive', _("Archive"), 'archived'), # make the SupplierOrder disappear from ordinary operations
+    ('make_unpaid', "MAKE UNPAID", 'unpaid'), # cancel the SupplierOrder 
+    ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder 
 )
  
 ## Transitions-to-States map
 # FIXME: should be a dictionary
 state_transition_map = (
-                           # (state name, transition name), 
-                           ('prepared', 'open'),
-                           ('open', 'close'),
-                           ('closed', 'pay'),
-                           ('closed', 'send mail'),
-                           ('sent', 'pay'),
-                           # SupplierOrder may be canceled at any time before delivery happens
-                           ('open', 'cancel'),
-                           ('closed', 'cancel'),
+    # (state name, transition name), 
+    ('prepared', 'open'),
+    ('open', 'close'),
+    ('open', 'close_and_send'),
+    ('closed', 'archive'),
+    ('closed', 'make_unpaid'),
+    ('unpaid', 'archive'),
+    # SupplierOrder may be canceled at any time before delivery happens
+    ('open', 'cancel'),
+    ('closed', 'cancel'),
+    ('prepared', 'cancel'),
 )
        
 initial_state_name = 'prepared'

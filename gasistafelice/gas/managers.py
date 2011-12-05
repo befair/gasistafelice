@@ -179,11 +179,8 @@ class OrderManager(models.Manager):
     def finalized(self):
         return self.get_query_set().finalized()
     
-    def sent(self):
-        return self.get_query_set().sent()
-    
-    def paid(self):
-        return self.get_query_set().paid()
+    def unpaid(self):
+        return self.get_query_set().unpaid()
 
     def delivered(self):
         return self.get_query_set().delivered()
