@@ -1,10 +1,9 @@
-{% load i18n %}
 
-I prossini ordini in chiusura del GAS {{ gas }} sono:
+I prossimi ordini in chiusura del GAS {{ gas }} sono:
 
 <ul>
     {% for order in closing_orders %}
-        <li><a href="{% url order %}">{{ order }}</a></li>
+        <li><a href="{{ url.get_absolute_url_page }}">{{ order }}</a></li>
     {% endfor %}
 </ul>
 

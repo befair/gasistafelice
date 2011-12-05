@@ -116,6 +116,9 @@ class Resource(object):
                 'resource_id' : self.pk 
         })
 
+    def get_absolute_url_page(self):
+        return self.get_absolute_url().replace('/rest', '/rest/#rest')
+
     def as_dict(self):
         return {
             'name': unicode(self),

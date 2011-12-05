@@ -1,4 +1,3 @@
-{% load i18n %}
 
 Caro gasista del GAS {{ gas }}, 
 gli aggiornamenti della settimana sono:
@@ -8,7 +7,7 @@ gli aggiornamenti della settimana sono:
 
     <ul>
         {% for order in closing_orders %}
-            <li><a href="{% url order %}">{{ order }}</a></li>
+            <li><a href="{{ order.get_absolute_url_page }}">{{ order }}</a></li>
         {% endfor %}
     </ul>
     {% else %}
@@ -20,7 +19,7 @@ gli aggiornamenti della settimana sono:
 {% if open_orders %}
     <ul>
         {% for order in open_orders %}
-            <li><a href="{% url order %}">{{ order }}</a></li>
+            <li><a href="{{ order.get_absolute_url_page }}">{{ order }}</a></li>
         {% endfor %}
     </ul>
     {% else %}
@@ -32,7 +31,7 @@ gli aggiornamenti della settimana sono:
 
 <ul>
     {% for pact in new_pacts %}
-        <li><a href="{% url pact %}">{{ pact }}</a></li>
+        <li><a href="{{  pact.get_absolute_url_page }}">{{ pact }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -42,7 +41,7 @@ gli aggiornamenti della settimana sono:
 
     <ul>
         {% for gm in new_gasmembers %}
-            <li><a href="{% url gm %}">{{ gm }}</a></li>
+            <li><a href="{{ gm.get_absolute_url_page }}">{{ gm }}</a></li>
         {% endfor %}
     </ul>
 {% endif %}
@@ -52,7 +51,7 @@ gli aggiornamenti della settimana sono:
 
     <ul>
         {% for gm in old_gasmembers %}
-            <li><a href="{% url gm %}">{{ gm }}</a></li>
+            <li><a href="{{ gm.get_absolute_url_page }}">{{ gm }}</a></li>
         {% endfor %}
     </ul>
 {% endif %}
