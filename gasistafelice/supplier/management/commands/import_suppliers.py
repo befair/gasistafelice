@@ -7,6 +7,7 @@ from django.core.files import File
 from django.contrib.auth.models import User
 from gasistafelice.lib.csvmanager import CSVManager
 from gasistafelice.lib import get_params_from_template
+from gasistafelice.supplier.models import Supplier, Product
 from gasistafelice.gas.models import GAS, GASMember
 from gasistafelice.base.models import Place, Person, Contact
 
@@ -19,9 +20,16 @@ ENCODING = "iso-8859-1"
 
 class Command(BaseCommand):
 
+    #TODO: pass argument <gas_pk> for automatic associate a pact for the supplier list?
     args = "<supplier_csv_file> <products_csv_file> [delimiter] [python_template] [python_template2]"
+#    allowed_keys_1 = ['fake_id_supplier','name','flavour','city','phone','email', 'address','certification','website', 'iban', 'n_employers', 'vat_number', 'ssn', 'image', 'description']
     allowed_keys_1 = ['fake_id_supplier','name','flavour','city','phone','email', 'address','certification','website', 'iban', 'n_employers', 'vat_number', 'ssn', 'image', 'description']
+#"Id_Fornitore";"Ragione sociale";"Tipo";"Citta";"Recapito telefonico";"Recapito email";"Indirizzo civico";"Certificazioni";"Sito WEB";"Codice IBAN";"Numero persone";"Partita IVA";"Codice Fiscale";"file_immagine";"Descrizione"
+
+#    allowed_keys_2 = ['fake_id_supplier','name','price','vat','pu','mu', 'muppu','category','code', 'units_minimum_amount', 'units_per_box', 'detail_minimum_amount', 'detail_step']
     allowed_keys_2 = ['fake_id_supplier','name','price','vat','pu','mu', 'muppu','category','code', 'units_minimum_amount', 'units_per_box', 'detail_minimum_amount', 'detail_step']
+#"Id_Fornitore";"Nome";"prezzo ivato";"aliquota IVA";"Unita di prodotto";" Unita di misura";"Unita di misura per unita di prodotto";"Categoria di prodotto";"Codice identificativo";"Quantita minima ordinabile";"Quantita di unita di prodotto per cartone";"Quantita minima del dettaglio";"Quantita minima di avanzamento"
+
     help = """Import supplier and products from csv file. Attributes allowed in python template are:
 
     * supplier: """ + ",".join(allowed_keys_1) + """; 
@@ -47,49 +55,67 @@ class Command(BaseCommand):
         if len(args) == 4:
             tmpl_1 = args[3]
         else:
-            tmpl_1 = "%(fake_id_supplier)s %(name)s %(flavour)s %(city)s %(phone)s %(email)s  %(address)s %(certification)s %(website)s" 
+            print "AAAAA template 1"
+            tmpl_1 = "%(fake_id_supplier)s %(name)s %(flavour)s %(city)s %(phone)s %(email)s  %(address)s %(certification)s %(website)s %(iban)s %(n_employers)s %(vat_number)s %(ssn)s %(image)s %(description)s"
 
         if len(args) == 5:
             tmpl_2 = args[4]
         else:
             tmpl_2 = "%(fake_id_supplier)s %(name)s %(price)s %(vat)s %(pu)s %(mu)s  %(muppu)s %(category)s %(code)s  %(units_minimum_amount)s  %(units_per_box)s  %(detail_minimum_amount)s %(detail_step)s"
+#'fake_id_supplier','name','price','vat','pu','mu', 'muppu','category','code', 'units_minimum_amount', 'units_per_box', 'detail_minimum_amount', 'detail_step'
 
         # STEP 0: prepare data in dicts
         data_suppliers = self._prepare_data(csv_filename_suppliers, delimiter, tmpl_1)
         data_products = self._prepare_data(csv_filename_products, delimiter, tmpl_2)
 
         # Data prepared
-
         with transaction.commit_on_success():
 
+            i = 0
+            sum_sup = 0
+            sum_pro = 0
+            sum_pro_all = 0
+#{"pk":81,"model":"supplier.supplier", "fields": {"name":"Ittingrosso","website":"","flavour":" COOPERATING","seat":89,"vat_number": " 1336220437" ,"contact_set": [81,162,405] ,"certifications": [4]  ,"frontman": 82 } },
             for d in data_suppliers:
                 log.info("#### ---- start new supplier import... ----####")
+                print "#### ---- start new supplier import (%s)... ----####\n --> %s" % (i, d)
 
                 sups = Supplier.objects.filter(name__icontains=d['name'])
                 if sups.count():
-                    raise CommandError("Found suppliers with name %s" % sups.values('name'))
+                    print "Found suppliers with name %s" % sups.values('name')
+                    continue
+                    #raise CommandError("Found suppliers with name %s" % sups.values('name'))
 
                 else:
+                    sum_sup += 1
+                    sum_pro = 0
+                    #log.info(("Prepare unexisting Supplier  %s" % gm).decode(ENCODING))
+                    for key in self.allowed_keys_1:
+                        print "supplier Key/val [%s,%s]" % (key,d[key])
 
-                    contacts = self._get_or_create_contacts(d)
-                    place = self._get_or_create_place(d)
+                    #contacts = self._get_or_create_contacts(d)
+                    #place = self._get_or_create_place(d)
                     s = Supplier(
                         name=d['name'],
                         flavour=d['flavour'],
-                        place=place,
+                        #place=place,
                         website=d['website'],
                     )
-                    s.save()
-                    s.contact_set.add(*contacts)
+#                    s.save()
+#                    s.contact_set.add(*contacts)
+                    #log.info(("CREATED GASMEMBER %s" % gm).decode(ENCODING))
 
-
+#{"pk":1,"model":"supplier.product", "fields": {"name":"Olio ", "category":37, "producer":1, "mu":4, "pu":6, "muppu_is_variable":false, "vat_percent":"0.04" }  } ,
                     for product_d in data_products:
-
                         if product_d['fake_id_supplier'] != d['fake_id_supplier']:
                             continue
                         else:
+                            for key in self.allowed_keys_2:
+                                sum_pro += 1
+                                sum_pro_all += 1
+                                print "     product Key/val [%s,%s]   (%s-%s-%s)" % (key,product_d[key],sum_sup,sum_pro,sum_pro_all)
 
-                            raise ValueError("TODO")
+                            #raise ValueError("TODO")
 
                             # Create product and bind to producer(Supplier)
                             # Create stock and bind to product and supplier
@@ -98,51 +124,49 @@ class Command(BaseCommand):
                             # Follows allowed_keys_1 and 2 reminders
                             # and code taken from import_gasmembers
 
-    allowed_keys_1 = ['fake_id_supplier','name','flavour','city','phone','email', 'address','certification','website', 'iban', 'n_employers', 'vat_number', 'ssn', 'image', 'description']
-    allowed_keys_2 = ['fake_id_supplier','name','price','vat','pu','mu', 'muppu','category','code', 'units_minimum_amount', 'units_per_box', 'detail_minimum_amount', 'detail_step']
-        
+#        allowed_keys_1 = ['fake_id_supplier','name','flavour','city','phone','email', 'address','certification','website', 'iban', 'n_employers', 'vat_number', 'ssn', 'image', 'description']
+#        allowed_keys_2 = ['fake_id_supplier','name','price','vat','pu','mu', 'muppu','category','code', 'units_minimum_amount', 'units_per_box', 'detail_minimum_amount', 'detail_step']
+#        g = GAS.objects.get(pk=gas_pk)
+#        g.config.auto_populate_products = True
+#        g.config.save()
 
-        g = GAS.objects.get(pk=gas_pk)
-        g.config.auto_populate_products = True
-        g.config.save()
+#        # STEP 2: process data and create instances
+#        with transaction.commit_on_success():
+#            for d in data:
+#                log.info("#### ---- start new user import... ----####")
+#                try:
+#                    user, updated = self._get_or_create_user(d)
+#                    try:
+#                        pers = user.person
+#                    except Person.DoesNotExist:
+#                        pers = self._get_or_create_person(d, contacts, place)
+#                        pers.user = user
+#                        pers.save()
+#                    else:
+#                        # This is a user of an already created person
+#                        log.info(("PERSON %s ALREADY EXISTENT" % user.person).decode(ENCODING)) 
+#                        if updated:
+#                            log.debug("UPDATE PERSON DETAILS")
 
-        # STEP 2: process data and create instances
-        with transaction.commit_on_success():
-            for d in data:
-                log.info("#### ---- start new user import... ----####")
-                try:
-                    user, updated = self._get_or_create_user(d)
-                    try:
-                        pers = user.person
-                    except Person.DoesNotExist:
-                        pers = self._get_or_create_person(d, contacts, place)
-                        pers.user = user
-                        pers.save()
-                    else:
-                        # This is a user of an already created person
-                        log.info(("PERSON %s ALREADY EXISTENT" % user.person).decode(ENCODING)) 
-                        if updated:
-                            log.debug("UPDATE PERSON DETAILS")
-
-                            contacts = self._update_contacts(user.person, d)
-                            place = self._update_place(user.person, d)
-                            pers = self._update_person(user.person, d, contacts, place, force=True)
-                        else:
-                            log.debug("SKIP IT")
+#                            contacts = self._update_contacts(user.person, d)
+#                            place = self._update_place(user.person, d)
+#                            pers = self._update_person(user.person, d, contacts, place, force=True)
+#                        else:
+#                            log.debug("SKIP IT")
 
 
-                except KeyError, e:
-                    if e.message not in self.allowed_keys:
-                        raise CommandError("Invalid key '%s' provided. Allowed keys in python template are: %s" % (e.message, self.allowed_keys))
-                    else:
-                        raise CommandError("Key '%s' is REQUIRED." % e.message)
+#                except KeyError, e:
+#                    if e.message not in self.allowed_keys:
+#                        raise CommandError("Invalid key '%s' provided. Allowed keys in python template are: %s" % (e.message, self.allowed_keys))
+#                    else:
+#                        raise CommandError("Key '%s' is REQUIRED." % e.message)
 
-                gm, created = GASMember.objects.get_or_create(person=pers, gas=g)
-                gm.save()
-                log.info(("CREATED GASMEMBER %s" % gm).decode(ENCODING)) 
+#                gm, created = GASMember.objects.get_or_create(person=pers, gas=g)
+#                gm.save()
+#                log.info(("CREATED GASMEMBER %s" % gm).decode(ENCODING)) 
         return 0
 
-    def _prepare_data(csv_filename, delimiter, tmpl):
+    def _prepare_data(self, csv_filename, delimiter, tmpl):
 
         f = file(csv_filename, "rb")
         csvdata = f.read()
@@ -153,6 +177,7 @@ class Command(BaseCommand):
         data = m.read(csvdata)
         log.debug(pprint(m.read(csvdata)))
 
+        return data
 
     def _manage_multiple_duplicates(self, qs, display_attrs):
 
@@ -223,6 +248,7 @@ class Command(BaseCommand):
             
         c_email.save()
         log.debug("CREATED EMAIL CONTACT %s" % c_email)
+        print "CREATED EMAIL CONTACT %s" % (c_email)
 
         rv = [c_email]
 
@@ -231,6 +257,7 @@ class Command(BaseCommand):
             c_phone.save()
             rv.append(c_phone)
             log.debug("CREATED PHONE CONTACT %s" % c_email)
+            print "CREATED PHONE CONTACT %s" % (c_email)
 
         return rv
 
