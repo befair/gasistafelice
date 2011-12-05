@@ -82,6 +82,7 @@
 {"pk": 78,"model": "supplier.productcategory","fields": {"name": "Cosmesi::Saponi e Detergenti intimi","description": "description for category and subcategory Cosmesi::Saponi e Detergenti intimi"}}, 
 {"pk": 79,"model": "supplier.productcategory","fields": {"name": "Cosmesi::Olii, crème e uguenti","description": "description for category and subcategory Cosmesi::Olii, crème e uguenti"}}, 
 {"pk": 80,"model": "supplier.productcategory","fields": {"name": "Cosmesi::Barba","description": "description for category and subcategory Cosmesi::Barba"}}, 
+{"pk": 81,"model": "supplier.productcategory","fields": {"name": "Non definita","description": "nessuna categoria definita per questo prodotto"}}, 
 
 
 
