@@ -458,7 +458,7 @@ class GAS(models.Model, PermissionResource):
     #--------------------------#
 
     @property
-    def transactions(self):
+    def economic_movements(self):
         #TODO: ECO return accounting Transaction or LedgerEntry
         return self.none()
 
@@ -641,6 +641,11 @@ class GASMember(models.Model, PermissionResource):
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
+
+    @property
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        return self.gas.accounting.entries('/members/' + self.person.uid)
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
@@ -949,9 +954,9 @@ class GASMember(models.Model, PermissionResource):
     #--------------------------#
 
     @property
-    def transactions(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        return self.gas.accounting.entries('/members/' + self.person.uid)
 
 
 #------------------------------------------------------------------------------

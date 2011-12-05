@@ -139,7 +139,7 @@ class GasAccountingProxy(AccountingProxy):
         else:
             raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas, 'order': order})
 
-    def movements(self):
+    def entries(self, base_path='/'):
         """
         List all transactions. Return LedgerEntry (account, transaction, amount)
         Show transactions for suppliers link to GAS  kind='PAYMENT' + another kind?
@@ -147,7 +147,8 @@ class GasAccountingProxy(AccountingProxy):
         Show transactions for GAS  from CASH system what kind?
         Explode for DES and GAS resourse?
         """
-        return LedgerEntry.objects.all()
+        #Choices are: account, entry_points_set, entry_set, exit_points_set, flow_set, id, is_placeholder, kind, name, parent, system
+        return self.system[base_path].ledger_entries
         gas = self.subject.instance
         #return all transactions for this gas. (all gas in des)
         return None

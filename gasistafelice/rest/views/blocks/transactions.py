@@ -66,5 +66,5 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions
-        return request.resource.accounting.movements
+        return request.resource.economic_movements
 
