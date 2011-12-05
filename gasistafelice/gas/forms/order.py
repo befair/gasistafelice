@@ -165,14 +165,7 @@ class AddOrderForm(BaseOrderForm):
         super(AddOrderForm, self).__init__(request, *args, **kw)
 
         # SOLIDAL PACT
-        all_pacts = request.resource.pacts
-
-        # We have to exclude pacts that have no referrers
-        pact_set = set()
-        for p in all_pacts:
-            if p.referrers.count():
-                pact_set.add(p)
-        pacts = GASSupplierSolidalPact.objects.filter(pk__in=map(lambda x : x.pk , pact_set))
+        pacts = request.resource.pacts
 
 #       if not pacts.count():
 #            raise PermissionDenied(_("You cannot open an order on a resource with no pacts"))
