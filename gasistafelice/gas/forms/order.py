@@ -95,6 +95,7 @@ class BaseOrderForm(forms.ModelForm):
             self.fields['withdrawal_referrer_person'].queryset = referrers
 
     def clean(self):
+
         cleaned_data = self.cleaned_data
         dt_start = cleaned_data.get("datetime_start")
         dt_end = cleaned_data.get("datetime_end")
@@ -155,18 +156,25 @@ class AddOrderForm(BaseOrderForm):
             Suppplier       OneSupplier     ChooseGAS ChooseReferrer
             Solidal Pact    OneSupplier     OneGAS    ChooseReferrer
     """
-    log.debug("AddOrderForm")
     pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
 
     def __init__(self, request, *args, **kw):
 
+        log.debug("AddOrderForm")
         super(AddOrderForm, self).__init__(request, *args, **kw)
 
-        #SOLIDAL PACT
-        pacts = request.resource.pacts
+        # SOLIDAL PACT
+        all_pacts = request.resource.pacts
 
-#        if not pacts.count():
+        # We have to exclude pacts that have no referrers
+        pact_set = set()
+        for p in all_pacts:
+            if p.referrers.count():
+                pact_set.add(p)
+        pacts = GASSupplierSolidalPact.objects.filter(pk__in=map(lambda x : x.pk , pact_set))
+
+#       if not pacts.count():
 #            raise PermissionDenied(_("You cannot open an order on a resource with no pacts"))
         #if pacts.count() == pacts.filter(gas=pacts[0].gas):
         if pacts.count() > 0:
@@ -174,14 +182,14 @@ class AddOrderForm(BaseOrderForm):
             self.fields['pact'].queryset = pacts
             self.fields['pact'].initial = pacts[0]
 
-            #Person is the current user: referers
+            # Person is the current user: referrers
             log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['delivery_referrer_person'].queryset)
             if request.user.person in self.fields['delivery_referrer_person'].queryset:
                 self.fields['delivery_referrer_person'].initial = request.user.person
             elif self.fields['delivery_referrer_person'].queryset.count() > 0:
                 self.fields['delivery_referrer_person'].initial = self.fields['delivery_referrer_person'].queryset[0]
 
-#        #Order referrer is not needed: pact referrers are enough!
+#        # Order referrer is not needed: pact referrers are enough!
 #        if request.user.person in self.fields['referrer_person'].queryset:
 #            self.fields['referrer_person'].initial = request.user.person
 #        elif self.fields['referrer_person'].queryset.count() > 0:

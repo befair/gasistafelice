@@ -651,7 +651,10 @@ WHERE order_id = %s \
         elif k == 'pact':
             # pact context
             pact = context[k]
-            allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
+            if pact.referrers.count():
+                allowed_users = pact.gas.tech_referrers | pact.gas.supplier_referrers
+            else:
+                allowed_users = User.objects.none()
 
         elif k == 'gas':
             # gas context
