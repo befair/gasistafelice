@@ -163,26 +163,26 @@ state_list = (
 ## Transitions allowed among States defined for a SupplierOrder
  
 transition_list = ( 
-                 # (key, transition name, destination state), 
-                 ('open', _("Open"), 'open'), # close the SupplierOrder
-                 ('close', _("Close"), 'closed'), # close the SupplierOrder
-                 ('send mail', _("Send mail"), 'sent'), # mark the SupplierOrder as "sent" 
-                 ('pay', _("Pay"), 'paid'), # mark the SupplierOrder as "paid" 
-                 ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder                                     
+    # (key, transition name, destination state), 
+    ('open', _("Open"), 'open'), # close the SupplierOrder
+    ('close', _("Close"), 'closed'), # close the SupplierOrder
+    ('close_and_send', _("Close and send email"), 'closed'), # close the SupplierOrder
+    ('pay', _("Pay"), 'paid'), # mark the SupplierOrder as "paid" 
+    ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder 
 )
  
 ## Transitions-to-States map
 # FIXME: should be a dictionary
 state_transition_map = (
-                           # (state name, transition name), 
-                           ('prepared', 'open'),
-                           ('open', 'close'),
-                           ('closed', 'pay'),
-                           ('closed', 'send mail'),
-                           ('sent', 'pay'),
-                           # SupplierOrder may be canceled at any time before delivery happens
-                           ('open', 'cancel'),
-                           ('closed', 'cancel'),
+    # (state name, transition name), 
+    ('prepared', 'open'),
+    ('open', 'close'),
+    ('open', 'close_and_send'),
+    ('closed', 'pay'),
+    # SupplierOrder may be canceled at any time before delivery happens
+    ('open', 'cancel'),
+    ('closed', 'cancel'),
+    ('prepared', 'cancel'),
 )
        
 initial_state_name = 'prepared'
