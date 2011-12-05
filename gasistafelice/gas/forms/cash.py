@@ -34,7 +34,7 @@ class EcoGASMemberForm(forms.Form):
     """
 
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
-    entry_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    original_amounted = CurrencyField(required=False, widget=forms.HiddenInput())
     amounted = CurrencyField(required=False, initial=0) #, widget=forms.TextInput())
 
     #TODO: domthu: note and delete
@@ -60,14 +60,6 @@ class EcoGASMemberForm(forms.Form):
             log.debug("EcoGASMemberForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
             raise
            
-        try:
-            cleaned_data['entry'] = LedgerEntry.objects.get(pk=cleaned_data['entry_id'])
-        except LedgerEntry.DoesNotExist:
-            log.debug("EcoGASMemberForm: ledger entry not found for order %s and gasmember %s" % (
-                self.__order.pk, cleaned_data['gasmember'].pk)
-            )
-            cleaned_data['entry'] = None
-
         return cleaned_data
 
     def save(self):
@@ -82,7 +74,6 @@ class EcoGASMemberForm(forms.Form):
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
         gm = self.cleaned_data['gasmember']
-        entry = self.cleaned_data['entry']
 
         #TODO: Seldon or Fero. Control if Order is in the rigth Workflow STATE
 
@@ -95,9 +86,11 @@ class EcoGASMemberForm(forms.Form):
 
             refs = [gm, self.__order]
 
-            if entry:
+            original_amounted = self.cleaned_data['original_amounted']
+
+            if original_amounted is not None:
                 # A ledger entry already exists
-                if entry.amount != amounted:
+                if original_amounted != amounted:
                     gm.gas.accounting.withdraw_from_member_account_update(
                         gm, amounted, refs
                     )

@@ -5,10 +5,10 @@
     {% for row in records %}
     [
 
-        "{{row.purchaser_id|escapejs}}",
-        "{{row.gasmember.upper|escapejs}}",
+        "{{row.pk|escapejs}}",
+        "{{row|escapejs}}",
         "&#8364; {{row.sum_amount|floatformat:"2"}}",
-        "{{row.account_amounted|escapejs}}",
+        "{{row.accounted_amount|floatformat:"2"}}",
 
     ]
     {% if not forloop.last %}

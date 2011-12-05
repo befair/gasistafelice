@@ -805,20 +805,20 @@ class Person(models.Model, PermissionResource):
         If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
         """
         from gasistafelice.gas.models import GAS
-        if not isinstance(self, GAS):
+        if not isinstance(gas, GAS):
             raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
-        return gas in [member.gas for member in self.gas_memberships]
+        return gas in [member.gas for member in self.gasmembers]
     
     @property
     def full_name(self):
         return self.name + self.surname
     
     @property
-    def gas_memberships(self):
+    def gasmembers(self):
         """
         The queryset of all incarnations of this person as a GAS member.
         """
-        return self.gas_membership_set.all()
+        return self.gasmember_set.all()
 
 class Contact(models.Model):
     """If is a contact, just a contact email or phone"""

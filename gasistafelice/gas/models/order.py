@@ -380,15 +380,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
 
         #Do not use string formatting on raw queries!
-        return GASMemberOrder.objects.raw("SELECT distinct gmo.purchaser_id AS purchaser \
-, gsop.order_id AS porder \
-, SUM(gmo.ordered_price) AS sum_price \
-, COUNT(gmo.ordered_product_id) AS tot_product \
-, SUM(gmo.ordered_amount) AS sum_qta \
-FROM gas_gasmemberorder AS gmo \
+        return GASMember.objects.raw("\
+SELECT tmp.id AS id,  \
+( SELECT SUM(gmo.ordered_price*gmo.ordered_amount) FROM \
+gas_gasmemberorder AS gmo \
 INNER JOIN gas_gassupplierorderproduct AS gsop \
 ON gmo.ordered_product_id = gsop.id \
-WHERE order_id = 10")
+WHERE gsop.order_id = %s AND gmo.purchaser_id = tmp.id \
+) AS sum_amount FROM gas_gasmember as tmp \
+WHERE tmp.id IN ( SELECT gmo2.purchaser_id FROM gas_gasmemberorder as gmo2 \
+INNER JOIN gas_gassupplierorderproduct AS gsop2 \
+ON gmo2.ordered_product_id = gsop2.id \
+WHERE gsop2.order_id = %s \
+)", [self.pk, self.pk])
+
 
         #<RawQuerySet: 'SELECT * from GASMemberOrder'>
 
@@ -414,27 +419,35 @@ WHERE order_id = 10")
 #mysql    : CAST(-125.823123123 AS DECIMAL(30, 2)) AS account_amounted
 #postgres : to_char(-125.8, '9999.99') AS account_amounted
 
-        cursor.execute("SELECT \
-tmp.order_id AS order_id\
-, tmp.purchaser_id AS purchaser_id \
-, tmp.sum_amount AS sum_amount \
-, tmp.sum_price AS sum_price \
-, tmp.tot_product AS tot_product \
-, tmp.sum_qta AS sum_qta \
-, (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
-, CAST(0 AS DECIMAL(30, 2)) AS account_amounted \
-FROM (SELECT gmo.purchaser_id AS purchaser_id \
-, gsop.order_id AS order_id \
-, SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
-, SUM(gmo.ordered_price) AS sum_price \
-, COUNT(gmo.ordered_product_id) AS tot_product \
-, SUM(gmo.ordered_amount) AS sum_qta \
-FROM gas_gasmemberorder AS gmo \
+#        cursor.execute("SELECT \
+#tmp.order_id AS order_id\
+#, tmp.purchaser_id AS purchaser_id \
+#, tmp.sum_amount AS sum_amount \
+#, tmp.sum_price AS sum_price \
+#, tmp.tot_product AS tot_product \
+#, tmp.sum_qta AS sum_qta \
+#, (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
+#, CAST(0 AS DECIMAL(30, 2)) AS account_amounted \
+#FROM (SELECT gmo.purchaser_id AS purchaser_id \
+#, gsop.order_id AS order_id \
+#, SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
+#, SUM(gmo.ordered_price) AS sum_price \
+#, COUNT(gmo.ordered_product_id) AS tot_product \
+#, SUM(gmo.ordered_amount) AS sum_qta \
+#FROM gas_gasmemberorder AS gmo \
+#INNER JOIN gas_gassupplierorderproduct AS gsop \
+#ON gmo.ordered_product_id = gsop.id \
+#WHERE order_id = %s \
+#GROUP BY gmo.purchaser_id, gsop.order_id \
+#) AS tmp", [self.pk])
+
+        cursor.execute("SELECT id AS purchaser_id,  \
+( SELECT SUM(gmo.ordered_price*gmo.ordered_amount) FROM \
+gas_gasmemberorder AS gmo \
 INNER JOIN gas_gassupplierorderproduct AS gsop \
 ON gmo.ordered_product_id = gsop.id \
 WHERE order_id = %s \
-GROUP BY gmo.purchaser_id, gsop.order_id \
-) AS tmp", [self.pk])
+) AS sum_amount", [self.pk])
 
 
 

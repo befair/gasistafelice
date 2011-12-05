@@ -72,16 +72,31 @@ class Block(BlockSSDataTables):
         return user_actions
 
     def _get_resource_list(self, request):
+        
         #return GASMember objects
-        #return request.resource.ordered_gasmembers
-        q_sql = request.resource.ordered_gasmembers_sql
+        order = request.resource.order
+        qs = order.ordered_gasmembers
+        accounted_amounts = order.gas.accounting.accounted_amount_by_gas_member(order)
+        gasmembers = set()
+        for item in qs:
+            gasmember = item
+            gasmember.accounted_amount = None
+            for member in accounted_amounts:
+                if member.pk == item.pk:
+                    gasmember.accounted_amount = member.accounted_amount 
+                    break
+            gasmembers.add(gasmember)
+
+        return gasmembers
+
+        #q_sql = request.resource.ordered_gasmembers_sql
 #        i = 0
 #        for item in q_sql:
 #            i += 1
 #            log.debug("Curtails enumerate (%s) - %s" % (i, item))
 #            print("---------Curtails sql  (%s) - %s" % (i, item))
 #{'gasmember': u'Thual', 'purchaser_id': 1L, 'order_id': 1L, 'sum_amount': Decimal('23.660000'), 'sum_qta': Decimal('1.75'), 'tot_product': 2L, 'sum_price': Decimal('25.4800')}
-        return q_sql
+        #return q_sql
 
     def _get_edit_multiple_form_class(self):
         return formset_factory(
@@ -104,38 +119,26 @@ class Block(BlockSSDataTables):
 
         map_info = { }
 
-        #{'purchaser': 7L, 'sum_price': Decimal('98.0400'), 'ordered_product__order': 10L, 'tot_product': 5, 'sum_qta': Decimal('5.00')}
-
         #Retrieve gasmembers orders curtails
         order = request.resource.order
-        accounting_data = order.pact.gas.accounting.accounted_amount_by_gas_member(order)
-        for trx in accounting_data:
-            print trx
-
-
-        #for i,el in enumerate(querySet):
         i = 0
         for i, item in enumerate(querySet):
-            log.debug("Curtails enumerate (%s) - %s" % (i, item))
-            pairs = [(v, k) for (k, v) in item.iteritems()]
-            pk = self._getItem(pairs, 'purchaser_id', 0)
+
             key_prefix = 'form-%d' % i
-            #querySet? 'dict' object has no attribute 'id' or 'order_id'
 
-            #TODO: account_amounted must replace sum_amount if exist one accounting transaction
-            ordered_tot_price =  self._getItem(pairs, 'sum_amount', 0)
-            accounted_wallet =  self._getItem(pairs, 'account_amounted', 0)
-            if accounted_wallet == 0:
-                accounted_wallet = ordered_tot_price
+            log.debug("Curtails enumerate (%s) - %s" % (i, item))
 
+            #'GASMember_Deferred_gas_id_id_in_gas_membership_fee' object has no attribute 'accounted_amount'
+            print("Accounted amounts: member %s, amount %s" % (item, item.accounted_amount))
+            accounted_wallet = item.accounted_amount or item.sum_amount
+                    
             data.update({
-               '%s-gm_id' % key_prefix : pk,
-               '%s-entry_id' % key_prefix : pk,
+               '%s-gm_id' % key_prefix : item.pk,
+               '%s-original_amounted' % key_prefix : item.accounted_amount,
                '%s-amounted' % key_prefix : accounted_wallet,
             })
 
-            map_info[pk] = {'formset_index' : i}
-            #map_info[i] = {'formset_index' : i}
+            map_info[item.pk] = {'formset_index' : i}
 
         data['form-TOTAL_FORMS'] = i + 1
         data['form-INITIAL_FORMS'] = i + 1
@@ -144,46 +147,17 @@ class Block(BlockSSDataTables):
         formset = self._get_edit_multiple_form_class()(request, data)
 
         records = []
-        #for i, el in enumerate(querySet):
         i = 0
-        for item in querySet:
-            i += 1
-            log.debug("Curtails enumerate (%s) - %s" % (i, item))
-            pairs = [(v, k) for (k, v) in item.iteritems()]
-            pk = self._getItem(pairs, 'purchaser_id', 0)
+        for i,item in enumerate(querySet):
 
-            form = formset[map_info[pk]['formset_index']]
-            #form = formset[map_info[i]['formset_index']]
-            gasmember = GASMember.objects.get(id=pk)
-            log.debug("Curtails gasmember -%s--%s->  %s" % (i, pk, gasmember))
-            print "Curtails gasmember -%s--%s-> %s" % (i, pk, gasmember)
+            form = formset[map_info[item.pk]['formset_index']]
 
             records.append({
-               'purchaser_id' : pk, #self._getItem(pairs, 'order_id', 0), #request.ressource.pk
-               'gasmember' : gasmember,
-               'tot_product' : self._getItem(pairs, 'tot_product', 0),
-               'sum_qta' : self._getItem(pairs, 'sum_qta', 0),
-               'sum_price' : self._getItem(pairs, 'sum_price', 0),
-               'sum_amount' : self._getItem(pairs, 'sum_amount', 0),
-               'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['entry_id']),
+               'purchaser_id' : item.pk,
+               'gasmember' : item,
+               'sum_amount' : item.sum_amount,
+               'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['original_amounted']),
             })
-#"{{row.amounted|escapejs}}"  --> "{{row.amounted|floatformat:"2"}}" cannot be done because is widget input
-#               'pk' : el.order_id,
-#               'gasmember' : gasmember,
-#               'tot_product' : el.tot_product,
-#               'sum_qta' : el.sum_qta,
-#               'sum_pice' : el.sum_price,
-#               'sum_amount' : el.sum_amount,
-#               'amounted' : "%s %s" % (form['id'], form['amounted']),
-#               'gasmember_pk' : el.purchaser,
-#        "{{row.ordered_product__order|escapejs}}",
-#        "{{row.purchaser|escapejs}}",
-#        "{{row.tot_product}}",
-#        "{{row.sum_qta}}",
-#        "{{row.sum_price}}",
-#        "&#8364; {{row.sum_amount|floatformat:"2"}}",
-#        "{{row.amounted|escapejs}}",
-
 
         return formset, records, {}
 

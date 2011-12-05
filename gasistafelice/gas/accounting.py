@@ -60,10 +60,10 @@ class GasAccountingProxy(AccountingProxy):
         gas = self.subject.instance
         if not member.person.is_member(gas):
             raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
-        source_account = self.system['/members/' + member.uid]
+        source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
         description = "Withdrawal from member %(member)s account by GAS %(gas)s" % {'gas': gas, 'member': member,}
-        issuer = gas 
+        issuer = self.subject #WAS: gas 
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:
             transaction.add_references(refs)
@@ -121,10 +121,20 @@ class GasAccountingProxy(AccountingProxy):
             for member in order.purchasers:
                 # retrieve transactions related to this GAS member and order,
                 # including only withdrawals made by the GAS from members' accounts
-                txs = Transaction.objects.get_by_reference([member, order]).filter(kind='GAS_WITHDRAWAL')
-                #FIXME: No!  One Order = One GASMember amount
-                member.accounted_amount = sum([tx.source.amount for tx in txs])
+                #NOTE: DOMTHU useful for list 
+                #txs = Transaction.objects.get_by_reference([member, order]).filter(kind='GAS_WITHDRAWAL')
+                #member.accounted_amount = sum([tx.source.amount for tx in txs])
+                #NOTE: in this method we MUST have only one transaction 
+                # for each (member, order) couple
+                try:
+                    tx = Transaction.objects.get_by_reference([member, order]).get(kind='GAS_WITHDRAWAL')
+                except Transaction.DoesNotExist:
+                    member.accounted_amount = None
+                else:
+                    member.accounted_amount = tx.source.amount 
+
                 members.add(member)
+                print("AAAA", member.pk, member.accounted_amount)
             return members
         else:
             raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas, 'order': order})
