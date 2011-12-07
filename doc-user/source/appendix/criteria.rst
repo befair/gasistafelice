@@ -1,3 +1,5 @@
+.. _criteria:
+
 Aspetti chiave
 ==============
 
