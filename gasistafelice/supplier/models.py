@@ -72,6 +72,9 @@ class Supplier(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
+        #DOMTHU: rawfromiso = iso8859string.encode('iso-8859-1')
+        #DOMTHU: properUTF8string = unicode(rawfromiso, 'utf-8')
+        #DOMTHU: rv = unicode(self.name, 'utf-8')
         rv = unicode(self.name)
         if settings.DEBUG:
             rv += " [%s]" % self.pk

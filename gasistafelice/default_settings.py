@@ -337,6 +337,12 @@ ENABLE_OLAP_REPORTS = False
 
 DATE_FMT = "%d/%m/%Y"
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+#DOMTHU:
+#locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
+#locale.setlocale(locale.LC_ALL, 'it_IT.1252')
+#locale.setlocale(locale.LC_ALL, 'it_IT')   #by default is .ISO8859-1
+#locale.setlocale(locale.LC_ALL, ('it_IT', 'ISO-8859-1'))
+#locale.setlocale(locale.LC_ALL, ('it_IT', '1252'))
 
 INIT_OPTIONS = {
     'domain' : "ordini.desmacerata.it",
