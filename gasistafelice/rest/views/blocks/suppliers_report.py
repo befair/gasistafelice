@@ -173,7 +173,7 @@ class Block(BlockSSDataTables):
             records.append({
                'id' : el.pk,
                'name' : el.name,
-               'frontman' : el.frontman.report_name,
+               'frontman' : el.subject_name,   #frontman.report_name,
                'address' : el.address,
                'email' : el.preferred_email_address,
                'phone' : el.preferred_phone_address,

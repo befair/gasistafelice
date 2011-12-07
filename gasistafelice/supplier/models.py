@@ -77,6 +77,12 @@ class Supplier(models.Model, PermissionResource):
             rv += " [%s]" % self.pk
         return rv
 
+    def subject_name(self):
+        if self.frontman:
+            return self.frontman.report_name
+        else:
+            return ""
+
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
