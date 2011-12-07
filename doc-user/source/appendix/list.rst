@@ -142,6 +142,7 @@ Fra parentesi è indicata la sigla da mettere nel formato di importazione:
 * \(Ml) Millilitro
 * \(PAC) Pacco
 * \(PZ) Pezzo
+
 .. _list-measure-units:
 
 Unità di misura

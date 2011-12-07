@@ -16,6 +16,7 @@ Essa è composta dai seguenti passi:
 2. Importazione dei dati da parte del gruppo di sviluppo
 3. Abilitazione del referente informatico del GAS
 4. Il referente informatico del GAS abilita gli utenti:
+
  * aggiunge i gasisti
  * assegna gli altri ruoli (referente informatico, referente fornitore, fornitore)
 
@@ -150,6 +151,7 @@ I campi obbligatori per l'importazione di questi tipi di soggetti sono:
 
 1. IDFORNITORE: v. :ref:`import-company`. Ha il compito di legare questa riga al soggetto giuridico interessato
 2. Tipo: a scelta fra:
+
  * ``RAPPRESENTANTE``: il rappresentante. È importante che ci sia uno e un solo rappresentante per ogni fornitore;
  * ``INFO``: una persona per il contatto;
  * ``OPERATORE``: un operatore nella piattaforma;
