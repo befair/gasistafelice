@@ -31,14 +31,14 @@ Indice dei contenuti:
     appendix/migration
     appendix/list
     appendix/what_is_going_on
-    
+
 .. TODO
-    resource_product
-    gas_referrer_cash
-    gas_referrer_order
-    gas_referrer_withdrawal
-    gas_referrer_delivery
-    root
+   resource_product
+   gas_referrer_cash
+   gas_referrer_order
+   gas_referrer_withdrawal
+   gas_referrer_delivery
+   root
     
 
 * :ref:`search`
