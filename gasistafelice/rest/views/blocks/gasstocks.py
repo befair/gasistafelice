@@ -86,16 +86,23 @@ class Block(BlockSSDataTables):
         records = []
         for i,form in enumerate(formset):
 
+            enabling = querySet[i].stock.amount_available
+            if enabling:
+                enabling = form['enabled']
+            else:
+                enabling = _('not available')
+
             records.append({
                'id' : "%s %s " % (form['pk'], form['id']),
                'product' : querySet[i].stock.product,
                'price' : querySet[i].price,
-               'availability' : querySet[i].stock.amount_available, 
-               'field_enabled' : [_('not available'),form['enabled']][bool(querySet[i].enabled)],
+               'availability' : querySet[i].stock.amount_available,
+               'field_enabled' : enabling,
                'tot_amount' : querySet[i].tot_amount,
                'tot_gasmembers' : querySet[i].tot_gasmembers,
                'tot_price' : querySet[i].tot_price,
             })
+               #'field_enabled' : [_('not available'),form['enabled']][bool(querySet[i].enabled)],
 
         return formset, records, {}
 
