@@ -7,7 +7,7 @@
 
         "{{gss.id|escapejs}}",
         "{{gss.product|escapejs}}",
-        "&#8364; {{gss.price|floatformat:2 }}",
+        "{{gss.price|escapejs}}",
         "{% filter escapejs %}{% bool_img gss.availability %}{% endfilter %}",
         "{{gss.field_enabled|escapejs}}",
         "{{gss.tot_amount|escapejs|floatformat:"-2"}}",

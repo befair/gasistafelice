@@ -1045,7 +1045,28 @@ class GASSupplierStock(models.Model, PermissionResource):
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
-        return self.stock.price*(1 + price_percent_update)
+        #return self.stock.price*(1 + price_percent_update)
+        return self.stock.net_price*(1 + price_percent_update)
+
+    @property
+    def report_price(self):
+        rv = u" %(price)s\u20AC/%(symb)s" % {
+            'symb' : self.stock.product.pu.symbol,
+            'price': "%.2f" % round(self.price,2)
+        }
+        if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
+            price_per_unit = self.price
+            if self.stock.product.muppu:
+                #DOMTHU: only for test
+                if self.stock.product.pu.symbol == "DAM":
+                    price_per_unit = self.price / 5
+                else:
+                    price_per_unit = self.price / self.stock.product.muppu
+            rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
+                'ppu' : "%.2f" % round(price_per_unit,2),
+                'mu'  : self.stock.product.mu.symbol
+            }
+        return rv
 
     class Meta:
         app_label = 'gas'

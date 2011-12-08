@@ -806,18 +806,22 @@ class Product(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = self.pu.symbol
-        if self.mu and (self.mu.symbol != self.pu.symbol):
-            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
-                'mu_sep' : Product.MU_SEPARATOR,
-                'muppu'  : self.muppu,
-                'mu'     : self.mu.symbol,
-            }
-        rv += u" %(prod_sep)s %(name)s" % {
-            'prod_sep' : Product.PROD_SEPARATOR,
+        rv = u" %(name)s (%(symb)s)" % {
+            'symb' : self.pu.symbol,
             'name': self.name
         }
-        
+
+#        rv = self.pu.symbol
+#        if self.mu and (self.mu.symbol != self.pu.symbol):
+#            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
+#                'mu_sep' : Product.MU_SEPARATOR,
+#                'muppu'  : self.muppu,
+#                'mu'     : self.mu.symbol,
+#            }
+#        rv += u" %(prod_sep)s %(name)s" % {
+#            'prod_sep' : Product.PROD_SEPARATOR,
+#            'name': self.name
+#        }
         return rv
 
     def clean(self):
@@ -976,18 +980,19 @@ class SupplierStock(models.Model, PermissionResource):
     @ClassProperty
     @classmethod
     def resource_type(cls):
-        return "stock" 
+        return "stock"
 
     def __init__(self, *args, **kw):
         super(SupplierStock, self).__init__(*args, **kw)
         self._msg = None
 
     def __unicode__(self):
-        return u"%(detail_step)s %(product)s" % {
-            'detail_step' : self.detail_step,
-            'product': self.product,
-        }
-        
+        return self.product
+#        return u"%(detail_step)s %(product)s" % {
+#            'detail_step' : self.detail_step,
+#            'product': self.product,
+#        }
+
     @property
     def parent(self):
         return self.supplier
