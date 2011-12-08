@@ -555,8 +555,9 @@ class Person(models.Model, PermissionResource):
             rv += u" (%s)" % self.city
         return rv
 
+    @property
     def report_name(self):
-        return u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+        return u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
 
     def clean(self):
         self.name = self.name.strip().lower().capitalize()
