@@ -14,12 +14,11 @@ from workflows.models import Workflow
 from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
-from flexi_auth.utils import register_parametric_role 
+from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from simple_accounting.models import economic_subject, Account, AccountingDescriptor 
-from simple_accounting.models import account_type
+from simple_accounting.models import economic_subject, Account, AccountingDescriptor, LedgerEntry, account_type
 
 
 from gasistafelice.lib import ClassProperty
@@ -459,8 +458,26 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def economic_movements(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+        """Return accounting LedgerEntry instances."""
+        #TODO: split trx from GAS's transcations and GAS activities transactions
+        all_gas_trx = LedgerEntry.objects.none()   #set()
+        #TODO: for each suppliers use pacts?
+        all_gas_trx |= self.gas.accounting.entries('/expenses')
+        all_gas_trx |= self.gas.accounting.entries('/expenses/suppliers')
+        #TODO: for each recharges and fees?
+        all_gas_trx |= self.gas.accounting.entries('/incomes')
+        all_gas_trx |= self.gas.accounting.entries('/incomes/recharges')
+        all_gas_trx |= self.gas.accounting.entries('/incomes/fees')
+        return all_gas_trx
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this gas"""
+        acc_tot = 0
+        #TODO: split trx from GAS's transcations and GAS activities transactions
+        source_account = self.gas.accounting.system['/cash']
+        #FIXME: return source_account.amount?
+        return acc_tot
 
 
 #------------------------------------------------------------------------------
@@ -641,11 +658,6 @@ class GASMember(models.Model, PermissionResource):
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
-
-    @property
-    def economic_movements(self):
-        """Return accounting LedgerEntry instances."""
-        return self.gas.accounting.entries('/members/' + self.person.uid)
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
@@ -956,7 +968,19 @@ class GASMember(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        return self.gas.accounting.entries('/members/' + self.person.uid)
+        all_member_trx = LedgerEntry.objects.none()   #set()
+        all_member_trx |= self.gas.accounting.entries('/members/' + self.person.uid)
+        all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/fees')
+        all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/recharges')
+        return all_member_trx 
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this gasmember"""
+        acc_tot = 0
+        source_account = self.person.accounting.system['/wallet']
+        #FIXME: return source_account.amount?
+        return acc_tot
 
 
 #------------------------------------------------------------------------------
@@ -1462,13 +1486,25 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             roles |= supplier.roles
         return roles
 
-
     #--------------------------#
 
     @property
-    def transactions(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        #TODO: split trx from GAS's transcations and GAS activities transactions
+        all_pact_trx = LedgerEntry.objects.none()   #set()
+        #all_pact_trx |= self.gas.accounting.entries('/expenses/suppliers' + self.supplier.uid)
+        all_pact_trx |= self.supplier.accounting.entries('/incomes/gas/' + self.gas.uid)
+        return all_pact_trx
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this pact"""
+        acc_tot = 0
+        #TODO: return only the economic 'stock' for this supplier for this gas
+        source_account = self.supplier.accounting.system['/wallet']
+        #FIXME: return source_account.amount?
+        return acc_tot
 
 
 #------------------------------------------------------------------------------

@@ -52,13 +52,10 @@ class SupplierAccountingProxy(AccountingProxy):
         if refs:
             transaction.add_references(refs)
 
-    def movements(self):
+    def entries(self, base_path='/'):
         """
         List all transactions. Return LedgerEntry (account, transaction, amount)
-        Show transactions for suppliers
-        Explode for DES and Supplier resourse?
         """
-        return LedgerEntry.objects.all()
-        supplier = self.subject.instance
-        return None
+        return self.system[base_path].ledger_entries
+
 

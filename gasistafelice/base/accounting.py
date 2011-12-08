@@ -59,24 +59,9 @@ class PersonAccountingProxy(AccountingProxy):
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])
 
-    def movements(self, gas=None):
+    def entries(self, base_path='/'):
         """
         List all transactions. Return LedgerEntry (account, transaction, amount)
         """
-        return LedgerEntry.objects.all()
-        person = self.subject.instance
-        if gas:
-            #return all transactions for a specific gas
-            return None
-        else:
-            #return all transactions for each gas the person participate
-            return None
-
-        #util.transaction_details(transaction) return string
-        #class AccountingProxy(object):
-        #    def __init__(self, subject):
-        #    def account(self):
-        #    def make_transactions_for_invoice_payment(self, invoice, is_being_payed):
-        #    def pay_invoice(self, invoice):
-        #    def set_invoice_payed(self, invoice):
+        return self.system[base_path].ledger_entries
 

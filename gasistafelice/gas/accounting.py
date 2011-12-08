@@ -131,7 +131,7 @@ class GasAccountingProxy(AccountingProxy):
                 except Transaction.DoesNotExist:
                     member.accounted_amount = None
                 else:
-                    member.accounted_amount = tx.source.amount 
+                    member.accounted_amount = tx.source.amount
 
                 members.add(member)
                 print("AAAA", member.pk, member.accounted_amount)

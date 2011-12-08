@@ -21,8 +21,7 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from simple_accounting.models import account_type
-from simple_accounting.models import economic_subject, AccountingDescriptor
+from simple_accounting.models import economic_subject, AccountingDescriptor, LedgerEntry, account_type
 
 from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib import ClassProperty, unordered_uniq
@@ -381,14 +380,19 @@ class Supplier(models.Model, PermissionResource):
     #--------------------------#
 
     @property
-    def transactions(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        all_sup_trx = LedgerEntry.objects.none()   #set()
+        for pact in self.pacts:
+            all_sup_trx |= pact.economic_movements
+        return all_sup_trx
 
     @property
     def tot_eco(self):
         """Accounting sold for this supplier"""
         acc_tot = 0
+        source_account = self.accounting.system['/wallet']
+        #FIXME: return source_account.amount?
         return acc_tot
 
 
@@ -481,9 +485,8 @@ class SupplierAgent(models.Model):
 #        # * other referrers for that supplier  
 #        allowed_users = self.supplier.des.admins | self.supplier.referrers
 #        return user in allowed_users 
-    
 
-    
+
 class Certification(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))

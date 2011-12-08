@@ -374,10 +374,23 @@ class DES(Site, PermissionResource):
 
     #--------------------------#
 
+
     @property
-    def transactions(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        from simple_accounting.models import LedgerEntry
+        all_des_trx = LedgerEntry.objects.none()   #set()
+        for gas in self.gas_list:
+            all_des_trx |= gas.economic_movements
+        for sup in self.suppliers:
+            all_des_trx |= sup.economic_movements
+        return all_des_trx
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this des"""
+        acc_tot = 0
+        return acc_tot
 
 
 #------------------------------------------------------------------------------
