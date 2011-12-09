@@ -159,8 +159,9 @@ class EcoGASMemberRechargeForm(forms.Form):
         if recharged and recharged > 0:
             # This kind of amount is ever POSITIVE!
             recharged = abs(recharged)
+            gas_system = self.__gas.accounting.system
             refs = [gm, self.__gas]
-            gm.person.accounting.do_recharge(self.__gas, amounted, refs)
+            gm.person.accounting.do_recharge(gas_system, amounted, refs)
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
@@ -169,7 +170,7 @@ def get_year_choices():
     last_year = (dt-year).strftime('%Y')
     actual_year = dt.strftime('%Y')
     next_year = (dt+year).strftime('%Y')
-    return [ (last_year, last_year), (actual_year, actual_year), (next_year, next_year)]
+    return [ ('0', '----'), (last_year, last_year), (actual_year, actual_year), (next_year, next_year)]
 
 
 class EcoGASMemberFeeForm(forms.Form):
@@ -231,7 +232,11 @@ class EcoGASMemberFeeForm(forms.Form):
         feeed = self.cleaned_data.get('feeed')
         year = self.cleaned_data.get('year')
 
-        if feeed and year:
+        if feeed and year and year > 0:
             refs = [gm, self.__gas]
-            gm.person.accounting.pay_membership_fee(self.__gas, year, refs)
+            #FIXME: GAS membership can only be tested against a GAS model instance
+            #gas_system = self.__gas.accounting.system
+            #gm.person.accounting.pay_membership_fee(gas_system, year, refs)
+            gas_accounting = self.__gas.accounting
+            gm.person.accounting.pay_membership_fee(gas_accounting, year, refs)
 

@@ -97,7 +97,7 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-gm_id' % key_prefix : item.pk,
                '%s-feeed' % key_prefix : 0,
-               '%s-year' % key_prefix : actual_year,
+               '%s-year' % key_prefix : '0', #actual_year,
             })
 
             map_info[item.pk] = {'formset_index' : i}
