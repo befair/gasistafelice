@@ -7,7 +7,7 @@
 
         "{{row.id|escapejs}}",
         "{{row|escapejs}}",
-        "{{row.frontman.name|escapejs}} {{row.frontman.surname.upper|escapejs}}",
+        "{{row.subject_name|escapejs}}",
         "{{row.city|escapejs}}",
         "{{row.preferred_email_address|escapejs }}",
         "{{row.preferred_phone_address|escapejs }}",

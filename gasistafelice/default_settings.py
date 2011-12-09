@@ -244,7 +244,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions'] #Finalize Orders, transactions explode in Transact_Casa, Transact_Borselino
+        'blocks' : ['transactions', 'recharge', 'fee'] #Finalize Orders, transactions explode in Transact_Casa, Transact_Borselino
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
@@ -270,15 +270,15 @@ RESOURCE_PAGE_BLOCKS = {
     'supplier' : [{
         'name' : 'products',
         'descr': 'Prodotti',
-        'blocks': ['stocks'],
+        'blocks': ['stocks']
     },{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'prepared_orders', 'supplier_pacts'],
+        'blocks': ['open_orders', 'prepared_orders', 'supplier_pacts']
     },{
         'name' : 'info',
         'descr': 'Scheda del fornitore',
-        'blocks': ['supplier_details', 'categories', 'closed_orders'],
+        'blocks': ['supplier_details', 'categories', 'closed_orders']
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
@@ -291,27 +291,27 @@ RESOURCE_PAGE_BLOCKS = {
     'order' : [{ 
         'name' : 'info',
         'descr': 'Ordine',
-        'blocks': ['order_details', 'order_report'],
+        'blocks': ['order_details', 'order_report']
     },{ 
         'name' : 'delivery',
         'descr': 'Pagamento',
-        'blocks': ['curtail'] #, 'unsolved'
+        'blocks': ['order_cash', 'curtail']
     }],
 
     'person' : [{
         'name': 'info',
         'descr': 'Scheda della persona',
-        'blocks' : ['person_details', 'person_gasmembers'],
+        'blocks' : ['person_details', 'person_gasmembers']
     }],
 
     'pact' : [{ 
         'name' : 'stock',
         'descr': 'Prodotti',
-        'blocks': ['open_orders', 'gasstocks'],
+        'blocks': ['open_orders', 'gasstocks']
     },{
         'name': 'info',
         'descr': 'Scheda del patto',
-        'blocks' : ['pact_details', 'closed_orders'],
+        'blocks' : ['pact_details', 'closed_orders']
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
@@ -324,7 +324,7 @@ RESOURCE_PAGE_BLOCKS = {
     'stock' : [{
         'name': 'info',
         'descr': 'Scheda del prodotto',
-        'blocks' : ['stock_details', 'open_orders'],
+        'blocks' : ['stock_details', 'open_orders']
     }],
 }
 
@@ -337,6 +337,12 @@ ENABLE_OLAP_REPORTS = False
 
 DATE_FMT = "%d/%m/%Y"
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+#DOMTHU:
+#locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
+#locale.setlocale(locale.LC_ALL, 'it_IT.1252')
+#locale.setlocale(locale.LC_ALL, 'it_IT')   #by default is .ISO8859-1
+#locale.setlocale(locale.LC_ALL, ('it_IT', 'ISO-8859-1'))
+#locale.setlocale(locale.LC_ALL, ('it_IT', '1252'))
 
 INIT_OPTIONS = {
     'domain' : "ordini.desmacerata.it",

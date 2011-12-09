@@ -21,8 +21,7 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from simple_accounting.models import account_type
-from simple_accounting.models import economic_subject, AccountingDescriptor
+from simple_accounting.models import economic_subject, AccountingDescriptor, LedgerEntry, account_type
 
 from gasistafelice.exceptions import NoSenseException
 from gasistafelice.lib import ClassProperty, unordered_uniq
@@ -72,10 +71,20 @@ class Supplier(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
+        #DOMTHU: rawfromiso = iso8859string.encode('iso-8859-1')
+        #DOMTHU: properUTF8string = unicode(rawfromiso, 'utf-8')
+        #DOMTHU: rv = unicode(self.name, 'utf-8')
         rv = unicode(self.name)
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
+
+    @property
+    def subject_name(self):
+        if self.frontman:
+            return self.frontman.report_name
+        else:
+            return "aaaa"
 
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
@@ -371,14 +380,19 @@ class Supplier(models.Model, PermissionResource):
     #--------------------------#
 
     @property
-    def transactions(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        all_sup_trx = LedgerEntry.objects.none()   #set()
+        for pact in self.pacts:
+            all_sup_trx |= pact.economic_movements
+        return all_sup_trx
 
     @property
     def tot_eco(self):
         """Accounting sold for this supplier"""
         acc_tot = 0
+        source_account = self.accounting.system['/wallet']
+        #FIXME: return source_account.amount?
         return acc_tot
 
 
@@ -471,9 +485,8 @@ class SupplierAgent(models.Model):
 #        # * other referrers for that supplier  
 #        allowed_users = self.supplier.des.admins | self.supplier.referrers
 #        return user in allowed_users 
-    
 
-    
+
 class Certification(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
@@ -779,7 +792,7 @@ class Product(models.Model, PermissionResource):
     )
 
     vat_percent = models.DecimalField(max_digits=3, decimal_places=2, 
-                default=Decimal("0.2"), verbose_name=_('vat percent')
+                default=Decimal("0.21"), verbose_name=_('vat percent')
     )
 
     name = models.CharField(max_length=128, verbose_name = _("name"))
@@ -793,18 +806,22 @@ class Product(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = self.pu.symbol
-        if self.mu and (self.mu.symbol != self.pu.symbol):
-            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
-                'mu_sep' : Product.MU_SEPARATOR,
-                'muppu'  : self.muppu,
-                'mu'     : self.mu.symbol,
-            }
-        rv += u" %(prod_sep)s %(name)s" % {
-            'prod_sep' : Product.PROD_SEPARATOR,
+        rv = u" %(name)s (%(symb)s)" % {
+            'symb' : self.pu.symbol,
             'name': self.name
         }
-        
+
+#        rv = self.pu.symbol
+#        if self.mu and (self.mu.symbol != self.pu.symbol):
+#            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
+#                'mu_sep' : Product.MU_SEPARATOR,
+#                'muppu'  : self.muppu,
+#                'mu'     : self.mu.symbol,
+#            }
+#        rv += u" %(prod_sep)s %(name)s" % {
+#            'prod_sep' : Product.PROD_SEPARATOR,
+#            'name': self.name
+#        }
         return rv
 
     def clean(self):
@@ -963,18 +980,21 @@ class SupplierStock(models.Model, PermissionResource):
     @ClassProperty
     @classmethod
     def resource_type(cls):
-        return "stock" 
+        return "stock"
 
     def __init__(self, *args, **kw):
         super(SupplierStock, self).__init__(*args, **kw)
         self._msg = None
 
     def __unicode__(self):
-        return u"%(detail_step)s %(product)s" % {
-            'detail_step' : self.detail_step,
+        return u"%(product)s" % {
             'product': self.product,
         }
-        
+#        return u"%(detail_step)s %(product)s" % {
+#            'detail_step' : self.detail_step,
+#            'product': self.product,
+#        }
+
     @property
     def parent(self):
         return self.supplier

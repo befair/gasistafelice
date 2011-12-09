@@ -173,7 +173,7 @@ class Block(BlockSSDataTables):
             records.append({
                'id' : el.pk,
                'name' : el.name,
-               'frontman' : el.frontman.report_name,
+               'frontman' : el.subject_name,   #frontman.report_name,
                'address' : el.address,
                'email' : el.preferred_email_address,
                'phone' : el.preferred_phone_address,
@@ -224,8 +224,10 @@ class Block(BlockSSDataTables):
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
+        #DOMTHU: <th title='TOT account'>&euro;</th>
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html), result) 
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8", "ignore")), result ) #, link_callback = fetch_resources )
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=Suppliers.pdf"

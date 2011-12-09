@@ -1,0 +1,12 @@
+{% extends "blocks/stocks/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Id" %}</th>
+    <th>{% trans "GASMember" %}</th>
+    <th title='{% trans "Last gasmember fee" %}'>{% trans "Last fee" %}</th>
+    <th title='{% trans "Select year" %}'>{% trans "Year" %}</th>
+    <th title='{% trans "Fee gasmember" %}'>{% trans "Fee" %}</th>
+{% endblock %}
+
+

@@ -1,0 +1,20 @@
+{% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for row in records %}
+    [
+
+        "{{row.id|escapejs}}",
+        "{{row.gasmember|escapejs}}",
+        "{{row.last_recharge|escapejs}}",
+        "{{row.recharging|escapejs}}",
+
+    ]
+    {% if not forloop.last %}
+        ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+

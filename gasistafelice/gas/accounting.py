@@ -131,7 +131,7 @@ class GasAccountingProxy(AccountingProxy):
                 except Transaction.DoesNotExist:
                     member.accounted_amount = None
                 else:
-                    member.accounted_amount = tx.source.amount 
+                    member.accounted_amount = tx.source.amount
 
                 members.add(member)
                 print("AAAA", member.pk, member.accounted_amount)
@@ -147,17 +147,6 @@ class GasAccountingProxy(AccountingProxy):
         Show transactions for GAS  from CASH system what kind?
         Explode for DES and GAS resourse?
         """
-        #Choices are: account, entry_points_set, entry_set, exit_points_set, flow_set, id, is_placeholder, kind, name, parent, system
         return self.system[base_path].ledger_entries
-        gas = self.subject.instance
-        #return all transactions for this gas. (all gas in des)
-        return None
-
-        #util.transaction_details(transaction) return string
-        #class AccountingProxy(object):
-        #    def __init__(self, subject):
-        #    def account(self):
-        #    def make_transactions_for_invoice_payment(self, invoice, is_being_payed):
-        #    def pay_invoice(self, invoice):
-        #    def set_invoice_payed(self, invoice):
+        #gas = self.subject.instance
 

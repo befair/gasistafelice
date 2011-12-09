@@ -25,8 +25,7 @@ from flexi_auth.utils import get_parametric_roles
 
 from flexi_auth.models import PrincipalParamRoleRelation
 
-from simple_accounting.models import economic_subject, AccountingDescriptor 
-from simple_accounting.models import account_type 
+from simple_accounting.models import economic_subject, AccountingDescriptor, LedgerEntry, account_type 
 
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.base import const
@@ -487,17 +486,24 @@ class Resource(object):
 #    def unit(self):
 #        """Return unit measure bound to resource"""
 #        raise NotImplementedError
-#
-#    @property
-#    def transacts(self):
-#        """Return transact list bound to resource"""
-#        raise NotImplementedError
-#
-#    @property
-#    def transact(self):
-#        """Return transact bound to resource"""
-#        raise NotImplementedError
-#
+
+    #--------------------------#
+
+
+    @property
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        raise NotImplementedError
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this ressource"""
+        raise NotImplementedError
+
+
+
+#------------------------------------------------------------------------------
+
 
 class PermissionResource(Resource, PermissionBase):
     """
@@ -555,8 +561,9 @@ class Person(models.Model, PermissionResource):
             rv += u" (%s)" % self.city
         return rv
 
+    @property
     def report_name(self):
-        return u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+        return u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
 
     def clean(self):
         self.name = self.name.strip().lower().capitalize()

@@ -14,12 +14,11 @@ from workflows.models import Workflow
 from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
-from flexi_auth.utils import register_parametric_role 
+from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from simple_accounting.models import economic_subject, Account, AccountingDescriptor 
-from simple_accounting.models import account_type
+from simple_accounting.models import economic_subject, Account, AccountingDescriptor, LedgerEntry, account_type
 
 
 from gasistafelice.lib import ClassProperty
@@ -459,8 +458,26 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def economic_movements(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+        """Return accounting LedgerEntry instances."""
+        #TODO: split trx from GAS's transcations and GAS activities transactions
+        all_gas_trx = LedgerEntry.objects.none()   #set()
+        #TODO: for each suppliers use pacts?
+        all_gas_trx |= self.gas.accounting.entries('/expenses')
+        all_gas_trx |= self.gas.accounting.entries('/expenses/suppliers')
+        #TODO: for each recharges and fees?
+        all_gas_trx |= self.gas.accounting.entries('/incomes')
+        all_gas_trx |= self.gas.accounting.entries('/incomes/recharges')
+        all_gas_trx |= self.gas.accounting.entries('/incomes/fees')
+        return all_gas_trx
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this gas"""
+        acc_tot = 0
+        #TODO: split trx from GAS's transcations and GAS activities transactions
+        source_account = self.gas.accounting.system['/cash']
+        #FIXME: return source_account.amount?
+        return acc_tot
 
 
 #------------------------------------------------------------------------------
@@ -641,11 +658,6 @@ class GASMember(models.Model, PermissionResource):
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
-
-    @property
-    def economic_movements(self):
-        """Return accounting LedgerEntry instances."""
-        return self.gas.accounting.entries('/members/' + self.person.uid)
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
@@ -956,8 +968,45 @@ class GASMember(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        return self.gas.accounting.entries('/members/' + self.person.uid)
+        all_member_trx = LedgerEntry.objects.none()   #set()
+        all_member_trx |= self.gas.accounting.entries('/members/' + self.person.uid)
+        all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/fees')
+        all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/recharges')
+        return all_member_trx
 
+    @property
+    def tot_eco(self):
+        """Accounting sold for this gasmember"""
+        acc_tot = 0
+        source_account = self.person.accounting.system['/wallet']
+        #FIXME: return source_account.amount?
+        return acc_tot
+
+    @property
+    def last_recharge(self):
+        """last reharge for this gasmember"""
+        rv = ''
+        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/recharges')
+        if latest:
+            return u"%(amount)s\u20AC %(date)s %(note)s" % {
+                'amount' : latest.amount,
+                'date': latest.date.strftime("%A, %d %B %Y - %H:%M"),
+                'note': latest.description,
+            }
+        return rv
+
+    @property
+    def last_fee(self):
+        """last fee for this gasmember"""
+        rv = ''
+        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/fees')
+        if latest:
+            return u"%(amount)s\u20AC %(date)s %(note)s" % {
+                'amount' : latest.amount,
+                'date': latest.date.strftime("%A, %d %B %Y - %H:%M"),
+                'note': latest.description,
+            }
+        return rv
 
 #------------------------------------------------------------------------------
 
@@ -1021,7 +1070,28 @@ class GASSupplierStock(models.Model, PermissionResource):
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
-        return self.stock.price*(1 + price_percent_update)
+        #return self.stock.price*(1 + price_percent_update)
+        return self.stock.net_price*(1 + price_percent_update)
+
+    @property
+    def report_price(self):
+        rv = u" %(price)s\u20AC/%(symb)s" % {
+            'symb' : self.stock.product.pu.symbol,
+            'price': "%.2f" % round(self.price,2)
+        }
+        if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
+            price_per_unit = self.price
+            if self.stock.product.muppu:
+                #DOMTHU: only for test
+                if self.stock.product.pu.symbol == "DAM":
+                    price_per_unit = self.price / 5
+                else:
+                    price_per_unit = self.price / self.stock.product.muppu
+            rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
+                'ppu' : "%.2f" % round(price_per_unit,2),
+                'mu'  : self.stock.product.mu.symbol
+            }
+        return rv
 
     class Meta:
         app_label = 'gas'
@@ -1462,13 +1532,25 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             roles |= supplier.roles
         return roles
 
-
     #--------------------------#
 
     @property
-    def transactions(self):
-        #TODO: ECO return accounting Transaction or LedgerEntry
-        return self.none()
+    def economic_movements(self):
+        """Return accounting LedgerEntry instances."""
+        #TODO: split trx from GAS's transcations and GAS activities transactions
+        all_pact_trx = LedgerEntry.objects.none()   #set()
+        #all_pact_trx |= self.gas.accounting.entries('/expenses/suppliers' + self.supplier.uid)
+        all_pact_trx |= self.supplier.accounting.entries('/incomes/gas/' + self.gas.uid)
+        return all_pact_trx
+
+    @property
+    def tot_eco(self):
+        """Accounting sold for this pact"""
+        acc_tot = 0
+        #TODO: return only the economic 'stock' for this supplier for this gas
+        source_account = self.supplier.accounting.system['/wallet']
+        #FIXME: return source_account.amount?
+        return acc_tot
 
 
 #------------------------------------------------------------------------------

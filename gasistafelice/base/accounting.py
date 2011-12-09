@@ -14,7 +14,7 @@ class PersonAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``Person``' model.    
     """
     
-    def pay_membership_fee(self, gas, year):
+    def pay_membership_fee(self, gas, year, refs=None):
         """
         Pay the annual membership fee for a GAS this person is member of.
         
@@ -28,6 +28,8 @@ class PersonAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A person can't pay membership fees to a GAS that (s)he is not member of")
         source_account = self.system['/wallet']
         exit_point = self.system['/expenses/gas/' + gas.uid + '/fees']
+        #FIXME: 'GAS' object has no attribute 'system
+        #SOLVED: Do not pass gas but gas.accounting(.system)
         entry_point =  gas.system['/incomes/fees']
         target_account = gas.system['/cash']
         amount = gas.membership_fee
@@ -35,8 +37,21 @@ class PersonAccountingProxy(AccountingProxy):
         issuer = person 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
-        
-    def do_recharge(self, gas, amount):
+
+    def last_entry(self, base_path):
+        """last entry for one subject"""
+        rv = LedgerEntry.objects.none()
+        #DOMTHU: only for test
+        return rv
+        latest = self.system[base_path].ledger_entries.latest('transaction__date')
+        if latest:
+            return latest
+        return rv
+        #FIXME: create last_entry or one method for each base_path? Encapsulation and refactoring
+        #FIXME: self <gasistafelice.base.accounting.PersonAccountingProxy object at 0xabaf86c>
+        #       base_path '/expenses/gas/gas-1/recharges'
+
+    def do_recharge(self, gas, amount, refs=None):
         """
         Do a recharge of amount ``amount`` to the corresponding member account
         in the GAS ``gas``.
@@ -59,24 +74,9 @@ class PersonAccountingProxy(AccountingProxy):
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])
 
-    def movements(self, gas=None):
+    def entries(self, base_path='/'):
         """
         List all transactions. Return LedgerEntry (account, transaction, amount)
         """
-        return LedgerEntry.objects.all()
-        person = self.subject.instance
-        if gas:
-            #return all transactions for a specific gas
-            return None
-        else:
-            #return all transactions for each gas the person participate
-            return None
-
-        #util.transaction_details(transaction) return string
-        #class AccountingProxy(object):
-        #    def __init__(self, subject):
-        #    def account(self):
-        #    def make_transactions_for_invoice_payment(self, invoice, is_being_payed):
-        #    def pay_invoice(self, invoice):
-        #    def set_invoice_payed(self, invoice):
+        return self.system[base_path].ledger_entries
 
