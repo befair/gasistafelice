@@ -7,7 +7,7 @@
 
         "{{row.pk|escapejs}}",
         "{{row|escapejs}}",
-        "{{row.last_recharge|floatformat:"2"}}",
+        "{{row.last_recharge|escapejs}}",
         "{{row.recharging|floatformat:"2"",
 
     ]

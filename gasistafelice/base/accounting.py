@@ -44,6 +44,10 @@ class PersonAccountingProxy(AccountingProxy):
             return latest
         return rv
         #FIXME: create last_entry or one method for each base_path? Encapsulation and refactoring
+        #FIXME: self <gasistafelice.base.accounting.PersonAccountingProxy object at 0xabaf86c>
+        #       base_path '/expenses/gas/gas-1/recharges'
+
+
 
     def do_recharge(self, gas, amount, refs=None):
         """

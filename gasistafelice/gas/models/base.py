@@ -986,7 +986,7 @@ class GASMember(models.Model, PermissionResource):
     def last_recharge(self):
         """last reharge for this gasmember"""
         rv = ''
-        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/recharges/')
+        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/recharges')
         if latest:
             return u"%(amount)s\u20AC %(date)s %(note)s" % {
                 'amount' : latest.amount,
