@@ -242,3 +242,78 @@ class EcoGASMemberFeeForm(forms.Form):
             gas_accounting = self.__gas.accounting
             gm.person.accounting.pay_membership_fee(gas_accounting, year, refs)
 
+
+
+
+#-------------------------------------------------------------------------------
+
+
+#class CashOrderForm(forms.ModelForm):
+class CashOrderForm(forms.Form):
+
+    log.debug("CashOrderForm")
+
+    def __init__(self, request, *args, **kw):
+
+        super(CashOrderForm, self).__init__(request, *args, **kw)
+
+        #SOLIDAL PACT
+        pact = request.resource.pact
+        delivery = request.resource.delivery
+#        ref = request.resource.delivery_referrer_person
+#        if ref:
+#            #control if queryset not empty.
+#            self.fields['delivery_referrer_person'].initial = ref
+#        if request.resource.datetime_end:
+#            self.fields['datetime_end'].initial = request.resource.datetime_end
+#        if delivery and delivery.date:
+#            self.fields['delivery_datetime'].initial = delivery.date
+
+    def save(self):
+
+#        if self.cleaned_data.get('delivery_datetime'):
+#            d = self.get_delivery()
+#            self.instance.delivery = d
+
+#        if self.cleaned_data.get('withdrawal_datetime'):
+#            w = self.get_withdrawal()
+#            self.instance.withdrawal = w
+
+        return super(CashOrderForm, self).save()
+
+    class Meta:
+        model = GASSupplierOrder
+        fields = ['invoice_amount', 'invoice_note']
+
+        gf_fieldsets = [(None, {
+            'fields' : [ 'current_state'
+                         , 'invoice_amount'
+                         , 'invoice_note'
+            ]
+        })]
+
+def form_class_factory_for_request(request, base):
+    """Return appropriate form class basing on GAS configuration
+    and other request parameters if needed"""
+
+    log.debug("CashOrderForm--> form_class_factory_for_request")
+    fields = copy.deepcopy(base.Meta.fields)
+    gf_fieldsets = copy.deepcopy(base.Meta.gf_fieldsets)
+    attrs = {}
+    order = request.resource.order
+
+    if order:
+
+#        refs = gas.cash_referrers
+#        if refs and request.user in refs:
+#            gf_fieldsets[0][1]['fields'].append('delivery_cost')
+
+        attrs.update(Meta=type('Meta', (), {
+            'model' : GASSupplierOrder,
+            'fields' : fields,
+            'gf_fieldsets' : gf_fieldsets
+        }))
+    return type('Custom%s' % base.__name__, (base,), attrs)
+
+
+#-------------------------------------------------------------------------------
