@@ -256,7 +256,7 @@ class Block(BlockSSDataTables):
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result)
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \
