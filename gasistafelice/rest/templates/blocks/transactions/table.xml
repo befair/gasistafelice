@@ -4,10 +4,8 @@
 {% block headers %}
     <th>{% trans "Id" %}</th>
     <th>{% trans "Date" %}</th>
-    <th>{% trans "Issuer" %}</th>
-    <th>{% trans "Source" %}</th>
     <th>{% trans "Kind" %}</th>
     <th>{% trans "Description" %}</th>
-    <th>{% trans "Confirmed" %}</th>
+    <th>{% trans "Amount" %}</th>
 {% endblock %}
 

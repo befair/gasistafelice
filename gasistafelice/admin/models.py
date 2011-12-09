@@ -12,6 +12,7 @@ from gasistafelice.gas import models as gas_models
 from flexi_auth import models as auth_models
 from gasistafelice.rest.models import pages as rest_models
 from gasistafelice.users import models as user_models
+from simple_accounting import models as accounting_models
 
 ########################## Inlines #######################
 
@@ -318,6 +319,12 @@ class UnitConvAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'src', 'dst', 'amount')
     list_editable = ('src', 'dst', 'amount')    
 
+class LedgerEntryAdmin(admin.ModelAdmin):
+    list_display = ('date', 'kind', 'account', 'description', 'amount')
+
+    def kind(self, obj):
+        return obj.transaction.kind
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact)
@@ -347,4 +354,5 @@ admin.site.register(rest_models.HomePage)
 admin.site.register(auth_models.PrincipalParamRoleRelation, PPRAdmin)
 admin.site.register(auth_models.ParamRole, PRAdmin)
 admin.site.register(user_models.UserProfile, UserProfileAdmin)
+admin.site.register(accounting_models.LedgerEntry, LedgerEntryAdmin)
 

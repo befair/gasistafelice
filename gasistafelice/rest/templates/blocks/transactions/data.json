@@ -2,16 +2,14 @@
 {% load basic_tags %}
 
 {% block table_rows %}
-    {% for tr in records %}
+    {% for entry in records %}
     [
 
-        "{{tr.pk|escapejs}}",
-        "{{tr.date|escapejs}}",
-        "{{tr.issuer|escapejs}}",
-        "{{tr.source|escapejs}}",
-        "{{tr.kind|escapejs}}",
-        "{{tr.description|escapejs}}",
-        "{{tr.is_confirmed|escapejs}}",
+        "{{entry.pk|escapejs}}",
+        "{{entry.date|escapejs}}",
+        "{{entry.transaction.kind|escapejs}}",
+        "{{entry.description|escapejs}}",
+        "{{entry.amount|escapejs}}",
 
     ]
     {% if not forloop.last %}

@@ -34,7 +34,7 @@ class PersonAccountingProxy(AccountingProxy):
         entry_point =  gas.accounting.system['/incomes/fees']
         target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
-        description = _("Membership fee for year %(year)s") % {'year': year,}
+        description = _("%(person)s for year %(year)s") % {'person': person, 'year': year,}
         issuer = self.subject 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
@@ -52,7 +52,7 @@ class PersonAccountingProxy(AccountingProxy):
         #FIXME: self <gasistafelice.base.accounting.PersonAccountingProxy object at 0xabaf86c>
         #       base_path '/expenses/gas/gas-1/recharges'
 
-    def do_recharge(self, gas, amount):
+    def do_recharge(self, gas, amount, note=""):
         """
         Do a recharge of amount ``amount`` to the corresponding member account
         in the GAS ``gas``.
@@ -70,7 +70,7 @@ class PersonAccountingProxy(AccountingProxy):
             exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
             entry_point =  gas.accounting.system['/incomes/recharges']
             target_account = gas.accounting.system['/members/' + person.uid]
-            description = _("GAS member account recharge")
+            description = unicode(person)
             issuer = self.subject
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])

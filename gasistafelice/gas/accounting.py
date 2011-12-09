@@ -4,6 +4,8 @@ from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
 
+from gasistafelice.base.models import Person
+
 class GasAccountingProxy(AccountingProxy):
     """
     This class is meant to be the place where implementing the accounting API 
@@ -64,8 +66,8 @@ class GasAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        description = _("Withdrawal from member %(member)s account by GAS %(gas)s") % {'gas': gas, 'member': member,}
-        issuer = self.subject #WAS: gas 
+        description = _("%(person)s by GAS %(gas)s") % {'gas': gas, 'person': member.person,}
+        issuer = self.subject
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:
             transaction.add_references(refs)
@@ -136,19 +138,29 @@ class GasAccountingProxy(AccountingProxy):
                     member.accounted_amount = tx.source.amount
 
                 members.add(member)
-                print("AAAA", member.pk, member.accounted_amount)
             return members
         else:
             raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas, 'order': order})
 
-    def entries(self, base_path='/'):
+    def account_entries(self, base_path='/'):
+        pass
+
+    def entries(self):
         """
-        List all transactions. Return LedgerEntry (account, transaction, amount)
+        List all LedgerEntries (account, transaction, amount)
         Show transactions for suppliers link to GAS  kind='PAYMENT' + another kind?
         Show transactions for gasmembers link to GAS kind='GAS_WITHDRAWAL' + another kind?
         Show transactions for GAS  from CASH system what kind?
-        Explode for DES and GAS resourse?
         """
-        return self.system[base_path].ledger_entries
-        #gas = self.subject.instance
+
+        gm_people = Person.objects.filter(gasmember__in=self.subject.instance.gasmembers)
+        members_account = map(lambda p : p.uid, gm_people)
+        suppliers = self.subject.instance.suppliers
+        s_account = map(lambda s : s.uid, suppliers)
+        accounts = self.system.accounts.filter(name="cash") | \
+            self.system.accounts.filter(parent__name="members", name__in=members_account) | \
+            self.system.accounts.filter(parent__name="suppliers", name__in=s_account)
+
+        return LedgerEntry.objects.filter(account__in=accounts) 
+
 

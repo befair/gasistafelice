@@ -459,16 +459,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        #TODO: split trx from GAS's transcations and GAS activities transactions
-        all_gas_trx = LedgerEntry.objects.none()   #set()
-        #TODO: for each suppliers use pacts?
-        all_gas_trx |= self.gas.accounting.entries('/expenses')
-        all_gas_trx |= self.gas.accounting.entries('/expenses/suppliers')
-        #TODO: for each recharges and fees?
-        all_gas_trx |= self.gas.accounting.entries('/incomes')
-        all_gas_trx |= self.gas.accounting.entries('/incomes/recharges')
-        all_gas_trx |= self.gas.accounting.entries('/incomes/fees')
-        return all_gas_trx
+        return self.accounting.entries()
 
     @property
     def tot_eco(self):
