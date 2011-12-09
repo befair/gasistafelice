@@ -185,7 +185,7 @@ class AbstractBlock(object):
             self.block_name,
             '%s' % (self.get_description()),
             block_urn,
-            str(self.resource),
+            self.resource, #was: str(self.resource)... that's why it may be None?!?
             self.refresh_rate,
             str(self.auto_refresh).lower(),
             str(self.start_open).lower(),
