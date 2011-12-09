@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 
 from gasistafelice.gas.models import GAS, GASMember, GASMemberOrder, GASSupplierOrder
 from gasistafelice.supplier.models import Supplier
@@ -63,6 +64,7 @@ class EcoGASMemberForm(forms.Form):
            
         return cleaned_data
 
+    @transaction.commit_on_success
     def save(self):
 
         #Control logged user
@@ -134,7 +136,14 @@ class EcoGASMemberRechargeForm(forms.Form):
            
         return cleaned_data
 
+    @transaction.commit_on_success
     def save(self):
+
+        # Do economic work
+        recharged = self.cleaned_data.get('recharged')
+        if not recharged:
+            # Skip without doing anything else
+            return
 
         #Control logged user
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
@@ -150,15 +159,8 @@ class EcoGASMemberRechargeForm(forms.Form):
             log.debug("PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
             raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!")
 
-        #Do economic work
-        recharged = self.cleaned_data.get('recharged')
-        if not recharged:
-            print "ciao %s" % gm
-
-        if recharged:
-            # This kind of amount is ever POSITIVE!
-            refs = [gm, self.__gas]
-            gm.person.accounting.do_recharge(self.__gas, recharged, refs)
+        # This kind of amount is ever POSITIVE!
+        gm.person.accounting.do_recharge(self.__gas, recharged)
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
@@ -206,7 +208,16 @@ class EcoGASMemberFeeForm(forms.Form):
            
         return cleaned_data
 
+    @transaction.commit_on_success
     def save(self):
+
+        #Do economic work
+        feeed = self.cleaned_data.get('feeed')
+        year = self.cleaned_data.get('year')
+
+        if not (feeed and year):
+            # Skip without doing anything else
+            return
 
         #Control logged user
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
@@ -222,13 +233,7 @@ class EcoGASMemberFeeForm(forms.Form):
             log.debug("PermissionDenied %s in cash fee for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
             raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!")
 
-        #Do economic work
-        feeed = self.cleaned_data.get('feeed')
-        year = self.cleaned_data.get('year')
-
-        if feeed and year and year > 0:
-            refs = [gm, self.__gas]
-            gm.person.accounting.pay_membership_fee(self.__gas, year, refs)
+        gm.person.accounting.pay_membership_fee(self.__gas, year)
 
 
 
@@ -257,6 +262,7 @@ class CashOrderForm(forms.Form):
 #        if delivery and delivery.date:
 #            self.fields['delivery_datetime'].initial = delivery.date
 
+    @transaction.commit_on_success
     def save(self):
 
 #        if self.cleaned_data.get('delivery_datetime'):
