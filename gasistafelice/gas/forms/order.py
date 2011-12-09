@@ -197,15 +197,19 @@ class AddOrderForm(BaseOrderForm):
             dt = first_day_on_or_after(6, dt)
 
             #Close
+            d_c = get_day_from_choice(gas.config.default_close_day)
             if gas.config.default_close_day:
-                dt = first_day_on_or_after(get_day_from_choice(gas.config.default_close_day), dt)
+                dt = first_day_on_or_after(d_c, dt)
             if gas.config.default_close_time:
                 dt = dt.replace(hour=gas.config.default_close_time.hour, minute=gas.config.default_close_time.minute)
             self.fields['datetime_end'].initial = dt
 
             #Delivery
+            d_d = get_day_from_choice(gas.config.default_delivery_day)
+            if d_d <= d_c:
+                dt = dt+timedelta(days=7)
             if gas.config.default_delivery_day:
-                dt = first_day_on_or_after(get_day_from_choice(gas.config.default_delivery_day), dt)
+                dt = first_day_on_or_after(d_d, dt)
             if gas.config.default_delivery_time:
                 dt = dt.replace(hour=gas.config.default_delivery_time.hour, minute=gas.config.default_delivery_time.minute)
             self.fields['delivery_datetime'].initial = dt
