@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext as _
+
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
@@ -32,7 +34,7 @@ class GasAccountingProxy(AccountingProxy):
         exit_point = self.system['/expenses/suppliers/' + supplier.uid]
         entry_point =  supplier.system['/incomes/gas' + gas.uid]
         target_account = supplier.system['/wallet']
-        description = "Payment from GAS %(gas)s to supplier %(supplier)s" % {'gas': gas, 'supplier': supplier,}
+        description = _("Payment from GAS %(gas)s to supplier %(supplier)s") % {'gas': gas, 'supplier': supplier,}
         issuer = gas 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')
         if refs:
@@ -62,7 +64,7 @@ class GasAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        description = "Withdrawal from member %(member)s account by GAS %(gas)s" % {'gas': gas, 'member': member,}
+        description = _("Withdrawal from member %(member)s account by GAS %(gas)s") % {'gas': gas, 'member': member,}
         issuer = self.subject #WAS: gas 
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:

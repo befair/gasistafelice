@@ -1,7 +1,8 @@
+from django.utils.translation import ugettext as _
+
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
-
 
 class PersonAccountingProxy(AccountingProxy):
     """
@@ -33,7 +34,7 @@ class PersonAccountingProxy(AccountingProxy):
         entry_point =  gas.accounting.system['/incomes/fees']
         target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
-        description = "Membership fee for year %(year)s" % {'year': year,}
+        description = _("Membership fee for year %(year)s") % {'year': year,}
         issuer = self.subject 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
@@ -69,7 +70,7 @@ class PersonAccountingProxy(AccountingProxy):
             exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
             entry_point =  gas.accounting.system['/incomes/recharges']
             target_account = gas.accounting.system['/members/' + person.uid]
-            description = "GAS member account recharge"
+            description = _("GAS member account recharge")
             issuer = self.subject
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])

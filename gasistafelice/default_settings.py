@@ -96,6 +96,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'gasistafelice.middleware.ResourceMiddleware',
+#    'django.middleware.transaction.TransactionMiddleware',
 )
 
 ROOT_URLCONF = 'gasistafelice.urls'

@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext as _
+
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
@@ -46,7 +48,7 @@ class SupplierAccountingProxy(AccountingProxy):
         exit_point = self.system['/incomes/gas/' + gas.uid]
         entry_point = gas.system['/expenses/suppliers/' + supplier.uid] 
         target_account = gas.system['/cash']
-        description = "Refund from supplier %(supplier)s to GAS %(gas)s" % {'gas': gas, 'supplier': supplier,}
+        description = _("Refund from supplier %(supplier)s to GAS %(gas)s") % {'gas': gas, 'supplier': supplier,}
         issuer = supplier 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='REFUND')
         if refs:
