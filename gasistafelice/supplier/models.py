@@ -987,7 +987,9 @@ class SupplierStock(models.Model, PermissionResource):
         self._msg = None
 
     def __unicode__(self):
-        return self.product
+        return u"%(product)s" % {
+            'product': self.product,
+        }
 #        return u"%(detail_step)s %(product)s" % {
 #            'detail_step' : self.detail_step,
 #            'product': self.product,
