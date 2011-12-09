@@ -146,24 +146,19 @@ class EcoGASMemberRechargeForm(forms.Form):
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
         gm = self.cleaned_data['gasmember']
-        #DOMTHU: if not gm in gas.gasmembers:  gm.has_role(GAS_MEMBER
-        #if not gm.has_perm(GAS_MEMBER, 
-#        if not gm.person.user.has_perm(GAS_MEMBER, 
-#            obj=ObjectWithContext(self.__gas)
-#        ):
-#            log.debug("PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-#            raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!")
+        if not gm in self.__gas.gasmembers:
+            log.debug("PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
+            raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!")
 
         #Do economic work
         recharged = self.cleaned_data.get('recharged')
+        if not recharged:
+            print "ciao %s" % gm
 
-        if recharged and recharged > 0:
+        if recharged:
             # This kind of amount is ever POSITIVE!
-            recharged = abs(recharged)
-            gas_system = self.__gas.accounting.system
             refs = [gm, self.__gas]
-            #FIXME: GAS membership can only be tested against a GAS model instance
-            gm.person.accounting.do_recharge(gas_system, recharged, refs)
+            gm.person.accounting.do_recharge(self.__gas, recharged, refs)
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
@@ -176,10 +171,11 @@ def get_year_choices():
 
 
 class EcoGASMemberFeeForm(forms.Form):
-    """Return form class for row level operation on cash ordered data
-    use in Fee 
-    Movement between GASMember.account --> GAS.GASMember.account
+    """Return form class for row level operation on cash ordered data.
+
+    Used in Fee Movement between GASMember.account --> GAS.GASMember.account
     """
+
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
     feeed = forms.BooleanField(required=False)
     #year = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=get_year_choices())
@@ -222,11 +218,7 @@ class EcoGASMemberFeeForm(forms.Form):
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
         gm = self.cleaned_data['gasmember']
-        #DOMTHU: if not gm in gas.gasmembers:  gm.has_role(GAS_MEMBER
-        #if not gm.has_perm(GAS_MEMBER, 
-        if not gm.person.user.has_perm(GAS_MEMBER, 
-            obj=ObjectWithContext(self.__gas)
-        ):
+        if not gm in self.__gas.gasmembers:
             log.debug("PermissionDenied %s in cash fee for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
             raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!")
 
@@ -236,11 +228,7 @@ class EcoGASMemberFeeForm(forms.Form):
 
         if feeed and year and year > 0:
             refs = [gm, self.__gas]
-            #FIXME: GAS membership can only be tested against a GAS model instance
-            #gas_system = self.__gas.accounting.system
-            #gm.person.accounting.pay_membership_fee(gas_system, year, refs)
-            gas_accounting = self.__gas.accounting
-            gm.person.accounting.pay_membership_fee(gas_accounting, year, refs)
+            gm.person.accounting.pay_membership_fee(self.__gas, year, refs)
 
 
 

@@ -988,9 +988,9 @@ class GASMember(models.Model, PermissionResource):
         rv = ''
         latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/recharges')
         if latest:
-            return u"%(amount)s\u20AC %(date)s %(note)s" % {
-                'amount' : latest.amount,
-                'date': latest.date.strftime("%A, %d %B %Y - %H:%M"),
+            return u"%(amount)s \u20AC %(date)s<br />%(note)s" % {
+                'amount' : "%.2f" % latest.amount,
+                'date': latest.date.strftime("%A, %d %B %Y - %H:%M").decode('utf-8'),
                 'note': latest.description,
             }
         return rv
@@ -1001,9 +1001,9 @@ class GASMember(models.Model, PermissionResource):
         rv = ''
         latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/fees')
         if latest:
-            return u"%(amount)s\u20AC %(date)s %(note)s" % {
-                'amount' : latest.amount,
-                'date': latest.date.strftime("%A, %d %B %Y - %H:%M"),
+            return u"%(amount)s\u20AC %(date)s<br />%(note)s" % {
+                'amount' : "%.2f" % latest.amount,
+                'date': latest.date.strftime("%A, %d %B %Y - %H:%M").decode('utf-8'),
                 'note': latest.description,
             }
         return rv
@@ -1070,14 +1070,13 @@ class GASSupplierStock(models.Model, PermissionResource):
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
-        #return self.stock.price*(1 + price_percent_update)
-        return self.stock.net_price*(1 + price_percent_update)
+        return self.stock.price*(1 + price_percent_update)
 
     @property
     def report_price(self):
         rv = u" %(price)s\u20AC/%(symb)s" % {
             'symb' : self.stock.product.pu.symbol,
-            'price': "%.2f" % round(self.price,2)
+            'price': "%.2f" % round(self.price,2),
         }
         if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
             price_per_unit = self.price

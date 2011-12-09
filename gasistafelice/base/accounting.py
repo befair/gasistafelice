@@ -14,7 +14,7 @@ class PersonAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``Person``' model.    
     """
     
-    def pay_membership_fee(self, gas, year, refs=None):
+    def pay_membership_fee(self, gas, year):
         """
         Pay the annual membership fee for a GAS this person is member of.
         
@@ -30,28 +30,28 @@ class PersonAccountingProxy(AccountingProxy):
         exit_point = self.system['/expenses/gas/' + gas.uid + '/fees']
         #FIXME: 'GAS' object has no attribute 'system
         #SOLVED: Do not pass gas but gas.accounting(.system)
-        entry_point =  gas.system['/incomes/fees']
-        target_account = gas.system['/cash']
+        entry_point =  gas.accounting.system['/incomes/fees']
+        target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
         description = "Membership fee for year %(year)s" % {'year': year,}
-        issuer = person 
+        issuer = self.subject 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
 
     def last_entry(self, base_path):
         """last entry for one subject"""
-        rv = LedgerEntry.objects.none()
-        #DOMTHU: only for test
-        return rv
-        latest = self.system[base_path].ledger_entries.latest('transaction__date')
-        if latest:
-            return latest
-        return rv
+
+        try:
+            latest = self.system[base_path].ledger_entries.latest('transaction__date')
+        except LedgerEntry.DoesNotExist:
+            latest = None
+        return latest
+
         #FIXME: create last_entry or one method for each base_path? Encapsulation and refactoring
         #FIXME: self <gasistafelice.base.accounting.PersonAccountingProxy object at 0xabaf86c>
         #       base_path '/expenses/gas/gas-1/recharges'
 
-    def do_recharge(self, gas, amount, refs=None):
+    def do_recharge(self, gas, amount):
         """
         Do a recharge of amount ``amount`` to the corresponding member account
         in the GAS ``gas``.
@@ -67,10 +67,10 @@ class PersonAccountingProxy(AccountingProxy):
         else:
             source_account = self.system['/wallet']
             exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
-            entry_point =  gas.system['/incomes/recharges']
-            target_account = gas.system['/members/' + person.uid]
+            entry_point =  gas.accounting.system['/incomes/recharges']
+            target_account = gas.accounting.system['/members/' + person.uid]
             description = "GAS member account recharge"
-            issuer = person
+            issuer = self.subject
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])
 
