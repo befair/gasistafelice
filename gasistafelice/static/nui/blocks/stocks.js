@@ -30,7 +30,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 },
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
-                        var url = aaData[5];
+                        var url = aaData[4];
                         if (url != undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);
