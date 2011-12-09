@@ -17,13 +17,13 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.consts import CASH  #Permission
 from gasistafelice.consts import GAS_MEMBER  #Role
 
-from datetime import datetime
+from datetime import tzinfo, timedelta, datetime
+
 import logging
 log = logging.getLogger(__name__)
 
 from django.core import validators
 from django.core.exceptions import ValidationError
-
 
 #-------------------------------------------------------------------------------
 
@@ -161,4 +161,77 @@ class EcoGASMemberRechargeForm(forms.Form):
             recharged = abs(recharged)
             refs = [gm, self.__gas]
             gm.person.accounting.do_recharge(self.__gas, amounted, refs)
+
+def get_year_choices():
+    #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
+    dt = datetime.now()
+    year = timedelta(days=365)
+    last_year = (dt-year).strftime('%Y')
+    actual_year = dt.strftime('%Y')
+    next_year = (dt+year).strftime('%Y')
+    return [ (last_year, last_year), (actual_year, actual_year), (next_year, next_year)]
+
+
+class EcoGASMemberFeeForm(forms.Form):
+    """Return form class for row level operation on cash ordered data
+    use in Fee 
+    Movement between GASMember.account --> GAS.GASMember.account
+    """
+    gm_id = forms.IntegerField(widget=forms.HiddenInput)
+    feeed = forms.BooleanField(required=False)
+    #year = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=get_year_choices())
+    year = forms.ChoiceField(required=False, widget=forms.Select, choices=get_year_choices())
+
+    #TODO: domthu: note
+    #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
+
+    def __init__(self, request, *args, **kw):
+        log.debug("    --------------       EcoGASMemberFeeForm")
+        super(EcoGASMemberFeeForm, self).__init__(*args, **kw)
+        self.fields['feeed'].widget.attrs['class'] = 'taright'
+        self.__loggedusr = request.user
+        self.__gas = request.resource.gas
+
+    def clean(self):
+
+        cleaned_data = super(EcoGASMemberFeeForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
+        except KeyError:
+            log.debug("EcoGASMemberFeeForm: cannot retrieve GASMember identifier. FORM ATTACK!")
+            raise 
+        except GASMember.DoesNotExist:
+            log.debug("EcoGASMemberFeeForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
+            raise
+           
+        return cleaned_data
+
+    def save(self):
+
+        #Control logged user
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+
+            log.debug("PermissionDenied %s in cash fee form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
+
+        gm = self.cleaned_data['gasmember']
+        #DOMTHU: if not gm in gas.gasmembers:  gm.has_role(GAS_MEMBER
+        #if not gm.has_perm(GAS_MEMBER, 
+        if not gm.person.user.has_perm(GAS_MEMBER, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+            log.debug("PermissionDenied %s in cash fee for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
+            raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!")
+
+        #Do economic work
+        feeed = self.cleaned_data.get('feeed')
+        year = self.cleaned_data.get('year')
+
+        if feeed and year:
+            refs = [gm, self.__gas]
+            gm.person.accounting.pay_membership_fee(self.__gas, year, refs)
 

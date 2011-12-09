@@ -244,7 +244,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions', 'recharge'] #Finalize Orders, transactions explode in Transact_Casa, Transact_Borselino
+        'blocks' : ['transactions', 'recharge', 'fee'] #Finalize Orders, transactions explode in Transact_Casa, Transact_Borselino
     },{
         'name' : 'archive',
         'descr' : 'Archivio',

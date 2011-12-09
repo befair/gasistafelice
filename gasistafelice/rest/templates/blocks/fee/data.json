@@ -7,8 +7,9 @@
 
         "{{row.pk|escapejs}}",
         "{{row|escapejs}}",
-        "{{row.last_recharge|escapejs}}",
-        "{{row.recharging|floatformat:"2"}}",
+        "{{row.last_fee|escapejs}}",
+        "",
+        "",
 
     ]
     {% if not forloop.last %}

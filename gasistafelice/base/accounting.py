@@ -28,6 +28,7 @@ class PersonAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A person can't pay membership fees to a GAS that (s)he is not member of")
         source_account = self.system['/wallet']
         exit_point = self.system['/expenses/gas/' + gas.uid + '/fees']
+        #FIXME: 'GAS' object has no attribute 'system
         entry_point =  gas.system['/incomes/fees']
         target_account = gas.system['/cash']
         amount = gas.membership_fee
@@ -39,6 +40,8 @@ class PersonAccountingProxy(AccountingProxy):
     def last_entry(self, base_path):
         """last entry for one subject"""
         rv = LedgerEntry.objects.none()
+        #DOMTHU: only for test
+        return rv
         latest = self.system[base_path].ledger_entries.latest('transaction__date')
         if latest:
             return latest
@@ -46,8 +49,6 @@ class PersonAccountingProxy(AccountingProxy):
         #FIXME: create last_entry or one method for each base_path? Encapsulation and refactoring
         #FIXME: self <gasistafelice.base.accounting.PersonAccountingProxy object at 0xabaf86c>
         #       base_path '/expenses/gas/gas-1/recharges'
-
-
 
     def do_recharge(self, gas, amount, refs=None):
         """
