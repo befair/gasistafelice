@@ -1,7 +1,7 @@
 """Models related to Order management (including state machine)."""
 
 from django.db import models
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from workflows.models import Workflow, Transition
@@ -19,6 +19,11 @@ from gasistafelice.gas.managers import AppointmentManager, OrderManager
 from gasistafelice.gas import signals
 from gasistafelice.base.models import Person
 from gasistafelice.consts import *
+from gasistafelice.gas.workflow_data import STATUS_PREPARED, STATUS_OPEN
+from gasistafelice.gas.workflow_data import STATUS_CLOSED, STATUS_UNPAID
+from gasistafelice.gas.workflow_data import STATUS_ARCHIVED, STATUS_CANCELED
+from gasistafelice.utils import long_date
+
 from flexi_auth.models import ParamRole
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.exceptions import WrongPermissionCheck
@@ -89,27 +94,57 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def __unicode__(self):
 
+        d = {}
+
+        d['date_start'] = long_date(self.datetime_start)
+
         if self.datetime_end is not None:
-            fmt_date = ('{0:%s}' % settings.DATE_FMT).format(self.datetime_end)
-            if self.is_active():
-                state = _("close on %(date)s") % { 'date' : fmt_date }
-            else:
-                state = _("closed on %(date)s") % { 'date' : fmt_date }
+            d['date_end'] = long_date(self.datetime_end)
+        try:
+            self.delivery
+        except Delivery.DoesNotExist:
+            d['date_delivery'] = None
         else:
-            if self.is_prepared():
-                state = _("prepared")
-            else:
-                state = _("open")
+            d['date_delivery'] = long_date(self.delivery.date)
 
-        if self.delivery and self.delivery.date is not None:
-            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
-            if self.is_active():
-                mdate = _(" --> to be delivered on %(date)s") % { 'date' : del_date }
-            else:
-                mdate = _(" delivered on %(date)s") % { 'date' : del_date }
+        state = self.current_state.name
+        date_info = "("
+        if state == STATUS_PREPARED:
+            date_info += ug("open on %(date_start)s")
+            if self.datetime_end:
+                date_info += ug(" - close on %(date_end)s")
+
+        elif state == STATUS_OPEN:
+            if self.datetime_end:
+                date_info += ug("close on %(date_end)s")
+
+            if d['date_delivery']:
+                date_info += ug(" --> to be delivered on %(date_delivery)s")
+
         else:
-            mdate = ""
+            date_info += "TODO"
 
+        date_info += ")"
+        date_info = date_info % d
+
+#            date_info = _("(open on %(date_start)s - close on %(date_end)s)") % d
+#
+#            state = _("close on %(date)s") % { 'date' : fmt_date }
+#        else:
+#            state = _("closed on %(date)s") % { 'date' : fmt_date }
+#
+#        else:
+#
+#        if self.delivery and self.delivery.date is not None:
+#            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
+#            if self.is_active():
+#                mdate = _(" --> to be delivered on %(date)s") % { 'date' : del_date }
+#            else:
+#                mdate = _(" delivered on %(date)s") % { 'date' : del_date }
+#        else:
+#            mdate = ""
+
+        state += " " + date_info
         ref = self.delivery_referrer_person
         if ref:
             ref = " Ref: %s " % ref
@@ -118,10 +153,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = _("Ord. %(order_num)s %(pact)s (%(state)s%(deldate)s)") % {
+        rv = _("Ord. %(order_num)s %(pact)s - %(state)s") % {
                     'pact' : self.pact,
                     'state' : state,
-                    'deldate' : mdate,
                     'order_num' : self.pk,
                     'ref' : ref
         }
@@ -247,7 +281,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if not self.pact.gas.config.auto_populate_products:
             self._msg = []
-            self._msg.append(ugettext("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
+            self._msg.append(ug("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
             return
 
         stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier, enabled =True)
@@ -303,7 +337,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append(ugettext('Deleting gas member %(member)s email %(email)s: Unit price(%(price)s) ordered quantity(%(quantity)s) total price(%(price)s) for product %(product)s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                self._msg.append(ug('Deleting gas member %(member)s email %(email)s: Unit price(%(price)s) ordered quantity(%(quantity)s) total price(%(price)s) for product %(product)s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 signals.gmo_product_erased.send(sender=self)
                 gmo.delete()
             self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))

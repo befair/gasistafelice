@@ -1,3 +1,5 @@
+from django.conf import settings
+
 def queryset_from_iterable(model, iterable):
     """
     Take a model class and an iterable containing instances of that model; 
@@ -16,3 +18,9 @@ def queryset_from_iterable(model, iterable):
             raise TypeError(_(u"Can't create a %(model)s QuerySet: %(obj)s is not an instance of model %(model)s"))
     qs = model._default_manager.filter(pk__in=id_set)
     return qs
+
+#-----------------------------------------------------------------------------------
+
+def long_date(d):
+    return d.strftime(settings.LONG_DATE_FMT).decode('utf-8')
+

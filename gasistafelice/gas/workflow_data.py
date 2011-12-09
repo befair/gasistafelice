@@ -7,6 +7,12 @@ from django.utils.translation import ugettext as _
 
 from gasistafelice.base.models import WorkflowDefinition
 
+STATUS_PREPARED = "Prepared"
+STATUS_OPEN = "Open"
+STATUS_CLOSED = "Closed"
+STATUS_UNPAID = "Unpaid"
+STATUS_ARCHIVED = "Archived"
+STATUS_CANCELED = "Canceled"
 
 # a dictionary containing all workflows declarations (as `WorkflowDefinition` objects)
 # listed in this module, keyed by name 
@@ -146,16 +152,16 @@ workflow_dict[name] = WorkflowDefinition(name, state_list, transition_list, stat
 #----------------------------------------------------------------------------- 
 ## default Workflow for a SupplierOrder 
 name="SimpleSupplierOrderDefault"
- 
+
 ## States in which a SupplierOrder can be
 state_list = (
           # (key, state name),
-           ('prepared', _("Prepared")), # SupplierOrder has been created
-           ('open', _("Open")), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
-           ('closed', _("Closed")), # SupplierOrder is closed; GasMemberOrders are disabled 
-           ('unpaid', _("Unpaid")), # SupplierOrder is unpaid (gas cash registered, but not paid to supplier)
-           ('archived', _("Archived")), # SupplierOrder is archived 
-           ('canceled', _("Canceled")),# SupplierOrder was canceled
+           ('prepared', STATUS_PREPARED), # SupplierOrder has been created
+           ('open', STATUS_OPEN), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
+           ('closed', STATUS_CLOSED), # SupplierOrder is closed; GasMemberOrders are disabled 
+           ('unpaid', STATUS_UNPAID), # SupplierOrder is unpaid (gas cash registered, but not paid to supplier)
+           ('archived', STATUS_ARCHIVED), # SupplierOrder is archived 
+           ('canceled', STATUS_CANCELED),# SupplierOrder was canceled
            #(exception_raised,"Exception raised")
 )
 

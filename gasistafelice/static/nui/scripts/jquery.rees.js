@@ -205,6 +205,7 @@ jQuery.UIBlock = Class.extend({
         var errors = this.set_parsed_data(data);
 
         if (errors) {
+            alert('qui abbiamo un bug');
             this.block_el.html(content);
             return;
         }
@@ -342,15 +343,23 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
             } else {
                 var error_list_html = '<ul class="errorlist">';
+                var stop_it = false;
                 for (var i=0; i<data['error_msg'].length; i++) {
                     var error_d = data['error_msg'][i];
                     if (!jQuery.isEmptyObject(error_d)) {
                         var n = i+1;
                         var error_html = '<li>Riga ' + n + ' - ';
                         for (var item in error_d) {
-                            error_html += item + " " + error_d[item];
+                            if (item != "__all__") {
+                                error_html += item + " " + error_d[item];
+                            } else {
+                                error_html += error_d[item];
+                                stop_it = true;
+                            }
                         }
                         error_list_html += error_html + "</li>";
+                        if (stop_it)
+                            break
                     }
                 }
                 error_list_html += "</ul>";

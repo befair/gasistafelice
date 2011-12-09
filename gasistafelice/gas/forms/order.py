@@ -399,11 +399,14 @@ class SingleGASMemberOrderForm(forms.Form):
         self.__gmusr = request.resource.gasmember.person.user
         self.__loggedusr = request.user
 
-    def save(self):
-
+    def clean(self):
+        cleaned_data = super(SingleGASMemberOrderForm, self).clean()
         if not self.__gmusr or self.__gmusr != self.__loggedusr:
             log.debug("------SingleGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
-            return
+            raise forms.ValidationError(_("You are not authorized to make an order for %(person)s") % {'person' :self.__gmusr})
+        return cleaned_data
+    def save(self):
+
         id = self.cleaned_data.get('id')
         if id:
             gmo = GASMemberOrder.objects.get(pk=id)
