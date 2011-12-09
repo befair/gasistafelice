@@ -5,10 +5,10 @@
     {% for row in records %}
     [
 
-        "{{row.pk|escapejs}}",
-        "{{row|escapejs}}",
+        "{{row.id|escapejs}}",
+        "{{row.gasmember|escapejs}}",
         "{{row.last_recharge|escapejs}}",
-        "{{row.recharging|floatformat:"2"}}",
+        "{{row.recharging|escapejs}}",
 
     ]
     {% if not forloop.last %}

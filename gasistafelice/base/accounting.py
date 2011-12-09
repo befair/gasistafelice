@@ -29,7 +29,7 @@ class PersonAccountingProxy(AccountingProxy):
         source_account = self.system['/wallet']
         exit_point = self.system['/expenses/gas/' + gas.uid + '/fees']
         #FIXME: 'GAS' object has no attribute 'system
-        #SOLVED: Do not pass gas but gas.accounting.system
+        #SOLVED: Do not pass gas but gas.accounting(.system)
         entry_point =  gas.system['/incomes/fees']
         target_account = gas.system['/cash']
         amount = gas.membership_fee

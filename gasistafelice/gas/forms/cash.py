@@ -147,11 +147,12 @@ class EcoGASMemberRechargeForm(forms.Form):
 
         gm = self.cleaned_data['gasmember']
         #DOMTHU: if not gm in gas.gasmembers:  gm.has_role(GAS_MEMBER
-        if not gm.has_perm(GAS_MEMBER, 
-            obj=ObjectWithContext(self.__gas)
-        ):
-            log.debug("PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-            raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!")
+        #if not gm.has_perm(GAS_MEMBER, 
+#        if not gm.person.user.has_perm(GAS_MEMBER, 
+#            obj=ObjectWithContext(self.__gas)
+#        ):
+#            log.debug("PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
+#            raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!")
 
         #Do economic work
         recharged = self.cleaned_data.get('recharged')
@@ -161,7 +162,8 @@ class EcoGASMemberRechargeForm(forms.Form):
             recharged = abs(recharged)
             gas_system = self.__gas.accounting.system
             refs = [gm, self.__gas]
-            gm.person.accounting.do_recharge(gas_system, amounted, refs)
+            #FIXME: GAS membership can only be tested against a GAS model instance
+            gm.person.accounting.do_recharge(gas_system, recharged, refs)
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
