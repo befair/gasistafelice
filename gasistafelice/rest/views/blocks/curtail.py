@@ -2,7 +2,6 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
@@ -16,6 +15,7 @@ from django.template import Context
 import cgi, os
 from django.conf import settings
 
+from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE
 from flexi_auth.models import ObjectWithContext
 
 import logging
@@ -53,22 +53,27 @@ class Block(BlockSSDataTables):
 
         #FIXME: Check if order is in "closed_state"  Not in Open STATE for CASH REFERRER
         #if request.user.has_perm(CASH, obj=ObjectWithContext(request.resource)):
-        user_actions += [
-            ResourceBlockAction(
-                block_name = self.BLOCK_NAME,
-                resource = request.resource,
-                name=VIEW, verbose_name=_("Show"),
-                popup_form=False,
-                method="get",
-            ),
-            ResourceBlockAction(
-                block_name = self.BLOCK_NAME,
-                resource = request.resource,
-                name=EDIT_MULTIPLE, verbose_name=_("Edit"),
-                popup_form=False,
-                method="get",
-            ),
-        ]
+
+        gas = request.resource.order.pact.gas
+
+        if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+
+            user_actions += [
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=VIEW, verbose_name=_("Show"),
+                    popup_form=False,
+                    method="get",
+                ),
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
+                    popup_form=False,
+                    method="get",
+                ),
+            ]
         return user_actions
 
     def _get_resource_list(self, request):

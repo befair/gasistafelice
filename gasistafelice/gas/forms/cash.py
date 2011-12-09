@@ -14,7 +14,8 @@ from gasistafelice.lib.fields.forms import CurrencyField
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 from flexi_auth.models import ObjectWithContext
-from gasistafelice.consts import CASH
+from gasistafelice.consts import CASH  #Permission
+from gasistafelice.consts import GAS_MEMBER  #Role
 
 from datetime import datetime
 import logging
@@ -145,9 +146,11 @@ class EcoGASMemberRechargeForm(forms.Form):
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
         gm = self.cleaned_data['gasmember']
-
-        if not gm in gas.gasmembers:
-            log.debug("PermissionDenied %s in cash recharge form for gasmember in other gas" % self.__loggedusr)
+        #DOMTHU: if not gm in gas.gasmembers:  gm.has_role(GAS_MEMBER
+        if not gm.has_perm(GAS_MEMBER, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+            log.debug("PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
             raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!")
 
         #Do economic work
