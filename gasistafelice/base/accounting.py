@@ -14,7 +14,7 @@ class PersonAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``Person``' model.    
     """
     
-    def pay_membership_fee(self, gas, year):
+    def pay_membership_fee(self, gas, year, refs=None):
         """
         Pay the annual membership fee for a GAS this person is member of.
         
@@ -35,8 +35,17 @@ class PersonAccountingProxy(AccountingProxy):
         issuer = person 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
-        
-    def do_recharge(self, gas, amount):
+
+    def last_entry(self, base_path):
+        """last entry for one subject"""
+        rv = LedgerEntry.objects.none()
+        latest = self.system[base_path].ledger_entries.latest('transaction__date')
+        if latest:
+            return latest
+        return rv
+        #FIXME: create last_entry or one method for each base_path? Encapsulation and refactoring
+
+    def do_recharge(self, gas, amount, refs=None):
         """
         Do a recharge of amount ``amount`` to the corresponding member account
         in the GAS ``gas``.

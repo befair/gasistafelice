@@ -972,7 +972,7 @@ class GASMember(models.Model, PermissionResource):
         all_member_trx |= self.gas.accounting.entries('/members/' + self.person.uid)
         all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/fees')
         all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/recharges')
-        return all_member_trx 
+        return all_member_trx
 
     @property
     def tot_eco(self):
@@ -982,6 +982,31 @@ class GASMember(models.Model, PermissionResource):
         #FIXME: return source_account.amount?
         return acc_tot
 
+    @property
+    def last_recharge(self):
+        """last reharge for this gasmember"""
+        rv = ''
+        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/recharges/')
+        if latest:
+            return u"%(amount)s\u20AC %(date)s %(note)s" % {
+                'amount' : latest.amount,
+                'date': latest.date.strftime("%A, %d %B %Y - %H:%M"),
+                'note': latest.description,
+            }
+        return rv
+
+    @property
+    def last_fee(self):
+        """last fee for this gasmember"""
+        rv = ''
+        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/fees')
+        if latest:
+            return u"%(amount)s\u20AC %(date)s %(note)s" % {
+                'amount' : latest.amount,
+                'date': latest.date.strftime("%A, %d %B %Y - %H:%M"),
+                'note': latest.description,
+            }
+        return rv
 
 #------------------------------------------------------------------------------
 
