@@ -37,7 +37,7 @@ class EcoGASMemberForm(forms.Form):
 
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
     original_amounted = CurrencyField(required=False, widget=forms.HiddenInput())
-    amounted = CurrencyField(required=False, initial=0) #, widget=forms.TextInput())
+    amounted = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2) #, widget=forms.TextInput())
 
     #TODO: domthu: note and delete
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
@@ -109,7 +109,7 @@ class EcoGASMemberRechargeForm(forms.Form):
     """
 
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
-    recharged = CurrencyField(required=False, initial=0)
+    recharged = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2)
 
     #TODO: domthu: note and delete
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
