@@ -29,7 +29,7 @@ class Block(details.Block):
         refs = [] #request.resource.cash_referrers
 
         # REMOVE programmatically managed transitions
-        for action in ['transition/make unpaid']:
+        for action in ['transition/make unpaid', 'transition/Close and send email']:
             try:
                 for ua in user_actions:
                     if ua.name == action:
@@ -38,10 +38,6 @@ class Block(details.Block):
                 pass
 
         #FIXME: disabled actions until implemented
-        try:
-            user_actions.remove('close_and_send')
-        except ValueError:
-            pass
 
         if refs and request.user in refs:
             log.debug("--------------       order_details actions refs.count() = %s- " % (refs.count()))

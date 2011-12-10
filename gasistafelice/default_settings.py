@@ -296,7 +296,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{ 
         'name' : 'delivery',
         'descr': 'Pagamento',
-        'blocks': ['order_cash', 'curtail']
+        'blocks': ['order_invoice', 'curtail']
     }],
 
     'person' : [{

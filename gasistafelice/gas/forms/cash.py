@@ -244,11 +244,14 @@ class EcoGASMemberFeeForm(forms.Form):
 #class CashOrderForm(forms.ModelForm):
 class CashOrderForm(forms.Form):
 
-    log.debug("CashOrderForm")
+    amount = CurrencyField(required=True)
+    note = forms.CharField(widget=widgets.TextInput())
 
     def __init__(self, request, *args, **kw):
 
-        super(CashOrderForm, self).__init__(request, *args, **kw)
+        log.debug("CashOrderForm")
+
+        super(CashOrderForm, self).__init__(*args, **kw)
 
         #SOLIDAL PACT
         pact = request.resource.pact
@@ -274,6 +277,9 @@ class CashOrderForm(forms.Form):
 #            self.instance.withdrawal = w
 
         return super(CashOrderForm, self).save()
+
+    def save(self):
+        raise ValueError("prova")
 
     class Meta:
         model = GASSupplierOrder
