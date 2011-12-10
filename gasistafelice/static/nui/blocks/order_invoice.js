@@ -12,6 +12,10 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
         }
     },
 
+    render_actions : function(data) {
+        return ""
+    },
+
     render_content : function(data) {
 
         function capitalize_str(s) {
@@ -20,57 +24,6 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
             return s;
         }
         
-            
-        //template elements
-        var details_template = "\
-        <div>\
-            <form >\
-            @@content@@\
-            </form>\
-        </div>\
-        "
-
-/*
-            <table border='0' width='100%' > \n\
-                <tr>\n\
-                    <td valign='center' width='100%'>\n\
-                        \n\
-                        <table border='0'>\n\
-                            <tr>\
-                                <td colspan='2'>\
-                                    <a class='ctx_enabled resource inline @@resource_type@@' href='#rest/@@resource_type@@/@@resource_id@@/'>@@resource_descr@@</a> \n\
-                                </td>\
-                            </tr>\
-                            @@inforow@@\n\
-                        </table>\n\
-                    </td>\n\
-                    <td valign='top' align='center'>\n\
-                        <img style='margin:5px' src='@@img@@'>\n\
-                    </td>\n\
-                </tr>\n\
-                <tr >\n\
-                    <td colspan='2'>\n\
-                        @@more_details@@\n\
-                    </td>\n\
-                </tr>\
-            \n\
-            </table>\n\
-            </br>\n\
-            <table border='0'> \n\
-                <tr >\n\
-                    <td>\n\
-                        <table> \n\
-                            @@notes_rows@@ \n\
-                        </table> \n\
-                    </td>\n\
-                </tr>\n\
-            </table>\n\
-            \
-        </div>";
-        
-*/        
-
-
         BLOCK_ELEMENT = jQuery.parseXml(data);
 
         //code
@@ -79,11 +32,41 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
         if (jQel.children('error').length != 0)
             return jQel.text()
         
-        var form_html = jQel.find('content[type="table"]').html();
-            
-        details_template = details_template.replace(/@@content@@/g, form_html);
+        //template elements
+        var content_template = "\
+        <div>\
+            <form method="POST" action="@@action_url@@">\
+            <div class="list_actions">@@list_actions@@</div> \
+            @@content@@\
+            </form>\
+        </div>\
+        "
+
+        //Render block actions
+        var contents = jQel.find('content[type="user_actions"]');
+
+        var action_template = "<input type='submit' href=\"#\" name=\"@@action_name@@\" value=\"@@action_verbose_name@@\" />";
+        var actions = '';
+
+        var form_url = "";
+        if (contents.find('action').length > 0) {
         
-        return details_template;
+            contents.find('action').each(function(){
+                var action = action_template.replace(/@@action_name@@/g, $(this).attr("name"));
+                action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
+                form_url = $(this).attr("url");
+                actions += action;
+            });
+        }
+
+        content_template = content_template.replace('@@list_actions@@', actions);
+        content_template = content_template.replace(/@@action_url@@/g, form_url);
+            
+
+        var form_content = jQel.find('content[type="table"]').html();
+        content_template = content_template.replace(/@@content@@/g, form_content);
+        
+        return content_template;
         
         //var b = jQel.find('block[type=details]');
         var sanet_urn     = jQel.attr('sanet_urn');
