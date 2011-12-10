@@ -29,7 +29,10 @@ urlpatterns = patterns('',
 	(r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
+)
 
+urlpatterns += patterns('',
+    url(r'^%scaptcha/' % settings.URL_PREFIX, include('captcha.urls')),
 )
 
 if settings.DEBUG:

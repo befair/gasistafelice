@@ -16,7 +16,7 @@
     Il GAS può inserirti come fornitore del DES,   
 </div>
 
-<div class="registration">
+<div style="margin: 2em 0.5em;" class="registration">
 {# Registration form #}
 <form method="post" action="{% url 'des.views.registration' %}">
 {% csrf_token %}
@@ -25,7 +25,7 @@
  {{ registration_form.as_table }}   
 </table>
 
-<input type="submit" value="register" />
+<input type="submit" value="Invia la richiesta di registrazione" />
 </form>
 
 </div>

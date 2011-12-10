@@ -5,6 +5,8 @@ from django import forms
 from django.db import transaction
 from django.contrib.auth.models import User
 
+from captcha.fields import CaptchaField
+
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 from gasistafelice.consts import SUPPLIER_REFERRER
 
@@ -32,6 +34,9 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         label="Numero di telefono",
         required=True,
         help_text="È importante poter contattare chi si registra via telefono"
+    )
+    recaptcha = CaptchaField(label="Inserisci le lettere che leggi " + 
+        "per farci capire che non sei un programma automatico"
     )
 
     def clean(self):
@@ -90,8 +95,8 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         supplier = self.cleaned_data.get('supplier_choice')
         if supplier:
             pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=supplier)
-            ppr = PrincipalParamRoleRelation.objects.get(
-                user=user, role=ppr
+            ppr = PrincipalParamRoleRelation.objects.create(
+                user=user, role=pr
             )
             ppr.save()
 
