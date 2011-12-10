@@ -273,7 +273,9 @@ class CashOrderForm(forms.Form):
         self.fields['order_info'].widget.attrs['readonly'] = True
         self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
         print "AAAA: %s " % self.__order
-
+        self.__loggedusr = request.user
+        self.__gas = self.__order.gas
+        
     def clean(self):
 
         cleaned_data = super(CashOrderForm, self).clean()
@@ -307,10 +309,15 @@ class CashOrderForm(forms.Form):
             log.debug("PermissionDenied %s in cash fee form" % self.__loggedusr)
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
-        self.__order.invoice_amount = cleaned_data['amount']
-        self.__order.invoice_note = cleaned_data['note']
+        self.__order.invoice_amount = self.cleaned_data['amount']
+        self.__order.invoice_note = self.cleaned_data['note']
         
-        self.__order.save()
+        try:
+            self.__order.save()
+        except ValueError, e:
+            print "retry later " +  e.message
+        else:
+            print "Invoice saved"
 
 
 

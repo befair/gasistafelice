@@ -2,6 +2,7 @@
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse
+from django.db import transaction
 
 from flexi_auth.models import ObjectWithContext
 
@@ -58,20 +59,16 @@ class Block(AbstractBlock):
             }
             return render_to_xml_response('blocks/order_invoice.xml', ctx)
         elif args == "INCOME":
-            print "--------1"
             if request.method == 'POST':
-                print "--------2"
 
                 form = CashOrderForm(request, request.POST)
 
                 if form.is_valid():
                     with transaction.commit_on_success():
                         if form.cleaned_data:
-                            print "--------3"
                             form.save()
-                    return self.response_success()
+                    return self.response_success("Good")
                 else:
-                    print "--------error unvalid"
                     return self.response_error(form.errors)
 
 
