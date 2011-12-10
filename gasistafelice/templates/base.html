@@ -10,14 +10,21 @@
 
 	<title>GASISTA FELICE</title>
 
-	<link rel="stylesheet" type="text/css" href="/static/nui/style/wholestyle.css" />
-	<link rel="stylesheet" type="text/css" href="/static/nui/style/nuvola.css" title="nuvola" />
-	<link rel="alternate stylesheet" type="text/css" href="/static/nui/style/tango.css" title="tango" />
-
 	<link rel="stylesheet" type="text/css" href="/static/nui/style/jquery-ui-1.7.2.custom.css" />
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}nui/style/wholestyle.css" />
+
+
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}nui/style/{{ THEME }}.css" title="{{ THEME }}" />
+    <link rel="alternate stylesheet" type="text/css" href="{{ MEDIA_URL }}nui/style/nuvola.css" title="nuvola" />
+    <link rel="alternate stylesheet" type="text/css" href="{{ MEDIA_URL }}nui/style/tango.css" title="tango" />
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}nui/style/enrico.css" />
+    <link href="{{ ADMIN_MEDIA_PREFIX }}css/base.css" type="text/css" rel="stylesheet">
+
 </head>
 <body>
+<div style="padding:1em; max-width:600px; line-height:1.5em;">
 {% block content %} {% endblock %}
+</div>
 {% block footer %}<div style="text-align: center; font-style: italic; font-size: 10px; margin-bottom: 20px;">Gasista Felice - v{% des_version %}</div>{% endblock %}
 </body>
 </html>

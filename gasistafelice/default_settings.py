@@ -130,6 +130,8 @@ INSTALLED_APPS = [
     'gasistafelice.localejs',
     'notification',
     'gasistafelice.des_notification',
+    'registration',
+    'captcha',
     #'south',
 ]
 
@@ -377,3 +379,5 @@ NOTIFICATION_BACKENDS = (
     ("email", "notification.backends.email.EmailBackend"),
 )
 
+CAPTCHA_FONT_SIZE = 40
+APTCHA_LETTER_ROTATION = (-25,25)
