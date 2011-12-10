@@ -253,10 +253,10 @@ class CashOrderForm(forms.Form):
         #SOLIDAL PACT
         pact = request.resource.pact
         delivery = request.resource.delivery
-#        ref = request.resource.delivery_referrer_person
+#        ref = request.resource.referrer_person
 #        if ref:
 #            #control if queryset not empty.
-#            self.fields['delivery_referrer_person'].initial = ref
+#            self.fields['referrer_person'].initial = ref
 #        if request.resource.datetime_end:
 #            self.fields['datetime_end'].initial = request.resource.datetime_end
 #        if delivery and delivery.date:

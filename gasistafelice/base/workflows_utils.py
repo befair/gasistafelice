@@ -38,6 +38,10 @@ def get_allowed_transitions(obj, user):
         if user in pr.get_users():
             rv = workflows.utils.get_allowed_transitions(obj, user)
             break
+        elif isinstance(obj, GASSupplierOrder) and user.person == obj.referrer_person:
+            #FIXME: ugly !
+            rv = workflows.utils.get_allowed_transitions(obj, user)
+            break
         else:
             rv = []
 

@@ -84,7 +84,7 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         #return request.resource.stocks
         # GASSupplierOrderProduct objects
-        return request.resource.orderable_products
+        return request.resource.orderable_products.filter(gasmember_order_set__ordered_amount__gt=0).distinct()
 
     def _get_resource_families(self, request):
         return request.resource.ordered_products
@@ -104,7 +104,7 @@ class Block(BlockSSDataTables):
         i = 0
         c = querySet.count()
         map_info = { }
-        av = True
+        av = False
 
         for i,el in enumerate(querySet):
 
@@ -131,7 +131,7 @@ class Block(BlockSSDataTables):
                'id' : el.pk,
                'product' : el.product,
                'price' : el.order_price,
-               'price_changed' : el.has_changed,
+               'price_changed' : el.has_changed_price,
                'tot_gasmembers' : el.tot_gasmembers,
                'unconfirmed' : el.unconfirmed_orders,
                'ordered_amount' : el.tot_amount,
@@ -235,7 +235,7 @@ class Block(BlockSSDataTables):
         #order = self.resource.order
         order = self.resource
         #TODO: order_by('somefield')
-        querySet = self._get_resource_list(self.request).filter(gasmember_order_set__ordered_amount__gt=0).distinct()
+        querySet = self._get_resource_list(self.request)
         fams, total_calc, subTotals, fam_count = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
         context_dict = {
             'order' : order,

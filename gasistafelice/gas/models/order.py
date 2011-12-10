@@ -145,7 +145,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 #            mdate = ""
 
         state += " " + date_info
-        ref = self.delivery_referrer_person
+        ref = self.referrer_person
         if ref:
             ref = " Ref: %s " % ref
         elif self.referrer_person:
@@ -256,6 +256,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         pact_refs = self.pact.referrers
         if not pact_refs:
             pact_refs = self.pact.gas.referrers
+        pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
         return pact_refs
 
     @property
@@ -643,12 +644,6 @@ WHERE order_id = %s \
         if created:
             self.set_default_gasstock_set()
 
-        if not self.referrer_person and self.delivery_referrer_person:
-            self.referrer_person = self.delivery_referrer_person
-        if not self.delivery_referrer_person and self.referrer_person:
-            self.delivery_referrer_person = self.referrer_person
-
-        
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    
@@ -737,7 +732,7 @@ WHERE order_id = %s \
         display.Resource(name="supplier", verbose_name=_("Supplier")),
         models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
         datetime_start, datetime_end, order_minimum_amount, 
-        delivery, display.Resource(name="delivery_referrer_person", verbose_name=_("Delivery referrer")),
+        delivery, display.Resource(name="referrer_person", verbose_name=_("Referrer")),
         withdrawal, display.Resource(name="withdrawal_referrer_person", verbose_name=_("Withdrawal referrer")),
     )
 

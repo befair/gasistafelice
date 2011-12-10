@@ -29,9 +29,11 @@ class Block(details.Block):
         refs = [] #request.resource.cash_referrers
 
         # REMOVE programmatically managed transitions
-        for action in ['make_unpaid']:
+        for action in ['transition/make unpaid']:
             try:
-                user_actions.remove(action)
+                for ua in user_actions:
+                    if ua.name == action:
+                        user_actions.remove(ua)
             except ValueError:
                 pass
 
@@ -63,7 +65,6 @@ class Block(details.Block):
 
 
             ]
-
 
 #            act_configure = ResourceBlockAction(
 #                    block_name = self.BLOCK_NAME,

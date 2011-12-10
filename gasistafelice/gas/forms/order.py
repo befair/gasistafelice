@@ -4,6 +4,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
+from django.db import transaction
 from django.forms.formsets import formset_factory
 from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
@@ -79,7 +80,7 @@ class BaseOrderForm(forms.ModelForm):
 
     delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
-    delivery_referrer_person = forms.ModelChoiceField(label=_('referrer'), queryset=Person.objects.none(), required=True, error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')})
+    referrer_person = forms.ModelChoiceField(label=_('referrer'), queryset=Person.objects.none(), required=True, error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')})
 
     def __init__(self, request, *args, **kw):
         #Strip request arg
@@ -90,7 +91,7 @@ class BaseOrderForm(forms.ModelForm):
 #        if not referrers.count():
 #            raise PermissionDenied(_("You cannot open an order without referrers"))
 
-        self.fields['delivery_referrer_person'].queryset = referrers
+        self.fields['referrer_person'].queryset = referrers
         if self.fields.get('withdrawal_referrer_person'):
             self.fields['withdrawal_referrer_person'].queryset = referrers
 
@@ -176,11 +177,11 @@ class AddOrderForm(BaseOrderForm):
             self.fields['pact'].initial = pacts[0]
 
             # Person is the current user: referrers
-            log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['delivery_referrer_person'].queryset)
-            if request.user.person in self.fields['delivery_referrer_person'].queryset:
-                self.fields['delivery_referrer_person'].initial = request.user.person
-            elif self.fields['delivery_referrer_person'].queryset.count() > 0:
-                self.fields['delivery_referrer_person'].initial = self.fields['delivery_referrer_person'].queryset[0]
+            log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['referrer_person'].queryset)
+            if request.user.person in self.fields['referrer_person'].queryset:
+                self.fields['referrer_person'].initial = request.user.person
+            elif self.fields['referrer_person'].queryset.count() > 0:
+                self.fields['referrer_person'].initial = self.fields['referrer_person'].queryset[0]
 
 #        # Order referrer is not needed: pact referrers are enough!
 #        if request.user.person in self.fields['referrer_person'].queryset:
@@ -212,6 +213,7 @@ class AddOrderForm(BaseOrderForm):
             #log.debug("AddOrderForm delivery %s --> %s" % (d, dt))
 
     #def save(self, commit=True):
+    @transaction.commit_on_success
     def save(self, *args, **kwargs):
         self.instance.pact = self.cleaned_data['pact']
         _gas = self.instance.pact.gas
@@ -242,13 +244,13 @@ class AddOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['pact', 'datetime_start', 'datetime_end', 'delivery_referrer_person']
+        fields = ['pact', 'datetime_start', 'datetime_end', 'referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
-                            , 'delivery_referrer_person'
+                            , 'referrer_person'
                             , 'email_gas'
             ]
         })]
@@ -258,19 +260,20 @@ class AddOrderForm(BaseOrderForm):
 
 class EditOrderForm(BaseOrderForm):
 
-    log.debug("EditOrderForm")
 
     def __init__(self, request, *args, **kw):
+
+        log.debug("EditOrderForm")
 
         super(EditOrderForm, self).__init__(request, *args, **kw)
 
         #SOLIDAL PACT
         pact = request.resource.pact
         delivery = request.resource.delivery
-        ref = request.resource.delivery_referrer_person
+        ref = request.resource.referrer_person
         if ref:
             #control if queryset not empty.
-            self.fields['delivery_referrer_person'].initial = ref
+            self.fields['referrer_person'].initial = ref
         if request.resource.datetime_end:
             self.fields['datetime_end'].initial = request.resource.datetime_end
         if delivery and delivery.date:
@@ -290,12 +293,12 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['datetime_start', 'datetime_end', 'delivery_referrer_person', 'delivery_cost']
+        fields = ['datetime_start', 'datetime_end', 'referrer_person', 'delivery_cost']
 
         gf_fieldsets = [(None, {
             'fields' : [ ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
-                            , 'delivery_referrer_person'
+                            , 'referrer_person'
             ]
         })]
 

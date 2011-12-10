@@ -129,7 +129,8 @@ class Block(AbstractBlock):
                     ResourceBlockAction( 
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
-                        name="transition/%s" % t.name.lower(), verbose_name=translated_t, 
+                        name="transition/%s" % t.name.lower(), 
+                        verbose_name=translated_t, 
                         popup_form=False,
                         url=None
                     )
