@@ -130,6 +130,7 @@ INSTALLED_APPS = [
     'gasistafelice.localejs',
     'notification',
     'gasistafelice.des_notification',
+    'registration',
     #'south',
 ]
 

@@ -2,7 +2,10 @@
 {% load url from future %}
 
 {% block content %}
+<div style="padding:1em; max-width:600px; line-height:1.5em;">
+<h1>Accedi per ordinare nel DES </h1>
 
+<div style="margin: 2em 0.5em;">
 {% if form.errors %}
 {{ form.non_field_errors }}
 <p>Tieni presente che potresti non accedere perché ancora non hai alcun ruolo nel DES.<br />
@@ -10,7 +13,7 @@ Fatti assegnare un ruolo dal referente informatico di un GAS con cui sei in cont
 A presto allora!</p>
 {% endif %}
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+<form method="post" action="{% url 'des.views.login' %}">
 {% csrf_token %}
 <table>
 <tr>
@@ -26,6 +29,11 @@ A presto allora!</p>
 <input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
+</div>
+
+<h2>Fai parte del DES, ma non hai ancora accesso alla piattaforma? 
+<a href="{% url 'des.views.registration' %}">Registrati ora</a>
+</h2>
 
 <style type="text/css">
 .traditional-list { margin-left: 2em; padding:0.2em;}
@@ -78,7 +86,7 @@ ul.traditional-list { list-style-type:circle; }
 </ol>
 </ul>
 
-<h3 style="padding:1.3em 0; text-align:center;">Per avere maggiori dettagli sulle attività di sviluppo, consulta <a target="_blank" href="http://www.jagom.org/trac/reesgas/report/1">la pagina dei ticket</a> (non è sempre aggiornata)</h3>
+<h3 style="padding:1.3em 0; text-align:center;">Per avere maggiori dettagli sulle attività di sviluppo, consulta <br /><a target="_blank" href="http://www.jagom.org/trac/reesgas/report/1">la pagina dei ticket</a> <br /> (ci sono anche cose vecchie, ad uso e consumo degli sviluppatori)</h3>
 
-
+</div>
 {% endblock %}

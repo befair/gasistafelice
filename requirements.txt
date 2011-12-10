@@ -11,3 +11,4 @@ pysqlite>=1.0.1
 file:../gasistafelice/submodules/django-simple-accounting
 file:../gasistafelice/submodules/django-flexi-auth
 file:../gasistafelice/submodules/django-notification
+django-registration
