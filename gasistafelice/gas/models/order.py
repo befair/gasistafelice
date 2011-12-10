@@ -119,12 +119,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 if self.datetime_end:
                     date_info += ug("Close: %(date_end)s")
 
-                if d['date_delivery']:
-                    date_info += ug(" --> Deliver: %(date_delivery)s")
+#                if d['date_delivery']:
+#                    date_info += ug(" --> Deliver: %(date_delivery)s")
     
             elif state == STATUS_CLOSED:
-                if self.datetime_end:
-                    date_info += ug("Closed: %(date_end)s")
+#                if self.datetime_end:
+#                    date_info += ug("Closed: %(date_end)s")
 
                 if d['date_delivery']:
                     date_info += ug(" --> to deliver: %(date_delivery)s  --> to pay")
@@ -607,12 +607,14 @@ WHERE order_id = %s \
     @property
     def tot_curtail(self):
         tot = 0
-        #TODO: ECO Accounting retrieve all GASMember for this order that have curtail payment
+        accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
+        for member in accounted_amounts:
+            tot += (member.accounted_amount or 0)
         return tot
 
     @property
     def payment(self):
-        mvt = 'TODO: ECO'
+        mvt = 0
         #TODO: ECO Accounting retrieve the payment for this order
         return mvt
 
@@ -624,6 +626,14 @@ WHERE order_id = %s \
         #So we have to go to the order details in EDIT mode?
         return mvt_urn
 
+    @property
+    def insolutes(self):
+        orders = GASSupplierOrder.objects.closed().filter(pact=self.pact) | \
+            GASSupplierOrder.objects.unpaid().filter(pact=self.pact)
+#        orders = None
+#        orders |= GASSupplierOrder.objects.closed().filter(pact=self.pact)
+#        orders |= GASSupplierOrder.objects.unpaid().filter(pact=self.pact)
+        return orders
 
     def save(self, *args, **kw):
         created = False

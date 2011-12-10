@@ -258,21 +258,21 @@ class CashOrderForm(forms.Form):
         self.__order = request.resource.order
         if self.__order:
             #set order informations
-            self.fields['order_info'].initial = "Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; " % {
+            self.fields['order_info'].initial = ("Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; --> Pag: %(eco)s &euro;" % {
                 'fam' : "%.2f" % round(self.__order.tot_price, 2)
                 , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
-            }
+                , 'eco' : "%.2f" % round(self.__order.tot_curtail, 2)
+            })
 
             #set invoice data
             if self.__order.invoice_amount:
                 self.fields['amount'].initial = self.__order.invoice_amount
             if self.__order.invoice_note:
-                self.fields['amount'].initial = self.__order.invoice_note
+                self.fields['note'].initial = self.__order.invoice_note
 
         self.fields['order_info'].widget.attrs['class'] = 'info input_long'
         self.fields['order_info'].widget.attrs['readonly'] = True
         self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
-        print "AAAA: %s " % self.__order
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
         
@@ -283,10 +283,10 @@ class CashOrderForm(forms.Form):
         try:
             cleaned_data['invoice'] = abs(cleaned_data['amount'])
         except KeyError:
-            log.debug("CashOrderForm: cannot retrieve GASMember identifier. FORM ATTACK!")
+            log.debug("CashOrderForm: cannot retrieve order identifier. FORM ATTACK!")
             raise 
         except GASSupplierOrder.DoesNotExist:
-            log.debug("CashOrderForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
+            log.debug("CashOrderForm: cannot retrieve order instance. Identifier (%s)." % cleaned_data['gm_id'])
             raise
            
         return cleaned_data
@@ -294,7 +294,6 @@ class CashOrderForm(forms.Form):
     @transaction.commit_on_success
     def save(self):
         #raise ValueError("prova")
-        print "BBBB: %s " % self.__order
 
         #Do economic work
         if not self.__order:
@@ -306,8 +305,8 @@ class CashOrderForm(forms.Form):
             obj=ObjectWithContext(self.__gas)
         ):
 
-            log.debug("PermissionDenied %s in cash fee form" % self.__loggedusr)
-            raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
+            log.debug("PermissionDenied %s in cash invoice receipt form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot manage receipt invoice cash!")
 
         self.__order.invoice_amount = self.cleaned_data['amount']
         self.__order.invoice_note = self.cleaned_data['note']
@@ -319,6 +318,106 @@ class CashOrderForm(forms.Form):
         else:
             print "Invoice saved"
 
+#-------------------------------------------------------------------------------
+
+
+class InsoluteOrderForm(forms.Form):
+
+    order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
+    orders = forms.ModelMultipleChoiceField(label=_("Insolute order(s)"), 
+        queryset=GASSupplierOrder.objects.none(), required=True, widget=forms.CheckboxSelectMultiple
+    )
+    orders2 = forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple)
+    amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
+    note = forms.CharField(label=_('Causale'), required=False, widget=forms.TextInput)
+
+    def __init__(self, request, *args, **kw):
+
+        log.debug("InsoluteOrderForm")
+
+        super(InsoluteOrderForm, self).__init__(*args, **kw)
+
+        #SOLIDAL PACT
+        self.__order = request.resource.order
+        if self.__order:
+
+            #set insolute data
+            if self.__order.invoice_amount:
+                self.fields['amount'].initial = self.__order.invoice_amount
+            if self.__order.invoice_note:
+                self.fields['note'].initial = self.__order.invoice_note
+
+            insolutes = self.__order.insolutes
+            _choice = []
+            tot_ordered = 0
+            tot_invoiced = 0
+            tot_eco_entries = 0
+            for ins in insolutes:
+                tot_ordered += ins.tot_price
+                tot_invoiced += ins.invoice_amount or 0
+                tot_eco_entries += ins.tot_curtail
+                _choice.append((ins.pk, ("Total. Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; --> Fatt: %(eco)s &euro;" % {
+                'fam' : "%.2f" % round(ins.tot_price, 2)
+                , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+                , 'eco' : "%.2f" % round(ins.tot_curtail, 2)
+            } )))
+            self.fields['orders'].queryset = insolutes
+            self.fields['orders2'].choices = _choice
+
+            #set order informations  &euro; &#128; 	&#x80;
+            self.fields['order_info'].initial = ("Total. Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; --> Fatt: %(eco)s &euro;" % {
+                'fam' : "%.2f" % round(tot_ordered, 2)
+                , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+                , 'eco' : "%.2f" % round(tot_eco_entries, 2)
+            } )#.encode('iso-8859-1') ('utf-8')
+            self.fields['order_info'].widget.attrs['class'] = 'info input_long'
+            self.fields['order_info'].widget.attrs['readonly'] = True
+            self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
+
+        self.__loggedusr = request.user
+        self.__gas = self.__order.gas
+        
+    def clean(self):
+
+        cleaned_data = super(InsoluteOrderForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['invoice'] = abs(cleaned_data['amount'])
+        except KeyError:
+            log.debug("InsoluteOrderForm: cannot retrieve order identifier. FORM ATTACK!")
+            raise 
+        except GASSupplierOrder.DoesNotExist:
+            log.debug("InsoluteOrderForm: cannot retrieve order instance. Identifier (%s)." % cleaned_data['gm_id'])
+            raise
+           
+        return cleaned_data
+
+    @transaction.commit_on_success
+    def save(self):
+        #raise ValueError("prova")
+
+        #Do economic work
+        if not self.__order:
+            return
+
+        #Control logged user
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+
+            log.debug("PermissionDenied %s in cash insolute form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot manage insolute order cash!")
+
+        self.__order.invoice_amount = self.cleaned_data['amount']
+        self.__order.invoice_note = self.cleaned_data['note']
+        
+        try:
+            self.__order.save()
+        except ValueError, e:
+            print "retry later " +  e.message
+        else:
+            print "Invoice saved"
 
 
 
