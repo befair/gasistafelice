@@ -100,49 +100,53 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if self.datetime_end is not None:
             d['date_end'] = long_date(self.datetime_end)
-        try:
-            self.delivery
-        except Delivery.DoesNotExist:
-            d['date_delivery'] = None
-        else:
-            d['date_delivery'] = long_date(self.delivery.date)
+        d['date_delivery'] = ""
+        if self.delivery:
+            if self.delivery.date:
+                d['date_delivery'] = long_date(self.delivery.date)
 
-        state = self.current_state.name
-        date_info = "("
-        if state == STATUS_PREPARED:
-            date_info += ug("open on %(date_start)s")
-            if self.datetime_end:
-                date_info += ug(" - close on %(date_end)s")
+        state = ""
+        date_info = ""
+        if self.current_state:
+            state = self.current_state.name
+            date_info = "("
+            if state == STATUS_PREPARED:
+                date_info += ug("Open: %(date_start)s")
+                if self.datetime_end:
+                    date_info += ug(" - Close: %(date_end)s")
+    
+            elif state == STATUS_OPEN:
+                if self.datetime_end:
+                    date_info += ug("Close: %(date_end)s")
 
-        elif state == STATUS_OPEN:
-            if self.datetime_end:
-                date_info += ug("close on %(date_end)s")
+                if d['date_delivery']:
+                    date_info += ug(" --> Deliver: %(date_delivery)s")
+    
+            elif state == STATUS_CLOSED:
+                if self.datetime_end:
+                    date_info += ug("Closed: %(date_end)s")
 
-            if d['date_delivery']:
-                date_info += ug(" --> to be delivered on %(date_delivery)s")
+                if d['date_delivery']:
+                    date_info += ug(" --> to deliver: %(date_delivery)s  --> to pay")
 
-        else:
-            date_info += "TODO"
+    
+            elif state == STATUS_UNPAID:
+                if d['date_delivery']:
+                    date_info += ug(" --> Delivered: %(date_delivery)s --> to pay")
 
-        date_info += ")"
+            elif state == STATUS_ARCHIVED:
+                if d['date_delivery']:
+                    date_info += ug("Archived: %(date_delivery)s")
+    
+            elif state == STATUS_CANCELED:
+                if d['date_delivery']:
+                    date_info += ug("Canceled: %(date_delivery)s")
+
+            else:
+                date_info += "TODO"
+            date_info += ")"
+
         date_info = date_info % d
-
-#            date_info = _("(open on %(date_start)s - close on %(date_end)s)") % d
-#
-#            state = _("close on %(date)s") % { 'date' : fmt_date }
-#        else:
-#            state = _("closed on %(date)s") % { 'date' : fmt_date }
-#
-#        else:
-#
-#        if self.delivery and self.delivery.date is not None:
-#            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
-#            if self.is_active():
-#                mdate = _(" --> to be delivered on %(date)s") % { 'date' : del_date }
-#            else:
-#                mdate = _(" delivered on %(date)s") % { 'date' : del_date }
-#        else:
-#            mdate = ""
 
         state += " " + date_info
         ref = self.referrer_person
@@ -836,6 +840,8 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             self.initial_price = self.order_price
         if self.delivered_price is None:
             self.delivered_price = self.order_price
+
+        print "CCCCC save"
         super(GASSupplierOrderProduct, self).save(*args, **kw)
 
         # CASCADING set until GASMemberOrder

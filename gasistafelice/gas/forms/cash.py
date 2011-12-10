@@ -244,8 +244,9 @@ class EcoGASMemberFeeForm(forms.Form):
 #class CashOrderForm(forms.ModelForm):
 class CashOrderForm(forms.Form):
 
-    amount = CurrencyField(required=True)
-    note = forms.CharField(widget=widgets.TextInput())
+    order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
+    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2)
+    note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
@@ -254,66 +255,64 @@ class CashOrderForm(forms.Form):
         super(CashOrderForm, self).__init__(*args, **kw)
 
         #SOLIDAL PACT
-        pact = request.resource.pact
-        delivery = request.resource.delivery
-#        ref = request.resource.referrer_person
-#        if ref:
-#            #control if queryset not empty.
-#            self.fields['referrer_person'].initial = ref
-#        if request.resource.datetime_end:
-#            self.fields['datetime_end'].initial = request.resource.datetime_end
-#        if delivery and delivery.date:
-#            self.fields['delivery_datetime'].initial = delivery.date
+        self.__order = request.resource.order
+        if self.__order:
+            #set order informations
+            self.fields['order_info'].initial = "Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; " % {
+                'fam' : "%.2f" % round(self.__order.tot_price, 2)
+                , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
+            }
+
+            #set invoice data
+            if self.__order.invoice_amount:
+                self.fields['amount'].initial = self.__order.invoice_amount
+            if self.__order.invoice_note:
+                self.fields['amount'].initial = self.__order.invoice_note
+
+        self.fields['order_info'].widget.attrs['class'] = 'info input_long'
+        self.fields['order_info'].widget.attrs['readonly'] = True
+        self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
+        print "AAAA: %s " % self.__order
+
+    def clean(self):
+
+        cleaned_data = super(CashOrderForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['invoice'] = abs(cleaned_data['amount'])
+        except KeyError:
+            log.debug("CashOrderForm: cannot retrieve GASMember identifier. FORM ATTACK!")
+            raise 
+        except GASSupplierOrder.DoesNotExist:
+            log.debug("CashOrderForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
+            raise
+           
+        return cleaned_data
 
     @transaction.commit_on_success
     def save(self):
+        #raise ValueError("prova")
+        print "BBBB: %s " % self.__order
 
-#        if self.cleaned_data.get('delivery_datetime'):
-#            d = self.get_delivery()
-#            self.instance.delivery = d
+        #Do economic work
+        if not self.__order:
+            return
 
-#        if self.cleaned_data.get('withdrawal_datetime'):
-#            w = self.get_withdrawal()
-#            self.instance.withdrawal = w
+        #Control logged user
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
 
-        return super(CashOrderForm, self).save()
+            log.debug("PermissionDenied %s in cash fee form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
 
-    def save(self):
-        raise ValueError("prova")
+        self.__order.invoice_amount = cleaned_data['amount']
+        self.__order.invoice_note = cleaned_data['note']
+        
+        self.__order.save()
 
-    class Meta:
-        model = GASSupplierOrder
-        fields = ['invoice_amount', 'invoice_note']
 
-        gf_fieldsets = [(None, {
-            'fields' : [ 'current_state'
-                         , 'invoice_amount'
-                         , 'invoice_note'
-            ]
-        })]
-
-def form_class_factory_for_request(request, base):
-    """Return appropriate form class basing on GAS configuration
-    and other request parameters if needed"""
-
-    log.debug("CashOrderForm--> form_class_factory_for_request")
-    fields = copy.deepcopy(base.Meta.fields)
-    gf_fieldsets = copy.deepcopy(base.Meta.gf_fieldsets)
-    attrs = {}
-    order = request.resource.order
-
-    if order:
-
-#        refs = gas.cash_referrers
-#        if refs and request.user in refs:
-#            gf_fieldsets[0][1]['fields'].append('delivery_cost')
-
-        attrs.update(Meta=type('Meta', (), {
-            'model' : GASSupplierOrder,
-            'fields' : fields,
-            'gf_fieldsets' : gf_fieldsets
-        }))
-    return type('Custom%s' % base.__name__, (base,), attrs)
 
 
 #-------------------------------------------------------------------------------
