@@ -38,10 +38,21 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
                     var iOrdered = 0;
                     var iTotal = 0;
+                    var tmp = '';
                     for ( var i=0 ; i<aaData.length ; i++ )
                     {
                         iTotal += parseFloat(aaData[i][iTot].substr(8).replace(',','.'));
-                        iOrdered += parseFloat(aaData[i][iTot+1].substr(8).replace(',','.'));
+                        tmp = aaData[i][iTot+1].substr(8).replace(',','.')
+                        if (tmp != '') {
+                            if (tmp.indexOf('input') > 0) {
+                                tmp = tmp.slice(tmp.indexOf('input'))
+                                tmp = tmp.slice(tmp.indexOf('value="'))
+                                tmp = tmp.slice(tmp.indexOf('"') + 1)
+                                tmp = tmp.substr(0, tmp.indexOf('"'))
+                                //el = $(nRow.cells[3]).next('input') tmp = el.val();
+                            }
+                            iOrdered += parseFloat(tmp);
+                        }
                     }
 
                     /* Modify the footer row to match what we want */
