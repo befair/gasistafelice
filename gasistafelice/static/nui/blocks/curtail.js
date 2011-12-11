@@ -24,7 +24,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     { "sWidth": "50%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false
-                        , "sClass": "taright"
+                        , "sClass": "input_payment taright"
                     },
                 ],
                 "oLanguage": {

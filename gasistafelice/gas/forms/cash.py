@@ -278,7 +278,8 @@ class InvoiceOrderForm(forms.Form):
                 self.fields['amount'].initial = self.__order.invoice_amount
             if self.__order.invoice_note:
                 self.fields['note'].initial = self.__order.invoice_note
-        self.fields['note'].widget.attrs['class'] = 'input_long'
+        #self.fields['note'].widget.attrs['class'] = 'input_long'
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
 
 #        self.fields['order_info'].widget.attrs['class'] = 'info input_long'
 #        self.fields['order_info'].widget.attrs['readonly'] = True
@@ -382,6 +383,7 @@ class InsoluteOrderForm(forms.Form):
                 , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
             })
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
 
         self.__loggedusr = request.user
         self.__gas = self.__order.gas

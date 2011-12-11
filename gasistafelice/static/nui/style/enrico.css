@@ -47,3 +47,4 @@ td input[type="text"] {max-width: 95%;}
 .amount{width:35px; color: blue;}
 span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;font-size: 12px; line-height: 20px;}
 .button, input[type="submit"], input[type="button"], .submit-row input {cursor: pointer;}
+.input_payment, #id_amount{font-size: 16px;color:blue;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right;}
