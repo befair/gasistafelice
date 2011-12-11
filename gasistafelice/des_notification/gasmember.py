@@ -2,6 +2,10 @@ from django.contrib.auth.models import User
 from notification.models import Notice
 import notification
 
+import logging
+
+log = logging.getLogger(__name__)
+
 #-------------------------------------------------------------------------------
 
 def bulk_gasmembers_notification(unseen_since):
@@ -18,11 +22,18 @@ def bulk_gasmembers_notification(unseen_since):
             on_site=True, unseen=True, added__gte=unseen_since
         )
 
-        notification.send([user], "gasmember_notification", {
-            'notices' : notices,
-        }, on_site=False)
-        
+        try:
+            notification.send([user], "gasmember_notification", {
+                'notices' : notices,
+            }, on_site=False)
+
+        except Exception as e:
+            log.error("Send msg gasmember_notification: %s (%s)" % (e.message, type(e)))
+            print 'EEEEEEEEEEEEEE  notification gasmember_notification %s (%s)' % (e.message, type(e))
+            pass
+
         for n in notices:
             n.unseen = False
             n.save()
+
 
