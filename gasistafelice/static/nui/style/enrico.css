@@ -45,3 +45,5 @@ td input[type="text"] {max-width: 95%;}
 .input_medium{width:160px; color: green;}
 .input_long{width:100%; color: gray;}
 .amount{width:35px; color: blue;}
+span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;font-size: 12px; line-height: 20px;}
+.button, input[type="submit"], input[type="button"], .submit-row input {cursor: pointer;}

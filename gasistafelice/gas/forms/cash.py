@@ -1,3 +1,7 @@
+#!/usr/local/bin/python
+# coding: utf-8
+import os, sys
+
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
@@ -240,53 +244,59 @@ class EcoGASMemberFeeForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
+EURO_HTML = '&euro;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
+EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
-#class CashOrderForm(forms.ModelForm):
-class CashOrderForm(forms.Form):
+class InvoiceOrderForm(forms.Form):
 
-    order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
+    #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
     amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2)
     note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("CashOrderForm")
+        log.debug("InvoiceOrderForm")
 
-        super(CashOrderForm, self).__init__(*args, **kw)
+        super(InvoiceOrderForm, self).__init__(*args, **kw)
 
         #SOLIDAL PACT
         self.__order = request.resource.order
         if self.__order:
             #set order informations
-            self.fields['order_info'].initial = ("Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; --> Pag: %(eco)s &euro;" % {
-                'fam' : "%.2f" % round(self.__order.tot_price, 2)
+            stat = ("Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                'fam'    : "%.2f" % round(self.__order.tot_price, 2)
                 , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
-                , 'eco' : "%.2f" % round(self.__order.tot_curtail, 2)
+                , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
             })
+            #    , 'euro' : EURO
+            #self.fields['order_info'].initial = stat
+            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+
 
             #set invoice data
             if self.__order.invoice_amount:
                 self.fields['amount'].initial = self.__order.invoice_amount
             if self.__order.invoice_note:
                 self.fields['note'].initial = self.__order.invoice_note
+        self.fields['note'].widget.attrs['class'] = 'input_long'
 
-        self.fields['order_info'].widget.attrs['class'] = 'info input_long'
-        self.fields['order_info'].widget.attrs['readonly'] = True
-        self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
+#        self.fields['order_info'].widget.attrs['class'] = 'info input_long'
+#        self.fields['order_info'].widget.attrs['readonly'] = True
+#        self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
         
     def clean(self):
 
-        cleaned_data = super(CashOrderForm, self).clean()
+        cleaned_data = super(InvoiceOrderForm, self).clean()
         print("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['invoice'] = abs(cleaned_data['amount'])
         except KeyError:
-            log.debug("CashOrderForm: cannot retrieve order identifier. FORM ATTACK!")
+            log.debug("InvoiceOrderForm: cannot retrieve order identifier. FORM ATTACK!")
             raise 
         except GASSupplierOrder.DoesNotExist:
-            log.debug("CashOrderForm: cannot retrieve order instance. Identifier (%s)." % cleaned_data['gm_id'])
+            log.debug("InvoiceOrderForm: cannot retrieve order instance. Identifier (%s)." % cleaned_data['gm_id'])
             raise
            
         return cleaned_data
@@ -323,10 +333,9 @@ class CashOrderForm(forms.Form):
 
 class InsoluteOrderForm(forms.Form):
 
-    order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
-    orders = forms.ModelMultipleChoiceField(label=_("Insolute order(s)"), 
-        queryset=GASSupplierOrder.objects.none(), required=True, widget=forms.CheckboxSelectMultiple
-    )
+#    orders = forms.ModelMultipleChoiceField(label=_("Insolute order(s)"), 
+#        queryset=GASSupplierOrder.objects.none(), required=True, widget=forms.CheckboxSelectMultiple
+#    )
     orders2 = forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple)
     amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
     note = forms.CharField(label=_('Causale'), required=False, widget=forms.TextInput)
@@ -341,7 +350,7 @@ class InsoluteOrderForm(forms.Form):
         self.__order = request.resource.order
         if self.__order:
 
-            #set insolute data
+            #set insolute data and informations
             if self.__order.invoice_amount:
                 self.fields['amount'].initial = self.__order.invoice_amount
             if self.__order.invoice_note:
@@ -352,27 +361,27 @@ class InsoluteOrderForm(forms.Form):
             tot_ordered = 0
             tot_invoiced = 0
             tot_eco_entries = 0
+            stat = ''
             for ins in insolutes:
                 tot_ordered += ins.tot_price
                 tot_invoiced += ins.invoice_amount or 0
                 tot_eco_entries += ins.tot_curtail
-                _choice.append((ins.pk, ("Total. Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; --> Fatt: %(eco)s &euro;" % {
-                'fam' : "%.2f" % round(ins.tot_price, 2)
-                , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-                , 'eco' : "%.2f" % round(ins.tot_curtail, 2)
-            } )))
-            self.fields['orders'].queryset = insolutes
+                stat = _("Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                    'fam'    : "%.2f" % round(ins.tot_price, 2)
+                    , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+                    , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+                    } )
+                _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+#            self.fields['orders'].queryset = insolutes
             self.fields['orders2'].choices = _choice
 
-            #set order informations  &euro; &#128; 	&#x80;
-            self.fields['order_info'].initial = ("Total. Fam: %(fam)s &euro; --> Fatt: %(fatt)s &euro; --> Fatt: %(eco)s &euro;" % {
-                'fam' : "%.2f" % round(tot_ordered, 2)
+            #set order informations
+            stat = _("Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                'fam'    : "%.2f" % round(tot_ordered, 2)
                 , 'fatt' : "%.2f" % round(tot_invoiced, 2)
-                , 'eco' : "%.2f" % round(tot_eco_entries, 2)
-            } )#.encode('iso-8859-1') ('utf-8')
-            self.fields['order_info'].widget.attrs['class'] = 'info input_long'
-            self.fields['order_info'].widget.attrs['readonly'] = True
-            self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
+                , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+            })
+            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
