@@ -140,7 +140,7 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-gm_id' % key_prefix : item.pk,
                '%s-original_amounted' % key_prefix : item.accounted_amount,
-               '%s-amounted' % key_prefix : accounted_wallet,
+               '%s-amounted' % key_prefix : "%.2f" % round(accounted_wallet, 2),
             })
 
             map_info[item.pk] = {'formset_index' : i}
