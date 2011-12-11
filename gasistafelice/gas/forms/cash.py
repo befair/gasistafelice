@@ -76,9 +76,12 @@ class EcoGASMemberForm(forms.Form):
         if not self.__loggedusr.has_perm(CASH, 
             obj=ObjectWithContext(self.__order.gas)
         ):
-
             log.debug("PermissionDenied %s in cash order form" % self.__loggedusr)
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
+
+        if not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied("order is not in good state!")
 
         gm = self.cleaned_data['gasmember']
 
@@ -263,10 +266,11 @@ class InvoiceOrderForm(forms.Form):
         self.__order = request.resource.order
         if self.__order:
             #set order informations
-            stat = ("Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            stat = ("%(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                 'fam'    : "%.2f" % round(self.__order.tot_price, 2)
                 , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
                 , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
+                , 'state'  : self.__order.current_state.name
             })
             #    , 'euro' : EURO
             #self.fields['order_info'].initial = stat
@@ -281,9 +285,11 @@ class InvoiceOrderForm(forms.Form):
         #self.fields['note'].widget.attrs['class'] = 'input_long'
         self.fields['amount'].widget.attrs['class'] = 'input_payment'
 
-#        self.fields['order_info'].widget.attrs['class'] = 'info input_long'
-#        self.fields['order_info'].widget.attrs['readonly'] = True
-#        self.fields['order_info'].widget.attrs['disabled'] = 'disabled'
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+        if not self.__order.is_closed():
+            self.fields['amount'].widget.attrs['readonly'] = True
+            self.fields['amount'].widget.attrs['disabled'] = 'disabled'
+
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
         
@@ -315,13 +321,16 @@ class InvoiceOrderForm(forms.Form):
         if not self.__loggedusr.has_perm(CASH, 
             obj=ObjectWithContext(self.__gas)
         ):
-
             log.debug("PermissionDenied %s in cash invoice receipt form" % self.__loggedusr)
             raise PermissionDenied("You are not a cash_referrer, you cannot manage receipt invoice cash!")
 
+        if not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied("order is not in good state!")
+
         self.__order.invoice_amount = self.cleaned_data['amount']
         self.__order.invoice_note = self.cleaned_data['note']
-        
+
         try:
             self.__order.save()
         except ValueError, e:
@@ -337,7 +346,7 @@ class InsoluteOrderForm(forms.Form):
 #    orders = forms.ModelMultipleChoiceField(label=_("Insolute order(s)"), 
 #        queryset=GASSupplierOrder.objects.none(), required=True, widget=forms.CheckboxSelectMultiple
 #    )
-    orders2 = forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple)
+    orders2 = forms.MultipleChoiceField(label=_("Insolute order(s)"), required=True, widget=forms.CheckboxSelectMultiple)
     amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
     note = forms.CharField(label=_('Causale'), required=False, widget=forms.TextInput)
 
@@ -377,17 +386,23 @@ class InsoluteOrderForm(forms.Form):
             self.fields['orders2'].choices = _choice
 
             #set order informations
-            stat = _("Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            stat = _("%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                 'fam'    : "%.2f" % round(tot_ordered, 2)
                 , 'fatt' : "%.2f" % round(tot_invoiced, 2)
                 , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+                , 'state'  : self.__order.current_state.name
             })
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
         self.fields['amount'].widget.attrs['class'] = 'input_payment'
 
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
+            self.fields['amount'].widget.attrs['readonly'] = True
+            self.fields['amount'].widget.attrs['disabled'] = 'disabled'
+
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
-        
+
     def clean(self):
 
         cleaned_data = super(InsoluteOrderForm, self).clean()
@@ -416,9 +431,12 @@ class InsoluteOrderForm(forms.Form):
         if not self.__loggedusr.has_perm(CASH, 
             obj=ObjectWithContext(self.__gas)
         ):
-
             log.debug("PermissionDenied %s in cash insolute form" % self.__loggedusr)
             raise PermissionDenied("You are not a cash_referrer, you cannot manage insolute order cash!")
+
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied("order is not in good state!")
 
         self.__order.invoice_amount = self.cleaned_data['amount']
         self.__order.invoice_note = self.cleaned_data['note']

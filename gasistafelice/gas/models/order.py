@@ -143,7 +143,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     date_info += ug("Canceled: %(date_delivery)s")
 
             else:
-                date_info += "TODO"
+                date_info += "TODO ?(%s)" % state
             date_info += ")"
 
         date_info = date_info % d
@@ -232,20 +232,42 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """
         Return `True` if the GAS supplier order is prepared; `False` otherwise.
         """
-        return self in GASSupplierOrder.objects.prepared()
-    
+        #return self in GASSupplierOrder.objects.prepared()
+        return self.current_state.name == STATUS_PREPARED
+
     def is_active(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.
         """
-        return self in GASSupplierOrder.objects.open()
-    
+        #return self in GASSupplierOrder.objects.open()
+        return self.current_state.name == STATUS_OPEN
+
     def is_archived(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'archived'; `False` otherwise.
         """
-        return not self.is_active()
-    
+        #return not self.is_active()
+        return self.current_state.name == STATUS_ARCHIVED
+
+    def is_closed(self):
+        """
+        Return `True` if the GAS supplier order is closed; `False` otherwise.
+        """
+        return self.current_state.name == STATUS_CLOSED
+
+    def is_unpaid(self):
+        """
+        Return `True` if the GAS supplier order is closed but producer is not payed; `False` otherwise.
+        """
+        return self.current_state.name == STATUS_UNPAID
+
+    def is_canceled(self):
+        """
+        Return `True` if the GAS supplier order is canceled; `False` otherwise.
+        """
+        return self.current_state.name == STATUS_CANCELED
+
+
     #-------------------------------------------------------------------------------#    
 
     @property

@@ -30,16 +30,20 @@ class Block(AbstractBlock):
     def _get_user_actions(self, request):
 
         user_actions = []
+        order = self.resource.order
+
         if request.user.has_perm(CASH, obj=ObjectWithContext(self.resource.gas)):
 
-            user_actions += [
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = self.resource,
-                    name=INCOME, verbose_name=_("Insolute payment"),
-                    popup_form=False,
-                ),
-            ]
+            if order.is_closed() or order.is_unpaid():
+
+                user_actions += [
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = self.resource,
+                        name=INCOME, verbose_name=_("Insolute payment"),
+                        popup_form=False,
+                    ),
+                ]
 
         return user_actions
 
