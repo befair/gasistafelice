@@ -18,6 +18,7 @@ jQuery.UIBlockFee = jQuery.UIBlockWithList.extend({
                 "bServerSide": true,
                 "bStateSave": true,
                 'sPaginationType': 'full_numbers',
+                'bLengthChange': true,
                 "iDisplayLength": 50,
                 "aaSorting": [[1,'asc'], [0,'asc']],
                 "sAjaxSource": this.get_data_source(),

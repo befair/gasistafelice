@@ -16,6 +16,7 @@ jQuery.UIBlockRecharge = jQuery.UIBlockWithList.extend({
         var block_obj = this;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers',
+                'bLengthChange': true,
                 "iDisplayLength": 50,
                 "aaSorting": [[1,'asc'], [0,'asc']],
                 "bServerSide": true,
