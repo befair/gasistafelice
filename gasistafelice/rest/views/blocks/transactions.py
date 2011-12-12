@@ -46,5 +46,6 @@ class Block(BlockSSDataTables):
 
 #        "{{entry.account.name|escapejs}}",
 #        "{{entry.urn|escapejs}}",
+#        "{{entry.transaction.kind|escapejs}}",
 
 

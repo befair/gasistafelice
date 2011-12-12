@@ -7,6 +7,8 @@ from django.template.loader import get_template, select_template
 from django.db import models
 import datetime, os.path
 
+from django.utils.translation import ugettext as _
+
 register = template.Library()
 
 @register.simple_tag
@@ -32,6 +34,21 @@ def bool_img(value):
 @register.simple_tag
 def bool_img_not(value):
     return bool_img(not value)
+
+@register.simple_tag
+def Human_readable_kind(kind):
+    if kind == 'GAS_WITHDRAWAL':
+        return _("Curtail")
+    if kind == 'RECHARGE':
+        return _("Recharge")
+    if kind == 'MEMBERSHIP_FEE':
+        return _("Fee")
+    if kind == 'PAYMENT':
+        return _("Pay")
+    if kind == 'REFUND':
+        return _("Collect")
+    else:
+        return kind
 
 @register.simple_tag
 def Human_readable_account(account):
