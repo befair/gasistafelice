@@ -12,7 +12,9 @@ from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import SUPPLIER_REFERRER
-from gasistafelice.supplier.models import SupplierStock, Product, ProductPU, ProductMU, ProductCategory
+from gasistafelice.supplier.models import SupplierStock, Product, \
+    ProductPU, ProductMU, ProductCategory, \
+    UnitsConversion
 
 from decimal import Decimal
 import logging
