@@ -28,10 +28,10 @@ jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"15%",},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"15%",},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"15%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%",},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%", "sClass":"taright"},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"30%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"40%"},
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {

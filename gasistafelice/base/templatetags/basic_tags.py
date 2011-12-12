@@ -63,14 +63,15 @@ def Human_readable_account(account):
     name = ""
     urn = ""
     if 'person-' in account.name:
-        from gasistafelice.gas.models.base import GASMember
+        #from gasistafelice.gas.models.base import GASMember
+        from gasistafelice.base.models import Person
         p_pk = account.name.replace("person-", "")
         try:
-            obj = GASMember.objects.get(pk=p_pk)
+            obj = Person.objects.get(pk=p_pk)
         except GASMember.DoesNotExist:
             pass
         else:
-            name = obj.person.report_name
+            name = obj.report_name
             urn = obj.urn
 
     elif 'gas-' in account.name:

@@ -104,11 +104,11 @@ class EcoGASMemberForm(forms.Form):
                 # A ledger entry already exists
                 if original_amounted != amounted:
                     gm.gas.accounting.withdraw_from_member_account_update(
-                        gm, amounted, refs
+                        gm, amounted, refs, self.__order
                     )
 
             else:
-                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs)
+                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order)
 
 
 class EcoGASMemberRechargeForm(forms.Form):

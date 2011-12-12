@@ -127,7 +127,10 @@ class PersonAccountingProxy(AccountingProxy):
         accounts = self.system.accounts.filter(name="wallet") | \
             self.system.accounts.filter(parent__name="members", name__in=member_account) | \
             self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/fees", name__in=member_account) | \
-            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/recharges", name__in=member_account)
+            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/recharges", name__in=member_account) | \
+            gasmember.gas.accounting.system.accounts.filter(parent__name="members", name=member_account)
+
+#gasmember.gas.accounting.system.accounts.filter(name="members/%s" % member_account) ko?
 
         return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
 

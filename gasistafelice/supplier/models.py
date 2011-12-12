@@ -86,6 +86,10 @@ class Supplier(models.Model, PermissionResource):
         else:
             return "aaaa"
 
+    @property
+    def report_name(self):
+        return "%s %s" % (self.name, self.subject_name)
+
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
