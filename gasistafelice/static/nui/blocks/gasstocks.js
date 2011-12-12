@@ -12,15 +12,15 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
         var block_obj = this;
         // Init dataTables
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'sPaginationType': 'full_numbers', 
+                'sPaginationType': 'full_numbers',
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
                     {"bSearchable":false,"bSortable":true,"sWidth":"30%","bVisible": true},
-                    {"bSearchable":true,"bSortable":false,"sWidth":"15%", "sType": "currency", "sClass": "taright" },
-                    {"bSearchable":false,"bSortable":false,"sWidth":"10%",},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"15%", "sType": "currency", "sClass": "taright" },
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%",},
                     {"bSearchable":false,"bSortable":true,"sWidth":"10%",},
                     {"bSearchable":false,"bSortable":false,"sWidth":"10%","sClass":"taright",},
                     {"bSearchable":false,"bSortable":false,"sWidth":"10%","sClass":"taright",},

@@ -6,7 +6,7 @@ from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBloc
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.gas.models import GASMember
-from gasistafelice.gas.forms.cash import EcoGASMemberRechargeForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.cash import EcoGASMemberRechargeFormSet
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -31,11 +31,12 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'pk', 
-        1: 'person_surname',
-        2: 'last_recharge',
+        0: 'id',
+        1: 'person__surname',
+        2: '',
         3: ''
     }
+#        2: 'last_recharge',
 
     def _get_user_actions(self, request):
   
@@ -70,11 +71,7 @@ class Block(BlockSSDataTables):
         return gas.gasmembers.order_by('person__surname', 'person__name')
 
     def _get_edit_multiple_form_class(self):
-        return formset_factory(
-            form=EcoGASMemberRechargeForm,
-            formset=BaseFormSetWithRequest,
-            extra=0
-        )
+        return EcoGASMemberRechargeFormSet
 
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""

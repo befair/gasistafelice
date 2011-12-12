@@ -9,4 +9,6 @@
     <th title='{% trans "Fee gasmember" %}'>{% trans "Fee" %}</th>
 {% endblock %}
 
+{% block footer %}
+{% endblock %}
 

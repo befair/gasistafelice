@@ -11,17 +11,19 @@ jQuery.UIBlockFee = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         // Init dataTables
-//                'sPaginationType': 'full_numbers', 
+//                'bPaginate': false,
         var iTot = 2;
         var block_obj = this;
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'bPaginate': false,
                 "bServerSide": true,
                 "bStateSave": true,
+                'sPaginationType': 'full_numbers',
+                "iDisplayLength": 50,
+                "aaSorting": [[1,'asc'], [0,'asc']],
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    { "sWidth": "10%", "bSortable" : false, "bSearchable" : true},
-                    { "sWidth": "30%", "bSortable" : false, "bSearchable" : true},
+                    { "sWidth": "10%", "bSortable" : true, "bSearchable" : true},
+                    { "sWidth": "30%", "bSortable" : true, "bSearchable" : true},
                     { "sWidth": "40%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},

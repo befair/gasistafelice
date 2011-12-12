@@ -650,10 +650,9 @@ WHERE order_id = %s \
 
     @property
     def control_economic_state(self):
-        print "XXXXXXXXXXXXXXXXXX %s " % self.pk
         #1/3 control invoice receipt
         if not self.invoice_amount:
-            print "KAPPAO invoice_amount %s " % self.pk
+            #print"KAPPAO invoice_amount %s " % self.pk
             return
         #2/3 control members curtails
         qs = self.ordered_gasmembers
@@ -665,17 +664,17 @@ WHERE order_id = %s \
                     pass_member = True
                     break
             if not pass_member:
-                print "KAPPAO member(%s) %s " % (item, self.pk)
+                #print"KAPPAO member(%s) %s " % (item, self.pk)
                 return
         #3/3 control accounting payment
         tx = self.gas.accounting.get_supplier_order_transaction(self)
         if tx:
             #change state to STATUS_ARCHIVED
-            print "GOTO STATUS_ARCHIVED %s " % self.pk
+            #print"GOTO STATUS_ARCHIVED %s " % self.pk
             t_name = TRANSITION_ARCHIVE
         else:
             #change state to STATUS_UNPAID
-            print "GOTO STATUS_UNPAID %s " % self.pk
+            #print"GOTO STATUS_UNPAID %s " % self.pk
             t_name = TRANSITION_UNPAID
 
 #FIXME: fero
@@ -919,7 +918,6 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         if self.delivered_price is None:
             self.delivered_price = self.order_price
 
-        print "CCCCC save"
         super(GASSupplierOrderProduct, self).save(*args, **kw)
 
         # CASCADING set until GASMemberOrder

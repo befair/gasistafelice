@@ -25,15 +25,19 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "gasmember"]
 
     COLUMN_INDEX_NAME_MAP = {
-        0: 'pk',
-        1: 'date',
-        2: 'issuer',
-        3: 'source',
-        4: 'kind',
-        5: 'description',
+        0: 'id',
+        1: 'transaction__date',
+        2: 'transaction__issuer',
+        3: 'transaction__source',
+        4: 'transaction__kind',
+        5: 'transaction__description',
         6: '',
     }
 #        6: 'is_confirmed'
+#Cannot resolve keyword 'issuer' into field. Choices are: account, amount, entry_id, id, transaction
+
+
+
 
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions

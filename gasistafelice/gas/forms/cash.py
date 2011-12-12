@@ -171,6 +171,12 @@ class EcoGASMemberRechargeForm(forms.Form):
         # This kind of amount is ever POSITIVE!
         gm.person.accounting.do_recharge(self.__gas, recharged)
 
+EcoGASMemberRechargeFormSet = formset_factory(
+                                form=EcoGASMemberRechargeForm,
+                                formset=BaseFormSetWithRequest,
+                                extra=0 #must be 0 no add form
+                          )
+
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
     dt = datetime.now()
@@ -243,6 +249,12 @@ class EcoGASMemberFeeForm(forms.Form):
             raise PermissionDenied("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!")
 
         gm.person.accounting.pay_membership_fee(self.__gas, year)
+
+EcoGASMemberFeeFormSet = formset_factory(
+                                form=EcoGASMemberFeeForm,
+                                formset=BaseFormSetWithRequest,
+                                extra=0 #must be 0 no add form
+                          )
 
 
 
@@ -329,7 +341,7 @@ class InvoiceOrderForm(forms.Form):
 
         self.__order.invoice_amount = self.cleaned_data['invoice_amount']
         self.__order.invoice_note = self.cleaned_data['note']
-        print "Invoice amount %s---" % self.__order.invoice_amount
+        #print"Invoice amount %s---" % self.__order.invoice_amount
 
         try:
             self.__order.save()
@@ -338,7 +350,7 @@ class InvoiceOrderForm(forms.Form):
         else:
             #Update State if possible
             self.__order.control_economic_state()
-            print "Invoice saved"
+            #print"Invoice saved"
 
 #-------------------------------------------------------------------------------
 
@@ -447,11 +459,10 @@ class InsoluteOrderForm(forms.Form):
 
         p_amount = self.cleaned_data['insolute_amount']
         p_note = self.cleaned_data['note']
-        print "insolute amount %s---" % p_amount
+        #print"insolute amount %s---" % p_amount
         #refs=[self.__order]
         refs=[]
         insolutes = self.cleaned_data['orders_to_pay']
-        print "OOOOOOOOOOOOOOOOOOOO  " % insolutes
         if insolutes:
             for ins_pk in insolutes:
                 try:
@@ -468,7 +479,7 @@ class InsoluteOrderForm(forms.Form):
                 except ValueError, e:
                     print "retry later " +  e.message
                 else:
-                    print "Insolute(%s) saved " % len(refs)
+                    #print"Insolute(%s) saved " % len(refs)
                     for _order in refs:
                         #Update State if possible
                         _order.control_economic_state

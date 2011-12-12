@@ -43,7 +43,6 @@ def Human_readable_account(account):
     we expect value.name as ressource-type-pk
     """
     #FIXME: this view must import and know the model controller!!!! (not MVC)
-    print "VVVVVVVVVV %s " % account.name
     name = ""
     urn = ""
     if 'person-' in account.name:
