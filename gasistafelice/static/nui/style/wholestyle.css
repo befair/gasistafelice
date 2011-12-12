@@ -402,8 +402,10 @@ form p.help, .help {
     color : green;
 }
 
-ul.errorlist {
-    max-width : 400px;
+ul.errorlist { max-width : 400px; }
+.aligned label { 
+    width : 100%; 
+    max-width : 8em; 
 }
 
 

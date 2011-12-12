@@ -117,10 +117,12 @@ class EditStockForm(forms.ModelForm):
     product_description = forms.CharField(required=False, label=_("Description"), widget=forms.TextInput(), max_length=500)
 
     product_pu = forms.ModelChoiceField(ProductPU.objects.all(), 
-            label=ProductPU._meta.verbose_name, required=True)
+            label=_("Package"), required=True
+    )
     product_mu = forms.ModelChoiceField(ProductMU.objects.all(), required=False,
-            label=ProductMU._meta.verbose_name)
-    product_muppu = forms.DecimalField(label=_('Measure unit per product unit'), initial=1)
+            label=_("Units")
+    )
+    product_muppu = forms.DecimalField(label=_('of'), initial=1)
 
     product_category = forms.ModelChoiceField(ProductCategory.objects.all(), 
             label=ProductCategory._meta.verbose_name)
@@ -208,14 +210,22 @@ class EditStockForm(forms.ModelForm):
                     'product_name',
                     'product_description',
                     ('price', 'product_vat_percent'),
+                    'product_category',
+                )
+             }),
+             (_("Distribution info"), {
+                'fields' : (
                     ('product_pu', 'product_muppu', 'product_mu'),
                     ('units_minimum_amount', 'units_per_box'),
                     ('detail_minimum_amount', 'detail_step'), 
                     'availability',
-                    ('code','product_category', 'supplier_category'),
-                    'product_pk',
                 )
              }),
+             (_("Supplier info"), {
+                'fields' : (
+                    ('code', 'supplier_category'),
+                )
+             })
             )
 
 #------------------------------------------------------------------------------

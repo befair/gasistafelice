@@ -806,7 +806,8 @@ class Product(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-        rv = u" %(name)s (%(symb)s)" % {
+
+        rv = u" %(name)s (%(symb)s )" % {
             'symb' : self.pu.symbol,
             'name': self.name
         }
