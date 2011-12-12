@@ -39,7 +39,7 @@ class GasAccountingProxy(AccountingProxy):
         target_account = supplier.accounting.system['/wallet']
         description = _("Ord.%(pk)s %(gas)s --> %(supplier)s") % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
         if descr:
-            description += ". %s" % descr
+            description += ". %s" % descr.replace(description + ". ", "")
         #issuer = gas Not the instance
         issuer =  self.subject
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')

@@ -298,7 +298,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{ 
         'name' : 'delivery',
         'descr': 'Pagamento',
-        'blocks': ['order_insolute', 'order_invoice', 'curtail']
+        'blocks': ['order_invoice', 'curtail', 'order_insolute']
     }],
 
     'person' : [{
