@@ -72,7 +72,7 @@ class GasAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        description = _("GAS %(gas)s <--> %(person)s") % {'gas': gas.id_in_des, 'person': member.person,}
+        description = _("GAS %(gas)s <--> %(person)s") % {'gas': gas.id_in_des, 'person': member.person.report_name,}
         issuer = self.subject
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:
@@ -189,9 +189,6 @@ class GasAccountingProxy(AccountingProxy):
         else:
             raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order})
 
-    def account_entries(self, base_path='/'):
-        pass
-
     def entries(self):
         """
         List all LedgerEntries (account, transaction, amount)
@@ -209,6 +206,6 @@ class GasAccountingProxy(AccountingProxy):
             self.system.accounts.filter(parent__name="members", name__in=members_account) | \
             self.system.accounts.filter(parent__name="suppliers", name__in=s_account)
 
-        return LedgerEntry.objects.filter(account__in=accounts)
+        return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
 
 

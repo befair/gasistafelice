@@ -366,7 +366,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def gasmembers(self):
         """All GASMember for this GAS"""
-        return self.gasmember_set.all()
+        return self.gasmember_set.all().order_by('person__surname', 'person__name')
 
     @property
     def orders(self):
@@ -959,11 +959,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        all_member_trx = LedgerEntry.objects.none()   #set()
-        all_member_trx |= self.gas.accounting.entries('/members/' + self.person.uid)
-        all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/fees')
-        all_member_trx |= self.person.accounting.entries('/expenses/gas/' + self.gas.uid + '/recharges')
-        return all_member_trx
+        return self.person.accounting.entries_gasmember(self)
 
     @property
     def tot_eco(self):

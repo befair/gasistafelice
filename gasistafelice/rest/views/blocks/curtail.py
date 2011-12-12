@@ -83,7 +83,7 @@ class Block(BlockSSDataTables):
         
         #return GASMember objects
         order = request.resource.order
-        qs = order.ordered_gasmembers
+        qs = order.ordered_gasmembers.order_by('person__surname', 'person__name')
         accounted_amounts = order.gas.accounting.accounted_amount_by_gas_member(order)
         gasmembers = set()
         for item in qs:

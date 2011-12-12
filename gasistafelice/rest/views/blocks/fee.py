@@ -34,7 +34,7 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk', 
-        1: 'gasmember',
+        1: 'person_surname',
         2: 'last_fee',
         3: ''
     }
@@ -69,7 +69,7 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         #return GASMember objects
         gas = request.resource.gas
-        return gas.gasmembers
+        return gas.gasmembers.order_by('person__surname', 'person__name')
 
     def _get_edit_multiple_form_class(self):
         return formset_factory(

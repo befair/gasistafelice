@@ -59,7 +59,7 @@ def Human_readable_account(account):
 
     elif 'gas-' in account.name:
         from gasistafelice.gas.models.base import GAS
-        pk = account.name.replace("gas-", "")
+        p_pk = account.name.replace("gas-", "")
         try:
             obj = GAS.objects.get(pk=p_pk)
         except GAS.DoesNotExist:
@@ -70,7 +70,7 @@ def Human_readable_account(account):
 
     elif 'supplier-' in account.name:
         from gasistafelice.supplier.models import Supplier
-        pk = account.name.replace("supplier-", "")
+        p_pk = account.name.replace("supplier-", "")
         try:
             obj = Supplier.objects.get(pk=p_pk)
         except Supplier.DoesNotExist:
