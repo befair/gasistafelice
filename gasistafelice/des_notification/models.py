@@ -33,9 +33,14 @@ def notify_gmo_product_erased(sender, **kwargs):
 
     recipients = [gmo.gasmember.person.user]
 
-    notification.send(recipients, "ordered_product_update", 
-        extra_content, on_site=True
-    )
+    try:
+        notification.send(recipients, "ordered_product_update", 
+            extra_content, on_site=True
+        )
+    except Exception as e:
+        log.error("Send msg notify_gmo_product_erased: %s (%s)" % (e.message, type(e)))
+        print 'EEEEEEEEEEEEEE  notification notify_gmo_product_erased %s (%s)' % (e.message, type(e))
+        pass
 
 #-------------------------------------------------------------------------------
 
@@ -53,9 +58,14 @@ def notify_gmo_price_update(sender, **kwargs):
 
     recipients = [gmo.gasmember.person.user]
 
-    notification.send(recipients, "ordered_product_update", 
-        extra_content, on_site=True
-    )
+    try:
+        notification.send(recipients, "ordered_product_update", 
+            extra_content, on_site=True
+        )
+    except Exception as e:
+        log.error("Send msg notify_gmo_price_update: %s (%s)" % (e.message, type(e)))
+        print 'EEEEEEEEEEEEEE  notification notify_gmo_price_update %s (%s)' % (e.message, type(e))
+        pass
 
 #-------------------------------------------------------------------------------
 
@@ -72,9 +82,14 @@ def notify_gasstock_product_enabled(sender, **kwargs):
         person__gasmember_set__in=gasstock.gasmembers
     ).distinct()
 
-    notification.send(recipients, "gasstock_update", 
-        extra_content, on_site=True
-    )
+    try:
+        notification.send(recipients, "gasstock_update", 
+            extra_content, on_site=True
+        )
+    except Exception as e:
+        log.error("Send msg notify_gasstock_product_enabled: %s (%s)" % (e.message, type(e)))
+        print 'EEEEEEEEEEEEEE  notification notify_gasstock_product_enabled %s (%s)' % (e.message, type(e))
+        pass
 
 #-------------------------------------------------------------------------------
 
@@ -91,10 +106,14 @@ def notify_gasstock_product_disabled(sender, **kwargs):
         person__gasmember_set__in=gasstock.gasmembers
     ).distinct()
 
-    notification.send(recipients, "gasstock_update", 
-        extra_content, on_site=True
-    )
-
+    try:
+        notification.send(recipients, "gasstock_update", 
+            extra_content, on_site=True
+        )
+    except Exception as e:
+        log.error("Send msg notify_gasstock_product_disabled: %s (%s)" % (e.message, type(e)))
+        print 'EEEEEEEEEEEEEE  notification notify_gasstock_product_disabled %s (%s)' % (e.message, type(e))
+        pass
 
 #-------------------------------------------------------------------------------
 
@@ -120,9 +139,14 @@ def notify_order_state_update(sender, **kwargs):
 
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))
-    notification.send(recipients, "order_state_update", 
-        extra_content, on_site=True
-    )
+    try:
+        notification.send(recipients, "order_state_update", 
+            extra_content, on_site=True
+        )
+    except Exception as e:
+        log.error("Send msg notify_order_state_update: %s (%s)" % (e.message, type(e)))
+        print 'EEEEEEEEEEEEEE  notification notify_order_state_update %s (%s)' % (e.message, type(e))
+        pass
 
 #-------------------------------------------------------------------------------
 

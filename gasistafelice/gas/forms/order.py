@@ -198,15 +198,19 @@ class AddOrderForm(BaseOrderForm):
             dt = first_day_on_or_after(6, dt)
 
             #Close
+            d_c = get_day_from_choice(gas.config.default_close_day)
             if gas.config.default_close_day:
-                dt = first_day_on_or_after(get_day_from_choice(gas.config.default_close_day), dt)
+                dt = first_day_on_or_after(d_c, dt)
             if gas.config.default_close_time:
                 dt = dt.replace(hour=gas.config.default_close_time.hour, minute=gas.config.default_close_time.minute)
             self.fields['datetime_end'].initial = dt
 
             #Delivery
+            d_d = get_day_from_choice(gas.config.default_delivery_day)
+            if d_d <= d_c:
+                dt = dt+timedelta(days=7)
             if gas.config.default_delivery_day:
-                dt = first_day_on_or_after(get_day_from_choice(gas.config.default_delivery_day), dt)
+                dt = first_day_on_or_after(d_d, dt)
             if gas.config.default_delivery_time:
                 dt = dt.replace(hour=gas.config.default_delivery_time.hour, minute=gas.config.default_delivery_time.minute)
             self.fields['delivery_datetime'].initial = dt
@@ -293,7 +297,7 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['datetime_start', 'datetime_end', 'referrer_person', 'delivery_cost']
+        fields = ['datetime_start', 'datetime_end', 'referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : [ ('datetime_start', 'datetime_end')
@@ -313,11 +317,6 @@ def form_class_factory_for_request(request, base):
     gas = request.resource.gas
 
     if gas:
-
-        #TODO: ECO 2 way for inserting economic data
-        refs = gas.cash_referrers
-        if refs and request.user in refs:
-            gf_fieldsets[0][1]['fields'].append('delivery_cost')
 
         if gas.config.use_withdrawal_place:
             gf_fieldsets[0][1]['fields'].append('withdrawal_referrer_person')

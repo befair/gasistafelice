@@ -22,6 +22,11 @@ from gasistafelice.consts import *
 from gasistafelice.gas.workflow_data import STATUS_PREPARED, STATUS_OPEN
 from gasistafelice.gas.workflow_data import STATUS_CLOSED, STATUS_UNPAID
 from gasistafelice.gas.workflow_data import STATUS_ARCHIVED, STATUS_CANCELED
+
+from gasistafelice.gas.workflow_data import TRANSITION_OPEN, TRANSITION_CLOSE, TRANSITION_CLOSE_EMAIL
+from gasistafelice.gas.workflow_data import TRANSITION_ARCHIVE, TRANSITION_UNPAID, TRANSITION_CANCEL
+
+
 from gasistafelice.utils import long_date
 
 from flexi_auth.models import ParamRole
@@ -44,7 +49,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
-    * status is a meaningful parameter... TODO
+    * current_state is a meaningful parameter for order status from workflow system
     * gasstock_set references specified products available for the specific order \
       (they can be a subset of all available products from that Supplier for the order);
 
@@ -63,8 +68,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # Delivery cost. To be set after delivery has happened
     delivery_cost = CurrencyField(verbose_name=_('Delivery cost'), null=True, blank=True)
 
-    # STATUS is MANAGED BY WORKFLOWS APP: 
-    # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     referrer_person = models.ForeignKey(Person, null=True, blank=True, related_name="order_set", verbose_name=_("order referrer"))
@@ -100,49 +103,53 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         if self.datetime_end is not None:
             d['date_end'] = long_date(self.datetime_end)
-        try:
-            self.delivery
-        except Delivery.DoesNotExist:
-            d['date_delivery'] = None
-        else:
-            d['date_delivery'] = long_date(self.delivery.date)
+        d['date_delivery'] = ""
+        if self.delivery:
+            if self.delivery.date:
+                d['date_delivery'] = long_date(self.delivery.date)
 
-        state = self.current_state.name
-        date_info = "("
-        if state == STATUS_PREPARED:
-            date_info += ug("open on %(date_start)s")
-            if self.datetime_end:
-                date_info += ug(" - close on %(date_end)s")
+        state = ""
+        date_info = ""
+        if self.current_state:
+            state = self.current_state.name
+            date_info = "("
+            if state == STATUS_PREPARED:
+                date_info += ug("Open: %(date_start)s")
+                if self.datetime_end:
+                    date_info += ug(" - Close: %(date_end)s")
+    
+            elif state == STATUS_OPEN:
+                if self.datetime_end:
+                    date_info += ug("Close: %(date_end)s")
 
-        elif state == STATUS_OPEN:
-            if self.datetime_end:
-                date_info += ug("close on %(date_end)s")
+#                if d['date_delivery']:
+#                    date_info += ug(" --> Deliver: %(date_delivery)s")
+    
+            elif state == STATUS_CLOSED:
+#                if self.datetime_end:
+#                    date_info += ug("Closed: %(date_end)s")
 
-            if d['date_delivery']:
-                date_info += ug(" --> to be delivered on %(date_delivery)s")
+                if d['date_delivery']:
+                    date_info += ug(" --> to deliver: %(date_delivery)s  --> to pay")
 
-        else:
-            date_info += "TODO"
+    
+            elif state == STATUS_UNPAID:
+                if d['date_delivery']:
+                    date_info += ug(" --> Delivered: %(date_delivery)s --> to pay")
 
-        date_info += ")"
+            elif state == STATUS_ARCHIVED:
+                if d['date_delivery']:
+                    date_info += ug("Archived: %(date_delivery)s")
+    
+            elif state == STATUS_CANCELED:
+                if d['date_delivery']:
+                    date_info += ug("Canceled: %(date_delivery)s")
+
+            else:
+                date_info += "TODO ?(%s)" % state
+            date_info += ")"
+
         date_info = date_info % d
-
-#            date_info = _("(open on %(date_start)s - close on %(date_end)s)") % d
-#
-#            state = _("close on %(date)s") % { 'date' : fmt_date }
-#        else:
-#            state = _("closed on %(date)s") % { 'date' : fmt_date }
-#
-#        else:
-#
-#        if self.delivery and self.delivery.date is not None:
-#            del_date = ('{0:%s}' % settings.DATE_FMT).format(self.delivery.date)
-#            if self.is_active():
-#                mdate = _(" --> to be delivered on %(date)s") % { 'date' : del_date }
-#            else:
-#                mdate = _(" delivered on %(date)s") % { 'date' : del_date }
-#        else:
-#            mdate = ""
 
         state += " " + date_info
         ref = self.referrer_person
@@ -174,7 +181,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
             # Act as superuser
             user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-            t_name = "open"
+            t_name = TRANSITION_OPEN
             t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
             if t in get_allowed_transitions(self, user):
@@ -189,7 +196,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
                 # Act as superuser
                 user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-                t_name = "close"
+                t_name = TRANSITION_CLOSE
                 t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
                 log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
@@ -228,20 +235,42 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """
         Return `True` if the GAS supplier order is prepared; `False` otherwise.
         """
-        return self in GASSupplierOrder.objects.prepared()
-    
+        #return self in GASSupplierOrder.objects.prepared()
+        return self.current_state.name == STATUS_PREPARED
+
     def is_active(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.
         """
-        return self in GASSupplierOrder.objects.open()
-    
+        #return self in GASSupplierOrder.objects.open()
+        return self.current_state.name == STATUS_OPEN
+
     def is_archived(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'archived'; `False` otherwise.
         """
-        return not self.is_active()
-    
+        #return not self.is_active()
+        return self.current_state.name == STATUS_ARCHIVED
+
+    def is_closed(self):
+        """
+        Return `True` if the GAS supplier order is closed; `False` otherwise.
+        """
+        return self.current_state.name == STATUS_CLOSED
+
+    def is_unpaid(self):
+        """
+        Return `True` if the GAS supplier order is closed but producer is not payed; `False` otherwise.
+        """
+        return self.current_state.name == STATUS_UNPAID
+
+    def is_canceled(self):
+        """
+        Return `True` if the GAS supplier order is canceled; `False` otherwise.
+        """
+        return self.current_state.name == STATUS_CANCELED
+
+
     #-------------------------------------------------------------------------------#    
 
     @property
@@ -603,23 +632,75 @@ WHERE order_id = %s \
     @property
     def tot_curtail(self):
         tot = 0
-        #TODO: ECO Accounting retrieve all GASMember for this order that have curtail payment
+        accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
+        for member in accounted_amounts:
+            tot += (member.accounted_amount or 0)
         return tot
 
     @property
     def payment(self):
-        mvt = 'TODO: ECO'
-        #TODO: ECO Accounting retrieve the payment for this order
-        return mvt
+        yet_payed, descr =self.gas.accounting.get_supplier_order_data(self)
+        return yet_payed
 
     @property
     def payment_urn(self):
-        mvt_urn = 'order/%s' % self.pk
-        #TODO: ECO Accounting retrieve the payment for this order and get the urn
-        #This is wright? Accounting is not a ressource...
-        #So we have to go to the order details in EDIT mode?
+        #mvt_urn = 'order/%s' % self.pk
+        mvt_urn = self.urn
         return mvt_urn
 
+    @property
+    def control_economic_state(self):
+        #1/3 control invoice receipt
+        if not self.invoice_amount:
+            #print"KAPPAO invoice_amount %s " % self.pk
+            return
+        #2/3 control members curtails
+        qs = self.ordered_gasmembers
+        accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
+        for item in qs:
+            pass_member = False
+            for member in accounted_amounts:
+                if member.pk == item.pk:
+                    pass_member = True
+                    break
+            if not pass_member:
+                #print"KAPPAO member(%s) %s " % (item, self.pk)
+                return
+        #3/3 control accounting payment
+        tx = self.gas.accounting.get_supplier_order_transaction(self)
+        if tx:
+            #change state to STATUS_ARCHIVED
+            #print"GOTO STATUS_ARCHIVED %s " % self.pk
+            t_name = TRANSITION_ARCHIVE
+        else:
+            #change state to STATUS_UNPAID
+            #print"GOTO STATUS_UNPAID %s " % self.pk
+            t_name = TRANSITION_UNPAID
+
+#FIXME: fero
+#from workflows.utils import do_transition
+#from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
+#def do_transition(self, transition, user):
+
+
+        # Act as superuser
+        user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+        t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+        log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
+        if t in get_allowed_transitions(self, user):
+            log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
+            self.do_transition(t, user)
+
+
+    @property
+    def insolutes(self):
+        orders = GASSupplierOrder.objects.closed().filter(pact=self.pact) | \
+            GASSupplierOrder.objects.unpaid().filter(pact=self.pact)
+#        orders = None
+#        orders |= GASSupplierOrder.objects.closed().filter(pact=self.pact)
+#        orders |= GASSupplierOrder.objects.unpaid().filter(pact=self.pact)
+        return orders
 
     def save(self, *args, **kw):
         created = False
@@ -836,6 +917,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             self.initial_price = self.order_price
         if self.delivered_price is None:
             self.delivered_price = self.order_price
+
         super(GASSupplierOrderProduct, self).save(*args, **kw)
 
         # CASCADING set until GASMemberOrder

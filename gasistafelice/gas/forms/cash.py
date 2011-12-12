@@ -1,3 +1,7 @@
+#!/usr/local/bin/python
+# coding: utf-8
+import os, sys
+
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
@@ -37,7 +41,7 @@ class EcoGASMemberForm(forms.Form):
 
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
     original_amounted = CurrencyField(required=False, widget=forms.HiddenInput())
-    amounted = CurrencyField(required=False, initial=0) #, widget=forms.TextInput())
+    amounted = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2) #, widget=forms.TextInput())
 
     #TODO: domthu: note and delete
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
@@ -69,12 +73,17 @@ class EcoGASMemberForm(forms.Form):
 
         #Control logged user
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        #refs = gas.cash_referrers
+        #if refs and request.user in refs:
         if not self.__loggedusr.has_perm(CASH, 
             obj=ObjectWithContext(self.__order.gas)
         ):
-
             log.debug("PermissionDenied %s in cash order form" % self.__loggedusr)
             raise PermissionDenied("You are not a cash_referrer, you cannot update GASMembers cash!")
+
+        if not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied("order is not in good state!")
 
         gm = self.cleaned_data['gasmember']
 
@@ -109,7 +118,7 @@ class EcoGASMemberRechargeForm(forms.Form):
     """
 
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
-    recharged = CurrencyField(required=False, initial=0)
+    recharged = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2)
 
     #TODO: domthu: note and delete
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
@@ -161,6 +170,12 @@ class EcoGASMemberRechargeForm(forms.Form):
 
         # This kind of amount is ever POSITIVE!
         gm.person.accounting.do_recharge(self.__gas, recharged)
+
+EcoGASMemberRechargeFormSet = formset_factory(
+                                form=EcoGASMemberRechargeForm,
+                                formset=BaseFormSetWithRequest,
+                                extra=0 #must be 0 no add form
+                          )
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
@@ -235,85 +250,240 @@ class EcoGASMemberFeeForm(forms.Form):
 
         gm.person.accounting.pay_membership_fee(self.__gas, year)
 
+EcoGASMemberFeeFormSet = formset_factory(
+                                form=EcoGASMemberFeeForm,
+                                formset=BaseFormSetWithRequest,
+                                extra=0 #must be 0 no add form
+                          )
+
 
 
 
 #-------------------------------------------------------------------------------
 
+EURO_HTML = '&euro;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
+EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
-#class CashOrderForm(forms.ModelForm):
-class CashOrderForm(forms.Form):
+class InvoiceOrderForm(forms.Form):
 
-    amount = CurrencyField(required=True)
-    note = forms.CharField(widget=widgets.TextInput())
+    #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
+    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2)
+    note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("CashOrderForm")
+        log.debug("InvoiceOrderForm")
 
-        super(CashOrderForm, self).__init__(*args, **kw)
+        super(InvoiceOrderForm, self).__init__(*args, **kw)
 
         #SOLIDAL PACT
-        pact = request.resource.pact
-        delivery = request.resource.delivery
-#        ref = request.resource.referrer_person
-#        if ref:
-#            #control if queryset not empty.
-#            self.fields['referrer_person'].initial = ref
-#        if request.resource.datetime_end:
-#            self.fields['datetime_end'].initial = request.resource.datetime_end
-#        if delivery and delivery.date:
-#            self.fields['delivery_datetime'].initial = delivery.date
+        self.__order = request.resource.order
+        if self.__order:
+            #set order informations
+            stat = ("%(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                'fam'    : "%.2f" % round(self.__order.tot_price, 2)
+                , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
+                , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
+                , 'state'  : self.__order.current_state.name
+            })
+            #    , 'euro' : EURO
+            #self.fields['order_info'].initial = stat
+            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+
+
+            #set invoice data
+            if self.__order.invoice_amount:
+                self.fields['amount'].initial = "%.2f" % round(self.__order.invoice_amount, 2)
+            if self.__order.invoice_note:
+                self.fields['note'].initial = self.__order.invoice_note
+        #self.fields['note'].widget.attrs['class'] = 'input_long'
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+        if not self.__order.is_closed():
+            self.fields['amount'].widget.attrs['readonly'] = True
+            self.fields['amount'].widget.attrs['disabled'] = 'disabled'
+
+        self.__loggedusr = request.user
+        self.__gas = self.__order.gas
+        
+    def clean(self):
+
+        cleaned_data = super(InvoiceOrderForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
+        except KeyError:
+            log.debug("InvoiceOrderForm: cannot retrieve order identifier. FORM ATTACK!")
+            raise
+
+        return cleaned_data
 
     @transaction.commit_on_success
     def save(self):
+        #raise ValueError("prova")
 
-#        if self.cleaned_data.get('delivery_datetime'):
-#            d = self.get_delivery()
-#            self.instance.delivery = d
+        #Do economic work
+        if not self.__order:
+            return
 
-#        if self.cleaned_data.get('withdrawal_datetime'):
-#            w = self.get_withdrawal()
-#            self.instance.withdrawal = w
+        #Control logged user
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+            log.debug("PermissionDenied %s in cash invoice receipt form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot manage receipt invoice cash!")
 
-        return super(CashOrderForm, self).save()
+        if not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied("order is not in good state!")
 
+        self.__order.invoice_amount = self.cleaned_data['invoice_amount']
+        self.__order.invoice_note = self.cleaned_data['note']
+        #print"Invoice amount %s---" % self.__order.invoice_amount
+
+        try:
+            self.__order.save()
+        except ValueError, e:
+            print "retry later " +  e.message
+        else:
+            #Update State if possible
+            self.__order.control_economic_state()
+            #print"Invoice saved"
+
+#-------------------------------------------------------------------------------
+
+
+class InsoluteOrderForm(forms.Form):
+
+#    orders2 = forms.ModelMultipleChoiceField(label=_("Insolute order(s)"), 
+#        queryset=GASSupplierOrder.objects.none(), required=True, widget=forms.CheckboxSelectMultiple
+#    )
+    orders = forms.MultipleChoiceField(label=_("Insolute order(s)"), required=True, widget=forms.CheckboxSelectMultiple)
+    amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
+    note = forms.CharField(label=_('Causale'), required=False, widget=forms.TextInput)
+
+    def __init__(self, request, *args, **kw):
+
+        log.debug("InsoluteOrderForm")
+
+        super(InsoluteOrderForm, self).__init__(*args, **kw)
+
+        #SOLIDAL PACT
+        self.__order = request.resource.order
+        self.__gas = request.resource.gas
+
+        if self.__order:
+
+            #set insolute data and informations
+            yet_payed, descr =self.__gas.accounting.get_supplier_order_data(self.__order)
+            if yet_payed > 0:
+                self.fields['amount'].initial = "%.2f" % round(yet_payed, 2)
+                self.fields['note'].initial = descr
+
+            insolutes = self.__order.insolutes
+            _choice = []
+            tot_ordered = 0
+            tot_invoiced = 0
+            tot_eco_entries = 0
+            stat = ''
+            for ins in insolutes:
+                tot_ordered += ins.tot_price
+                tot_invoiced += ins.invoice_amount or 0
+                tot_eco_entries += ins.tot_curtail
+                stat = _("%(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                    'fam'    : "%.2f" % round(ins.tot_price, 2)
+                    , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+                    , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+                    , 'state'  : ins.current_state.name
+                    } )
+                _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+#            self.fields['orders2'].queryset = insolutes
+            self.fields['orders'].choices = _choice
+
+            #set order informations
+            stat = _("%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                'fam'    : "%.2f" % round(tot_ordered, 2)
+                , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+                , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+                , 'state'  : self.__order.current_state.name
+            })
+            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+
+        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
+            self.fields['amount'].widget.attrs['readonly'] = True
+            self.fields['amount'].widget.attrs['disabled'] = 'disabled'
+
+        self.__loggedusr = request.user
+        self.__gas = self.__order.gas
+
+    def clean(self):
+
+        cleaned_data = super(InsoluteOrderForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
+        except KeyError:
+            log.debug("InsoluteOrderForm: cannot retrieve order identifier. FORM ATTACK!")
+            raise
+
+        try:
+            cleaned_data['orders_to_pay'] = cleaned_data['orders']
+        except KeyError:
+            log.debug("InsoluteOrderForm: cannot retrieve orders identifiers. FORM ATTACK!")
+            raise 
+           
+        return cleaned_data
+
+    @transaction.commit_on_success
     def save(self):
-        raise ValueError("prova")
+        #raise ValueError("prova")
 
-    class Meta:
-        model = GASSupplierOrder
-        fields = ['invoice_amount', 'invoice_note']
+        #Do economic work
+        if not self.__order:
+            return
 
-        gf_fieldsets = [(None, {
-            'fields' : [ 'current_state'
-                         , 'invoice_amount'
-                         , 'invoice_note'
-            ]
-        })]
+        #Control logged user
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+            log.debug("PermissionDenied %s in cash insolute form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot manage insolute order cash!")
 
-def form_class_factory_for_request(request, base):
-    """Return appropriate form class basing on GAS configuration
-    and other request parameters if needed"""
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied("order is not in good state!")
 
-    log.debug("CashOrderForm--> form_class_factory_for_request")
-    fields = copy.deepcopy(base.Meta.fields)
-    gf_fieldsets = copy.deepcopy(base.Meta.gf_fieldsets)
-    attrs = {}
-    order = request.resource.order
+        p_amount = self.cleaned_data['insolute_amount']
+        p_note = self.cleaned_data['note']
+        #print"insolute amount %s---" % p_amount
+        #refs=[self.__order]
+        refs=[]
+        insolutes = self.cleaned_data['orders_to_pay']
+        if insolutes:
+            for ins_pk in insolutes:
+                try:
+                    _ins = GASSupplierOrder.objects.get(pk=ins_pk)
+                except GASSupplierOrder.DoesNotExist:
+                    log.debug("InsoluteOrderForm: cannot retrieve order instance. Identifier (%s)." % ins_pk)
+                    raise
+                else:
+                    if _ins and (_ins.is_unpaid() or _ins.is_closed()):
+                        refs.append(_ins)
+            if len(refs) > 0:
+                try:
+                    self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
+                except ValueError, e:
+                    print "retry later " +  e.message
+                else:
+                    #print"Insolute(%s) saved " % len(refs)
+                    for _order in refs:
+                        #Update State if possible
+                        _order.control_economic_state
 
-    if order:
-
-#        refs = gas.cash_referrers
-#        if refs and request.user in refs:
-#            gf_fieldsets[0][1]['fields'].append('delivery_cost')
-
-        attrs.update(Meta=type('Meta', (), {
-            'model' : GASSupplierOrder,
-            'fields' : fields,
-            'gf_fieldsets' : gf_fieldsets
-        }))
-    return type('Custom%s' % base.__name__, (base,), attrs)
 
 
 #-------------------------------------------------------------------------------

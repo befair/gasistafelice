@@ -130,6 +130,8 @@ INSTALLED_APPS = [
     'gasistafelice.localejs',
     'notification',
     'gasistafelice.des_notification',
+    'registration',
+    'captcha',
     #'south',
 ]
 
@@ -296,7 +298,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{ 
         'name' : 'delivery',
         'descr': 'Pagamento',
-        'blocks': ['order_invoice', 'curtail']
+        'blocks': ['order_invoice', 'curtail', 'order_insolute']
     }],
 
     'person' : [{
@@ -337,7 +339,7 @@ CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
 
 DATE_FMT = "%d/%m/%Y"
-LONG_DATE_FMT = "%A, %d %B %Y"
+LONG_DATE_FMT = "%A %d %B %Y"
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #DOMTHU:
 #locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
@@ -377,3 +379,5 @@ NOTIFICATION_BACKENDS = (
     ("email", "notification.backends.email.EmailBackend"),
 )
 
+CAPTCHA_FONT_SIZE = 40
+APTCHA_LETTER_ROTATION = (-25,25)

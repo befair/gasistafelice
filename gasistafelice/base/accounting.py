@@ -4,6 +4,8 @@ from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
 
+#from gasistafelice.base.models import GAS, GASMember
+
 class PersonAccountingProxy(AccountingProxy):
     """
     This class is meant to be the place where implementing the accounting API 
@@ -34,7 +36,7 @@ class PersonAccountingProxy(AccountingProxy):
         entry_point =  gas.accounting.system['/incomes/fees']
         target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
-        description = _("%(person)s for year %(year)s") % {'person': person, 'year': year,}
+        description = _("Year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
         issuer = self.subject 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
@@ -70,14 +72,63 @@ class PersonAccountingProxy(AccountingProxy):
             exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
             entry_point =  gas.accounting.system['/incomes/recharges']
             target_account = gas.accounting.system['/members/' + person.uid]
-            description = unicode(person)
+            description = unicode(person.report_name)
             issuer = self.subject
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
             transaction.add_references([person, gas])
 
+#Transaction
+#    date = models.DateTimeField(default=datetime.now)
+#    description = models.CharField(max_length=512, help_text=_("Reason of the transaction"))
+#    issuer = models.ForeignKey(Subject, related_name='issued_transactions_set')
+#    source = models.ForeignKey(CashFlow)
+#    split_set = models.ManyToManyField(Split)
+#    kind = models.CharField(max_length=128, choices=settings.TRANSACTION_TYPES)
+#    is_confirmed = models.BooleanField(default=False)
+#    def splits(self):
+#    def is_split(self):
+#    def is_internal(self):
+#    def is_simple(self):
+
+#LedgerEntry
+#    account = models.ForeignKey(Account, related_name='entry_set')
+#    transaction = models.ForeignKey(Transaction, related_name='entry_set')
+#    entry_id = models.PositiveIntegerField(null=True, blank=True, editable=False)
+#    amount = CurrencyField()
+#    def date(self):
+#    def description(self):
+#    def issuer(self):
+
+
     def entries(self, base_path='/'):
         """
-        List all transactions. Return LedgerEntry (account, transaction, amount)
+        List all LedgerEntries (account, transaction, amount)
+
+        Show transactions for gasmembers link to GAS kind='GAS_WITHDRAWAL' + another kind?
         """
-        return self.system[base_path].ledger_entries
+        member_account = gasmember.person.uid
+        gas_account = gasmember.gas.uid
+        accounts = self.system.accounts.filter(name="wallet") | \
+            self.system.accounts.filter(parent__name="members", name__in=member_account) | \
+            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/fees", name__in=member_account) | \
+            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/recharges", name__in=member_account)
+
+        return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
+
+    def entries_gasmember(self, gasmember):
+        """
+        List all LedgerEntries (account, transaction, amount)
+
+        Show transactions for gasmembers link to GAS kind='GAS_WITHDRAWAL' + another kind?
+        """
+
+        member_account = gasmember.person.uid
+        gas_account = gasmember.gas.uid
+        accounts = self.system.accounts.filter(name="wallet") | \
+            self.system.accounts.filter(parent__name="members", name__in=member_account) | \
+            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/fees", name__in=member_account) | \
+            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/recharges", name__in=member_account)
+
+        return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
+
 

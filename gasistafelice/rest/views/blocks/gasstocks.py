@@ -23,15 +23,18 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
-        1: 'stock__product',
-        2: 'price',
-        3: 'stock__availability',
+        1: 'stock__product__name',
+        2: 'stock__price',
+        3: 'stock__amount_available',
         4: 'enabled',
         5: 'tot_amount',
         6: 'tot_gasmembers',
         7: 'tot_price'
     }
 
+#Cannot resolve keyword 'price' into field. Choices are: enabled, gassupplierorder, historicalorderable_product_set, id, minimum_amount, orderable_product_set, pact, step, stock
+
+#Cannot resolve keyword 'availability' into field. Choices are: amount_available, code, delivery_notes, detail_minimum_amount, detail_step, gasstock_set, gassuppliersolidalpact, historicalgasstock_set, id, image, price, product, supplier, supplier_category, units_minimum_amount, units_per_box
     def _get_user_actions(self, request):
 
         user_actions = []
@@ -58,7 +61,7 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         #GASSupplierStock
-        return request.resource.gasstocks
+        return request.resource.gasstocks.order_by('stock__product__name')
 
     def _get_edit_multiple_form_class(self):
         return GASSupplierStockFormSet

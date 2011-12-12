@@ -397,6 +397,16 @@ border:0px;
 td input[type="text"] { max-width:70%; }
 td input.amount { max-width:3em; text-align : center;}
 
+form p.help, .help {
+    font-weight : bold;
+    color : green;
+}
+
+ul.errorlist {
+    max-width : 400px;
+}
+
+
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
 .ui-timepicker-div dl{ text-align: left; }

@@ -14,6 +14,13 @@ STATUS_UNPAID = "Unpaid"
 STATUS_ARCHIVED = "Archived"
 STATUS_CANCELED = "Canceled"
 
+TRANSITION_OPEN = "open"
+TRANSITION_CLOSE = "close"
+TRANSITION_ARCHIVE = "archive"
+TRANSITION_UNPAID = "make_unpaid"
+TRANSITION_CLOSE_EMAIL = "close_and_send"
+TRANSITION_CANCEL = "cancel"
+
 # a dictionary containing all workflows declarations (as `WorkflowDefinition` objects)
 # listed in this module, keyed by name 
 workflow_dict = {}

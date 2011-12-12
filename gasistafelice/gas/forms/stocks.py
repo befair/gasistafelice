@@ -43,8 +43,8 @@ class GASSupplierStockForm(forms.Form):
                 Exception("Save SingleSupplierStockForm error: %s", str(e))
 
 GASSupplierStockFormSet = formset_factory(
-                                form=GASSupplierStockForm, 
-                                formset=BaseFormSetWithRequest, 
+                                form=GASSupplierStockForm,
+                                formset=BaseFormSetWithRequest,
                                 extra=0 #must be 0 no add form
                           )
 

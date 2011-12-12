@@ -54,33 +54,36 @@ class Block(BlockSSDataTables):
         #FIXME: Check if order is in "closed_state"  Not in Open STATE for CASH REFERRER
         #if request.user.has_perm(CASH, obj=ObjectWithContext(request.resource)):
 
-        gas = request.resource.order.pact.gas
+        order = self.resource.order
 
-        if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)):
 
-            user_actions += [
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"),
-                    popup_form=False,
-                    method="get",
-                ),
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
-                    popup_form=False,
-                    method="get",
-                ),
-            ]
+            if order.is_closed():
+
+                user_actions += [
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=VIEW, verbose_name=_("Show"),
+                        popup_form=False,
+                        method="get",
+                    ),
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=EDIT_MULTIPLE, verbose_name=_("Edit"),
+                        popup_form=False,
+                        method="get",
+                    ),
+                ]
+
         return user_actions
 
     def _get_resource_list(self, request):
         
         #return GASMember objects
         order = request.resource.order
-        qs = order.ordered_gasmembers
+        qs = order.ordered_gasmembers.order_by('person__surname', 'person__name')
         accounted_amounts = order.gas.accounting.accounted_amount_by_gas_member(order)
         gasmembers = set()
         for item in qs:
@@ -140,7 +143,7 @@ class Block(BlockSSDataTables):
             data.update({
                '%s-gm_id' % key_prefix : item.pk,
                '%s-original_amounted' % key_prefix : item.accounted_amount,
-               '%s-amounted' % key_prefix : accounted_wallet,
+               '%s-amounted' % key_prefix : "%.2f" % round(accounted_wallet, 2),
             })
 
             map_info[item.pk] = {'formset_index' : i}

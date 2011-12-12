@@ -48,7 +48,7 @@ class SupplierAccountingProxy(AccountingProxy):
         exit_point = self.system['/incomes/gas/' + gas.uid]
         entry_point = gas.system['/expenses/suppliers/' + supplier.uid] 
         target_account = gas.system['/cash']
-        description = _("Refund from supplier %(supplier)s to GAS %(gas)s") % {'gas': gas, 'supplier': supplier,}
+        description = _("Refund for %(gas)s <-- %(supplier)s ") % {'gas': gas.id_in_des, 'supplier': supplier,}
         issuer = supplier 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='REFUND')
         if refs:

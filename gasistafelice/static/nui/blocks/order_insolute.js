@@ -2,7 +2,7 @@
 //                                                                              //
 //------------------------------------------------------------------------------//
 
-jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
+jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
 
     action_handler : function(action_el) {
         if (action_el.attr('name') == "new_note") {
@@ -35,7 +35,7 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
         //template elements
         var content_template = '\
         <div>\
-            <form id="invoice_id" method="POST" action="@@action_url@@">\
+            <form id="insolute_id" method="POST" action="@@action_url@@">\
             <div class="list_actions">@@list_actions@@</div> \
             @@content@@\
             </form>\
@@ -73,8 +73,8 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
     post_load_handler : function() {
         
         //$("invoice_id").ajaxForm()
-        $("#invoice_id").ajaxForm(function(){
-            alert("handler attached: ajaxified form " + $("#amount").value );
+        $("#insolute_id").ajaxForm(function(){
+            //alert("handler attached: ajaxified form " + $("#amount").value );
         })
 
         this._super();
@@ -87,5 +87,5 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
 
 })
 
-jQuery.BLOCKS["order_invoice"] = new jQuery.UIBlockOrderInvoice("order_invoice");
+jQuery.BLOCKS["order_insolute"] = new jQuery.UIBlockOrderInsolute("order_insolute");
 

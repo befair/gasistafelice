@@ -19,8 +19,9 @@ urlpatterns = patterns('',
 
 	(r'^%srest/' % settings.URL_PREFIX, include('rest.urls')),
 
-	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'django.contrib.auth.views.login'),
+	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'des.views.login'),
 	(r'^%saccounts/logout/$' % settings.URL_PREFIX, 'django.contrib.auth.views.logout_then_login'),
+	(r'^%saccounts/registration/$' % settings.URL_PREFIX, 'des.views.registration'),
 
     (r'^gas-admin/', include(gas_admin.urls)),
     (r'^%sadmin/' % settings.URL_PREFIX, include(admin.site.urls)),
@@ -28,6 +29,10 @@ urlpatterns = patterns('',
 	(r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
+)
+
+urlpatterns += patterns('',
+    url(r'^%scaptcha/' % settings.URL_PREFIX, include('captcha.urls')),
 )
 
 if settings.DEBUG:
