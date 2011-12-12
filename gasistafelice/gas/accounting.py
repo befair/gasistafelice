@@ -37,7 +37,7 @@ class GasAccountingProxy(AccountingProxy):
         exit_point = self.system['/expenses/suppliers/' + supplier.uid]
         entry_point =  supplier.accounting.system['/incomes/gas/' + gas.uid]
         target_account = supplier.accounting.system['/wallet']
-        description = _("Ord.%(pk)s: %(gas)s --> %(supplier)s") % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
+        description = _("Ord.%(pk)s %(gas)s --> %(supplier)s") % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
         if descr:
             description += ". %s" % descr
         #issuer = gas Not the instance
@@ -138,7 +138,7 @@ class GasAccountingProxy(AccountingProxy):
         else:
             return 0, ''
 
-    def get_supplier_order_transaction(self, order, refs):
+    def get_supplier_order_transaction(self, order, refs=None):
         """
         Get transaction payment for one order
         """

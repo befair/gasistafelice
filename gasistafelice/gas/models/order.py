@@ -22,6 +22,11 @@ from gasistafelice.consts import *
 from gasistafelice.gas.workflow_data import STATUS_PREPARED, STATUS_OPEN
 from gasistafelice.gas.workflow_data import STATUS_CLOSED, STATUS_UNPAID
 from gasistafelice.gas.workflow_data import STATUS_ARCHIVED, STATUS_CANCELED
+
+from gasistafelice.gas.workflow_data import TRANSITION_OPEN, TRANSITION_CLOSE, TRANSITION_CLOSE_EMAIL
+from gasistafelice.gas.workflow_data import TRANSITION_ARCHIVE, TRANSITION_UNPAID, TRANSITION_CANCEL
+
+
 from gasistafelice.utils import long_date
 
 from flexi_auth.models import ParamRole
@@ -176,7 +181,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
             # Act as superuser
             user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-            t_name = "open"
+            t_name = TRANSITION_OPEN
             t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
             if t in get_allowed_transitions(self, user):
@@ -191,7 +196,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
                 # Act as superuser
                 user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-                t_name = "close"
+                t_name = TRANSITION_CLOSE
                 t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
                 log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
@@ -646,6 +651,48 @@ WHERE order_id = %s \
     @property
     def control_economic_state(self):
         print "XXXXXXXXXXXXXXXXXX %s " % self.pk
+        #1/3 control invoice receipt
+        if not self.invoice_amount:
+            print "KAPPAO invoice_amount %s " % self.pk
+            return
+        #2/3 control members curtails
+        qs = self.ordered_gasmembers
+        accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
+        for item in qs:
+            pass_member = False
+            for member in accounted_amounts:
+                if member.pk == item.pk:
+                    pass_member = True
+                    break
+            if not pass_member:
+                print "KAPPAO member(%s) %s " % (item, self.pk)
+                return
+        #3/3 control accounting payment
+        tx = self.gas.accounting.get_supplier_order_transaction(self)
+        if tx:
+            #change state to STATUS_ARCHIVED
+            print "GOTO STATUS_ARCHIVED %s " % self.pk
+            t_name = TRANSITION_ARCHIVE
+        else:
+            #change state to STATUS_UNPAID
+            print "GOTO STATUS_UNPAID %s " % self.pk
+            t_name = TRANSITION_UNPAID
+
+#FIXME: fero
+#from workflows.utils import do_transition
+#from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
+#def do_transition(self, transition, user):
+
+
+        # Act as superuser
+        user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+        t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+        log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
+        if t in get_allowed_transitions(self, user):
+            log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
+            self.do_transition(t, user)
+
 
     @property
     def insolutes(self):

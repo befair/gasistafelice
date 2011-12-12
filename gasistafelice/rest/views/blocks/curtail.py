@@ -58,7 +58,7 @@ class Block(BlockSSDataTables):
 
         if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)):
 
-            if not order.is_closed():
+            if order.is_closed():
 
                 user_actions += [
                     ResourceBlockAction(
