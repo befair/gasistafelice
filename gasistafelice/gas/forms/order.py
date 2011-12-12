@@ -297,7 +297,7 @@ class EditOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
-        fields = ['datetime_start', 'datetime_end', 'referrer_person', 'delivery_cost']
+        fields = ['datetime_start', 'datetime_end', 'referrer_person']
 
         gf_fieldsets = [(None, {
             'fields' : [ ('datetime_start', 'datetime_end')
@@ -317,11 +317,6 @@ def form_class_factory_for_request(request, base):
     gas = request.resource.gas
 
     if gas:
-
-        #TODO: ECO 2 way for inserting economic data
-        refs = gas.cash_referrers
-        if refs and request.user in refs:
-            gf_fieldsets[0][1]['fields'].append('delivery_cost')
 
         if gas.config.use_withdrawal_place:
             gf_fieldsets[0][1]['fields'].append('withdrawal_referrer_person')

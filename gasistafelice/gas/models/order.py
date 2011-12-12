@@ -44,7 +44,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
 
-    * status is a meaningful parameter... TODO
+    * current_state is a meaningful parameter for order status from workflow system
     * gasstock_set references specified products available for the specific order \
       (they can be a subset of all available products from that Supplier for the order);
 
@@ -63,8 +63,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
     # Delivery cost. To be set after delivery has happened
     delivery_cost = CurrencyField(verbose_name=_('Delivery cost'), null=True, blank=True)
 
-    # STATUS is MANAGED BY WORKFLOWS APP: 
-    # status = models.CharField(max_length=32, choices=STATES_LIST, help_text=_("order state"))
     gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
 
     referrer_person = models.ForeignKey(Person, null=True, blank=True, related_name="order_set", verbose_name=_("order referrer"))
@@ -637,15 +635,16 @@ WHERE order_id = %s \
     @property
     def payment(self):
         mvt = 0
-        #TODO: ECO Accounting retrieve the payment for this order
+        self.gas.accounting.get_supplier_order_amount(self)
         return mvt
+
+    def pay_supplier_order(self, amount):
+        self.gas.accounting.pay_supplier_order(self, amount)
 
     @property
     def payment_urn(self):
         mvt_urn = 'order/%s' % self.pk
-        #TODO: ECO Accounting retrieve the payment for this order and get the urn
-        #This is wright? Accounting is not a ressource...
-        #So we have to go to the order details in EDIT mode?
+        mvt_urn = self.urn
         return mvt_urn
 
     @property

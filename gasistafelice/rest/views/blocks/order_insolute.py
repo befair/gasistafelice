@@ -65,13 +65,15 @@ class Block(AbstractBlock):
         elif args == "INCOME":
             if request.method == 'POST':
 
-                form = CashOrderForm(request, request.POST)
+                form = InsoluteOrderForm(request, request.POST)
 
                 if form.is_valid():
                     with transaction.commit_on_success():
                         if form.cleaned_data:
                             form.save()
-                    return self.response_success("Good")
+                    #FIXME: handler attached: ajaxified form undefined
+                    #return self.response_success()
+                    return HttpResponse(_("Insolute saved"))
                 else:
                     return self.response_error(form.errors)
 

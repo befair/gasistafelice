@@ -54,15 +54,7 @@ class Block(AbstractBlock):
         res = self.resource
 
         user_actions = self._get_user_actions(request)
-        if args == "":
-            ctx = {
-                'resource'      : res,
-                'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
-                'form'          : InvoiceOrderForm(request),
-                'user_actions'  : user_actions,
-            }
-            return render_to_xml_response('blocks/order_invoice.xml', ctx)
-        elif args == "INCOME":
+        if args == "INCOME":
             if request.method == 'POST':
 
                 form = InvoiceOrderForm(request, request.POST)
@@ -71,6 +63,17 @@ class Block(AbstractBlock):
                     with transaction.commit_on_success():
                         if form.cleaned_data:
                             form.save()
-                    return self.response_success("Good")
-                else:
-                    return self.response_error(form.errors)
+                    #FIXME: handler attached: ajaxified form undefined
+#                    return self.response_success()
+#                else:
+#                    return self.response_error(form.errors)
+
+#        if args == "":
+        ctx = {
+            'resource'      : res,
+            'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
+            'form'          : InvoiceOrderForm(request),
+            'user_actions'  : user_actions,
+        }
+        return render_to_xml_response('blocks/order_invoice.xml', ctx)
+
