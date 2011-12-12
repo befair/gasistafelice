@@ -30,16 +30,18 @@ class GasAccountingProxy(AccountingProxy):
         """
         if amount < 0:
             raise MalformedTransaction("Payment amounts must be non-negative")
+        #gas = order.gas
         gas = self.subject.instance
         supplier = order.supplier
         source_account = self.system['/cash']
         exit_point = self.system['/expenses/suppliers/' + supplier.uid]
-        entry_point =  supplier.system['/incomes/gas' + gas.uid]
-        target_account = supplier.system['/wallet']
+        entry_point =  supplier.accounting.system['/incomes/gas/' + gas.uid]
+        target_account = supplier.accounting.system['/wallet']
         description = _("Ord.%(pk)s: %(gas)s --> %(supplier)s") % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
         if descr:
             description += ". %s" % descr
-        issuer = gas
+        #issuer = gas Not the instance
+        issuer =  self.subject
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')
         if refs:
             transaction.add_references(refs)
@@ -114,7 +116,7 @@ class GasAccountingProxy(AccountingProxy):
         #retrieve existing payment
         if not refs:
             refs = [order]
-        yet_payed, description = self.get_supplier_order_payment(order, refs)
+        yet_payed, description = self.get_supplier_order_data(order, refs)
         if yet_payed <= 0:
             # pay supplier
             self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr)

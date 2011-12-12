@@ -300,14 +300,11 @@ class InvoiceOrderForm(forms.Form):
         cleaned_data = super(InvoiceOrderForm, self).clean()
         print("cleaned_data %s" % cleaned_data)
         try:
-            cleaned_data['invoice'] = abs(cleaned_data['amount'])
+            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
         except KeyError:
             log.debug("InvoiceOrderForm: cannot retrieve order identifier. FORM ATTACK!")
-            raise 
-        except GASSupplierOrder.DoesNotExist:
-            log.debug("InvoiceOrderForm: cannot retrieve order instance. Identifier (%s)." % cleaned_data['gm_id'])
             raise
-           
+
         return cleaned_data
 
     @transaction.commit_on_success
@@ -330,8 +327,9 @@ class InvoiceOrderForm(forms.Form):
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied("order is not in good state!")
 
-        self.__order.invoice_amount = self.cleaned_data['amount']
+        self.__order.invoice_amount = self.cleaned_data['invoice_amount']
         self.__order.invoice_note = self.cleaned_data['note']
+        print "Invoice amount %s---" % self.__order.invoice_amount
 
         try:
             self.__order.save()
@@ -339,7 +337,7 @@ class InvoiceOrderForm(forms.Form):
             print "retry later " +  e.message
         else:
             #Update State if possible
-            self.control_economic_state(self.__order)
+            self.__order.control_economic_state()
             print "Invoice saved"
 
 #-------------------------------------------------------------------------------
@@ -414,13 +412,13 @@ class InsoluteOrderForm(forms.Form):
         cleaned_data = super(InsoluteOrderForm, self).clean()
         print("cleaned_data %s" % cleaned_data)
         try:
-            cleaned_data['invoice'] = abs(cleaned_data['amount'])
+            cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
         except KeyError:
             log.debug("InsoluteOrderForm: cannot retrieve order identifier. FORM ATTACK!")
             raise
 
         try:
-            cleaned_data['orders_to_pay'] = abs(cleaned_data['orders'])
+            cleaned_data['orders_to_pay'] = cleaned_data['orders']
         except KeyError:
             log.debug("InsoluteOrderForm: cannot retrieve orders identifiers. FORM ATTACK!")
             raise 
@@ -447,28 +445,33 @@ class InsoluteOrderForm(forms.Form):
             log.debug("PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied("order is not in good state!")
 
-        p_amount = self.cleaned_data['invoice']
+        p_amount = self.cleaned_data['insolute_amount']
         p_note = self.cleaned_data['note']
-        #TODO: for each order set ref
+        print "insolute amount %s---" % p_amount
         #refs=[self.__order]
         refs=[]
         insolutes = self.cleaned_data['orders_to_pay']
-        print "OOOOOOOOOOOOOOOOOOOO  " % xords
+        print "OOOOOOOOOOOOOOOOOOOO  " % insolutes
         if insolutes:
             for ins_pk in insolutes:
-                _ins = 
-                if _ins and (_ins.is_unpaid() or _ins.is_closed()):
-                    refs.append(_ins)
-            if refs.count() > 0:
+                try:
+                    _ins = GASSupplierOrder.objects.get(pk=ins_pk)
+                except GASSupplierOrder.DoesNotExist:
+                    log.debug("InsoluteOrderForm: cannot retrieve order instance. Identifier (%s)." % ins_pk)
+                    raise
+                else:
+                    if _ins and (_ins.is_unpaid() or _ins.is_closed()):
+                        refs.append(_ins)
+            if len(refs) > 0:
                 try:
                     self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
                 except ValueError, e:
                     print "retry later " +  e.message
                 else:
-                    print "Invoice saved"
-                    for _order in insolutes:
+                    print "Insolute(%s) saved " % len(refs)
+                    for _order in refs:
                         #Update State if possible
-                        self.control_economic_state(_order)
+                        _order.control_economic_state
 
 
 

@@ -634,18 +634,18 @@ WHERE order_id = %s \
 
     @property
     def payment(self):
-        mvt = 0
-        self.gas.accounting.get_supplier_order_amount(self)
-        return mvt
-
-    def pay_supplier_order(self, amount):
-        self.gas.accounting.pay_supplier_order(self, amount)
+        yet_payed, descr =self.gas.accounting.get_supplier_order_data(self)
+        return yet_payed
 
     @property
     def payment_urn(self):
-        mvt_urn = 'order/%s' % self.pk
+        #mvt_urn = 'order/%s' % self.pk
         mvt_urn = self.urn
         return mvt_urn
+
+    @property
+    def control_economic_state(self):
+        print "XXXXXXXXXXXXXXXXXX %s " % self.pk
 
     @property
     def insolutes(self):
