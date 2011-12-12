@@ -31,8 +31,10 @@ class Block(BlockSSDataTables):
         3: 'source',
         4: 'kind',
         5: 'description',
-        6: 'is_confirmed'
+        6: '',
     }
+#        6: 'is_confirmed'
+
 #Transaction
 #    date = models.DateTimeField(default=datetime.now)
 #    description = models.CharField(max_length=512, help_text=_("Reason of the transaction"))
@@ -63,8 +65,12 @@ class Block(BlockSSDataTables):
 #        5: 'Type',  --> Transaction type
 #        6: 'description'
 
-
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions
         return request.resource.economic_movements
+
+
+#        "{{entry.account.name|escapejs}}",
+#        "{{entry.urn|escapejs}}",
+
 

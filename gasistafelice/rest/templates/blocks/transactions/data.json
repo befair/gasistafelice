@@ -7,11 +7,10 @@
 
         "{{entry.pk|escapejs}}",
         "{{entry.date|escapejs}}",
-        "{{entry.account.name|escapejs}}",
+        "{% filter escapejs %}{% Human_readable_account entry.account %}{% endfilter %}",
         "{{entry.transaction.kind|escapejs}}",
-        "{{entry.description|escapejs}}",
         "{{entry.amount|escapejs}}",
-
+        "{{entry.description|escapejs}}",
     ]
     {% if not forloop.last %}
     ,

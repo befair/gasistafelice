@@ -34,7 +34,7 @@ class PersonAccountingProxy(AccountingProxy):
         entry_point =  gas.accounting.system['/incomes/fees']
         target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
-        description = _("%(person)s for year %(year)s") % {'person': person, 'year': year,}
+        description = _("Year %(year)s --> %(person)s") % {'person': person, 'year': year,}
         issuer = self.subject 
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])

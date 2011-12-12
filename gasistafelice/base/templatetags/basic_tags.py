@@ -33,6 +33,61 @@ def bool_img(value):
 def bool_img_not(value):
     return bool_img(not value)
 
+@register.simple_tag
+def Human_readable_account(account):
+    """
+    return one string containing the ressource name and the resource urn
+
+    The string is separated by '@@' keyword
+    in order to be split and use by jQuery.Resource(_url, _name);
+    we expect value.name as ressource-type-pk
+    """
+    #FIXME: this view must import and know the model controller!!!! (not MVC)
+    print "VVVVVVVVVV %s " % account.name
+    name = ""
+    urn = ""
+    if 'person-' in account.name:
+        from gasistafelice.gas.models.base import GASMember
+        p_pk = account.name.replace("person-", "")
+        try:
+            obj = GASMember.objects.get(pk=p_pk)
+        except GASMember.DoesNotExist:
+            pass
+        else:
+            name = obj.person.report_name
+            urn = obj.urn
+
+    elif 'gas-' in account.name:
+        from gasistafelice.gas.models.base import GAS
+        pk = account.name.replace("gas-", "")
+        try:
+            obj = GAS.objects.get(pk=p_pk)
+        except GAS.DoesNotExist:
+            pass
+        else:
+            name = obj.id_in_des
+            urn = obj.urn
+
+    elif 'supplier-' in account.name:
+        from gasistafelice.supplier.models import Supplier
+        pk = account.name.replace("supplier-", "")
+        try:
+            obj = Supplier.objects.get(pk=p_pk)
+        except Supplier.DoesNotExist:
+            pass
+        else:
+            name = obj.name
+            urn = obj.urn
+
+    if name == "" or urn == "":
+        obj = account.system.owner.instance
+        name = obj
+        #if 'person' in account.name:
+        #FIXME: Caught NotImplementedError while rendering: class: GAS method: person
+        #because we retrieve ledgerEntries from gas.account
+        urn = obj.urn
+
+    return "%(name)s|%(urn)s" % {'name': name, 'urn': urn}
 
 #--------------------------------------------------------------------------------
 
