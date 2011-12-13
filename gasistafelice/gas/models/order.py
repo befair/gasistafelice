@@ -175,6 +175,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def report_name(self):
+        print "report_namereport_namereport_namereport_namereport_name"
         rep_date = medium_date(self.datetime_end)
         if self.delivery:
             if self.delivery.date:
@@ -187,7 +188,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def open_if_needed(self):
         """Check datetime_start and open order if needed."""
-
+        print "open_if_neededopen_if_neededopen_if_neededopen_if_neededopen_if_needed"
         if self.datetime_start <= datetime.now():
 
             # Act as superuser
@@ -197,10 +198,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
             if t in get_allowed_transitions(self, user):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
+
+#                #20111212 02:00 prepare reccurent plan for order
+#FIXME: not done when using manual opening
+#                self.set_default_gasstock_set()
+
                 self.do_transition(t, user)
 
-                #20111212 02:00 prepare reccurent plan for order
-                self.set_default_gasstock_set()
 
     def close_if_needed(self):
         """Check for datetime_end and close order if needed."""
@@ -741,8 +745,8 @@ WHERE order_id = %s \
         super(GASSupplierOrder, self).save(*args, **kw)
 
 #20111212 02:00 prepare reccurent plan for order
-#        if created:
-#            self.set_default_gasstock_set()
+        if created:
+            self.set_default_gasstock_set()
 
     #-------------- Authorization API ---------------#
     

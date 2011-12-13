@@ -25,5 +25,5 @@ def long_date(d):
     return d.strftime(settings.LONG_DATE_FMT).decode('utf-8')
 
 def medium_date(d):
-    return d.strftime(settings.MEDIUM_DATE_FMT).decode('utf-8')
+    return d.strftime(settings.MEDIUM_DATETIME_FMT).decode('utf-8')
 

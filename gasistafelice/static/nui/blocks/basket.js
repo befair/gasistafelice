@@ -80,7 +80,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                         $(nRow.cells[8]).addClass(priceStatus);
                         $(nRow.cells[9]).addClass(confirmStatus);
                     }
-                    catch(e){alert(e.message);
+                    catch(e){//alert(e.message);
                     }
                     return nRow
                 } ,

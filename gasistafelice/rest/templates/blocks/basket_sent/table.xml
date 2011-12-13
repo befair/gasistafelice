@@ -1,0 +1,19 @@
+{% extends "blocks/stocks/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th title='{% trans "Order" %}'>Ord.</th>
+    <th>{% trans "Supplier" %}</th>
+    <th>{% trans "Product" %}</th>
+    <th>{% trans "Price" %}</th>
+    <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
+    <th title='{% trans "Ordered total" %}'>{% trans "Total" %}</th>
+{% endblock %}
+
+{% block footer %}
+    <tr>
+        <th class="totfield" colspan="3">{% trans "Total" %}:</th>
+        <th class="totvalue" colspan="3" id="total-basket"></th>
+    </tr>
+{% endblock %}
+
