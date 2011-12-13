@@ -176,6 +176,33 @@ class EditStockForm(forms.ModelForm):
         self.instance.product = product
         self.instance.save()
         
+    class Meta:
+        model = SupplierStock
+        exclude = ('supplier', 'amount_available', 'product')
+        
+        gf_fieldsets = (
+            (None, {
+                'fields': (
+                    'product_name',
+                    'product_description',
+                    ('price', 'product_vat_percent'),
+                    'product_category',
+                )
+             }),
+             (_("Distribution info"), {
+                'fields' : (
+                    ('product_pu', 'product_muppu', 'product_mu'),
+                    ('units_minimum_amount', 'units_per_box'),
+                    ('detail_minimum_amount', 'detail_step'), 
+                    'availability',
+                )
+             }),
+             (_("Supplier info"), {
+                'fields' : (
+                    ('code', 'supplier_category'),
+                )
+             })
+            )
 
 class AddStockForm(EditStockForm):
     """Add new product and stock"""
@@ -221,6 +248,28 @@ class AddStockForm(EditStockForm):
 
         return cleaned_data
 
+    def save(self):
+        log.debug("Saving new product:")
+        log.debug("cleaned data = %s" % self.cleaned_data)
+        product = self.cleaned_data['product']
+        product.producer = self._supplier
+        product.save()
+
+        stock = SupplierStock(
+            product = product,
+            price = self.cleaned_data['price'],
+            units_minimum_amount = self.cleaned_data['units_minimum_amount'],
+            units_per_box = self.cleaned_data['units_per_box'],
+            supplier = self._supplier
+        )
+        if self.cleaned_data.get('code'):
+            stock.code = self.cleaned_data['code']
+        if self.cleaned_data.get('amount_available'):
+            stock.amount_available = self.cleaned_data['amount_available']
+        if self.cleaned_data.get('supplier_category'):
+            stock.supplier_category = self.cleaned_data['supplier_category']
+        stock.save()
+        
 
 #------------------------------------------------------------------------------
 
