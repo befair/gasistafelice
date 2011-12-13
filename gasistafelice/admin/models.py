@@ -180,7 +180,7 @@ class SupplierAdmin(admin.ModelAdmin):
     list_display = ('name', 'flavour', 'website_with_link',)
     list_display_links = ('name',)
     list_filter = ('flavour',)
-    search_fields = ['name', 'referrers__name', 'referrers__surname',]
+    search_fields = ['name']
     
     def website_with_link(self, obj):
         url = obj.website
