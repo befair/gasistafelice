@@ -159,32 +159,6 @@ class EditStockForm(forms.ModelForm):
         mu = cleaned_data.get('product_mu')
         mu_qs = ProductMU.objects.filter(symbol__exact=pu.symbol) 
 
-        if mu:
-            
-            if mu_qs.count() == 1:
-                src_mu = mu_qs[0]
-                muppu = cleaned_data['product_muppu']
-                if muppu != UnitsConversion.objects.get(src=src_mu, dst=mu).amount:
-                    raise ValidationError(_("Units measure %(mu)s for %(pu)s must be %(amount)s") % {
-                            'mu' : mu, 'pu' : pu, 'amount':muppu
-                    })
-                
-            elif not mu_qs.count():
-                pass #do nothing whatever written, it is right
-            else:
-                raise DatabaseError("There are more than one MU for symbol %s" % cleaned_data['pu'].symbol)
-            
-        else:
-
-            if mu_qs.count() == 1:
-                cleaned_data['product_mu'] = mu_qs[0]
-                cleaned_data['product_muppu'] = 1
-            elif not mu_qs.count():
-                cleaned_data['product_mu'] = None
-                cleaned_data['product_muppu'] = None
-            else:
-                raise DatabaseError("There are more than one MU for symbol %s" % cleaned_data['pu'].symbol)
-
         # Update product with new info
         for k,v in cleaned_data.items():
              if k.startswith('product_'):
