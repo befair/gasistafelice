@@ -45,6 +45,15 @@ log = logging.getLogger(__name__)
 import logging
 log = logging.getLogger(__name__)
 
+trans_state_d = {
+    'Open' : 'Aperto',
+    'Close': 'Chiuso',
+    'Archived' : 'Archiviato',
+    'Prepared' : 'Preparato',
+    'Unpaid' : 'Insoluto',
+    'Canceled' : 'Annullato',
+}
+
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
@@ -102,14 +111,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         d = {}
 
-        d['date_start'] = long_date(self.datetime_start)
+        d['date_start'] = medium_date(self.datetime_start)
 
         if self.datetime_end is not None:
-            d['date_end'] = long_date(self.datetime_end)
+            d['date_end'] = medium_date(self.datetime_end)
         d['date_delivery'] = ""
         if self.delivery:
             if self.delivery.date:
-                d['date_delivery'] = long_date(self.delivery.date)
+                d['date_delivery'] = medium_date(self.delivery.date)
 
         state = ""
         date_info = ""
@@ -117,13 +126,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
             state = self.current_state.name
             date_info = "("
             if state == STATUS_PREPARED:
-                date_info += ug("Open: %(date_start)s")
+                date_info += ug("apertura: %(date_start)s")
                 if self.datetime_end:
-                    date_info += ug(" - Close: %(date_end)s")
+                    date_info += ug(" - chiusura: %(date_end)s")
     
             elif state == STATUS_OPEN:
                 if self.datetime_end:
-                    date_info += ug("Close: %(date_end)s")
+                    date_info += ug("chiusura: %(date_end)s")
 
 #                if d['date_delivery']:
 #                    date_info += ug(" --> Deliver: %(date_delivery)s")
@@ -133,20 +142,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
 #                    date_info += ug("Closed: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug(" --> to deliver: %(date_delivery)s  --> to pay")
+                    date_info += ug(" --> in consegna: %(date_delivery)s  --> to pay")
 
     
             elif state == STATUS_UNPAID:
                 if d['date_delivery']:
-                    date_info += ug(" --> Delivered: %(date_delivery)s --> to pay")
+                    date_info += ug(" --> consegnato: %(date_delivery)s --> to pay")
 
             elif state == STATUS_ARCHIVED:
                 if d['date_delivery']:
-                    date_info += ug("Archived: %(date_delivery)s")
+                    date_info += ug("archiviato: %(date_delivery)s")
     
             elif state == STATUS_CANCELED:
                 if d['date_delivery']:
-                    date_info += ug("Canceled: %(date_delivery)s")
+                    date_info += ug("annullato: %(date_delivery)s")
 
             else:
                 date_info += "TODO ?(%s)" % state
@@ -154,12 +163,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         date_info = date_info % d
 
+        state = trans_state_d.get(state, state)
         state += " " + date_info
         ref = self.referrer_person
+
         if ref:
-            ref = " Ref: %s " % ref
+            ref = " ref: %s " % ref
         elif self.referrer_person:
-            ref = " Ref: %s " % self.referrer_person
+            ref = " ref: %s " % self.referrer_person
         else:
             ref = ""
 
