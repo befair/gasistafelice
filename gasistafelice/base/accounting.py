@@ -124,7 +124,8 @@ class PersonAccountingProxy(AccountingProxy):
 
         member_account = gasmember.person.uid
         gas_account = gasmember.gas.uid
-        accounts = self.system.accounts.filter(name="wallet") | \
+        #accounts = self.system.accounts.filter(name="wallet") | \
+        accounts = \
             self.system.accounts.filter(parent__name="members", name__in=member_account) | \
             self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/fees", name__in=member_account) | \
             self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/recharges", name__in=member_account) | \

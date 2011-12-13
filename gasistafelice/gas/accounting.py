@@ -72,7 +72,8 @@ class GasAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        description = _("Ord.(%(order)s) GAS %(gas)s <--> %(supplier)s") % {'gas': gas.id_in_des, 'person': member.person.report_name, 'order': order.pk, 'supplier': order.supplier.report_name}
+        #'gas': gas.id_in_des, 
+        description = _("%(person)s %(order)s") % {'person': member.person.report_name, 'order': order.report_name}
         issuer = self.subject
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:

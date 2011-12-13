@@ -27,7 +27,7 @@ from gasistafelice.gas.workflow_data import TRANSITION_OPEN, TRANSITION_CLOSE, T
 from gasistafelice.gas.workflow_data import TRANSITION_ARCHIVE, TRANSITION_UNPAID, TRANSITION_CANCEL
 
 
-from gasistafelice.utils import long_date
+from gasistafelice.utils import long_date, medium_date
 
 from flexi_auth.models import ParamRole
 from flexi_auth.utils import register_parametric_role
@@ -169,6 +169,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #if settings.DEBUG:
         #    rv += " [%s]" % self.pk
         return rv
+
+    @property
+    def report_name(self):
+        rep_date = medium_date(self.datetime_end)
+        if self.delivery:
+            if self.delivery.date:
+                rep_date = medium_date(self.delivery.date)
+        return _("Ord.%s of %s %s" % (self.pk, rep_date, self.supplier.subject_name))
 
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)

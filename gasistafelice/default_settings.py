@@ -340,6 +340,8 @@ ENABLE_OLAP_REPORTS = False
 
 DATE_FMT = "%d/%m/%Y"
 LONG_DATE_FMT = "%A %d %B %Y"
+MEDIUM_DATETIME_FMT = "%D %d %b %Y %H:%M"
+
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #DOMTHU:
 #locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
