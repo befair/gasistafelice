@@ -279,13 +279,6 @@ class GAS(models.Model, PermissionResource):
         # register a new `GAS_REFERRER_CASH` Role for this GAS
         register_parametric_role(name=GAS_REFERRER_CASH, gas=self)
 
-    def setup_data(self):
-        # Needed to be called by fixture import
-        try:
-            self.config
-        except GASConfig.DoesNotExist:
-            self.config = GASConfig.objects.create(gas=self)
-
     def save(self, *args, **kw):
 
         if not self.id_in_des:
@@ -314,6 +307,11 @@ class GAS(models.Model, PermissionResource):
                 self.des = DES.objects.all()[0]
 
         super(GAS, self).save(*args, **kw)
+
+        try:
+            self.config
+        except GASConfig.DoesNotExist:
+            self.config = GASConfig.objects.create(gas=self)
 
     def setup_accounting(self):
         """ Accounting hierachy for GAS.
