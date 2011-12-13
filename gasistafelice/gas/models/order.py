@@ -374,8 +374,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         try:
             gsop = self.orderable_products.get(gasstock=s)
+            log.debug('product %s found in order %s' % (s.stock, self.order))
         except GASSupplierOrderProduct.DoesNotExist:
-            self._msg.append('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
 
         else:
             self._msg.append('product found in order(%s) state(%s)' % (self.pk, self.current_state))
@@ -385,8 +386,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append(ug('Deleting gas member %(member)s email %(email)s: Unit price(%(price)s) ordered quantity(%(quantity)s) total price(%(price)s) for product %(product)s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
-                signals.gmo_product_erased.send(sender=self)
+                self._msg.append(ug('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                signals.gmo_product_erased.send(sender=gmo)
                 gmo.delete()
             self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))
             gsop.delete()

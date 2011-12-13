@@ -1081,17 +1081,21 @@ class SupplierStock(models.Model, PermissionResource):
         # CASCADING 
         if self.has_changed_availability:
             self._msg = []
+            log.debug('Availability has changed for product %s' %  self.product)
             self._msg.append('Availability has changed for product %s' %  self.product)
             #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
             for gss in self.gasstocks:
                 if (self.availability != gss.enabled):
-                    log.debug('SS.has_changed_price cannot find pk %s ' % self.pk)
                     log.debug("Save SingleSupplierStock product availability has changed old(%s) new(%s)" % (gss.enabled, self.availability))
                     gss.enabled = self.availability
                     gss.save()
+                    log.debug("cielcio")
                     if not gss.enabled:
+                        log.debug("pippo")
                         signals.gasstock_product_disabled.send(sender=gss)
+                        log.debug("pippo1aaaaa")
                     else:
+                        log.debug("ciao")
                         signals.gasstock_product_enabled.send(sender=gss)
                     
                     if gss.message is not None:

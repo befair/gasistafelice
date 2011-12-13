@@ -39,6 +39,7 @@ class GASSupplierStockForm(forms.Form):
                 gasstock.enabled = self.cleaned_data.get('enabled', False)
                 gasstock.save()
             except Exception, e:
+                raise
                 log.debug("Save SingleSupplierStockForm error(%s)" %  str(e))
                 Exception("Save SingleSupplierStockForm error: %s", str(e))
 

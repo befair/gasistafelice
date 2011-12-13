@@ -84,6 +84,7 @@ class SingleSupplierStockForm(forms.Form):
                     log.debug("Save SingleSupplierStockForm product availability has changed old(%s) new(%s)" % (old_amount, ss.amount_available))
                 ss.save()
             except Exception, e:
+                raise
                 log.debug("Save SingleSupplierStockForm error(%s)" %  str(e))
                 Exception("Save SingleSupplierStockForm error: %s", str(e))
         else:

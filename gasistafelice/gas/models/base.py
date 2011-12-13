@@ -1114,6 +1114,7 @@ class GASSupplierStock(models.Model, PermissionResource):
             self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
             #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
             for order in self.orders.open():
+                log.debug("Change availability GSO order %s" % order)
                 if self.enabled:
                     #FIXME: see issue #9
                     #Add GASSupplierOrderProduct only for GASSupplierOrder in Open State

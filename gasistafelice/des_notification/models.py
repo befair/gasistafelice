@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User
 
 from notification import models as notification
         
@@ -39,7 +40,7 @@ def notify_gmo_product_erased(sender, **kwargs):
         )
     except Exception as e:
         log.error("Send msg notify_gmo_product_erased: %s (%s)" % (e.message, type(e)))
-        print 'EEEEEEEEEEEEEE  notification notify_gmo_product_erased %s (%s)' % (e.message, type(e))
+        log.error('EEEEEEEEEEEEEE  notification notify_gmo_product_erased %s (%s)' % (e.message, type(e)))
         pass
 
 #-------------------------------------------------------------------------------
@@ -53,7 +54,9 @@ def notify_gmo_price_update(sender, **kwargs):
         'order' : gmo.order,
         'product' : gmo.product,
         'action' : _("price changed"),
-        'extra_append' : _("from %(old)s to %(new)s") % (old_price, new_price),
+        'extra_append' : _("from %(old)s to %(new)s") % ({ 'old' : old_price, 
+            'new' : new_price
+        }),
     }
 
     recipients = [gmo.gasmember.person.user]
@@ -64,7 +67,7 @@ def notify_gmo_price_update(sender, **kwargs):
         )
     except Exception as e:
         log.error("Send msg notify_gmo_price_update: %s (%s)" % (e.message, type(e)))
-        print 'EEEEEEEEEEEEEE  notification notify_gmo_price_update %s (%s)' % (e.message, type(e))
+        log.error('EEEEEEEEEEEEEE  notification notify_gmo_price_update %s (%s)' % (e.message, type(e)))
         pass
 
 #-------------------------------------------------------------------------------
@@ -145,7 +148,6 @@ def notify_order_state_update(sender, **kwargs):
         )
     except Exception as e:
         log.error("Send msg notify_order_state_update: %s (%s)" % (e.message, type(e)))
-        print 'EEEEEEEEEEEEEE  notification notify_order_state_update %s (%s)' % (e.message, type(e))
         pass
 
 #-------------------------------------------------------------------------------
