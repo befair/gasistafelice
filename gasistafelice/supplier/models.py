@@ -807,22 +807,20 @@ class Product(models.Model, PermissionResource):
 
     def __unicode__(self):
 
-        rv = u" %(name)s (%(symb)s )" % {
+        rv = u" %(name)s (%(symb)s " % {
             'symb' : self.pu.symbol,
             'name': self.name
         }
 
-#        rv = self.pu.symbol
-#        if self.mu and (self.mu.symbol != self.pu.symbol):
-#            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
-#                'mu_sep' : Product.MU_SEPARATOR,
-#                'muppu'  : self.muppu,
-#                'mu'     : self.mu.symbol,
-#            }
-#        rv += u" %(prod_sep)s %(name)s" % {
-#            'prod_sep' : Product.PROD_SEPARATOR,
-#            'name': self.name
-#        }
+        if self.mu:
+            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
+                'mu_sep' : Product.MU_SEPARATOR,
+                'muppu'  : self.muppu,
+                'mu'     : self.mu.symbol,
+            }
+
+        rv += ")"
+
         return rv
 
     def clean(self):
