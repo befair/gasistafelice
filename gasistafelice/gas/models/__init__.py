@@ -34,7 +34,7 @@ def setup_order_workflow(sender, instance, created, **kwargs):
             set_workflow(instance, w)
 
         instance.open_if_needed()
-        
+
 post_save.connect(setup_order_workflow, sender=GASSupplierOrder)
 
 ## Signals

@@ -260,7 +260,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'basket',
         'descr' : 'Paniere',
-        'blocks' : ['basket']
+        'blocks' : ['basket', 'basket_sent']
     },{
         'name' : 'info',
         'descr' : 'Scheda del gasista',
