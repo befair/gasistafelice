@@ -482,7 +482,7 @@ class InsoluteOrderForm(forms.Form):
                     #print"Insolute(%s) saved " % len(refs)
                     for _order in refs:
                         #Update State if possible
-                        _order.control_economic_state
+                        _order.control_economic_state()
 
 
 

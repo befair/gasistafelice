@@ -670,7 +670,6 @@ WHERE order_id = %s \
         mvt_urn = self.urn
         return mvt_urn
 
-    @property
     def control_economic_state(self):
         #1/3 control invoice receipt
         if not self.invoice_amount:
@@ -707,6 +706,7 @@ WHERE order_id = %s \
 
         # Act as superuser
         user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+        log.debug("doing trans: %s ,  current_state = %s" % (t_name, self.current_state))
         t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
         log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
