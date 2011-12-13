@@ -86,6 +86,10 @@ class Supplier(models.Model, PermissionResource):
         else:
             return "aaaa"
 
+    @property
+    def report_name(self):
+        return "%s %s" % (self.name, self.subject_name)
+
     def setup_roles(self):
         # register a new `SUPPLIER_REFERRER` Role for this Supplier
         register_parametric_role(name=SUPPLIER_REFERRER, supplier=self) 
@@ -797,9 +801,11 @@ class Product(models.Model, PermissionResource):
 
     name = models.CharField(max_length=128, verbose_name = _("name"))
     description = models.TextField(blank=True, verbose_name = _("description"))
-    
+
+    deleted = models.BooleanField(default=False,verbose_name=_('deleted'))
+
     history = HistoricalRecords()
-    
+
     class Meta:
         verbose_name = _('product')
         verbose_name_plural = _('products')
@@ -967,6 +973,8 @@ class SupplierStock(models.Model, PermissionResource):
 
     # How the Product will be delivered
     delivery_notes = models.TextField(blank=True, default='', verbose_name = _('delivery notes'))
+
+    deleted = models.BooleanField(default=False,verbose_name=_('deleted'))
 
     history = HistoricalRecords()
 

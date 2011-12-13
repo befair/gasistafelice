@@ -54,7 +54,7 @@ class GasAccountingProxy(AccountingProxy):
             return True
         return False
 
-    def withdraw_from_member_account(self, member, new_amount, refs=None):
+    def withdraw_from_member_account(self, member, new_amount, refs, order):
         """
         Withdraw a given amount ``new_amount`` of money from the account of a member
         of this GAS and bestow it to the GAS's cash.
@@ -72,7 +72,8 @@ class GasAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        description = _("GAS %(gas)s <--> %(person)s") % {'gas': gas.id_in_des, 'person': member.person.report_name,}
+        #'gas': gas.id_in_des, 
+        description = _("%(person)s %(order)s") % {'person': member.person.report_name, 'order': order.report_name}
         issuer = self.subject
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:

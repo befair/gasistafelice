@@ -83,7 +83,9 @@ class Block(BlockSSDataTables):
         
         #return GASMember objects
         order = request.resource.order
-        qs = order.ordered_gasmembers.order_by('person__surname', 'person__name')
+        #qs = order.ordered_gasmembers.order_by('person__surname', 'person__name')
+        #'RawQuerySet' object has no attribute 'order_by'
+        qs = order.ordered_gasmembers
         accounted_amounts = order.gas.accounting.accounted_amount_by_gas_member(order)
         gasmembers = set()
         for item in qs:

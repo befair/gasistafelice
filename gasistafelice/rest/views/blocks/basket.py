@@ -78,7 +78,9 @@ class Block(BlockSSDataTables):
         return user_actions
         
     def _get_resource_list(self, request):
-        return request.resource.basket
+        #qs = request.resource.basket | request.resource.basket_to_be_delivered
+        qs = request.resource.basket
+        return qs
 
 
     def _get_edit_multiple_form_class(self):
