@@ -7,7 +7,7 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.supplier.forms import SingleSupplierStockFormSet
+from gasistafelice.supplier.forms import SingleSupplierStockFormSet, AddStockForm
 
 from flexi_auth.models import ObjectWithContext
 
@@ -54,6 +54,13 @@ class Block(BlockSSDataTables):
                     popup_form=False,
                     method="get",
                 ),
+                ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE, verbose_name=_("Add"), 
+                    popup_form=True,
+                    method="get",
+                ),
             ]
 
         return user_actions
@@ -61,6 +68,9 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         # SupplierStock list
         return request.resource.stocks
+
+    def _get_add_form_class(self):
+        return AddStockForm
 
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""

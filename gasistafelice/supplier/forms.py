@@ -107,7 +107,6 @@ class EditStockForm(forms.ModelForm):
     WARNIG: this form is valid only in an update-context
         """
 
-    #product_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
     product_name = forms.CharField(required=True, 
             label=_("Name"), widget=forms.TextInput(attrs={'size':'40'},), max_length=200
     )
@@ -131,7 +130,6 @@ class EditStockForm(forms.ModelForm):
         super(EditStockForm, self).__init__(*args, **kw)
         self._supplier = request.resource.supplier
         self._product = request.resource.product
-        #self.fields['product_pk'].initial = self._product.pk
         self.fields['product_name'].initial = self._product.name
         self.fields['product_name'].widget.attrs['class'] = 'input_medium'
         self.fields['product_description'].widget.attrs['class'] = 'input_long'
@@ -173,37 +171,56 @@ class EditStockForm(forms.ModelForm):
     def save(self):
         log.debug("Saving updated product: %s" % self.instance)
         log.debug("cleaned data = %s" % self.cleaned_data)
-        self.instance.product = self.cleaned_data['product']
-        self.instance.product.save()
+        product = self.cleaned_data['product']
+        product.save()
+        self.instance.product = product
         self.instance.save()
         
-    class Meta:
-        model = SupplierStock
-        exclude = ('supplier', 'amount_available', 'product')
-        
-        gf_fieldsets = (
-            (None, {
-                'fields': (
-                    'product_name',
-                    'product_description',
-                    ('price', 'product_vat_percent'),
-                    'product_category',
-                )
-             }),
-             (_("Distribution info"), {
-                'fields' : (
-                    ('product_pu', 'product_muppu', 'product_mu'),
-                    ('units_minimum_amount', 'units_per_box'),
-                    ('detail_minimum_amount', 'detail_step'), 
-                    'availability',
-                )
-             }),
-             (_("Supplier info"), {
-                'fields' : (
-                    ('code', 'supplier_category'),
-                )
-             })
-            )
+
+class AddStockForm(EditStockForm):
+    """Add new product and stock"""
+    # TODO: refactory with EditStockForm / BaseStockForm nedeed
+
+    def __init__(self, request, *args, **kw):
+
+        #AAA: super(EditStockForm IS RIGHT! Leave it here pls
+        super(EditStockForm, self).__init__(*args, **kw)
+        self._supplier = request.resource.supplier
+        self._product = Product()
+        self.fields['product_name'].widget.attrs['class'] = 'input_medium'
+        self.fields['product_description'].widget.attrs['class'] = 'input_long'
+        self.fields['product_vat_percent'].initial = 20
+
+#        # If Supplier is not the Producer ==>
+#        # can't change product info!
+#        if self._supplier != self._product.producer:
+#            for k,v in self.fields.items():
+#                 if k.startswith('product_'):
+#                    self.fields[k].widget.attrs['disabled'] = 'disabled'
+
+    def clean(self):
+        #AAA: super(EditStockForm IS RIGHT! Leave it here pls
+        cleaned_data = super(EditStockForm, self).clean()
+        cleaned_data['supplier'] = self._supplier
+        cleaned_data['amount_available'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
+        cleaned_data['product_vat_percent'] = Decimal(cleaned_data['product_vat_percent'])/100
+
+        #MU and PU settings must be compatible with UnitsConversion table
+        pu = cleaned_data['product_pu']
+        mu = cleaned_data.get('product_mu')
+        mu_qs = ProductMU.objects.filter(symbol__exact=pu.symbol) 
+
+        # Update product with new info
+        for k,v in cleaned_data.items():
+             if k.startswith('product_'):
+                setattr(self._product, k[len('product_'):], v)
+
+        log.debug(self._product.vat_percent)
+        cleaned_data['product'] = self._product
+        log.debug(self.errors)
+
+        return cleaned_data
+
 
 #------------------------------------------------------------------------------
 
