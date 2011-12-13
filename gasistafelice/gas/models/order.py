@@ -463,9 +463,13 @@ WHERE gsop.order_id = %s AND gmo.purchaser_id = tmp.id \
 WHERE tmp.id IN ( SELECT gmo2.purchaser_id FROM gas_gasmemberorder as gmo2 \
 INNER JOIN gas_gassupplierorderproduct AS gsop2 \
 ON gmo2.ordered_product_id = gsop2.id \
-WHERE gsop2.order_id = %s \
-)", [self.pk, self.pk])
+WHERE gsop2.order_id = %s ) \
+", [self.pk, self.pk])
 
+#SELECT tmp2.* , bp.surname, bp.name from (  \
+#SELECT tmp.id AS id, tmp.person_id AS pb_id,  \
+#) as tmp2 inner join base_person as bp on bp.id = tmp2.pb_id \
+#order by tmp2.id desc, bp.surname, bp.name \
 
         #<RawQuerySet: 'SELECT * from GASMemberOrder'>
 
