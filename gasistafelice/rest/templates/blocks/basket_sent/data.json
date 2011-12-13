@@ -1,0 +1,24 @@
+{% extends "blocks/base/data.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for el in records %}
+    [
+
+        "{{el.ordered_product.order.report_name|escapejs}}",
+        "{{el.supplier|escapejs}}",
+        "{{el.product|escapejs}}",
+        "{{el.ordered_price|floatformat:"2"}}",
+        "&#8364; {{ el.ordered_amount|escapejs|floatformat:"2"}}",
+        "&#8364; {{ el.tot_price|escapejs|floatformat:"2"}}",
+        "{{el.order.urn|escapejs}}",
+        "{{el.supplier.urn|escapejs}}",
+        "{{el.ordered_product.gasstock.stock.urn|escapejs}}",
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+

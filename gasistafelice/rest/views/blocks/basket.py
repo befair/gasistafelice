@@ -242,7 +242,9 @@ class Block(BlockSSDataTables):
     def _create_pdf(self):
 
         gasmember = self.resource
-        querySet = self._get_resource_list(self.request).order_by('ordered_product__order__pk')
+        querySet = self._get_resource_list(self.request) | \
+            self.request.resource.basket_to_be_delivered
+        querySet = querySet.order_by('ordered_product__order__pk') 
         context_dict = {
             'gasmember' : gasmember,
             'records' : self._get_pdfrecords(self.request, querySet),
@@ -258,7 +260,8 @@ class Block(BlockSSDataTables):
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \
