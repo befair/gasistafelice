@@ -107,7 +107,7 @@ class EditStockForm(forms.ModelForm):
     WARNIG: this form is valid only in an update-context
         """
 
-    product_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    #product_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
     product_name = forms.CharField(required=True, 
             label=_("Name"), widget=forms.TextInput(attrs={'size':'40'},), max_length=200
     )
@@ -131,7 +131,7 @@ class EditStockForm(forms.ModelForm):
         super(EditStockForm, self).__init__(*args, **kw)
         self._supplier = request.resource.supplier
         self._product = request.resource.product
-        self.fields['product_pk'].initial = self._product.pk
+        #self.fields['product_pk'].initial = self._product.pk
         self.fields['product_name'].initial = self._product.name
         self.fields['product_name'].widget.attrs['class'] = 'input_medium'
         self.fields['product_description'].widget.attrs['class'] = 'input_long'
@@ -197,6 +197,9 @@ class EditStockForm(forms.ModelForm):
         return cleaned_data
 
     def save(self):
+        log.debug("Saving updated product: %s" % self.instance)
+        log.debug("cleaned data = %s" % self.cleaned_data)
+        self.instance.product = self.cleaned_data['product']
         self.instance.product.save()
         self.instance.save()
         
