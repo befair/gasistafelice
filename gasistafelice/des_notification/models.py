@@ -81,9 +81,13 @@ def notify_gasstock_product_enabled(sender, **kwargs):
         'action' : _("enabled"),
     }
 
+#Cannot resolve keyword 'gasmember_set' into field. Choices are: address, avatar, contact_set, delivery_for_order_set, des, display_name, gas, gasactivist, gasmember, historicaldelivery_for_order_set, historicalgasactivist, historicalgasmember, historicalorder_set, historicalsupplier_frontman_set, historicalsupplieragent, historicalwithdrawal_for_order_set, id, name, order_set, ssn, supplier, supplier_frontman_set, supplieragent, surname, user, website, withdrawal_for_order_set
     recipients = User.objects.filter(
-        person__gasmember_set__in=gasstock.gasmembers
+#        person__gasmember_set__in=gasstock.gasmembers
+        person__gasmember__in=gasstock.gasmembers
     ).distinct()
+
+    log.debug("notify_gasstock_product_enabled recipients %s " % recipients)
 
     try:
         notification.send(recipients, "gasstock_update", 
@@ -106,8 +110,9 @@ def notify_gasstock_product_disabled(sender, **kwargs):
     }
 
     recipients = User.objects.filter(
-        person__gasmember_set__in=gasstock.gasmembers
+        person__gasmember__in=gasstock.gasmembers
     ).distinct()
+#        person__gasmember_set__in=gasstock.gasmembers
 
     try:
         notification.send(recipients, "gasstock_update", 
