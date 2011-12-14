@@ -3,6 +3,7 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("gasstocks", "table");
+        this.submit_name = "Aggiorna il listino GAS del produttore (sottoinsieme del listino DES)";
     },
         //this.active_view = "edit_multiple";
         //this.default_view = this.active_view;
@@ -13,12 +14,14 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
         // Init dataTables
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers',
+                'bLengthChange': true,
+                "iDisplayLength": 50,
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"30%","bVisible": true},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"30%","bVisible": true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"15%", "sType": "currency", "sClass": "taright" },
                     {"bSearchable":false,"bSortable":true,"sWidth":"10%",},
                     {"bSearchable":false,"bSortable":true,"sWidth":"10%",},

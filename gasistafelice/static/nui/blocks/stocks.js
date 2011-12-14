@@ -3,6 +3,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("stocks", "table");
+        this.submit_name = "Aggiorna il listino DES del produttore";
     },
 
     rendering_table_post_load_handler: function() {
@@ -12,6 +13,8 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 //                    {"bSearchable":true,"bSortable":true,"sWidth":"40%","bVisible":true},
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
+                'bLengthChange': true,
+                "iDisplayLength": 50,
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),

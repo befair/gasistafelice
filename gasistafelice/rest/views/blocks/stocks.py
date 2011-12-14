@@ -25,7 +25,7 @@ class Block(BlockSSDataTables):
         0: 'pk',
         1: 'product',
         2: 'price',
-        3: 'availability'
+        3: 'amount_available'
     }
         #1: 'stock',
         #1: 'code',
@@ -33,6 +33,8 @@ class Block(BlockSSDataTables):
         #"{{ss.product.description|escapejs}}",
         #"{{ss.description|escapejs}}",
         #<th>{% trans "Description" %}</th>
+
+#Caught FieldError while rendering: Cannot resolve keyword 'availability' into field. Choices are: amount_available, code, deleted, delivery_notes, detail_minimum_amount, detail_step, gasstock_set, gassuppliersolidalpact, historicalgasstock_set, id, image, price, product, supplier, supplier_category, units_minimum_amount, units_per_box
 
     def _get_user_actions(self, request):
 

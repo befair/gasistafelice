@@ -31,10 +31,8 @@ class Block(BlockSSDataTables):
         6: 'tot_gasmembers',
         7: 'tot_price'
     }
+#Cannot resolve keyword 'tot_amount' into field. Choices are: enabled, gassupplierorder, historicalorderable_product_set, id, minimum_amount, orderable_product_set, pact, step, stock
 
-#Cannot resolve keyword 'price' into field. Choices are: enabled, gassupplierorder, historicalorderable_product_set, id, minimum_amount, orderable_product_set, pact, step, stock
-
-#Cannot resolve keyword 'availability' into field. Choices are: amount_available, code, delivery_notes, detail_minimum_amount, detail_step, gasstock_set, gassuppliersolidalpact, historicalgasstock_set, id, image, price, product, supplier, supplier_category, units_minimum_amount, units_per_box
     def _get_user_actions(self, request):
 
         user_actions = []
