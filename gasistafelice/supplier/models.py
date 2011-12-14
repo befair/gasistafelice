@@ -991,7 +991,6 @@ class SupplierStock(models.Model, PermissionResource):
 
     def __init__(self, *args, **kw):
         super(SupplierStock, self).__init__(*args, **kw)
-        self._msg = None
 
     def __unicode__(self):
         return u"%(product)s" % {
@@ -1066,11 +1065,6 @@ class SupplierStock(models.Model, PermissionResource):
         except SupplierStock.DoesNotExist:
             return False
 
-    @property
-    def message(self):
-        """getter property for internal message from model."""
-        return self._msg
-
     def save(self, *args, **kwargs):
 
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
@@ -1080,33 +1074,23 @@ class SupplierStock(models.Model, PermissionResource):
 
         # CASCADING 
         if self.has_changed_availability:
-            self._msg = []
             log.debug('Availability has changed for product %s' %  self.product)
-            self._msg.append('Availability has changed for product %s' %  self.product)
             #For each GASSupplierStock (present for each GASSupplierSolidalPact) set new availability and save
             for gss in self.gasstocks:
                 if (self.availability != gss.enabled):
                     log.debug("Save SingleSupplierStock product availability has changed old(%s) new(%s)" % (gss.enabled, self.availability))
                     gss.enabled = self.availability
                     gss.save()
-                    log.debug("cielcio")
                     if not gss.enabled:
-                        log.debug("pippo")
                         signals.gasstock_product_disabled.send(sender=gss)
-                        log.debug("pippo1aaaaa")
                     else:
-                        log.debug("ciao")
                         signals.gasstock_product_enabled.send(sender=gss)
                     
-                    if gss.message is not None:
-                        self._msg.extend(gss.message)
-            self._msg.append('Ended(%d)' % self.gasstocks.count())
-            log.debug(self._msg)
+            log.debug('Ended(%d)' % self.gasstocks.count())
 
         # CASCADING set until GASMemberOrder
         if self.has_changed_price:
-            self._msg = []
-            self._msg.append('Price has changed for product %s' %  self.product)
+            log.debug('Price has changed for product %s' %  self.product)
             for gsop in self.orderable_products:
                 gsop.order_price = self.price
                 gsop.save()

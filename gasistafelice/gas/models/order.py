@@ -105,7 +105,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         
     def __init__(self, *args, **kw):
         super(GASSupplierOrder, self).__init__(*args, **kw)
-        self._msg = None
 
     def __unicode__(self):
 
@@ -339,8 +338,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
 
         if not self.pact.gas.config.auto_populate_products:
-            self._msg = []
-            self._msg.append(ug("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
+            log.debug(ug("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
             return
 
         stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier, enabled =True)
@@ -348,16 +346,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
             if s.enabled:
                 GASSupplierOrderProduct.objects.create(order=self, gasstock=s, initial_price=s.price, order_price=s.price, delivered_price=s.price)
 
-    @property
-    def message(self):
-        """getter property for internal message from model."""
-        return self._msg
-
     def add_product(self, s):
         '''
         A helper function to add product to a GASSupplierOrder.
         '''
-        self._msg = []
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
@@ -365,12 +357,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, order_price=s.price, initial_price=s.price)
         if created:
             log.debug('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
-            self._msg.append('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
             gsop.order_price = s.price
             gsop.save()
         else:
             log.debug('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
-            self._msg.append('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
             if gsop.delivered_price != s.price:
                 gsop.delivered_price = s.price
                 gsop.save()
@@ -381,7 +371,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
         #TODO: Does workflows.utils have method state_in(tupple of state)
         #if (order.current_state == OPEN) | (order.current_state == CLOSED) 
-        self._msg = []
 
         try:
             gsop = self.orderable_products.get(gasstock=s)
@@ -390,17 +379,17 @@ class GASSupplierOrder(models.Model, PermissionResource):
             log.debug('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
 
         else:
-            self._msg.append('product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            log.debug('product found in order(%s) state(%s)' % (self.pk, self.current_state))
             #Delete all GASMemberOrders done
             lst = gsop.gasmember_order_set.all()
             total = 0
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                self._msg.append(ug('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                log.debug(ug('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 signals.gmo_product_erased.send(sender=gmo)
                 gmo.delete()
-            self._msg.append('Deleted gas members orders (%s) for total of %s euro' % (count, total))
+            log.debug('Deleted gas members orders (%s) for total of %s euro' % (count, total))
             gsop.delete()
 
 
@@ -957,8 +946,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
 
         # CASCADING set until GASMemberOrder
         if self.has_changed_price:
-            self._msg = []
-            self._msg.append('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
+            log.debug('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
             for gmo in self.gasmember_order_set:
                 #gmo.order_price = self.order_price
                 gmo.note = _("Price changed on %(date)s") % { 'date' : datetime.now() }

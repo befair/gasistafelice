@@ -240,8 +240,7 @@ class AddOrderForm(BaseOrderForm):
             new_id = self.instance.pk
             log.debug("AddOrderForm CREATED Ord. %s" % (new_id))
             if _send_email and bool(_send_email):
-                _msg = _('Created order %s' % (new_id))
-                log.debug("AddOrderForm CREATED send email %s" % (_msg))
+                log.debug("AddOrderForm CREATED send email %s" % ('TODO'))
 
         return _created_order
 

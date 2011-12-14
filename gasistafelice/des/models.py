@@ -205,6 +205,7 @@ class DES(Site, PermissionResource):
 
         l = []
         for i in limits:
+            print "-------- i " % i
             i = i.lower()
             if i == 'gn':
                 l += self.gas_list.filter(name__icontains=q)

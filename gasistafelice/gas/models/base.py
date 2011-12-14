@@ -1027,7 +1027,6 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)
-        self._msg = None
     
     @property
     def gasmembers(self):
@@ -1088,7 +1087,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     def has_changed_availability(self):
         #TODO: add to GASSupplierSolidalPact model the inactive state of a solidal pact
         #if (not pact.is_active):
-        #    self._msg.append('Solidal pact unactive')
+        #    log.debug('Solidal pact unactive')
         #    return False;
         try:
             #FIXME: Generate error raise self.model.DoesNotExist: GASSupplierStock matching query does not exist
@@ -1100,31 +1099,20 @@ class GASSupplierStock(models.Model, PermissionResource):
         except GASSupplierStock.DoesNotExist:
             return False
 
-    @property
-    def message(self):
-        """getter property for internal message from model."""
-        return self._msg
-
     def save(self, *args, **kwargs):
 
         # CASCADING
         if self.has_changed_availability:
 
-            self._msg = []
-            self._msg.append('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
+            log.debug('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
             #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
             for order in self.orders.open():
                 log.debug("Change availability GSO order %s" % order)
                 if self.enabled:
-                    #FIXME: see issue #9
-                    #Add GASSupplierOrderProduct only for GASSupplierOrder in Open State
                     order.add_product(self)
                 else:
                     #Delete GASSupplierOrderProduct for GASSupplierOrder in Open State or Closed state. Delete GASMemberOrder associated
                     order.remove_product(self)
-                if order.message is not None:
-                    self._msg.extend(order.message)
-                    log.debug(self._msg)
 
         super(GASSupplierStock, self).save(*args, **kwargs)
 
