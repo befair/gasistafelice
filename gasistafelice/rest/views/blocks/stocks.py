@@ -23,7 +23,7 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = { 
         0: 'pk',
-        1: 'product',
+        1: 'product__name',
         2: 'price',
         3: 'amount_available'
     }
