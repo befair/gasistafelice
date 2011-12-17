@@ -254,8 +254,7 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def economic_state(self):
-        return "0"
-        #return u"%s - %s" % (self.account, self.liquidity)
+        return u"%s - %s" % (self.balance, self.liquidity)
 
     #-- Contacts --#
 
@@ -415,11 +414,6 @@ class GAS(models.Model, PermissionResource):
         return self.supplier_set.all()
 
     @property
-    def accounts(self):
-        #return (Account.objects.filter(pk=self.account.pk) | Account.objects.filter(pk=self.liquidity.pk)).order_by('balance')
-        raise NotImplementedError
-
-    @property
     def stocks(self):
         return SupplierStock.objects.filter(supplier__in=self.suppliers)
 
@@ -460,12 +454,16 @@ class GAS(models.Model, PermissionResource):
         return self.accounting.entries()
 
     @property
-    def tot_eco(self):
+    def balance(self):
         """Accounting sold for this gas"""
-        acc_tot = 0
-        #TODO: split trx from GAS's transcations and GAS activities transactions
-        source_account = self.gas.accounting.system['/cash']
-        #FIXME: return source_account.amount?
+        acc_tot = self.accounting.system['/cash'].balance
+        return acc_tot
+
+    @property
+    def liquidity(self):
+        """Accounting sold for all members of this gas"""
+        for gm in self.gasmembers:
+            acc_tot = gm.balance
         return acc_tot
 
 
@@ -753,14 +751,10 @@ class GASMember(models.Model, PermissionResource):
         st1 = self.total_basket
         st2 = self.total_basket_to_be_delivered
         try:
-            return u"%s - (%s + %s) = %s"  % (self.account, st1, st2, (self.account.balance - (st1 + st2)))
+            return u"%s - (%s + %s) = %s"  % (self.balance, st1, st2, (self.balance - (st1 + st2)))
         except AttributeError:
             # Account descriptor is not implemented yet
             return u"(%s + %s)"  % (st1, st2)
-
-    @property
-    def account(self):
-        return 0
 
     @property
     def total_basket(self):
@@ -901,11 +895,6 @@ class GASMember(models.Model, PermissionResource):
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
 
     @property
-    def account(self):
-        #TODO: manage accounting informations here
-        return 0
-
-    @property
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
         return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
@@ -962,11 +951,11 @@ class GASMember(models.Model, PermissionResource):
         return self.person.accounting.entries_gasmember(self)
 
     @property
-    def tot_eco(self):
+    def balance(self):
         """Accounting sold for this gasmember"""
-        acc_tot = 0
-        source_account = self.person.accounting.system['/wallet']
-        #FIXME: return source_account.amount?
+        #FIXME: only for this person in this GAS! Not for the person himself
+        #acc_tot = self.person.accounting.system['/wallet'].balance
+        acc_tot = self.gas.accounting.system['/members/' + self.person.uid].balance
         return acc_tot
 
     @property
@@ -1519,12 +1508,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return all_pact_trx
 
     @property
-    def tot_eco(self):
+    def balance(self):
         """Accounting sold for this pact"""
-        acc_tot = 0
-        #TODO: return only the economic 'stock' for this supplier for this gas
-        source_account = self.supplier.accounting.system['/wallet']
-        #FIXME: return source_account.amount?
+        #acc_tot = self.supplier.accounting.system['/wallet'].balance
+        acc_tot = self.gas.accounting.system['/incomes/gas/' + self.gas.uid].balance
         return acc_tot
 
 

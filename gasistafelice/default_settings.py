@@ -226,7 +226,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions']
+        'blocks' : ['balance', 'transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
@@ -247,7 +247,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions', 'recharge', 'fee'] #Finalize Orders, transactions explode in Transact_Casa, Transact_Borselino
+        'blocks' : ['balance', 'transactions', 'recharge', 'fee']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
@@ -268,7 +268,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions']
+        'blocks' : ['balance', 'transactions']
     }],
     'supplier' : [{
         'name' : 'products',
@@ -285,7 +285,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions']
+        'blocks' : ['balance', 'transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
@@ -318,7 +318,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['transactions']
+        'blocks' : ['balance', 'transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',

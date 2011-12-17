@@ -13,7 +13,7 @@
         "{{row.preferred_phone_address|escapejs }}",
         "{{row.tot_stocks|floatformat:"-2"}}",
         "{{row.tot_pacts|floatformat:"-2"}}",
-        "&#8364; {{ row.tot_eco|floatformat:"2"}}",
+        "&#8364; {{ row.balance|floatformat:"2"}}",
         "{{row.certifications_list|escapejs }}",
 
     ]

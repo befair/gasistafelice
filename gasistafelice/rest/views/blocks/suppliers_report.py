@@ -45,7 +45,7 @@ class Block(BlockSSDataTables):
         5: 'phone',
         6: 'tot_stocks',
         7: 'tot_pacts',
-        8: 'tot_eco',
+        8: 'balance',
         9: 'certifications_list'
     }
 
@@ -180,13 +180,13 @@ class Block(BlockSSDataTables):
                'fax' : el.preferred_fax_address,
                'tot_stocks' : el.tot_stocks,
                'tot_pacts' : el.tot_pacts,
-               'tot_eco' : el.tot_eco,
+               'balance' : el.balance,
                'certs' : el.certifications_list,
             })
 
 #            <td class="taright qta">{{row.tot_stocks|floatformat:"-2"}}</td>
 #            <td class="taright qta">{{row.tot_pacts|floatformat:"-2"}}</td>
-#            <td class="taright totprice">&nbsp;&euro;&nbsp;{{row.tot_eco|floatformat:"2"}}</td>
+#            <td class="taright totprice">&nbsp;&euro;&nbsp;{{row.balance|floatformat:"2"}}</td>
 #            <td>{{row.certs|escapejs}}</td>
 
         return records, nSup -3 , nProducts, pact_count

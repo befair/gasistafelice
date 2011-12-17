@@ -69,17 +69,14 @@ jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
         return content_template;
         
     },
-	
-    post_load_handler : function() {
-        
-        //$("invoice_id").ajaxForm()
-        $("#insolute_id").ajaxForm(function(){
-            //alert("handler attached: ajaxified form " + $("#amount").value );
-        })
 
-        this._super();
+//    post_load_handler : function() {
+//        $("#insolute_id").ajaxForm(function(){
+//            //alert("handler attached: ajaxified form " + $("#amount").value );
+//        })
+//        this._super();
+//    },
 
-    },
     //------------------------------------------------------------------------------//
     //                                                                              //
     //------------------------------------------------------------------------------//

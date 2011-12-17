@@ -272,16 +272,6 @@ class Resource(object):
         """Return GAS bound to resource"""
         raise NotImplementedError("class: %s method: gas" % self.__class__.__name__)
 
-    @property
-    def accounts(self):
-        """Return economic state bound to resource  (DES, GASMember, GAS or Supplier through )"""
-        raise NotImplementedError("class: %s method: accounts" % self.__class__.__name__)
-
-    @property
-    def account(self):
-        """Return an economic state bound to resource (DES, GASMember, GAS or Supplier through )"""
-        raise NotImplementedError("class: %s method: account" % self.__class__.__name__)
-
     def categories(self):
         """Return ProductCategory bound to resource"""
         raise NotImplementedError("class: %s method: categories" % self.__class__.__name__)
@@ -496,10 +486,13 @@ class Resource(object):
         raise NotImplementedError
 
     @property
-    def tot_eco(self):
-        """Accounting sold for this ressource"""
-        raise NotImplementedError
+    def balance(self):
+        """Return an economic state bound to resource (DES, GASMember, GAS or Supplier through )
 
+        Accounting sold for this ressource
+        """
+        acc_tot = self.person.accounting.system['/wallet'].balance
+        return acc_tot
 
 
 #------------------------------------------------------------------------------

@@ -282,11 +282,6 @@ class DES(Site, PermissionResource):
         return Person.objects.all()
 
     @property
-    def accounts(self):
-        #return Account.objects.all()
-        raise NotImplementedError
-
-    @property
     def gasmembers(self):
         from gasistafelice.gas.models.base import GASMember
         tmp = self.gas_list
@@ -388,9 +383,22 @@ class DES(Site, PermissionResource):
         return all_des_trx
 
     @property
-    def tot_eco(self):
-        """Accounting sold for this des"""
+    def balance(self):
+        """
+        return all accounts for the accounting system
+        
+        compose by
+            - GAS
+            - Supplier
+            - GASMembers
+        """
         acc_tot = 0
+        for gm in self.gasmembers:
+            acc_tot = gm.balance
+        for d in self.gas_list:
+            acc_tot = g.balance
+        for sup in self.suppliers:
+            acc_tot = sup.balance
         return acc_tot
 
 

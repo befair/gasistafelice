@@ -28,7 +28,7 @@ jQuery.UIBlockSupplierReport = jQuery.UIBlockWithList.extend({
 //        5: 'phone',
 //        6: 'tot_products',
 //        7: 'tot_pacts',
-//        8: 'tot_eco',
+//        8: 'balance',
 //        9: 'certifications_list'
 
         var oTable = this.block_el.find('.dataTable').dataTable({

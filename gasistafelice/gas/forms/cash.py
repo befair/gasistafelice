@@ -426,6 +426,7 @@ class InsoluteOrderForm(forms.Form):
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
         except KeyError:
+            #FIXME: if no gmo we don't have to show button.
             log.debug("InsoluteOrderForm: cannot retrieve order identifier. FORM ATTACK!")
             raise
 
@@ -487,3 +488,58 @@ class InsoluteOrderForm(forms.Form):
 
 
 #-------------------------------------------------------------------------------
+
+
+class BalanceForm(forms.Form):
+
+    balance = CurrencyField(label=_('Balance'), required=True, max_digits=8, decimal_places=2)
+    amount = CurrencyField(label=_('Amount'), required=True, max_digits=8, decimal_places=2)
+    note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
+
+    def __init__(self, request, *args, **kw):
+
+        log.debug("BalanceForm")
+
+        super(BalanceForm, self).__init__(*args, **kw)
+
+        #self.fields['note'].widget.attrs['class'] = 'input_long'
+#        self.fields['balance'].initial = "%.2f" % round(self.balance, 2)
+        self.fields['balance'].widget.attrs['class'] = 'balance'
+        self.__loggedusr = request.user
+#        self.__gas = self.gas
+        
+    def clean(self):
+
+        cleaned_data = super(BalanceForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
+        except KeyError:
+            log.debug("BalanceForm: cannot retrieve economic identifier. FORM ATTACK!")
+            raise
+
+        return cleaned_data
+
+    @transaction.commit_on_success
+    def save(self):
+
+        #Do economic work
+        if not self.__gas:
+            return
+
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+            log.debug("PermissionDenied %s in economic operation form" % self.__loggedusr)
+            raise PermissionDenied("You are not a cash_referrer, you cannot do economic operation!")
+#        #Do economic work
+#        try:
+#            self.economic_operation()
+#        except ValueError, e:
+#            print "retry later " +  e.message
+
+#-------------------------------------------------------------------------------
+
+
+

@@ -2,7 +2,7 @@
 //                                                                              //
 //------------------------------------------------------------------------------//
 
-jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
+jQuery.UIBlockBalance = jQuery.UIBlock.extend({
 
     action_handler : function(action_el) {
         if (action_el.attr('name') == "new_note") {
@@ -71,6 +71,7 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
     },
 
 //    post_load_handler : function() {
+//        
 //        $("#invoice_id").ajaxForm(function(){
 //            alert("handler attached: ajaxified form " + $("#amount").value );
 //        })
@@ -84,5 +85,5 @@ jQuery.UIBlockOrderInvoice = jQuery.UIBlock.extend({
 
 })
 
-jQuery.BLOCKS["order_invoice"] = new jQuery.UIBlockOrderInvoice("order_invoice");
+jQuery.BLOCKS["balance"] = new jQuery.UIBlockBalance("balance");
 

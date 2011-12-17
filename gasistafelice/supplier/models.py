@@ -392,11 +392,9 @@ class Supplier(models.Model, PermissionResource):
         return all_sup_trx
 
     @property
-    def tot_eco(self):
+    def balance(self):
         """Accounting sold for this supplier"""
-        acc_tot = 0
-        source_account = self.accounting.system['/wallet']
-        #FIXME: return source_account.amount?
+        acc_tot = self.accounting.system['/wallet'].balance
         return acc_tot
 
 
