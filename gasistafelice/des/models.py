@@ -392,13 +392,14 @@ class DES(Site, PermissionResource):
             - Supplier
             - GASMembers
         """
+        #FIXME: performance time not good. In debug time 22 seconds
         acc_tot = 0
         for gm in self.gasmembers:
-            acc_tot = gm.balance
-        for d in self.gas_list:
-            acc_tot = g.balance
+            acc_tot += gm.balance
+        for g in self.gas_list:
+            acc_tot += g.balance
         for sup in self.suppliers:
-            acc_tot = sup.balance
+            acc_tot += sup.balance
         return acc_tot
 
 

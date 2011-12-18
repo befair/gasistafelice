@@ -1522,8 +1522,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def balance(self):
         """Accounting sold for this pact"""
-        #acc_tot = self.supplier.accounting.system['/wallet'].balance
-        acc_tot = self.gas.accounting.system['/incomes/gas/' + self.gas.uid].balance
+        #acc_tot = self.gas.accounting.system['/expenses/supplier/' + self.supplier.uid].balance
+        acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
         return acc_tot
 
 
