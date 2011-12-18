@@ -357,6 +357,10 @@ class GAS(models.Model, PermissionResource):
         return self.des
 
     @property
+    def gas_list(self):
+        return [self.gas]
+
+    @property
     def gas(self):
         return self
 
@@ -843,6 +847,10 @@ class GASMember(models.Model, PermissionResource):
     def des(self):
         # A GAS member belongs to the DES its GAS belongs to.
         return self.gas.des
+
+    @property
+    def gas_list(self):
+        return [self.gas]
 
     @property
     def pacts(self):
@@ -1371,6 +1379,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def des(self):
         return self.gas.des
+
+    @property
+    def gas_list(self):
+        return [self.gas]
 
     @property
     def stocks(self):

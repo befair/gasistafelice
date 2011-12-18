@@ -30,18 +30,20 @@ class Block(AbstractBlock):
     def _get_user_actions(self, request):
 
         user_actions = []
-        gas = self.resource.gas
+        gas_list = self.resource.gas_list
 
-        if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+        for gas in gas_list:
+            if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
 
-            user_actions += [
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = self.resource,
-                    name=INCOME, verbose_name=_("Balance state"),
-                    popup_form=False,
-                ),
-            ]
+                user_actions += [
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = self.resource,
+                        name=INCOME, verbose_name=_("Balance state"),
+                        popup_form=False,
+                    ),
+                ]
+                break
 
         return user_actions
 
