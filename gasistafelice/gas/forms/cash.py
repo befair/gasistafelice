@@ -7,7 +7,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 
-from gasistafelice.gas.models import GAS, GASMember, GASMemberOrder, GASSupplierOrder
+from gasistafelice.base.models import Person
+from gasistafelice.gas.models import GAS, GASMember, GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 
 from django.forms.formsets import formset_factory
@@ -493,8 +494,6 @@ class InsoluteOrderForm(forms.Form):
 class BalanceForm(forms.Form):
 
     balance = CurrencyField(label=_('Balance'), required=True, max_digits=8, decimal_places=2)
-#    amount = CurrencyField(label=_('Amount'), required=True, max_digits=8, decimal_places=2)
-#    note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
@@ -509,44 +508,98 @@ class BalanceForm(forms.Form):
         if eco_state:
             if eco_state > 20:
                 eco_class = "Plus"
-            elif eco_state < 20 and eco_state > 0:
+            elif eco_state < 20 and eco_state >= 0:
                 eco_class = "Alert"
         self.fields['balance'].initial = ("%.2f" % round(request.resource.balance, 2)).replace('.','€')
         self.fields['balance'].widget.attrs['class'] = 'balance input_payment ' + eco_class
         self.__loggedusr = request.user
 
-#    def clean(self):
-
-#        cleaned_data = super(BalanceForm, self).clean()
-#        print("cleaned_data %s" % cleaned_data)
-#        try:
-#            cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
-#        except KeyError:
-#            log.debug("BalanceForm: cannot retrieve economic identifier. FORM ATTACK!")
-#            raise
-
-#        return cleaned_data
-
-#    @transaction.commit_on_success
-#    def save(self):
-
-#        #Do economic work
-#        if not self.__gas:
-#            return
-
-#        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
-#        if not self.__loggedusr.has_perm(CASH, 
-#            obj=ObjectWithContext(self.__gas)
-#        ):
-#            log.debug("PermissionDenied %s in economic operation form" % self.__loggedusr)
-#            raise PermissionDenied("You are not a cash_referrer, you cannot do economic operation!")
-##        #Do economic work
-##        try:
-##            self.economic_operation()
-##        except ValueError, e:
-##            print "retry later " +  e.message
-
 #-------------------------------------------------------------------------------
 
+class BalanceGASForm(BalanceForm):
 
+    Wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
+    Wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
+
+    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+help_text = _('define the amount with the sign - to debit money from this account'), error_messages={'required': _(u'You must insert an postive or negatibe amount for the operation')})
+    note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+help_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
+#    target = forms.ModelChoiceField(label=_("Account"), queryset=Account.objects.none(), required=False)
+    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
+help_text="define the target of the operation")
+    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
+    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+
+    def __init__(self, request, *args, **kw):
+
+        log.debug("BalanceGASForm")
+        super(BalanceGASForm, self).__init__(request, *args, **kw)
+
+        self.fields['target'].initial = '0'
+        self.__gas = request.resource.gas
+
+        eco_state = request.resource.balance_gasmembers
+        eco_class = "Negative"
+        if eco_state:
+            if eco_state > 20:
+                eco_class = "Plus"
+            elif eco_state < 20 and eco_state >= 0:
+                eco_class = "Alert"
+        self.fields['Wallet_gasmembers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
+        self.fields['Wallet_gasmembers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+
+        eco_state = request.resource.balance_suppliers
+        eco_class = "Negative"
+        if eco_state:
+            if eco_state > 20:
+                eco_class = "Plus"
+            elif eco_state < 20 and eco_state >= 0:
+                eco_class = "Alert"
+        self.fields['Wallet_suppliers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
+        self.fields['Wallet_suppliers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+
+        self.__loggedusr = request.user
+
+        # SOLIDAL PACT
+        pacts = request.resource.pacts
+        if pacts and pacts.count() > 0:
+            self.fields['pact'].queryset = pacts
+#            self.fields['pact'].initial = pacts[0]
+
+        # MEMBERS
+        gms = request.resource.gasmembers
+        if gms and gms.count() > 0:
+            self.fields['person'].queryset = gms
+
+    def clean(self):
+
+        cleaned_data = super(BalanceGASForm, self).clean()
+        print("cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
+        except KeyError:
+            log.debug("BalanceGASForm: cannot retrieve economic identifier. FORM ATTACK!")
+            raise
+
+        return cleaned_data
+
+    @transaction.commit_on_success
+    def save(self):
+
+        #Do economic work
+        if not self.__gas:
+            return
+
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, 
+            obj=ObjectWithContext(self.__gas)
+        ):
+            log.debug("PermissionDenied %s in economic operation form" % self.__loggedusr)
+            raise PermissionDenied("BalanceGASForm: You are not a cash_referrer, you cannot do economic operation!")
+#        #Do economic work
+#        try:
+#            self.economic_operation()
+#        except ValueError, e:
+#            print "retry later " +  e.message
 

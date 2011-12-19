@@ -464,6 +464,23 @@ class GAS(models.Model, PermissionResource):
         return acc_tot
 
     @property
+    def balance_gasmembers(self):
+        """Accounting sold for all gasmembers"""
+        #return self.accounting.system['/members'].balance
+        acc_tot = 0
+        for gm in self.gasmembers:
+            acc_tot += self.accounting.system['/members/' + gm.person.uid].balance
+        return acc_tot
+
+    @property
+    def balance_suppliers(self):
+        """Accounting sold for all supplier"""
+        acc_tot = 0
+        for pact in self.pacts:
+            acc_tot += self.accounting.system['/expenses/suppliers/' + pact.supplier.uid].balance
+        return acc_tot
+
+    @property
     def liquidity(self):
         """Accounting sold for all members of this gas"""
         for gm in self.gasmembers:
