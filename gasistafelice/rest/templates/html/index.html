@@ -1616,7 +1616,7 @@
 
                         $('#user_name').text(jQuery.labsglobals['user']);
 
-                        init_user_roles_box();
+                        //init_user_roles_box();
                         init_user_urns_list();
 
 
@@ -2140,10 +2140,11 @@
 
                         <span id="user_data">
                             {% trans "User" %}: <span id="user_name" class="ui-corner-all user"></span>
-                            |
+                            {% comment %} |
                             <a id="home_page" href="">{% trans "Home page" %}</a>
                             <span id="user_role"> </span>
                             |
+                            {% endcomment %} 
                             <span id="user_urn"> 
                                 <span id="user_urn_gasmember" class="menu_section" style="display:none">
                                     <h3>Utente</h3>
