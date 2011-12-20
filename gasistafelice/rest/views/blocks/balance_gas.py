@@ -68,6 +68,9 @@ class Block(AbstractBlock):
 #                else:
 #                    return self.response_error(form.errors)
 
+        else:
+                form = BalanceGASForm(request)
+
 #        if args == "":
         ctx = {
             'resource'      : res,

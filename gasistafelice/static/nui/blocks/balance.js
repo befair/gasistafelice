@@ -35,7 +35,7 @@ jQuery.UIBlockBalance = jQuery.UIBlock.extend({
         //template elements
         var content_template = '\
         <div>\
-            <form id="invoice_id" method="POST" action="@@action_url@@">\
+            <form id="fbalance" method="POST" action="@@action_url@@">\
             <div class="list_actions">@@list_actions@@</div> \
             @@content@@\
             </form>\
@@ -70,13 +70,20 @@ jQuery.UIBlockBalance = jQuery.UIBlock.extend({
         
     },
 
-//    post_load_handler : function() {
-//        
-//        $("#invoice_id").ajaxForm(function(){
-//            alert("handler attached: ajaxified form " + $("#amount").value );
-//        })
-//        this._super();
-//    },
+    post_load_handler : function() {
+        var form_el = $("#fbalance");
+        form_el.ajaxForm({
+            dataType : 'xml',
+            success : function(responseXML, statusText, xhr, $form)  {
+            if (xhr.responseText.match('class="errorlist"')) {
+                form_html = $(xhr.responseText).find('tbody');
+                form_el.find('tbody').html(form_html.html());
+            } else 
+                window.location.reload();
+            }
+        });
+        this._super();
+    },
 
     //------------------------------------------------------------------------------//
     //                                                                              //

@@ -63,10 +63,12 @@ class Block(AbstractBlock):
                     with transaction.commit_on_success():
                         if form.cleaned_data:
                             form.save()
-                    #FIXME: handler attached: ajaxified form undefined
 #                    return self.response_success()
 #                else:
 #                    return self.response_error(form.errors)
+
+        else:
+                form = BalanceForm(request)
 
 #        if args == "":
         ctx = {
