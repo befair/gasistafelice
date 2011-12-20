@@ -268,7 +268,7 @@ EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 class InvoiceOrderForm(forms.Form):
 
     #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
-    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2)
+    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2, error_messages={'required': _(u'You must insert an postive amount for the operation')})
     note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
@@ -311,12 +311,13 @@ class InvoiceOrderForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(InvoiceOrderForm, self).clean()
-        print("cleaned_data %s" % cleaned_data)
-        try:
-            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
-        except KeyError:
-            log.debug("InvoiceOrderForm: cannot retrieve order identifier. FORM ATTACK!")
-            raise
+#Domthu: only for test purpose
+#        print("cleaned_data %s" % cleaned_data)
+#        try:
+#            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
+#        except KeyError:
+#            log.debug("InvoiceOrderForm: cannot retrieve order identifier. FORM ATTACK!")
+#            raise
 
         return cleaned_data
 
@@ -522,7 +523,7 @@ class BalanceGASForm(BalanceForm):
     Wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
     amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-help_text = _('define the amount with the sign - to debit money from this account'), error_messages={'required': _(u'You must insert an postive or negatibe amount for the operation')})
+help_text = _('define the amount with the sign - to debit money from this account'), error_messages={'required': _(u'You must insert an postive or negative amount for the operation')})
     note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
 help_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
 #    target = forms.ModelChoiceField(label=_("Account"), queryset=Account.objects.none(), required=False)
