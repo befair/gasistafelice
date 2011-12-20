@@ -68,11 +68,14 @@ class Block(AbstractBlock):
 #                else:
 #                    return self.response_error(form.errors)
 
+        else:
+                form = InvoiceOrderForm(request)
+
 #        if args == "":
         ctx = {
             'resource'      : res,
             'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
-            'form'          : InvoiceOrderForm(request),
+            'form'          : form,
             'user_actions'  : user_actions,
         }
         return render_to_xml_response('blocks/order_invoice.xml', ctx)
