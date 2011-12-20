@@ -17,6 +17,7 @@ from gasistafelice.des.models import Siteattr
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 
 from gasistafelice.base.models import Person
+from gasistafelice import consts
 
 import time, datetime
 
@@ -82,7 +83,23 @@ def user_urns(request):
 
     rv = []
     #Person Profile
-    persons = Person.objects.filter(user=request.user)
+    person = Person.objects.get(user=request.user)
+
+    for obj in person.gasmembers:
+        rv.append( obj.as_dict() )
+    for obj in person.gas_list:
+        rv.append( obj.as_dict() )
+    for prr in request.user.principal_param_role_set.all():
+
+        if prr.role.role.name == consts.GAS_REFERRER_SUPPLIER:
+
+            pact = prr.role.params[0].value
+            supplier = pact.supplier
+            rv.append( supplier.as_dict() )
+        
+    return HttpResponse(simplejson.dumps(rv))
+    
+    
     for person in persons:
         #Is gasmember
         for gm in person.gasmembers:
