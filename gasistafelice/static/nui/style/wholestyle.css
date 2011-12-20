@@ -408,6 +408,21 @@ ul.errorlist { max-width : 400px; }
     max-width : 8em; 
 }
 
+.menu_section {
+    display : table-cell;
+    background-color: lightgreen;
+    border : 1px solid grey;
+    padding : 0 0.5em;
+    color : white;
+}
+
+.menu_section ul {
+    display : none;
+}
+
+.menu_section:hover ul {
+    display : block;
+}
 
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }

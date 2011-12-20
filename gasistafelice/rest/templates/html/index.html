@@ -1485,11 +1485,14 @@
                         //alert('init_user_urns_list ' + new_user_urn);
                         opt_name = new_user_urn["name"];
                         opt_url = new_user_urn["urn"];
-                        var r = new jQuery.Resource(opt_url, opt_name).render();
-                        if (i > 1) { r = '  |  ' + r; }
+                        opt_type = opt_url.slice(0, opt_url.indexOf("/")) 
+                        var res = new jQuery.Resource(opt_url, opt_name).render();
+                        var li = "<li>" + res + "</li>";
+                        //if (i > 1) { r = '  |  ' + r; }
                         //r = '<div class="left" align="left">' + r + '</div>'
                         //alert('init_user_urns_list r:' + r )
-                        $('#user_urn').append(r);
+                        $('#user_urn_'+opt_type+' ul').append(li);
+                        $('#user_urn_'+opt_type).show();
                     }
                 }
             } ) ;
@@ -2141,7 +2144,24 @@
                             <a id="home_page" href="">{% trans "Home page" %}</a>
                             <span id="user_role"> </span>
                             |
-                            <span id="user_urn"> </span>
+                            <span id="user_urn"> 
+                                <span id="user_urn_gasmember" class="menu_section" style="display:none">
+                                    <h3>Utente</h3>
+                                    <ul> </ul>
+                                </span>
+                                <span id="user_urn_gas" class="menu_section" style="display:none">
+                                    <h3>GAS</h3>
+                                    <ul> </ul>
+                                </span>
+                                <span id="user_urn_pact" class="menu_section" style="display:none">
+                                    <h3>Patti</h3>
+                                    <ul> </ul>
+                                </span>
+                                <span id="user_urn_supplier" class="menu_section" style="display:none">
+                                    <h3>Fornitori</h3>
+                                    <ul> </ul>
+                                </span>
+                            </span>
                             |
                             <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
                         </span>
