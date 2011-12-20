@@ -52,3 +52,4 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
 #id_balance.Plus {color: green;font-size: 40px;width: 40%;}
 #id_balance.Alert {color: orange;font-size: 40px;width: 40%;}
 #id_balance.Negative {color: red;font-size: 40px;width: 40%;}
+#header{height:auto;}
