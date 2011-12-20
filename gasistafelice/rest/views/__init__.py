@@ -94,6 +94,7 @@ def user_urns(request):
         if prr.role.role.name == consts.GAS_REFERRER_SUPPLIER:
 
             pact = prr.role.params[0].value
+            rv.append( pact.as_dict() )
             supplier = pact.supplier
             rv.append( supplier.as_dict() )
         
