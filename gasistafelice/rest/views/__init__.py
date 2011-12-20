@@ -16,6 +16,8 @@ from gasistafelice.des.models import Siteattr
 
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 
+from gasistafelice.base.models import Person
+
 import time, datetime
 
 #------------------------------------------------------------------------------#
@@ -66,6 +68,45 @@ def site_settings(request):
 #---------------------------------------------------------------------#
 # Roles management                                                    #
 #---------------------------------------------------------------------#
+
+@login_required
+def user_urns(request):
+    """ Return all urn for utils links
+
+    [{"url": "gasmember/1", "name": "CAM - Dominique Thual (Castelraimondo) "}, {"url": "gas/1", "name": "Gas di Montagna(CAM)"}]
+    """
+
+    if request.user.is_superuser:
+        rv = [{ 'role_name' : _("Master of the Universe"), 'role_resources' : [] }]
+        return HttpResponse(simplejson.dumps(rv))
+
+    rv = []
+    #Person Profile
+    persons = Person.objects.filter(user=request.user)
+    for person in persons:
+        #Is gasmember
+        for gm in person.gasmembers:
+            #Add GASMember urn
+            x = ''
+            x = gm.statistic_name()
+            rv.append( {
+                'url': gm.urn,
+                'name': x,
+            })
+            #Add GAS urn
+            gas = gm.gas
+            rv.append( {
+                'url': gas.urn,
+                'name': gas.name + '(' + gas.id_in_des + ')',
+            })
+            
+        #Is supplier
+        #  see role management
+        #References list
+#        for prr in request.user.principal_param_role_set.all():
+
+    return HttpResponse(simplejson.dumps(rv))
+
 
 @login_required
 def user_roles(request):

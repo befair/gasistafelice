@@ -1470,6 +1470,33 @@
         
         }                      
 
+        function init_user_urns_list() {
+          try{
+            $('#home_page').attr('href', jQuery.pre);
+            $.get('{% url rest.views.user_urns %}', function(data) {
+                var user_urns = $.JSON.parse(data);
+                if (user_urns.length == 0) {
+                    alert('BUG: user with no urn cannot be logged in!');
+                } else {
+                    var i = 0
+                    for (var j in user_urns) {
+                        i++
+                        new_user_urn = user_urns[j];
+                        //alert('init_user_urns_list ' + new_user_urn);
+                        opt_name = new_user_urn["name"];
+                        opt_url = new_user_urn["url"];
+                        var r = new jQuery.Resource(opt_url, opt_name).render();
+                        if (i > 1) { r = '  |  ' + r; }
+                        //r = '<div class="left" align="left">' + r + '</div>'
+                        //alert('init_user_urns_list r:' + r )
+                        $('#user_urn').append(r);
+                    }
+                }
+            } ) ;
+          } catch (e) { alert('ERROR e: init_user_urns_list' + e.message); }
+        }
+
+
         function init_user_roles_box() {    
 
             $('#home_page').attr('href', jQuery.pre);
@@ -1586,7 +1613,8 @@
 
                         $('#user_name').text(jQuery.labsglobals['user']);
 
-                        init_user_roles_box();
+                        //init_user_roles_box();
+                        init_user_urns_list();
 
 
                         setInterval(refhash, 1);
@@ -2100,7 +2128,6 @@
 <body>
     <div id="container">
 
-        <div id="header">
             <div id="header-content">
                 <!-- <span class="right" id="app_clock" style="padding:0.2em;"></span> -->
                 <div class="right" align="right">
@@ -2114,6 +2141,8 @@
                             <a id="home_page" href="">{% trans "Home page" %}</a>
                             <span id="user_role"> </span>
                             |
+                            <span id="user_urn"> </span>
+                            |
                             <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
                         </span>
                     </span>
@@ -2121,7 +2150,7 @@
                     <div id="app_clock" style="padding:0.2em;"></div>
                 </div>
 
-                <h3 id="page_resource"> </h3>
+                <h2 id="page_resource"> </h2>
 
                 <div class="header-actions"></div>
                 <span id="navbar"

@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^hh_mm',                               'rest.views.hh_mm'),
     (r'^now',                                 'rest.views.now'),
 
+    (r'^user_urns$',                         'rest.views.user_urns'),
     (r'^user_roles$',                         'rest.views.user_roles'),
     (r'^switch_role$',                        'rest.views.switch_role'),
 
