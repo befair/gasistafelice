@@ -39,16 +39,20 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
         1: 'name',
-        2: 'frontman',
+        2: 'frontman__name',
         3: 'city',
         4: 'mail',
         5: 'phone',
-        6: 'tot_stocks',
-        7: 'tot_pacts',
-        8: 'balance',
-        9: 'certifications_list'
+        6: '',
+        7: '',
+        8: '',
+        9: ''
     }
 
+#        6: 'tot_stocks',
+#        7: 'tot_pacts',
+#        8: 'balance',
+#        9: 'certifications_list'
 #        10: 'enabled'
 
 
