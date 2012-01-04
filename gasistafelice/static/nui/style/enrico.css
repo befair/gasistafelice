@@ -73,6 +73,7 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
     list-style-type: none;
     background-color: #AFD909;
     border: 1px solid grey;
+    text-align:left;
 }
 
 .menu_section ul { display : none; }
@@ -85,11 +86,4 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
     /*color:red;*/ 
     z-index:99;
 }
-.menu_section:hover ul li a { display: block;
-/*width: 10em;*/ border: none; padding: 2px; 
-}
-/*.menu_section:hover ul li a:before { content: " >> "; } */
-
-.menu_section:hover ul li a.resource.inline { padding-left: 32px; }
-/* display: inline-block; color: red;*/
 
