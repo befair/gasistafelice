@@ -856,7 +856,7 @@
                     
                     jQuery.post_load_handler(); // Update GUI event handlers
                     
-                    $(SEARCH_RESULTS_CONTAINER).css('overflow'   , 'scroll');
+                    $(SEARCH_RESULTS_CONTAINER).css('overflow-x'   , 'scroll');
                     $(SEARCH_RESULTS_CONTAINER).css('white-space', 'nowrap');
                 },
                 beforeSend: function(){
@@ -1692,6 +1692,7 @@
             $('#right_separator').css('height', h);
             $('#right_separator_gap').css('height', 300     );
             $('#right_separator_gap').css('width', 2);
+            $('#right_separator_gap').css('z-index', 90);
             
             set_right_separator_icon();
         }
@@ -2196,62 +2197,6 @@
                 </div>
                 -->
 
-                <!-- =============================================== -->
-                <!-- SEARCH BOX                                      -->
-                <!-- =============================================== -->
-
-                <div class="block" id="search">
-                    <div class="block_header">
-                        <div class="right toolbar">
-                            <span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/></span>
-                        </div>
-                        <h1 class="block-title">{% trans "Search" %}</h1> <!-- Ricerca --> {# title should be "Search in resource(DES)" #}
-                    </div>
-
-                    <div class="block_body" id="quick_search" is_open="1">
-
-                        <div id="searchbox">
-                            <div id="search_form" style="text-align : center;">
-                                <form id="search_trueform"  name="search_form" action="{% url rest.views.quick_search %}">
-                                    <input id="search_input"
-                                           name="q"
-                                           type="search"
-                                           size="20"
-                                           autocomplete="on"
-                                           title="{% trans "Enter search keyword here" %}" /> <!-- Scrivere qui una parte del nome della risorsa e premere &lt;Invio -->
-
-                                    <input id="search_reset"
-                                           type="button"
-                                           name="reset"
-                                           title='{% trans "Reset search" %}'
-                                           value='{% trans "Reset search" %}'
-                                           onclick="reset_search_form()" /> <br />
-
-                                    <a id="moropt" type="button" value="{% trans "Options" %}" name="advanced_research" href="">{% trans "Options" %}</a> <!-- Options -->
-                                    {% comment %}| <a href="#rest/advanced-search-page">{% trans "Advanced" %}</a> {% endcomment %}
-
-                                    <fieldset id="moroptpanel" style="text-align:left; font-size:0.8em">
-
-                                        <fieldset style="text-align:left;">
-                                            <legend>GAS</legend>
-                                            <input type="checkbox" name="l" value="gn" checked="checked" /><label>{% trans "Name" %}</label> <br/>
-                                        </fieldset>
-                                        <fieldset style="text-align:left;">
-                                            <legend>{% trans "Supplier" %}</legend>
-                                            <input type="checkbox" name="l" value="sn" checked="checked" /><label>{% trans "Name" %}</label> <br/>
-                                        </fieldset>
-                                        <fieldset style="text-align:left;">
-                                            <legend>{% trans "Order" %}</legend>
-                                            <input type="checkbox" name="l" value="ogn" checked="checked" /><label>{% trans "GAS name" %}</label><br/>
-                                            <input type="checkbox" name="l" value="osn" checked="checked" /><label>{% trans "Supplier name" %}</label><br/>
-                                        </fieldset>
-                                    </fieldset>
-                                </form>
-                            </div>
-                            <div id="search_results"> </div>
-                        </div>
-                    </div>
-                </div> <!-- blocco search -->
 
                 <!-- =============================================== -->
                 <!-- HISTORY                                         -->
@@ -2340,11 +2285,69 @@
             <div id="notifications-panel" class="panel">
             
                 <!-- =============================================== -->
+                <!-- SEARCH BOX                                      -->
+                <!-- =============================================== -->
+
+                <div class="block" id="search">
+                    <div class="block_header ui-corner-top">
+                        <div class="right toolbar">
+                            <span class="toggle_show"><img class="header_button" src="" title="{% trans "Minimize block" %}"/></span>
+                        </div>
+                        <h1 class="block-title">{% trans "Search" %}</h1> <!-- Ricerca --> {# title should be "Search in resource(DES)" #}
+                    </div>
+
+                    <div class="block_body" id="quick_search" is_open="1">
+
+                        <div id="searchbox">
+                            <div id="search_form" style="text-align : center;">
+                                <form id="search_trueform"  name="search_form" action="{% url rest.views.quick_search %}">
+                                    <input id="search_input"
+                                           name="q"
+                                           type="search"
+                                           size="20"
+                                           autocomplete="on"
+                                           title="Scrivere qui una parte del nome della risorsa e premere &lt;Invio&gt;"
+                                    >
+
+                                    <input id="search_submit" type="submit" title="Cerca" value="Cerca">
+                                    <input id="search_reset"
+                                           type="button"
+                                           name="reset"
+                                           title='{% trans "Reset search" %}'
+                                           value='{% trans "Reset search" %}'
+                                           onclick="reset_search_form()" /> <br />
+
+                                    <a id="moropt" type="button" value="{% trans "Options" %}" name="advanced_research" href="">{% trans "Options" %}</a> <!-- Options -->
+                                    {% comment %}| <a href="#rest/advanced-search-page">{% trans "Advanced" %}</a> {% endcomment %}
+
+                                    <fieldset id="moroptpanel" style="text-align:left; font-size:0.8em">
+
+                                        <fieldset style="text-align:left;">
+                                            <legend>{% trans "Order" %}</legend>
+                                            <input type="checkbox" name="l" value="ogn" checked="checked" /><label>{% trans "GAS name" %}</label><br/>
+                                            <input type="checkbox" name="l" value="osn" checked="checked" /><label>{% trans "Supplier name" %}</label><br/>
+                                        </fieldset>
+                                        <fieldset style="text-align:left;">
+                                            <legend>{% trans "Supplier" %}</legend>
+                                            <input type="checkbox" name="l" value="sn" checked="checked" /><label>{% trans "Name" %}</label> <br/>
+                                        </fieldset>
+                                        <fieldset style="text-align:left;">
+                                            <legend>GAS</legend>
+                                            <input type="checkbox" name="l" value="gn" checked="checked" /><label>{% trans "Name" %}</label> <br/>
+                                        </fieldset>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div id="search_results"> </div>
+                        </div>
+                    </div>
+                </div> <!-- blocco search -->
+                <!-- =============================================== -->
                 <!-- NOTIFICATIONS BOX                               -->
                 <!-- =============================================== -->
 
                 <div class="block" id="user-notifications">
-                    <div class="block_header">
+                    <div class="block_header ui-corner-top">
                         <div class="right toolbar">
                             <img class="header_button toggle_refresh hide_on_toggle"
                                  src=""
@@ -2364,7 +2367,7 @@
                 <!-- =============================================== -->
 
                 <div class="block" id="notes">
-                    <div class="block_header">
+                    <div class="block_header ui-corner-top">
 
                         <div class="right toolbar">
                             <img class="header_button toggle_refresh hide_on_toggle"

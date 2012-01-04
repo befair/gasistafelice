@@ -180,10 +180,10 @@ select{
 
 
 .panel {
-	background-color: #eee;
-	/* padding: 10px; */
+	margin: 0 0.2em;
 	/*margin: 10px;*/
 	width  : 220px;
+    heigth : 100%;
 	min-width  : 220px;
 	max-width  : 500px;
 }

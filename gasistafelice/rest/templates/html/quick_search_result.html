@@ -6,17 +6,8 @@
 	
 		<a 
 			class="ctx_enabled resource inline {{ resource.resource_type }}"
-			
-			{% if resource.resource_type != "target" and resource.resource_type != "measure" %}
-				{% if resource.icon %}
-					style="font-size: 0.8em; background: transparent url(/static/theme/img/resources/{{resource.icon.fname}}16x16.png) no-repeat scroll left center;"
-				{% endif %}
-			{% endif %}
-			
 			href="#rest/{{ resource.resource_type }}/{{ resource.id }}"
 			sanet_urn="{{ resource.resource_type }}/{{ resource.id }}"
-			
-			
 		>
 		{{  resource }}
 		</a>

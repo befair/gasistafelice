@@ -193,7 +193,7 @@ class DES(Site, PermissionResource):
         else:
             return Comment.objects.filter(is_removed=False).order_by('-submit_date').all()
 
-    def quick_search(self, q, limits=['gn','sn','ogn','osn']):
+    def quick_search(self, q, limits=['ogn','osn','gn','sn']):
         """Search with limit.
         @param q: search query
         @param limits: limit of search.
@@ -205,16 +205,15 @@ class DES(Site, PermissionResource):
 
         l = []
         for i in limits:
-            print "-------- i " % i
             i = i.lower()
-            if i == 'gn':
-                l += self.gas_list.filter(name__icontains=q)
-            if i == 'sn':
-                l += self.suppliers.filter(name__icontains=q)
-            elif i == 'ogn':
-                l += self.orders.open().filter(pact__gas__name=q)
+            if i == 'ogn':
+                l += self.orders.open().filter(pact__gas__name__icontains=q)
             elif i == 'osn':
-                l += self.orders.open().filter(pact__supplier__name=q)
+                l += self.orders.open().filter(pact__supplier__name__icontains=q)
+            elif i == 'gn':
+                l += self.gas_list.filter(name__icontains=q)
+            elif i == 'sn':
+                l += self.suppliers.filter(name__icontains=q)
             else:
                 pass
 
