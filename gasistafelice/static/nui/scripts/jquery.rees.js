@@ -574,7 +574,7 @@ jQuery.retrieve_form = function (action_el) {
                 $(NEW_NOTE_DIALOG).dialog('destroy');
                 $(NEW_NOTE_DIALOG).dialog('close');
 
-                window.location.reload();
+                update_page();
 				// response = jQuery.parseXml(responseText);
 				// var resource_type = $(response).attr('resource_type');
 				// var resource_id   = $(response).attr('resource_id');
