@@ -117,12 +117,14 @@ class EditStockForm(forms.ModelForm):
     product_description = forms.CharField(required=False, label=_("Description"), widget=forms.TextInput(), max_length=500)
 
     product_pu = forms.ModelChoiceField(ProductPU.objects.all(), 
-            label=_("Package"), required=True
+        label=_("Package"), required=True
     )
     product_mu = forms.ModelChoiceField(ProductMU.objects.all(), required=False,
-            label=_("Units")
+        label=_("Units")
     )
-    product_muppu = forms.DecimalField(label=_('of'), initial=1)
+    product_muppu = forms.DecimalField(label=_('of'), initial=1,
+        min_value = Decimal('0.01'), max_value = Decimal('10000')
+    )
 
     product_category = forms.ModelChoiceField(ProductCategory.objects.all(), 
             label=ProductCategory._meta.verbose_name)
