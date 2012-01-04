@@ -1957,7 +1957,7 @@
                 }
             });
             
-            $('#resource_panel .toggle_show').attr('src', '{{ MEDIA_URL }}nui/img/button-min.png');
+            //$('#resource_panel .toggle_show').attr('src', '{{ MEDIA_URL }}nui/img/button-min.png');
 
             //
             // Fullscreen button
@@ -1982,7 +1982,7 @@
                 //
                 // HIDE EVERY OTHER ELEMENT
                 //
-                $('#resource_panel').toggle();
+                //$('#resource_panel').toggle();
                 $('#notifications-panel').toggle();
                 
                 
@@ -1995,7 +1995,7 @@
                 // SET BLOCK HEIGHT
                 //
                 var expanded = true;
-                if ($('#resource_panel').is(':visible'))
+                if ($('#notifications-panel').is(':visible'))
                     expanded = false;
                 
                 // If the body is not visibile, don't try to fix height
@@ -2071,6 +2071,7 @@
             
 
             
+            /* COMMENTED by fero
             $('#resource_panel').resizable({
                 handles:'e',
                 autoHide:true,
@@ -2079,7 +2080,7 @@
 
                     save_block_attribute('sanet_sidebar_width', width);
                 }
-            });
+            });*/
 
             $('#notifications-panel').resizable({
                 handles:'e',
@@ -2091,6 +2092,7 @@
                 }
             });
 
+            /* COMMENTED by fero
             var width = get_block_attribute('sanet_sidebar_width')
             if (width != undefined) 
                 $('#resource_panel').css('width', width);
@@ -2100,23 +2102,24 @@
 
             $('#separator_button').click(function(e) {
                 show_resource_panel();
-            });
+            }); */
 
             $('#right_separator_button').click(function(e) {
                 show_notifications_panel();
             });
 
         
-            /*
+            /* COMMENTED by fero
             var visible = get_block_attribute('sanet_sidebar_visible');
             alert(visible);
             if (visible == undefined) 
                 visible = 'true';    
             
             if (visible == 'true') 
-            */
             
             prepare_resource_panel();
+            */
+
             prepare_notifications_panel();
 
             init_user_buttons();
@@ -2190,7 +2193,7 @@
 
         <div id="main_content">
         
-            <div id="resource_panel" class="panel">
+            <div id="resource_panel" class="panel" style="display:none">
             
                 <!--<div id="resource_panel_hide_button" >
                     <img alt='nascondi'  title='nascondi' src='{{ MEDIA_URL }}nui/img/expand_button_left.gif'/>
