@@ -2168,6 +2168,11 @@
                             </span>
                         </span>
                     </span>
+                    <span id="history_menu" class="menu_section">
+                        <h3>Cronologia</h3>
+                        <ul id="history_elements">
+                        </ul>
+                    </span>
                 </span>
 
                     {% trans "User" %}: <span id="user_name" class="ui-corner-all user"></span>
@@ -2194,12 +2199,8 @@
         <div id="main_content">
         
             <div id="resource_panel" class="panel" style="display:none">
+{% comment %} WAS #resource_panel content
             
-                <!--<div id="resource_panel_hide_button" >
-                    <img alt='nascondi'  title='nascondi' src='{{ MEDIA_URL }}nui/img/expand_button_left.gif'/>
-                </div>
-                -->
-
 
                 <!-- =============================================== -->
                 <!-- HISTORY                                         -->
@@ -2222,8 +2223,7 @@
                 </div>
 
 
-                {% comment %}
-                ##### TODO fero #####
+##### TODO: fero verify if useful #####
 
                 <!-- =============================================== -->
                 <!-- USER ACTIONS                                    -->
@@ -2270,13 +2270,14 @@
                     <!-- Fine block_body -->
                 </div> <!-- blocco albero -->
 
-                {% endcomment %}
             </div>
 
             <div id="separator" style='float:left'>
                 <img id='separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>
                 <img id='separator_button'/>
             </div>
+###  fero -- before end #resource_panel{% endcomment %}
+
         </div>
 
         <div id="right_column_wrapper" style="float:right">

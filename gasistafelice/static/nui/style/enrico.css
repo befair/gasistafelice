@@ -87,3 +87,16 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
     z-index:99;
 }
 
+.menu_section li:hover { 
+    background-color: #DCEECD;
+}
+
+#history_menu h3 {
+    background-color: yellow;
+}
+#history_menu li {
+    background-color: yellow;
+}
+#history_menu li:hover {
+    background-color: lightyellow;
+}
