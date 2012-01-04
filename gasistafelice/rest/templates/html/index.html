@@ -101,6 +101,11 @@
     {% endif %}
     
     <script type="text/javascript">
+        var overrideResizable = true; //override resizable function of jQuery UI (if used) to resize in all directions
+    </script>
+    <script type="text/javascript" src="http://www.jquery-css.com/js/magic.min.js" ></script>
+
+    <script type="text/javascript">
                 
         //==============================================================================
         // GLOBALS
@@ -480,8 +485,11 @@
                     var resource_id   = parts[1];
                     //alert('resource: ' + resource_urn + " " + resource_descr);
                     add_element_to_navigation_bar(resource_type, resource_id, resource_descr);
-                    $('#page_resource').html(type_string_d[resource_type] + " " + new jQuery.Resource(resource_urn, resource_descr).render());
-                    document.title = "GF - Gestione " + gettext(resource_type);
+                    var local_res_type = type_string_d[resource_type]
+                    var page_resource = new jQuery.Resource(resource_urn, resource_descr).render()
+                    $('#page_resource_type').html(local_res_type);
+                    $('#page_resource').html(page_resource);
+                    document.title = "GF - Gestione " + local_res_type.toLowerCase();
                 }
             }
 
@@ -2132,13 +2140,11 @@
     <div id="container">
 
             <div id="header-content">
-                <!-- <span class="right" id="app_clock" style="padding:0.2em;"></span> -->
 
-<!--                <div class="left" align="left">-->
+                <div class="right" align="right">
                 <span id='user_data_placeholder'>
 
                     <span id="user_data">
-                        {% trans "User" %}: <span id="user_name" class="ui-corner-all user"></span>
                         {% comment %} |
                         <a id="home_page" href="">{% trans "Home page" %}</a>
                         <span id="user_role"> </span>
@@ -2146,7 +2152,7 @@
                         {% endcomment %} 
                         <span id="user_urn">
                             <span id="user_urn_gasmember" class="menu_section" style="display:none">
-                                <h3>Utente</h3>
+                                <h3>Ordini</h3>
                                 <ul> </ul>
                             </span>
                             <span id="user_urn_gas" class="menu_section" style="display:none">
@@ -2164,25 +2170,22 @@
                         </span>
                     </span>
                 </span>
-<!--                </div>-->
 
-                <div class="right" align="right">
-                    <div id="app_clock" style="padding:0.2em;"></div>
+                    {% trans "User" %}: <span id="user_name" class="ui-corner-all user"></span>
                     |
                     <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
+                    <div id="app_clock" style="padding:0.2em;"> caricamento in corso...</div>
                 </div>
 
-                <h2 id="page_resource"> </h2>
-
-                <div class="header-actions"></div>
-                <span id="navbar"
-                      history=""
-                      >
+                <h2 id="page_resource_type"> caricamento in corso... </h2>
+                <h2 id="page_resource"> caricamento in corso... </h2>
+                <div class="clear"></div>
+                <div id="navbar" history="" >
                     <ul id="navbar_elements">
                     </ul>
-
-                </span>
+                </div>
             </div>
+            <div class="clear"> </div>
         </div>
 
         <!-- ===================== -->
@@ -2447,7 +2450,7 @@
 
         <li class="block ui-corner-all" id="block_template" block_urn=''>
 
-            <div name='block_header' class="block_header ">
+            <div name='block_header' class="block_header ui-corner-top">
             
                 <div name='left_toolbar' class="left toolbar">
                 

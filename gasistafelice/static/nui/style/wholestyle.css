@@ -238,20 +238,20 @@ border:0px;
 	/*margin : 0px 0px 0px 0px;*/
 	margin: 10px;
 	
-	border : 1px solid #DDDDDD;
+	border-right : 1px solid #DDDDDD;
+	border-left : 1px solid #DDDDDD;
+	border-bottom : 1px solid #DDDDDD;
 	border-collapse : collapse;
 	min-width : 200px;
 }
 .block_header {
 	background-color : #afd909;
-
-	border-bottom : 1px solid #FFF;
-	
-
-	padding-top:8px;
-	/*clear : both;*/
-
+	border-bottom : 1px solid #bbb;
+	padding-top:5px;
 	height : 21px;
+	border-collapse : collapse;
+    margin-top : -2px;
+    margin-bottom : 2px;
 }
 
 .block-title {
@@ -393,7 +393,24 @@ border:0px;
 
 /* Added by fero - Gasista Felice */
 
-#page_resource   { text-transform:capitalize; }
+#page_resource_type { 
+    text-transform:capitalize; 
+    padding-top : 0;
+    margin-top : 0.1em;
+}
+#page_resource { 
+    padding-top : 0;
+    margin-top : 0.1em; 
+}
+
+#main_content { margin-top : 1em; }
+#navbar {
+  background-color: #F2FBF2;
+  border: 1px dashed lightgray;
+  margin-top: 0.2em;
+  padding: 2px;
+}
+
 td input[type="text"] { max-width:70%; }
 td input.amount { max-width:3em; text-align : center;}
 
@@ -406,22 +423,6 @@ ul.errorlist { max-width : 400px; }
 .aligned label { 
     width : 100%; 
     max-width : 8em; 
-}
-
-.menu_section {
-    display : table-cell;
-    background-color: lightgreen;
-    border : 1px solid grey;
-    padding : 0 0.5em;
-    color : white;
-}
-
-.menu_section ul {
-    display : none;
-}
-
-.menu_section:hover ul {
-    display : block;
 }
 
 /* css for timepicker */
