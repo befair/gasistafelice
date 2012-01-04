@@ -1481,9 +1481,9 @@
                 if (user_urns.length == 0) {
                     alert('BUG: user with no urn cannot be logged in!');
                 } else {
-                    var i = 0
-                    for (var j in user_urns) {
-                        i++
+                    var i = 0;
+                    for (var j=0; j<user_urns.length; j++) {
+                        i++;
                         new_user_urn = user_urns[j];
                         //alert('init_user_urns_list ' + new_user_urn);
                         opt_name = new_user_urn["name"];
@@ -2151,26 +2151,26 @@
                         {% endcomment %} 
                         <span id="user_urn">
                             <span id="user_urn_gasmember" class="menu_section" style="display:none">
-                                <h3>Ordini</h3>
-                                <ul> </ul>
+                                <h3>Gestione ordini</h3>
+                                <ul class="submenu"> </ul>
                             </span>
                             <span id="user_urn_gas" class="menu_section" style="display:none">
                                 <h3>GAS</h3>
-                                <ul> </ul>
+                                <ul class="submenu"> </ul>
                             </span>
                             <span id="user_urn_pact" class="menu_section" style="display:none">
                                 <h3>Patti</h3>
-                                <ul> </ul>
+                                <ul class="submenu"> </ul>
                             </span>
                             <span id="user_urn_supplier" class="menu_section" style="display:none">
                                 <h3>Fornitori</h3>
-                                <ul> </ul>
+                                <ul class="submenu"> </ul>
                             </span>
                         </span>
                     </span>
                     <span id="history_menu" class="menu_section">
                         <h3>Cronologia</h3>
-                        <ul id="history_elements">
+                        <ul id="history_elements" class="submenu">
                         </ul>
                     </span>
                 </span>

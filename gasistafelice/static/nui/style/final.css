@@ -91,6 +91,11 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
     background-color: #DCEECD;
 }
 
+.submenu {
+    max-height : 300px;
+    overflow-y : auto;
+}
+
 #history_menu h3 {
     background-color: yellow;
 }

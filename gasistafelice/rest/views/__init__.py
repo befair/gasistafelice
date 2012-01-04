@@ -17,6 +17,8 @@ from gasistafelice.des.models import Siteattr
 from gasistafelice.comments.views import get_all_notes, get_notes_for
 
 from gasistafelice.base.models import Person
+from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
+from gasistafelice.supplier.models import Supplier
 from gasistafelice import consts
 
 import time, datetime
@@ -77,26 +79,35 @@ def user_urns(request):
     [{"url": "gasmember/1", "name": "CAM - Dominique Thual (Castelraimondo) "}, {"url": "gas/1", "name": "Gas di Montagna(CAM)"}]
     """
 
-    if request.user.is_superuser:
-        rv = [{ 'role_name' : _("Master of the Universe"), 'role_resources' : [] }]
-        return HttpResponse(simplejson.dumps(rv))
-
     rv = []
-    #Person Profile
-    person = Person.objects.get(user=request.user)
+    if request.user.is_superuser:
+        
+        for obj in GASMember.objects.all():
+            rv.append( obj.as_dict() )
+        for obj in GAS.objects.all():
+            rv.append( obj.as_dict() )
+        for obj in GASSupplierSolidalPact.objects.all():
+            rv.append( obj.as_dict() )
+        for obj in Supplier.objects.all():
+            rv.append( obj.as_dict() )
+        
+    else:
 
-    for obj in person.gasmembers:
-        rv.append( obj.as_dict() )
-    for obj in person.gas_list:
-        rv.append( obj.as_dict() )
-    for prr in request.user.principal_param_role_set.all():
+        #Person Profile
+        person = Person.objects.get(user=request.user)
 
-        if prr.role.role.name == consts.GAS_REFERRER_SUPPLIER:
+        for obj in person.gasmembers:
+            rv.append( obj.as_dict() )
+        for obj in person.gas_list:
+            rv.append( obj.as_dict() )
+        for prr in request.user.principal_param_role_set.all():
 
-            pact = prr.role.params[0].value
-            rv.append( pact.as_dict() )
-            supplier = pact.supplier
-            rv.append( supplier.as_dict() )
+            if prr.role.role.name == consts.GAS_REFERRER_SUPPLIER:
+
+                pact = prr.role.params[0].value
+                rv.append( pact.as_dict() )
+                supplier = pact.supplier
+                rv.append( supplier.as_dict() )
         
     return HttpResponse(simplejson.dumps(rv))
     
