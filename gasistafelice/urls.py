@@ -40,3 +40,7 @@ if settings.DEBUG:
         (r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     )
 
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^%srosetta/' % settings.URL_PREFIX, include('rosetta.urls')),
+    )

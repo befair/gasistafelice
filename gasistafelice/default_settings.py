@@ -135,6 +135,13 @@ INSTALLED_APPS = [
     #'south',
 ]
 
+try:
+    import rosetta
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS.append('rosetta')
+
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/auth/'),
     os.path.join(PROJECT_ROOT, 'fixtures/base/'),

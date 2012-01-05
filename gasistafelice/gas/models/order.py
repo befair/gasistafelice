@@ -54,7 +54,7 @@ trans_state_d = {
     'Canceled' : 'Annullato',
 }
 
-OF = ugettext_lazy('of')
+OF = _('of')
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.

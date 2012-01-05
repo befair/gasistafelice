@@ -25,7 +25,9 @@ done
 ./sh_start_venv.sh $GF_HOME $GF_VENV
 
 /usr/bin/env python $GF_HOME/manage.py dumpdata auth.User > $DUMPFILE
-/bin/sed -i 's@"groups": \[4], "user_permissions": \[], @@g' $DUMPFILE
+#WAS /bin/sed -i 's@"groups": \[4], "user_permissions": \[], @@g' $DUMPFILE
+/bin/sed -i 's@"groups": \[[1-9, ]*], "user_permissions": \[], @@g' $DUMPFILE
+
 
 /usr/bin/env python $ASKBOT_HOME/manage.py loaddata $DUMPFILE
 
