@@ -52,3 +52,20 @@ class BaseRoleForm(forms.ModelForm):
                 'role', 'person',  
         )})]
 
+#--------------------------------------------------------------------------------
+
+class EditPersonForm(forms.ModelForm):
+
+    def __init__(self, request, *args, **kw):
+        super(EditPersonForm, self).__init__(*args, **kw)
+
+    class Meta:
+        model = Person
+        fields = (
+            'name', 'surname', 'contact_set', 'address'
+        )
+        gf_fieldsets = [(None, { 
+            'fields' : (
+                ('name', 'surname'),  
+                'address', 'contact_set'),  
+        })]
