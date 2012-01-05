@@ -22,8 +22,8 @@ Import
 
 * Prima si importano i moduli inclusi nella distribuzione ufficiale di Django
 * Poi i moduli di applicazioni Django non incluse nel progetto
-* Poi le librerie di sistema
 * Infine i moduli delle applicazioni incluse nel progetto
+* Poi le librerie di sistema
 * Settings. Non usare 'import settings' ma 'from django.conf import settings'. Cosi l'importazione non adviene dal file ma da un oggetto lazy che puo essere cambiato a runtime.
 
 Naming
@@ -48,12 +48,6 @@ Il file models.py
 * i nomi campi BooleanField o NullBooleanField devo iniziare con un verbo. Ad esempio: "is_active", "use_scheduler", "can_change_price", ...
 * i nomi campi prediposti per memorizzare valori di default da usare in altri contesti, devono iniziare con "default_"
 * usare funzione save() per codice che non rappresenta un estensione al modello. Usare signal (handler) per codice che rappresenta un estensione.
-* Validazione nei modelli. save() e clean(). Tenere separato il concetto di salvattagio e di validazione.
-Esempio: 
- 2 campi nullable nel modello. 
- Verificare che uno dei 2 non è nullo = controllo di validazione clean(). lanciare ValidationError in questo caso
- Va salvato nella save() use AttributeError
-* Uso di full_clean() nella save() ? Da verificare. Forzare la validazione. Chiamare Validazione prima del salvataggio
 
 
 .. _ManyToManyField:
@@ -87,6 +81,8 @@ Esempio:
 
 Struttura classi del modello
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In linea generale:
 
 * Prima ci sono i campi
 * Poi i manager
