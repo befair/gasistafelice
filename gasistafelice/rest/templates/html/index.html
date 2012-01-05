@@ -119,6 +119,7 @@
         var blockTimers       = new Array();
         
         var oldhash;
+        var selected_tab_index;
 
         var generic_timers = new Array();
 
@@ -359,6 +360,12 @@
         function update_page() 
         {
 
+            //Save selected_tab_index global
+            if ((oldhash == location.hash)&&($.cookie('selected_tab_index')))
+                selected_tab_index = parseInt($.cookie('selected_tab_index'));
+            else
+                selected_tab_index = 0;
+
             fill_navigation_bar();
 
             /*$('#resource_panel').show();*/
@@ -598,12 +605,6 @@
                     }
                 });
                 
-                var selected_tab_index;
-                if ((oldhash == location.hash)&&($.cookie('selected_tab_index')))
-                    selected_tab_index = parseInt($.cookie('selected_tab_index'));
-                else
-                    selected_tab_index = 0;
-
                 var start_section = CURRENT_PAGE_SECTIONS[selected_tab_index];
                 var content_placeholder_element_id = 'section_blocks_' + start_section['name'];
                 $("#section_tabs").tabs("select", selected_tab_index);
@@ -2199,7 +2200,6 @@
                 </div>
             </div>
             <div class="clear"> </div>
-        </div>
 
         <!-- ===================== -->
         <!-- Start of main content -->
@@ -2289,7 +2289,7 @@
 
         </div>
 
-        <div id="right_column_wrapper" style="float:right">
+        <div id="right_column_wrapper" style="float:right; width:20%;">
         
             <div id="right_separator" style='float:left'>
                 <img id='right_separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>
@@ -2326,9 +2326,9 @@
                                     <input id="search_reset"
                                            type="button"
                                            name="reset"
-                                           title='{% trans "Reset search" %}'
-                                           value='{% trans "Reset search" %}'
-                                           onclick="reset_search_form()" /> <br />
+                                           title='{% trans "Reset" %}'
+                                           value='{% trans "Reset" %}'
+                                           onclick="reset_search_form()" /> 
 
                                     <a id="moropt" type="button" value="{% trans "Options" %}" name="advanced_research" href="">{% trans "Options" %}</a> <!-- Options -->
                                     {% comment %}| <a href="#rest/advanced-search-page">{% trans "Advanced" %}</a> {% endcomment %}
@@ -2532,5 +2532,6 @@ TODO fero TOCHECK
     </div>
 
     <div id="log"></div>
+    </div> <!-- end of #container -->
 </body>
 </html>
