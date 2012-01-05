@@ -29,7 +29,10 @@ class SingleSupplierStockForm(forms.Form):
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     pk = forms.IntegerField(required=False)
     #code = forms.CharField(required=False)
-    product = forms.CharField(required=True, widget=forms.TextInput(attrs={'size':'95'},), max_length=200)
+    product = forms.CharField(required=True, 
+        widget=forms.TextInput(attrs={'size':'85'}), 
+        max_length=200
+    )
 #    description = forms.CharField(required=False, widget=forms.TextInput(), max_length=500)
 #    product = forms.ModelChoiceField(
 #                            queryset = Product.objects.all(), 

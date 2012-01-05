@@ -21,7 +21,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%","bVisible":true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"50%","bVisible":true},
-                   {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
+                    {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
                     {"bSearchable":true,"bSortable":true,"sWidth":"20%",},
                 ],
                 "oLanguage": {
@@ -42,7 +42,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                     }
                     catch(e){alert(e.message);
                     }
-                    return nRow
+                    return nRow;
                 } ,
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     /* Modify Django management form info */

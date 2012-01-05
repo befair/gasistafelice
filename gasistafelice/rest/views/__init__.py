@@ -8,7 +8,7 @@ from django.utils import simplejson
 from notification.models import Notice
 from flexi_auth.models import ROLES_DICT, ParamRole
 
-from gasistafelice.lib.shortcuts import render_to_xml_response
+from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
 
@@ -38,7 +38,7 @@ def index(request):
         'MEDIA_URL' : settings.MEDIA_URL,
         'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
     }
-    return render_to_response("html/index.html", ctx)
+    return render_to_context_response(request, "html/index.html", ctx)
     
 #---------------------------------------------------------------------#
 #                                                                     #

@@ -612,7 +612,7 @@
                 render_blocks(content_placeholder_element_id, start_section['blocks']);
             }
             else {
-                render_blocks('body_content', start_section['blocks']);
+                render_blocks('body_content', CURRENT_PAGE_SECTIONS[0]['blocks']);
             }
 
             
@@ -1485,7 +1485,6 @@
 
         function init_user_urns_list() {
           try{
-            $('#home_page').attr('href', jQuery.pre);
             $.get('{% url rest.views.user_urns %}', function(data) {
                 var user_urns = $.JSON.parse(data);
                 if (user_urns.length == 0) {
@@ -1512,76 +1511,6 @@
           } catch (e) { alert('ERROR e: init_user_urns_list' + e.message); }
         }
 
-
-        function init_user_roles_box() {    
-
-            $('#home_page').attr('href', jQuery.pre);
-            $.get('{% url rest.views.user_roles %}', function(data) {
-                var user_roles = $.JSON.parse(data);
-                if (user_roles.length == 0) {
-                    alert('BUG: user with no role cannot be logged in!');
-                } else if (user_roles.length == 1) {
-                    var res = user_roles[0]["role_name"];
-                    if (user_roles[0]["role_resources"].length > 0) {
-                        res += " " + gettext("on") + " ";
-                        for (var i in user_roles[0]["role_resources"]) {
-                            if (i>0) res += ", ";
-                            var resource_dict = user_roles[0]["role_resources"][i];
-                            var r = new jQuery.Resource(resource_dict["urn"], resource_dict["name"]).render();
-                            res += r;
-                        }
-                    }
-                    $('#user_role').append(res);
-                } else {
-
-                    //Prepare a SELECT box to make the user able to switch role
-                    var SWITCH_ROLE_FORM              = "switch-role-form";
-                    var res = ' \
-                        <form action="{% url rest.views.switch_role %}" name="' + SWITCH_ROLE_FORM + '" id="' + SWITCH_ROLE_FORM + '" style="display:inline" method="POST"> \
-                            <select name="active_role" onchange="$(this.form).submit()">@@options@@</select> \
-                        </form> \
-                    ';
-
-                    var opt_tmpl = '<option value="@@opt_value@@" @@selected@@>@@opt_name@@</option>';
-
-                    for (var j in user_roles) {
-                        user_role = user_roles[j];
-                        opt_name = user_role["role_name"];
-
-                        if (user_role["role_resources"].length > 0) {
-                            opt_name += " " + gettext("on") + " ";
-                            for (var i in user_role["role_resources"]) {
-                                opt_name += user_role["role_resources"][i]["name"];
-                            }
-                        }
-
-                        var selected = "";
-                        var opt = opt_tmpl.replace(/@@opt_value@@/, user_role["role_pk"]);
-                        if (user_role["role_pk"] == $.cookie('active_role')) {
-                            selected = "selected";
-                        }
-                        opt = opt.replace(/@@opt_name@@/, opt_name);
-                        opt = opt.replace(/@@selected@@/, selected);
-                        res = res.replace(/@@options@@/, opt + "@@options@@");
-
-                    }
-
-                    res = res.replace(/@@options@@/, "");
-                    $('#user_role').append(res);
-
-                    $('#' + SWITCH_ROLE_FORM).submit( function() {
-                        $(this).ajaxSubmit({ success: function () {
-                            var value = $("#" + SWITCH_ROLE_FORM + " select option:selected").val();
-                            $.cookie('active_role', value, { path: '/', expires: SANET_COOKIE_EXPIRATION_TIME } );
-                            window.location.href = '{% url base.views.index %}';
-                        }});
-                        return false;
-                    });
-                    
-                }
-                
-            });
-        }
 
         //
         // ============================================================================
@@ -1629,7 +1558,6 @@
 
                         $('#user_name').text(jQuery.labsglobals['user']);
 
-                        //init_user_roles_box();
                         init_user_urns_list();
 
 
@@ -2153,15 +2081,12 @@
                 <div class="right" align="right">
                 <span id='user_data_placeholder'>
 
+                    {% trans 'Welcome,' %}
+                    <span id="user_name" class="user"></span>! 
                     <span id="user_data">
-                        {% comment %} |
-                        <a id="home_page" href="">{% trans "Home page" %}</a>
-                        <span id="user_role"> </span>
-                        |
-                        {% endcomment %} 
                         <span id="user_urn">
                             <span id="user_urn_gasmember" class="menu_section" style="display:none">
-                                <h3>Gestione ordini</h3>
+                                <h3>Gestisci ordini</h3>
                                 <ul class="submenu"> </ul>
                             </span>
                             <span id="user_urn_gas" class="menu_section" style="display:none">
@@ -2183,10 +2108,17 @@
                         <ul id="history_elements" class="submenu">
                         </ul>
                     </span>
+                    <a id="home_page" href="{{ user.person.get_absolute_url_page }}">{% trans "Home page" %}</a> | 
+                    {% comment %}
+                    <span id="settings_menu" class="menu_section">
+                        <h3>Impostazioni</h3>
+                        <ul class="submenu">
+                            <li></li>
+                        </ul>
+                    </span>
+                    {% endcomment %}
                 </span>
 
-                    {% trans "User" %}: <span id="user_name" class="ui-corner-all user"></span>
-                    |
                     <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
                     <div id="app_clock" style="padding:0.2em;"> caricamento in corso...</div>
                 </div>
@@ -2289,7 +2221,7 @@
 
         </div>
 
-        <div id="right_column_wrapper" style="float:right; width:20%;">
+        <div id="right_column_wrapper" style="float:right;">
         
             <div id="right_separator" style='float:left'>
                 <img id='right_separator_gap' src='{{ MEDIA_URL }}nui/img/1x1.gif'/> <br/>

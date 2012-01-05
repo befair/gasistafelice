@@ -184,6 +184,7 @@ select{
 	/*margin: 10px;*/
     heigth : 100%;
 	min-width  : 220px;
+	max-width  : 300px;
 }
 
 #resource_panel {
@@ -302,7 +303,9 @@ border:0px;
 	margin : 0pt 0pt 0 0pt;
 }
 
-
+#user_name {
+    font-weight: bold;
+}
 
 
 /**************************
