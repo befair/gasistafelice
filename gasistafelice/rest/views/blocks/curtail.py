@@ -139,7 +139,7 @@ class Block(BlockSSDataTables):
             log.debug("Curtails enumerate (%s) - %s" % (i, item))
 
             #'GASMember_Deferred_gas_id_id_in_gas_membership_fee' object has no attribute 'accounted_amount'
-            print("Accounted amounts: member %s, amount %s" % (item, item.accounted_amount))
+            log.debug("Accounted amounts: member %s, amount %s" % (item, item.accounted_amount))
             accounted_wallet = item.accounted_amount or item.sum_amount
                     
             data.update({

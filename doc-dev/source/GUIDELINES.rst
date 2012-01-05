@@ -111,3 +111,25 @@ Convenzioni
 * I commenti "che si vogliono indirizzare agli altri sviluppatori" iniziano con `#COMMENT <nick>`
 * Le parti di codice pushate ma che hanno bisogno di revisione includono la stringa `TODO: NEEDS REVIEW`
 
+ATTENZIONE A
+-------------
+
+1. **(NON) utilizzo della funzione `print`**
+    * Non usare la funzione `print` senza le parentesi
+    * Non usare la funzione `print` se non a scopo temporaneo di debug
+    * Se si intende pushare codice con `print`, sostituirlo con `log.debug`
+
+2. **Stringhe e internazionalizzazione (i18n)**
+    * TUTTE le stringhe devono essere **UNICODE**. Il che vuol dire che qualunque
+      stringa scriviamo deve essere preceduta da una **`u`** (ad es: `u"ciao mamma"`) 
+    * Usare `ugettext` quando il valore della stringa viene recuperato a runtime,
+      usare `ugettext_lazy` quando il valore della stringa viene recuperato ad import time
+    * NON È POSSIBILE LOCALIZZARE STRINGHE CHE HANNO PIù DI UN %s al loro interno:
+      usare sostituzione delle variabili per nome nei template (ad es: `_("ciao %(name)s")` )
+3. **Impostazioni del proprio ambiente in settings.py**
+    * Tutte le impostazioni relative alla propria installazione vanno in settings.py
+      Ad esempio se non si ha un server email per le notifiche impostare `NOTIFICATION_BACKENDS = ()`
+
+
+
+

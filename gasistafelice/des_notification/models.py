@@ -95,7 +95,7 @@ def notify_gasstock_product_enabled(sender, **kwargs):
         )
     except Exception as e:
         log.error("Send msg notify_gasstock_product_enabled: %s (%s)" % (e.message, type(e)))
-        print 'EEEEEEEEEEEEEE  notification notify_gasstock_product_enabled %s (%s)' % (e.message, type(e))
+        log.debug('EEEEEEEEEEEEEE  notification notify_gasstock_product_enabled %s (%s)' % (e.message, type(e)))
         pass
 
 #-------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
         )
     except Exception as e:
         log.error("Send msg notify_gasstock_product_disabled: %s (%s)" % (e.message, type(e)))
-        print 'EEEEEEEEEEEEEE  notification notify_gasstock_product_disabled %s (%s)' % (e.message, type(e))
+        log.debug('EEEEEEEEEEEEEE  notification notify_gasstock_product_disabled %s (%s)' % (e.message, type(e)))
         pass
 
 #-------------------------------------------------------------------------------

@@ -366,7 +366,7 @@ def parts(request, resource_type, resource_id):
                             "description":itm.get_description()
                             })
         except Exception, e:
-            print(e)
+            log.debug(e)
             continue
 
     return render_to_xml_response("resource_urls.xml", {"resource_id":resource_id, "resource_type":resource_type, "urls":urls})

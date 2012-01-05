@@ -54,6 +54,8 @@ trans_state_d = {
     'Canceled' : 'Annullato',
 }
 
+OF = ugettext_lazy('of')
+
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#OrdineFornitore>`__ for details (ITA only).
@@ -185,12 +187,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def report_name(self):
-        print "report_namereport_namereport_namereport_namereport_name"
+        log.debug("report_namereport_namereport_namereport_namereport_name")
         rep_date = medium_date(self.datetime_end)
         if self.delivery:
             if self.delivery.date:
                 rep_date = medium_date(self.delivery.date)
-        return _("Ord.%s of %s %s" % (self.pk, rep_date, self.supplier.subject_name))
+        return u"Ord.%s %s %s %s" % (self.pk, OF, rep_date, self.supplier.subject_name))
 
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)
@@ -198,7 +200,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def open_if_needed(self):
         """Check datetime_start and open order if needed."""
-        print "open_if_neededopen_if_neededopen_if_neededopen_if_neededopen_if_needed"
+        log.debug("open_if_neededopen_if_neededopen_if_neededopen_if_neededopen_if_needed")
         if self.datetime_start <= datetime.now():
 
             # Act as superuser
@@ -674,7 +676,7 @@ WHERE order_id = %s \
     def control_economic_state(self):
         #1/3 control invoice receipt
         if not self.invoice_amount:
-            #print"KAPPAO invoice_amount %s " % self.pk
+            #log.debug("KAPPAO invoice_amount %s " % self.pk)
             return
         #2/3 control members curtails
         qs = self.ordered_gasmembers
@@ -686,24 +688,18 @@ WHERE order_id = %s \
                     pass_member = True
                     break
             if not pass_member:
-                #print"KAPPAO member(%s) %s " % (item, self.pk)
+                #log.debug("KAPPAO member(%s) %s " % (item, self.pk))
                 return
         #3/3 control accounting payment
         tx = self.gas.accounting.get_supplier_order_transaction(self)
         if tx:
             #change state to STATUS_ARCHIVED
-            #print"GOTO STATUS_ARCHIVED %s " % self.pk
+            #log.debug("GOTO STATUS_ARCHIVED %s " % self.pk)
             t_name = TRANSITION_ARCHIVE
         else:
             #change state to STATUS_UNPAID
-            #print"GOTO STATUS_UNPAID %s " % self.pk
+            #log.debug("GOTO STATUS_UNPAID %s " % self.pk)
             t_name = TRANSITION_UNPAID
-
-#FIXME: fero
-#from workflows.utils import do_transition
-#from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
-#def do_transition(self, transition, user):
-
 
         # Act as superuser
         user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])

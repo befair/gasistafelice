@@ -348,7 +348,7 @@ class InvoiceOrderForm(forms.Form):
         try:
             self.__order.save()
         except ValueError, e:
-            print "retry later " +  e.message
+            log.debug("retry later " +  e.message)
         else:
             #Update State if possible
             self.__order.control_economic_state()
@@ -480,7 +480,7 @@ class InsoluteOrderForm(forms.Form):
                 try:
                     self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
                 except ValueError, e:
-                    print "retry later " +  e.message
+                    log.debug("retry later " +  e.message)
                 else:
                     #print"Insolute(%s) saved " % len(refs)
                     for _order in refs:
@@ -602,5 +602,5 @@ help_text="define the target of the operation")
 #        try:
 #            self.economic_operation()
 #        except ValueError, e:
-#            print "retry later " +  e.message
+#            log.debug("retry later " +  e.message)
 
