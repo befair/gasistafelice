@@ -2,7 +2,10 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
-from gasistafelice.base.models import Person
+from gasistafelice.lib.widgets import (
+    RelatedFieldWidgetCanAdd, RelatedMultipleFieldWidgetCanAdd
+)
+from gasistafelice.base.models import Person, Place, Contact
 from gasistafelice.consts import GAS_REFERRER_TECH
 
 class BaseRoleForm(forms.ModelForm):
@@ -55,6 +58,19 @@ class BaseRoleForm(forms.ModelForm):
 #--------------------------------------------------------------------------------
 
 class EditPersonForm(forms.ModelForm):
+
+    address = forms.ModelChoiceField(
+                    label = _("address"),
+                    required = False,
+                    queryset = Place.objects.all(), 
+                    widget = RelatedFieldWidgetCanAdd(related_model=Place)
+    )       
+
+    contact_set = forms.ModelMultipleChoiceField(
+                    label = _("Contacts"),
+                    queryset = Contact.objects.all(), 
+                    widget = RelatedMultipleFieldWidgetCanAdd(related_model=Contact)
+    )       
 
     def __init__(self, request, *args, **kw):
         super(EditPersonForm, self).__init__(*args, **kw)

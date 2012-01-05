@@ -396,6 +396,14 @@ class Resource(object):
         return self.contact_set.all()
 
     @property
+    def email_address(self):
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.contacts.filter(flavour=const.EMAIL).values_list('value'))))
+
+    @property
+    def phone_address(self):
+        return ", ".join(unordered_uniq(map(lambda x: x[0], self.contacts.filter(flavour=const.PHONE).values_list('value'))))
+
+    @property
     def preferred_email_address(self):
         """The email address, where we should write if we would know more info on the resource.
 
@@ -797,7 +805,8 @@ class Person(models.Model, PermissionResource):
         name, surname, 
         models.CharField(name="city", verbose_name=_("City")),
         models.CharField(name="username", verbose_name=_("Username")),
-        contact_set,
+        #DO NOT SHOW now models.CharField(name="email_address", verbose_name=_("Email")),
+        #DO NOT SHOW now models.CharField(name="phone_address", verbose_name=_("Phone")),
         address,
     )
     
