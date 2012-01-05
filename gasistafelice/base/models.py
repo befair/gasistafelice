@@ -970,6 +970,12 @@ class Place(models.Model, PermissionResource):
                 
     #-----------------------------------------------------#
 
+    display_fields = (
+        name, description, 
+        address, zipcode, city, province
+    )
+    
+
 # Generic workflow management
 
 class DefaultTransition(models.Model, PermissionResource):

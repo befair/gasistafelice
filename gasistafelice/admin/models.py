@@ -16,9 +16,11 @@ from simple_accounting import models as accounting_models
 
 ########################## Inlines #######################
 
-class ContactInline(admin.TabularInline):
-    model = base_models.Contact
+class PersonContactInline(admin.TabularInline):
+    model = base_models.Person.contact_set.through
     extra = 2
+    # does not work :( see https://code.djangoproject.com/ticket/9025
+    # fields = ('contact__flavour', 'value')
 
 class GASMemberInline(admin.TabularInline):
     model = gas_models.GASMember
@@ -58,12 +60,19 @@ class GASMemberRoleInline(admin.TabularInline):
 
 class PersonAdmin(admin.ModelAdmin):
 
+    inlines = [PersonContactInline, ]
     save_on_top = True
     
     list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
     list_editable = ('name', 'surname') 
     list_display_links = ('__unicode__', 'display_name')
     search_fields = ('^name','^surname', 'address__city')
+    fieldsets = ((None,
+            { 'fields' : ('name', 'surname',
+                'display_name', 'user',
+                'address', 'avatar', 'website' 
+            )
+    }),)
 
 class PlaceAdmin(admin.ModelAdmin):
 

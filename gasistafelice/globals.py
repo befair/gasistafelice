@@ -1,7 +1,11 @@
 from gasistafelice.des.models import DES
-from gasistafelice.base.models import Person
-from gasistafelice.supplier.models import Supplier, Product, ProductCategory, ProductMU, SupplierStock
-from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
+from gasistafelice.base.models import Person, Place
+from gasistafelice.supplier.models import (
+    Supplier, Product, ProductCategory, ProductMU, SupplierStock
+)
+from gasistafelice.gas.models.base import (
+    GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
+)
 from gasistafelice.gas.models.order import GASSupplierOrder
 
 type_model_d = {
@@ -17,6 +21,7 @@ type_model_d = {
 	'category' : ProductCategory,
 	'unit' : ProductMU,
 	'pact' : GASSupplierSolidalPact,
+	'place' : Place,
 }
 
 RESOURCE_LIST = type_model_d.keys()

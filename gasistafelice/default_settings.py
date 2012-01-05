@@ -336,6 +336,11 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Scheda del prodotto',
         'blocks' : ['stock_details', 'open_orders']
     }],
+    'place' : [{
+        'name': 'info',
+        'descr': 'Scheda del luogo',
+        'blocks' : ['details']
+    }],
 }
 
 

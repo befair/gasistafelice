@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-05 17:14+0100\n"
-"PO-Revision-Date: 2012-01-05 17:15\n"
+"PO-Revision-Date: 2012-01-05 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -311,7 +311,7 @@ msgstr "Avatar"
 
 #: base/models.py:541 gas/models/base.py:74 supplier/models.py:54
 msgid "web site"
-msgstr "sito"
+msgstr "sito web"
 
 #: base/models.py:547 gas/models/base.py:614 gas/models/base.py:639
 msgid "person"
