@@ -192,7 +192,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if self.delivery:
             if self.delivery.date:
                 rep_date = medium_date(self.delivery.date)
-        return u"Ord.%s %s %s %s" % (self.pk, OF, rep_date, self.supplier.subject_name))
+        return u"Ord.%s %s %s %s" % (self.pk, OF, rep_date, self.supplier.subject_name)
 
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)

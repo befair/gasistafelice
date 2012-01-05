@@ -1,0 +1,12 @@
+04.01.2012 Luca Ferroni <luca@befair.it>
+
+    * Intestazione più chiara con menu per l'accesso diretto a:
+        - risorse interessanti per l'utente
+        - ultime risorse visitate dall'utente (cronologia)
+        - al proprio profilo
+
+    * Cambio password nella pagina utente
+    * Esposta la funzione di ricerca per ordini, fornitori e gas nel pannello di destra
+    * Evitato il reload della pagina dopo la compilazione di un popup
+    * Mantenuta aperta la scheda che si sta visualizzando
+
