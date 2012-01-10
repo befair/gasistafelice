@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-27 05:20+0100\n"
+"POT-Creation-Date: 2012-01-10 03:48+0100\n"
 "PO-Revision-Date: 2011-11-27 06:18+1200\n"
 "Last-Translator: Luca Ferroni <luca@befair.it>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -17,451 +17,689 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: rest/templates/html/index.html:447
-msgid "DES"
-msgstr "DES"
+#: static/nui/blocks/advsearch.js:110 static/nui/blocks/alarms.js:25
+#: static/nui/blocks/calendar.js:114 static/nui/blocks/globalstatus.js:25
+#: static/nui/blocks/gmap.js:153 static/nui/blocks/googlemap.js:551
+#: static/nui/blocks/googlemap.js.py:571 static/nui/blocks/googlemap.js:604
+#: static/nui/blocks/graph.js:34 static/nui/blocks/ifaces.js:161
+#: static/nui/blocks/inventory_blk.js:219
+#: static/nui/blocks/inventory_blk.js:322
+#: static/nui/blocks/inventory_blk.js:410
+#: static/nui/blocks/inventory_blk.js:500
+#: static/nui/blocks/inventory_blk.js:568
+#: static/nui/blocks/inventory_blk.js:672
+#: static/nui/blocks/inventory_blk.js:886
+#: static/nui/blocks/inventory_blk.js:924
+#: static/nui/blocks/inventory_blk.js:990
+#: static/nui/blocks/inventory_blk.js:1023
+#: static/nui/blocks/inventory_blk.js:1088
+#: static/nui/blocks/inventory_blk.js:1115
+#: static/nui/blocks/inventory_blk.js:1177
+#: static/nui/blocks/inventory_blk.js:1211
+#: static/nui/blocks/inventory_blk.js:1274
+#: static/nui/blocks/inventory_blk.js:1326
+#: static/nui/blocks/inventory_blk.js:1334
+#: static/nui/blocks/inventory_blk.js:1429
+#: static/nui/blocks/inventory_blk.js:1482
+#: static/nui/blocks/inventory_blk.js:1636
+#: static/nui/blocks/inventory_blk.js:1667
+#: static/nui/blocks/inventory_blk.js:1732
+#: static/nui/blocks/inventory_blk.js:1754
+#: static/nui/blocks/inventory_blk.js:1790 static/nui/blocks/ipmon_data.js:42
+#: static/nui/blocks/map.js:25 static/nui/blocks/measures.js:461
+#: static/nui/blocks/measures.js.py:805 static/nui/blocks/nodes.js:147
+#: static/nui/blocks/periodicreport_info.js:32
+#: static/nui/blocks/periodicreports_list.js:195
+#: static/nui/blocks/reach_analysis.js:81
+#: static/nui/blocks/reports_list.js:190 static/nui/blocks/rstate.js:141
+#: static/nui/blocks/showcontainer.js:400
+#: static/nui/blocks/states_count.js:134
+#: static/nui/blocks/states_logack.js:1314 static/nui/blocks/status_rtt.js:84
+#: static/nui/blocks/targets.js:511 static/nui/blocks/targets2.js:477
+#: static/nui/blocks/usersettings.js:76
+msgid "An error occurred while retring the data from server"
+msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
-#: rest/templates/html/index.html:448
-msgid "Pact"
-msgstr "Patto"
-
-#: rest/templates/html/index.html:449
-msgid "Gasmember"
-msgstr "Gasista"
-
-#: rest/templates/html/index.html:450
-msgid "Order"
-msgstr "Ordine"
-
-#: rest/templates/html/index.html:452
-msgid "Supplier"
-msgstr "Fornitore"
-
-#: rest/templates/html/index.html:453
-msgid "Product"
-msgstr "Prodotto"
-
-#: rest/templates/html/index.html:454
-msgid "Person"
-msgstr "Persona"
-
-#: rest/templates/html/index.html:592
-msgid "This section is empty!"
-msgstr "Nessun contenuto attualmente associato a questa pagina."
-
-#: rest/templates/html/index.html:757
-msgid "Do you really want to clean the navigation history?"
-msgstr "Sicuro di voler azzerare la cronologia?"
-
-#: rest/templates/html/index.html:761
-msgid "Navigation history cleaned."
-msgstr "Cronologia azzerata."
-
-#: rest/templates/html/index.html:1008
-msgid "Resource succesfully added to the user container"
-msgstr "Risorsa aggiunta al contenitore utente"
-
-#: rest/templates/html/index.html:1281
-#, fuzzy
-msgid "Are you sure you want to remove every block from your userpage?"
-msgstr "Sei sicuro di voler rimuovere questa misura"
-
-#: rest/templates/html/index.html:1426 rest/templates/html/index.html:1451
-msgid "on"
+#: static/nui/blocks/basket.js:66 static/nui/blocks/basket_sent.js:35
+#: static/nui/blocks/curtail.js:30 static/nui/blocks/fee.js:32
+#: static/nui/blocks/order.js:66 static/nui/blocks/order_report.js:39
+#: static/nui/blocks/recharge.js:33 static/nui/blocks/stocks.js:28
+#: static/nui/blocks/suppliers_report.js:50
+msgid "Display _MENU_ records per page"
 msgstr ""
 
-#: rest/templates/html/index.html:1501
+#: static/nui/blocks/basket.js:67 static/nui/blocks/basket_sent.js:36
+#: static/nui/blocks/curtail.js:31 static/nui/blocks/fee.js:33
+#: static/nui/blocks/order.js:67 static/nui/blocks/order_report.js:40
+#: static/nui/blocks/recharge.js:34 static/nui/blocks/stocks.js:29
+#: static/nui/blocks/suppliers_report.js:51
+msgid "Nothing found"
+msgstr ""
+
+#: static/nui/blocks/basket.js:68 static/nui/blocks/basket_sent.js:37
+#: static/nui/blocks/curtail.js:32 static/nui/blocks/fee.js:34
+#: static/nui/blocks/order.js:68 static/nui/blocks/order_report.js:41
+#: static/nui/blocks/recharge.js:35 static/nui/blocks/stocks.js:30
+#: static/nui/blocks/suppliers_report.js:52
+msgid "Showing _START_ to _END_ of _TOTAL_ records"
+msgstr ""
+
+#: static/nui/blocks/basket.js:69 static/nui/blocks/basket_sent.js:38
+#: static/nui/blocks/curtail.js:33 static/nui/blocks/fee.js:35
+#: static/nui/blocks/order.js:69 static/nui/blocks/order_report.js:42
+#: static/nui/blocks/recharge.js:36 static/nui/blocks/stocks.js:31
+#: static/nui/blocks/suppliers_report.js:53
+msgid "Showing 0 to 0 of 0 records"
+msgstr ""
+
+#: static/nui/blocks/basket.js:70 static/nui/blocks/basket_sent.js:39
+#: static/nui/blocks/curtail.js:34 static/nui/blocks/fee.js:36
+#: static/nui/blocks/order.js:70 static/nui/blocks/order_report.js:43
+#: static/nui/blocks/recharge.js:37 static/nui/blocks/stocks.js:32
+#: static/nui/blocks/suppliers_report.js:54
+msgid "(filtered from _MAX_ total records)"
+msgstr ""
+
+#: static/nui/blocks/calendar.js:44
+msgid "Target"
+msgstr "Destinazione"
+
+#: static/nui/blocks/calendar.js:45 static/nui/blocks/targets.js:203
+msgid "State"
+msgstr "Stato"
+
+#: static/nui/blocks/calendar.js:46 static/nui/blocks/targets2.js:743
+msgid "Node"
+msgstr "Nodo"
+
+#: static/nui/blocks/calendar.js:47
+msgid "Interface"
+msgstr "Interfaccia"
+
+#: static/nui/blocks/calendar.js:48 static/nui/blocks/states_logack.js:224
+msgid "Description"
+msgstr "Descrizione"
+
+#: static/nui/blocks/details.js:13 static/nui/blocks/gas_details.js:13
+#: static/nui/blocks/gasmember_details.js:13
+#: static/nui/blocks/order_cash.js:13 static/nui/blocks/order_details.js:13
+#: static/nui/blocks/pact_details.js:13 static/nui/blocks/person_details.js:13
+#: static/nui/blocks/stock_details.js:13
+#: static/nui/blocks/supplier_details.js:13
+msgid "Add note"
+msgstr "Aggiungi nota"
+
+#: static/nui/blocks/details.js:336 static/nui/blocks/gas_details.js:336
+#: static/nui/blocks/gasmember_details.js:336
+#: static/nui/blocks/order_cash.js:336 static/nui/blocks/order_details.js:336
+#: static/nui/blocks/pact_details.js:336
+#: static/nui/blocks/periodicreports_list.js:29
+#: static/nui/blocks/person_details.js:336
+#: static/nui/blocks/reports_list.js:35 static/nui/blocks/states_logack.js:155
+#: static/nui/blocks/states_logack.js:557
+#: static/nui/blocks/stock_details.js:336
+#: static/nui/blocks/supplier_details.js:336
+#: static/nui/scripts/jquery.rees.js:581
+msgid "Confirm"
+msgstr "Conferma"
+
+#: static/nui/blocks/details.js:346 static/nui/blocks/gas_details.js:346
+#: static/nui/blocks/gasmember_details.js:346
+#: static/nui/blocks/order_cash.js:346 static/nui/blocks/order_details.js:346
+#: static/nui/blocks/pact_details.js:346
+#: static/nui/blocks/person_details.js:346
+#: static/nui/blocks/stock_details.js:346
+#: static/nui/blocks/supplier_details.js:346
+msgid "New note"
+msgstr "Nuova nota"
+
+#: static/nui/blocks/details.js:370 static/nui/blocks/gas_details.js:370
+#: static/nui/blocks/gasmember_details.js:370
+#: static/nui/blocks/order_cash.js:370 static/nui/blocks/order_details.js:370
+#: static/nui/blocks/pact_details.js:370
+#: static/nui/blocks/person_details.js:370
+#: static/nui/blocks/stock_details.js:370
+#: static/nui/blocks/supplier_details.js:370
+msgid "Do you really want to delete this note?"
+msgstr "Sei sicuro di voler cancellare la nota?"
+
+#: static/nui/blocks/googlemap.js:58
+msgid "Save center/zoom"
+msgstr "Salva centro/zoom"
+
+#: static/nui/blocks/googlemap.js:61
+msgid "Show node names"
+msgstr "Mostra i nomi dei nodi"
+
+#: static/nui/blocks/googlemap.js:63
 #, fuzzy
-msgid "Loading configuration..."
+msgid "Show links"
+msgstr "Mostra i collegamenti"
+
+#: static/nui/blocks/googlemap.js:65
+#, fuzzy
+msgid "Link size"
+msgstr "Dimensione del collegamento"
+
+#: static/nui/blocks/googlemap.js:69
+#, fuzzy
+msgid "Link bend factor"
+msgstr "Fattore di curvatura dei link "
+
+#: static/nui/blocks/googlemap.js:73
+msgid "Icon size"
+msgstr "Dimensione icone"
+
+#: static/nui/blocks/ifaces.js:4 static/nui/blocks/nodes.js:4
+msgid "Do you really want to remove this element from this list?"
+msgstr "Sei sicuro di voler togliere questo elemento dalla lista?"
+
+#: static/nui/blocks/ifaces.js:66 static/nui/blocks/nodes.js:59
+msgid "remove"
+msgstr "Rimuovi"
+
+#: static/nui/blocks/ifaces.js:130 static/nui/blocks/nodes.js:116
+msgid "There are no ifaces related to this resource."
+msgstr "Non ci sono interfacce associati alla risorsa"
+
+#: static/nui/blocks/inventory_blk.js:137 static/nui/blocks/measures.js:320
+#: static/nui/blocks/states_logack.js:1258 static/nui/blocks/targets2.js:294
+msgid "total"
+msgstr "totale"
+
+#: static/nui/blocks/inventory_blk.js:161
+#: static/nui/blocks/inventory_blk.js:510
+#: static/nui/blocks/inventory_blk.js:718
+#: static/nui/blocks/inventory_blk.js:798
+#: static/nui/blocks/inventory_blk.js:1500
+#: static/nui/blocks/inventory_blk.js:1510
+#: static/nui/blocks/inventory_blk.js:1522
+#: static/nui/blocks/inventory_blk.js:1545
+#: static/nui/blocks/inventory_blk.js:1556
+#: static/nui/blocks/inventory_blk.js:1569
+#: static/nui/blocks/inventory_blk.js:1803 static/nui/blocks/targets.js:186
+#: static/nui/blocks/targets2.js:733
+msgid "Name"
+msgstr "Nome"
+
+#: static/nui/blocks/inventory_blk.js:162
+#: static/nui/blocks/inventory_blk.js:511
+#: static/nui/blocks/inventory_blk.js:798
+#: static/nui/blocks/inventory_blk.js:1500
+#: static/nui/blocks/inventory_blk.js:1545
+#: static/nui/blocks/inventory_blk.js:1803
+msgid "Address"
+msgstr "Indirizzo"
+
+#: static/nui/blocks/inventory_blk.js:163
+#: static/nui/blocks/inventory_blk.js:512
+#: static/nui/blocks/inventory_blk.js:798
+#: static/nui/blocks/inventory_blk.js:1500
+#: static/nui/blocks/inventory_blk.js:1545
+msgid "Notes"
+msgstr "Note"
+
+#: static/nui/blocks/inventory_blk.js:173
+msgid "Update Location Data"
+msgstr "Aggiorna i dati sulla locazione"
+
+#: static/nui/blocks/inventory_blk.js:189
+#: static/nui/blocks/inventory_blk.js:536
+msgid "location name must be specified"
+msgstr "La locazione deve essere specificata"
+
+#: static/nui/blocks/inventory_blk.js:246
+#: static/nui/blocks/inventory_blk.js:595
+msgid "name"
+msgstr "Nome"
+
+#: static/nui/blocks/inventory_blk.js:247
+#: static/nui/blocks/inventory_blk.js:596
+msgid "address"
+msgstr "indirizzo"
+
+#: static/nui/blocks/inventory_blk.js:248
+#: static/nui/blocks/inventory_blk.js:597
+msgid "contact person"
+msgstr "referente"
+
+#: static/nui/blocks/inventory_blk.js:249
+#: static/nui/blocks/inventory_blk.js:598
+msgid "telephone"
+msgstr "telefono"
+
+#: static/nui/blocks/inventory_blk.js:250
+#: static/nui/blocks/inventory_blk.js:599
+msgid "mobile"
+msgstr "cellulare"
+
+#: static/nui/blocks/inventory_blk.js:251
+#: static/nui/blocks/inventory_blk.js:600
+msgid "mail"
+msgstr "mail"
+
+#: static/nui/blocks/inventory_blk.js:259
+msgid "Update Organization Data"
+msgstr "Aggiorna i dati dell'organizzazione"
+
+#: static/nui/blocks/inventory_blk.js:278
+#: static/nui/blocks/inventory_blk.js:627
+msgid "organization and contact person names must be specified"
+msgstr "devono essere specificati il nome dell'organizzazione ed il referente"
+
+#: static/nui/blocks/inventory_blk.js:284
+#: static/nui/blocks/inventory_blk.js:633
+msgid "please provide a valid email address"
+msgstr "deve essere fornito un indirizzo email valido"
+
+#: static/nui/blocks/inventory_blk.js:350
+#: static/nui/blocks/inventory_blk.js:428
+msgid "Cannot delete requested Data"
+msgstr "Non e' possibile cancellare i dati richiesti"
+
+#: static/nui/blocks/inventory_blk.js:351
+msgid "the location is referred by the nodes"
+msgstr "la locazione è riferita dai seguenti nodi"
+
+#: static/nui/blocks/inventory_blk.js:364
+#: static/nui/blocks/inventory_blk.js:455
+msgid "Error"
+msgstr "Errore"
+
+#: static/nui/blocks/inventory_blk.js:429
+msgid "the organization currently owns the following nodes"
+msgstr "l'organizzazione possiede i seguenti nodi"
+
+#: static/nui/blocks/inventory_blk.js:436
+msgid "the organization is served by the following interfaces"
+msgstr "l'organizzazione è servita dalle seguenti interfacce"
+
+#: static/nui/blocks/inventory_blk.js:443
+msgid "the organization manages the following nodes"
+msgstr "l'organizzazione gestisce i seguenti nodi"
+
+#: static/nui/blocks/inventory_blk.js:520
+msgid "Add New Location"
+msgstr "Aggiungi una nuova locazione"
+
+#: static/nui/blocks/inventory_blk.js:608
+msgid "Add New Organization"
+msgstr "Aggiungi una nuova organizzazione"
+
+#: static/nui/blocks/inventory_blk.js:707
+msgid "Organizations"
+msgstr "Organizzazioni"
+
+#: static/nui/blocks/inventory_blk.js:710
+#: static/nui/blocks/inventory_blk.js:723
+#: static/nui/blocks/inventory_blk.js:785
+#: static/nui/blocks/inventory_blk.js:801
+msgid "error"
+msgstr "errore"
+
+#: static/nui/blocks/inventory_blk.js:718
+#: static/nui/blocks/inventory_blk.js:1510
+#: static/nui/blocks/inventory_blk.js:1522
+#: static/nui/blocks/inventory_blk.js:1556
+#: static/nui/blocks/inventory_blk.js:1569
+#: static/nui/blocks/inventory_blk.js:1803
+msgid "Contact Person"
+msgstr "Referente"
+
+#: static/nui/blocks/inventory_blk.js:718
+#: static/nui/blocks/inventory_blk.js:1510
+#: static/nui/blocks/inventory_blk.js:1522
+#: static/nui/blocks/inventory_blk.js:1556
+#: static/nui/blocks/inventory_blk.js:1569
+#: static/nui/blocks/inventory_blk.js:1803
+msgid "Mail"
+msgstr "Mail"
+
+#: static/nui/blocks/inventory_blk.js:718
+#: static/nui/blocks/inventory_blk.js:1510
+#: static/nui/blocks/inventory_blk.js:1522
+#: static/nui/blocks/inventory_blk.js:1556
+#: static/nui/blocks/inventory_blk.js:1569
+#: static/nui/blocks/inventory_blk.js:1803
+msgid "Phone"
+msgstr "Telefono"
+
+#: static/nui/blocks/inventory_blk.js:718
+#: static/nui/blocks/inventory_blk.js:1510
+#: static/nui/blocks/inventory_blk.js:1522
+#: static/nui/blocks/inventory_blk.js:1556
+#: static/nui/blocks/inventory_blk.js:1569
+#: static/nui/blocks/inventory_blk.js:1803
+msgid "Mobile Phone"
+msgstr "Cellulare"
+
+#: static/nui/blocks/inventory_blk.js:750
+#: static/nui/blocks/inventory_blk.js:823
+#: static/nui/blocks/inventory_blk.js:1591
+#: static/nui/blocks/inventory_blk.js:1813
+msgid "Delete"
+msgstr "Cancella"
+
+#: static/nui/blocks/inventory_blk.js:751
+#: static/nui/blocks/inventory_blk.js:825
+#: static/nui/blocks/inventory_blk.js:1550
+#: static/nui/blocks/inventory_blk.js:1563
+#: static/nui/blocks/inventory_blk.js:1577
+msgid "Update"
+msgstr "Aggiorna"
+
+#: static/nui/blocks/inventory_blk.js:760
+#: static/nui/blocks/inventory_blk.js:833
+msgid "Add"
+msgstr "Aggiungi"
+
+#: static/nui/blocks/inventory_blk.js:782
+#, fuzzy
+msgid "Locazioni"
+msgstr "Locazione"
+
+#: static/nui/blocks/inventory_blk.js:966
+#, fuzzy
+msgid "Update Manager"
+msgstr "Aggiorna il possessore"
+
+#: static/nui/blocks/inventory_blk.js:1064
+msgid "Update Owner"
+msgstr "Aggiorna il possessore"
+
+#: static/nui/blocks/inventory_blk.js:1154
+msgid "Update Location"
+msgstr "Aggiorna una locazione"
+
+#: static/nui/blocks/inventory_blk.js:1251
+msgid "Add New Manager"
+msgstr "Aggiungi un nuovo gestore"
+
+#: static/nui/blocks/inventory_blk.js:1383
+#: static/nui/blocks/inventory_blk.js:1508
+#: static/nui/blocks/inventory_blk.js:1554
+msgid "Owner"
+msgstr "Possessore"
+
+#: static/nui/blocks/inventory_blk.js:1388
+#: static/nui/blocks/inventory_blk.js:1520
+msgid "Manager"
+msgstr "Gestore"
+
+#: static/nui/blocks/inventory_blk.js:1399
+msgid "Create New Asset Node"
+msgstr "Crea un nuovo asset node"
+
+#: static/nui/blocks/inventory_blk.js:1411
+msgid "update asset node"
+msgstr "aggiorna l'asset node"
+
+#: static/nui/blocks/inventory_blk.js:1466
+#: static/nui/blocks/inventory_blk.js:1606
+#, fuzzy
+msgid "Configuration"
 msgstr "Caricamento della configurazione..."
 
-#: rest/templates/html/index.html:1781 rest/templates/html/index.html:1782
-#: rest/templates/html/index.html:1783
-msgid "Minimize block"
-msgstr "Riduci blocco"
+#: static/nui/blocks/inventory_blk.js:1498
+#: static/nui/blocks/inventory_blk.js:1543
+msgid "Location"
+msgstr "Locazione"
 
-#: rest/templates/html/index.html:1797 rest/templates/html/index.html:1798
-#: rest/templates/html/index.html:1799
-msgid "Restore block"
-msgstr "Ripristina blocco"
+#: static/nui/blocks/inventory_blk.js:1531
+#: static/nui/blocks/inventory_blk.js:1816
+msgid "Create"
+msgstr "Crea"
 
-#: rest/templates/html/index.html:1879 rest/templates/html/index.html:1880
-#: rest/templates/html/index.html:1881
-msgid "Restore block size"
-msgstr "Ripristina dimensione del blocco"
+#: static/nui/blocks/inventory_blk.js:1567
+msgid "Managers"
+msgstr "Gestori"
 
-#: rest/templates/html/index.html:1885 rest/templates/html/index.html:1886
-#: rest/templates/html/index.html:1887
-msgid "Full screen"
-msgstr "Schermo intero"
+#: static/nui/blocks/inventory_blk.js:1605
+msgid "Add Manager"
+msgstr "Aggiungi gestore"
 
-#~ msgid "An error occurred while retring the data from server"
-#~ msgstr "Si è verificato un errore durante la lettura dei dati dal server"
+#: static/nui/blocks/inventory_blk.js:1708
+msgid "Select Organization"
+msgstr "Seleziona una organizzazione"
 
-#~ msgid "Target"
-#~ msgstr "Destinazione"
+#: static/nui/blocks/inventory_blk.js:1813
+msgid "Cannot delete an empty data"
+msgstr "Non posso cancellare un insieme di dati vuoto"
 
-#~ msgid "State"
-#~ msgstr "Stato"
+#: static/nui/blocks/ipmon_data.js:19
+msgid "Retrieving informations from the device"
+msgstr "Sto recuperando informazioni dal dispositivo"
 
-#~ msgid "Node"
-#~ msgstr "Nodo"
-
-#~ msgid "Interface"
-#~ msgstr "Interfaccia"
-
-#~ msgid "Description"
-#~ msgstr "Descrizione"
-
-#~ msgid "Add note"
-#~ msgstr "Aggiungi nota"
-
-#~ msgid "Confirm"
-#~ msgstr "Conferma"
-
-#~ msgid "New note"
-#~ msgstr "Nuova nota"
-
-#~ msgid "Do you really want to delete this note?"
-#~ msgstr "Sei sicuro di voler cancellare la nota?"
-
-#~ msgid "Save center/zoom"
-#~ msgstr "Salva centro/zoom"
-
-#~ msgid "Show node names"
-#~ msgstr "Mostra i nomi dei nodi"
-
+#: static/nui/blocks/measures.js:330
 #, fuzzy
-#~ msgid "Show links"
-#~ msgstr "Mostra i collegamenti"
+msgid "Are you sure you want to remove this measure?"
+msgstr "Sei sicuro di voler rimuovere questa misura"
 
+#: static/nui/blocks/measures.js:394
+msgid "Merged graph"
+msgstr "Grafico ???"
+
+#: static/nui/blocks/measures.js:425 static/nui/blocks/states_logack.js:1453
+#: static/nui/blocks/targets2.js:329 static/nui/blocks/targets2.js.py:333
+msgid "rows"
+msgstr "righe"
+
+#: static/nui/blocks/measures.js:498
 #, fuzzy
-#~ msgid "Link size"
-#~ msgstr "Dimensione del collegamento"
-
-#, fuzzy
-#~ msgid "Link bend factor"
-#~ msgstr "Fattore di curvatura dei link "
-
-#~ msgid "Icon size"
-#~ msgstr "Dimensione icone"
-
-#~ msgid "Do you really want to remove this element from this list?"
-#~ msgstr "Sei sicuro di voler togliere questo elemento dalla lista?"
-
-#~ msgid "remove"
-#~ msgstr "Rimuovi"
-
-#~ msgid "There are no ifaces related to this resource."
-#~ msgstr "Non ci sono interfacce associati alla risorsa"
-
-#~ msgid "total"
-#~ msgstr "totale"
-
-#~ msgid "Name"
-#~ msgstr "Nome"
-
-#~ msgid "Address"
-#~ msgstr "Indirizzo"
-
-#~ msgid "Notes"
-#~ msgstr "Note"
-
-#~ msgid "Update Location Data"
-#~ msgstr "Aggiorna i dati sulla locazione"
-
-#~ msgid "location name must be specified"
-#~ msgstr "La locazione deve essere specificata"
-
-#~ msgid "name"
-#~ msgstr "Nome"
-
-#~ msgid "address"
-#~ msgstr "indirizzo"
-
-#~ msgid "contact person"
-#~ msgstr "referente"
-
-#~ msgid "telephone"
-#~ msgstr "telefono"
-
-#~ msgid "mobile"
-#~ msgstr "cellulare"
-
-#~ msgid "mail"
-#~ msgstr "mail"
-
-#~ msgid "Update Organization Data"
-#~ msgstr "Aggiorna i dati dell'organizzazione"
-
-#~ msgid "organization and contact person names must be specified"
-#~ msgstr ""
-#~ "devono essere specificati il nome dell'organizzazione ed il referente"
-
-#~ msgid "please provide a valid email address"
-#~ msgstr "deve essere fornito un indirizzo email valido"
-
-#~ msgid "Cannot delete requested Data"
-#~ msgstr "Non e' possibile cancellare i dati richiesti"
-
-#~ msgid "the location is referred by the nodes"
-#~ msgstr "la locazione è riferita dai seguenti nodi"
-
-#~ msgid "Error"
-#~ msgstr "Errore"
-
-#~ msgid "the organization currently owns the following nodes"
-#~ msgstr "l'organizzazione possiede i seguenti nodi"
-
-#~ msgid "the organization is served by the following interfaces"
-#~ msgstr "l'organizzazione è servita dalle seguenti interfacce"
-
-#~ msgid "the organization manages the following nodes"
-#~ msgstr "l'organizzazione gestisce i seguenti nodi"
-
-#~ msgid "Add New Location"
-#~ msgstr "Aggiungi una nuova locazione"
-
-#~ msgid "Add New Organization"
-#~ msgstr "Aggiungi una nuova organizzazione"
-
-#~ msgid "Organizations"
-#~ msgstr "Organizzazioni"
-
-#~ msgid "error"
-#~ msgstr "errore"
-
-#~ msgid "Contact Person"
-#~ msgstr "Referente"
-
-#~ msgid "Mail"
-#~ msgstr "Mail"
-
-#~ msgid "Phone"
-#~ msgstr "Telefono"
-
-#~ msgid "Mobile Phone"
-#~ msgstr "Cellulare"
-
-#~ msgid "Delete"
-#~ msgstr "Cancella"
-
-#~ msgid "Update"
-#~ msgstr "Aggiorna"
-
-#~ msgid "Add"
-#~ msgstr "Aggiungi"
-
-#, fuzzy
-#~ msgid "Locazioni"
-#~ msgstr "Locazione"
-
-#, fuzzy
-#~ msgid "Update Manager"
-#~ msgstr "Aggiorna il possessore"
-
-#~ msgid "Update Owner"
-#~ msgstr "Aggiorna il possessore"
-
-#~ msgid "Update Location"
-#~ msgstr "Aggiorna una locazione"
-
-#~ msgid "Add New Manager"
-#~ msgstr "Aggiungi un nuovo gestore"
-
-#~ msgid "Owner"
-#~ msgstr "Possessore"
-
-#~ msgid "Manager"
-#~ msgstr "Gestore"
-
-#~ msgid "Create New Asset Node"
-#~ msgstr "Crea un nuovo asset node"
-
-#~ msgid "update asset node"
-#~ msgstr "aggiorna l'asset node"
-
-#~ msgid "Location"
-#~ msgstr "Locazione"
-
-#~ msgid "Create"
-#~ msgstr "Crea"
-
-#~ msgid "Managers"
-#~ msgstr "Gestori"
-
-#~ msgid "Add Manager"
-#~ msgstr "Aggiungi gestore"
-
-#~ msgid "Select Organization"
-#~ msgstr "Seleziona una organizzazione"
-
-#~ msgid "Cannot delete an empty data"
-#~ msgstr "Non posso cancellare un insieme di dati vuoto"
-
-#~ msgid "Retrieving informations from the device"
-#~ msgstr "Sto recuperando informazioni dal dispositivo"
-
-#~ msgid "Merged graph"
-#~ msgstr "Grafico ???"
-
-#~ msgid "rows"
-#~ msgstr "righe"
-
-#, fuzzy
-#~ msgid "Merge selected measures"
-#~ msgstr "Cambia le misure selezionate"
+msgid "Merge selected measures"
+msgstr "Cambia le misure selezionate"
 
 # msgid  "Time"
 # msgstr "Orario"
-#~ msgid "S"
-#~ msgstr "S"
+#: static/nui/blocks/measures.js:524 static/nui/blocks/states_logack.js:199
+msgid "S"
+msgstr "S"
 
-#~ msgid "Title"
-#~ msgstr "Titolo"
+#: static/nui/blocks/measures.js:534
+msgid "Title"
+msgstr "Titolo"
 
-#~ msgid "Resource"
-#~ msgstr "Risorsa"
+#: static/nui/blocks/measures.js:548 static/nui/blocks/states_logack.js:213
+msgid "Resource"
+msgstr "Risorsa"
 
-#~ msgid "Last check"
-#~ msgstr "Ultimo check"
+#: static/nui/blocks/measures.js:554 static/nui/blocks/targets2.js:770
+msgid "Last check"
+msgstr "Ultimo check"
 
-#~ msgid "Remove"
-#~ msgstr "Rimuovi"
+#: static/nui/blocks/measures.js:627
+msgid "Remove"
+msgstr "Rimuovi"
 
-#~ msgid "There aren't measures linked to this resource"
-#~ msgstr "Non ci sono misure associate alla risorsa"
+#: static/nui/blocks/measures.js:738
+msgid "There aren't measures linked to this resource"
+msgstr "Non ci sono misure associate alla risorsa"
 
-#~ msgid "Cancel"
-#~ msgstr "Annulla"
+#: static/nui/blocks/periodicreports_list.js:38
+#: static/nui/blocks/periodicreports_list.js:83
+#: static/nui/blocks/reports_list.js:44 static/nui/blocks/reports_list.js:88
+msgid "Cancel"
+msgstr "Annulla"
 
-#~ msgid "New report"
-#~ msgstr "Nuovo Report"
+#: static/nui/blocks/periodicreports_list.js:44
+#: static/nui/blocks/reports_list.js:49
+msgid "New report"
+msgstr "Nuovo Report"
 
-#~ msgid "New report: parameters"
-#~ msgstr "Nuovo Report: parametri"
+#: static/nui/blocks/periodicreports_list.js:88
+msgid "New report: parameters"
+msgstr "Nuovo Report: parametri"
 
 #
 # PERIODIC REPORTS
 #
-#~ msgid "Do you really want to delete this periodic report?"
-#~ msgstr "Sei sicuro di voler cancellare il report periodico?"
+#: static/nui/blocks/periodicreports_list.js:140
+msgid "Do you really want to delete this periodic report?"
+msgstr "Sei sicuro di voler cancellare il report periodico?"
 
-#~ msgid "New report parameters"
-#~ msgstr "Nuovi parametri per il report"
+#: static/nui/blocks/reports_list.js:94
+msgid "New report parameters"
+msgstr "Nuovi parametri per il report"
 
 #
 # REPORTS
 #
-#~ msgid "Do you really want to delete this report?"
-#~ msgstr "Sicuro di voler cancellare questo report?"
+#: static/nui/blocks/reports_list.js:145
+msgid "Do you really want to delete this report?"
+msgstr "Sicuro di voler cancellare questo report?"
 
 #
 # LOGACK
 #
-#~ msgid "Show all"
-#~ msgstr "Mostra tutti"
+#: static/nui/blocks/states_logack.js:26
+msgid "Show all"
+msgstr "Mostra tutti"
 
-#~ msgid "Only ackable"
-#~ msgstr "Solo con ACK richiesto"
+#: static/nui/blocks/states_logack.js:27
+msgid "Only ackable"
+msgstr "Solo con ACK richiesto"
 
-#~ msgid "Only not acked"
-#~ msgstr "Solo privi di ACK"
+#: static/nui/blocks/states_logack.js:28
+msgid "Only not acked"
+msgstr "Solo privi di ACK"
 
-#~ msgid "Ack Selected"
-#~ msgstr "Ack selezionati"
+#: static/nui/blocks/states_logack.js:32
+#: static/nui/blocks/states_logack.js:147
+msgid "Ack Selected"
+msgstr "Ack selezionati"
 
-#~ msgid "Ack before selected"
-#~ msgstr "Ack log selezionato e tutti quelli cronologicamente precedenti"
+#: static/nui/blocks/states_logack.js:33
+#: static/nui/blocks/states_logack.js:148
+msgid "Ack before selected"
+msgstr "Ack log selezionato e tutti quelli cronologicamente precedenti"
 
-#~ msgid "Deack Selected"
-#~ msgstr "Deack selezionati"
+#: static/nui/blocks/states_logack.js:34
+#: static/nui/blocks/states_logack.js:149
+msgid "Deack Selected"
+msgstr "Deack selezionati"
 
-#~ msgid "Deack after selected"
-#~ msgstr "Deack log selezionato e tutti quelli cronologicamente successivi"
+#: static/nui/blocks/states_logack.js:35
+#: static/nui/blocks/states_logack.js:150
+msgid "Deack after selected"
+msgstr "Deack log selezionato e tutti quelli cronologicamente successivi"
 
-#~ msgid "Deack all of the same ack"
-#~ msgstr "Deack tutti i log con lo stesso ack"
+#: static/nui/blocks/states_logack.js:36
+#: static/nui/blocks/states_logack.js:151
+msgid "Deack all of the same ack"
+msgstr "Deack tutti i log con lo stesso ack"
 
-#~ msgid "Ack Type"
-#~ msgstr "Tipo"
+#: static/nui/blocks/states_logack.js:47
+msgid "Ack Type"
+msgstr "Tipo"
 
-#~ msgid "Other reason"
-#~ msgstr "Altra motivazione"
+#: static/nui/blocks/states_logack.js:54
+msgid "Other reason"
+msgstr "Altra motivazione"
 
-#~ msgid "Show logs"
-#~ msgstr "Mostra log"
+#: static/nui/blocks/states_logack.js:94
+msgid "Show logs"
+msgstr "Mostra log"
 
-#~ msgid "Priority"
-#~ msgstr "Priorita'"
+#: static/nui/blocks/states_logack.js:101 static/nui/blocks/targets.js:196
+#: static/nui/blocks/targets2.js:761
+msgid "Priority"
+msgstr "Priorita'"
 
-#~ msgid "Ack id"
-#~ msgstr "Ack id"
+#: static/nui/blocks/states_logack.js:104
+msgid "Ack id"
+msgstr "Ack id"
 
-#~ msgid "From"
-#~ msgstr "Da"
+#: static/nui/blocks/states_logack.js:109
+#: static/nui/blocks/states_logack.js:491
+msgid "From"
+msgstr "Da"
 
-#~ msgid "hour"
-#~ msgstr "ora"
+#: static/nui/blocks/states_logack.js:111
+#: static/nui/blocks/states_logack.js:115
+msgid "hour"
+msgstr "ora"
 
-#~ msgid "To"
-#~ msgstr "A"
+#: static/nui/blocks/states_logack.js:113
+#: static/nui/blocks/states_logack.js:487
+msgid "To"
+msgstr "A"
 
-#~ msgid "FILTER"
-#~ msgstr "Filtra"
+#: static/nui/blocks/states_logack.js:125
+msgid "FILTER"
+msgstr "Filtra"
 
-#~ msgid "Remove filters"
-#~ msgstr "Rimuovi"
+#: static/nui/blocks/states_logack.js:127
+msgid "Remove filters"
+msgstr "Rimuovi"
 
-#~ msgid "Select all visibles"
-#~ msgstr "Seleziona tutti i visibili"
+#: static/nui/blocks/states_logack.js:136
+msgid "Select all visibles"
+msgstr "Seleziona tutti i visibili"
 
-#~ msgid "Invert visibles selected"
-#~ msgstr "Inverti selezionati"
+#: static/nui/blocks/states_logack.js:137
+msgid "Invert visibles selected"
+msgstr "Inverti selezionati"
 
-#~ msgid "Text search"
-#~ msgstr "Testo libero"
+#: static/nui/blocks/states_logack.js:140
+msgid "Text search"
+msgstr "Testo libero"
 
-#~ msgid "Site"
-#~ msgstr "Sito"
+#: static/nui/blocks/states_logack.js:167
+msgid "Site"
+msgstr "Sito"
 
-#~ msgid "Time"
-#~ msgstr "Orario"
+#: static/nui/blocks/states_logack.js:194
+#: static/nui/blocks/states_logack.js:362
+msgid "Time"
+msgstr "Orario"
 
-#~ msgid "P"
-#~ msgstr "P"
+#: static/nui/blocks/states_logack.js:206
+msgid "P"
+msgstr "P"
 
-#~ msgid "Target Path"
-#~ msgstr "Path del target"
+#: static/nui/blocks/states_logack.js:220
+msgid "Target Path"
+msgstr "Path del target"
 
 # msgid "Description"
 # msgstr "Descrizione"
-#~ msgid "Ack info"
-#~ msgstr "Info Ack"
+#: static/nui/blocks/states_logack.js:230
+msgid "Ack info"
+msgstr "Info Ack"
 
-#~ msgid "ID"
-#~ msgstr "ID"
+#: static/nui/blocks/states_logack.js:359
+msgid "ID"
+msgstr "ID"
 
-#~ msgid "Type"
-#~ msgstr "Tipo"
+#: static/nui/blocks/states_logack.js:360
+msgid "Type"
+msgstr "Tipo"
 
-#~ msgid "Descr"
-#~ msgstr "Descrizione"
+#: static/nui/blocks/states_logack.js:361
+msgid "Descr"
+msgstr "Descrizione"
 
-#~ msgid "Last Change time"
-#~ msgstr "Ultima modifica"
+#: static/nui/blocks/states_logack.js:363
+msgid "Last Change time"
+msgstr "Ultima modifica"
 
-#~ msgid "User"
-#~ msgstr "Utente"
+#: static/nui/blocks/states_logack.js:364
+msgid "User"
+msgstr "Utente"
 
-#~ msgid "Reason"
-#~ msgstr "Motivazione"
+#: static/nui/blocks/states_logack.js:365
+msgid "Reason"
+msgstr "Motivazione"
 
-#~ msgid "Conferma"
-#~ msgstr "Conferma"
+#: static/nui/blocks/states_logack.js:393
+#: static/nui/blocks/states_logack.js:1148
+msgid "Conferma"
+msgstr "Conferma"
 
-#~ msgid "Acknowledgement"
-#~ msgstr "Imposta Ack"
+#: static/nui/blocks/states_logack.js:399
+#: static/nui/blocks/states_logack.js:1153
+msgid "Acknowledgement"
+msgstr "Imposta Ack"
 
 # msgid  "Time"
 # msgstr "Orario"
@@ -469,112 +707,215 @@ msgstr "Schermo intero"
 # msgstr "Utente"
 # msgid  "Reason"
 # msgstr "Motivazione"
-#~ msgid "An error occurred while preparing the acknowledgement data"
-#~ msgstr "Si e' verificato un errore durante la preparazione dei dati"
+#: static/nui/blocks/states_logack.js:413
+#: static/nui/blocks/states_logack.js:926
+#: static/nui/blocks/states_logack.js:964
+#: static/nui/blocks/states_logack.js:1031
+#: static/nui/blocks/states_logack.js:1167
+msgid "An error occurred while preparing the acknowledgement data"
+msgstr "Si e' verificato un errore durante la preparazione dei dati"
 
-#~ msgid "All transitions states"
-#~ msgstr "Tutte le transizioni"
+#: static/nui/blocks/states_logack.js:472
+msgid "All transitions states"
+msgstr "Tutte le transizioni"
 
-#~ msgid "Select"
-#~ msgstr "Seleziona"
+#: static/nui/blocks/states_logack.js:476
+msgid "Select"
+msgstr "Seleziona"
 
-#~ msgid "You must select a transition"
-#~ msgstr "E' necessario selezionare una transizione"
+#: static/nui/blocks/states_logack.js:587
+msgid "You must select a transition"
+msgstr "E' necessario selezionare una transizione"
 
-#~ msgid "Change selected transitions"
-#~ msgstr "Cambia transizioni selezionate"
+#: static/nui/blocks/states_logack.js:597
+#: static/nui/blocks/states_logack.js:1422
+msgid "Change selected transitions"
+msgstr "Cambia transizioni selezionate"
 
-#~ msgid "Select transitions"
-#~ msgstr "Seleziona transizioni"
+#: static/nui/blocks/states_logack.js:600
+#: static/nui/blocks/states_logack.js:668
+#: static/nui/blocks/states_logack.js:1420
+msgid "Select transitions"
+msgstr "Seleziona transizioni"
 
-#~ msgid "Set visible log transitions"
-#~ msgstr "Imposta il registro delle transizioni visibili"
+#: static/nui/blocks/states_logack.js:608
+msgid "Set visible log transitions"
+msgstr "Imposta il registro delle transizioni visibili"
 
-#~ msgid "You must specify a starting date"
-#~ msgstr "Devi indicare una data di inizio periodo"
+#: static/nui/blocks/states_logack.js:749
+msgid "You must specify a starting date"
+msgstr "Devi indicare una data di inizio periodo"
 
-#~ msgid "Invalid time"
-#~ msgstr "Orario non valido"
+#: static/nui/blocks/states_logack.js:758
+#: static/nui/blocks/states_logack.js:773
+msgid "Invalid time"
+msgstr "Orario non valido"
 
-#~ msgid "You must specify a ending date"
-#~ msgstr "Devi indicare una data di fine periodo"
+#: static/nui/blocks/states_logack.js:764
+msgid "You must specify a ending date"
+msgstr "Devi indicare una data di fine periodo"
 
-#~ msgid "You must specify a date range in order to perform a free text search"
-#~ msgstr ""
-#~ "E' necessario inserire un range di date per poter effettuare una ricerca "
-#~ "a testo libero"
+#: static/nui/blocks/states_logack.js:802
+msgid "You must specify a date range in order to perform a free text search"
+msgstr ""
+"E' necessario inserire un range di date per poter effettuare una ricerca a "
+"testo libero"
 
-#~ msgid "No log selected"
-#~ msgstr "Nessun log selezionato"
+#: static/nui/blocks/states_logack.js:883
+#: static/nui/blocks/states_logack.js:901
+#: static/nui/blocks/states_logack.js:998
+msgid "No log selected"
+msgstr "Nessun log selezionato"
 
-#~ msgid "Operation completed"
-#~ msgstr "Operazione completata"
+#: static/nui/blocks/states_logack.js:917
+#: static/nui/blocks/states_logack.js:955
+#: static/nui/blocks/states_logack.js:1022
+#: static/nui/blocks/states_logack.js:1113
+msgid "Operation completed"
+msgstr "Operazione completata"
 
-#~ msgid "ERROR"
-#~ msgstr "ERRORE"
+#: static/nui/blocks/states_logack.js:923
+#: static/nui/blocks/states_logack.js:961
+#: static/nui/blocks/states_logack.js:1028
+#: static/nui/blocks/states_logack.js:1120
+#: static/nui/blocks/states_logack.js:1129
+msgid "ERROR"
+msgstr "ERRORE"
 
-#~ msgid "You must specify a log"
-#~ msgstr "E' necessario selezionare un log"
+#: static/nui/blocks/states_logack.js:939
+msgid "You must specify a log"
+msgstr "E' necessario selezionare un log"
 
-#~ msgid "You must select only one event"
-#~ msgstr "Bisogna selezionare solamente un evento"
+#: static/nui/blocks/states_logack.js:980
+#: static/nui/blocks/states_logack.js:1002
+msgid "You must select only one event"
+msgstr "Bisogna selezionare solamente un evento"
 
-#~ msgid "Suggested reasons"
-#~ msgstr "Motivazioni suggerite"
+#: static/nui/blocks/states_logack.js:1059
+msgid "Suggested reasons"
+msgstr "Motivazioni suggerite"
 
-#~ msgid "An error occurred while processing the request!"
-#~ msgstr "Si e' verificato un errore durante l'elaborazione della richiesta"
+#: static/nui/blocks/states_logack.js:1134
+msgid "An error occurred while processing the request!"
+msgstr "Si e' verificato un errore durante l'elaborazione della richiesta"
 
-#~ msgid "NOTE: you are watching a filtered subset of the saved logs"
-#~ msgstr "NOTA: stai visualizzando solo un sottoinsieme dei log salvati"
+#: static/nui/blocks/states_logack.js:1546
+msgid "NOTE: you are watching a filtered subset of the saved logs"
+msgstr "NOTA: stai visualizzando solo un sottoinsieme dei log salvati"
 
-#~ msgid "Do you really want to remove the selected target?"
-#~ msgstr "Sei sicuro di voler togliere il target dall'elenco?"
+#: static/nui/blocks/targets.js:130 static/nui/blocks/targets2.js:131
+msgid "Do you really want to remove the selected target?"
+msgstr "Sei sicuro di voler togliere il target dall'elenco?"
 
-#~ msgid "Linked to"
-#~ msgstr "Collegato a"
+#: static/nui/blocks/targets.js:189 static/nui/blocks/targets2.js:749
+msgid "Linked to"
+msgstr "Collegato a"
 
-#~ msgid "Last change"
-#~ msgstr "Ultima modifica"
+#: static/nui/blocks/targets.js:200 static/nui/blocks/targets2.js:778
+msgid "Last change"
+msgstr "Ultima modifica"
 
-#~ msgid "Acked"
-#~ msgstr "Ack id"
+#: static/nui/blocks/targets.js:207
+msgid "Acked"
+msgstr "Ack id"
 
-#~ msgid "Dependent targets"
-#~ msgstr "Target dipendenti"
+#: static/nui/blocks/targets.js:215
+msgid "Dependent targets"
+msgstr "Target dipendenti"
 
-#~ msgid ""
-#~ "WARNING: some targets are not listed here due to block's configuration"
-#~ msgstr ""
-#~ "ATTENZIONE: Alcuni target non sono visualizzati per via della "
-#~ "configurazione del blocco"
+#: static/nui/blocks/targets.js:227
+msgid "WARNING: some targets are not listed here due to block's configuration"
+msgstr ""
+"ATTENZIONE: Alcuni target non sono visualizzati per via della configurazione "
+"del blocco"
 
-#~ msgid "Show target's timeline"
-#~ msgstr "Espandi storia target"
+#: static/nui/blocks/targets.js:238 static/nui/blocks/targets2.js:803
+msgid "Show target's timeline"
+msgstr "Espandi storia target"
 
-#~ msgid "There are notes on this target"
-#~ msgstr "Non ci sono note associate alla risorsa"
+#: static/nui/blocks/targets2.js:843
+msgid "There are notes on this target"
+msgstr "Non ci sono note associate alla risorsa"
 
-#~ msgid "This block does not allow customization."
-#~ msgstr "Questo blocco non consente personalizzazioni."
+#: static/nui/blocks/targets2.js:975
+msgid "It seems the reachability problem is indipendent from other nodes"
+msgstr ""
+
+#: static/nui/blocks/targets2.js:979
+msgid "It seems the reachability problem depends from other nodes"
+msgstr ""
+
+#: static/nui/scripts/jquery.labs.xmpprender.js:47
+msgid "This block does not allow customization."
+msgstr "Questo blocco non consente personalizzazioni."
 
 #
 # BLOCK 'details'
 #
-#~ msgid "Text"
-#~ msgstr "Testo"
+#: static/nui/scripts/jquery.rees.js:12
+msgid "Text"
+msgstr "Testo"
 
-#~ msgid "Please provide a name for this resource before rendering it"
-#~ msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
+#: static/nui/scripts/jquery.rees.js:43
+msgid "Please provide a name for this resource before rendering it"
+msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
 
-#~ msgid "An error occurred while retrieving the data from server ("
-#~ msgstr "Si è verificato un errore durante la lettura dei dati dal server"
+#: static/nui/scripts/jquery.rees.js:142 static/nui/scripts/jquery.rees.js:195
+msgid "An error occurred while retrieving the data from server ("
+msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
-#~ msgid "Submit"
-#~ msgstr "Invia"
+#: static/nui/scripts/jquery.rees.js:313
+msgid "Submit"
+msgstr "Invia"
 
-#~ msgid "There are no elements related to this resource."
-#~ msgstr "Non ci sono elementi associati alla risorsa."
+#: static/nui/scripts/jquery.rees.js:505
+msgid "There are no elements related to this resource."
+msgstr "Non ci sono elementi associati alla risorsa."
+
+#~ msgid "DES"
+#~ msgstr "DES"
+
+#~ msgid "Pact"
+#~ msgstr "Patto"
+
+#~ msgid "Gasmember"
+#~ msgstr "Gasista"
+
+#~ msgid "Order"
+#~ msgstr "Ordine"
+
+#~ msgid "Supplier"
+#~ msgstr "Fornitore"
+
+#~ msgid "Product"
+#~ msgstr "Prodotto"
+
+#~ msgid "Person"
+#~ msgstr "Persona"
+
+#~ msgid "This section is empty!"
+#~ msgstr "Nessun contenuto attualmente associato a questa pagina."
+
+#~ msgid "Do you really want to clean the navigation history?"
+#~ msgstr "Sicuro di voler azzerare la cronologia?"
+
+#~ msgid "Navigation history cleaned."
+#~ msgstr "Cronologia azzerata."
+
+#~ msgid "Resource succesfully added to the user container"
+#~ msgstr "Risorsa aggiunta al contenitore utente"
+
+#~ msgid "Minimize block"
+#~ msgstr "Riduci blocco"
+
+#~ msgid "Restore block"
+#~ msgstr "Ripristina blocco"
+
+#~ msgid "Restore block size"
+#~ msgstr "Ripristina dimensione del blocco"
+
+#~ msgid "Full screen"
+#~ msgstr "Schermo intero"
 
 #~ msgid "Suspend resourse"
 #~ msgstr "Motivazioni suggerite"
