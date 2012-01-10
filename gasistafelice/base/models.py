@@ -1103,6 +1103,65 @@ GROUP_SUPPLIERS = "suppliers"
 GROUP_USERS = "users"
 GROUP_MEMBERS = "gasmembers"
 
+def init_perms_for_groups():
+
+    from gasistafelice.base.models import Person, Place, Contact
+    from gasistafelice.gas.models import GAS, GASConfig, GASMember
+    from gasistafelice.supplier.models import (
+        SupplierConfig, SupplierProductCategory, ProductCategory,
+        SupplierStock, Product, Supplier
+    )
+    from django.contrib.auth.models import User
+    
+    g_techs = Group.objects.get(name=GROUP_TECHS)
+    g_suppliers = Group.objects.get(name=GROUP_SUPPLIERS)
+    g_gasmembers = Group.objects.get(name=GROUP_MEMBERS)
+
+    techs_perms_d = {
+        Person : ('add', 'change', 'delete'),
+        Place : ('add', 'change', 'delete'),
+        Contact : ('add', 'change', 'delete'),
+        GAS : ('change',),
+        GASConfig : ('change',),
+        SupplierConfig : ('change',),
+        GASMember : ('add', 'change', 'delete'),
+        SupplierProductCategory : ('add', 'change', 'delete'),
+        ProductCategory : ('add', 'change', 'delete'),
+        SupplierStock : ('add', 'change', 'delete'),
+        Product : ('add', 'change', 'delete'),
+        Supplier : ('add', 'change', 'delete'),
+        User : ('change',),
+    }
+
+    supplier_perms_d = {
+        Person : ('add', 'change'),
+        Place : ('add', 'change'),
+        Contact : ('add', 'change'),
+        SupplierConfig : ('change',),
+        SupplierProductCategory : ('add', 'change', 'delete'),
+        SupplierStock : ('add', 'change', 'delete'),
+        Product : ('add', 'change', 'delete'),
+        Supplier : ('change',),
+    }
+
+    gm_perms_d = {
+        Person : ('change',),
+        Place : ('add', 'change',),
+        Contact : ('add', 'change',),
+    }
+
+    # Create all groups needed for this hack
+    # Check only last...
+    for gr in g_techs, g_suppliers, g_gasmembers:
+        for klass, perm_codenames in techs_perms_d.items():
+            ctype = ContentType.objects.get_for_model(klass)
+            for codename in perm_codenames:
+                p = Permission.objects.get(
+                    content_type=ctype, 
+                    codename="%s_%s" % (codename, klass.__name__.lower())
+                )
+                gr.permissions.add(p)
+
 def setup_data_handler(sender, instance, created, **kwargs):
     """ Ovverride temporarly for associating some groups to users
 
@@ -1117,62 +1176,10 @@ def setup_data_handler(sender, instance, created, **kwargs):
         g_techs, created = Group.objects.get_or_create(name=GROUP_TECHS)
         g_suppliers, created = Group.objects.get_or_create(name=GROUP_SUPPLIERS)
         g_gasmembers, created = Group.objects.get_or_create(name=GROUP_MEMBERS)
-        g_users, created = Group.objects.get_or_create(name=GROUP_USERS)
 
         if created:
-            from gasistafelice.base.models import Person, Place, Contact
-            from gasistafelice.gas.models import GAS, GASConfig, GASMember
-            from gasistafelice.supplier.models import (
-                SupplierConfig, SupplierProductCategory, ProductCategory,
-                SupplierStock, Product, Supplier
-            )
-            from django.contrib.auth.models import User
-            
-            techs_perms_d = {
-                Person : ('add', 'change', 'delete'),
-                Place : ('add', 'change', 'delete'),
-                Contact : ('add', 'change', 'delete'),
-                GAS : ('change',),
-                GASConfig : ('change',),
-                SupplierConfig : ('change',),
-                GASMember : ('add', 'change', 'delete'),
-                SupplierProductCategory : ('add', 'change', 'delete'),
-                ProductCategory : ('add', 'change', 'delete'),
-                SupplierStock : ('add', 'change', 'delete'),
-                Product : ('add', 'change', 'delete'),
-                Supplier : ('add', 'change', 'delete'),
-                User : ('change',),
-            }
 
-            supplier_perms_d = {
-                Person : ('add', 'change'),
-                Place : ('add', 'change'),
-                Contact : ('add', 'change'),
-                SupplierConfig : ('change',),
-                SupplierProductCategory : ('add', 'change', 'delete'),
-                SupplierStock : ('add', 'change', 'delete'),
-                Product : ('add', 'change', 'delete'),
-                Supplier : ('change',),
-            }
-
-            gm_perms_d = {
-                Person : ('change',),
-                Place : ('add', 'change',),
-                Contact : ('add', 'change',),
-            }
-
-            # Create all groups needed for this hack
-            # Check only last...
-            for gr in g_techs, g_suppliers, g_gasmembers:
-                for klass, perm_codenames in techs_perms_d.items():
-                    ctype = ContentType.objects.get_for_model(klass)
-                    for codename in perm_codenames:
-                        p = Permission.objects.get(
-                            content_type=ctype, 
-                            codename="%s_%s" % (codename, klass.__name__.lower())
-                        )
-                        gr.permissions.add(p)
-
+            init_perms_for_groups()
 
         role_group_map = {
             GAS_MEMBER : g_gasmembers,
@@ -1194,7 +1201,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
                 log.debug("%s create cannot add %s's group %s(%s)" % 
                     (role_name, group, instance, instance.pk)
                 )
-
+# END hack
         
 #-------------------------------------------------------------------------------
 
