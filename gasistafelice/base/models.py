@@ -1141,6 +1141,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
                 SupplierStock : ('add', 'change', 'delete'),
                 Product : ('add', 'change', 'delete'),
                 Supplier : ('add', 'change', 'delete'),
+                User : ('change',),
             }
 
             supplier_perms_d = {
