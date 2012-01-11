@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-11 15:23+0100\n"
+"POT-Creation-Date: 2012-01-11 16:16+0100\n"
 "PO-Revision-Date: 2012-01-05 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -181,8 +181,7 @@ msgstr "Sabato"
 msgid "Sunday"
 msgstr "Domenica"
 
-#: base/forms.py:15 gas/forms/cash.py:533
-#: rest/templates/blocks/suppliers_report/report.html:49
+#: base/forms.py:15 rest/templates/blocks/suppliers_report/report.html:49
 msgid "Person"
 msgstr "Persona"
 
@@ -591,61 +590,18 @@ msgid ""
 "Pag: %(eco)s (euro)s"
 msgstr ""
 
-#: gas/forms/cash.py:497
+#: gas/forms/cash.py:497 rest/views/blocks/balance.py:25
+#: rest/views/blocks/balance_gas.py:25
 msgid "Balance"
 msgstr "Saldo"
 
-#: gas/forms/cash.py:522
+#: gas/forms/cash.py:527
 msgid "Wallet GASMembers"
 msgstr "Portafoglio gasisti"
 
-#: gas/forms/cash.py:523
+#: gas/forms/cash.py:528
 msgid "Wallet Suppliers"
 msgstr "Portafoglio fornitori"
-
-#: gas/forms/cash.py:525
-msgid "Operation"
-msgstr "Operazione"
-
-#: gas/forms/cash.py:526
-msgid "define the amount with the sign - to debit money from this account"
-msgstr "scrivi l'importo con il segno - per addebitare su questo conto"
-
-#: gas/forms/cash.py:526
-msgid "You must insert an postive or negative amount for the operation"
-msgstr "Devi inserire un importo positivo o negativo per l'operazione"
-
-#: gas/forms/cash.py:527
-msgid "Causal"
-msgstr "Causale"
-
-#: gas/forms/cash.py:528
-msgid "Register the reason of this movment"
-msgstr "Registra il motivo di questo movimento"
-
-#: gas/forms/cash.py:528
-msgid "You must declare the causal of the movment"
-msgstr "Devi scrivere la causale di questo movimento"
-
-#: gas/forms/cash.py:530
-msgid "only GAS"
-msgstr "solo GAS"
-
-#: gas/forms/cash.py:530
-msgid "GAS <--> GASMember"
-msgstr "GAS <--> Gasista"
-
-#: gas/forms/cash.py:530
-msgid "GAS <--> Supplier"
-msgstr "GAS <--> Fornitore"
-
-#: gas/forms/cash.py:532 gas/forms/order.py:160 gas/models/order.py:69
-msgid "pact"
-msgstr "patto"
-
-#: gas/forms/cash.py:532 gas/forms/order.py:160
-msgid "You must select one pact (or create it in your GAS details if empty)"
-msgstr "Devi selezionare un patto (o crearne almeno uno per il tuo GAS se la selezione è vuota)"
 
 #: gas/forms/order.py:75
 msgid "Date start"
@@ -673,7 +629,19 @@ msgstr "referente"
 
 #: gas/forms/order.py:83
 msgid "You must select one referrer (or create it in GAS details if empty)"
-msgstr "Devi selezionare un referente (o crearne uno nel tuo GAS se la selezione è vuota)"
+msgstr ""
+"Devi selezionare un referente (o crearne uno nel tuo GAS se la selezione è "
+"vuota)"
+
+#: gas/forms/order.py:160 gas/models/order.py:69
+msgid "pact"
+msgstr "patto"
+
+#: gas/forms/order.py:160
+msgid "You must select one pact (or create it in your GAS details if empty)"
+msgstr ""
+"Devi selezionare un patto (o crearne almeno uno per il tuo GAS se la "
+"selezione è vuota)"
 
 #: gas/forms/order.py:161
 msgid "Send email to the LIST of the GAS?"
@@ -1831,16 +1799,12 @@ msgstr "descrizione predefinita"
 msgid "Economic state"
 msgstr "Stato economico"
 
-#: rest/views/blocks/balance.py:25 rest/views/blocks/balance_gas.py:28
-msgid "balance management"
-msgstr "Gestione del saldo"
-
-#: rest/views/blocks/balance.py:39
+#: rest/views/blocks/balance.py:41
 #, fuzzy
 msgid "Balance state"
 msgstr "Data di apertura"
 
-#: rest/views/blocks/balance_gas.py:42
+#: rest/views/blocks/balance_gas.py:41
 msgid "Account transaction"
 msgstr "Transazioni del conto"
 
@@ -1902,9 +1866,8 @@ msgid "Manage roles"
 msgstr "Gestisci ruoli"
 
 #: rest/views/blocks/fee.py:32
-#, fuzzy
 msgid "Fee gasmember"
-msgstr "Gasisti"
+msgstr "Quota gasista"
 
 #: rest/views/blocks/gas_details.py:31
 #: rest/views/blocks/supplier_details.py:31
@@ -2022,18 +1985,16 @@ msgid "Products"
 msgstr "Prodotti"
 
 #: rest/views/blocks/recharge.py:30
-#, fuzzy
 msgid "Recharge gasmember"
-msgstr "Ricarica da un membro del GAS"
+msgstr "Ricarica gasista"
 
 #: rest/views/blocks/stocks.py:21
 msgid "Stocks"
 msgstr "Listino fornitore"
 
 #: rest/views/blocks/stored_orders.py:16
-#, fuzzy
 msgid "Stored orders"
-msgstr "Ordini chiusi"
+msgstr "Ordini archiviati"
 
 #: rest/views/blocks/suppliers.py:37 rest/views/blocks/suppliers_report.py:72
 msgid "Add supplier"
@@ -2396,6 +2357,36 @@ msgstr "categoria"
 #, python-format
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
+
+#~ msgid "Operation"
+#~ msgstr "Operazione"
+
+#~ msgid "define the amount with the sign - to debit money from this account"
+#~ msgstr "scrivi l'importo con il segno - per addebitare su questo conto"
+
+#~ msgid "You must insert an postive or negative amount for the operation"
+#~ msgstr "Devi inserire un importo positivo o negativo per l'operazione"
+
+#~ msgid "Causal"
+#~ msgstr "Causale"
+
+#~ msgid "Register the reason of this movment"
+#~ msgstr "Registra il motivo di questo movimento"
+
+#~ msgid "You must declare the causal of the movment"
+#~ msgstr "Devi scrivere la causale di questo movimento"
+
+#~ msgid "only GAS"
+#~ msgstr "solo GAS"
+
+#~ msgid "GAS <--> GASMember"
+#~ msgstr "GAS <--> Gasista"
+
+#~ msgid "GAS <--> Supplier"
+#~ msgstr "GAS <--> Fornitore"
+
+#~ msgid "balance management"
+#~ msgstr "Gestione del saldo"
 
 #~ msgid "indicative products seasonality and availability"
 #~ msgstr "disponibilità stagionale indicativa dei prodotti"

@@ -22,9 +22,11 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance"
     BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "gasmember"]
-    BLOCK_DESCRIPTION = _("balance management")
+    BLOCK_DESCRIPTION = _("Balance")
 
     def _get_user_actions(self, request):
+        #COMMENT BY fero: no need for these actions now
+        return []
 
         user_actions = []
         gas_list = self.resource.gas_list
@@ -76,3 +78,16 @@ class Block(AbstractBlock):
         }
         return render_to_xml_response('blocks/balance.xml', ctx)
 
+
+#class Block(InfoBlock):
+#
+#    BLOCK_NAME = "balance"
+#    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "gasmember"]
+#    BLOCK_DESCRIPTION = _("balance")
+#
+#    def get_response(self, request, resource_type, resource_id, args):
+#
+#        super(Block, self).get_response(request, resource_type, resource_id, args)
+#
+#        if args == "":
+#            return self.render_details_block(request, resource_type, resource_id)

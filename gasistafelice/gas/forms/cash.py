@@ -515,6 +515,11 @@ class BalanceForm(forms.Form):
         self.fields['balance'].widget.attrs['class'] = 'balance input_payment ' + eco_class
         self.__loggedusr = request.user
 
+        # LF: Balance is a readonly field
+        field_name = 'balance'
+        self.fields[field_name].widget.attrs['readonly'] = True
+        self.fields[field_name].widget.attrs['disabled'] = 'disabled'
+
 #-------------------------------------------------------------------------------
 
 class BalanceGASForm(BalanceForm):
@@ -522,23 +527,28 @@ class BalanceGASForm(BalanceForm):
     Wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
     Wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
-    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-help_text = _('define the amount with the sign - to debit money from this account'), error_messages={'required': _(u'You must insert an postive or negative amount for the operation')})
-    note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
-help_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
-#    target = forms.ModelChoiceField(label=_("Account"), queryset=Account.objects.none(), required=False)
-    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
-help_text="define the target of the operation")
-    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
-    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+    # COMMENT by fero: balance and Wallet_* (why capitalized variables?!?) are always read-only so
+    # they MUST NOT be included in form... other stuff now may be commented because we have to think
+    # about more intuitive way to do these operations
+#LF    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+#LF        help_text = _('define the amount with the sign - to debit money from this account'), 
+#LF        error_messages = {'required': _(u'You must insert an postive or negative amount for the operation')}
+#LF    )
+#LF    note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+#LFhelp_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
+#LF#    target = forms.ModelChoiceField(label=_("Account"), queryset=Account.objects.none(), required=False)
+#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
+#LFhelp_text="define the target of the operation")
+#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
+#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
 
     def __init__(self, request, *args, **kw):
 
         log.debug("BalanceGASForm")
         super(BalanceGASForm, self).__init__(request, *args, **kw)
 
-        self.fields['target'].initial = '0'
-        self.__gas = request.resource.gas
+#LF        self.fields['target'].initial = '0'
+#LF        self.__gas = request.resource.gas
 
         eco_state = request.resource.balance_gasmembers
         eco_class = "Negative"
@@ -560,18 +570,23 @@ help_text="define the target of the operation")
         self.fields['Wallet_suppliers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
         self.fields['Wallet_suppliers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
 
-        self.__loggedusr = request.user
-
-        # SOLIDAL PACT
-        pacts = request.resource.pacts
-        if pacts and pacts.count() > 0:
-            self.fields['pact'].queryset = pacts
-#            self.fields['pact'].initial = pacts[0]
-
-        # MEMBERS
-        gms = request.resource.gasmembers
-        if gms and gms.count() > 0:
-            self.fields['person'].queryset = gms
+#LF        self.__loggedusr = request.user
+#LF
+#LF        # SOLIDAL PACT
+#LF        pacts = request.resource.pacts
+#LF        if pacts and pacts.count() > 0:
+#LF            self.fields['pact'].queryset = pacts
+#LF#            self.fields['pact'].initial = pacts[0]
+#LF
+#LF        # MEMBERS
+#LF        gms = request.resource.gasmembers
+#LF        if gms and gms.count() > 0:
+#LF            self.fields['person'].queryset = gms
+#LF
+        # Set readonly fields for wallet_*
+        for field_name in ( 'Wallet_gasmembers' , 'Wallet_suppliers'):
+            self.fields[field_name].widget.attrs['readonly'] = True
+            self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
     def clean(self):
 

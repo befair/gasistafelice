@@ -22,12 +22,11 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_gas"
     BLOCK_VALID_RESOURCE_TYPES = ["gas", "pact", "gasmember"]
-
-    def __init__(self):
-        super(Block, self).__init__()
-        self.description = _("balance management")
+    BLOCK_DESCRIPTION = _("Balance")
 
     def _get_user_actions(self, request):
+        #COMMENT BY fero: no need for these actions now
+        return []
 
         user_actions = []
         gas_list = self.resource.gas_list
