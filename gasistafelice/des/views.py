@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.conf import settings
 from django.contrib import messages
 from django.core import urlresolvers
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from gasistafelice.des.forms import DESRegistrationForm
 
 @never_cache
@@ -18,8 +18,14 @@ def login(request, *args, **kw):
         'VERSION': settings.VERSION,
         'THEME' : settings.THEME,
         'MEDIA_URL' : settings.MEDIA_URL,
-        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
+        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
+        'MAINTENANCE_MODE' : settings.MAINTENANCE_MODE
     }
+    if settings.MAINTENANCE_MODE: 
+        if request.method == "POST" and \
+            request.POST.get('username') != settings.INIT_OPTIONS['su_username']:
+            return HttpResponse(_("Maintenance in progress, please retry later..."))
+
     return django_auth_login(request, *args, **kw)
 
 @csrf_protect

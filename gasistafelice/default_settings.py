@@ -373,6 +373,8 @@ INIT_OPTIONS = {
     'su_passwd' : "admin",
 }
 
+MAINTENANCE_MODE = False
+
 # --- WARNING: changing following parameters implies fixtures adaptation --
 # Default category for all uncategorized products
 DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
@@ -393,5 +395,8 @@ NOTIFICATION_BACKENDS = (
     ("email", "notification.backends.email.EmailBackend"),
 )
 
+#------ CAPTCHA settings
+
 CAPTCHA_FONT_SIZE = 40
 APTCHA_LETTER_ROTATION = (-25,25)
+
