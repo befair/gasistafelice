@@ -10,7 +10,9 @@ fi
 GF_HOME=/usr/local/gasistafelice
 VENV=desmacerata
 
-sh_start_venv.sh $GF_HOME $VENV
+export WORKON_HOME=/var/lib/virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
+workon $VENV
 
 cd $GF_HOME;
 /usr/bin/env python manage.py $@

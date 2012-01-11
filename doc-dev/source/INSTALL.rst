@@ -74,3 +74,12 @@ If you want to set up a PostgreSQL db follow these steps:
     postgres=# \q
 
 
+Setup cron for automatic order open and close
+---------------------------------------------
+
+Check every two minutes if there are orders to be opened or closed
+
+.. sourcecode:: crontab
+
+   */2 * * * * root /usr/local/gasistafelice/extra/sh_manage_wrapper.sh order_fix_state
+
