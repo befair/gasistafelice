@@ -74,9 +74,9 @@ class Supplier(models.Model, PermissionResource):
         #DOMTHU: rawfromiso = iso8859string.encode('iso-8859-1')
         #DOMTHU: properUTF8string = unicode(rawfromiso, 'utf-8')
         #DOMTHU: rv = unicode(self.name, 'utf-8')
-        rv = unicode(self.name)
+        rv = self.name
         if settings.DEBUG:
-            rv += " [%s]" % self.pk
+            rv += u" [%s]" % self.pk
         return rv
 
     @property
