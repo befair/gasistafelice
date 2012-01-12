@@ -2,8 +2,9 @@
 Stato dei lavori e segnalazione dei problemi
 ============================================
 
-Questa pagina è mantenuta aggiornata per illustrare, alla versione attuale (**NOTA: da pubblicare lunedì 28/11/2011**), 
-cosa funziona nel software, e cosa non funziona nella piattaforma *Gasista Felice* disponibile su http://ordini.desmacerata.it
+Questa pagina è mantenuta aggiornata per illustrare, alla versione attuale, 
+cosa funziona nel software, e cosa non funziona nella piattaforma 
+*Gasista Felice* disponibile su http://ordini.desmacerata.it
 
 Nella pagina si specificano anche **quali problemi segnalare**.
 
@@ -14,8 +15,11 @@ Cosa funziona
 
 **Per i referenti fornitori e i fornitori**:
 
-1. Modificare disponibilità e prezzo nel *listino fornitore* associato al fornitore.
-2. Modifica prodotto
+1. Listino fornitore: modifica disponibilità e prezzo
+2. Listino fornitore: aggiungi prodotto
+3. Scheda del prodotto: modifica prodotto
+4. Aggiungi/Modifica fornitore
+5. Assegnazione ruolo fornitore nella scheda del fornitore
 
 *NOTA: una modifica in questo punto del software comporterà il cambiamento per tutto il DES.
 Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa a* :ref:`resource_pact`.
@@ -23,11 +27,10 @@ Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel
 **Per i referenti fornitori**:
 
 1. Apertura nuovo ordine e sua gestione (avanzamento --> chiusura)
-2. Definire il listino dei prodotti di quel produttore per un GAS (nel patto)
-3. Aggiustare il listino prezzo del fornitore a livello DES e a Livello GAS (CASCADING)
-3. Aggiustare la disponibilità del listino del fornitore a livello DES e a Livello GAS (CASCADING)
-3. Aggiustare l'ordine fatto prima di inviarlo al fornitore?
-4. Generazione del documento PDF per l'ordine. Sia in stato aperto che chiuso: (Ridurre solo allo stato chiuso?1)
+2. Patto: definire il listino dei prodotti del produttore per il GAS, modifica disponibilità
+3. Ordine: aggiustare l'ordine fatto prima di inviarlo al fornitore
+4. Ordine: generazione del documento PDF per l'ordine
+5. Avanzamento automatico apertura e chiusura ordini secondo le date impostate
 
 **Per tutti**:
 
@@ -35,28 +38,39 @@ Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel
 6. Ordinare
 7. Produzione del documento PDF per il paniere del gasista
 8. Possibilità di aggiungere note su tutte le risorse del sistema (persone, fornitori, patti, ordini, ...). Le note aggiunte agli ordini verranno inserite nel documento PDF dell'ordine
+9. Registrazione nuova persona
+10. Cambio password
+11. Alcuni link per semplificare la navigazione
+12. Conto: visualizzazione saldo per GAS, Gasista, Fornitore, DES
 
-**Per i referenti informatici dei GAS**:
+**Per i referenti informatici**:
 
 8. Configurazione del GAS. **È la prima cosa che i referenti informatici devono fare**
 9. Assegnazione dei ruoli *referente informatico*, *referente economico*, *referente fornitore* e *fornitore*
+
+**Per i referenti economici**:
+
+1. Ordine: decurtazione gasisti
+2. GAS: ricarica gasista, pagamento quota
 
 .. _what_is_in_testing:
 
 Cosa è in fase di test
 ----------------------
 
-1. Aggiungi prodotto
-2. Aggiungi/Modifica fornitore
 3. Aggiungi/Modifica categoria
 4. Aggiungi/Modifica GAS
-5. Gestione economica: nel software sono presenti alcune griglie per la gestione economica, danno un'idea di come saranno gestiti i conti nel GAS, ma non funzionano ora
-6. Apertura in automatico degli ordini
-7. Avvanzamento in automatico dei stati degli ordini con chiusura e invio PDF
+5. Gestione economica: operazioni di vario genere
 8. Gestione delle email per le notifiche
-9. Trattamento economico 2/3 decurtare le singole famiglie per un dato ordine
-10. Gestione ruoli della scheda del fornitore rest/supplier/id/
-11. Rimuovere i ruoli riguardante il fornitore della lista della gestione ruoli della scheda del GAS rest/gas/id/
+10. Trattamento economico 1/3 registrare la fattura emmessa dal produttore per un dato ordine
+11. Trattamento economico 3/3 a) pagamento di un produttore per un dato ordine
+12. Trattamento economico 3/3 b) pagamento di un produttore per più ordini cumulati = gestione insoluti
+13. Trattamento economico Anagrafiche - Lista flussi economici per i gasisti
+14. Trattamento economico Anagrafiche - Lista flussi economici per i supplier
+15. Trattamento economico Anagrafiche - Lista flussi economici per i gas (Borsellino + Deposito)
+8. Insoluti. Lista degli ordini chiusi ed consegnati ma non pagatti: gestione insoluti
+9. Archivio. Lista degli ordini archiviati
+10. Caricamento immagini per persone, fornitori, GAS
 
 .. _what_does_not_work:
 
@@ -65,25 +79,10 @@ Cosa non funziona / non c'è
 
 Le cose non citate qui sopra sono da considerarsi non funzionanti o non realizzate oggi. Ne citiamo alcune:
 
-1. Registrazione nuova persona
-2. Cambio password
-3. Alcuni link per semplificare la navigazione
 4. Visualizzazione ad immagini di prodotti e categorie
 5. Filtro dei prodotti
 6. Filtro dei produttori
 7. Disaccopiare il CASCADING abilitazione prodotto dalla gestione "non c'è" (eliminare ordini gasisti)
-8. Insoluti. Lista degli ordini chiusi ed consegnati ma non pagatti: gestione insoluti
-9. Archivio. Lista degli ordini archiviati
-10. Trattamento economico 1/3 registrare la fattura emmessa dal produttore per un dato ordine
-11. Trattamento economico 3/3 a) pagamento di un produttore per un dato ordine
-12. Trattamento economico 3/3 b) pagamento di un produttore per più ordini cumulati = gestione insoluti
-13. Trattamento economico Anagrafiche - Lista flussi economici per i gasisti
-14. Trattamento economico Anagrafiche - Lista flussi economici per i supplier
-15. Trattamento economico Anagrafiche - Lista flussi economici per i gas (Borsellino + Deposito)
-16. Trattamento economico Conti - Saldo gassista. Calcolo e Vissualizzazione grafica
-17. Trattamento economico Conti - Saldo supplier. Livello GAS. Calcolo e Vissualizzazione grafica
-18. Trattamento economico Conti - Saldo supplier. Livello DES. Multi Calcolo e Multi Vissualizzazione grafica
-19. Trattamento economico Conti - Saldo GAS. Calcolo e Vissualizzazione grafica per Borsellino e Deposito
 20. Trattamento economico manipulazione - modifica di un flusso economico esistente (tra 2 soggetti)
 
 .. _which_problems:
