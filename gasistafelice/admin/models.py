@@ -5,6 +5,9 @@ from django.contrib.admin.util import unquote
 from django.core import urlresolvers
 from django import forms
 
+from ajax_select import make_ajax_field
+from ajax_select.fields import autoselect_fields_check_can_add
+
 from gasistafelice.base import models as base_models
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
@@ -126,14 +129,38 @@ class GASAdmin(admin.ModelAdmin):
         self.instance = self.get_object(request, unquote(object_id))
         return super(GASAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
+class GASConfigForm(forms.ModelForm):
+
+    default_withdrawal_place = make_ajax_field(gas_models.GASConfig, 
+        model_fieldname='default_withdrawal_place',
+        channel='placechannel', 
+        #help_text="Search for place by name"
+    )
+    default_delivery_place = make_ajax_field(gas_models.GASConfig, 
+        model_fieldname='default_delivery_place',
+        channel='placechannel', 
+        #help_text="Search for place by name"
+    )
+    class Meta:
+        model = gas_models.GASConfig
+
+#--------
+
 class GASConfigAdmin(admin.ModelAdmin):
 
+    form = GASConfigForm
     save_on_top = True
     list_display = ('default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
     fieldsets = ((_("Configuration"), {
         'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'gasmember_auto_confirm_order', 'auto_populate_products', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active'),
     }),
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(GASConfigAdmin,self).get_form(request,obj,**kwargs)
+        autoselect_fields_check_can_add(form,self.model,request.user)
+        return form
+
 
 class GASMemberAdmin(admin.ModelAdmin):
 
@@ -186,7 +213,7 @@ class SupplierAdmin(admin.ModelAdmin):
         }),        
         )
 
-    list_display = ('name', 'flavour', 'website_with_link',)
+    list_display = ('name', '__unicode__', 'flavour', 'website_with_link',)
     list_display_links = ('name',)
     list_filter = ('flavour',)
     search_fields = ['name']

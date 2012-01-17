@@ -78,7 +78,6 @@ class DES(Site, PermissionResource):
             setattr(self, attr, Siteattr.get_attribute_or_empty(attr))
         self.cfg_time = Siteattr.get_site_config_timestamp()
         
-            
     def __unicode__(self):
         return self.name
     
