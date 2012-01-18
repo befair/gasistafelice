@@ -360,6 +360,10 @@ class UnitConvAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'src', 'dst', 'amount')
     list_editable = ('src', 'dst', 'amount')    
 
+class GASSupplierStockAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'pact', 'enabled')
+    list_filter = ('pact', 'enabled')
+
 class LedgerEntryAdmin(admin.ModelAdmin):
     list_display = ('date', 'kind', 'account', 'description', 'amount')
 
@@ -384,7 +388,7 @@ admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.GASConfig, GASConfigAdmin)
 admin.site.register(gas_models.base.GASSupplierSolidalPact)
-admin.site.register(gas_models.order.GASSupplierStock)
+admin.site.register(gas_models.order.GASSupplierStock, GASSupplierStockAdmin)
 admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
 admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderProductAdmin)
 admin.site.register(gas_models.order.GASMemberOrder, GASMemberOrderAdmin)
