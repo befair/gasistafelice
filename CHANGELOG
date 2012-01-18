@@ -1,3 +1,10 @@
+17.01.2012 Luca Ferroni <luca@befair.it>
+
+    * Release 0.6-beta1
+    * Migliorati i campi per la gestione dei luoghi e dei contatti
+    * Migliorate le performance
+    * Aggiornato a jquery-ui-1.8.17
+
 04.01.2012 Luca Ferroni <luca@befair.it>
 
     * Intestazione più chiara con menu per l'accesso diretto a:
