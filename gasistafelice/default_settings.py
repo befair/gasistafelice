@@ -409,8 +409,8 @@ AJAX_LOOKUP_CHANNELS = {
     'placechannel' : ( 'gasistafelice.base.forms.lookups' , 'PlaceLookup')
 }
 # magically include jqueryUI/js/css
-AJAX_SELECT_BOOTSTRAP = True
-AJAX_SELECT_INLINES = 'inline'
+AJAX_SELECT_BOOTSTRAP = False
+#AJAX_SELECT_INLINES = 'inline'
 
 #STATIC_URL = '/site_static/'
 #STATIC_ROOT = PROJECT_ROOT + '/site_static/'
