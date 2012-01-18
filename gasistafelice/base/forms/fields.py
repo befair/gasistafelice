@@ -9,6 +9,10 @@ from gasistafelice.base.models import Place, Contact
 from gasistafelice.base.const import STATE_CHOICES, CONTACT_CHOICES
 from django.core.exceptions import ValidationError
 
+from gasistafelice.base.forms.widgets import (
+    PlaceWidget, ContactWidget, MultiContactWidget
+)
+
 #--------------------------------------------------------------------------------
 
 class PlaceField(forms.MultiValueField):
@@ -16,7 +20,7 @@ class PlaceField(forms.MultiValueField):
     """ Field used to manage a Place model instance.
 
     DEPRECATED. Now we use ajax_select Field
-    """"
+    """
 
 #    fields = ['address','city']
     widget = PlaceWidget

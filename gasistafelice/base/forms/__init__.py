@@ -2,6 +2,10 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
+from ajax_select import make_ajax_field
+from ajax_select.fields import autoselect_fields_check_can_add
+
+from gasistafelice.base.forms.fields import MultiContactField
 from gasistafelice.lib.widgets import (
     RelatedFieldWidgetCanAdd, RelatedMultipleFieldWidgetCanAdd
 )
@@ -72,8 +76,17 @@ class EditPersonForm(forms.ModelForm):
                     widget = RelatedMultipleFieldWidgetCanAdd(related_model=Contact)
     )       
 
+    address = make_ajax_field(Person, 
+        model_fieldname='address',
+        channel='placechannel', 
+        #help_text="Search for place by name"
+    )
+    contact_set = MultiContactField(n=3,label=_('Contacts'))
+
     def __init__(self, request, *args, **kw):
         super(EditPersonForm, self).__init__(*args, **kw)
+        model = self._meta.model
+        autoselect_fields_check_can_add(self,model,request.user)
 
     class Meta:
         model = Person
