@@ -129,10 +129,10 @@ La pagina viene rinfrescata e le somme vengono accreditate ad ciascuno gasista. 
 
 .. _my-GF-ECO-Ricarica:
 
-.. figure:: GF-ECO-Ricarica.png
-   :align:   center
-
-   Griglia per la gestione delle ricariche
+.. image:: _static/eco_ricarica.png
+    :alt: riquadro di gestione economica delle ricarciche
+    :align: center
+    Griglia per la gestione delle ricariche
 
 [FAQ] Ho sbagliato a ricaricare un gasista
 L'economico non può ritornare su una transazione economica. In questo caso l'economico deve portare una correzione. 
