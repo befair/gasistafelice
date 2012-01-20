@@ -18,21 +18,29 @@ from flexi_auth.exceptions import WrongPermissionCheck
 from flexi_auth.models import PrincipalParamRoleRelation
 from django.contrib.auth.backends import ModelBackend
 
+from django.contrib.auth.models import User
+
 class AuthenticationParamRoleBackend(ModelBackend):
     """
     Django authentication backend to state that a User with no role cannot log in
     """
-    
+
     def authenticate(self, username, password):
         """
         This is an authenticate-only backend, so it's good to be here! ;)
         """
 
-        username = username.lower()
-        rv = user = super(AuthenticationParamRoleBackend, self).authenticate(username, password)
-
-        if not PrincipalParamRoleRelation.objects.filter(user=user).count():
+        rv = None
+        try:
+            user = User.objects.get(username__iexact=username)
+            if user.check_password(password):
+                rv = user
+        except User.DoesNotExist:
             rv = None
-       
+
+        if user:
+            if not PrincipalParamRoleRelation.objects.filter(user=user).count():
+                rv = None
+
         return rv
-        
+

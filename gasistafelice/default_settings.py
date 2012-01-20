@@ -133,6 +133,8 @@ INSTALLED_APPS = [
     'registration',
     'captcha',
     #'south',
+    'ajax_select',
+    #'django.contrib.staticfiles',
 ]
 
 try:
@@ -399,4 +401,18 @@ NOTIFICATION_BACKENDS = (
 
 CAPTCHA_FONT_SIZE = 40
 APTCHA_LETTER_ROTATION = (-25,25)
+
+#-------------------------------------------------------------------------------
+# Ajax_select settings
+
+AJAX_LOOKUP_CHANNELS = {
+    'placechannel' : ( 'gasistafelice.base.forms.lookups' , 'PlaceLookup')
+}
+# magically include jqueryUI/js/css
+AJAX_SELECT_BOOTSTRAP = False
+#AJAX_SELECT_INLINES = 'inline'
+
+#STATIC_URL = '/site_static/'
+#STATIC_ROOT = PROJECT_ROOT + '/site_static/'
+
 

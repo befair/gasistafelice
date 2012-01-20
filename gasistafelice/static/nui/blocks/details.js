@@ -186,7 +186,7 @@ jQuery.UIBlockDetails = jQuery.UIBlock.extend({
                 
                 var res = $(val_obj.children()[0]);
                 res = new jQuery.Resource(res.attr('type')+'/'+res.attr('id'), res.text());
-                var val = res.render();
+                val = res.render();
                 
             } else if (val_type == 'resourcelist') {
                 

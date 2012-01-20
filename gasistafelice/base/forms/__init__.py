@@ -1,7 +1,12 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
+from django.db import transaction
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
+from ajax_select import make_ajax_field
+from ajax_select.fields import autoselect_fields_check_can_add
+
+from gasistafelice.base.forms.fields import MultiContactField
 from gasistafelice.lib.widgets import (
     RelatedFieldWidgetCanAdd, RelatedMultipleFieldWidgetCanAdd
 )
@@ -59,21 +64,30 @@ class BaseRoleForm(forms.ModelForm):
 
 class EditPersonForm(forms.ModelForm):
 
-    address = forms.ModelChoiceField(
-                    label = _("address"),
-                    required = False,
-                    queryset = Place.objects.all(), 
-                    widget = RelatedFieldWidgetCanAdd(related_model=Place)
-    )       
-
-    contact_set = forms.ModelMultipleChoiceField(
-                    label = _("Contacts"),
-                    queryset = Contact.objects.all(), 
-                    widget = RelatedMultipleFieldWidgetCanAdd(related_model=Contact)
-    )       
+    address = make_ajax_field(Person, 
+        label = _("address"),
+        model_fieldname='address',
+        channel='placechannel', 
+        help_text=_("Search for place by name, by address, or by city")
+    )
+    contact_set = MultiContactField(n=3,label=_('Contacts'))
 
     def __init__(self, request, *args, **kw):
         super(EditPersonForm, self).__init__(*args, **kw)
+        model = self._meta.model
+        autoselect_fields_check_can_add(self,model,request.user)
+
+    @transaction.commit_on_success
+    def save(self, *args, **kw):
+        """Save related objects and then save model instance"""
+
+        for contact in self.cleaned_data['contact_set']:
+            if contact.value:
+                contact.save()
+            elif contact.pk:
+                self.cleaned_data['contact_set'].remove(contact)
+
+        return super(EditPersonForm, self).save(*args, **kw)
 
     class Meta:
         model = Person

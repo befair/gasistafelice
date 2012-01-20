@@ -495,7 +495,14 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
-                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
+                
+                //AAAAA FIXME TODO: ancora non è implementata la pagina della risorsa categoria
+                //TOGLIERE L'IF QUANDO SARà IMPLEMENTATA
+                if (urn.split('/')[0] == 'productcategory') { 
+                    a = a.replace(/@@resource@@/g, name);
+                } else {
+                    a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
+                }
 
                 var actions = '';
                 var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";

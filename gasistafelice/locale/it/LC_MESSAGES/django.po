@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GASISTA-FELICE-0.2\n"
+"Project-Id-Version: GASISTA-FELICE-0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-11 16:16+0100\n"
+"POT-Creation-Date: 2012-01-18 02:32+0100\n"
 "PO-Revision-Date: 2012-01-05 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -31,7 +31,7 @@ msgstr "GAS"
 #: flexi_auth_settings.py:32 gas/models/base.py:1244 gas/models/base.py:1299
 #: gas/models/order.py:833
 #: rest/templates/blocks/suppliers_report/report.html:48
-#: rest/templates/html/index.html:2280
+#: rest/templates/html/index.html:2282
 msgid "Supplier"
 msgstr "Fornitore"
 
@@ -74,40 +74,40 @@ msgid ""
 "%(model)s"
 msgstr ""
 
-#: admin/models.py:29
+#: admin/models.py:32
 msgid "GAS membership"
 msgstr "gasista"
 
-#: admin/models.py:30
+#: admin/models.py:33
 msgid "GAS memberships"
 msgstr "gasisti"
 
-#: admin/models.py:101
+#: admin/models.py:104
 msgid "Identity"
 msgstr "Identità"
 
-#: admin/models.py:133
+#: admin/models.py:154
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: admin/models.py:165
+#: admin/models.py:192
 #, python-format
 msgid "Hello %s"
 msgstr "Ciao %s"
 
-#: admin/models.py:166
+#: admin/models.py:193
 msgid "Say hello to gas members"
 msgstr "Saluta i gasisti"
 
-#: admin/models.py:247
+#: admin/models.py:274
 msgid "minimum amount"
 msgstr "importo minimo"
 
-#: admin/models.py:252 supplier/models.py:953
+#: admin/models.py:279 supplier/models.py:953
 msgid "units per box"
 msgstr "unità di prodotto per cartone"
 
-#: admin/models.py:257
+#: admin/models.py:284
 msgid "amount available"
 msgstr "quantità disponibile"
 
@@ -129,76 +129,60 @@ msgstr "Prodotti ordinati"
 msgid "Year %(year)s --> %(person)s"
 msgstr "%(id_in_gas)s - %(gas_member)s"
 
-#: base/const.py:4
+#: base/const.py:13
 msgid "Company"
 msgstr "Impresa"
 
-#: base/const.py:5
+#: base/const.py:14
 msgid "Cooperating"
 msgstr "Cooperativa"
 
-#: base/const.py:6
+#: base/const.py:15
 msgid "Freelance"
 msgstr ""
 
-#: base/const.py:20
+#: base/const.py:27
 msgid "PHONE"
 msgstr "TELEFONO"
 
-#: base/const.py:21
+#: base/const.py:28
 msgid "EMAIL"
 msgstr "EMAIL"
 
-#: base/const.py:22
+#: base/const.py:29
 msgid "FAX"
 msgstr "FAX"
 
-#: base/const.py:27
+#: base/const.py:34
 msgid "Monday"
 msgstr "Lunedi"
 
-#: base/const.py:28
+#: base/const.py:35
 msgid "Tuesday"
 msgstr "Martedi"
 
-#: base/const.py:29
+#: base/const.py:36
 msgid "Wednesday"
 msgstr "Mercoledi"
 
-#: base/const.py:30
+#: base/const.py:37
 msgid "Thursday"
 msgstr "Giovedi"
 
-#: base/const.py:31
+#: base/const.py:38
 msgid "Friday"
 msgstr "Venerdi"
 
-#: base/const.py:32
+#: base/const.py:39
 msgid "Saturday"
 msgstr "Sabato"
 
-#: base/const.py:33
+#: base/const.py:40
 msgid "Sunday"
 msgstr "Domenica"
 
-#: base/forms.py:15 rest/templates/blocks/suppliers_report/report.html:49
-msgid "Person"
-msgstr "Persona"
-
-#: base/forms.py:16
-msgid "delete"
-msgstr "elimina"
-
-#: base/forms.py:63 base/models.py:874
-msgid "address"
-msgstr "Indirizzo principale"
-
-#: base/forms.py:70 supplier/models.py:379
-msgid "Contacts"
-msgstr "Contatti"
-
-#: base/models.py:540 gas/forms/base.py:38 rest/templates/html/index.html:2281
-#: rest/templates/html/index.html:2285 sanet_users/models.py:149
+#: base/models.py:540 gas/forms/base.py:38 rest/templates/html/index.html:2283
+#: rest/templates/html/index.html:2287 sanet_users/models.py:149
 #: supplier/forms.py:115
 msgid "Name"
 msgstr "Nome"
@@ -264,15 +248,15 @@ msgstr "Nome utente"
 msgid "GAS membership can only be tested against a GAS model instance"
 msgstr ""
 
-#: base/models.py:838 supplier/models.py:57
+#: base/models.py:838 base/forms/fields.py:98 supplier/models.py:57
 msgid "flavour"
 msgstr "Tipo"
 
-#: base/models.py:839 des/models.py:411
+#: base/models.py:839 des/models.py:410
 msgid "value"
 msgstr "Valore"
 
-#: base/models.py:840
+#: base/models.py:840 base/forms/fields.py:100
 msgid "preferred"
 msgstr "Preferito"
 
@@ -282,7 +266,7 @@ msgstr "Preferito"
 msgid "description"
 msgstr "Descrizione"
 
-#: base/models.py:846
+#: base/models.py:846 base/forms/fields.py:99
 msgid "contact"
 msgstr "Contatto"
 
@@ -295,17 +279,21 @@ msgstr "Il tipo di contatto deve essere uno fra %s"
 msgid "You can avoid to specify a name if you specify an address"
 msgstr "Puoi evitare di indicare un name se indichi un indirizzo"
 
-#: base/models.py:869 des/models.py:410 gas/models/base.py:56
-#: supplier/models.py:50 supplier/models.py:494 supplier/models.py:548
-#: supplier/models.py:800 supplier/models.py:1199
+#: base/models.py:869 base/forms/fields.py:31 des/models.py:409
+#: gas/models/base.py:56 supplier/models.py:50 supplier/models.py:494
+#: supplier/models.py:548 supplier/models.py:800 supplier/models.py:1199
 msgid "name"
 msgstr "Nome"
+
+#: base/models.py:874 base/forms/__init__.py:68
+msgid "address"
+msgstr "Indirizzo"
 
 #: base/models.py:877
 msgid "Zip code"
 msgstr "Codice Postale"
 
-#: base/models.py:879
+#: base/models.py:879 base/forms/fields.py:33
 msgid "city"
 msgstr "Città"
 
@@ -341,7 +329,7 @@ msgstr "Il codice postale inserito è sbagliato"
 msgid "workflow"
 msgstr "Workflow"
 
-#: base/models.py:993
+#: base/models.py:993 base/forms/fields.py:34
 msgid "state"
 msgstr "Stato"
 
@@ -366,18 +354,66 @@ msgstr ""
 "Le specifiche di workflow non sono coerenti .\n"
 " %s"
 
+#: base/forms/__init__.py:20
+#: rest/templates/blocks/suppliers_report/report.html:49
+msgid "Person"
+msgstr "Persona"
+
+#: base/forms/__init__.py:21
+msgid "delete"
+msgstr "elimina"
+
+#: base/forms/__init__.py:71
+msgid "Search for place by name, by address, or by city"
+msgstr "Cerca un posto per nome, per indirizzo, o per città"
+
+#: base/forms/__init__.py:73 supplier/models.py:379
+msgid "Contacts"
+msgstr "Contatti"
+
+#: base/forms/fields.py:32
+msgid "zip"
+msgstr "cap"
+
+#: base/forms/widgets.py:35
+msgid "Name/Address:"
+msgstr "Nome/Indirizzo:"
+
+#: base/forms/widgets.py:36
+msgid "ZIP:"
+msgstr "CAP:"
+
+#: base/forms/widgets.py:37
+msgid "City:"
+msgstr "Città:"
+
+#: base/forms/widgets.py:38
+msgid "State:"
+msgstr "Stato:"
+
+#: base/forms/widgets.py:65
+msgid "Type"
+msgstr "Tipo"
+
+#: base/forms/widgets.py:66
+msgid "Contact"
+msgstr "Contatto"
+
+#: base/forms/widgets.py:68
+msgid "Preferred"
+msgstr "Preferito"
+
 #: base/templatetags/basic_tags.py:41
 msgid "Curtail"
-msgstr ""
+msgstr "Decurtazione"
 
 #: base/templatetags/basic_tags.py:43
-#, fuzzy
 msgid "Recharge"
-msgstr "Ricarica da un membro del GAS"
+msgstr "Ricarica"
 
 #: base/templatetags/basic_tags.py:45
 msgid "Fee"
-msgstr ""
+msgstr "Quota"
 
 #: base/templatetags/basic_tags.py:47
 msgid "Pay"
@@ -417,15 +453,15 @@ msgstr "sito"
 msgid "sites"
 msgstr "siti"
 
-#: des/models.py:412
+#: des/models.py:411
 msgid "type"
 msgstr "tipo"
 
-#: des/models.py:436
+#: des/models.py:435
 msgid "environment variable"
 msgstr "variabile d'ambiente"
 
-#: des/models.py:437
+#: des/models.py:436
 msgid "environment variables"
 msgstr "variabili d'ambiente"
 
@@ -1636,7 +1672,7 @@ msgid "TotOrder"
 msgstr "Ordine"
 
 #: rest/templates/blocks/order_report/report.html:36
-#: rest/templates/html/index.html:2275 rest/views/blocks/order.py:23
+#: rest/templates/html/index.html:2277 rest/views/blocks/order.py:23
 msgid "Order"
 msgstr "Ordine"
 
@@ -1689,97 +1725,97 @@ msgstr ""
 msgid "Fax"
 msgstr ""
 
-#: rest/templates/html/index.html:2085
+#: rest/templates/html/index.html:2087
 msgid "Welcome,"
 msgstr ""
 
-#: rest/templates/html/index.html:2112
+#: rest/templates/html/index.html:2114
 msgid "Home page"
 msgstr "Pagina utente"
 
-#: rest/templates/html/index.html:2124
+#: rest/templates/html/index.html:2126
 msgid "Logout"
 msgstr "Esci"
 
-#: rest/templates/html/index.html:2242 rest/templates/html/index.html:2304
-#: rest/templates/html/index.html:2325 rest/templates/html/index.html:2415
-#: rest/templates/html/index.html:2423
+#: rest/templates/html/index.html:2244 rest/templates/html/index.html:2306
+#: rest/templates/html/index.html:2327 rest/templates/html/index.html:2417
+#: rest/templates/html/index.html:2425
 msgid "Minimize block"
 msgstr "Minimizza il blocco"
 
-#: rest/templates/html/index.html:2244
+#: rest/templates/html/index.html:2246
 msgid "Search"
 msgstr "Cerca"
 
-#: rest/templates/html/index.html:2264 rest/templates/html/index.html:2265
+#: rest/templates/html/index.html:2266 rest/templates/html/index.html:2267
 msgid "Reset"
 msgstr ""
 
-#: rest/templates/html/index.html:2268
+#: rest/templates/html/index.html:2270
 msgid "Options"
 msgstr "Opzioni"
 
-#: rest/templates/html/index.html:2276
+#: rest/templates/html/index.html:2278
 msgid "GAS name"
 msgstr "Nome del GAS"
 
-#: rest/templates/html/index.html:2277
+#: rest/templates/html/index.html:2279
 msgid "Supplier name"
 msgstr "Nome del fornitore"
 
-#: rest/templates/html/index.html:2306
+#: rest/templates/html/index.html:2308
 msgid "Notifications"
 msgstr "Notifiche"
 
-#: rest/templates/html/index.html:2328
+#: rest/templates/html/index.html:2330
 msgid "Notes"
 msgstr "Note"
 
-#: rest/templates/html/index.html:2348 sanet_users/views/__init__.py:179
+#: rest/templates/html/index.html:2350 sanet_users/views/__init__.py:179
 msgid "User page"
 msgstr "Pagina utente"
 
-#: rest/templates/html/index.html:2407 rest/templates/html/index.html:2422
+#: rest/templates/html/index.html:2409 rest/templates/html/index.html:2424
 msgid "Refresh block now"
 msgstr "Aggiorna il blocco adesso"
 
-#: rest/templates/html/index.html:2414 rest/templates/html/index.html:2421
+#: rest/templates/html/index.html:2416 rest/templates/html/index.html:2423
 msgid "Set to full screen"
 msgstr "Imposta a tutto schermo"
 
-#: rest/templates/html/index.html:2445
+#: rest/templates/html/index.html:2447
 msgid "Select the resource type"
 msgstr "Seleziona il tipo di risorsa"
 
-#: rest/templates/html/index.html:2448
+#: rest/templates/html/index.html:2450
 msgid "Site"
 msgstr "Sito"
 
-#: rest/templates/html/index.html:2449
+#: rest/templates/html/index.html:2451
 msgid "Container"
 msgstr "Contenitore"
 
-#: rest/templates/html/index.html:2450
+#: rest/templates/html/index.html:2452
 msgid "Node"
 msgstr "Nodo"
 
-#: rest/templates/html/index.html:2451
+#: rest/templates/html/index.html:2453
 msgid "Interface"
 msgstr "Interfaccia"
 
-#: rest/templates/html/index.html:2452
+#: rest/templates/html/index.html:2454
 msgid "Target"
 msgstr "Obiettivo"
 
-#: rest/templates/html/index.html:2453
+#: rest/templates/html/index.html:2455
 msgid "Measure"
 msgstr "Misura"
 
-#: rest/templates/html/index.html:2457
+#: rest/templates/html/index.html:2459
 msgid "Select the resource"
 msgstr "Seleziona la risorsa"
 
-#: rest/templates/html/index.html:2462
+#: rest/templates/html/index.html:2464
 msgid "Select the data block type"
 msgstr "Seleziona il tipo di blocco della data"
 

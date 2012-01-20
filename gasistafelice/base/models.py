@@ -894,8 +894,8 @@ class Place(models.Model, PermissionResource):
     def __unicode__(self):
 
         rv = u"" 
-#        if self.name or self.address:
-#            rv += (self.name or self.address) + u", "
+        if self.name:
+            rv += self.name + u" - "
         if self.address:
             rv += self.address + u", "
 

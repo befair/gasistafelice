@@ -991,9 +991,7 @@ class SupplierStock(models.Model, PermissionResource):
         super(SupplierStock, self).__init__(*args, **kw)
 
     def __unicode__(self):
-        return u"%(product)s" % {
-            'product': self.product,
-        }
+        return unicode(self.product)
 #        return u"%(detail_step)s %(product)s" % {
 #            'detail_step' : self.detail_step,
 #            'product': self.product,

@@ -335,18 +335,27 @@ class GASSupplierOrder(models.Model, PermissionResource):
         '''
         A helper function associating a default set of products to a GASSupplierOrder.
         
-        Useful if a supplier referrer isn't interested in "cherry pick" products one-by-one; 
-        in this c ase, a reasonable choice is to add every Product bound to the Supplier the order will be issued to.
+        At this time of execution we cannot use self.gasstock_set because we are building it.
+
+        At this time of the software development every Product bound to pact,
+        and so to the GAS, are included in list of orderable products for this order. 
+
+        In future, we could have the ability to choice products one-by-one, but this is not
+        our case now, so don't care about it.        
         '''
 
-        if not self.pact.gas.config.auto_populate_products:
-            log.debug(ug("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
-            return
+#COMMENT LF - TO BE REMOVED
+#        if not self.pact.gas.config.auto_populate_products:
+#            log.debug(ug("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
+#            return
 
-        stocks = GASSupplierStock.objects.filter(pact=self.pact, stock__supplier=self.pact.supplier, enabled =True)
-        for s in stocks:
-            if s.enabled:
-                GASSupplierOrderProduct.objects.create(order=self, gasstock=s, initial_price=s.price, order_price=s.price, delivered_price=s.price)
+        gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
+        for s in gasstocks:
+            #maybe works the more intuitive...self.orderable_product_set.add( ???
+            GASSupplierOrderProduct.objects.create(order=self, 
+                gasstock=s, initial_price=s.price, order_price=s.price, 
+                delivered_price=s.price
+            )
 
     def add_product(self, s):
         '''
@@ -568,7 +577,7 @@ WHERE order_id = %s \
     @property
     def stocks(self):
         from gasistafelice.supplier.models import SupplierStock
-        stocks_pk=map(lambda x: x[0], self.gasstock_set.values('stock'))
+        stocks_pk=map(lambda x: x[0], self.gasstock_set.values_list('stock'))
         return SupplierStock.objects.filter(pk__in=stocks_pk)
 
     @property

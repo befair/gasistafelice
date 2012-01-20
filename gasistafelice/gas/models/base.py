@@ -1037,7 +1037,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return '%s' % (self.stock)
+        return unicode(self.stock)
 
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)

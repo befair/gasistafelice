@@ -118,6 +118,6 @@ Questa modalità di lavoro:
 
 Prima di segnalare un problema avere l'accortezza di **vedere se è già stato segnalato** e in tal caso aggiungere un commento alla segnalazione precedente.
 
-Se si intende fare una domanda relativa all'applicazione, usare solamente i tag 'informatica' e 'gestionale'.
+Se si intende fare una domanda relativa all'applicazione, usare i tag 'informatica' e 'gestionale'.
 
 Se si intende fare una domanda relativa agli aspetti informatici del DES diversi dal gestionale usare solo 'informatica'.

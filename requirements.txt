@@ -14,3 +14,4 @@ file:../gasistafelice/submodules/django-notification
 django-registration
 django-simple-captcha
 PIL
+django-ajax-selects

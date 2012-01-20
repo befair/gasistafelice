@@ -5,6 +5,9 @@ from django.contrib.admin.util import unquote
 from django.core import urlresolvers
 from django import forms
 
+from ajax_select import make_ajax_field
+from ajax_select.fields import autoselect_fields_check_can_add
+
 from gasistafelice.base import models as base_models
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.supplier import models as supplier_models
@@ -97,9 +100,14 @@ class PlaceAdmin(admin.ModelAdmin):
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    list_display = ('__unicode__', 'id_in_des', 'city', 'website_with_link', 'economic_state')
+    list_display = ('__unicode__', 'id_in_des', 
+        'city', 'website_with_link', 'economic_state'
+    )
     fieldsets = ((_('Identity'),
-            { 'fields' : ('name', 'id_in_des', 'headquarter', 'contact_set', 'logo', 'description', 'association_act', 'intent_act')
+            { 'fields' : ('name', 'id_in_des', 'birthday',
+                'headquarter', 'contact_set', 'logo', 
+                'description', 'association_act', 'intent_act'
+              )
     }),
 # COMMENT fero: Economic state is disabled right now
 #    (_("Economic"), {
@@ -126,14 +134,38 @@ class GASAdmin(admin.ModelAdmin):
         self.instance = self.get_object(request, unquote(object_id))
         return super(GASAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
+class GASConfigForm(forms.ModelForm):
+
+    default_withdrawal_place = make_ajax_field(gas_models.GASConfig, 
+        model_fieldname='default_withdrawal_place',
+        channel='placechannel', 
+        #help_text="Search for place by name"
+    )
+    default_delivery_place = make_ajax_field(gas_models.GASConfig, 
+        model_fieldname='default_delivery_place',
+        channel='placechannel', 
+        #help_text="Search for place by name"
+    )
+    class Meta:
+        model = gas_models.GASConfig
+
+#--------
+
 class GASConfigAdmin(admin.ModelAdmin):
 
+    form = GASConfigForm
     save_on_top = True
-    list_display = ('default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
+    list_display = ('gas', 'default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
     fieldsets = ((_("Configuration"), {
         'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'gasmember_auto_confirm_order', 'auto_populate_products', 'default_close_day', 'default_close_time', 'default_delivery_day', 'default_delivery_time', 'can_change_delivery_place_on_each_order', 'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 'default_withdrawal_place', 'is_active'),
     }),
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(GASConfigAdmin,self).get_form(request,obj,**kwargs)
+        autoselect_fields_check_can_add(form,self.model,request.user)
+        return form
+
 
 class GASMemberAdmin(admin.ModelAdmin):
 
@@ -186,7 +218,7 @@ class SupplierAdmin(admin.ModelAdmin):
         }),        
         )
 
-    list_display = ('name', 'flavour', 'website_with_link',)
+    list_display = ('name', '__unicode__', 'flavour', 'website_with_link',)
     list_display_links = ('name',)
     list_filter = ('flavour',)
     search_fields = ['name']
@@ -328,6 +360,17 @@ class UnitConvAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'src', 'dst', 'amount')
     list_editable = ('src', 'dst', 'amount')    
 
+class GASSupplierStockAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'pact', 'enabled')
+    list_filter = ('pact', 'enabled')
+
+class PactAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 
+        'gas', 'supplier', 'date_signed', 
+        'auto_populate_products'
+    )
+    list_filter = ('gas', 'supplier')
+
 class LedgerEntryAdmin(admin.ModelAdmin):
     list_display = ('date', 'kind', 'account', 'description', 'amount')
 
@@ -351,8 +394,8 @@ admin.site.register(supplier_models.UnitsConversion, UnitConvAdmin)
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
 admin.site.register(gas_models.GASConfig, GASConfigAdmin)
-admin.site.register(gas_models.base.GASSupplierSolidalPact)
-admin.site.register(gas_models.order.GASSupplierStock)
+admin.site.register(gas_models.base.GASSupplierSolidalPact, PactAdmin)
+admin.site.register(gas_models.order.GASSupplierStock, GASSupplierStockAdmin)
 admin.site.register(gas_models.order.GASSupplierOrder, GASSupplierOrderAdmin)
 admin.site.register(gas_models.order.GASSupplierOrderProduct, GASSupplierOrderProductAdmin)
 admin.site.register(gas_models.order.GASMemberOrder, GASMemberOrderAdmin)

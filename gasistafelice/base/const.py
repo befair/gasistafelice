@@ -1,12 +1,19 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.conf import settings
+
+STATE_CHOICES = [
+    ('AN', 'Ancona'),
+    ('AP', 'Ascoli Piceno'),
+    ('FM', 'Fermo'),
+    ('MC', 'Macerata'),
+    ('PU', 'Pesaro Urbino')
+]
 
 SUPPLIER_FLAVOUR_LIST = [
     ('COMPANY', _('Company')),
     ('COOPERATING', _('Cooperating')),
     ('FREELANCE', _('Freelance')),
 ]
-
-PRIVATE = 'PRIVA'
 
 MU_CHOICES = [('Km', 'Km')]
 ALWAYS_AVAILABLE = 1000000000
