@@ -1,8 +1,13 @@
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact
+from gasistafelice.gas.models import ( GASSupplierOrder,
+            GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact,
+            GASSupplierOrderProduct, GASMemberOrder,
+            Delivery, Withdrawal)
+
 from gasistafelice.supplier.models import Supplier
+from gasistafelice.base.models import Place, Person
 
 from django.db import transaction
 from django.forms.formsets import formset_factory
@@ -10,9 +15,6 @@ from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
-from gasistafelice.gas.models import GASSupplierOrderProduct, GASMemberOrder
-from gasistafelice.gas.models import Delivery, Withdrawal
-from gasistafelice.base.models import Place, Person
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.base import const
@@ -159,6 +161,7 @@ class AddOrderForm(BaseOrderForm):
     """
     pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
+    repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
 
     def __init__(self, request, *args, **kw):
 
@@ -236,11 +239,26 @@ class AddOrderForm(BaseOrderForm):
         log.debug("AddOrderForm CREATED pre_save")
         _created_order = super(AddOrderForm, self).save(*args, **kwargs)
         if self.instance:
-            _send_email = self.cleaned_data['email_gas']
-            new_id = self.instance.pk
-            log.debug("AddOrderForm CREATED Ord. %s" % (new_id))
-            if _send_email and bool(_send_email):
-                log.debug("AddOrderForm CREATED send email %s" % ('TODO'))
+
+#            #send email
+#            #COMMENT domthu: Only if opened?  Util?
+#            _send_email = self.cleaned_data['email_gas']
+#            new_id = self.instance.pk
+#            log.debug("AddOrderForm CREATED Ord. %s" % (new_id))
+#            if _send_email and bool(_send_email):
+#                log.debug("AddOrderForm CREATED send email %s" % ('TODO'))
+
+            #
+            _repeat_order = self.cleaned_data['repeat_order']
+            if _repeat_order and bool(_repeat_order):
+                #Clean all previous planification
+                planed_orders = GASSupplierOrder.objects.filter(pact=self.instance.pact)
+                planed_orders = planed_orders.filter(datetime_start__gte = self.instance.datetime_start)
+                planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
+                log.debug("yet_existing_orders: %s" % (planed_orders))
+                for order in planed_orders:
+                    order.delete()
+                #Planificate new orders
 
         return _created_order
 
@@ -254,9 +272,10 @@ class AddOrderForm(BaseOrderForm):
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
                             , 'referrer_person'
-                            , 'email_gas'
+                            , 'repeat_order'
             ]
         })]
+#                            , 'email_gas'
 
 #-------------------------------------------------------------------------------
 
