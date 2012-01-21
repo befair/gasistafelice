@@ -152,6 +152,9 @@ class BaseOrderForm(forms.ModelForm):
 
 #-------------------------------------------------------------------------------
 
+def frequency_choices():
+    return [ ('1', _('week')), ('2', _('two weeks')), ('3', _('three weeks')), ('4', _('monthly')), ('5', _('two months')), ('6', _('three months')), ('7', _('half year')), ('8', _('year'))]
+
 class AddOrderForm(BaseOrderForm):
     """ use in forms:
             des             ChooseSupplier  ChooseGAS ChooseReferrer
@@ -162,7 +165,8 @@ class AddOrderForm(BaseOrderForm):
     pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
     repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
-
+    repeat_frequency = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=frequency_choices())
+    repeat_items = forms.IntegerField(required=False, max_value=52*3)
     def __init__(self, request, *args, **kw):
 
         log.debug("AddOrderForm")
@@ -251,15 +255,49 @@ class AddOrderForm(BaseOrderForm):
             #
             _repeat_order = self.cleaned_data['repeat_order']
             if _repeat_order and bool(_repeat_order):
-                #Clean all previous planification
-                planed_orders = GASSupplierOrder.objects.filter(pact=self.instance.pact)
-                planed_orders = planed_orders.filter(datetime_start__gte = self.instance.datetime_start)
-                planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
-                log.debug("yet_existing_orders: %s" % (planed_orders))
-                for order in planed_orders:
-                    order.delete()
-                #Planificate new orders
-
+                _repeat_frequency = int(self.cleaned_data['repeat_frequency'])
+                _repeat_items = self.cleaned_data['repeat_items']
+                if _repeat_frequency and _repeat_items:
+                    #Clean all previous planification
+                    planed_orders = GASSupplierOrder.objects.filter(pact=self.instance.pact)
+                    planed_orders = planed_orders.filter(datetime_start__gte = self.instance.datetime_start)
+                    planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
+                    log.debug("repeat planed_orders: %s" % (planed_orders))
+                    for order in planed_orders:
+                        order.delete()
+                    #Planificate new orders
+                    log.debug("repeat original frequency: %s" % _repeat_frequency)
+                    log.debug("repeat original items: %s" % _repeat_items)
+                    repeat_max = 3 # limit to 3 years
+                    if _repeat_frequency == 1: #week
+                        if _repeat_items > (repeat_max * 52):
+                            _repeat_items = repeat_max * 52
+                    elif _repeat_frequency == 2: #two weeks
+                        if _repeat_items > (repeat_max * 26):
+                            _repeat_items = repeat_max * 26
+                    elif _repeat_frequency == 3: #three weeks
+                        if _repeat_items > (repeat_max * 18):
+                            _repeat_items = repeat_max * 18
+                    elif _repeat_frequency == 4: #monthly
+                        if _repeat_items > (repeat_max * 12):
+                            _repeat_items = repeat_max * 12
+                    elif _repeat_frequency == 5: #two months
+                        if _repeat_items > (repeat_max * 6):
+                            _repeat_items = repeat_max * 6
+                    elif _repeat_frequency == 6: #three months
+                        if _repeat_items > (repeat_max * 4):
+                            _repeat_items = repeat_max * 4
+                    elif _repeat_frequency == 7: #half year
+                        if _repeat_items > (repeat_max * 2):
+                            _repeat_items = repeat_max * 2
+                    elif _repeat_frequency == 8: #year
+                        if _repeat_items > (repeat_max * 1):
+                            _repeat_items = repeat_max * 1
+                    else: _repeat_items = 1;
+                    log.debug("repeat limited frequency: %s" % _repeat_frequency)
+                    log.debug("repeat limited items: %s" % _repeat_items)
+                else:
+                    log.debug("repeat some parameter wrong")
         return _created_order
 
 
@@ -272,7 +310,7 @@ class AddOrderForm(BaseOrderForm):
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
                             , 'referrer_person'
-                            , 'repeat_order'
+                            , ('repeat_order', 'repeat_items', 'repeat_frequency')
             ]
         })]
 #                            , 'email_gas'
