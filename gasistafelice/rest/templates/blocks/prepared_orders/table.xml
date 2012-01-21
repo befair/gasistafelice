@@ -1,0 +1,13 @@
+{% extends "blocks/base/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+    <th>{% trans "Order" %}</th>
+    <th>{% trans "Producer" %}</th>
+    <th>{% trans "Datetime Start" %}</th>
+    <th>{% trans "referrer" %}</th>
+    <th>{% trans "Datetime End" %}</th>
+    <th>{% trans "Inter GAS" %}</th>
+    <th>{% trans "Root Plan" %}</th>
+{% endblock %}
+
