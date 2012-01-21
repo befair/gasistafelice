@@ -22,6 +22,8 @@ from gasistafelice.base import const
 from django.conf import settings
 import copy
 from datetime import tzinfo, timedelta, datetime
+import calendar
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -69,7 +71,6 @@ class GFSplitDateTimeWidget(admin_widgets.AdminSplitDateTime):
         self.widgets[0].format=settings.DATE_INPUT_FORMATS[0]
         self.widgets[1].widget = admin_widgets.AdminTimeWidget()
         self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]
-
 
 class BaseOrderForm(forms.ModelForm):
 
@@ -143,7 +144,7 @@ class BaseOrderForm(forms.ModelForm):
 
         d, created = klass.objects.get_or_create(date=ddt, place=p)
         return d
-        
+
     def get_delivery(self):
         return self.get_appointment_instance('delivery', Delivery)
 
@@ -154,6 +155,51 @@ class BaseOrderForm(forms.ModelForm):
 
 def frequency_choices():
     return [ ('1', _('week')), ('2', _('two weeks')), ('3', _('three weeks')), ('4', _('monthly')), ('5', _('two months')), ('6', _('three months')), ('7', _('half year')), ('8', _('year'))]
+
+def add_months(sourcedate,months):
+    log.debug("add_months")
+    #descriptor 'date' requires a 'datetime.datetime' object but received a 'int'
+    month = sourcedate.month - 1 + months
+    year = sourcedate.year + month / 12
+    month = month % 12 + 1
+    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+    log.debug("add_months %s %s %s" % (year,month,day))
+    return datetime.date(year,month,day)
+
+def GetNewOrder(obj, set_intergas):
+    #new_obj = obj
+    #new_obj.id = None
+
+    new_obj = GASSupplierOrder()
+    new_obj.pact = obj.pact
+    #planification
+    new_obj.root_plan = obj  #.pk
+    new_obj.datetime_start = obj.datetime_start
+    new_obj.datetime_end = obj.datetime_end
+    #KAPPAO: get() returned more than one Delivery -- it returned 2! Lookup parameters were {'date':, 'place': }
+#    new_obj.delivery = Delivery.objects.create(
+#            date=obj.delivery.date,
+#            place=obj.delivery.place
+#    )
+    if obj.withdrawal:
+        new_obj.withdrawal = Withdrawal.objects.create(
+                date=obj.withdrawal.date,
+                place=obj.withdrawal.place
+        )
+    if obj.order_minimum_amount:
+        new_obj.order_minimum_amount = obj.order_minimum_amount
+    if obj.delivery_cost:
+        new_obj.delivery_cost = obj.delivery_cost
+    if obj.referrer_person:
+        new_obj.referrer_person = obj.referrer_person
+    if obj.delivery_referrer_person:
+        new_obj.delivery_referrer_person = obj.delivery_referrer_person
+    if obj.withdrawal_referrer_person:
+        new_obj.withdrawal_referrer_person = obj.withdrawal_referrer_person
+    #InterGAS
+    if set_intergas:
+        new_obj.group_id = obj.group_id
+    return new_obj
 
 class AddOrderForm(BaseOrderForm):
     """ use in forms:
@@ -245,7 +291,7 @@ class AddOrderForm(BaseOrderForm):
         if self.instance:
 
 #            #send email
-#            #COMMENT domthu: Only if opened?  Util?
+#            #COMMENT domthu: Only if opened?  Util? use another politica
 #            _send_email = self.cleaned_data['email_gas']
 #            new_id = self.instance.pk
 #            log.debug("AddOrderForm CREATED Ord. %s" % (new_id))
@@ -269,28 +315,48 @@ class AddOrderForm(BaseOrderForm):
                     log.debug("repeat original frequency: %s" % _repeat_frequency)
                     log.debug("repeat original items: %s" % _repeat_items)
                     repeat_max = 3 # limit to 3 years
+                    # days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks
+                    repeat_type = 'days'
+                    repeat_qta = 7
                     if _repeat_frequency == 1: #week
                         if _repeat_items > (repeat_max * 52):
                             _repeat_items = repeat_max * 52
                     elif _repeat_frequency == 2: #two weeks
+                        repeat_qta = 7 * 2
                         if _repeat_items > (repeat_max * 26):
                             _repeat_items = repeat_max * 26
                     elif _repeat_frequency == 3: #three weeks
+                        repeat_qta = 7 * 3
                         if _repeat_items > (repeat_max * 18):
                             _repeat_items = repeat_max * 18
                     elif _repeat_frequency == 4: #monthly
+                        #repeat_type = 'months'
+                        #repeat_qta = 1
+                        repeat_qta = 7 * 4
                         if _repeat_items > (repeat_max * 12):
                             _repeat_items = repeat_max * 12
                     elif _repeat_frequency == 5: #two months
+                        #repeat_type = 'months'
+                        #repeat_qta = 2
+                        repeat_qta = 7 * 4 * 2
                         if _repeat_items > (repeat_max * 6):
                             _repeat_items = repeat_max * 6
                     elif _repeat_frequency == 6: #three months
+                        #repeat_type = 'months'
+                        #repeat_qta = 3
+                        repeat_qta = 7 * 4 * 3
                         if _repeat_items > (repeat_max * 4):
                             _repeat_items = repeat_max * 4
                     elif _repeat_frequency == 7: #half year
+                        #repeat_type = 'months'
+                        #repeat_qta = 6
+                        repeat_qta = 7 * 4 * 6
                         if _repeat_items > (repeat_max * 2):
                             _repeat_items = repeat_max * 2
                     elif _repeat_frequency == 8: #year
+                        #repeat_type = 'months'
+                        #repeat_qta = 12
+                        repeat_qta = 7 * 4 * 12
                         if _repeat_items > (repeat_max * 1):
                             _repeat_items = repeat_max * 1
                     else: _repeat_items = 1;
@@ -298,6 +364,31 @@ class AddOrderForm(BaseOrderForm):
                     log.debug("repeat limited items: %s" % _repeat_items)
                 else:
                     log.debug("repeat some parameter wrong")
+
+                #create orders
+                for num in range(1,_repeat_items+1):  #to iterate between 1 to _repeat_items
+                    #program order
+                    x_obj = GetNewOrder(self.instance, False)
+                    r_q = (repeat_qta*num)
+                    r_dd = self.instance.delivery.date
+                    #Open Close Delivery
+                    if repeat_type == 'months':
+                        x_obj.datetime_start = add_months(x_obj.datetime_start, r_q )
+                        x_obj.datetime_end = add_months(x_obj.datetime_end, r_q )
+                        r_dd = add_months(r_dd, r_q )
+                    else:
+                        x_obj.datetime_start += timedelta(days=+r_q)
+                        x_obj.datetime_end += timedelta(days=+r_q)
+                        r_dd += timedelta(days=+r_q)
+                    x_obj.delivery = Delivery.objects.create(
+                            date=r_dd,
+                            place=self.instance.delivery.place
+                    )
+                    #create order
+                    if x_obj.save():
+                        log.debug("repeat created order: %s " % (x_obj))
+                    else:
+                        log.debug("repeat NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (num, r_q, x_obj.datetime_start, x_obj.datetime_end, x_obj.delivery.date))
         return _created_order
 
 
