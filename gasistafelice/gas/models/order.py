@@ -754,6 +754,14 @@ WHERE order_id = %s \
         if created:
             self.set_default_gasstock_set()
 
+#    def delete(self, *args, **kw):
+#        """
+#        Override default model method so an GASSupplierOrder in InterGAS 
+#        when its head is deleted.
+#        """
+#        #COMMENT: it wil enter in loop?
+#        super(GASSupplierOrder, self).delete(*args, **kw)
+
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    
