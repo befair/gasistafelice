@@ -337,6 +337,7 @@ class AddOrderForm(BaseOrderForm):
         _created_order = super(AddOrderForm, self).save(*args, **kwargs)
         if self.instance:
 
+            _intergas_orders = set() #GASSupplierOrder.objects.none()
             if _intergas_gas and _intergas_number:
                 log.debug("AddOrderForm interGAS OPEN for other GAS")
                 #TODO Repeat this order for the overs GAS
@@ -359,7 +360,22 @@ class AddOrderForm(BaseOrderForm):
                     planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
                     #log.debug("repeat planed_orders: %s" % (planed_orders))
                     for order in planed_orders:
-                        order.delete()
+
+                        #if InterGAS delete relative group_id others orders.
+                        if order.group_id and order.group_id > 0:
+                            #COMMENT: do it in Models with def delete(self, *args, **kw)?
+                            planed_intergas_orders = GASSupplierOrder.objects.filter(group_id=order.group_id)
+                            if planed_intergas_orders and planed_intergas_orders.count() >0:
+                                for intergas_order in planed_intergas_orders:
+                                    log.debug("AddOrderForm repeat delete intergas_planed_orders: %s" % (intergas_order))
+                                    intergas_order.delete()
+                            else:
+                                log.debug("AddOrderForm repeat delete unique? intergas_planed_orders: %s" % (order))
+                                order.delete()
+                        else:
+                            log.debug("AddOrderForm repeat delete planed_orders: %s" % (order))
+                            order.delete()
+
                     #Planificate new orders
                     #log.debug("repeat original frequency: %s" % _repeat_frequency)
                     #log.debug("repeat original items: %s" % _repeat_items)
