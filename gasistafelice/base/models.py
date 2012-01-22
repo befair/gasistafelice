@@ -641,9 +641,20 @@ class Person(models.Model, PermissionResource):
     
     @property
     def pacts(self):
-        # TODO: what pacts are associated to a Person ?
-        pass
-    
+        """
+        A person is related to:
+        pacts who have signed a pact with a GAS he/she belongs to
+        """
+        from gasistafelice.gas.models import GASSupplierSolidalPact
+        # initialize the return QuerySet 
+        qs = GASSupplierSolidalPact.objects.none()
+        
+        #add the suppliers who have signed a pact with a GAS this person belongs to
+        for gas in self.gas_list:
+            qs = qs | gas.pacts
+
+        return qs
+
     @property
     def suppliers(self):
         #TODO UNITTEST

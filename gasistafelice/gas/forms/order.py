@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.gas.models import ( GASSupplierOrder,
+from gasistafelice.gas.models import ( GAS, GASSupplierOrder,
             GASMemberOrder, GASSupplierOrder, GASSupplierSolidalPact,
             GASSupplierOrderProduct, GASMemberOrder,
             Delivery, Withdrawal)
@@ -213,24 +213,46 @@ class AddOrderForm(BaseOrderForm):
     repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
     repeat_frequency = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=frequency_choices())
     repeat_items = forms.IntegerField(required=False, max_value=52*3)
+
+    intergas = forms.BooleanField(label=_('This order is InterGAS?'), required=False)
+    intergas_grd = forms.MultipleChoiceField(label=_('gas'), choices=GAS.objects.none(), required=False, widget=forms.CheckboxSelectMultiple)
+
     def __init__(self, request, *args, **kw):
 
         log.debug("AddOrderForm")
         super(AddOrderForm, self).__init__(request, *args, **kw)
 
         # SOLIDAL PACT
-        pacts = request.resource.pacts
-
+        #pacts = request.resource.pacts
+        pacts = GASSupplierSolidalPact.objects.none()
+        resource_pacts = request.resource.pacts
+        #Limit pact to the logger user. Do not see pacts from other GAS than mine. Due to "Supplier" resources that was showing pacty for another GAS.
+        #user_pacts = request.user.person.pacts
+        user_pacts = request.user.person.pacts.values_list('pk')
+        if resource_pacts and user_pacts and resource_pacts.count() > 0 and user_pacts.count() > 0:
+            pacts = resource_pacts.filter(pk__in = user_pacts)
 #       if not pacts.count():
 #            raise PermissionDenied(_("You cannot open an order on a resource with no pacts"))
         #if pacts.count() == pacts.filter(gas=pacts[0].gas):
+
         if pacts.count() > 0:
+
+            gas_list = None
+            one_pact = pacts[0]
+            if pacts.count() == 1:
+                log.debug("AddOrderForm only one pact %s" % pacts)
+                gas_list = [(gas.pk, gas.name) for gas in one_pact.supplier.gas_list]
+            else:
+                gas_list = [(gas.pk, gas.name) for gas in GAS.objects.all()]
+            self.fields['intergas_grd'].choices = gas_list
 
             self.fields['pact'].queryset = pacts
             self.fields['pact'].initial = pacts[0]
 
+#            self.fields['pact'].queryset = pacts
+
             # Person is the current user: referrers
-            log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['referrer_person'].queryset)
+            #log.debug("AddOrderForm delivery_referrer queryset %s" % self.fields['referrer_person'].queryset)
             if request.user.person in self.fields['referrer_person'].queryset:
                 self.fields['referrer_person'].initial = request.user.person
             elif self.fields['referrer_person'].queryset.count() > 0:
@@ -402,6 +424,7 @@ class AddOrderForm(BaseOrderForm):
                             , 'delivery_datetime'
                             , 'referrer_person'
                             , ('repeat_order', 'repeat_items', 'repeat_frequency')
+                            , ('intergas', 'intergas_grd')
             ]
         })]
 #                            , 'email_gas'
