@@ -301,18 +301,45 @@ class AddOrderForm(BaseOrderForm):
                 self.instance.withdrawal = w
 
         #InterGAS
+        _intergas_gas = None
+        _intergas_number = None
         _intergas = self.cleaned_data['intergas']
         if _intergas and bool(_intergas):
-            _intergas_number = 1
-            _intergas_maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
-            if _intergas_maxs:
-                # get the maximum attribute from the first record and add 1 to it
-                _intergas_number = _intergas_maxs['group_id__max'] + 1
-            log.debug("AddOrderForm intergaS Maxs(%s) --> (%s) GAS:%s" % (_intergas_maxs, _intergas_number, self.cleaned_data['intergas_grd']))
-        return
+
+            #interGAS gas list
+            _intergas_gas_list = self.cleaned_data['intergas_grd']
+            if _intergas_gas_list and _intergas_gas_list.count > 0:
+                #Add the default order's gas in the list
+                _intergas_gas = set() #GAS.objects.none()
+                _intergas_gas.add(self.instance.pact.gas)
+                for g in _intergas_gas_list:
+                    if g != self.instance.gas.pk:
+                        #_intergas_gas = _intergas_gas | GAS.objects.get(pk=g)
+                        _intergas_gas.add(GAS.objects.get(pk=g))
+#unsupported operand type(s) for |=: 'GAS' and 'GAS'
+                #if _intergas_gas.count() == 1:
+                if len(_intergas_gas) == 1:
+                    #Not valid almost 2 GAS to be an interGAS
+                    _intergas_gas = None
+                else:
+                    #interGAS aggregation number
+                    _intergas_number = 1
+                    _intergas_maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
+                    if _intergas_maxs:
+                        # get the maximum attribute from the first record and add 1 to it
+                        _intergas_number = _intergas_maxs['group_id__max'] + 1
+                    log.debug("AddOrderForm intergas --> (%s) GAS:%s" % (_intergas_number, _intergas_gas))
+
+                    #Set instance as InterGAS
+                    self.instance.group_id = _intergas_number
+
         #log.debug("AddOrderForm CREATED pre_save")
         _created_order = super(AddOrderForm, self).save(*args, **kwargs)
         if self.instance:
+
+            if _intergas_gas and _intergas_number:
+                log.debug("AddOrderForm interGAS OPEN for other GAS")
+                #TODO Repeat this order for the overs GAS
 
 #            #send email
 #            #COMMENT domthu: Only if opened?  Util? use another politica
