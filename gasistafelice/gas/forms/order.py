@@ -10,6 +10,7 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.base.models import Place, Person
 
 from django.db import transaction
+from django.db.models import Max
 from django.forms.formsets import formset_factory
 from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
@@ -74,7 +75,7 @@ class GFSplitDateTimeWidget(admin_widgets.AdminSplitDateTime):
 
 class BaseOrderForm(forms.ModelForm):
 
-    log.debug("BaseOrderForm")
+    #log.debug("BaseOrderForm")
     datetime_start = forms.SplitDateTimeField(label=_('Date start'), required=True, 
                     help_text=_("when the order will be opened"), widget=GFSplitDateTimeWidget, initial=gf_now)
 
@@ -157,30 +158,21 @@ def frequency_choices():
     return [ ('1', _('week')), ('2', _('two weeks')), ('3', _('three weeks')), ('4', _('monthly')), ('5', _('two months')), ('6', _('three months')), ('7', _('half year')), ('8', _('year'))]
 
 def add_months(sourcedate,months):
-    log.debug("add_months")
-    #descriptor 'date' requires a 'datetime.datetime' object but received a 'int'
     month = sourcedate.month - 1 + months
     year = sourcedate.year + month / 12
     month = month % 12 + 1
     day = min(sourcedate.day,calendar.monthrange(year,month)[1])
-    log.debug("add_months %s %s %s" % (year,month,day))
     return datetime.date(year,month,day)
 
 def GetNewOrder(obj, set_intergas):
     #new_obj = obj
     #new_obj.id = None
-
     new_obj = GASSupplierOrder()
     new_obj.pact = obj.pact
     #planification
     new_obj.root_plan = obj  #.pk
     new_obj.datetime_start = obj.datetime_start
     new_obj.datetime_end = obj.datetime_end
-    #KAPPAO: get() returned more than one Delivery -- it returned 2! Lookup parameters were {'date':, 'place': }
-#    new_obj.delivery = Delivery.objects.create(
-#            date=obj.delivery.date,
-#            place=obj.delivery.place
-#    )
     if obj.withdrawal:
         new_obj.withdrawal = Withdrawal.objects.create(
                 date=obj.withdrawal.date,
@@ -219,7 +211,7 @@ class AddOrderForm(BaseOrderForm):
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("AddOrderForm")
+        #log.debug("AddOrderForm")
         super(AddOrderForm, self).__init__(request, *args, **kw)
 
         # SOLIDAL PACT
@@ -240,7 +232,7 @@ class AddOrderForm(BaseOrderForm):
             gas_list = None
             one_pact = pacts[0]
             if pacts.count() == 1:
-                log.debug("AddOrderForm only one pact %s" % pacts)
+                #log.debug("AddOrderForm only one pact %s" % pacts)
                 gas_list = [(gas.pk, gas.name) for gas in one_pact.supplier.gas_list]
             else:
                 gas_list = [(gas.pk, gas.name) for gas in GAS.objects.all()]
@@ -308,19 +300,27 @@ class AddOrderForm(BaseOrderForm):
                 w = self.get_withdrawal()
                 self.instance.withdrawal = w
 
-        log.debug("AddOrderForm CREATED pre_save")
+        #InterGAS
+        _intergas = self.cleaned_data['intergas']
+        if _intergas and bool(_intergas):
+            _intergas_number = 1
+            _intergas_maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
+            if _intergas_maxs:
+                # get the maximum attribute from the first record and add 1 to it
+                _intergas_number = _intergas_maxs['group_id__max'] + 1
+            log.debug("AddOrderForm intergaS Maxs(%s) --> (%s) GAS:%s" % (_intergas_maxs, _intergas_number, self.cleaned_data['intergas_grd']))
+        return
+        #log.debug("AddOrderForm CREATED pre_save")
         _created_order = super(AddOrderForm, self).save(*args, **kwargs)
         if self.instance:
 
 #            #send email
 #            #COMMENT domthu: Only if opened?  Util? use another politica
 #            _send_email = self.cleaned_data['email_gas']
-#            new_id = self.instance.pk
-#            log.debug("AddOrderForm CREATED Ord. %s" % (new_id))
 #            if _send_email and bool(_send_email):
-#                log.debug("AddOrderForm CREATED send email %s" % ('TODO'))
+#                TODO: May be we only need to disable the notification if not enabled
 
-            #
+            #Planification
             _repeat_order = self.cleaned_data['repeat_order']
             if _repeat_order and bool(_repeat_order):
                 _repeat_frequency = int(self.cleaned_data['repeat_frequency'])
@@ -330,12 +330,12 @@ class AddOrderForm(BaseOrderForm):
                     planed_orders = GASSupplierOrder.objects.filter(pact=self.instance.pact)
                     planed_orders = planed_orders.filter(datetime_start__gte = self.instance.datetime_start)
                     planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
-                    log.debug("repeat planed_orders: %s" % (planed_orders))
+                    #log.debug("repeat planed_orders: %s" % (planed_orders))
                     for order in planed_orders:
                         order.delete()
                     #Planificate new orders
-                    log.debug("repeat original frequency: %s" % _repeat_frequency)
-                    log.debug("repeat original items: %s" % _repeat_items)
+                    #log.debug("repeat original frequency: %s" % _repeat_frequency)
+                    #log.debug("repeat original items: %s" % _repeat_items)
                     repeat_max = 3 # limit to 3 years
                     # days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks
                     repeat_type = 'days'
@@ -382,8 +382,8 @@ class AddOrderForm(BaseOrderForm):
                         if _repeat_items > (repeat_max * 1):
                             _repeat_items = repeat_max * 1
                     else: _repeat_items = 1;
-                    log.debug("repeat limited frequency: %s" % _repeat_frequency)
-                    log.debug("repeat limited items: %s" % _repeat_items)
+                    #log.debug("repeat limited frequency: %s" % _repeat_frequency)
+                    #log.debug("repeat limited items: %s" % _repeat_items)
                 else:
                     log.debug("repeat some parameter wrong")
 
@@ -437,7 +437,7 @@ class EditOrderForm(BaseOrderForm):
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("EditOrderForm")
+        #log.debug("EditOrderForm")
 
         super(EditOrderForm, self).__init__(request, *args, **kw)
 
@@ -480,7 +480,7 @@ def form_class_factory_for_request(request, base):
     """Return appropriate form class basing on GAS configuration
     and other request parameters if needed"""
 
-    log.debug("OrderForm--> form_class_factory_for_request")
+    #log.debug("OrderForm--> form_class_factory_for_request")
     fields = copy.deepcopy(base.Meta.fields)
     gf_fieldsets = copy.deepcopy(base.Meta.gf_fieldsets)
     attrs = {}
@@ -537,10 +537,10 @@ class GASSupplierOrderProductForm(forms.Form):
 
         #log.debug("Save GASSupplierOrderProductForm")
         id = self.cleaned_data.get('id')
-        log.debug("Save GASSupplierOrderProductForm id(%s)" % id)
+        #log.debug("Save GASSupplierOrderProductForm id(%s)" % id)
         if id:
             enabled = self.cleaned_data.get('enabled')
-            log.debug("Save GASSupplierOrderProductForm enabled(%s)" % enabled)
+            #log.debug("Save GASSupplierOrderProductForm enabled(%s)" % enabled)
             #Delete is ok for gsop that have gmo but: 
             #FIXME: if no gmo associated to gsop the field enabled remain always True?
             if not enabled:
@@ -587,7 +587,7 @@ class SingleGASMemberOrderForm(forms.Form):
             gmo.note = self.cleaned_data.get('note')
             if gmo.ordered_amount == 0:
                 gmo.delete()
-                #log.debug("STO CANCELLANDO un ordine gasista da widget quantita")
+                log.debug("STO CANCELLANDO un ordine gasista da widget quantita")
             else:
                 gmo.save()
                 log.debug("Product ho aggiornato un ordine gasista (%s) " % id)
