@@ -126,7 +126,7 @@ class BaseOrderForm(forms.ModelForm):
                 p = Place.objects.get(city=dc, name__icontains=dp)
             except Place.DoesNotExist:
                 try:
-                    p = Place.objects.get(city=dc, addr__icontains=dp)
+                    p = Place.objects.get(city=dc, address__icontains=dp)
                 except Place.DoesNotExist:
                     p = Place(city=dc, name=dp)
                     p.save()
