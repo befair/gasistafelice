@@ -315,7 +315,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         pact_refs = self.pact.referrers
         if not pact_refs:
             pact_refs = self.pact.gas.referrers
-        pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
+
+        #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
+        if self.referrer_person:
+            pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
         return pact_refs
 
     @property
