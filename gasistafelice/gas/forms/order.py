@@ -144,6 +144,7 @@ class BaseOrderForm(forms.ModelForm):
                 return None
 
         d, created = klass.objects.get_or_create(date=ddt, place=p)
+        #FIXME: get() returned more than one Delivery -- it returned 2! Lookup parameters were {'date': ..., 'place': <Place: ...>}
         return d
 
     def get_delivery(self):
@@ -164,34 +165,80 @@ def add_months(sourcedate,months):
     day = min(sourcedate.day,calendar.monthrange(year,month)[1])
     return datetime.date(year,month,day)
 
-def GetNewOrder(obj, set_intergas):
+def GetNewOrder(obj, other_pact):
     #new_obj = obj
     #new_obj.id = None
     new_obj = GASSupplierOrder()
-    new_obj.pact = obj.pact
+    if other_pact:
+        new_obj.pact = other_pact
+    else:
+        new_obj.pact = obj.pact
     #planification
     new_obj.root_plan = obj  #.pk
     new_obj.datetime_start = obj.datetime_start
     new_obj.datetime_end = obj.datetime_end
-    if obj.withdrawal:
-        new_obj.withdrawal = Withdrawal.objects.create(
-                date=obj.withdrawal.date,
-                place=obj.withdrawal.place
-        )
+    if other_pact:
+        log.debug("TODO GetNewOrder how to create withdrawal? %s " % other_pact)
+    else:
+        if obj.withdrawal:
+            new_obj.withdrawal = Withdrawal.objects.create(
+                    date=obj.withdrawal.date,
+                    place=obj.withdrawal.place
+            )
     if obj.order_minimum_amount:
         new_obj.order_minimum_amount = obj.order_minimum_amount
     if obj.delivery_cost:
         new_obj.delivery_cost = obj.delivery_cost
-    if obj.referrer_person:
-        new_obj.referrer_person = obj.referrer_person
-    if obj.delivery_referrer_person:
-        new_obj.delivery_referrer_person = obj.delivery_referrer_person
-    if obj.withdrawal_referrer_person:
-        new_obj.withdrawal_referrer_person = obj.withdrawal_referrer_person
-    #InterGAS
-    if set_intergas:
+    if other_pact:
+        #retrieve the first referrer_person
+        refs = other_pact.referrers_people
+        if refs and refs.count()>0:
+            new_obj.referrer_person = refs[0]
+        else:
+            refs = other_pact.supplier_referrers_people
+            if refs and refs.count()>0:
+                new_obj.referrer_person = refs[0]
+            else:
+                #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
+                #Cannot create the order.
+                log.debug("FIXME GetNewOrder retrieve almost one referrer_person for a specific pact?")
+                #FIXME: for test only
+                #return None
+                new_obj.referrer_person = obj.referrer_person
+        new_obj.delivery_referrer_person = new_obj.referrer_person
+        new_obj.withdrawal_referrer_person = new_obj.referrer_person
+
+        #Delivery retrieve a Place. The GAS place if older orders does not exist.
+        if obj.delivery:
+            #TODO: look for the last order in order to retrieve the last delivery Place
+            new_obj.delivery, created = Delivery.objects.get_or_create(
+                            date=obj.delivery.date,
+                            place=other_pact.gas.headquarter
+                    )
+        new_obj.datetime_start = obj.datetime_start
+        new_obj.datetime_end = obj.datetime_end
+
+    else:
+        if obj.referrer_person:
+            new_obj.referrer_person = obj.referrer_person
+        if obj.delivery_referrer_person:
+            new_obj.delivery_referrer_person = obj.delivery_referrer_person
+        if obj.withdrawal_referrer_person:
+            new_obj.withdrawal_referrer_person = obj.withdrawal_referrer_person
+    if obj.group_id:
         new_obj.group_id = obj.group_id
+    elif other_pact:
+        log.debug("GetNewOrder cannot create other intergas order without a father group_id")
+        return None
     return new_obj
+
+def get_group_id():
+    _group_id = 1
+    _maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
+    if _maxs:
+        # get the maximum attribute from the first record and add 1 to it
+        _group_id = _maxs['group_id__max'] + 1
+    return _group_id
 
 class AddOrderForm(BaseOrderForm):
     """ use in forms:
@@ -301,7 +348,7 @@ class AddOrderForm(BaseOrderForm):
                 self.instance.withdrawal = w
 
         #InterGAS
-        _intergas_gas = None
+        _intergas_pacts = None
         _intergas_number = None
         _intergas = self.cleaned_data['intergas']
         if _intergas and bool(_intergas):
@@ -310,25 +357,28 @@ class AddOrderForm(BaseOrderForm):
             _intergas_gas_list = self.cleaned_data['intergas_grd']
             if _intergas_gas_list and _intergas_gas_list.count > 0:
                 #Add the default order's gas in the list
-                _intergas_gas = set() #GAS.objects.none()
-                _intergas_gas.add(self.instance.pact.gas)
+                _intergas_pacts = set() #GAS.objects.none()
+                #_intergas_pacts.add(self.instance.pact)
                 for g in _intergas_gas_list:
-                    if g != self.instance.gas.pk:
+                    if int(g) != self.instance.gas.pk:
+                        log.debug("AddOrderForm intergas find %s another PACT:%s" % (g, self.instance.gas.pk))
                         #_intergas_gas = _intergas_gas | GAS.objects.get(pk=g)
-                        _intergas_gas.add(GAS.objects.get(pk=g))
-#unsupported operand type(s) for |=: 'GAS' and 'GAS'
-                #if _intergas_gas.count() == 1:
-                if len(_intergas_gas) == 1:
-                    #Not valid almost 2 GAS to be an interGAS
-                    _intergas_gas = None
+                        x_g = GAS.objects.get(pk=g)
+                        if x_g:
+                            #retrieve the existing pact for this gas for this supplier. If exist.
+                            x_p = GASSupplierSolidalPact.objects.filter(gas=x_g, supplier=self.instance.pact.supplier)
+                            if x_p and x_p.count()>0:
+                                _intergas_pacts.add(x_p[0])
+                                if x_p.count() > 1:
+                                    log.debug("AddOrderForm intergas INCONGRUITY looking for gas %s and supplier %s" % (x_g, self.instance.pact.supplier))
+                #if _intergas_pacts.count() == 1:
+                if len(_intergas_pacts) == 0:
+                    #Not valid InterGAS almost 2 GAS to be an interGAS's order
+                    _intergas_pacts = None
                 else:
                     #interGAS aggregation number
-                    _intergas_number = 1
-                    _intergas_maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
-                    if _intergas_maxs:
-                        # get the maximum attribute from the first record and add 1 to it
-                        _intergas_number = _intergas_maxs['group_id__max'] + 1
-                    log.debug("AddOrderForm intergas --> (%s) GAS:%s" % (_intergas_number, _intergas_gas))
+                    _intergas_number = get_group_id()
+                    log.debug("AddOrderForm intergas --> (%s) another PACTs:%s" % (_intergas_number, _intergas_pacts))
 
                     #Set instance as InterGAS
                     self.instance.group_id = _intergas_number
@@ -338,9 +388,17 @@ class AddOrderForm(BaseOrderForm):
         if self.instance:
 
             _intergas_orders = set() #GASSupplierOrder.objects.none()
-            if _intergas_gas and _intergas_number:
+            if _intergas_pacts and _intergas_number:
                 log.debug("AddOrderForm interGAS OPEN for other GAS")
                 #TODO Repeat this order for the overs GAS
+                for other_pact in _intergas_pacts:
+                    other_order = GetNewOrder(self.instance, other_pact)
+                    if other_order:
+                        if other_order.save():
+                            log.debug("repeat created another order: %s " % (other_order))
+                            _intergas_orders.add(other_order)
+                        else:
+                            log.debug("repeat another NOT created: pact %s, start %s , end %s , delivery %s" % (other_order.pact, other_order.datetime_start, other_order.datetime_end, other_order.delivery.date))
 
 #            #send email
 #            #COMMENT domthu: Only if opened?  Util? use another politica
@@ -354,7 +412,8 @@ class AddOrderForm(BaseOrderForm):
                 _repeat_frequency = int(self.cleaned_data['repeat_frequency'])
                 _repeat_items = self.cleaned_data['repeat_items']
                 if _repeat_frequency and _repeat_items:
-                    #Clean all previous planification
+
+                    #Delete - Clean all previous planification
                     planed_orders = GASSupplierOrder.objects.filter(pact=self.instance.pact)
                     planed_orders = planed_orders.filter(datetime_start__gte = self.instance.datetime_start)
                     planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
@@ -425,15 +484,14 @@ class AddOrderForm(BaseOrderForm):
                         if _repeat_items > (repeat_max * 1):
                             _repeat_items = repeat_max * 1
                     else: _repeat_items = 1;
-                    #log.debug("repeat limited frequency: %s" % _repeat_frequency)
-                    #log.debug("repeat limited items: %s" % _repeat_items)
+                    log.debug("repeat limited frequency: %s, items: %s" % (_repeat_frequency, _repeat_items))
                 else:
                     log.debug("repeat some parameter wrong")
 
                 #create orders
                 for num in range(1,_repeat_items+1):  #to iterate between 1 to _repeat_items
                     #program order
-                    x_obj = GetNewOrder(self.instance, False)
+                    x_obj = GetNewOrder(self.instance, None)
                     r_q = (repeat_qta*num)
                     r_dd = self.instance.delivery.date
                     #Open Close Delivery
@@ -445,13 +503,36 @@ class AddOrderForm(BaseOrderForm):
                         x_obj.datetime_start += timedelta(days=+r_q)
                         x_obj.datetime_end += timedelta(days=+r_q)
                         r_dd += timedelta(days=+r_q)
-                    x_obj.delivery = Delivery.objects.create(
+                    #x_obj.delivery = Delivery.objects.create(
+                    x_obj.delivery, created = Delivery.objects.get_or_create(
                             date=r_dd,
                             place=self.instance.delivery.place
                     )
+
+                    #get new interGAS number if needed
+                    if _intergas_orders:
+                        x_obj.group_id = get_group_id()
+
                     #create order
                     if x_obj.save():
                         log.debug("repeat created order: %s " % (x_obj))
+
+                        #InterGAS
+                        if _intergas_orders:
+                            for other_order in _intergas_orders:
+                                try:
+                                    x_other_obj = GetNewOrder(other_order, None)
+                                    if x_other_obj:
+                                        x_other_obj.datetime_start = x_obj.datetime_start
+                                        x_other_obj.datetime_end = x_obj.datetime_end
+                                        x_other_obj.delivery.date = x_obj.delivery.date
+                                        if x_other_obj.save():
+                                            log.debug("another repeat created order: %s " % (x_other_obj))
+                                        else:
+                                            log.debug("another repeat NOT created: pact %s, start %s , end %s , delivery %s" % (x_other_obj.pact, x_other_obj.datetime_start, x_other_obj.datetime_end, x_other_obj.delivery.date))
+                                except Exception,e:
+                                    log.debug("another repeat NOT created order ERROR: %s " % (e))
+
                     else:
                         log.debug("repeat NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (num, r_q, x_obj.datetime_start, x_obj.datetime_end, x_obj.delivery.date))
         return _created_order

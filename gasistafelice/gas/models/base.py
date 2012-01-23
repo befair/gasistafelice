@@ -1429,10 +1429,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def pact(self):
         return self
-    
-    @property
-    def pacts(self):
-        return GASSupplierSolidalPact.objects.filter(pk=self.pk)
 
     @property
     def persons(self):

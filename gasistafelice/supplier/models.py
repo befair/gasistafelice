@@ -380,6 +380,7 @@ class Supplier(models.Model, PermissionResource):
         display.ResourceList(name="referrers_people", verbose_name=_("Platform referrers")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
+    #COMMENT domthu: i don't understand where referrers_people is defined?
 
     #--------------------------#
 
