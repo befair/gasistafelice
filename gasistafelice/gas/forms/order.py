@@ -211,12 +211,11 @@ def GetNewOrder(obj, other_pact):
         #Delivery retrieve a Place. The GAS place if older orders does not exist.
         if obj.delivery:
             #TODO: look for the last order in order to retrieve the last delivery Place
-            new_obj.delivery, created = Delivery.objects.get_or_create(
-                            date=obj.delivery.date,
-                            place=other_pact.gas.headquarter
-                    )
-        new_obj.datetime_start = obj.datetime_start
-        new_obj.datetime_end = obj.datetime_end
+            #new_obj.delivery, created = Delivery.objects.get_or_create(
+            #                date=obj.delivery.date,
+            #                place=other_pact.gas.headquarter
+            #        )
+            new_obj.delivery = get_delivery(obj.delivery.date, other_pact.gas.headquarter)
 
     else:
         if obj.referrer_person:
@@ -239,6 +238,23 @@ def get_group_id():
         # get the maximum attribute from the first record and add 1 to it
         _group_id = _maxs['group_id__max'] + 1
     return _group_id
+
+def get_delivery(date, place):
+    try:
+        obj, created = Delivery.objects.get_or_create(
+                date=date,
+                place=place
+        )
+        return obj
+    except Exception,e:
+        log.debug("get_delivery: %s " % (e))
+        objs = Delivery.objects.filter(date=date, place=place)
+        if objs and objs.count()>0:
+            return objs[objs.count()-1]
+        else:
+            log.debug("get_delivery cannot retrieve for place: %s and date: %s" % (place, date))
+            return None
+
 
 class AddOrderForm(BaseOrderForm):
     """ use in forms:
@@ -394,7 +410,10 @@ class AddOrderForm(BaseOrderForm):
                 for other_pact in _intergas_pacts:
                     other_order = GetNewOrder(self.instance, other_pact)
                     if other_order:
-                        if other_order.save():
+                        #COMMENT domthu: Don't understand why .save() not return true?
+                        #if other_order.save():
+                        other_order.save()
+                        if other_order.pk:
                             log.debug("repeat created another order: %s " % (other_order))
                             _intergas_orders.add(other_order)
                         else:
@@ -504,28 +523,33 @@ class AddOrderForm(BaseOrderForm):
                         x_obj.datetime_end += timedelta(days=+r_q)
                         r_dd += timedelta(days=+r_q)
                     #x_obj.delivery = Delivery.objects.create(
-                    x_obj.delivery, created = Delivery.objects.get_or_create(
-                            date=r_dd,
-                            place=self.instance.delivery.place
-                    )
+                    #x_obj.delivery, created = Delivery.objects.get_or_create(
+                    #        date=r_dd,
+                    #        place=self.instance.delivery.place
+                    #)
+                    x_obj.delivery = get_delivery(r_dd, self.instance.delivery.place)
 
                     #get new interGAS number if needed
                     if _intergas_orders:
                         x_obj.group_id = get_group_id()
 
                     #create order
-                    if x_obj.save():
+                    #COMMENT domthu: Don't understand why .save() not return true?
+                    #if x_obj.save():
+                    x_obj.save()
+                    if x_obj.pk:
                         log.debug("repeat created order: %s " % (x_obj))
 
                         #InterGAS
                         if _intergas_orders:
                             for other_order in _intergas_orders:
                                 try:
+                                    other_order.datetime_start = x_obj.datetime_start
+                                    other_order.datetime_end = x_obj.datetime_end
+                                    other_order.delivery.date = x_obj.delivery.date
                                     x_other_obj = GetNewOrder(other_order, None)
                                     if x_other_obj:
-                                        x_other_obj.datetime_start = x_obj.datetime_start
-                                        x_other_obj.datetime_end = x_obj.datetime_end
-                                        x_other_obj.delivery.date = x_obj.delivery.date
+                                        #COMMENT domthu: Don't understand why .save() not return true?
                                         if x_other_obj.save():
                                             log.debug("another repeat created order: %s " % (x_other_obj))
                                         else:

@@ -181,6 +181,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     'order_num' : self.pk,
                     'ref' : ref
         }
+
+        if self.group_id:
+            rv += " --> InterGAS. %s" % (self.group_id)
         #if settings.DEBUG:
         #    rv += " [%s]" % self.pk
         return rv
