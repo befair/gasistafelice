@@ -40,28 +40,28 @@ jQuery.UIBlockOrdersPreparedList = jQuery.UIBlockWithList.extend({
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
-                        var url = aaData[iUrn];
+                        var url = aaData[iUrn + 1];
                         if (url != undefined) {
                             var _name = aaData[0];
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[0]).html( res.render() );
                         }
-                        url = aaData[iUrn + 1];
+                        url = aaData[iUrn + 2];
                         if (url != undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[1]).html( res.render() );
                         }
-                        url = aaData[iUrn + 2];
+                        url = aaData[iUrn + 3];
                         if (url != undefined) {
                             var _name = aaData[3];
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[3]).html( res.render() );
                         }
-                        url = aaData[iUrn + 3];
-                        if (url != undefined) {
+                        url = aaData[iUrn + 4];
+                        if (url != undefined && url != "") {
                             var _name = aaData[6];
-                            res = new jQuery.Resource(url, _name);
+                            res = new jQuery.Resource(url, "Ord. " + _name);
                             $(nRow.cells[6]).html( res.render() );
                         }
                     }
