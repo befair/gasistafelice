@@ -171,8 +171,9 @@ class Block(BlockSSDataTables):
                             'step' : el.gasstock.step or 1,
                             'minimum_amount' : el.gasstock.minimum_amount or 1,
                             's_url' : el.supplier.urn,
-                            'p_url' : el.product.urn,
+                            'p_url' : el.gasstock.stock.urn,
             }
+                            #'p_url' : el.product.urn,
 
             records.append({
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),

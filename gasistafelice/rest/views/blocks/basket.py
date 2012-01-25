@@ -146,14 +146,15 @@ class Block(BlockSSDataTables):
                             'eur_chan' : ["", "alert"][bool(el.has_changed)],
                             'req_conf' : ["alert", ""][bool(el.is_confirmed)],
                             's_url' : el.supplier.urn,
-                            'p_url' : el.product.urn,
+                            'p_url' : el.ordered_product.stock.urn,
             }
+                            #'p_url' : el.product.urn,
 
             records.append({
                'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),
                'order' : el.ordered_product.order.pk,
                'supplier' : el.supplier,
-               'product' : el.product,
+               'product' : el.product,  #ordered_product.stock,   #el.product
                'price' : el.ordered_product.order_price,
                'price_changed' : not el.has_changed,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
