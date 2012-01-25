@@ -135,15 +135,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 if self.datetime_end:
                     date_info += ug("chiusura: %(date_end)s")
 
-#                if d['date_delivery']:
-#                    date_info += ug(" --> Deliver: %(date_delivery)s")
+                if d['date_delivery']:
+                    date_info += ug(" --> consegna: %(date_delivery)s")
     
             elif state == STATUS_CLOSED:
 #                if self.datetime_end:
 #                    date_info += ug("Closed: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug(" --> in consegna: %(date_delivery)s  --> to pay")
+                    date_info += ug("in consegna: %(date_delivery)s  --> to pay")
 
     
             elif state == STATUS_UNPAID:
