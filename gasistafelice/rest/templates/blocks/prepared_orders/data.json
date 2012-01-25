@@ -11,7 +11,7 @@
         "{{gso.referrer_person|escapejs}}",
         "{{gso.datetime_end|date:"Y D d F"}}",
         "{{gso.group_id|escapejs}}",
-        "Ord. {{gso.root_plan.id|escapejs}}",
+        "{{gso.root_plan.id|escapejs}}",
         "{{gso.urn|escapejs}}",
         "{{gso.pact.urn|escapejs}}",
         "{{gso.referrer_person.urn|escapejs}}",
