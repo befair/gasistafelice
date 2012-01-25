@@ -9,6 +9,7 @@
         "{{row.gasmember|escapejs}}",
         "{{row.last_recharge|escapejs}}",
         "{{row.recharging|escapejs}}",
+        "{{row.gasmember_urn|escapejs}}",
 
     ]
     {% if not forloop.last %}

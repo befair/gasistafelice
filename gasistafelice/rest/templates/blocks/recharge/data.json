@@ -9,7 +9,7 @@
         "{{row|escapejs}}",
         "{{row.last_recharge|escapejs}}",
         "",
-
+        "{{row.urn|escapejs}}",
     ]
     {% if not forloop.last %}
         ,

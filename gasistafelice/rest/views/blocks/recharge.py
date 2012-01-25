@@ -34,7 +34,7 @@ class Block(BlockSSDataTables):
         0: 'id',
         1: 'person__surname',
         2: '',
-        3: ''
+        3: 'person__name'
     }
 #        2: 'last_recharge',
 
@@ -112,6 +112,7 @@ class Block(BlockSSDataTables):
                'gasmember' : item,
                'last_recharge' : item.last_recharge,
                'recharging' : "%s %s" % (form['gm_id'], form['recharged']),
+               'gasmember_urn' : item.urn,
             })
 
         return formset, records, {}
