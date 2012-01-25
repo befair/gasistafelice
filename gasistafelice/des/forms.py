@@ -4,6 +4,7 @@ from registration.forms import RegistrationFormUniqueEmail
 from django import forms
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from captcha.fields import CaptchaField
 
@@ -13,6 +14,9 @@ from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.gas.models import GAS, GASMember
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.base.models import Place, Contact, Person
+
+import logging
+log = logging.getLogger(__name__)
 
 class DESRegistrationForm(RegistrationFormUniqueEmail):
 
@@ -35,6 +39,8 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         required=True,
         help_text="È importante poter contattare chi si registra via telefono"
     )
+    motivation = forms.CharField(label='Motivazione', required=False, widget=forms.Textarea,
+        help_text="Alcune righe per conoscerti e/o sapere come ai conosciuto il GAS")
     recaptcha = CaptchaField(label="Inserisci le lettere che leggi " + 
         "per farci capire che non sei un programma automatico"
     )
@@ -91,6 +97,30 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         if gas:
             gm = GASMember( person=person, gas=gas )
             gm.save()
+
+            #Send email for GAS_REFERER_TECH
+            techs = gas.tech_referrers_people
+            if techs:
+                body = _("new registration from %(username)s %(usersurname)s with email %(email)s. User active status is %(active)s. Motivation: %(motivation)s...") % {
+                    'username' : user.first_name,
+                    'usersurname' : user.last_name,
+                    'email' : user.email,
+                    'active' : user.is_active,
+                    'motivation' : self.cleaned_data['motivation'],
+                }
+                #from notification.models import Notice
+                #INFORMATIC REFERENT
+                for tech in techs:
+                    #TODO: Notification or send email
+                    recipient = tech.user.email
+                    recipient = tech.preferred_email_contacts
+                    log.debug("Send email for tech %s with body %s" % (recipient, body))
+                #FORUM
+                #FIXME: not set! Quale è l'email del FORUM del GAS?
+                if gas.orders_email_contact:
+                    #TODO: Notification or send email
+                    forum = gas.orders_email_contact.value
+                    log.debug("Send email for FORUM %s with body %s" % (forum, body))
 
         supplier = self.cleaned_data.get('supplier_choice')
         if supplier:
