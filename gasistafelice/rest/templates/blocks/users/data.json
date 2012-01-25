@@ -1,0 +1,19 @@
+{% extends "blocks/base/data.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for ss in records %}
+    [
+
+        "{{ss.id|escapejs}}",
+        "{{ss.first_name|escapejs}}",
+        "{{ss.last_name|escapejs}}",
+        "{% filter escapejs %}{% bool_img ss.is_active %}{% endfilter %}",
+
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}

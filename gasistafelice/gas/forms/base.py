@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 
 from flexi_auth.models import ParamRole, Param
+from django.contrib.auth.models import User
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.forms import BaseRoleForm
@@ -68,11 +69,39 @@ class EditGASMemberForm(forms.ModelForm):
             )
 
 
-#display.Resource(name="gas", verbose_name=_("GAS")),
-#display.Resource(name="person", verbose_name=_("Person")),
-#membership_fee_payed,
-#id_in_gas,
-#models.CharField(max_length=32, name="city", verbose_name=_("City")),
-#models.CharField(max_length=200, name="email", verbose_name=_("Email")),
-#models.CharField(max_length=32, name="economic_state", verbose_name=_("Account")),
+
+#--------------------User-----------------------------------------------------------
+
+class SingleUserForm(forms.Form):
+
+    #For editing
+    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    pk = forms.IntegerField(required=False)
+    is_active = forms.BooleanField(required=False)
+
+    def __init__(self, request, *args, **kw):
+        super(SingleUserForm, self).__init__(*args, **kw)
+        instance = getattr(self, 'instance', None)
+        self.fields['pk'].widget.attrs['readonly'] = True
+        self.fields['pk'].widget.attrs['disabled'] = 'disabled'
+        self.fields['pk'].widget.attrs['class'] = 'input_small'
+        self.__supplier = request.resource
+
+    def save(self):
+
+        log.debug("Save SingleUserForm")
+        if self.cleaned_data.get('id'):
+            ss = User.objects.get(pk=self.cleaned_data['id'])
+            #log.debug("Save SingleUserForm id_ss(%s)" % (ss.pk))
+            try:
+                ss.is_active = self.cleaned_data.get('is_active')
+                ss.save()
+            except Exception, e:
+                raise
+                log.debug("Save SingleUserForm error(%s)" %  str(e))
+                Exception("Save SingleUserForm error: %s", str(e))
+        else:
+            #do not create users here!
+            #ss = User()
+            log.debug("New SingleUserForm")
 

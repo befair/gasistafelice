@@ -11,7 +11,7 @@ from gasistafelice.lib.http import HttpResponse
 
 from gasistafelice.gas.models import GASMember
 
-from gasistafelice.gas.forms.order import BasketGASMemberOrderForm, SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import BasketGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template

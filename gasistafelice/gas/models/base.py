@@ -197,6 +197,23 @@ class GAS(models.Model, PermissionResource):
         return Person.objects.filter(gasactivist__in=self.activist_set.all())
 
     @property
+    def users(self):
+        #usrs_pks = set(member.user.pk for member in self.gasmembers)
+        #return User.objects.filter(pk__in=usrs_pks)
+        #qs = User.objects.filter(person__in=self.persons)
+        #return qs.distinct()
+
+        return  User.objects.all()
+        #FIXME:'User' object has no attribute '_clone'
+        # initialize the return QuerySet 
+        qs = User.objects.none()
+        #add the suppliers who have signed a pact with a GAS this person belongs to
+        for member in self.gasmembers:
+            if member.person.user:
+                qs = qs | member.person.user
+        return qs
+
+    @property
     def persons(self):
         qs = Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
         return qs.distinct()

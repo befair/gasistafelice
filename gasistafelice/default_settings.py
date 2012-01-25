@@ -252,7 +252,11 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
-        'blocks' : ['gas_details', 'gasmembers']
+        'blocks' : ['gas_details', 'gasmembers'],
+    },{
+        'name' : 'admin',
+        'descr' : 'Admin',
+        'blocks' : ['users'],   # 'users' Referrer and roles
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
