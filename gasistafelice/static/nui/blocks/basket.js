@@ -28,9 +28,9 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aaSorting": [[2,"asc"]],
                 "aoColumns": [
-                    {"bSearchable":true,"bSortable":true, "sWidth": "5%"},
-                    {"bSearchable":true,"bSortable":true, "sWidth": "5%"},
-                    {"bSearchable":false,"bSortable":true, "sWidth": "20%",
+                    {"bSearchable":true,"bSortable":true, "sWidth": "3%"},
+                    {"bSearchable":true,"bSortable":true, "sWidth": "9%"},
+                    {"bSearchable":false,"bSortable":true, "sWidth": "18%",
                       "fnRender": function ( oObj ) {
                                     var url = $(oObj.aData[iQta]).attr('s_url');
                                     var _name = oObj.aData[ oObj.iDataColumn ];
@@ -38,7 +38,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                                     return res.render();
                                   },
                     },
-                    {"bSearchable":false,"bSortable":true, "sWidth": "30%",
+                    {"bSearchable":false,"bSortable":true, "sWidth": "29%",
                       "fnRender": function ( oObj ) {
                                     var url = $(oObj.aData[iQta]).attr('p_url');
                                     var _name = oObj.aData[ oObj.iDataColumn ];
@@ -79,6 +79,14 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                         $(nRow.cells[4]).addClass(priceStatus);
                         $(nRow.cells[8]).addClass(priceStatus);
                         $(nRow.cells[9]).addClass(confirmStatus);
+
+                        var url = aaData[10];
+                        if (url != undefined) {
+                            var _name = aaData[1];
+                            res = new jQuery.Resource(url, _name);
+                            $(nRow.cells[1]).html( res.render() );
+                        }
+
                     }
                     catch(e){//alert(e.message);
                     }

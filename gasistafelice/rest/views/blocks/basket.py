@@ -34,18 +34,20 @@ class Block(BlockSSDataTables):
     BLOCK_VALID_RESOURCE_TYPES = ["gasmember"]
 
         #3: 'ordered_product__stock__supplier_stock__product', gasstock
-    COLUMN_INDEX_NAME_MAP = { 
-        0: 'pk', 
-        1: 'ordered_product__order__pk', 
-        2: 'ordered_product__gasstock__stock__supplier', 
-        3: 'ordered_product__gasstock__stock__product', 
-        4: 'ordered_price', 
+    COLUMN_INDEX_NAME_MAP = {
+        0: 'pk',
+        1: 'ordered_product__order__pk',
+        2: 'ordered_product__gasstock__stock__supplier',
+        3: 'ordered_product__gasstock__stock__product',
+        4: 'ordered_price',
         5: '' ,
-        6: 'ordered_amount', 
-        7: 'tot_price', 
+        6: 'ordered_amount',
+        7: 'tot_price',
         8: 'enabled' ,
-        9: '' 
+        9: ''
     }
+#,
+#        10: ''  --> order_urn
 
     def _get_user_actions(self, request):
 
@@ -158,6 +160,7 @@ class Block(BlockSSDataTables):
                'ordered_total' : total,
                'field_enabled' : form['enabled'],
                'order_confirmed' : el.is_confirmed,
+               'order_urn' : el.ordered_product.order.urn,
             })
                #'description' : el.product.description,
 
