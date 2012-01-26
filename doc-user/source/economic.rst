@@ -106,13 +106,14 @@ La gerarchia degli account relativi ad un GAS potrebbe essere di questo tipo:
         **SUPPLIER-side**
         . ROOT (/)
         +----------- incomes [P,I]+
-                        +--- gas [P, I] +
+                        +--- gas [P, I]+
                                 +--- <UID gas #1>  [P, I]
                                 | ..
                                 +--- <UID gas #n>  [P, I]
 
    Prod +
         |----------- wallet [A]
+        |
         +----------- incomes [P,I]+
         |                +--- gas [P, I] +
         |                        +--- <UID gas #1>  [P, I]
@@ -122,8 +123,9 @@ La gerarchia degli account relativi ad un GAS potrebbe essere di questo tipo:
         +----------- expenses [P,E]+
                         +--- TODO: Other (Correction?, Donation?, )
 
+
 Legenda
-^^^^^^^
+-------
 
 * A:= Assets
 * L:= Liabilities
