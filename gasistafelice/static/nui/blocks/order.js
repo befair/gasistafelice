@@ -1,5 +1,5 @@
 
-jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
+jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("order", "table");
@@ -92,6 +92,6 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
     
 });
 
-jQuery.BLOCKS["order"] = new jQuery.UIBlockOrderReport();
+jQuery.BLOCKS["order"] = new jQuery.UIBlockOrder();
 
 

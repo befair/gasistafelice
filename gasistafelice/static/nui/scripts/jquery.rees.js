@@ -83,12 +83,17 @@ jQuery.UIBlock = Class.extend({
 
     get_control_panel: function() {
         
-        var block_obj = this;
+        var block_el = $('#' + this.block_box_id);
+        var block_urn = block_el.attr('block_urn');
+        this.url = jQuery.pre + jQuery.app + '/' + block_urn;
         
+        var block_obj = this;
+
         $.ajax({
             type:'GET',
             url: block_obj.url + 'options',
             dataType: 'xml',
+            async: false,
             complete: function(r, s){
                 
                 if (s == "success") {
@@ -96,6 +101,7 @@ jQuery.UIBlock = Class.extend({
                     var jQel = jQuery(jQuery.parseXml(r.responseText));
                     if (jQel.children('error').length > 0)
                         return jQel.text()
+
 
                     if (jQel.find('field').length) {
                         var form_container = $('<div class="opt_content_div"><form id="'+ block_obj.block_name + '-options_form">\n</form></div>');
@@ -117,10 +123,11 @@ jQuery.UIBlock = Class.extend({
                             }
                             
                             var checked = '';
-                            if (_ft == 'checkbox')
+                            if ((_ft == 'checkbox')||(_ft == 'radio')) {
                                 var _fchk = $(this).children('value').attr('xselected');
                                 if (_fchk == 'True')
                                     checked = 'checked="checked"';
+                            }
                             
                             if(_ft != 'select')
                                 form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+"</label></td></tr>" );
@@ -128,19 +135,22 @@ jQuery.UIBlock = Class.extend({
                                 form.append("<tr><td><label>"+_fl+":</label></td><td><select name='gfCP_"+_fv+"'></select></td></tr>" );
                         });
 
-                        block_obj.block_el.prev('.block_control_panel').html(form_container);
+                        //KO: block_el.prev('.block_control_panel').html(form_container);
+                        //    because block is not in page yet!
+                        block_el.find('.block_control_panel').first().html(form_container);
 
-                        block_obj.block_el.parent().find('.opt_content_div input').each( function () {
+                        block_el.parent().find('.opt_content_div input').each( function () {
                             $(this).change(function (e) {
                                 block_obj.extra_queryString = $('#'+ block_obj.block_name + '-options_form').serialize();
                                 block_obj.update_handler(block_obj.block_box_id);
                             })
+                            block_obj.extra_queryString = $('#'+ block_obj.block_name + '-options_form').serialize();
                         });
 
                       }
                 }
                 else {
-                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
+                    block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
                 }
             }
         });	
