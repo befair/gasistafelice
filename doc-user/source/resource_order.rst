@@ -6,6 +6,19 @@ L'ordine
 |head2_descr|
 -------------
 
+Per ciascun ordine il nome riporta:
+
+* il numero dell'ordine
+* la sigla del GAS
+* il fornitore
+* lo stato
+
+Un ordine pianificato visualizza la data di apertura.
+Un ordine aperto visualizza la data di chiusura e di consegna.
+Un ordine chiuso visualizza la data di consegna.
+
+Per sapere ulteriori dettagli, posizionarsi sopra con il mouse, appariranno i dettagli della risorsa
+
 |head2_terms|
 -------------
 
