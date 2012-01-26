@@ -213,6 +213,14 @@ def resource_page(request, resource_type, resource_id):
         
     resource = request.resource
     page_config = get_resource_page_content_config(resource.resource_type)
+    
+    if not request.user.is_superuser:
+
+        if resource_type == GAS.resource_type:
+            if request.user not in resource.tech_referrers:
+                for section in page_config:
+                    if section['name'] == 'admin':
+                        page_config.remove(section)
 
     return create_page_settings_from_config(page_config, resource, resource.ancestors)
 

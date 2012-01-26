@@ -1,3 +1,8 @@
+26.01.2012 Luca Ferroni <luca@befair.it>
+
+    * Autoselezione ordine nella pagina di ordine quando il GAS vuole ordinare
+      su un produttore alla volta
+
 17.01.2012 Luca Ferroni <luca@befair.it>
 
     * Release 0.6-beta1
