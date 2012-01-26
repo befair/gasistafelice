@@ -666,7 +666,7 @@
             //
             var blocks_scripts_to_load = new Array()
             for (var b=0; b < blocks_config.length; b++) {
-                if ($.inArray(blocks_config[b].block_name, blocks_scripts_to_load)<0)
+                if ($.inArray(blocks_config[b].block_name, blocks_scripts_to_load) < 0)
                     blocks_scripts_to_load.push(blocks_config[b].block_name)
             }        
             
@@ -685,17 +685,23 @@
         
                         var block_box_id = 'block_' + jQuery.app + '_' + block.block_urn.replace(/\//g, '_') + 'box';    // MAIN BLOCK HTML ELEMENT                        
                         
-                        render_block_and_start_autorefresh_timer(block.block_name, block.block_urn, block.refresh_rate, block_box_id);
-
                         // Load control panel for each block
-                        // fero - copied some code from doUpdate
+                        // COMMENT LF: copied some code from doUpdate
+                        // COMMENT LF: needed some "fashion code" setting block_box_id
+                        // COMMENT LF: refactory need to block_init_load and set 
+                        // COMMENT LF: block_box_id and block_url in block_obj
                         var visible  = get_block_attribute(block.block_name, 'show');
                         if ( visible == undefined ) {
                             visible = "false";
                             if (block.start_open != "false") visible = "true";
                         }
-                        if (visible == "true") 
+                        if (visible == "true") {
+                            jQuery.BLOCKS[block.block_name].block_box_id = block_box_id;
                             jQuery.BLOCKS[block.block_name].get_control_panel();
+                        }
+
+                        render_block_and_start_autorefresh_timer(block.block_name, block.block_urn, block.refresh_rate, block_box_id);
+
                     }            
                 });
             }

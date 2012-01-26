@@ -540,16 +540,22 @@ class GASConfig(models.Model):
 
     order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False, 
         help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
-    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Select only one order at a time'), default=False, 
-        help_text=_("GASMember can select only one open order at a time in order block"))
+    order_show_only_one_at_a_time = models.BooleanField(
+        verbose_name=_('Select only one order at a time'), default=True, 
+        help_text=_("GASMember can select only one open order at a time in order block")
+    )
 
     #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
-        help_text=_("default closing order day of the week"),verbose_name=_('default close day')
+    default_close_day = models.CharField(
+        max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        help_text=_("default closing order day of the week"),
+        verbose_name=_('default close day')
     )
     #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
-        help_text=_("default delivery day of the week"),verbose_name=_('default delivery day')
+    default_delivery_day = models.CharField(
+        max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        help_text=_("default delivery day of the week"),
+        verbose_name=_('default delivery day')
     )
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
