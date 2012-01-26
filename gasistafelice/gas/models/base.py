@@ -500,6 +500,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def liquidity(self):
         """Accounting sold for all members of this gas"""
+        acc_tot = 0
         for gm in self.gasmembers:
             acc_tot = gm.balance
         return acc_tot
