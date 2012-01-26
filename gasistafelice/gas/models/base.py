@@ -332,22 +332,22 @@ class GAS(models.Model, PermissionResource):
     def setup_accounting(self):
         """ Accounting hierachy for GAS.
 
-		. ROOT (/)
-		|----------- cash [A]
-		+----------- members [P,A]+
-		|				+--- <UID member #1>  [A]
-		|				| ..
-		|				+--- <UID member #n>  [A]
-		+----------- expenses [P,E]+
-		|				+--- TODO: OutOfNetwork
-		|				+--- suppliers [P, E] +
-		|						+--- <UID supplier #1>  [E]
-		|						| ..
-		|						+--- <UID supplier #n>  [E]
-		+----------- incomes [P,I]+
-		|				+--- recharges [I] 
-		|				+--- fees [I]
-		|				+--- TODO: Other
+        . ROOT (/)
+        |----------- cash [A]
+        +----------- members [P,A]+
+        |                +--- <UID member #1>  [A]
+        |                | ..
+        |                +--- <UID member #n>  [A]
+        +----------- expenses [P,E]+
+        |                +--- TODO: OutOfNetwork
+        |                +--- suppliers [P, E] +
+        |                        +--- <UID supplier #1>  [E]
+        |                        | ..
+        |                        +--- <UID supplier #n>  [E]
+        +----------- incomes [P,I]+
+        |                +--- recharges [I] 
+        |                +--- fees [I]
+        |                +--- TODO: Other
         """
 
         self.subject.init_accounting_system()
@@ -840,9 +840,9 @@ class GASMember(models.Model, PermissionResource):
         #GAS-side
         . ROOT (/)
         +----------- members [P,A]+
-        |				+--- <UID member #1>  [A]
-        |				| ..
-        |				+--- <UID member #n>  [A]
+        |                +--- <UID member #1>  [A]
+        |                | ..
+        |                +--- <UID member #n>  [A]
 
         #Person-side
         . ROOT (/)
@@ -850,8 +850,8 @@ class GASMember(models.Model, PermissionResource):
         +--- expenses [P,E]+
                 +--- gas [P, E] +
                         +--- <UID gas #1>  [P, E]+
-                        |			+--- recharges [E]
-                        |			+--- fees [E]
+                        |            +--- recharges [E]
+                        |            +--- fees [E]
                         | ..
                         +--- <UID gas #n>  [P, E]
                                     +--- recharges [E]
@@ -1361,12 +1361,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         """ GASSupplierSolidalPact contributes to GAS and Supplier accounting hierarchies.
 
         # GAS-side
-		. ROOT (/)
-		+----------- expenses [P,E]+
-		|				+--- suppliers [P, E] +
-		|						+--- <UID supplier #1>  [E]
-		|						| ..
-		|						+--- <UID supplier #n>  [E]
+        . ROOT (/)
+        +----------- expenses [P,E]+
+        |               +--- suppliers [P, E] +
+        |                       +--- <UID supplier #1>  [E]
+        |                       | ..
+        |                       +--- <UID supplier #n>  [E]
 
         # SUPPLIER-side
         . ROOT (/)
