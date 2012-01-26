@@ -35,7 +35,7 @@ jQuery.UIBlockOrdersPreparedList = jQuery.UIBlockWithList.extend({
                     {"bSearchable":false,"bSortable":true,"sWidth":"15%",},
                     {"bSearchable":true,"bSortable":true,"sWidth":"20%",},
                     {"bSearchable":false,"bSortable":true,"sWidth":"15%"},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"5%"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"5%", "sClass": "tacenter"},
                     {"bSearchable":false,"bSortable":true,"sWidth":"10%"}
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
