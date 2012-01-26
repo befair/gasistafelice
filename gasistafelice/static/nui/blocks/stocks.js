@@ -22,7 +22,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%","bVisible":true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"50%","bVisible":true},
                     {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"20%",},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%", "sClass": "tacenter"},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
