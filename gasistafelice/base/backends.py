@@ -38,7 +38,7 @@ class AuthenticationParamRoleBackend(ModelBackend):
         except User.DoesNotExist:
             rv = None
 
-        if user:
+        if rv:
             if not PrincipalParamRoleRelation.objects.filter(user=user).count():
                 rv = None
 
