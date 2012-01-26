@@ -356,6 +356,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 #            return
 
         gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
+        if gasstocks and gasstocks.count() > 0:
+            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set count: %s " % gasstocks.count())
+        else:
+            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set ?????? %s " % gasstocks)
         for s in gasstocks:
             #maybe works the more intuitive...self.orderable_product_set.add( ???
             GASSupplierOrderProduct.objects.create(order=self, 
