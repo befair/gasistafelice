@@ -465,46 +465,46 @@ class AddOrderForm(BaseOrderForm):
                     repeat_max = 3 # limit to 3 years
                     # days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks
                     repeat_type = 'days'
-                    repeat_qta = 7
+                    repeat_amount = 7
                     if _repeat_frequency == 1: #week
                         if _repeat_items > (repeat_max * 52):
                             _repeat_items = repeat_max * 52
                     elif _repeat_frequency == 2: #two weeks
-                        repeat_qta = 7 * 2
+                        repeat_amount = 7 * 2
                         if _repeat_items > (repeat_max * 26):
                             _repeat_items = repeat_max * 26
                     elif _repeat_frequency == 3: #three weeks
-                        repeat_qta = 7 * 3
+                        repeat_amount = 7 * 3
                         if _repeat_items > (repeat_max * 18):
                             _repeat_items = repeat_max * 18
                     elif _repeat_frequency == 4: #monthly
                         #repeat_type = 'months'
-                        #repeat_qta = 1
-                        repeat_qta = 7 * 4
+                        #repeat_amount = 1
+                        repeat_amount = 7 * 4
                         if _repeat_items > (repeat_max * 12):
                             _repeat_items = repeat_max * 12
                     elif _repeat_frequency == 5: #two months
                         #repeat_type = 'months'
-                        #repeat_qta = 2
-                        repeat_qta = 7 * 4 * 2
+                        #repeat_amount = 2
+                        repeat_amount = 7 * 4 * 2
                         if _repeat_items > (repeat_max * 6):
                             _repeat_items = repeat_max * 6
                     elif _repeat_frequency == 6: #three months
                         #repeat_type = 'months'
-                        #repeat_qta = 3
-                        repeat_qta = 7 * 4 * 3
+                        #repeat_amount = 3
+                        repeat_amount = 7 * 4 * 3
                         if _repeat_items > (repeat_max * 4):
                             _repeat_items = repeat_max * 4
                     elif _repeat_frequency == 7: #half year
                         #repeat_type = 'months'
-                        #repeat_qta = 6
-                        repeat_qta = 7 * 4 * 6
+                        #repeat_amount = 6
+                        repeat_amount = 7 * 4 * 6
                         if _repeat_items > (repeat_max * 2):
                             _repeat_items = repeat_max * 2
                     elif _repeat_frequency == 8: #year
                         #repeat_type = 'months'
-                        #repeat_qta = 12
-                        repeat_qta = 7 * 4 * 12
+                        #repeat_amount = 12
+                        repeat_amount = 7 * 4 * 12
                         if _repeat_items > (repeat_max * 1):
                             _repeat_items = repeat_max * 1
                     else: _repeat_items = 1;
@@ -516,7 +516,7 @@ class AddOrderForm(BaseOrderForm):
                 for num in range(1,_repeat_items+1):  #to iterate between 1 to _repeat_items
                     #program order
                     x_obj = GetNewOrder(self.instance, None)
-                    r_q = (repeat_qta*num)
+                    r_q = (repeat_amount*num)
                     r_dd = self.instance.delivery.date
                     #Open Close Delivery
                     if repeat_type == 'months':
@@ -699,7 +699,7 @@ class GASSupplierOrderProductForm(forms.Form):
             if not enabled:
                 gsop = GASSupplierOrderProduct.objects.get(pk=id)
                 log.debug("STO rendendo indisponibile (fuori stagione) un prodotto da un ordine aperto")
-                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/Qta %s/Gasisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
+                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/amount %s/Gasisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
                 gsop.delete()
 
 
