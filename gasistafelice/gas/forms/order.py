@@ -154,9 +154,7 @@ class BaseOrderForm(forms.ModelForm):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
 #-------------------------------------------------------------------------------
-
-def frequency_choices():
-    return [ ('1', _('week')), ('2', _('two weeks')), ('3', _('three weeks')), ('4', _('monthly')), ('5', _('two months')), ('6', _('three months')), ('7', _('half year')), ('8', _('year'))]
+FREQUENCY = [ ('1', _('week')), ('2', _('two weeks')), ('3', _('three weeks')), ('4', _('monthly')), ('5', _('two months')), ('6', _('three months')), ('7', _('half year')), ('8', _('year'))]
 
 def add_months(sourcedate,months):
     month = sourcedate.month - 1 + months
@@ -271,7 +269,7 @@ class AddOrderForm(BaseOrderForm):
     pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
     repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
-    repeat_frequency = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=frequency_choices())
+    repeat_frequency = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=FREQUENCY)
     repeat_items = forms.IntegerField(required=False, max_value=52*3)
 
     intergas = forms.BooleanField(label=_('This order is InterGAS?'), required=False)
