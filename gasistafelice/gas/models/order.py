@@ -939,7 +939,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def stock(self):
         return self.gasstock.stock
-    
+
     def save(self, *args, **kw):
         """Sef default initial price"""
         if not self.pk:
@@ -1060,6 +1060,14 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def product(self):
         return self.ordered_product.product
+
+    @property
+    def stock(self):
+        return self.ordered_product.stock
+
+    @property
+    def order(self):
+        return self.ordered_product.order
 
     @property
     def supplier(self):

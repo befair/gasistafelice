@@ -146,22 +146,22 @@ class Block(BlockSSDataTables):
                             'eur_chan' : ["", "alert"][bool(el.has_changed)],
                             'req_conf' : ["alert", ""][bool(el.is_confirmed)],
                             's_url' : el.supplier.urn,
-                            'p_url' : el.ordered_product.stock.urn,
+                            'p_url' : el.stock.urn,
             }
                             #'p_url' : el.product.urn,
 
             records.append({
                'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),
-               'order' : el.ordered_product.order.pk,
+               'order' : el.order.pk,
                'supplier' : el.supplier,
-               'product' : el.product,  #ordered_product.stock,   #el.product
+               'product' : el.product,
                'price' : el.ordered_product.order_price,
                'price_changed' : not el.has_changed,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
                'field_enabled' : form['enabled'],
                'order_confirmed' : el.is_confirmed,
-               'order_urn' : el.ordered_product.order.urn,
+               'order_urn' : el.order.urn,
             })
                #'description' : el.product.description,
 
@@ -181,13 +181,13 @@ class Block(BlockSSDataTables):
         tot_prod = 0
 
         for el in querySet:
-            rowOrder = el.ordered_product.order.pk
+            rowOrder = el.order.pk
             if actualProduttore == -1 or actualProduttore != rowOrder:
                 if actualProduttore != -1:
                     tot_prod = 0
                 actualProduttore = rowOrder
-                description = unicode(el.ordered_product.order)
-                producer = el.ordered_product.stock.supplier
+                description = unicode(el.order)
+                producer = el.supplier
             tot_prod += el.tot_price
 
             records.append({
