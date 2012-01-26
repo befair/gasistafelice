@@ -234,9 +234,14 @@ def GetNewOrder(obj, other_pact):
 def get_group_id():
     _group_id = 1
     _maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
+    log.debug("get_group_id %s " % _maxs)
     if _maxs:
         # get the maximum attribute from the first record and add 1 to it
-        _group_id = _maxs['group_id__max'] + 1
+        _group_id = _maxs['group_id__max']
+        if _group_id:
+            _group_id += 1
+        else:
+            _group_id = 1
     return _group_id
 
 def get_delivery(date, place):
