@@ -214,9 +214,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             if t in get_allowed_transitions(self, user):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
 
-#                #20111212 02:00 prepare reccurent plan for order
-#FIXME: not done when using manual opening
-#                self.set_default_gasstock_set()
+                #20111212 02:00 prepare reccurent plan for order
+                #FIXME: not done when using manual opening. Do it using worflow change state handler
+                #WAS: self.set_default_gasstock_set()
 
                 self.do_transition(t, user)
 
@@ -760,17 +760,10 @@ WHERE order_id = %s \
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
-#20111212 02:00 prepare reccurent plan for order
+        #KO: 20111212 02:00 prepare reccurent plan for order. 
+        # becasue Do not create gasstock if order state is prepared
         if created:
             self.set_default_gasstock_set()
-
-#    def delete(self, *args, **kw):
-#        """
-#        Override default model method so an GASSupplierOrder in InterGAS 
-#        when its head is deleted.
-#        """
-#        #COMMENT: it wil enter in loop?
-#        super(GASSupplierOrder, self).delete(*args, **kw)
 
     #-------------- Authorization API ---------------#
     
