@@ -154,14 +154,7 @@ class BaseOrderForm(forms.ModelForm):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
 #-------------------------------------------------------------------------------
-FREQUENCY = [ ('1', _('week')), ('2', _('two weeks')), ('3', _('three weeks')), ('4', _('monthly')), ('5', _('two months')), ('6', _('three months')), ('7', _('half year')), ('8', _('year'))]
-
-def add_months(sourcedate,months):
-    month = sourcedate.month - 1 + months
-    year = sourcedate.year + month / 12
-    month = month % 12 + 1
-    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
-    return datetime.date(year,month,day)
+FREQUENCY = [ ('7', _('week')), ('14', _('two weeks')), ('21', _('three weeks')), ('28', _('monthly')), ('56', _('two months')), ('84', _('three months')), ('168', _('half year')), ('336', _('year'))]
 
 def GetNewOrder(obj, other_pact):
     #new_obj = obj
@@ -269,8 +262,8 @@ class AddOrderForm(BaseOrderForm):
     pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
     repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
-    repeat_frequency = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=FREQUENCY)
-    repeat_items = forms.IntegerField(required=False, max_value=52*3)
+    repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
+    repeat_until_date = forms.DateField(initial=datetime.now(), widget=admin_widgets.AdminDateWidget)
 
     intergas = forms.BooleanField(label=_('This order is InterGAS?'), required=False)
     intergas_grd = forms.MultipleChoiceField(label=_('gas'), choices=GAS.objects.none(), required=False, widget=forms.CheckboxSelectMultiple)
@@ -370,7 +363,7 @@ class AddOrderForm(BaseOrderForm):
         _intergas_pacts = None
         _intergas_number = None
         _intergas = self.cleaned_data['intergas']
-        if _intergas and bool(_intergas):
+        if bool(_intergas):
 
             #interGAS gas list
             _intergas_gas_list = self.cleaned_data['intergas_grd']
@@ -402,14 +395,14 @@ class AddOrderForm(BaseOrderForm):
                     #Set instance as InterGAS
                     self.instance.group_id = _intergas_number
 
-        #log.debug("AddOrderForm CREATED pre_save")
+        log.debug("AddOrderForm CREATED pre_save")
         _created_order = super(AddOrderForm, self).save(*args, **kwargs)
         if self.instance:
 
             _intergas_orders = set() #GASSupplierOrder.objects.none()
             if _intergas_pacts and _intergas_number:
                 log.debug("AddOrderForm interGAS OPEN for other GAS")
-                #TODO Repeat this order for the overs GAS
+                #Repeat this order for the overs GAS
                 for other_pact in _intergas_pacts:
                     other_order = GetNewOrder(self.instance, other_pact)
                     if other_order:
@@ -425,22 +418,46 @@ class AddOrderForm(BaseOrderForm):
 #            #send email
 #            #COMMENT domthu: Only if opened?  Util? use another politica
 #            _send_email = self.cleaned_data['email_gas']
-#            if _send_email and bool(_send_email):
+#            if bool(_send_email):
 #                TODO: May be we only need to disable the notification if not enabled
 
             #Planification
             _repeat_order = self.cleaned_data['repeat_order']
-            if _repeat_order and bool(_repeat_order):
-                _repeat_frequency = int(self.cleaned_data['repeat_frequency'])
-                _repeat_items = self.cleaned_data['repeat_items']
-                if _repeat_frequency and _repeat_items:
+            if bool(_repeat_order):
+                _repeat_amount = int(self.cleaned_data['repeat_frequency'])
+                _repeat_items = None
+                _repeat_until_date = self.cleaned_data['repeat_until_date']
+                #Calcul _repeat_items
+                tmp_date = self.instance.datetime_end.date()
+                log.debug("repeat params: start %s end %s(%s), until: %s desired: %s" % (
+                    self.instance.datetime_start,
+                    self.instance.datetime_end,
+                    tmp_date,
+                    _repeat_until_date,
+                    _repeat_amount)
+                )
+                if _repeat_until_date and tmp_date and _repeat_until_date > tmp_date:
+                    tmp_date = self.instance.datetime_start.date()
+                    tmp_days = (_repeat_until_date - tmp_date).days
+                    log.debug("repeat tmp date: %s days: %s" % (tmp_date, tmp_days))
+                    _repeat_items = tmp_days // _repeat_amount
+                log.debug("repeat parameters: %s, items: %s" % (_repeat_amount, _repeat_items))
 
-                    #Delete - Clean all previous planification
-                    planed_orders = GASSupplierOrder.objects.filter(pact=self.instance.pact)
-                    planed_orders = planed_orders.filter(datetime_start__gte = self.instance.datetime_start)
-                    planed_orders = planed_orders.exclude(datetime_start = self.instance.datetime_start)
-                    #log.debug("repeat planed_orders: %s" % (planed_orders))
-                    for order in planed_orders:
+                #verify params request is consistent
+                if not _repeat_amount or not _repeat_items or _repeat_items < 1:
+                    log.debug("repeat some parameter wrong")
+                    return _created_order
+
+                #Delete - Clean all previous planification
+                previous_planed_orders = GASSupplierOrder.objects.filter(
+                    pact=self.instance.pact,
+                    datetime_start__gt = self.instance.datetime_start
+                )
+                log.debug("repeat previous_planed_orders: %s" % (previous_planed_orders))
+                for order in previous_planed_orders:
+
+                    #delete only prepared orders
+                    if order.is_prepared or order.is_active:
 
                         #if InterGAS delete relative group_id others orders.
                         if order.group_id and order.group_id > 0:
@@ -448,88 +465,24 @@ class AddOrderForm(BaseOrderForm):
                             planed_intergas_orders = GASSupplierOrder.objects.filter(group_id=order.group_id)
                             if planed_intergas_orders and planed_intergas_orders.count() >0:
                                 for intergas_order in planed_intergas_orders:
-                                    log.debug("AddOrderForm repeat delete intergas_planed_orders: %s" % (intergas_order))
+                                    log.debug("AddOrderForm repeat delete intergas_previous_planed_orders: %s" % (intergas_order))
                                     intergas_order.delete()
-                            else:
-                                log.debug("AddOrderForm repeat delete unique? intergas_planed_orders: %s" % (order))
-                                order.delete()
-                        else:
-                            log.debug("AddOrderForm repeat delete planed_orders: %s" % (order))
-                            order.delete()
 
-                    #Planificate new orders
-                    #log.debug("repeat original frequency: %s" % _repeat_frequency)
-                    #log.debug("repeat original items: %s" % _repeat_items)
-                    repeat_max = 3 # limit to 3 years
-                    # days[, seconds[, microseconds[, milliseconds[, minutes[, hours[, weeks
-                    repeat_type = 'days'
-                    repeat_amount = 7
-                    if _repeat_frequency == 1: #week
-                        if _repeat_items > (repeat_max * 52):
-                            _repeat_items = repeat_max * 52
-                    elif _repeat_frequency == 2: #two weeks
-                        repeat_amount = 7 * 2
-                        if _repeat_items > (repeat_max * 26):
-                            _repeat_items = repeat_max * 26
-                    elif _repeat_frequency == 3: #three weeks
-                        repeat_amount = 7 * 3
-                        if _repeat_items > (repeat_max * 18):
-                            _repeat_items = repeat_max * 18
-                    elif _repeat_frequency == 4: #monthly
-                        #repeat_type = 'months'
-                        #repeat_amount = 1
-                        repeat_amount = 7 * 4
-                        if _repeat_items > (repeat_max * 12):
-                            _repeat_items = repeat_max * 12
-                    elif _repeat_frequency == 5: #two months
-                        #repeat_type = 'months'
-                        #repeat_amount = 2
-                        repeat_amount = 7 * 4 * 2
-                        if _repeat_items > (repeat_max * 6):
-                            _repeat_items = repeat_max * 6
-                    elif _repeat_frequency == 6: #three months
-                        #repeat_type = 'months'
-                        #repeat_amount = 3
-                        repeat_amount = 7 * 4 * 3
-                        if _repeat_items > (repeat_max * 4):
-                            _repeat_items = repeat_max * 4
-                    elif _repeat_frequency == 7: #half year
-                        #repeat_type = 'months'
-                        #repeat_amount = 6
-                        repeat_amount = 7 * 4 * 6
-                        if _repeat_items > (repeat_max * 2):
-                            _repeat_items = repeat_max * 2
-                    elif _repeat_frequency == 8: #year
-                        #repeat_type = 'months'
-                        #repeat_amount = 12
-                        repeat_amount = 7 * 4 * 12
-                        if _repeat_items > (repeat_max * 1):
-                            _repeat_items = repeat_max * 1
-                    else: _repeat_items = 1;
-                    log.debug("repeat limited frequency: %s, items: %s" % (_repeat_frequency, _repeat_items))
-                else:
-                    log.debug("repeat some parameter wrong")
+                        log.debug("AddOrderForm repeat delete previous_planed_orders: %s" % (order))
+                        order.delete()
 
-                #create orders
+                #Planificate new orders
                 for num in range(1,_repeat_items+1):  #to iterate between 1 to _repeat_items
                     #program order
                     x_obj = GetNewOrder(self.instance, None)
-                    r_q = (repeat_amount*num)
+                    r_q = (_repeat_amount*num)
                     r_dd = self.instance.delivery.date
-                    #Open Close Delivery
-                    if repeat_type == 'months':
-                        x_obj.datetime_start = add_months(x_obj.datetime_start, r_q )
-                        x_obj.datetime_end = add_months(x_obj.datetime_end, r_q )
-                        r_dd = add_months(r_dd, r_q )
-                    else:
-                        x_obj.datetime_start += timedelta(days=+r_q)
-                        x_obj.datetime_end += timedelta(days=+r_q)
-                        r_dd += timedelta(days=+r_q)
-                    #x_obj.delivery = Delivery.objects.create(
-                    #x_obj.delivery, created = Delivery.objects.get_or_create(
-                    #        date=r_dd,
-                    #        place=self.instance.delivery.place
-                    #)
+
+                    #set date for open, close and delivery order
+                    x_obj.datetime_start += timedelta(days=+r_q)
+                    x_obj.datetime_end += timedelta(days=+r_q)
+                    r_dd += timedelta(days=+r_q)
+
                     x_obj.delivery = get_delivery(r_dd, self.instance.delivery.place)
 
                     #get new interGAS number if needed
@@ -574,7 +527,7 @@ class AddOrderForm(BaseOrderForm):
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
                             , 'referrer_person'
-                            , ('repeat_order', 'repeat_items', 'repeat_frequency')
+                            , ('repeat_order', 'repeat_frequency', 'repeat_until_date')
                             , ('intergas', 'intergas_grd')
             ]
         })]
