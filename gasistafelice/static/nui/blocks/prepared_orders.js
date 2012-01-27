@@ -27,6 +27,8 @@ jQuery.UIBlockOrdersPreparedList = jQuery.UIBlockWithList.extend({
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
+                "iDisplayLength": 20,
+                "aaSorting": [[2,'asc']],
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
@@ -34,9 +36,9 @@ jQuery.UIBlockOrdersPreparedList = jQuery.UIBlockWithList.extend({
                     {"bSearchable":true,"bSortable":true,"sWidth":"15%"},
                     {"bSearchable":false,"bSortable":true,"sWidth":"15%",},
                     {"bSearchable":true,"bSortable":true,"sWidth":"20%",},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"15%"},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"5%", "sClass": "tacenter"},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"10%"}
+                    {"bSearchable":true,"bSortable":true,"sWidth":"15%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"5%", "sClass": "tacenter"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%"}
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {

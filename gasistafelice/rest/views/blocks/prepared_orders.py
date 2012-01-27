@@ -26,15 +26,10 @@ class Block(BlockSSDataTables):
         1: 'pact__supplier__name',
         2: 'datetime_start',
         3: 'referrer_person__name',
-        4: 'datetime_end',
+        4: 'referrer_person__surname',
         5: 'group_id',
         6: 'root_plan__pk'
     }
 
-#        0: 'order', 'pk'
-#        1: 'producer',
-#        2: 'datetime_start__range',
-#        3: 'referrer_person'
 #        4: 'datetime_end',
-#        5: 'group_id',
-#        6: 'root_plan',
+
