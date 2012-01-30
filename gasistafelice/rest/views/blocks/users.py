@@ -21,13 +21,17 @@ class Block(BlockSSDataTables):
 
     BLOCK_NAME = "users"
     BLOCK_DESCRIPTION = _("Users")
-    BLOCK_VALID_RESOURCE_TYPES = ["gas"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
-    COLUMN_INDEX_NAME_MAP = { 
+    COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
         1: 'first_name',
         2: 'last_name',
-        3: 'is_active'
+        3: 'email',
+        4: 'last_login',
+        5: 'date_joined',
+        6: 'is_active',
+        7: 'is_staff'
     }
 
     def _get_user_actions(self, request):
@@ -107,6 +111,10 @@ class Block(BlockSSDataTables):
                'id' : "%s %s" % (form['pk'], form['id']),
                 'first_name' : el.first_name,
                 'last_name' : el.last_name,
+                'email' : el.email,
+                'last_login' : el.last_login,
+                'date_joined' : el.date_joined,
+                'is_staff' : el.is_staff,
                 'is_active' : form['is_active'],
             })
 

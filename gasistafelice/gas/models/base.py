@@ -203,14 +203,14 @@ class GAS(models.Model, PermissionResource):
         #qs = User.objects.filter(person__in=self.persons)
         #return qs.distinct()
 
-        return  User.objects.all()
+        #return  User.objects.all()
         #FIXME:'User' object has no attribute '_clone'
         # initialize the return QuerySet 
         qs = User.objects.none()
         #add the suppliers who have signed a pact with a GAS this person belongs to
         for member in self.gasmembers:
             if member.person.user:
-                qs = qs | member.person.user
+                qs |= member.person.user
         return qs
 
     @property
