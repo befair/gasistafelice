@@ -198,20 +198,17 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def users(self):
-        #usrs_pks = set(member.user.pk for member in self.gasmembers)
-        #return User.objects.filter(pk__in=usrs_pks)
-        #qs = User.objects.filter(person__in=self.persons)
-        #return qs.distinct()
-
-        #return  User.objects.all()
+        #WAS: us = User.objects.none()
+        #WAS: add the suppliers who have signed a pact with a GAS this person belongs to
+        #WAS: for member in self.gasmembers:
+        #WAS:     if member.person.user:
+        #WAS:         us |= member.person.user
         #FIXME:'User' object has no attribute '_clone'
-        # initialize the return QuerySet 
-        qs = User.objects.none()
-        #add the suppliers who have signed a pact with a GAS this person belongs to
+        usr_ids = set()
         for member in self.gasmembers:
             if member.person.user:
-                qs |= member.person.user
-        return qs
+                usr_ids.add(member.person.user.pk)
+        return User.objects.filter(pk__in = usr_ids)
 
     @property
     def persons(self):
@@ -250,7 +247,7 @@ class GAS(models.Model, PermissionResource):
         # retrieve all Users having this role
         us = User.objects.none()
         for pr in prs:
-            us |= pr.get_users() 
+            us |= pr.get_users()
         return us
 
     @property
