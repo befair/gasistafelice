@@ -247,7 +247,7 @@ class GAS(models.Model, PermissionResource):
         # retrieve all Users having this role
         us = User.objects.none()
         for pr in prs:
-            us |= pr.get_users() 
+            us |= pr.get_users()
         return us
 
     @property
