@@ -685,8 +685,9 @@ class SingleGASMemberOrderForm(forms.Form):
         cleaned_data = super(SingleGASMemberOrderForm, self).clean()
         if not self.__gmusr or self.__gmusr != self.__loggedusr:
             log.debug("------SingleGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
-            raise forms.ValidationError(_("You are not authorized to make an order for %(person)s") % {'person' :self.__gmusr})
+            raise forms.ValidationError(_("You %(logged)s are not authorized to make an order for %(person)s") % {'logged' :self.__loggedusr, 'person' :self.__gmusr})
         return cleaned_data
+
     def save(self):
 
         id = self.cleaned_data.get('id')
@@ -729,9 +730,16 @@ class BasketGASMemberOrderForm(forms.Form):
 
     def __init__(self, request, *args, **kw):
         super(BasketGASMemberOrderForm, self).__init__(*args, **kw)
-        #self.__gm = request.resource.gasmember
+        self.__gm = request.resource.gasmember
         self.__gmusr = request.resource.gasmember.person.user
         self.__loggedusr = request.user
+
+    def clean(self):
+        cleaned_data = super(BasketGASMemberOrderForm, self).clean()
+        if not self.__gmusr or self.__gmusr != self.__loggedusr:
+            log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
+            raise forms.ValidationError(_("You %(logged)s are not authorized to make an order for %(person)s") % {'logged' :self.__loggedusr, 'person' :self.__gmusr})
+        return cleaned_data
 
 
     def save(self):
