@@ -97,8 +97,8 @@ class Block(BlockSSDataTables):
 
             map_info[el.pk] = {'formset_index' : i}
 
-        data['form-TOTAL_FORMS'] = c #i 
-        data['form-INITIAL_FORMS'] = c #0
+        data['form-TOTAL_FORMS'] = c
+        data['form-INITIAL_FORMS'] = c
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)
