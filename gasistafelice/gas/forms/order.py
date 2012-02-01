@@ -84,7 +84,10 @@ class BaseOrderForm(forms.ModelForm):
 
     delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
 
-    referrer_person = forms.ModelChoiceField(label=_('referrer'), queryset=Person.objects.none(), required=True, error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')})
+    referrer_person = forms.ModelChoiceField(label=_('referrer'), 
+        queryset=Person.objects.none(), required=True, 
+        error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')}
+    )
 
     def __init__(self, request, *args, **kw):
         #Strip request arg
@@ -154,7 +157,17 @@ class BaseOrderForm(forms.ModelForm):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
 #-------------------------------------------------------------------------------
-FREQUENCY = [ ('7', _('week')), ('14', _('two weeks')), ('21', _('three weeks')), ('28', _('monthly')), ('56', _('two months')), ('84', _('three months')), ('168', _('half year')), ('336', _('year'))]
+
+FREQUENCY = [ 
+    ('7', _('week')), 
+    ('14', _('two weeks')), 
+    ('21', _('three weeks')), 
+    ('28', _('monthly')), 
+    ('56', _('two months')), 
+    ('84', _('three months')), 
+    ('168', _('half year')), 
+    ('336', _('year'))
+]
 
 def GetNewOrder(obj, other_pact):
     #new_obj = obj
@@ -164,6 +177,7 @@ def GetNewOrder(obj, other_pact):
         new_obj.pact = other_pact
     else:
         new_obj.pact = obj.pact
+
     #planification
     new_obj.root_plan = obj  #.pk
     new_obj.datetime_start = obj.datetime_start
@@ -254,12 +268,16 @@ def get_delivery(date, place):
 
 class AddOrderForm(BaseOrderForm):
     """ use in forms:
-            des             ChooseSupplier  ChooseGAS ChooseReferrer
+            DES             ChooseSupplier  ChooseGAS ChooseReferrer
             GAS             ChooseSupplier  OneGAS    ChooseReferrer
-            Suppplier       OneSupplier     ChooseGAS ChooseReferrer
+            Supplier        OneSupplier     ChooseGAS ChooseReferrer
             Solidal Pact    OneSupplier     OneGAS    ChooseReferrer
     """
-    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=True, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
+    pact = forms.ModelChoiceField(label=_('pact'), 
+        queryset=GASSupplierSolidalPact.objects.none(), 
+        required=True, 
+        error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')}
+    )
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
     repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
     repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
@@ -276,10 +294,12 @@ class AddOrderForm(BaseOrderForm):
         #pacts = request.resource.pacts
         pacts = GASSupplierSolidalPact.objects.none()
         resource_pacts = request.resource.pacts
-        #Limit pact to the logger user. Do not see pacts from other GAS than mine. Due to "Supplier" resources that was showing pacty for another GAS.
-        #user_pacts = request.user.person.pacts
+        # Limit pact to the logger user. Do not see pacts from other GAS than mine. 
+        # Due to "Supplier" resources that was showing pact for another GAS.
+        # user_pacts = request.user.person.pacts
         user_pacts = request.user.person.pacts.values_list('pk')
-        if resource_pacts and user_pacts and resource_pacts.count() > 0 and user_pacts.count() > 0:
+        #KO by fero: not needed "if resource_pacts and user_pacts and "
+        if resource_pacts.count() and user_pacts.count():
             pacts = resource_pacts.filter(pk__in = user_pacts)
 #       if not pacts.count():
 #            raise PermissionDenied(_("You cannot open an order on a resource with no pacts"))
@@ -601,24 +621,45 @@ def form_class_factory_for_request(request, base):
         if gas.config.use_withdrawal_place:
             gf_fieldsets[0][1]['fields'].append('withdrawal_referrer_person')
             attrs.update({
-                'withdrawal_referrer' : forms.ModelChoiceField(queryset=Person.objects.none(), required=False),
+                'withdrawal_referrer' : forms.ModelChoiceField(
+                    queryset=Person.objects.none(), 
+                    required=False
+                ),
             })
 
         if gas.config.can_change_delivery_place_on_each_order:
             gf_fieldsets[0][1]['fields'].append(('delivery_city', 'delivery_addr_or_place'))
             attrs.update({
-                'delivery_city' : forms.CharField(required=True, label=_('Delivery city'), initial=gas.city),
-                'delivery_addr_or_place': forms.CharField(required=True, label=_('Delivery address or place'), initial=gas.headquarter),
+                'delivery_city' : forms.CharField(required=True, 
+                    label=_('Delivery city'), 
+                    initial=gas.city
+                ),
+                'delivery_addr_or_place': forms.CharField(
+                    required=True, label=_('Delivery address or place'), 
+                    initial=gas.headquarter
+                ),
             })
 
         if gas.config.use_withdrawal_place:
 
             if gas.config.can_change_withdrawal_place_on_each_order:
-                gf_fieldsets[0][1]['fields'].append(('withdrawal_datetime', 'withdrawal_city', 'withdrawal_addr_or_place'))
+                gf_fieldsets[0][1]['fields'].append((
+                    'withdrawal_datetime', 'withdrawal_city', 
+                    'withdrawal_addr_or_place')
+                )
                 attrs.update({
-                    'withdrawal_datetime' : forms.SplitDateTimeField(required=False, label=_('Withdrawal on/at'), widget=admin_widgets.AdminSplitDateTime),
-                    'withdrawal_city' : forms.CharField(required=True, label=_('Withdrawal city'), initial=gas.city),
-                    'withdrawal_addr_or_place': forms.CharField(required=True, label=_('Withdrawal address or place'), initial=gas.headquarter),
+                    'withdrawal_datetime' : forms.SplitDateTimeField(
+                        required=False, label=_('Withdrawal on/at'), 
+                        widget=admin_widgets.AdminSplitDateTime
+                    ),
+                    'withdrawal_city' : forms.CharField(
+                        required=True, label=_('Withdrawal city'), 
+                        initial=gas.city
+                    ),
+                    'withdrawal_addr_or_place': forms.CharField(required=True, 
+                        label=_('Withdrawal address or place'), 
+                        initial=gas.headquarter
+                    ),
                 })
 
 
@@ -656,7 +697,10 @@ class GASSupplierOrderProductForm(forms.Form):
             if not enabled:
                 gsop = GASSupplierOrderProduct.objects.get(pk=id)
                 log.debug("STO rendendo indisponibile (fuori stagione) un prodotto da un ordine aperto")
-                log.debug("order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/amount %s/Gasisti %s]" % (gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, gsop.tot_amount, gsop.tot_gasmembers))
+                log.debug(u"order(%s) %s  per prodotto(%s): %s |||| ordini gasmember: [Euro %s/amount %s/Gasisti %s]" % (
+                    gsop.order.pk, gsop.order, id, gsop.product, gsop.tot_price, 
+                    gsop.tot_amount, gsop.tot_gasmembers
+                ))
                 gsop.delete()
 
 
@@ -759,7 +803,9 @@ class BasketGASMemberOrderForm(forms.Form):
             )
 
         if self.__gmusr != self.__loggedusr:
-            log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
+            log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (
+                self.__gmusr,self.__loggedusr
+            ))
             raise forms.ValidationError(
                 _("You %(logged)s are not authorized to make an order for %(person)s") % {
                     'logged' : u"(%s)" % self.__loggedusr, 
@@ -771,7 +817,9 @@ class BasketGASMemberOrderForm(forms.Form):
     def save(self):
 
         if not self.__gmusr or self.__gmusr != self.__loggedusr:
-            log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
+            log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (
+                self.__gmusr,self.__loggedusr
+            ))
             return
         id = self.cleaned_data.get('id')
         gm_id = self.cleaned_data.get('gm_id')
