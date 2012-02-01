@@ -37,7 +37,7 @@ from gasistafelice.supplier.models import Supplier, SupplierStock, Product, Prod
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.des.models import DES
 
-from gasistafelice.exceptions import NoSenseException
+from gasistafelice.exceptions import NoSenseException, DatabaseInconsistent
 
 from decimal import Decimal
 import datetime
@@ -203,11 +203,16 @@ class GAS(models.Model, PermissionResource):
         #WAS: for member in self.gasmembers:
         #WAS:     if member.person.user:
         #WAS:         us |= member.person.user
-        #FIXME:'User' object has no attribute '_clone'
         usr_ids = set()
         for member in self.gasmembers:
-            if member.person.user:
-                usr_ids.add(member.person.user.pk)
+
+            #COMMENT LF: specifications say that every GASMember MUST
+            #COMMENT LF: be bound to a User: so raise an Exception if not True
+            if not member.person.user:
+                raise DatabaseInconsistent(
+                    "Member %s is not bound to a valid User" % member
+                )
+            usr_ids.add(member.person.user.pk)
         return User.objects.filter(pk__in = usr_ids)
 
     @property

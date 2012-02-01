@@ -14,11 +14,13 @@ from django.db.models import Max
 from django.forms.formsets import formset_factory
 from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
+from django.core.exceptions import ValidationError, PermissionDenied
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.base import const
+from gasistafelice.exceptions import DatabaseInconsistent
 
 from django.conf import settings
 import copy
@@ -28,8 +30,6 @@ import calendar
 import logging
 log = logging.getLogger(__name__)
 
-from django.core import validators
-from django.core.exceptions import ValidationError, PermissionDenied
 
 
 def gf_now():
@@ -683,9 +683,23 @@ class SingleGASMemberOrderForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(SingleGASMemberOrderForm, self).clean()
-        if not self.__gmusr or self.__gmusr != self.__loggedusr:
-            log.debug("------SingleGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
-            raise forms.ValidationError(_("You %(logged)s are not authorized to make an order for %(person)s") % {'logged' :self.__loggedusr, 'person' :self.__gmusr})
+
+        #COMMENT LF: specifications say that every GASMember MUST
+        #COMMENT LF: be bound to a User: so raise an Exception if not True
+        if not self.__gmusr:
+            raise DatabaseInconsistent(
+                "Member %s is not bound to a valid User" % self.__gm
+            )
+
+        if self.__gmusr != self.__loggedusr:
+            log.debug(u"------SingleGASMemberOrderForm (%s) not enabled for %s" % (
+                self.__gmusr, self.__loggedusr
+            ))
+            raise forms.ValidationError(
+                _(u"You %(logged)s are not authorized to make an order for %(person)s") % {
+                    'logged' : u"(%s)" % self.__loggedusr, 
+                    'person' :self.__gmusr
+            })
         return cleaned_data
 
     def save(self):
@@ -698,10 +712,10 @@ class SingleGASMemberOrderForm(forms.Form):
             gmo.note = self.cleaned_data.get('note')
             if gmo.ordered_amount == 0:
                 gmo.delete()
-                log.debug("STO CANCELLANDO un ordine gasista da widget quantita")
+                log.debug(u"STO CANCELLANDO un ordine gasista da widget quantita")
             else:
                 gmo.save()
-                log.debug("Product ho aggiornato un ordine gasista (%s) " % id)
+                log.debug(u"Product ho aggiornato un ordine gasista (%s) " % id)
 
         elif self.cleaned_data.get('ordered_amount'):
                 gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
@@ -736,9 +750,21 @@ class BasketGASMemberOrderForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(BasketGASMemberOrderForm, self).clean()
-        if not self.__gmusr or self.__gmusr != self.__loggedusr:
+
+        #COMMENT LF: specifications say that every GASMember MUST
+        #COMMENT LF: be bound to a User: so raise an Exception if not True
+        if not self.__gmusr:
+            raise DatabaseInconsistent(
+                "Member %s is not bound to a valid User" % self.__gm
+            )
+
+        if self.__gmusr != self.__loggedusr:
             log.debug("------BasketGASMemberOrderForm (%s) not enabled for %s" % (self.__gmusr,self.__loggedusr))
-            raise forms.ValidationError(_("You %(logged)s are not authorized to make an order for %(person)s") % {'logged' :self.__loggedusr, 'person' :self.__gmusr})
+            raise forms.ValidationError(
+                _("You %(logged)s are not authorized to make an order for %(person)s") % {
+                    'logged' : u"(%s)" % self.__loggedusr, 
+                    'person' :self.__gmusr
+            })
         return cleaned_data
 
 
@@ -760,12 +786,12 @@ class BasketGASMemberOrderForm(forms.Form):
             gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
             #log.debug("BasketGASMemberOrderForm (%s) enabled = %s" % (gmo.pk,enabled))
             if gmo.ordered_amount == 0:
+                log.debug(u"Basket STO CANCELLANDO un ordine gasista da widget quantita")
                 gmo.delete()
-                log.debug("Basket STO CANCELLANDO un ordine gasista da widget quantita")
             elif enabled:
+                log.debug(u"Basket STO CANCELLANDO un ordine gasista da check enabled")
                 gmo.delete()
-                log.debug("Basket STO CANCELLANDO un ordine gasista da check enabled")
             else:
+                log.debug(u"Basket ho aggiornato un ordine gasista (%s) " % id)
                 gmo.save()
-                log.debug("Basket ho aggiornato un ordine gasista (%s) " % id)
 
