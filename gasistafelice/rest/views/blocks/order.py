@@ -8,7 +8,10 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models import GASMemberOrder
-from gasistafelice.gas.forms.order import SingleGASMemberOrderForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import SingleGASMemberOrderForm
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from django.forms.formsets import formset_factory
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -18,6 +21,10 @@ log = logging.getLogger(__name__)
 #------------------------------------------------------------------------------#
 
 class Block(BlockSSDataTables):
+
+    # COMMENT fero: name of this block should be
+    # something different from "order" (p.e: "make_order")
+    # because usually we refer to "order" for GASSupplierOrder
 
     BLOCK_NAME = "order"
     BLOCK_DESCRIPTION = _("Order")
