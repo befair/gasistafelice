@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from datetime import timedelta, datetime
+
 def queryset_from_iterable(model, iterable):
     """
     Take a model class and an iterable containing instances of that model; 
@@ -26,4 +28,15 @@ def long_date(d):
 
 def medium_date(d):
     return d.strftime(settings.MEDIUM_DATETIME_FMT).decode('utf-8')
+
+#--------------------------------------------------------------------------------
+
+def datetime_round_ten_minutes(dt):
+
+    #dt.minutes = (dt.minutes/15)*15
+    dt += timedelta(minutes=5)
+    dt -= timedelta(minutes=dt.minute % 10,
+                     seconds=dt.second,
+                     microseconds=dt.microsecond)
+    return dt
 

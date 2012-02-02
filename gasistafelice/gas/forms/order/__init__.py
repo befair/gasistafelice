@@ -21,25 +21,32 @@ from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 from gasistafelice.base import const
 from gasistafelice.exceptions import DatabaseInconsistent
+from gasistafelice.utils import datetime_round_ten_minutes
 
 from django.conf import settings
+
 import copy
-from datetime import tzinfo, timedelta, datetime
-import calendar
+from datetime import timedelta, datetime, date
 
 import logging
+
 log = logging.getLogger(__name__)
 
+FREQUENCY = [ 
+    ('7', _('week')), 
+    ('14', _('two weeks')), 
+    ('21', _('three weeks')), 
+    ('28', _('monthly')), 
+    ('56', _('two months')), 
+    ('84', _('three months')), 
+    ('168', _('half year')), 
+    ('336', _('year'))
+]
 
+def now_round_ten_minutes():
 
-def gf_now():
     dt = datetime.now()
-    #dt.minutes = (dt.minutes/15)*15
-    dt += timedelta(minutes=5)
-    dt -= timedelta(minutes=dt.minute % 10,
-                     seconds=dt.second,
-                     microseconds=dt.microsecond)
-    return dt
+    return datetime_round_ten_minutes(dt)
 
 def get_day_from_choice(choice):
     day_num = 0
@@ -65,24 +72,22 @@ def first_day_on_or_after(daynum, dt):
         dt += timedelta(days_to_go)
     return dt
 
-class GFSplitDateTimeWidget(admin_widgets.AdminSplitDateTime):
-
-    def __init__(self, *args, **kw):
-        super(GFSplitDateTimeWidget, self).__init__(*args, **kw)
-        self.widgets[0].format=settings.DATE_INPUT_FORMATS[0]
-        self.widgets[1].widget = admin_widgets.AdminTimeWidget()
-        self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]
-
 class BaseOrderForm(forms.ModelForm):
 
     #log.debug("BaseOrderForm")
     datetime_start = forms.SplitDateTimeField(label=_('Date start'), required=True, 
-                    help_text=_("when the order will be opened"), widget=GFSplitDateTimeWidget, initial=gf_now)
+        help_text=_("when the order will be opened"), 
+        widget=SplitDateTimeFormatAwareWidget, initial=now_round_ten_minutes
+    )
 
     datetime_end = forms.SplitDateTimeField(label=_('Date end'), required=False, 
-                    help_text=_("when the order will be closed"), widget=GFSplitDateTimeWidget)
+        help_text=_("when the order will be closed"), 
+        widget=SplitDateTimeFormatAwareWidget
+    )
 
-    delivery_datetime = forms.SplitDateTimeField(required=False, label=_('Delivery on/at'), widget=GFSplitDateTimeWidget)
+    delivery_datetime = forms.SplitDateTimeField(required=False, 
+        label=_('Delivery on/at'), widget=SplitDateTimeFormatAwareWidget
+    )
 
     referrer_person = forms.ModelChoiceField(label=_('referrer'), 
         queryset=Person.objects.none(), required=True, 
@@ -157,17 +162,6 @@ class BaseOrderForm(forms.ModelForm):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
 #-------------------------------------------------------------------------------
-
-FREQUENCY = [ 
-    ('7', _('week')), 
-    ('14', _('two weeks')), 
-    ('21', _('three weeks')), 
-    ('28', _('monthly')), 
-    ('56', _('two months')), 
-    ('84', _('three months')), 
-    ('168', _('half year')), 
-    ('336', _('year'))
-]
 
 def GetNewOrder(obj, other_pact):
     #new_obj = obj
@@ -281,7 +275,7 @@ class AddOrderForm(BaseOrderForm):
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
     repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
     repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
-    repeat_until_date = forms.DateField(initial=datetime.now(), widget=admin_widgets.AdminDateWidget)
+    repeat_until_date = forms.DateField(initial=date.now(), widget=admin_widgets.AdminDateWidget)
 
 #WAS: INTERGAS 0
 
@@ -323,6 +317,7 @@ class AddOrderForm(BaseOrderForm):
             # we can set some additional defaults
 
             gas = pacts[0].gas
+
             #Next week by default
             dt = datetime.now()+timedelta(days=7)
             dt = first_day_on_or_after(6, dt)
@@ -342,7 +337,10 @@ class AddOrderForm(BaseOrderForm):
             if gas.config.default_delivery_day:
                 dt = first_day_on_or_after(d_d, dt)
             if gas.config.default_delivery_time:
-                dt = dt.replace(hour=gas.config.default_delivery_time.hour, minute=gas.config.default_delivery_time.minute)
+                dt = dt.replace(
+                    hour=gas.config.default_delivery_time.hour, 
+                    minute=gas.config.default_delivery_time.minute
+                )
             self.fields['delivery_datetime'].initial = dt
             #log.debug("AddOrderForm delivery %s --> %s" % (d, dt))
 

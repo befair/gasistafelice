@@ -3,9 +3,11 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.forms import widgets
+from django.contrib.admin import widgets as admin_widgets
 
 from django.conf import settings
 
+#--------------------------------------------------------------------------------
 
 class RelatedFieldWidgetCanAdd(widgets.Select):
 
@@ -23,6 +25,7 @@ class RelatedFieldWidgetCanAdd(widgets.Select):
         output.append(u'<img src="%simg/admin/icon_addlink.gif" width="10" height="10" alt="%s"/></a>' % (settings.ADMIN_MEDIA_PREFIX, _('Add Another')))
         return mark_safe(u''.join(output))
 
+#--------------------------------------------------------------------------------
 
 class RelatedMultipleFieldWidgetCanAdd(widgets.SelectMultiple):
 
@@ -41,4 +44,14 @@ class RelatedMultipleFieldWidgetCanAdd(widgets.SelectMultiple):
                 (related_url, name))
         output.append(u'<img src="%simg/admin/icon_addlink.gif" width="10" height="10" alt="%s"/></a>' % (settings.ADMIN_MEDIA_PREFIX, _('Add Another')))
         return mark_safe(u''.join(output))
+
+#--------------------------------------------------------------------------------
+
+class SplitDateTimeFormatAwareWidget(admin_widgets.AdminSplitDateTime):
+
+    def __init__(self, *args, **kw):
+        super(MySplitDateTimeWidget, self).__init__(*args, **kw)
+        self.widgets[0].format=settings.DATE_INPUT_FORMATS[0]
+        self.widgets[1].widget = admin_widgets.AdminTimeWidget()
+        self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]
 
