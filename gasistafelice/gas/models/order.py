@@ -1211,8 +1211,15 @@ class Delivery(Appointment, PermissionResource):
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
     """
     
-    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"),verbose_name=_('place'))
-    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"),verbose_name=_('date'))    
+    place = models.ForeignKey(Place, 
+        related_name="delivery_set", 
+        help_text=_("where the order will be delivered by supplier"),
+        verbose_name=_('place')
+    )
+    date = models.DateTimeField(
+        help_text=_("when the order will be delivered by supplier"),
+        verbose_name=_('date')
+    )    
 
     history = HistoricalRecords()
 
@@ -1348,11 +1355,17 @@ class Withdrawal(Appointment, PermissionResource):
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
     """
     
-    place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
+    place = models.ForeignKey(Place, 
+        related_name="withdrawal_set", 
+        help_text=_("where the order will be withdrawn by GAS members")
+    )
+
     #TODO FIXME AFTER 6th of september: 
     # * date should be Date field
     # * start_time and end_time (with no defaults) must be managed in forms
-    date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
+    date = models.DateTimeField(
+        help_text=_("when the order will be withdrawn by GAS members")
+    )
 
     # a Withdrawal appointment usually span a time interval
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))

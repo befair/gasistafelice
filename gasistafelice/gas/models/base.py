@@ -570,26 +570,51 @@ class GASConfig(models.Model):
         help_text=_("default delivery closing hour and minutes")
     )
 
-    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), default=False,
+    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), 
+        default=False,
         help_text=_("If False, GAS never use concept of withdrawal place that is the default")
     )
-    can_change_withdrawal_place_on_each_order = models.BooleanField(verbose_name=_('Can change withdrawal place on each order'), default=False, 
+    can_change_withdrawal_place_on_each_order = models.BooleanField(
+        verbose_name=_('Can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
-    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
+    can_change_delivery_place_on_each_order = models.BooleanField(
+        verbose_name=_('Can change delivery place on each order'), default=False, 
+        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
     # to follow headquarter value if it changes.
     # Provide delivery place and withdrawal place properties to get the right value
-    default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
-    default_delivery_place = models.ForeignKey(Place, verbose_name=_('Default delivery place'), blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
+    default_withdrawal_place = models.ForeignKey(Place, 
+        verbose_name=_('Default withdrawal place'), 
+        blank=True, null=True, related_name="gas_default_withdrawal_set", 
+        help_text=_("to specify if different from headquarter")
+    )
+    default_delivery_place = models.ForeignKey(Place, 
+        verbose_name=_('Default delivery place'), blank=True, null=True, 
+        related_name="gas_default_delivery_set", 
+        help_text=_("to specify if different from withdrawal place")
+    )
 
-    auto_populate_products = models.BooleanField(verbose_name=_('Auto populate products'), default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
-    is_active = models.BooleanField(verbose_name=_('Is active'), default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
-    use_scheduler = models.BooleanField(default=False, verbose_name=_("Use scheduler"), help_text=_("Enable scheduler for automatic and planned operations"))
-    gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
+    auto_populate_products = models.BooleanField(
+        verbose_name=_('Auto populate products'), default=True, 
+        help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated")
+    )
+    is_active = models.BooleanField(
+        verbose_name=_('Is active'), default=True, 
+        help_text=_("This GAS doesn't exist anymore or is banned? (from who?)")
+    )
+    use_scheduler = models.BooleanField(default=False, 
+        verbose_name=_("Use scheduler"), 
+        help_text=_("Enable scheduler for automatic and planned operations")
+    )
+    gasmember_auto_confirm_order = models.BooleanField(
+        verbose_name=_('GAS members orders are auto confirmed'), 
+        default=True, 
+        help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders")
+    )
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
