@@ -1490,17 +1490,15 @@
           try{
             $.get('{% url rest.views.user_urns %}', function(data) {
                 var user_urns = $.JSON.parse(data);
-                if (user_urns.length == 0) {
-                    alert('BUG: user with no urn cannot be logged in!');
-                } else {
-                    var i = 0;
-                    for (var j=0; j<user_urns.length; j++) {
-                        i++;
-                        new_user_urn = user_urns[j];
-                        //alert('init_user_urns_list ' + new_user_urn);
-                        opt_name = new_user_urn["name"];
-                        opt_url = new_user_urn["urn"];
-                        opt_type = opt_url.slice(0, opt_url.indexOf("/")) 
+                var i = 0;
+                for (var j=0; j<user_urns.length; j++) {
+                    i++;
+                    new_user_urn = user_urns[j];
+                    //alert('init_user_urns_list ' + new_user_urn);
+                    var opt_url = new_user_urn["urn"];
+                    var opt_type = opt_url.slice(0, opt_url.indexOf("/")); 
+                    if ($('#user_urn_'+opt_type) != undefined) {
+                        var opt_name = new_user_urn["name"];
                         var res = new jQuery.Resource(opt_url, opt_name).render();
                         var li = "<li>" + res + "</li>";
                         //if (i > 1) { r = '  |  ' + r; }

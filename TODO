@@ -1,4 +1,9 @@
 
+DONE
+----
+
+* Risolvere bug, NO USER URNS
+
 
 TODO 20120126
 ----
@@ -6,11 +11,10 @@ TODO 20120126
 * Nome dell'ordine secondo gli stati e tradurre
 * Tooltip risorse
 * Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS
-* Risolvere bug, NO USER URNS
+* Frequency_choices costante e in giorni
 
 * Vertical align "order_report"
 * Resource API GMO.stock e sostituire 
-* Frequency_choices costante e in giorni
 * s/_qta/_amount
 * Informazioni aggiuntive blocco "users" registrazione, scheda "admin" nel GAS
 
