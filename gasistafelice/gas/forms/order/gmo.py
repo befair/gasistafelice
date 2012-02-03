@@ -99,7 +99,7 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
                     gmo.save()
                     log.debug("CREATED GASMemberOrder (%s) " % gmo.pk)
         else:
-            log.debug("WARNING: SingleGASMemberOrderForm.save(): form is not valid. is_valid() SHOULD be called before calling save()")
+            log.warning("SingleGASMemberOrderForm.save(): form is not valid. is_valid() SHOULD be called before calling save()")
 
 #-------------------------------------------------------------------------------
 
@@ -144,6 +144,6 @@ class BasketGASMemberOrderForm(BaseGASMemberOrderForm):
                     gmo.save()
                     log.debug(u"UPDATED")
         else:
-            log.debug("WARNING: BasketGASMemberOrderForm.save(): form is not valid. is_valid() SHOULD be called before calling save()")
+            log.warning("BasketGASMemberOrderForm.save(): form is not valid. is_valid() SHOULD be called before calling save()")
 
 
