@@ -75,12 +75,19 @@ class BaseOrderForm(forms.ModelForm):
         label=_('Delivery on/at'), widget=SplitDateTimeFormatAwareWidget
     )
 
-    referrer_person = forms.ModelChoiceField(label=_('referrer'), 
+    referrer_person = forms.ModelChoiceField(label=_('referrer').capitalize(), 
         queryset=Person.objects.none(), required=True, 
         error_messages={'required': _(u'You must select one referrer (or create it in GAS details if empty)')}
     )
 
     def __init__(self, request, *args, **kw):
+
+        #TODO: fero to refactory and move in GF Form baseclass...
+        self._messages = {
+            'error' : [],
+            'info' : [],
+            'warning' : [],
+        }
 
         # Strip request arg and initialize form class
         super(BaseOrderForm, self).__init__(*args, **kw)
@@ -95,6 +102,19 @@ class BaseOrderForm(forms.ModelForm):
         self.fields['referrer_person'].queryset = referrers
         if self.fields.get('withdrawal_referrer_person'):
             self.fields['withdrawal_referrer_person'].queryset = referrers
+
+    def write_down_messages(self):
+        """Used to return messages related to form.
+
+        Usually called:
+        * in request.method == "GET"
+        * when it is "POST" but form is invalid
+        """
+
+        # Write down messages only if we are GETting the form
+        for level, msg_list in self._messages.items():
+            for msg in msg_list:
+                getattr(messages, level)(self.request, msg)
 
     def clean(self):
 
@@ -115,7 +135,7 @@ class BaseOrderForm(forms.ModelForm):
 
         # Set cleaned data additional keys:
         # pact: needed if we are in EditOrderForm
-        pact = cleaned_data.get('pact', self.instance.pact)
+        pact = cleaned_data.get('pact') or self.instance.pact
         cleaned_data['pact'] = pact
 
         # delivery_appointment: d would be saved within save()
@@ -212,7 +232,7 @@ class AddOrderForm(BaseOrderForm):
             Supplier        OneSupplier     ChooseGAS ChooseReferrer
             Solidal Pact    OneSupplier     OneGAS    ChooseReferrer
     """
-    pact = forms.ModelChoiceField(label=_('pact'), 
+    pact = forms.ModelChoiceField(label=_('pact').capitalize(), 
         queryset=GASSupplierSolidalPact.objects.none(), 
         required=True, 
         error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')}
@@ -278,9 +298,9 @@ class AddOrderForm(BaseOrderForm):
 
         if not self._pacts.count():
             log.error("Cannot add an order on a resource with no pacts")
-            messages.error(self.request, ug("No pacts selectable for you. Please contact staff"))
+            self._messages['error'].append(ug("No pacts selectable for you. Please contact staff"))
         else:
-            messages.info(self.request, ug("Please select the pact you want to make an order for"))
+            self._messages['info'].append(ug("Please select the pact you want to make an order for"))
 
 
     def set_initial_referrer(self):
@@ -293,7 +313,7 @@ class AddOrderForm(BaseOrderForm):
         elif ref_field.queryset.count() > 0:
             ref_field.initial = ref_field.queryset[0]
         else:
-            messages.error(self.request, ug("No referrers selectable for you. Please add tech referrer to add pact referrers for your GAS"))
+            self._messages['error'].append(ug("No referrers selectable for you. Please add tech referrer to add pact referrers for your GAS"))
 
     def set_initial_datetime_end(self, gas, dt, d_c):
 

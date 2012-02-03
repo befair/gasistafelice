@@ -91,8 +91,21 @@ class BlockWithList(AbstractBlock):
                 form.save()
                 return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
                 
+            else:
+                try:
+                    #TODO fero
+                    form.write_down_messages()
+                except AttributeError as e:
+                    log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
+                    pass #don't worry for this exception...
         else:
             form = form_class(request)
+            try:
+                #TODO fero
+                form.write_down_messages()
+            except AttributeError as e:
+                log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
+                pass #don't worry for this exception...
 
         fields = form.base_fields.keys()
         fieldsets = form_class.Meta.gf_fieldsets

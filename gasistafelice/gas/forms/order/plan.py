@@ -10,6 +10,7 @@ import copy
 from gasistafelice.gas.forms.order.base import AddOrderForm
 
 
+
 FREQUENCY = [ 
     (7, _('week')), 
     (14, _('two weeks')), 
@@ -23,18 +24,22 @@ FREQUENCY = [
 
 #--------------------------------------------------------------------------------
 
-class PlannedOrderFormMixIn(object):
+class AddPlannedOrderForm(AddOrderForm):
     """MixIn class to be used with a forms.Form class to add repeated records"""
 
-    
     repeat_order = forms.BooleanField(
-        label=_('Repeat this order several times?'), required=False
+        label=_('Is this a periodic order?'), required=False,
+        help_text=_('Check the little square to plan this order as much times as you want')
     )
     repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
     repeat_until_date = forms.DateField(initial=date.today, required=False,
         help_text=_("Required if you want to plan orders")
         # COMMENT fero: dates are rendered with calendar, widget=admin_widgets.AdminDateWidget
     )
+
+    def __init__(self, *args, **kw):
+        super(AddPlannedOrderForm, self).__init__(*args, **kw)
+        self._messages['info'].append(("If you want you can plan your orders with some frequency until a specific date"))
 
     def clean(self):
         """Validate data here. Not in save().
@@ -50,17 +55,18 @@ class PlannedOrderFormMixIn(object):
 
         """
 
-        self.is_repeated = self.cleaned_data['repeat_order']
+        cleaned_data = super(AddPlannedOrderForm, self).clean()
+
+        self.is_repeated = cleaned_data['repeat_order']
 
         if self.is_repeated:
 
-            _repeat_frequency = self.cleaned_data['repeat_frequency']
+            _repeat_frequency = cleaned_data['repeat_frequency']
             _repeat_items = None
-            _repeat_until_date = self.cleaned_data['repeat_until_date']
+            _repeat_until_date = cleaned_data['repeat_until_date']
 
-            if not self.cleaned_data.get('datetime_end'):
+            if not cleaned_data.get('datetime_end'):
                 raise forms.validationerror(ug("To plan an order you must set an end date and time"))
-
 
 #NOTE fero: I do not completely agree. 
 #NOTE fero: You can leave an order open for 3 month, but plan it every 1 month,
@@ -83,7 +89,7 @@ class PlannedOrderFormMixIn(object):
             if not _repeat_until_date:
                 raise forms.validationerror(ug("To plan an order you must set an end planning date"))
 
-            start_date = self.cleaned_data['datetime_start'].date()
+            start_date = cleaned_data['datetime_start'].date()
             min_repeat_until_date = start_date + timedelta(days=_repeat_frequency)
             if _repeat_until_date < min_repeat_until_date:
                 raise forms.validationerror(ug("To plan an order you must set an end planning date later than start date + frequency"))
@@ -110,8 +116,9 @@ class PlannedOrderFormMixIn(object):
                 raise forms.ValidationError(ug("Something wrong has happened with planning parameters"))
 
             self._repeat_items = _repeat_items
-            
-                
+
+        return cleaned_data
+
     def clone_base_order(self):
         """WAS GetNewOrder. This relates to planning.
         
@@ -123,7 +130,6 @@ class PlannedOrderFormMixIn(object):
 
         return new_obj
 
-    @transaction.commit_on_success
     def create_repeated_orders(self):
         """Create other instances of GASSupplierOrder.
 
@@ -215,20 +221,10 @@ class PlannedOrderFormMixIn(object):
 
 #WAS: INTERGAS 5
 
-
-#--------------------------------------------------------------------------------
-
-class AddPlannedOrderForm(AddOrderForm, PlannedOrderFormMixIn):
-
-    def clean(self):
-
-        self.cleaned_data = AddOrderForm.clean()
-        self.cleaned_data = PlannedOrderFormMixIn.clean()
-        return self.cleaned_data
-
+    @transaction.commit_on_success
     def save(self):
 
-        AddOrderForm.save(self)
+        super(AddPlannedOrderForm, self).save()
 
         if self.instance and self.is_repeated:
             self.create_repeated_orders()
@@ -243,3 +239,4 @@ class AddPlannedOrderForm(AddOrderForm, PlannedOrderFormMixIn):
                 , ('repeat_order', 'repeat_frequency', 'repeat_until_date')
             ]
         })]
+
