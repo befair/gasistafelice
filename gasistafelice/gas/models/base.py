@@ -100,8 +100,9 @@ class GAS(models.Model, PermissionResource):
         display.ResourceList(name="tech_referrers_people", verbose_name=_("tech referrers")),
         display.ResourceList(name="supplier_referrers_people", verbose_name=_("supplier referrers")),
         display.ResourceList(name="cash_referrers_people", verbose_name=_("cash referrers")),
-        display.ResourceList(verbose_name=_("created by"), name="created_by_person"),
-        display.ResourceList(verbose_name=_("last update by"), name="last_update_by_person"),
+        #TODO WAS: do not work with current django-pro-history implementation
+        # display.ResourceList(verbose_name=_("created by"), name="created_by_person"),
+        # display.ResourceList(verbose_name=_("last update by"), name="last_update_by_person"),
     )
 
     #-- Meta --#

@@ -7,7 +7,8 @@ Sphinx>=0.6.6
 pisa>=3.0.32
 xhtml2pdf
 pysqlite>=1.0.1
--e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
+#-e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
+file:../gasistafelice/submodules/django-pro-history
 file:../gasistafelice/submodules/django-simple-accounting
 file:../gasistafelice/submodules/django-flexi-auth
 file:../gasistafelice/submodules/django-notification

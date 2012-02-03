@@ -643,7 +643,7 @@ class Person(models.Model, PermissionResource):
     def pacts(self):
         """
         A person is related to:
-        pacts who have signed a pact with a GAS he/she belongs to
+        pacts signed with a GAS he/she belongs to
         """
         from gasistafelice.gas.models import GASSupplierSolidalPact
         # initialize the return QuerySet 

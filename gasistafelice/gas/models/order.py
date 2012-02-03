@@ -67,25 +67,51 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
-    datetime_start = models.DateTimeField(verbose_name=_('Date open'), default=datetime.now, help_text=_("when the order will be opened"))
-    datetime_end = models.DateTimeField(verbose_name=_('Date close'), help_text=_("when the order will be closed"), null=True, blank=True)
+    datetime_start = models.DateTimeField(verbose_name=_('date open'), 
+        default=datetime.now, help_text=_("when the order will be opened")
+    )
+    datetime_end = models.DateTimeField(verbose_name=_('date close'), 
+        help_text=_("when the order will be closed"), null=True, blank=True
+    )
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
-    order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
+    order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), 
+        null=True, blank=True
+    )
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
+    # FUTURE TODO: must be ManyToManyField
+    delivery = models.ForeignKey('Delivery', 
+        verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True
+    )
+
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True)
+    # FUTURE TODO: must be ManyToManyField
+    withdrawal = models.ForeignKey('Withdrawal', 
+        verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True
+    )
 
     # Delivery cost. To be set after delivery has happened
     delivery_cost = CurrencyField(verbose_name=_('Delivery cost'), null=True, blank=True)
 
-    gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    gasstock_set = models.ManyToManyField(GASSupplierStock, 
+        verbose_name=_('GAS supplier stock'), 
+        help_text=_("products available for the order"), 
+        blank=True, through='GASSupplierOrderProduct'
+    )
 
-    referrer_person = models.ForeignKey(Person, null=True, blank=True, related_name="order_set", verbose_name=_("order referrer"))
-    delivery_referrer_person = models.ForeignKey(Person, null=True, related_name="delivery_for_order_set", blank=True, verbose_name=_("delivery referrer"))
-    withdrawal_referrer_person = models.ForeignKey(Person, null=True, related_name="withdrawal_for_order_set", blank=True, verbose_name=_("withdrawal referrer"))
+    referrer_person = models.ForeignKey(Person, null=True, blank=True, 
+        related_name="order_set", verbose_name=_("order referrer")
+    )
+    delivery_referrer_person = models.ForeignKey(Person, 
+        null=True, related_name="delivery_for_order_set", blank=True, 
+        verbose_name=_("delivery referrer")
+    )
+    withdrawal_referrer_person = models.ForeignKey(Person, 
+        null=True, related_name="withdrawal_for_order_set", blank=True, 
+        verbose_name=_("withdrawal referrer")
+    )
 
-    group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
+    group_id = models.PositiveIntegerField(verbose_name=_('Order group'), 
+        null=True, blank=True, 
         help_text=_("If not null this order is aggregate with orders from other GAS")
     )
 
@@ -109,6 +135,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         super(GASSupplierOrder, self).__init__(*args, **kw)
 
     def __unicode__(self):
+
+        # TODO domthu: translation for order state names!
 
         d = {}
 
@@ -1061,7 +1089,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def tot_price(self):
         """Ordered price per ordered amount for this ordered product"""
-        #FIXME: we have to use self.ordered_price instead of self.ordered_product.order_price?
+        #FIXME INVESTIGATE: we have to use self.ordered_price instead of self.ordered_product.order_price?
+        #HINT: self.ordered_price is a copy of the price of the ordered_product when gasmember ordered it...
         return self.ordered_product.order_price * self.ordered_amount
 
     @property
