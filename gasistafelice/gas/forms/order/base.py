@@ -133,9 +133,6 @@ class AddOrderForm(BaseOrderForm):
         error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')}
     )
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
-    repeat_order = forms.BooleanField(label=_('Repeat this order several times?'), required=False)
-    repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
-    repeat_until_date = forms.DateField(initial=date.now(), widget=admin_widgets.AdminDateWidget)
 
 #WAS: INTERGAS 0
 
@@ -143,21 +140,10 @@ class AddOrderForm(BaseOrderForm):
 
         #log.debug("AddOrderForm")
         super(AddOrderForm, self).__init__(request, *args, **kw)
+        self.request = request
+        self.set_selectable_pacts()
 
-        # SOLIDAL PACT
-        #pacts = request.resource.pacts
-        pacts = GASSupplierSolidalPact.objects.none()
-        resource_pacts = request.resource.pacts
-        # Limit pact to the logged user. Do not see pacts from other GAS than mine. 
-        # Due to "Supplier" resources that was showing pact for another GAS.
-        # user_pacts = request.user.person.pacts
-        user_pacts = request.user.person.pacts.values_list('pk')
-        #KO by fero: not needed "if resource_pacts and user_pacts and "
-        if resource_pacts.count() and user_pacts.count():
-            pacts = resource_pacts.filter(pk__in = user_pacts)
-#       if not pacts.count():
-#            raise PermissionDenied(ug("You cannot open an order on a resource with no pacts"))
-        #if pacts.count() == pacts.filter(gas=pacts[0].gas):
+        pacts = self._pacts
 
         if pacts.count() > 0:
 
@@ -167,11 +153,7 @@ class AddOrderForm(BaseOrderForm):
 
 #WAS: INTERGAS 1
 
-            # Person is the current user: referrers
-            if request.user.person in self.fields['referrer_person'].queryset:
-                self.fields['referrer_person'].initial = request.user.person
-            elif self.fields['referrer_person'].queryset.count() > 0:
-                self.fields['referrer_person'].initial = self.fields['referrer_person'].queryset[0]
+            self.set_initial_referrer()
 
             # If we are managing some pacts (even 1) of the same GAS,
             # we can set some additional defaults
@@ -182,27 +164,65 @@ class AddOrderForm(BaseOrderForm):
             dt = datetime.now()+timedelta(days=7)
             dt = first_day_on_or_after(6, dt)
 
-            #Close
-            d_c = get_day_from_choice(gas.config.default_close_day)
-            if gas.config.default_close_day:
-                dt = first_day_on_or_after(d_c, dt)
-            if gas.config.default_close_time:
-                dt = dt.replace(hour=gas.config.default_close_time.hour, minute=gas.config.default_close_time.minute)
-            self.fields['datetime_end'].initial = dt
+            dt = self.set_initial_datetime_end(gas, dt)
+            dt = self.set_initial_delivery_date(gas, dt)
 
-            #Delivery
-            d_d = get_day_from_choice(gas.config.default_delivery_day)
-            if d_d <= d_c:
-                dt = dt+timedelta(days=7)
-            if gas.config.default_delivery_day:
-                dt = first_day_on_or_after(d_d, dt)
-            if gas.config.default_delivery_time:
-                dt = dt.replace(
-                    hour=gas.config.default_delivery_time.hour, 
-                    minute=gas.config.default_delivery_time.minute
-                )
-            self.fields['delivery_datetime'].initial = dt
-            #log.debug("AddOrderForm delivery %s --> %s" % (d, dt))
+    def set_selectable_pacts(self):
+
+        """User can select pacts bound to specific resource and available to him.
+
+        Limit pact to the logged user. Do not see pacts from other GAS than mine. 
+        Due to "Supplier" resources that was showing pact for another GAS.
+
+        This method set form attribute self._pacts
+        """
+
+        self._pacts = GASSupplierSolidalPact.objects.none()
+        resource_pacts = self.request.resource.pacts
+        user_pacts = self.request.user.person.pacts.values_list('pk')
+
+        #KO by fero unneeded code: "if resource_pacts and user_pacts and "
+        if resource_pacts.count() and user_pacts.count():
+            self._pacts = resource_pacts.filter(pk__in = user_pacts)
+
+        if not self._pacts.count():
+            log.error("Cannot add an order on a resource with no pacts")
+
+    def set_initial_referrer(self):
+        """Set initial value for 'referrer_person'. """
+
+        ref_field = self.fields['referrer_person']
+        if self.request.user.person in ref_field.queryset:
+            # Person is the current user: referrers
+            ref_field.initial = self.request.user.person
+        elif ref_field.queryset.count() > 0:
+            ref_field.initial = ref_field.queryset[0]
+
+    def set_initial_datetime_end(self, gas, dt):
+        #Close
+        d_c = get_day_from_choice(gas.config.default_close_day)
+        if gas.config.default_close_day:
+            dt = first_day_on_or_after(d_c, dt)
+        if gas.config.default_close_time:
+            dt = dt.replace(hour=gas.config.default_close_time.hour, minute=gas.config.default_close_time.minute)
+        self.fields['datetime_end'].initial = dt
+        return dt
+
+    def set_initial_delivery_date(self, gas, dt):
+        #Delivery
+        d_d = get_day_from_choice(gas.config.default_delivery_day)
+        if d_d <= d_c:
+            dt = dt+timedelta(days=7)
+        if gas.config.default_delivery_day:
+            dt = first_day_on_or_after(d_d, dt)
+        if gas.config.default_delivery_time:
+            dt = dt.replace(
+                hour=gas.config.default_delivery_time.hour, 
+                minute=gas.config.default_delivery_time.minute
+            )
+        self.fields['delivery_datetime'].initial = dt
+        #log.debug("AddOrderForm delivery %s --> %s" % (d, dt))
+        return dt
 
     @transaction.commit_on_success
     def save(self, *args, **kwargs):
@@ -221,88 +241,13 @@ class AddOrderForm(BaseOrderForm):
                 self.instance.withdrawal = w
 
         log.debug("AddOrderForm CREATED pre_save")
-        _created_order = super(AddOrderForm, self).save(*args, **kwargs)
-        if self.instance:
+        super(AddOrderForm, self).save(*args, **kwargs)
 
-#            #send email
+#TODO            #send email
 #            #COMMENT domthu: Only if opened?  Util? use another politica
 #            _send_email = self.cleaned_data['email_gas']
 #            if bool(_send_email):
 #                TODO: May be we only need to disable the notification if not enabled
-
-#WAS: INTERGAS 2
-
-            #Planification
-            _repeat_order = self.cleaned_data['repeat_order']
-            if bool(_repeat_order):
-                _repeat_amount = int(self.cleaned_data['repeat_frequency'])
-                _repeat_items = None
-                _repeat_until_date = self.cleaned_data['repeat_until_date']
-                #Calcul _repeat_items
-                tmp_date = self.instance.datetime_end.date()
-                log.debug("repeat params: start %s end %s(%s), until: %s desired: %s" % (
-                    self.instance.datetime_start,
-                    self.instance.datetime_end,
-                    tmp_date,
-                    _repeat_until_date,
-                    _repeat_amount)
-                )
-                if _repeat_until_date and tmp_date and _repeat_until_date > tmp_date:
-                    tmp_date = self.instance.datetime_start.date()
-                    tmp_days = (_repeat_until_date - tmp_date).days
-                    log.debug("repeat tmp date: %s days: %s" % (tmp_date, tmp_days))
-                    _repeat_items = tmp_days // _repeat_amount
-                log.debug("repeat parameters: %s, items: %s" % (_repeat_amount, _repeat_items))
-
-                #verify params request is consistent
-                if not _repeat_amount or not _repeat_items or _repeat_items < 1:
-                    log.debug("repeat some parameter wrong")
-                    return _created_order
-
-                #Delete - Clean all previous planification
-                previous_planed_orders = GASSupplierOrder.objects.filter(
-                    pact=self.instance.pact,
-                    datetime_start__gt = self.instance.datetime_start
-                )
-                log.debug("repeat previous_planed_orders: %s" % (previous_planed_orders))
-                for order in previous_planed_orders:
-
-                    #delete only prepared orders
-                    if order.is_prepared or order.is_active:
-
-#WAS: INTERGAS 3
-
-                        log.debug("AddOrderForm repeat delete previous_planed_orders: %s" % (order))
-                        order.delete()
-
-                #Planificate new orders
-                for num in range(1,_repeat_items+1):  #to iterate between 1 to _repeat_items
-                    #program order
-                    x_obj = GetNewOrder(self.instance, None)
-                    r_q = (_repeat_amount*num)
-                    r_dd = self.instance.delivery.date
-
-                    #set date for open, close and delivery order
-                    x_obj.datetime_start += timedelta(days=+r_q)
-                    x_obj.datetime_end += timedelta(days=+r_q)
-                    r_dd += timedelta(days=+r_q)
-
-                    x_obj.delivery = get_delivery(r_dd, self.instance.delivery.place)
-
-#WAS: INTERGAS 4
-
-                    #create order
-                    #COMMENT domthu: Don't understand why .save() not return true?
-                    #WAS: if x_obj.save():
-                    x_obj.save()
-                    if x_obj.pk:
-                        log.debug("repeat created order: %s " % (x_obj))
-
-#WAS: INTERGAS 5
-
-                    else:
-                        log.debug("repeat NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (num, r_q, x_obj.datetime_start, x_obj.datetime_end, x_obj.delivery.date))
-        return _created_order
 
 
     class Meta:

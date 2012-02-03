@@ -1,6 +1,7 @@
 #WAS: INTERGAS 0
 #    intergas = forms.BooleanField(label=_('This order is InterGAS?'), required=False)
 #    intergas_grd = forms.MultipleChoiceField(label=_('gas'), choices=GAS.objects.none(), required=False, widget=forms.CheckboxSelectMultiple)
+
 #WAS: INTERGAS 1
 #            gas_list = None
 #            if pacts.count() == 1:
