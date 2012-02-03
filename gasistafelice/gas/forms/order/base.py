@@ -3,9 +3,11 @@ from django import forms
 from django.db import transaction
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
-from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
+
 from gasistafelice.utils import datetime_round_ten_minutes
+from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
 
 from gasistafelice.base.models import Place, Person
 from gasistafelice.gas.models import ( 
@@ -48,7 +50,7 @@ def get_day_from_choice(choice):
 def first_day_on_or_after(daynum, dt):
     days_to_go = daynum - dt.weekday()
     if days_to_go:
-        dt += timedelta(days_to_go)
+        dt += datetime.timedelta(days_to_go)
     return dt
 
 #---------------------------------------------------------------------------------
@@ -198,11 +200,13 @@ class AddOrderForm(BaseOrderForm):
             gas = pacts[0].gas
 
             #Next week by default
-            dt = datetime.now()+timedelta(days=7)
+            dt = datetime.datetime.now()+datetime.timedelta(days=7)
             dt = first_day_on_or_after(6, dt)
+            #Close
+            d_c = get_day_from_choice(gas.config.default_close_day)
 
-            dt = self.set_initial_datetime_end(gas, dt)
-            dt = self.set_initial_delivery_date(gas, dt)
+            dt = self.set_initial_datetime_end(gas, dt, d_c)
+            dt = self.set_initial_delivery_date(gas, dt, d_c)
 
     def set_selectable_pacts(self):
 
@@ -214,16 +218,24 @@ class AddOrderForm(BaseOrderForm):
         This method set form attribute self._pacts
         """
 
-        self._pacts = GASSupplierSolidalPact.objects.none()
         resource_pacts = self.request.resource.pacts
-        user_pacts = self.request.user.person.pacts.values_list('pk')
 
-        #KO by fero unneeded code: "if resource_pacts and user_pacts and "
-        if resource_pacts.count() and user_pacts.count():
-            self._pacts = resource_pacts.filter(pk__in = user_pacts)
+        if self.request.user.is_superuser:
+            self._pacts = resource_pacts
+        else:
+            self._pacts = GASSupplierSolidalPact.objects.none()
+            user_pacts = self.request.user.person.pacts.values_list('pk')
+
+            #KO by fero unneeded code: "if resource_pacts and user_pacts and "
+            if resource_pacts.count() and user_pacts.count():
+                self._pacts = resource_pacts.filter(pk__in = user_pacts)
 
         if not self._pacts.count():
             log.error("Cannot add an order on a resource with no pacts")
+            messages.error(self.request, ug("No pacts selectable for you. Please contact staff"))
+        else:
+            messages.info(self.request, ug("Please select the pact you want to make an order for"))
+
 
     def set_initial_referrer(self):
         """Set initial value for 'referrer_person'. """
@@ -234,22 +246,26 @@ class AddOrderForm(BaseOrderForm):
             ref_field.initial = self.request.user.person
         elif ref_field.queryset.count() > 0:
             ref_field.initial = ref_field.queryset[0]
+        else:
+            messages.error(self.request, ug("No referrers selectable for you. Please add tech referrer to add pact referrers for your GAS"))
 
-    def set_initial_datetime_end(self, gas, dt):
-        #Close
-        d_c = get_day_from_choice(gas.config.default_close_day)
+    def set_initial_datetime_end(self, gas, dt, d_c):
+
         if gas.config.default_close_day:
             dt = first_day_on_or_after(d_c, dt)
         if gas.config.default_close_time:
-            dt = dt.replace(hour=gas.config.default_close_time.hour, minute=gas.config.default_close_time.minute)
+            dt = dt.replace(
+                hour=gas.config.default_close_time.hour, 
+                minute=gas.config.default_close_time.minute
+            )
         self.fields['datetime_end'].initial = dt
         return dt
 
-    def set_initial_delivery_date(self, gas, dt):
+    def set_initial_delivery_date(self, gas, dt, d_c):
         #Delivery
         d_d = get_day_from_choice(gas.config.default_delivery_day)
         if d_d <= d_c:
-            dt = dt+timedelta(days=7)
+            dt = dt+datetime.timedelta(days=7)
         if gas.config.default_delivery_day:
             dt = first_day_on_or_after(d_d, dt)
         if gas.config.default_delivery_time:

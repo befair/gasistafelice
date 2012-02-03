@@ -553,7 +553,8 @@ jQuery.retrieve_form = function (action_el) {
     var action_name = action_el.val();
     var action_url = action_el.attr("url");
 	
-    var form_html = "";
+    var jqForm = "";
+    var jqMessagelist = "";
     var form_script = "";
 
     var url = action_url;
@@ -562,9 +563,10 @@ jQuery.retrieve_form = function (action_el) {
         url : action_url, 
         success : function(d){
 
-            form_html = $(d).find('form');
-            form_html.attr('action', action_url);
-            form_html.find('.submit-row').each( function () { $(this).remove();});
+            jqMessagelist = $(d).find('.messagelist');
+            jqForm = $(d).find('form');
+            jqForm.attr('action', action_url);
+            jqForm.find('.submit-row').each( function () { $(this).remove();});
             form_script = $(d).find('script');
         },
         async : false,
@@ -577,11 +579,12 @@ jQuery.retrieve_form = function (action_el) {
 	var options = { 
 		success : function (responseText, statusText)  { 
             if (responseText.match('class="errorlist"')) {
-                form_html = $(responseText).find('form');
-                form_html.attr('action', action_url);
-                form_html.find('.submit-row').each( function () { $(this).remove();});
+                jqMessagelist = $(responseText).find('.messagelist');
+                jqForm = $(responseText).find('form');
+                jqForm.attr('action', action_url);
+                jqForm.find('.submit-row').each( function () { $(this).remove();});
                 form_script = $(responseText).find('script');
-                $(NEW_NOTE_DIALOG).html(form_html);
+                $(NEW_NOTE_DIALOG).html(jqForm);
                 eval(form_script);
             } 
             else {
@@ -613,12 +616,13 @@ jQuery.retrieve_form = function (action_el) {
 	$(NEW_NOTE_DIALOG).dialog('destroy');
 	
 	$(NEW_NOTE_DIALOG).empty();
-	$(NEW_NOTE_DIALOG).append(form_html);
+	$(NEW_NOTE_DIALOG).append(jqMessagelist);
+	$(NEW_NOTE_DIALOG).append(jqForm);
     eval(form_script);
 	
 	var buttons = new Object();
 	buttons[gettext('Confirm')] = function() {
-		$(form_html).ajaxSubmit(options);
+		$(jqForm).ajaxSubmit(options);
 	};
 	
 	$(NEW_NOTE_DIALOG).dialog({
