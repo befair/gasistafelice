@@ -106,7 +106,7 @@ class Block(BlockSSDataTables):
         i = 0
         c = querySet.count()
         map_info = { }
-        av = False
+        av = True
 
         for i,el in enumerate(querySet):
 
