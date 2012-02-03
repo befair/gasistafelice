@@ -1,10 +1,23 @@
+
 from django import forms
+from django.db import transaction
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
 from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
+from django.core.exceptions import PermissionDenied
 from gasistafelice.utils import datetime_round_ten_minutes
 
+from gasistafelice.base.models import Place, Person
+from gasistafelice.gas.models import ( 
+    GASSupplierSolidalPact, GASSupplierOrder,
+    Delivery, Withdrawal
+)
+
 import datetime
+
+import logging
+log = logging.getLogger(__name__)
+
 
 #---------------------------------------------------------------------------------
 # Specific forms support functions
@@ -283,7 +296,6 @@ class AddOrderForm(BaseOrderForm):
                             , ('datetime_start', 'datetime_end')
                             , 'delivery_datetime'
                             , 'referrer_person'
-                            , ('repeat_order', 'repeat_frequency', 'repeat_until_date')
             ]
         })]
 #WAS: INTERGAS 6

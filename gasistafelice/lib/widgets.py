@@ -50,7 +50,7 @@ class RelatedMultipleFieldWidgetCanAdd(widgets.SelectMultiple):
 class SplitDateTimeFormatAwareWidget(admin_widgets.AdminSplitDateTime):
 
     def __init__(self, *args, **kw):
-        super(MySplitDateTimeWidget, self).__init__(*args, **kw)
+        super(SplitDateTimeFormatAwareWidget, self).__init__(*args, **kw)
         self.widgets[0].format=settings.DATE_INPUT_FORMATS[0]
         self.widgets[1].widget = admin_widgets.AdminTimeWidget()
         self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]

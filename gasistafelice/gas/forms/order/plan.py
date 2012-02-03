@@ -1,8 +1,13 @@
 """This module holds Mix-in class and final PlannedAddOrderForm class"""
 
+from django import forms
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.db import transaction
 
+from datetime import timedelta, datetime, date
 import copy
+
+from gasistafelice.gas.forms.order.base import AddOrderForm
 
 
 FREQUENCY = [ 
@@ -12,7 +17,7 @@ FREQUENCY = [
     (28, _('monthly')), 
     (56, _('two months')), 
     (84, _('three months')), 
-    (168', _('half year')), 
+    (168, _('half year')), 
     (336, _('year'))
 ]
 
@@ -26,7 +31,7 @@ class PlannedOrderFormMixIn(object):
         label=_('Repeat this order several times?'), required=False
     )
     repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
-    repeat_until_date = forms.DateField(initial=date.now, required=False,
+    repeat_until_date = forms.DateField(initial=date.today, required=False,
         help_text=_("Required if you want to plan orders")
         # COMMENT fero: dates are rendered with calendar, widget=admin_widgets.AdminDateWidget
     )
@@ -79,7 +84,7 @@ class PlannedOrderFormMixIn(object):
                 raise forms.validationerror(ug("To plan an order you must set an end planning date"))
 
             start_date = self.cleaned_data['datetime_start'].date()
-            min_repeat_until_date = (start_date + timedelta(days=_repeat_frequency)
+            min_repeat_until_date = start_date + timedelta(days=_repeat_frequency)
             if _repeat_until_date < min_repeat_until_date:
                 raise forms.validationerror(ug("To plan an order you must set an end planning date later than start date + frequency"))
 
@@ -228,3 +233,13 @@ class AddPlannedOrderForm(AddOrderForm, PlannedOrderFormMixIn):
         if self.instance and self.is_repeated:
             self.create_repeated_orders()
 
+    class Meta(AddOrderForm.Meta):
+
+        gf_fieldsets = [(None, {
+            'fields' : ['pact'
+                , ('datetime_start', 'datetime_end')
+                , 'delivery_datetime'
+                , 'referrer_person'
+                , ('repeat_order', 'repeat_frequency', 'repeat_until_date')
+            ]
+        })]

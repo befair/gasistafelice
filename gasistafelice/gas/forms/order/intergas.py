@@ -1,3 +1,4 @@
+from django.db.models import Max
 def get_group_id():
     _group_id = 1
     _maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))

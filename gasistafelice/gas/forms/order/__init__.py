@@ -53,31 +53,14 @@ There are also some other classes that support order interactions:
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from gasistafelice.gas.models import ( GAS, GASSupplierOrder,
-            Delivery, Withdrawal
-)
-
-from gasistafelice.supplier.models import Supplier
 from gasistafelice.base.models import Place, Person
+from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
 
-from django.db import transaction
-from django.db.models import Max
-from django.forms.formsets import formset_factory
-from django.forms import widgets
-from django.contrib.admin import widgets as admin_widgets
-from django.core.exceptions import ValidationError, PermissionDenied
+from gasistafelice.gas.forms.order.base import AddOrderForm, EditOrderForm
+from gasistafelice.gas.forms.order.plan import AddPlannedOrderForm
 
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
-from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
-
-from gasistafelice.base import const
-from gasistafelice.exceptions import DatabaseInconsistent
-from gasistafelice.utils import datetime_round_ten_minutes
-
-from django.conf import settings
-
+from gasistafelice.gas.models import GASSupplierOrder
 import copy
-from datetime import timedelta, datetime, date
 
 import logging
 log = logging.getLogger(__name__)
@@ -126,7 +109,7 @@ def form_class_factory_for_request(request, base):
                 attrs.update({
                     'withdrawal_datetime' : forms.SplitDateTimeField(
                         required=False, label=_('Withdrawal on/at'), 
-                        widget=admin_widgets.AdminSplitDateTime
+                        widget=SplitDateTimeFormatAwareWidget
                     ),
                     'withdrawal_city' : forms.CharField(
                         required=True, label=_('Withdrawal city'), 
