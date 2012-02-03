@@ -3,11 +3,14 @@
 from django import forms
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.db import transaction
+from django.contrib.admin import widgets as admin_widgets
+
+from gasistafelice.gas.forms.order.base import AddOrderForm
+from gasistafelice.lib.widgets import DateFormatAwareWidget
 
 from datetime import timedelta, datetime, date
 import copy
 
-from gasistafelice.gas.forms.order.base import AddOrderForm
 
 
 
@@ -32,9 +35,9 @@ class AddPlannedOrderForm(AddOrderForm):
         help_text=_('Check the little square to plan this order as much times as you want')
     )
     repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
-    repeat_until_date = forms.DateField(initial=date.today, required=False,
-        help_text=_("Required if you want to plan orders")
-        # COMMENT fero: dates are rendered with calendar, widget=admin_widgets.AdminDateWidget
+    repeat_until_date = forms.DateField(initial=date.today, required=False
+        , help_text=_("Required if you want to plan orders")
+        , widget=DateFormatAwareWidget
     )
 
     def __init__(self, *args, **kw):

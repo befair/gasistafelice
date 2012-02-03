@@ -55,3 +55,11 @@ class SplitDateTimeFormatAwareWidget(admin_widgets.AdminSplitDateTime):
         self.widgets[1].widget = admin_widgets.AdminTimeWidget()
         self.widgets[1].format=settings.TIME_INPUT_FORMATS[0]
 
+#--------------------------------------------------------------------------------
+
+class DateFormatAwareWidget(admin_widgets.AdminDateWidget):
+
+    def __init__(self, *args, **kw):
+        super(DateFormatAwareWidget, self).__init__(*args, **kw)
+        self.format=settings.DATE_INPUT_FORMATS[0]
+
