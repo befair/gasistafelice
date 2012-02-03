@@ -88,6 +88,7 @@ class BaseOrderForm(forms.ModelForm):
         referrers = request.resource.supplier_referrers_people
         if not referrers.count():
             #KO: not rendered the form and the relative warning
+            #NOTE fero: it shouldn't arrive here...no matter for me if it is and HARD exception
             #raise PermissionDenied(ug("You cannot open an order without referrers"))
             log.warning("AddOrderForm.__init__(): trying to create a new order without referrers!")
 
@@ -100,21 +101,47 @@ class BaseOrderForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
         dt_start = cleaned_data.get("datetime_start")
         dt_end = cleaned_data.get("datetime_end")
-        dt_close = cleaned_data.get("delivery_datetime")
-        #log.debug("AddOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_close))
+        dt_delivery = cleaned_data.get("delivery_datetime")
+
+        #log.debug("AddOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_delivery))
         # Only do something if both fields are valid so far.
         if dt_start and dt_end:
             if dt_start >= dt_end:
                  raise forms.ValidationError(ug(u"Start date can't be later or equal than end date"))
 
-        if dt_end and dt_close:
-            if dt_end > dt_close:
+        if dt_end and dt_delivery:
+            if dt_end > dt_delivery:
                  raise forms.ValidationError(ug("End date can't be later than delivery date"))
+
+        # Set cleaned data additional keys:
+        # pact: needed if we are in EditOrderForm
+        pact = cleaned_data.get('pact', self.instance.pact)
+        cleaned_data['pact'] = pact
+
+        # delivery_appointment: d would be saved within save()
+        if dt_delivery:
+            d = self.get_delivery()
+            cleaned_data['delivery_appointment'] = d 
+
+        # withdrawal_appointment
+        # COMMENT fero: I think that EVERY order SHOULD have withdrawal_place
+        # COMMENT fero: ok to not show in form, but programmatically create it anyway
+        if pact.gas.config.use_withdrawal_place:
+            if self.cleaned_data.get('withdrawal_datetime'):
+                w = self.get_withdrawal()
+                cleaned_data['withdrawal_appointment'] = w 
 
         # Always return the full collection of cleaned data.
         return cleaned_data
 
     def get_appointment_instance(self, name, klass):
+        """Return a delivery or withdrawal instance.
+
+        If instance already exist in db ==> return it,
+        return a non-saved instance otherwise.
+
+        It would be saved in save()
+        """
 
         ddt = self.cleaned_data['%s_datetime' % name]
         if self.cleaned_data.get('%s_city' % name):
@@ -139,7 +166,10 @@ class BaseOrderForm(forms.ModelForm):
                 return None
 
         try:
-            d, created = klass.objects.get_or_create(date=ddt, place=p)
+            # try to get already existent appointment
+            appointment = klass.objects.get(date=ddt, place=p)
+        except klass.DoesNotExist as e:
+            appointment = klass(date=ddt, place=p)
         except klass.MultipleObjectsReturned as e:
 
             #FIXME TOVERIFY: get() returned more than one Delivery -- it returned 2!
@@ -149,13 +179,29 @@ class BaseOrderForm(forms.ModelForm):
             ))
             raise
 
-        return d
+        return appointment
 
     def get_delivery(self):
         return self.get_appointment_instance('delivery', Delivery)
 
     def get_withdrawal(self):
         return self.get_appointment_instance('withdrawal', Withdrawal)
+
+    @transaction.commit_on_success
+    def save(self, *args, **kwargs):
+
+        d = self.cleaned_data.get('delivery_appointment')
+        if d and not d.pk:
+            d.save()
+        self.instance.delivery = d
+
+        w = self.cleaned_data.get('withdrawal_appointment')
+        if w and not w.pk:
+            w.save()
+        self.instance.withdrawal = w
+
+        super(BaseOrderForm, self).save(*args, **kwargs)
+
 
 #--------------------------------------------------------------------------------
 
@@ -279,28 +325,19 @@ class AddOrderForm(BaseOrderForm):
 
     @transaction.commit_on_success
     def save(self, *args, **kwargs):
+
         self.instance.pact = self.cleaned_data['pact']
-        _gas = self.instance.pact.gas
 
         #TODO in clean(): Control if delivery referrer is a GAS's referrer
-
-        if self.cleaned_data.get('delivery_datetime'):
-            d = self.get_delivery()
-            self.instance.delivery = d
-
-        if _gas.config.use_withdrawal_place:
-            if self.cleaned_data.get('withdrawal_datetime'):
-                w = self.get_withdrawal()
-                self.instance.withdrawal = w
-
-        log.debug("AddOrderForm CREATED pre_save")
-        super(AddOrderForm, self).save(*args, **kwargs)
 
 #TODO            #send email
 #            #COMMENT domthu: Only if opened?  Util? use another politica
 #            _send_email = self.cleaned_data['email_gas']
 #            if bool(_send_email):
 #                TODO: May be we only need to disable the notification if not enabled
+
+        log.debug("AddOrderForm CREATED pre_save")
+        super(AddOrderForm, self).save(*args, **kwargs)
 
 
     class Meta:
@@ -335,6 +372,7 @@ class EditOrderForm(BaseOrderForm):
         pact = request.resource.pact
         delivery = request.resource.delivery
         ref = request.resource.referrer_person
+            
         if ref:
             #control if queryset not empty.
             self.fields['referrer_person'].initial = ref
@@ -342,18 +380,6 @@ class EditOrderForm(BaseOrderForm):
             self.fields['datetime_end'].initial = request.resource.datetime_end
         if delivery and delivery.date:
             self.fields['delivery_datetime'].initial = delivery.date
-
-    def save(self):
-
-        if self.cleaned_data.get('delivery_datetime'):
-            d = self.get_delivery()
-            self.instance.delivery = d
-
-        if self.cleaned_data.get('withdrawal_datetime'):
-            w = self.get_withdrawal()
-            self.instance.withdrawal = w
-
-        return super(EditOrderForm, self).save()
 
     class Meta:
         model = GASSupplierOrder

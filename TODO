@@ -23,6 +23,9 @@ TODO 20120126
 * Sistemare notifiche interne e via mail
 * Eliminazione ordini deve chiedere (vuoi eliminare questo o tutti i successivi?)
 
+* Se ad un ordine aperto modifico la data di apertura nel futuro, rimane aperto.
+  Impedire la modifica della data di apertura?
+
 APPUNTI
 -------
 
