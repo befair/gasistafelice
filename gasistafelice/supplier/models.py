@@ -101,13 +101,13 @@ class Supplier(models.Model, PermissionResource):
         . ROOT (/)
         |----------- wallet [A]
         +----------- incomes [P,I]+
-        |				+--- gas [P, I] +
-        |						+--- <UID gas #1>  [P, I]
-        |						| ..
-        |						+--- <UID gas #n>  [P, I]
-        |				+--- TODO: Other (Bonus? Subvention? Investment?)
-        +----------- expenses [P,E]	+
-        				+--- TODO: Other (Correction?, Donation?, )
+        |                +--- gas [P, I] +
+        |                        +--- <UID gas #1>  [P, I]
+        |                        | ..
+        |                        +--- <UID gas #n>  [P, I]
+        |                +--- TODO: Other (Bonus? Subvention? Investment?)
+        +----------- expenses [P,E]+
+                        +--- TODO: Other (Correction?, Donation?, )
         """
 
         self.subject.init_accounting_system()
@@ -380,6 +380,7 @@ class Supplier(models.Model, PermissionResource):
         display.ResourceList(name="referrers_people", verbose_name=_("Platform referrers")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
+    #COMMENT domthu: i don't understand where referrers_people is defined?
 
     #--------------------------#
 

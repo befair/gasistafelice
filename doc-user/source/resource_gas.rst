@@ -4,7 +4,7 @@ Il GAS
 |head2_descr|
 -------------
 
-|TODO| Qui si intende la risorsa Supplier. Non l'utente fornitore, ma l'azienda, la cooperativa, ... 
+|TODO| Qui si intende la risorsa GAS
 
 |head2_terms|
 -------------

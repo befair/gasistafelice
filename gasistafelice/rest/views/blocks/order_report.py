@@ -7,7 +7,9 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.order import GASSupplierOrderProductForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order import GASSupplierOrderProductForm
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -84,7 +86,9 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         #return request.resource.stocks
         # GASSupplierOrderProduct objects
-        return request.resource.orderable_products.filter(gasmember_order_set__ordered_amount__gt=0).distinct()
+        return request.resource.orderable_products.filter(
+            gasmember_order_set__ordered_amount__gt=0
+        ).distinct()
 
     def _get_resource_families(self, request):
         return request.resource.ordered_products
@@ -92,9 +96,9 @@ class Block(BlockSSDataTables):
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
         return formset_factory(
-                    form=GASSupplierOrderProductForm,
-                    formset=BaseFormSetWithRequest,
-                    extra=qs.count()
+            form=GASSupplierOrderProductForm,
+            formset=BaseFormSetWithRequest,
+            extra=qs.count()
         )
 
     def _get_records(self, request, querySet):

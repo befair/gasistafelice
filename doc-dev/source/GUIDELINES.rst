@@ -106,6 +106,9 @@ Convenzioni
 * Le cose da fare sono marcate come `TODO`
 * I commenti "che si vogliono indirizzare agli altri sviluppatori" iniziano con `#COMMENT <nick>`
 * Le parti di codice pushate ma che hanno bisogno di revisione includono la stringa `TODO: NEEDS REVIEW`
+* Il codice segue le linee guida del PEP-08
+* L'indentazione delle righe spezzate è sempre di 4 spazi
+* Le parti di codice che si commentano e si vogliono lasciare come promemoria si commentano con `#WAS`, se è una prova che non era andata a buon fine mettere `KO:`
 
 ATTENZIONE A
 -------------

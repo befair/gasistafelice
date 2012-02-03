@@ -1,5 +1,5 @@
 
-jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
+jQuery.UIBlockOrderCurtail = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("curtail", "table");
@@ -97,5 +97,5 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS["curtail"] = new jQuery.UIBlockOrderReport();
+jQuery.BLOCKS["curtail"] = new jQuery.UIBlockOrderCurtail();
 

@@ -181,6 +181,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     'order_num' : self.pk,
                     'ref' : ref
         }
+
+        if self.group_id:
+            rv += " --> InterGAS. %s" % (self.group_id)
         #if settings.DEBUG:
         #    rv += " [%s]" % self.pk
         return rv
@@ -211,9 +214,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             if t in get_allowed_transitions(self, user):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
 
-#                #20111212 02:00 prepare reccurent plan for order
-#FIXME: not done when using manual opening
-#                self.set_default_gasstock_set()
+                #20111212 02:00 prepare reccurent plan for order
+                #FIXME: not done when using manual opening. Do it using worflow change state handler
+                #WAS: self.set_default_gasstock_set()
 
                 self.do_transition(t, user)
 
@@ -315,7 +318,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         pact_refs = self.pact.referrers
         if not pact_refs:
             pact_refs = self.pact.gas.referrers
-        pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
+
+        #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
+        if self.referrer_person:
+            pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
         return pact_refs
 
     @property
@@ -350,6 +356,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 #            return
 
         gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
+        if gasstocks and gasstocks.count() > 0:
+            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set count: %s " % gasstocks.count())
+        else:
+            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set ?????? %s " % gasstocks)
         for s in gasstocks:
             #maybe works the more intuitive...self.orderable_product_set.add( ???
             GASSupplierOrderProduct.objects.create(order=self, 
@@ -750,7 +760,8 @@ WHERE order_id = %s \
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
-#20111212 02:00 prepare reccurent plan for order
+        #KO: 20111212 02:00 prepare reccurent plan for order. 
+        # becasue Do not create gasstock if order state is prepared
         if created:
             self.set_default_gasstock_set()
 
@@ -939,7 +950,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def stock(self):
         return self.gasstock.stock
-    
+
     def save(self, *args, **kw):
         """Sef default initial price"""
         if not self.pk:
@@ -1060,6 +1071,14 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def product(self):
         return self.ordered_product.product
+
+    @property
+    def stock(self):
+        return self.ordered_product.stock
+
+    @property
+    def order(self):
+        return self.ordered_product.order
 
     @property
     def supplier(self):
@@ -1192,8 +1211,15 @@ class Delivery(Appointment, PermissionResource):
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
     """
     
-    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"),verbose_name=_('place'))
-    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"),verbose_name=_('date'))    
+    place = models.ForeignKey(Place, 
+        related_name="delivery_set", 
+        help_text=_("where the order will be delivered by supplier"),
+        verbose_name=_('place')
+    )
+    date = models.DateTimeField(
+        help_text=_("when the order will be delivered by supplier"),
+        verbose_name=_('date')
+    )    
 
     history = HistoricalRecords()
 
@@ -1329,11 +1355,17 @@ class Withdrawal(Appointment, PermissionResource):
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
     """
     
-    place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
+    place = models.ForeignKey(Place, 
+        related_name="withdrawal_set", 
+        help_text=_("where the order will be withdrawn by GAS members")
+    )
+
     #TODO FIXME AFTER 6th of september: 
     # * date should be Date field
     # * start_time and end_time (with no defaults) must be managed in forms
-    date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
+    date = models.DateTimeField(
+        help_text=_("when the order will be withdrawn by GAS members")
+    )
 
     # a Withdrawal appointment usually span a time interval
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))

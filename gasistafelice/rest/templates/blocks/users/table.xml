@@ -3,8 +3,13 @@
 
 {% block headers %}
 <th>{% trans "Id" %}</th>
+<th>{% trans "username" %}</th>
 <th>{% trans "Fisrt name" %}</th>
 <th>{% trans "Last name" %}</th>
+<th>{% trans "Email" %}</th>
+<th>{% trans "Last login" %}</th>
+<th>{% trans "Date joined" %}</th>
+<th>{% trans "Staff" %}</th>
 <th>{% trans "Active" %}</th>
 {% endblock %}
 

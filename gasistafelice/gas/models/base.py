@@ -37,7 +37,7 @@ from gasistafelice.supplier.models import Supplier, SupplierStock, Product, Prod
 from gasistafelice.gas.managers import GASMemberManager
 from gasistafelice.des.models import DES
 
-from gasistafelice.exceptions import NoSenseException
+from gasistafelice.exceptions import NoSenseException, DatabaseInconsistent
 
 from decimal import Decimal
 import datetime
@@ -198,20 +198,22 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def users(self):
-        #usrs_pks = set(member.user.pk for member in self.gasmembers)
-        #return User.objects.filter(pk__in=usrs_pks)
-        #qs = User.objects.filter(person__in=self.persons)
-        #return qs.distinct()
-
-        return  User.objects.all()
-        #FIXME:'User' object has no attribute '_clone'
-        # initialize the return QuerySet 
-        qs = User.objects.none()
-        #add the suppliers who have signed a pact with a GAS this person belongs to
+        #WAS: us = User.objects.none()
+        #WAS: add the suppliers who have signed a pact with a GAS this person belongs to
+        #WAS: for member in self.gasmembers:
+        #WAS:     if member.person.user:
+        #WAS:         us |= member.person.user
+        usr_ids = set()
         for member in self.gasmembers:
-            if member.person.user:
-                qs = qs | member.person.user
-        return qs
+
+            #COMMENT LF: specifications say that every GASMember MUST
+            #COMMENT LF: be bound to a User: so raise an Exception if not True
+            if not member.person.user:
+                raise DatabaseInconsistent(
+                    "Member %s is not bound to a valid User" % member
+                )
+            usr_ids.add(member.person.user.pk)
+        return User.objects.filter(pk__in = usr_ids)
 
     @property
     def persons(self):
@@ -250,7 +252,7 @@ class GAS(models.Model, PermissionResource):
         # retrieve all Users having this role
         us = User.objects.none()
         for pr in prs:
-            us |= pr.get_users() 
+            us |= pr.get_users()
         return us
 
     @property
@@ -332,22 +334,22 @@ class GAS(models.Model, PermissionResource):
     def setup_accounting(self):
         """ Accounting hierachy for GAS.
 
-		. ROOT (/)
-		|----------- cash [A]
-		+----------- members [P,A]+
-		|				+--- <UID member #1>  [A]
-		|				| ..
-		|				+--- <UID member #n>  [A]
-		+----------- expenses [P,E]+
-		|				+--- TODO: OutOfNetwork
-		|				+--- suppliers [P, E] +
-		|						+--- <UID supplier #1>  [E]
-		|						| ..
-		|						+--- <UID supplier #n>  [E]
-		+----------- incomes [P,I]+
-		|				+--- recharges [I] 
-		|				+--- fees [I]
-		|				+--- TODO: Other
+        . ROOT (/)
+        |----------- cash [A]
+        +----------- members [P,A]+
+        |                +--- <UID member #1>  [A]
+        |                | ..
+        |                +--- <UID member #n>  [A]
+        +----------- expenses [P,E]+
+        |                +--- TODO: OutOfNetwork
+        |                +--- suppliers [P, E] +
+        |                        +--- <UID supplier #1>  [E]
+        |                        | ..
+        |                        +--- <UID supplier #n>  [E]
+        +----------- incomes [P,I]+
+        |                +--- recharges [I] 
+        |                +--- fees [I]
+        |                +--- TODO: Other
         """
 
         self.subject.init_accounting_system()
@@ -540,16 +542,22 @@ class GASConfig(models.Model):
 
     order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False, 
         help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
-    order_show_only_one_at_a_time = models.BooleanField(verbose_name=_('Select only one order at a time'), default=False, 
-        help_text=_("GASMember can select only one open order at a time in order block"))
+    order_show_only_one_at_a_time = models.BooleanField(
+        verbose_name=_('Select only one order at a time'), default=True, 
+        help_text=_("GASMember can select only one open order at a time in order block")
+    )
 
     #TODO: see ticket #65
-    default_close_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
-        help_text=_("default closing order day of the week"),verbose_name=_('default close day')
+    default_close_day = models.CharField(
+        max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        help_text=_("default closing order day of the week"),
+        verbose_name=_('default close day')
     )
     #TODO: see ticket #65
-    default_delivery_day = models.CharField(max_length=16, blank=True, choices=const.DAY_CHOICES, 
-        help_text=_("default delivery day of the week"),verbose_name=_('default delivery day')
+    default_delivery_day = models.CharField(
+        max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        help_text=_("default delivery day of the week"),
+        verbose_name=_('default delivery day')
     )
 
     #Do not provide default for time fields because it has no sense set it to the moment of GAS configuration
@@ -562,26 +570,51 @@ class GASConfig(models.Model):
         help_text=_("default delivery closing hour and minutes")
     )
 
-    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), default=False,
+    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), 
+        default=False,
         help_text=_("If False, GAS never use concept of withdrawal place that is the default")
     )
-    can_change_withdrawal_place_on_each_order = models.BooleanField(verbose_name=_('Can change withdrawal place on each order'), default=False, 
+    can_change_withdrawal_place_on_each_order = models.BooleanField(
+        verbose_name=_('Can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
-    can_change_delivery_place_on_each_order = models.BooleanField(verbose_name=_('Can change delivery place on each order'), default=False, help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
+    can_change_delivery_place_on_each_order = models.BooleanField(
+        verbose_name=_('Can change delivery place on each order'), default=False, 
+        help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
     # to follow headquarter value if it changes.
     # Provide delivery place and withdrawal place properties to get the right value
-    default_withdrawal_place = models.ForeignKey(Place, verbose_name=_('Default withdrawal place'), blank=True, null=True, related_name="gas_default_withdrawal_set", help_text=_("to specify if different from headquarter"))
-    default_delivery_place = models.ForeignKey(Place, verbose_name=_('Default delivery place'), blank=True, null=True, related_name="gas_default_delivery_set", help_text=_("to specify if different from delivery place"))
+    default_withdrawal_place = models.ForeignKey(Place, 
+        verbose_name=_('Default withdrawal place'), 
+        blank=True, null=True, related_name="gas_default_withdrawal_set", 
+        help_text=_("to specify if different from headquarter")
+    )
+    default_delivery_place = models.ForeignKey(Place, 
+        verbose_name=_('Default delivery place'), blank=True, null=True, 
+        related_name="gas_default_delivery_set", 
+        help_text=_("to specify if different from withdrawal place")
+    )
 
-    auto_populate_products = models.BooleanField(verbose_name=_('Auto populate products'), default=True, help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated"))
-    is_active = models.BooleanField(verbose_name=_('Is active'), default=True, help_text=_("This GAS doesn't exist anymore or is banned? (from who?)"))
-    use_scheduler = models.BooleanField(default=False, verbose_name=_("Use scheduler"), help_text=_("Enable scheduler for automatic and planned operations"))
-    gasmember_auto_confirm_order = models.BooleanField(verbose_name=_('GAS members orders are auto confirmed'), default=True, help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders"))
+    auto_populate_products = models.BooleanField(
+        verbose_name=_('Auto populate products'), default=True, 
+        help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated")
+    )
+    is_active = models.BooleanField(
+        verbose_name=_('Is active'), default=True, 
+        help_text=_("This GAS doesn't exist anymore or is banned? (from who?)")
+    )
+    use_scheduler = models.BooleanField(default=False, 
+        verbose_name=_("Use scheduler"), 
+        help_text=_("Enable scheduler for automatic and planned operations")
+    )
+    gasmember_auto_confirm_order = models.BooleanField(
+        verbose_name=_('GAS members orders are auto confirmed'), 
+        default=True, 
+        help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders")
+    )
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
@@ -840,9 +873,9 @@ class GASMember(models.Model, PermissionResource):
         #GAS-side
         . ROOT (/)
         +----------- members [P,A]+
-        |				+--- <UID member #1>  [A]
-        |				| ..
-        |				+--- <UID member #n>  [A]
+        |                +--- <UID member #1>  [A]
+        |                | ..
+        |                +--- <UID member #n>  [A]
 
         #Person-side
         . ROOT (/)
@@ -850,8 +883,8 @@ class GASMember(models.Model, PermissionResource):
         +--- expenses [P,E]+
                 +--- gas [P, E] +
                         +--- <UID gas #1>  [P, E]+
-                        |			+--- recharges [E]
-                        |			+--- fees [E]
+                        |            +--- recharges [E]
+                        |            +--- fees [E]
                         | ..
                         +--- <UID gas #n>  [P, E]
                                     +--- recharges [E]
@@ -1361,12 +1394,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         """ GASSupplierSolidalPact contributes to GAS and Supplier accounting hierarchies.
 
         # GAS-side
-		. ROOT (/)
-		+----------- expenses [P,E]+
-		|				+--- suppliers [P, E] +
-		|						+--- <UID supplier #1>  [E]
-		|						| ..
-		|						+--- <UID supplier #n>  [E]
+        . ROOT (/)
+        +----------- expenses [P,E]+
+        |               +--- suppliers [P, E] +
+        |                       +--- <UID supplier #1>  [E]
+        |                       | ..
+        |                       +--- <UID supplier #n>  [E]
 
         # SUPPLIER-side
         . ROOT (/)
@@ -1447,10 +1480,6 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def pact(self):
         return self
-    
-    @property
-    def pacts(self):
-        return GASSupplierSolidalPact.objects.filter(pk=self.pk)
 
     @property
     def persons(self):
