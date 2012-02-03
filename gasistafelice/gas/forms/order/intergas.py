@@ -1,3 +1,16 @@
+def get_group_id():
+    _group_id = 1
+    _maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
+    log.debug("get_group_id %s " % _maxs)
+    if _maxs:
+        # get the maximum attribute from the first record and add 1 to it
+        _group_id = _maxs['group_id__max']
+        if _group_id:
+            _group_id += 1
+        else:
+            _group_id = 1
+    return _group_id
+
 #WAS: INTERGAS 0
 #    intergas = forms.BooleanField(label=_('This order is InterGAS?'), required=False)
 #    intergas_grd = forms.MultipleChoiceField(label=_('gas'), choices=GAS.objects.none(), required=False, widget=forms.CheckboxSelectMultiple)

@@ -14,6 +14,30 @@ def now_round_ten_minutes():
     dt = datetime.datetime.now()
     return datetime_round_ten_minutes(dt)
 
+def get_day_from_choice(choice):
+    day_num = 0
+    if choice == 'MONDAY':
+        day_num = 0
+    elif choice == 'TUESDAY':
+        day_num = 1
+    elif choice == 'WEDNESDAY':
+        day_num = 2
+    elif choice == 'THURSDAY':
+        day_num = 3
+    elif choice == 'FRIDAY':
+        day_num = 4
+    elif choice == 'SATURDAY':
+        day_num = 5
+    elif choice == 'SUNDAY':
+        day_num = 6
+    return day_num
+
+def first_day_on_or_after(daynum, dt):
+    days_to_go = daynum - dt.weekday()
+    if days_to_go:
+        dt += timedelta(days_to_go)
+    return dt
+
 #---------------------------------------------------------------------------------
 
 class BaseOrderForm(forms.ModelForm):

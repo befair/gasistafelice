@@ -82,26 +82,6 @@ from datetime import timedelta, datetime, date
 import logging
 log = logging.getLogger(__name__)
 
-def get_delivery(date, place):
-    # COMMENT fero: this must be debugged since there can't be multiple
-    # COMMENT fero: deliveries with the same date/place. If there are,
-    # COMMENT fero: Database is corrupt
-    # COMMENT fero: TO AVOID PROBLEMS IS NOT THE RIGHT SOLUTION
-    try:
-        obj, created = Delivery.objects.get_or_create(
-            date=date,
-            place=place
-        )
-        return obj
-    except Exception as e:
-        log.debug("get_delivery: %s " % (e))
-        objs = Delivery.objects.filter(date=date, place=place)
-        if objs and objs.count()>0:
-            return objs[objs.count()-1]
-        else:
-            log.debug("get_delivery cannot retrieve for place: %s and date: %s" % (place, date))
-            return None
-
 def form_class_factory_for_request(request, base):
     """Return appropriate form class basing on GAS configuration
     and other request parameters if needed"""
