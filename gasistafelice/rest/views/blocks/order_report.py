@@ -7,8 +7,7 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.order import GASSupplierOrderProductForm
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
 from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
@@ -97,7 +96,6 @@ class Block(BlockSSDataTables):
         qs = self._get_resource_list(self.request)
         return formset_factory(
             form=GASSupplierOrderProductForm,
-            formset=BaseFormSetWithRequest,
             extra=qs.count()
         )
 
