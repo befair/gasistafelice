@@ -7,11 +7,11 @@ from django.contrib.admin import widgets as admin_widgets
 
 from gasistafelice.gas.forms.order.base import AddOrderForm
 from gasistafelice.lib.widgets import DateFormatAwareWidget
+from gasistafelice.gas.models.order import GASSupplierOrder, Delivery
 
 from datetime import timedelta, datetime, date
-import copy
-
-
+import copy, logging
+log = logging.getLogger(__name__)
 
 
 FREQUENCY = [ 
@@ -34,7 +34,7 @@ class AddPlannedOrderForm(AddOrderForm):
         label=_('Is this a periodic order?'), required=False,
         help_text=_('Check the little square to plan this order as much times as you want')
     )
-    repeat_frequency = forms.ChoiceField(required=False, choices=FREQUENCY)
+    repeat_frequency = forms.TypedChoiceField(required=False, choices=FREQUENCY, coerce=int)
     repeat_until_date = forms.DateField(initial=date.today, required=False
         , help_text=_("Required if you want to plan orders")
         , widget=DateFormatAwareWidget
@@ -119,6 +119,7 @@ class AddPlannedOrderForm(AddOrderForm):
                 raise forms.ValidationError(ug("Something wrong has happened with planning parameters"))
 
             self._repeat_items = _repeat_items
+            self._repeat_frequency = _repeat_frequency
 
         return cleaned_data
 
@@ -132,6 +133,24 @@ class AddPlannedOrderForm(AddOrderForm):
         new_obj.pk = None
 
         return new_obj
+
+    def delete_previous_planned_orders(self):
+
+        # Delete - Clean all previous planification
+        previous_planned_orders = GASSupplierOrder.objects.filter(
+            pact=self.instance.pact,
+            datetime_start__gt = self.instance.datetime_start
+        )
+        log.debug("repeat previous_planned_orders: %s" % (previous_planned_orders))
+        for order in previous_planned_orders:
+
+            #delete only prepared orders
+            if order.is_prepared or order.is_active:
+
+#WAS: INTERGAS 3
+
+                log.debug("AddOrderForm repeat delete previous_planned_orders: %s" % (order))
+                order.delete()
 
     def create_repeated_orders(self):
         """Create other instances of GASSupplierOrder.
@@ -149,21 +168,7 @@ class AddPlannedOrderForm(AddOrderForm):
 
 #WAS: INTERGAS 2
 
-        # Delete - Clean all previous planification
-        previous_planned_orders = GASSupplierOrder.objects.filter(
-            pact=self.instance.pact,
-            datetime_start__gt = self.instance.datetime_start
-        )
-        log.debug("repeat previous_planned_orders: %s" % (previous_planned_orders))
-        for order in previous_planned_orders:
-
-            #delete only prepared orders
-            if order.is_prepared or order.is_active:
-
-#WAS: INTERGAS 3
-
-                log.debug("AddOrderForm repeat delete previous_planned_orders: %s" % (order))
-                order.delete()
+        self.delete_previous_planned_orders()
 
         #Planning new orders
         for num in range(1, self._repeat_items+1):  #to iterate between 1 to _repeat_items
