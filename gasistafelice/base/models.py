@@ -931,10 +931,11 @@ class Place(models.Model, PermissionResource):
 
         self.zipcode = self.zipcode.strip()
         if self.zipcode:
-            try:
-                int(self.zipcode)
-            except ValueError:
-                raise ValidationError(_("Wrong ZIP CODE provided"))
+            if settings.VALIDATE_NUMERICAL_ZIPCODES:
+                try:
+                    int(self.zipcode)
+                except ValueError:
+                    raise ValidationError(_("Wrong ZIP CODE provided"))
 
         self.description = self.description.strip()
 
