@@ -100,8 +100,16 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
 #settings_menu h3, #settings_menu li {
     background-color: yellow;
 }
-
 #history_menu li:hover, 
 #settings_menu li:hover {
     background-color: lightyellow;
 }
+
+#user_urn_gasmember h3, #user_urn_gasmember li {
+    background-color: #99ccff;
+}
+
+#user_urn_gasmember li:hover {
+    background-color: #99ffff;
+}
+
