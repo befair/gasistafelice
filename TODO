@@ -15,6 +15,7 @@ DONE
 
 * Permessi per aggiungi/modifica prodotti
 * Fix aggiornamento automatico listini GAS su creazione/modifica prodotti
+* Formato orario
 
 DEVEL:
 
@@ -25,7 +26,6 @@ DEVEL:
 TODO 20120126
 ----
 
-* Formato orario
 * Elimina prodotto
 * Tooltip risorse
 * Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS

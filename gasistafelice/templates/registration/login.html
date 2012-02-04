@@ -38,24 +38,32 @@ A presto allora!</p>
 .traditional-list { margin-left: 2em; padding:0.2em;}
 ol.traditional-list { list-style-type:upper-roman; }
 ul.traditional-list { list-style-type:circle; }
+li.traditional-list.true { list-style-image : url("/media/img/admin/icon-yes.gif"); }
+li.traditional-list.false { list-style-image : url("/media/img/admin/icon-no.gif"); }
 .done { text-decoration : line-through; }
 </style>
 
 <div style="border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em;">
+<h1 style="margin-top: 1em; padding:0.2em;">Ultime novità</h1>
+<ul class="traditional-list">
+    <li class="traditional-list">Pianificazione degli ordini</li>
+    <li class="traditional-list">Migliorata l'abilitazione di nuovi utenti</li>
+</ul>
+</div>
+
+<div style="border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em;">
 <h1 style="margin-top: 1em; padding:0.2em;">Stato della migrazione del DES</h1>
 <ul class="traditional-list">
-<li class="traditional-list">
-    Tutti i dati del DES comunicati dai referenti informatici dei GAS sono stati importati nel gestionale
-</li>
-<li class="traditional-list">
-    Tutti i dati importati sono da verificare e da mettere a punto
-</li>
-<li class="traditional-list">
-    Per ogni soggetto del DES che non abbia ancora accesso alla piattaforma è possibile registrarsi per l'abilitazione
-</li>
-<li class="traditional-list">
-  A <a href="http://readthedocs.org/docs/gasista-felice/en/latest/appendix/what_is_going_on/" target="_blank">questa pagina</a> è scritto cosa funziona e cosa non funziona.
-</li>
+<li class="traditional-list true">Importazione dati del DES</li>
+<li class="traditional-list false">Verifica e messa a punto dei dati (in progress man mano che si attivano i GAS...)</li>
+<li class="traditional-list false">GAS Montefano</li>
+<li class="traditional-list false">GASsosa - Recanati</li>
+<li class="traditional-list false">GAS dei Castelli - San Severino</li>
+<li class="traditional-list false">GAS Tolentino</li>
+<li class="traditional-list false">GASdotto - Matelica</li>
+<li class="traditional-list false">GAS GAIA - Civitanova Marche</li>
+<li class="traditional-list false">GAS MC - Macerata</li>
+<li class="traditional-list false">GAS di Montagna - Camerino</li>
 </ul>
 </div>
 
@@ -63,7 +71,6 @@ ul.traditional-list { list-style-type:circle; }
 
 <h1 style="margin-top: 1em; padding:0.2em;">Futuri sviluppi per cui il sistema è predisposto</h1>
 <ul class="traditional-list">
-    <li class="traditional-list">Pianificazione ordini GAS</li>
     <li class="traditional-list">Listino gasista per preordinare prodotti (preparazione automatica paniere)</li>
     <li class="traditional-list">Personalizzazione report per i fornitori (per categorie personalizzate, modelli personalizzati, ...)</li>
     <li class="traditional-list">Import di massa listino prodotti</li>
