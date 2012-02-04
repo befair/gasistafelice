@@ -1112,6 +1112,7 @@ from django.contrib.auth.models import Group, Permission
 # groups for users
 GROUP_TECHS = "techs"
 GROUP_SUPPLIERS = "suppliers"
+GROUP_REFERRER_SUPPLIERS = "gas_referrer_suppliers"
 GROUP_USERS = "users"
 GROUP_MEMBERS = "gasmembers"
 
@@ -1128,6 +1129,7 @@ def init_perms_for_groups():
     
     g_techs = Group.objects.get(name=GROUP_TECHS)
     g_suppliers = Group.objects.get(name=GROUP_SUPPLIERS)
+    g_referrers_suppliers = Group.objects.get(name=GROUP_REFERRER_SUPPLIERS)
     g_gasmembers = Group.objects.get(name=GROUP_MEMBERS)
 
     techs_perms_d = {
@@ -1142,7 +1144,7 @@ def init_perms_for_groups():
         ProductCategory : ('add', 'change', 'delete'),
         SupplierStock : ('add', 'change', 'delete'),
         Product : ('add', 'change', 'delete'),
-        Supplier : ('add', 'change', 'delete'),
+        Supplier : ('add', 'change'),
         User : ('change',),
     }
 
@@ -1157,6 +1159,10 @@ def init_perms_for_groups():
         Supplier : ('change',),
     }
 
+    gas_referrer_supplier_perms_d = supplier_perms_d.update({
+        Supplier : ('add', 'change'),
+    })
+
     gm_perms_d = {
         Person : ('change',),
         Place : ('add', 'change',),
@@ -1166,6 +1172,7 @@ def init_perms_for_groups():
     group_perms_d_tuples = (
         (g_techs , techs_perms_d),
         (g_suppliers , supplier_perms_d),
+        (g_referrers_suppliers , gas_referrer_supplier_perms_d),
         (g_gasmembers , gm_perms_d),
     )
 
@@ -1193,6 +1200,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
 
         g_techs, created = Group.objects.get_or_create(name=GROUP_TECHS)
         g_suppliers, created = Group.objects.get_or_create(name=GROUP_SUPPLIERS)
+        g_referrers_suppliers, created = Group.objects.get_or_create(name=GROUP_REFERRER_SUPPLIERS)
         g_gasmembers, created = Group.objects.get_or_create(name=GROUP_MEMBERS)
 
         if created:
@@ -1203,7 +1211,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
 
         role_group_map = {
             GAS_MEMBER : g_gasmembers,
-            GAS_REFERRER_SUPPLIER : g_suppliers,
+            GAS_REFERRER_SUPPLIER : g_referrers_suppliers,
             SUPPLIER_REFERRER : g_suppliers,
             GAS_REFERRER_TECH : g_techs,
         }
