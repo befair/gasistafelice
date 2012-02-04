@@ -55,6 +55,10 @@ trans_state_d = {
 }
 
 OF = _('of')
+AT = _('at')
+ON = _('on')
+FROM = _('from')
+TO = _('to')
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -1258,7 +1262,11 @@ class Delivery(Appointment, PermissionResource):
         verbose_name_plural = _('deliveries')
         
     def __unicode__(self):
-        return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
+        return u"%(date)s %(at)s %(place)s" % {
+            'date':long_date(self.date).capitalize(), 
+            'at': AT, 
+            'place':self.place
+        }
     
     @property
     def gas_list(self):
@@ -1408,11 +1416,13 @@ class Withdrawal(Appointment, PermissionResource):
         verbose_name_plural = _('wihtdrawals')
     
     def __unicode__(self):
-        return "At %(place)s on %(date)s from %(start_time)s to %(end_time)s" % {
+        return u"%(on)s %(date)s %(from)s %(start_time)s %(to)s %(end_time)s %(at)s %(place)s" % {
                     'start_time':self.start_time.strftime("%H:%M"), 
                     'end_time':self.end_time.strftime("%H:%M"), 
-                    'date':self.date.strftime("%d-%m-%Y"), 
-                    'place':self.place
+                    'date':long_date(self.date).capitalize(), 
+                    'place':self.place,
+                    'on' : ON, 'at': AT,
+                    'from' : FROM, 'to': TO,
         }
     
     

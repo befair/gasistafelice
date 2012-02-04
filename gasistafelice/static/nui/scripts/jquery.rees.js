@@ -42,13 +42,20 @@ jQuery.Resource = Class.extend({
         if (this.name == undefined) {
             alert(gettext('Please provide a name for this resource before rendering it'));
         }
-        var res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
+        var res = "";
 
-        res = res.replace(/@@resource_type@@/g, this.type);
-        res = res.replace(/@@name@@/g, this.name);
-        res = res.replace(/@@urn@@/g,  this.urn);
-        res = res.replace(/@@url@@/g, this.url);
-        return res
+        //AAAAA FIXME TODO: ancora non è implementata la pagina della risorsa categoria
+        //TOGLIERE L'IF QUANDO SARà IMPLEMENTATA
+        if ((this.type == 'productcategory')|| (this.type == 'delivery')|| (this.type == 'withdrawal')) { 
+            res = this.name;
+        } else {
+            res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
+            res = res.replace(/@@resource_type@@/g, this.type);
+            res = res.replace(/@@name@@/g, this.name);
+            res = res.replace(/@@urn@@/g,  this.urn);
+            res = res.replace(/@@url@@/g, this.url);
+        }
+        return res;
     },
 
 });
@@ -506,13 +513,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
                 
-                //AAAAA FIXME TODO: ancora non è implementata la pagina della risorsa categoria
-                //TOGLIERE L'IF QUANDO SARà IMPLEMENTATA
-                if (urn.split('/')[0] == 'productcategory') { 
-                    a = a.replace(/@@resource@@/g, name);
-                } else {
-                    a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
-                }
+                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
 
                 var actions = '';
                 var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";

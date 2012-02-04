@@ -20,10 +20,10 @@ from flexi_auth.exceptions import WrongPermissionCheck
 
 from simple_accounting.models import economic_subject, Account, AccountingDescriptor, LedgerEntry, account_type
 
-
 from gasistafelice.lib import ClassProperty
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
+from gasistafelice.utils import long_date
 
 from gasistafelice.base.models import PermissionResource, Person, Place, Contact
 from gasistafelice.base import const
@@ -1049,7 +1049,7 @@ class GASMember(models.Model, PermissionResource):
         if latest:
             return u"%(amount)s \u20AC %(date)s<br />%(note)s" % {
                 'amount' : "%.2f" % latest.amount,
-                'date': latest.date.strftime("%A, %d %B %Y - %H:%M").decode('utf-8'),
+                'date': long_date(latest.date),
                 'note': latest.description,
             }
         return rv
@@ -1062,7 +1062,7 @@ class GASMember(models.Model, PermissionResource):
         if latest:
             return u"%(amount)s\u20AC %(date)s<br />%(note)s" % {
                 'amount' : "%.2f" % latest.amount,
-                'date': latest.date.strftime("%A, %d %B %Y - %H:%M").decode('utf-8'),
+                'date': long_date(latest.date),
                 'note': latest.description,
             }
         return rv
