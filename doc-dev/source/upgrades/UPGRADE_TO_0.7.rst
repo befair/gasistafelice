@@ -9,13 +9,41 @@ https://github.com/feroda/gasistafelice
 
 nell'aggiornamento a questa versione è necessario:
 
-1. Eliminare dal database tutte le relazioni temporali
-2. Rieffettuare la sincronizzazione del database
+1. Aggiornare il sottomodulo django-pro-history
+2. Eliminare dal database tutte le relazioni temporali
+3. Rieffettuare la sincronizzazione del database
+
+Aggiornare il sottomodulo django-pro-history
+--------------------------------------------
+
+# git submodule update --init
+# cd submodules/django-pro-history
+# git checkout simple-history
+# python setup.py install
+
+Verificare che sia installato il nuovo modulo
+(metodo artigianale)
+
+# python
+>>> import history
+>>> history.__file___
+(posizione del file __init__.pyc)
+>>> CTRL+D
+
+# ls -l submodules/django-pro-history/history/models.py (directory trovata prima)/models.py
+
+Verificare che la dimensione sia la stessa
+
+Se non è la stessa fare:
+
+# rm -rf (directory trovata prima)/
+
+e ripetere l'operazione lanciando la shell python (da "# python")
 
 Eliminare dal database tutte le relazioni temporali
 ---------------------------------------------------
 
-Per chi è fortunano come me (fero) e dispone di un sistema GNU/Linux
+Per chi è fortunato come me (fero ;)) e dispone di un sistema GNU/Linux
 con una shell moderna (bash/dash), può effettuare i seguenti semplici
 comandi per eseguire quasi automaticamente tutte le operazioni.
 
@@ -25,7 +53,7 @@ si stanno rimuovendo prima di eseguire le operazioni `DROP TABLE` vere e proprie
 Dal vostro amico terminale eseguite:
 
 # cd <directory del default_settings.py>
-# echo '\dt *_historical*' | python manage.py dbshell | grep table | awk '{print $3 }'
+# echo '\dt *_historical*' | python manage.py dbshell | grep public | awk '{print $3 }'
 
 e verificate di avere un output a:
 
@@ -55,7 +83,7 @@ e verificate di avere un output a:
 
 questa è la lista delle tabelle che verranno eliminate. A questo punto potete eseguire:
 
-# for t in $(echo '\dt *_historical*' | python manage.py dbshell | grep table | awk '{print $3 }'); do echo DROP TABLE $t | python manage.py dbshell ; done
+# for t in $(echo '\dt *_historical*' | python manage.py dbshell | grep public | awk '{print $3 }'); do echo DROP TABLE $t | python manage.py dbshell ; done
 
 e successivamente sincronizzare il database:
 
