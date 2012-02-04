@@ -603,6 +603,12 @@ class GASConfig(models.Model):
         verbose_name=_('Auto populate products'), default=True, 
         help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated")
     )
+
+    @property
+    def auto_populate_products(self):
+        #auto_populate_products always True until Gasista Felice 2.0
+        return True
+
     is_active = models.BooleanField(
         verbose_name=_('Is active'), default=True, 
         help_text=_("This GAS doesn't exist anymore or is banned? (from who?)")
