@@ -13,7 +13,7 @@ DONE
 --> modifica report
 --> modifica paniere
 
-* Permessi per aggiungi/modifica/elimina prodotti
+* Permessi per aggiungi/modifica prodotti
 * Fix aggiornamento automatico listini GAS su creazione/modifica prodotti
 
 DEVEL:
@@ -25,6 +25,7 @@ DEVEL:
 TODO 20120126
 ----
 
+* Formato orario
 * Elimina prodotto
 * Tooltip risorse
 * Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS

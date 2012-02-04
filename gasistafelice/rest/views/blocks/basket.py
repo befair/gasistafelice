@@ -222,7 +222,7 @@ class Block(BlockSSDataTables):
 
         if args == CONFIRM:
             for gmo in self.resource.basket:
-                log.debug("Sto confermando un ordine gassista(%s)" % gmo)
+                log.debug(u"Sto confermando un ordine gasista(%s)" % gmo)
                 gmo.confirm()
 
             #IMPORTANT: unset args to compute table results!

@@ -334,7 +334,7 @@ class Block(AbstractBlock):
             element_type  = ''
             element_warning = ''    # 'on' will make the value look red
             
-            #print "DETTAGLIO PRE: ", type(c)
+            #log.debug("DETTAGLIO PRE: ", type(c))
             
             if isinstance(display_field, types.StringTypes) or isinstance(display_field, types.UnicodeType):
                 element_type  = 'str'

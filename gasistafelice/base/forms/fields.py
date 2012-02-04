@@ -63,7 +63,7 @@ class PlaceField(forms.MultiValueField):
             return ''
 
     def clean(self, data_list):
-        #print("Clean PlaceField, DL=",data_list)
+        #log.debug("Clean PlaceField, DL=",data_list)
         nameaddr = data_list[1]
         cap = data_list[2]
         city = data_list[3]
@@ -102,7 +102,7 @@ class ContactField(forms.MultiValueField):
         super(ContactField, self).__init__(fields, *args, **kw)
     
     def compress(self, data_list):
-        #print("Compress a Contact Field, DL=",data_list)
+        #log.debug("Compress a Contact Field, DL=",data_list)
         if data_list:
             curr_id = data_list[0]
             flavour = data_list[1]
@@ -126,7 +126,7 @@ class ContactField(forms.MultiValueField):
         return ''
         
     def clean(self, value):
-        #print ("Contact to clean =", value)
+        #log.debug ("Contact to clean =", value)
         if value[1].lower() == 'email':
             validate_email(value[2])
         if value[1].lower() == 'phone':
@@ -155,7 +155,7 @@ class MultiContactField(forms.MultiValueField):
         self.widget = MultiContactWidget(n)
 
     def clean(self, value):
-        #print("Clean data=",value)
+        #log.debug("Clean data=",value)
         email_found = False
         for currData in value:
             if currData[1] != None and currData[1].lower() == 'email' and currData[2].strip() != '':
@@ -170,7 +170,7 @@ class MultiContactField(forms.MultiValueField):
         return super(MultiContactField, self).clean(value)
 
     def compress(self, data_list):
-        #print("Compress a MultiContactField, Data_List=",data_list)
+        #log.debug("Compress a MultiContactField, Data_List=",data_list)
         if self.widget == None:
             return
 

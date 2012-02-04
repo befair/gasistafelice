@@ -11,7 +11,6 @@ from gasistafelice.gas.forms.cash import EcoGASMemberRechargeFormSet
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.template import Context
-import cgi, os
 from django.conf import settings
 
 from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE

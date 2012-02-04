@@ -3,7 +3,7 @@ jQuery.UIBlockRecharge = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("recharge", "table");
-        this.submit_name = "Prepagato: ricarica il conto gassista";
+        this.submit_name = "Prepagato: ricarica il conto gasista";
     },
         //this.active_view = "edit_multiple";
         //this.default_view = this.active_view;

@@ -104,7 +104,7 @@ class Block(BlockSSDataTables):
 #        for item in q_sql:
 #            i += 1
 #            log.debug("Curtails enumerate (%s) - %s" % (i, item))
-#            print("---------Curtails sql  (%s) - %s" % (i, item))
+#            log.debug("---------Curtails sql  (%s) - %s" % (i, item))
 #{'gasmember': u'Thual', 'purchaser_id': 1L, 'order_id': 1L, 'sum_amount': Decimal('23.660000'), 'sum_qta': Decimal('1.75'), 'tot_product': 2L, 'sum_price': Decimal('25.4800')}
         #return q_sql
 

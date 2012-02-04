@@ -3,7 +3,6 @@ from notification.models import Notice
 import notification
 
 import logging
-
 log = logging.getLogger(__name__)
 
 #-------------------------------------------------------------------------------
@@ -29,7 +28,6 @@ def bulk_gasmembers_notification(unseen_since):
 
         except Exception as e:
             log.error("Send msg gasmember_notification: %s (%s)" % (e.message, type(e)))
-            print 'EEEEEEEEEEEEEE  notification gasmember_notification %s (%s)' % (e.message, type(e))
             pass
 
         for n in notices:

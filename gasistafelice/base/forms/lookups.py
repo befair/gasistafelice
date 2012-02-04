@@ -15,7 +15,7 @@ class PlaceLookup(LookupChannel):
         return qs.order_by('city','name')[:10]
 
 #    def get_result(self,obj):
-#        print(obj,"BBBBBB")
+#        log.debug(obj,"BBBBBB")
 #        return unicode(obj)
         
     def format_match(self,obj):
@@ -30,7 +30,7 @@ class PlaceLookup(LookupChannel):
 #            values = values + (escape(obj.province),) # the final , forces tuple concatenation -FS
 #            format += " (%s)"
 #            
-#        #print("values=", values)    
+#        #log.debug("values=", values)    
 #            
 #        return format % values 
 
