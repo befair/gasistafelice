@@ -43,6 +43,9 @@ from gasistafelice.supplier.forms import SupplierRoleForm
 
 #from users.models import can_write_to_resource
 
+import logging
+log = logging.getLogger(__name__)
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#

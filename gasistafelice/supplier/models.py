@@ -7,7 +7,7 @@ Models here rely on base model classes.
 Definition: `Vocabolario - Fornitori <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#Fornitori>`__ (ITA only)
 """
 
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -332,11 +332,12 @@ class Supplier(models.Model, PermissionResource):
         return user in allowed_users
  
     # Row-level EDIT permission
-    def can_edit(self, user, context):
+    def can_edit(self, user, context=None):
         # Who can edit details of a Supplier in a DES ?
         # * DES administrators
         # * referrers for that supplier        
-        allowed_users = self.des.admins | self.referrers
+        # * gas supplier_referrers for that supplier
+        allowed_users = self.des.admins | self.referrers | self.supplier_referrers
         return user in allowed_users 
     
     # Row-level DELETE permission
@@ -900,16 +901,22 @@ http://www.jagom.org/trac/reesgas/ticket/157
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of a product in a supplier catalog ?
-        # * referrers for that supplier
-        allowed_users = self.producer.referrers
-        return user in allowed_users 
+        #KO by fero * referrers for that supplier
+        #KO by fero: allowed_users = self.supplier.referrers
+        #KO by fero: return user in allowed_users 
+        #COMMENT fero: is it right to go like this?!?
+        # * anyone can edit supplier
+        return self.producer.can_edit(user)
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete a product from a supplier catalog ?
-        # * referrers for that supplier
-        allowed_users = self.producer.referrers
-        return user in allowed_users 
+        #KO by fero * referrers for that supplier
+        #KO by fero: allowed_users = self.supplier.referrers
+        #KO by fero: return user in allowed_users 
+        #COMMENT fero: is it right to go like this?!?
+        # * anyone can edit supplier
+        return self.producer.can_edit(user)
     
     #-----------------------------------------------#
 
@@ -1062,6 +1069,7 @@ class SupplierStock(models.Model, PermissionResource):
         except SupplierStock.DoesNotExist:
             return False
 
+    @transaction.commit_on_success
     def save(self, *args, **kwargs):
 
         # if `code` is set to an empty string, set it to `None`, instead, before saving,
@@ -1096,9 +1104,35 @@ class SupplierStock(models.Model, PermissionResource):
                 if gmo.has_changed:
                     signals.gmo_price_update.send(sender=gmo)
             
+        created = False
+        if not self.pk:
+            created = True
+
         super(SupplierStock, self).save(*args, **kwargs)
 
+        #CASCADING is needed for NEW product
+        #COMMENT fero: the whole machinery of updating stuff in gas models,
+        #COMMENT fero: should be managed by signals in order to make supplier app
+        #COMMENT fero: independent from gas app. But pay attention to fixtures import!
+
+        if created:
+
+            for gas in self.gas_list:
+                
+                # Get the pact
+                pact = gas.pacts.get(supplier=self.supplier)
+                enabled = self.availability and gas.config.auto_populate_products
+                self.gasstock_set.create(
+                    pact=pact, enabled=enabled, 
+                    minimum_amount=self.detail_minimum_amount,
+                    step=self.detail_step,
+            )
+
     #-- Resource API --#
+
+    @property
+    def gas_list(self):
+        return self.supplier.gas_list
 
     @property
     def gasstocks(self):
@@ -1155,16 +1189,22 @@ class SupplierStock(models.Model, PermissionResource):
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of a stock in  a supplier catalog ?
-        # * referrers for that supplier
-        allowed_users = self.supplier.referrers
-        return user in allowed_users 
+        #KO by fero * referrers for that supplier
+        #KO by fero: allowed_users = self.supplier.referrers
+        #KO by fero: return user in allowed_users 
+        #COMMENT fero: is it right to go like this?!?
+        # * anyone can edit supplier
+        return self.supplier.can_edit(user)
     
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete a stock from  a supplier catalog ?
-        # * referrers for that supplier
-        allowed_users = self.supplier.referrers
-        return user in allowed_users 
+        #KO by fero:  * referrers for that supplier
+        #KO by fero: allowed_users = self.supplier.referrers
+        #KO by fero: return user in allowed_users 
+        #COMMENT fero: is it right to go like this?!?
+        # * anyone can edit supplier
+        return self.supplier.can_edit(user)
     
     #-----------------------------------------------#
 

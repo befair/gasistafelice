@@ -61,7 +61,7 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
 
     note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
 
-    def __init__(self, request, *args, **kw):
+    def __init__(self, *args, **kw):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
         self.fields['note'].widget.attrs['class'] = 'input_medium'
 

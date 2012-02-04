@@ -8,6 +8,10 @@ DONE
 * Visualizzazione messaggi utente nelle form ove presenti
 * Nome dell'ordine secondo gli stati e tradurre
 
+* TEST eseguiti:
+--> apri ordine
+--> modifica ordine
+--> apri ordine con pianificazione
 
 TODO 20120126
 ----

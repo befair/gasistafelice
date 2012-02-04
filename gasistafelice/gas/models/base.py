@@ -378,7 +378,7 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def gas_list(self):
-        return [self.gas]
+        return GAS.objects.filter(pk=self.pk)
 
     @property
     def gas(self):
@@ -1170,7 +1170,9 @@ class GASSupplierStock(models.Model, PermissionResource):
         # CASCADING
         if self.has_changed_availability:
 
-            log.debug('   Changing for PDS %s(%s) and stock %s(%s)' %  (self.pact, self.pact.pk, self.stock, self.stock.pk) )
+            log.debug('   Changing for PDS %s(%s) and stock %s(%s)' %  (
+                self.pact, self.pact.pk, self.stock, self.stock.pk
+            ) )
             #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
             for order in self.orders.open():
                 log.debug("Change availability GSO order %s" % order)

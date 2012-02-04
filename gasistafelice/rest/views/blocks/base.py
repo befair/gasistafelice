@@ -28,6 +28,9 @@ from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.consts import CREATE, EDIT_MULTIPLE
 CREATE_PDF = "createpdf"
 
+import logging
+log = logging.getLogger(__name__)
+
 #from users.models import can_write_to_resource
 #------------------------------------------------------------------------------#
 # Actions                                                                      #

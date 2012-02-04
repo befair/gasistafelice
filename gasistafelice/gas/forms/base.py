@@ -32,9 +32,8 @@ class EditGASMemberForm(forms.ModelForm):
     """Edit form for gas member attributes.
 
     WARNING: this form is valid only in an update-context
-        """
+    """
 
-    log.debug("EditGASMemberForm")
     gm_pk = forms.IntegerField(required=False, widget=forms.HiddenInput())
     gm_name = forms.CharField(required=True, label=_("Name"), widget=forms.TextInput(attrs={'size':'100'}))
 
