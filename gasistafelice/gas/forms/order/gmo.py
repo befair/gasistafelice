@@ -2,7 +2,7 @@ from django.db import transaction
 from django import forms
 from django.utils.translation import ugettext as _
 
-from gasistafelice.gas.models import GASMemberOrder 
+from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrderProduct
 from gasistafelice.exceptions import DatabaseInconsistent
 
 import logging
@@ -16,7 +16,7 @@ class BaseGASMemberOrderForm(forms.Form):
     Do not use this class in your views, use subclasses instead."""
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    gssop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    gsop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     ordered_amount = forms.DecimalField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
 
@@ -85,12 +85,12 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
                     log.debug("UPDATED")
 
             elif self.cleaned_data.get('ordered_amount'):
-                    gssop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gssop_id'))
+                    gsop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gsop_id'))
 
                     # INTEGRITY NOTE: Ensure no duplicate entry into database is done 
                     # into GASMemberOrder Model with set unique_together
                     gmo = GASMemberOrder(
-                            ordered_product = gssop,
+                            ordered_product = gsop,
                             ordered_price = self.cleaned_data.get('ordered_price'),
                             ordered_amount = self.cleaned_data.get('ordered_amount'),
                             note = self.cleaned_data.get('note'),
@@ -118,6 +118,7 @@ class BasketGASMemberOrderForm(BaseGASMemberOrderForm):
         # (maybe we can include a call to it in this method...)
 
         if self.is_valid():
+
             id = self.cleaned_data.get('id')
             gm_id = self.cleaned_data.get('gm_id')
             gsop_id = self.cleaned_data.get('gsop_id')

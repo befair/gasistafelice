@@ -23,8 +23,10 @@ import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
 from datetime import datetime
+
 import logging
 log = logging.getLogger(__name__)
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -142,15 +144,15 @@ class Block(BlockSSDataTables):
             total = map_info[el.pk]['ordered_total']
 
             form.fields['ordered_amount'].widget.attrs = { 
-                            'class' : 'amount',
-                            'step' : el.ordered_product.gasstock.step or 1,
-                            'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
-                            'eur_chan' : ["", "alert"][bool(el.has_changed)],
-                            'req_conf' : ["alert", ""][bool(el.is_confirmed)],
-                            's_url' : el.supplier.urn,
-                            'p_url' : el.stock.urn,
+                'class' : 'amount',
+                'step' : el.ordered_product.gasstock.step or 1,
+                'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
+                'eur_chan' : ["", "alert"][bool(el.has_changed)],
+                'req_conf' : ["alert", ""][bool(el.is_confirmed)],
+                's_url' : el.supplier.urn,
+                'p_url' : el.stock.urn,
             }
-                            #'p_url' : el.product.urn,
+                #'p_url' : el.product.urn,
 
             records.append({
                'id' : "%s %s %s %s %s" % (el.pk, form['id'], form['gm_id'], form['gsop_id'], form['ordered_price']),

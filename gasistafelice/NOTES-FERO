@@ -1,0 +1,36 @@
+
+1. A possible refactory for form classes in Gasista Felice
+
+class FormRequestWrapper(object):
+
+    form_class = None #to be defined in subclasses
+
+    def __init__(self, request, *form_args, **form_kw):
+
+        self.request = request
+        self.form_args = form_args
+        self.form_kw = form_kw
+
+        self.prepare_form_input()
+        self.form = form_class(*self.form_class, **self.form_kw)
+
+#---------------------------------------------------------------------------------
+
+2. Trick to manage MapAndReduce Model (like Place, Contact, Delivery, Withdrawal) 
+   could make use of _meta.get_all_related_objects_with_model()
+
+   Check performance before use it. 
+   Probably is better to use them in a garbage collector software
+
+# restituisce tutti gli oggetti connessi a me stesso sono in
+# la parte base è questa:
+
+for klass in get_models(include_auto_created=True):
+    for f in klass._meta.local_fields:
+        # valuto se è un campo related
+        # se il valore di related non è una stringa (è un modello già definito)
+        # se il _meta del modello puntato è uguale a me stesso
+        if f.rel and not isinstance(f.rel.to, basestring) and self == f.rel.to._meta:
+            cache[RelatedObject(f.rel.to, klass, f)] = None
+
+

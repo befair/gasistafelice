@@ -3,8 +3,6 @@ DONE
 ----
 
 * Risolvere bug, NO USER URNS
-* Frequency_choices costante e in giorni
-* s/_qta/_amount
 * Visualizzazione messaggi utente nelle form ove presenti
 * Nome dell'ordine secondo gli stati e tradurre
 
@@ -12,15 +10,26 @@ DONE
 --> apri ordine
 --> modifica ordine
 --> apri ordine con pianificazione
+--> modifica report
+--> modifica paniere
+
+* Permessi per aggiungi/modifica/elimina prodotti
+* Fix aggiornamento automatico listini GAS su creazione/modifica prodotti
+
+DEVEL:
+
+* Resource API GMO.stock e sostituire 
+* Frequency_choices costante e in giorni
+* s/_qta/_amount
 
 TODO 20120126
 ----
 
+* Elimina prodotto
 * Tooltip risorse
 * Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS
 
 * Vertical align "order_report"
-* Resource API GMO.stock e sostituire 
 * Informazioni aggiuntive blocco "users" registrazione, scheda "admin" nel GAS
 
 * Notifica su registrazione nuovo utente

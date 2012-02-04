@@ -106,10 +106,10 @@ class Block(BlockSSDataTables):
                     extra=qs.count() - self.__get_gmos(qs).count()
         )
 
-    def __get_gmos(self, gssop):
+    def __get_gmos(self, gsop):
         log.debug("order block __get_gmos (%s)" % (self.request.resource.gasmember))
         return GASMemberOrder.objects.filter(
-                    ordered_product__in=gssop,
+                    ordered_product__in=gsop,
                     purchaser=self.request.resource.gasmember
         )
 
@@ -144,7 +144,7 @@ class Block(BlockSSDataTables):
                '%s-id' % key_prefix : gmo.pk,
                '%s-ordered_amount' % key_prefix : gmo.ordered_amount or 0,
                '%s-ordered_price' % key_prefix : el.gasstock.price, #displayed as hiddend field
-               '%s-gssop_id' % key_prefix : el.pk, #displayed as hiddend field
+               '%s-gsop_id' % key_prefix : el.pk, #displayed as hiddend field
                '%s-note' % key_prefix : gmo.note,
             })
 
@@ -183,7 +183,7 @@ class Block(BlockSSDataTables):
                             #'p_url' : el.product.urn,
 
             records.append({
-               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gssop_id'], form['ordered_price']),
+               'id' : "%s %s %s %s" % (el.pk, form['id'], form['gsop_id'], form['ordered_price']),
                'supplier' : el.supplier,
                'product' : el.product,
                'note' : form['note'],

@@ -122,7 +122,7 @@ class Block(BlockSSDataTables):
         data['form-INITIAL_FORMS'] = c #0
         data['form-MAX_NUM_FORMS'] = 0
 
-        formset = self._get_edit_multiple_form_class()(request, data)
+        formset = self._get_edit_multiple_form_class()(data)
 
         records = []
         for i, el in enumerate(querySet):
