@@ -41,13 +41,13 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
         1: 'ordered_product__order__pk',
-        2: 'ordered_product__gasstock__stock__supplier',
-        3: 'ordered_product__gasstock__stock__product',
+        2: 'ordered_product__gasstock__stock__supplier__name',
+        3: 'ordered_product__gasstock__stock__product__name',
         4: 'ordered_price',
         5: '' ,
         6: 'ordered_amount',
         7: 'tot_price',
-        8: 'enabled' ,
+        8: 'enabled',
         9: ''
     }
 #,

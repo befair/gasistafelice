@@ -980,7 +980,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def basket_to_be_delivered(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(ordered_product__in=self.orders.closed())
+        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders.closed())
 
     @property
     def orderable_products(self):
