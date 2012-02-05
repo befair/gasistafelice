@@ -7,7 +7,9 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.supplier.forms import SupplierForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.supplier.forms import SupplierForm
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
