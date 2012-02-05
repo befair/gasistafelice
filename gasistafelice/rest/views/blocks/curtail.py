@@ -7,7 +7,9 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 
 from gasistafelice.gas.models import GASMember, GASMemberOrder
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.cash import EcoGASMemberForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.cash import EcoGASMemberForm
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
