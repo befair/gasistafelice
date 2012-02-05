@@ -32,12 +32,14 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'ordered_product__order__pk',
-        1: 'ordered_product__gasstock__stock__supplier',
-        2: 'ordered_product__gasstock__stock__product',
+        1: 'ordered_product__gasstock__stock__supplier__name',
+        2: 'ordered_product__gasstock__stock__product__name',
         3: 'ordered_price',
         4: 'ordered_amount',
-        5: 'tot_price',
+        5: ''
     }
+
+#        5: 'tot_price',
 
     def _get_resource_list(self, request):
         qs = request.resource.basket_to_be_delivered
