@@ -164,6 +164,8 @@ class Resource(object):
     @property
     def created_by(self):
         """Returns user that created the resource."""
+        #COMMENT fero: disabled user in history!
+        return User.objects.none()
        
         # There could be the case that a deleted id is reused, so, do not use .get method
         self_as_of_creation = \
@@ -183,6 +185,9 @@ class Resource(object):
     def last_update_by(self):
         """Returns user that has made the last update to the resource."""
        
+        #COMMENT fero: disabled user in history!
+        return User.objects.none()
+
         # There could be the case that a deleted id is reused, so, do not use .get method
         try:
             self_as_of_last_update = \
@@ -260,6 +265,9 @@ class Resource(object):
     @property
     def des(self):
         """Return the DES instance bound to the resource"""
+        from gasistafelice.des.models import Siteattr
+        return Siteattr.get_site()
+
         raise NotImplementedError("class: %s method: des" % self.__class__.__name__)
 
     @property
