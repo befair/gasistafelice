@@ -9,12 +9,12 @@ Il gestore della cassa. Tiene i conti. Sa in qualsiasi momento lo stato economic
 Il referente economico può essere più di una figura all'interno di un GAS. Ciascuno a suo turno.
 
 L'economico deve essere in grado di dire in qualsiasi momento quale sono:
-- lo stato economico di un gassista e correggere il suo conto
+- lo stato economico di un gasista e correggere il suo conto
 - lo stato economico di un produttore e avere in mano la gestione delle consegne effetuate  ma che risultano non pagate cioè insolute.
 - conoscere il saldo della cassa del GAS
 - differenziare nella cassa del GAS:
 1 - la disponibilità effettiva del GAS: i soldi del GAS detto anche il borsellino 
-2 - l'ammontare dei depositi gassisti
+2 - l'ammontare dei depositi gasisti
 3 - il totale degli insoluti dovuti ai produttori
 
 L'economico deve avere uno strumento che lui permette di ricostruire la cronologia dei flussi economici. E sempre disponibile un ordinamento temporale del succedersi delle transazione economiche.
@@ -39,7 +39,7 @@ Una transazione economica si verificarsi tra due soggetti  o solo uno.
 
 Si identifica il Distretto di Economia Solidale basandosi sulla movimentazione delle transazione tra soggetti.
 
-Se un gassista ricarica il suo conto. Si verifica un spostamento di monete tra il gassista e la cassa. Il saldo della rete rimane invariata.
+Se un gasista ricarica il suo conto. Si verifica un spostamento di monete tra il gasista e la cassa. Il saldo della rete rimane invariata.
 Se il GAS paga un produttore. La rete verifica una perdita.
 I pagamento di una fattura o altre servizi esterni verificano un uscita. 
 
@@ -47,6 +47,8 @@ I pagamento di una fattura o altre servizi esterni verificano un uscita.
 -------------
 
 * Vari conti (gasista, produttore, cassa gas, borsellino gas)
+
+Il conto del gasista
 * Prezzo ordinato / prezzo consegnato
 * Totale ordinato / Fattura emessa dal produttore / Totale famiglie decurtato
 * Registra il pagamento di uno o più ordini (gestione degli insoluti)
@@ -75,7 +77,7 @@ Variante. Oltre all'economico di turno, il punto 1 e 2 possono essere effettuate
 
 Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le seguente operazioni:
 
-1 correzione sugli soggetti attivi: Gassista e produttori
+1 correzione sugli soggetti attivi: Gasista e produttori
 2 entrata e uscita della propria cassa senza punto di ingresso o di arrivo.
 
 
@@ -98,27 +100,100 @@ Gestione di un ordine
 +++++++++++++++++++++
 
 da un punto di vista economico si fa in 3 steps separati
-* Registra la Fattura di un ordine
-* Decurta il totale famiglia per ciascun famiglie di un ordine
-* Aggiunge una famiglia, inizialmente assente, e decurta il totale famiglia
+1) Registra la Fattura di un ordine. ordine_invoice_
+
+2) Decurta il totale famiglia per ciascun famiglie di un ordine. ordine_decurta_
+
+3) Aggiunge una famiglia, inizialmente assente, e decurta il totale famiglia
+
+.. _order_steps:
+
+.. figure:: _static/eco_ord_steps.png
+    :alt: 3 steps per evadere un ordine chiuso
+    :align: center
+
+    Tab di gestione dei 3 steps per evadere un ordine chiuso
 
 In pratica la consegna è già avvenuta. Per vari motivi (il produttore non riesce a soddisfare completamente la domanda, i prezzi subiscono un aggiornamento, la merce è di qualità inferiore alla media e il produttore decide di applicare uno sconto,..), le quantità/prezzi registrati al momento dell'invio dell ordine possono differire da quelli effettivi, conoscibili solo al momento della consegna della merce da parte del produttore. Di conseguenza, il GAS dovrebbe verificare la corrispondenza tra ciò che viene ordinato e ciò che viene effettivamente consegnato (a livello di prezzi, quantità e, eventualmente, qualità).
 
-Da una parte, questa verifica è importante sotto vari punti di vista: facilita la gestione del processo di consegna e della contabilità del GAS, permette di implementare delle procedure più robuste e resistenti agli errori umani, consente un monitoraggio più accurato dell'attività del GAS (cosa utile sia ai Gasisti che nelle realizzazione di statistiche "aggregate" più rispondenti alla realtà) e della affidabilità dei Fornitori; dall'altra una gestione così granulare richiede ai Gasisti uno sforzo organizzativo/logistico che alcuni GAS (in particolare quelli di dimensioni più ridotte) non vogliono/possono sostenere. Quindi in questa fase del gestionale non scendiamo al livello del prodotto ma la parte economica si limita a registrare la somma totale che il gassista dev effettivamente sborsare per il produttore.
+Da una parte, questa verifica è importante sotto vari punti di vista: facilita la gestione del processo di consegna e della contabilità del GAS, permette di implementare delle procedure più robuste e resistenti agli errori umani, consente un monitoraggio più accurato dell'attività del GAS (cosa utile sia ai Gasisti che nelle realizzazione di statistiche "aggregate" più rispondenti alla realtà) e della affidabilità dei Fornitori; dall'altra una gestione così granulare richiede ai Gasisti uno sforzo organizzativo/logistico che alcuni GAS (in particolare quelli di dimensioni più ridotte) non vogliono/possono sostenere. Quindi in questa fase del gestionale non scendiamo al livello del prodotto ma la parte economica si limita a registrare la somma totale che il gasista dev effettivamente sborsare per il produttore.
 
-D una consegna escono la fattura emessa dal produttore e il documento di consegna detto anche PDF che viene con una penna modificato a mano. Le modifiche portano solo sul totale economico per famiglia per produttore. 
+Da una consegna escono la fattura emessa dal produttore e il documento di consegna di tipo PDF che viene con una penna modificato a mano. Le modifiche portano solo sul totale economico per famiglia per produttore.
 
-Questi 2 documento servono rispettivamente al punto 1) e 2)
+Un esempio di documento di consegna è visibile cui Documento_ordine .. seealso:: gas_referrer_supplier.rst
+
+
+La fattura e il report di consegna modificato sono i 2 documenti che servono rispettivamente al punto 1) e 2) per evadere l'ordine
+
+Nota: E possibile vedere la lista degli ordini chiusi nella pagina del suo GAS
+
+.. _ordini_chiusi:
+
+.. figure:: _static/gas_ord_closed.png
+    :alt: griglia ordini chiusi
+    :align: center
+
+    Griglia che elenca gli ordini chiusi
+
+Cliccando su una riga si raggiunge la scheda dell'ordine
 
 1) Registrazione fattura
-si fa nella 
+si fa nella scheda dell'ordine
+
+.. _ordine_invoice:
+
+.. figure:: _static/ord_invoice.png
+    :alt: scheda registrazione fattura
+    :align: center
+
+    riquadro per la registrazione della fattura di un ordine
+
+
+2) Decurta del conto gasista
+
+La griglia presenta l'insieme delle persone che hanno prenotato durante l'apertura dell'ordine.
+Di default il sistema presenta il totale previsto della prenotazione.
+Ovviamente durante la consegna questa cifra per famiglia può variare per mille motivi. 
+
+E proprio in questa griglia che vengono gestite queste variazione. Se l'utente loggato dispon del ruolo economico o è il referente di questo ordine allora appiaono 2 pulsanti *Visualiza* e *Modifica*
+
+Cliccando su *Modifica* la griglia entra in modalità di editing
+
+.. _ordine_decurta:
+
+.. figure:: _static/ord_curtail.png
+    :alt: griglia ordini chiusi
+    :align: center
+
+    Stato economico delle famiglie per un dato ordine
+
+Il referente dell'ordine o uno dei referenti economico puo sistemare ciascun famiglia segondo le informazione e il svolgersi della consegna.
+
+Una volta messa a posto tutte le famiglie il referente clicca su *decurta conto gasista per un dato ordine* per creare le transazione economiche.
+
+Per ciascun famiglia viene creata una transazione economica dal conto del gasista verso 
+
+
+[FAQ] Aggiungere una famiglia
+Aggiungere una famiglia non compressa nel report al momento della chiusura ordine.
+Succede speso che alcuni ritardatari possono ordinare dopo che il report del gestionale fu stato inviato al produttore. Succede che durante la consegna una famiglia a dato ad un altra alcuni prodotti. Succede che una famiglia ha contattato il produttore, direttamente o via il referente, pr farci consegnare prodotti in più o non prenotati...
+
+Per tutti questi casi si puo aggiungere una famiglia alla decurtazione dell'ordine.
+
+.. TODO
+
+    non implementato ancora
+
+Una volta fatto i punti 1) e 2) l'ordine passa allo stato evasso. Cioè rimane appesso in attessa di essere pagato da un referente economico. 
+
+In pratica gli ordini vengono pagato direttamente. Al volo. Succede che alcuni produttori vengono paghati dopo aver accumulato alcune consegne. Ad esempio se un produttore di verdure consegna ogni settimana ma, da accordo con il GAS, viene pagato solo una volta al mese, allora alla fine del mese, al momento di farci pagare, questo produttore ad accumulato 4 fatture. Sono 4 Insoluti. Questi 4 Insoluti vengono addizionati e mostrato a video per aiutare il referente economia ad rintracciare gli insoluti. 
 
 
 Verifica conti dei soggetti
 +++++++++++++++++++++++++++
 
 * Verifica i conti produttori
-* Verifica i conti gassisti
+* Verifica i conti gasisti
 * Verifica la cassa del GAS
 * Verifica il borsellino del GAS
 
@@ -159,7 +234,7 @@ L'economico non può ritornare su una transazione economica. In questo caso l'ec
 
 * Se l'ammontare da accreditare e superiore a quanto ricaricato, l'economico può procedere ad una seconda ricarica con la differenza mancante. 
 
-* Se l'ammontare accreditato sul conto è superiore a quanto sborsato realmente dal gassista allora rimane solo una correzione in negativo da portare sul conto gasista. cf. my-correct-gasmember_
+* Se l'ammontare accreditato sul conto è superiore a quanto sborsato realmente dal gasista allora rimane solo una correzione in negativo da portare sul conto gasista. cf. my-correct-gasmember_
 
 
 Correggere una transazione
