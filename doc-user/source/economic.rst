@@ -57,70 +57,128 @@ La gerarchia degli account relativi ad un GAS potrebbe essere di questo tipo:
 .. note::
 
    GAS  +
-        |----------- cash [A]
+        +----------- cash [A]
+
         +----------- members [P,A]+
+
         |                +--- <UID member #1>  [A]
+
         |                | ..
+
         |                +--- <UID member #n>  [A]
+
         +----------- expenses [P,E]+
+
         |                +--- TODO: OutOfNetwork
+
         |                +--- suppliers [P, E] +
+
         |                        +--- <UID supplier #1>  [E]
+
         |                        | ..
+
         |                        +--- <UID supplier #n>  [E]
+
         +----------- incomes [P,I]+
-        |                +--- recharges [I] 
+
+        |                +--- recharges [I]
+
         |                +--- fees [I]
+
         |                +--- TODO: Other
 
+
  Member +
-        **GAS-side**
+
+        **Conto GAS**
+
         . ROOT (/)
+
         +----------- members [P,A]+
+
         |                +--- <UID member #1>  [A]
+
         |                | ..
+
         |                +--- <UID member #n>  [A]
 
-        **Person-side**
+        **Conto gasista**
+
         . ROOT (/)
-        |--- wallet [A]
+
+        +--- wallet [A]
+
         +--- expenses [P,E]+
+
                 +--- gas [P, E] +
+
                         +--- <UID gas #1>  [P, E]+
-                        |            +--- recharges [E]
-                        |            +--- fees [E]
+
+                        |           +--- recharges [E]
+
+                        |           +--- fees [E]
+
                         | ..
+
                         +--- <UID gas #n>  [P, E]
+
                                     +--- recharges [E]
+
                                     +--- fees [E]
 
+
    PACT +
+
         **GAS-side**
+
         . ROOT (/)
+
         +----------- expenses [P,E]+
+
         |               +--- suppliers [P, E] +
+
         |                       +--- <UID supplier #1>  [E]
+
         |                       | ..
+
         |                       +--- <UID supplier #n>  [E]
 
+
         **SUPPLIER-side**
+
         . ROOT (/)
+
         +----------- incomes [P,I]+
+
                         +--- gas [P, I]+
+
                                 +--- <UID gas #1>  [P, I]
+
                                 | ..
+
                                 +--- <UID gas #n>  [P, I]
 
+
    Prod +
-        |----------- wallet [A]
+
+        +----------- wallet [A]
+
         |
+
         +----------- incomes [P,I]+
-        |                +--- gas [P, I] +
+
+        |               +--- gas [P, I] +
+
         |                        +--- <UID gas #1>  [P, I]
+
         |                        | ..
+
         |                        +--- <UID gas #n>  [P, I]
-        |                +--- TODO: Other (Bonus? Subvention? Investment?)
+
+        |               +--- TODO: Other (Bonus? Subvention? Investment?)
+
         +----------- expenses [P,E]+
+
                         +--- TODO: Other (Correction?, Donation?, )
 
 
