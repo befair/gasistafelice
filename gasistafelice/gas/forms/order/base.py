@@ -146,6 +146,8 @@ class BaseOrderForm(forms.ModelForm):
         # withdrawal_appointment
         # COMMENT fero: I think that EVERY order SHOULD have withdrawal_place
         # COMMENT fero: ok to not show in form, but programmatically create it anyway
+        # see also...
+        # https://github.com/feroda/gasistafelice/commit/1209d5390c1a354d24cf8c53add98fbef4b0a55a#commitcomment-935905
         if pact.gas.config.use_withdrawal_place:
             if self.cleaned_data.get('withdrawal_datetime'):
                 w = self.get_withdrawal()
