@@ -9,6 +9,11 @@ jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
 
     rendering_table_post_load_handler: function() {
 
+  $(document).ready(function() {
+    //alert('gfCP_from: ' +  $("#gfCP_from"));
+    $("#gfCP_from").datepicker();
+  });
+
         var block_obj = this;
         // Init dataTables
 
@@ -29,11 +34,11 @@ jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
-                    {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"15%",},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"10%",},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"10%", "sClass":"taright"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"5%","bVisible": true},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"15%",},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%",},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sClass":"taright"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"40%"},
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
