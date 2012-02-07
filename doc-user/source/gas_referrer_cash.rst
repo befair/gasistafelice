@@ -166,7 +166,8 @@ Altro esempio il produttore consegna per 80,32 euro. Il produttore arrotonda la 
 80 euro. Il GAS decurtera effettivamente 80,32 euro dalle varie famiglie. Il GAS registrerà la fatura e pagherà realmente 80 euro al produttore. Il GAS troverà nel suo borselino un ammontare di 0,32 in più. 
 
 I casi per il quale queste 3 cifre divergono sono tante. In ogni modo il sistema proverà a mostrare queste 3 ciffre, quando inserite nel sistema, in modo da aiutare il controllo e l'immissione da parte del referente. Questa indicazione si trova sotto la cassela di inserimento del prezzo. 
-"Ordine chiuso: (I) Totale prenotato dalle famiglie --> (II) fattura richiesta dal Produttore --> (III) Pagamento effettivo del GAS"
+
+**Ordine chiuso: (I) Totale prenotato dalle famiglie --> (II) fattura richiesta dal Produttore --> (III) Pagamento effettivo del GAS**
 
 
 2) Decurta del conto gasista
