@@ -23,9 +23,11 @@ DEVEL:
 * Frequency_choices costante e in giorni
 * s/_qta/_amount
 
-TODO 20120126
+TODO 20120405
 ----
 
+* Sincronizza utenti forum
+* Link al forum in alto
 * Elimina prodotto
 * Tooltip risorse
 * Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS
