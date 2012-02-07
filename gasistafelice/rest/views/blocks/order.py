@@ -87,7 +87,7 @@ class Block(BlockSSDataTables):
                 'field_label'  : open_order,
                 'field_name'   : 'order',
                 'field_values' : [{ 'value' : open_order.pk, 'selected' : selected}]
-            }) 
+            })
 
         ctx = {
             'block_name' : self.description,
