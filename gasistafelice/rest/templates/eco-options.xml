@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {%
-forms.widgets import Widget, Select, MultiWidget, DateInput 
+forms.widgets import Widget, Select, MultiWidget, DateInput
 %}
 {% comment %}
 load gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
@@ -15,7 +15,7 @@ _________________________________________
 _________________________________________
         {{ field.field_name|date:"j-M" }}
 ___________________________________________
-    <field 
+    <field
             {% if field.field_type == 'datetime' %}
                 type="{{field.field_type}}"
                 widget="DateInput"

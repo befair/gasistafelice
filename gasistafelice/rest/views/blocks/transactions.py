@@ -46,7 +46,7 @@ class Block(BlockSSDataTables):
 # Kind iof transctions: can be checkbox list multiselect
 # Subject: Radio or multiple checkbox onto values [GAS borselino, GASMemmbers, Suppliers]
 #    def options_response(self, request, resource_type, resource_id):
-#        """Get options for transaction block. 
+#        """Get options for transaction block.
 #        WARNING: call to this method doesn't pass through get_response
 #        so you have to reset self.request and self.resource attribute if you want
 #        """
