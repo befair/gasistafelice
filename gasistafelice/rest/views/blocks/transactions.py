@@ -12,7 +12,7 @@ from gasistafelice.rest.views.blocks.base import BlockSSDataTables
 
 #from gasistafelice.base.accounting import PersonAccountingProxy
 
-
+from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -27,25 +27,61 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = {
         0: 'id',
         1: 'transaction__date',
-        2: 'transaction__issuer',
-        3: 'transaction__source',
-        4: 'transaction__kind',
-        5: 'transaction__description',
-        6: '',
+        2: '',
+        3: '',
+        4: '',
+        5: 'amount',
+        6: 'transaction__description',
     }
+
+#        2: 'transaction__issuer',
+#        3: 'transaction__source',
+#        4: 'transaction__kind',
+#        5: 'amount',
+#        6: 'transaction__description',
+
+#Caught FieldError while rendering: Cannot resolve keyword 'entry' into field. Choices are: account, amount, entry_id, id, transaction
+#        5: 'entry__amount',
+#        6: 'entry__description',
 #        6: 'is_confirmed'
-#Cannot resolve keyword 'issuer' into field. Choices are: account, amount, entry_id, id, transaction
-
-
-
-
-    def _get_resource_list(self, request):
-        #Accounting.LedgerEntry  or Transactions
-        return request.resource.economic_movements
-
 
 #        "{{entry.account.name|escapejs}}",
 #        "{{entry.urn|escapejs}}",
 #        "{{entry.transaction.kind|escapejs}}",
 
+    def _get_resource_list(self, request):
+        #Accounting.LedgerEntry  or Transactions
+        return request.resource.economic_movements
+
+#    def options_response(self, request, resource_type, resource_id):
+#        """Get options for transaction block. 
+#        WARNING: call to this method doesn't pass through get_response
+#        so you have to reset self.request and self.resource attribute if you want
+#        """
+
+#        #log.debug("transaction options_response")
+
+#        self.request = request
+#        self.resource = request.resource
+#        fields = []
+
+#        fields.append({
+#            'field_type'   : 'datetime',
+#            'field_label'  : 'from date',
+#            'field_name'   : 'from',
+#            'field_values' : [{ 'value' : '22/09/2012', 'selected' : ''}]
+#        })
+
+#        fields.append({
+#            'field_type'   : 'datetime',
+#            'field_label'  : 'to date',
+#            'field_name'   : 'to',
+#            'field_values' : [{ 'value' : '28/09/2012', 'label' : 'labelvalue', 'selected' : 'sel'}]
+#        })
+
+#        ctx = {
+#            'block_name' : self.description,
+#            'fields': fields,
+#        }
+#        return render_to_xml_response('eco-options.xml', ctx)
 
