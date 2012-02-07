@@ -148,6 +148,26 @@ si fa nella scheda dell'ordine
 
     riquadro per la registrazione della fattura di un ordine
 
+Inserire l'ammontare richiesto dal produttore. Ovviamente è un valore positivo con centessimi.
+Aggiungere note se necesario. Di solito viene annotato il numero della fattura del produttore o altre informazioni in modo da risalire al documento rilasciato. Questo documento varia in funzione del regime fiscale del produttore. 
+Cliccare su *Invoice receipt* per associare la richiesta di pagamento del produttore.
+
+.. warning::
+
+    per un dato ordine avrette 3 totali:
+        I - Il totale sommato delle prenotazioni delle famiglie
+        II - L'ammontare richiesto dal produttore dopo avere consegnato
+        III - Il pagamento finale del produttore. Che potrà anche essere la somma di più ordini fatti
+        Queste 3 ciffre sono idelamente uguali.
+
+In pratica queste 3 ciffre sono speso differente tra di loro. Ad esempio se il totale prenotato dalle famiglie del GAS si ammonta ad 100 euro di prodotti, ma, durante la consegna, il prezzo di alcuni prodotti è variabile con il peso o in altri casi mancanno proprio dei prodotti al momento della consegna; in questi casi la fattura emessa dopo la consegna reale sarà sicuramente differente dal prenotato. 
+
+Altro esempio il produttore consegna per 80,32 euro. Il produttore arrotonda la fattura per chiedere 
+80 euro. Il GAS decurtera effettivamente 80,32 euro dalle varie famiglie. Il GAS registrerà la fatura e pagherà realmente 80 euro al produttore. Il GAS troverà nel suo borselino un ammontare di 0,32 in più. 
+
+I casi per il quale queste 3 cifre divergono sono tante. In ogni modo il sistema proverà a mostrare queste 3 ciffre, quando inserite nel sistema, in modo da aiutare il controllo e l'immissione da parte del referente. Questa indicazione si trova sotto la cassela di inserimento del prezzo. 
+"Ordine chiuso: (I) Totale prenotato dalle famiglie --> (II) fattura richiesta dal Produttore --> (III) Pagamento effettivo del GAS"
+
 
 2) Decurta del conto gasista
 
