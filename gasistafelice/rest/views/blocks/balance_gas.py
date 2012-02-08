@@ -10,10 +10,10 @@ from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_respon
 from gasistafelice.rest.views.blocks import details
 from gasistafelice.gas.forms import cash as order_cash_forms
 
-from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE, INCOME
+from gasistafelice.consts import CASH, CREATE, INCOME
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
-from gasistafelice.gas.forms.cash import BalanceGASForm
+from gasistafelice.gas.forms.cash import BalanceGASForm, TransationGASForm
 
 import logging
 log = logging.getLogger(__name__)
@@ -21,61 +21,105 @@ log = logging.getLogger(__name__)
 class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_gas"
-    BLOCK_VALID_RESOURCE_TYPES = ["gas", "pact", "gasmember"]
+    BLOCK_VALID_RESOURCE_TYPES = ["gas"]
     BLOCK_DESCRIPTION = _("Balance")
 
+    #UGLY: fixme when succeed to open popup for cash referrer operations
     def _get_user_actions(self, request):
-        #COMMENT BY fero: no need for these actions now
-        return []
-
+##        #COMMENT BY fero: no need for these actions now
+#        return []
         user_actions = []
         gas_list = self.resource.gas_list
-
         for gas in gas_list:
             if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
-
                 user_actions += [
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
                         name=INCOME, verbose_name=_("Account transaction"),
-                        popup_form=False,
+                        popup_form=True,
                     ),
                 ]
                 break
-
+#DT                        name=CREATE, verbose_name=_("Account transaction"),
+#DT                        name=INCOME, verbose_name=_("Account transaction"),
+#DT                        name="gas_income", verbose_name=_("Account transaction"),
         return user_actions
 
     def get_response(self, request, resource_type, resource_id, args):
-
         super(Block, self).get_response(request, resource_type, resource_id, args)
-
         res = self.resource
-
-        user_actions = self._get_user_actions(request)
+        #UGLY: fixme when succeed to open popup for cash referrer operations
+        form = BalanceGASForm(request)
+        gas = res.gas
+        if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+            form = TransationGASForm(request)
         if args == "INCOME":
             if request.method == 'POST':
-
-                form = BalanceGASForm(request, request.POST)
-
-                if form.is_valid():
+                if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+                    form_post = TransationGASForm(request, request.POST)
+                else:
+                    form_post = BalanceGASForm(request, request.POST)
+                if form_post.is_valid():
                     with transaction.commit_on_success():
-                        if form.cleaned_data:
-                            form.save()
+                        if form_post.cleaned_data:
+                            form_post.save()
                     #FIXME: handler attached: ajaxified form undefined
 #                    return self.response_success()
 #                else:
-#                    return self.response_error(form.errors)
+#                    return self.response_error(form_post.errors)
 
-        else:
-                form = BalanceGASForm(request)
-
-#        if args == "":
         ctx = {
             'resource'      : res,
             'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
-            'form'          : BalanceGASForm(request),
-            'user_actions'  : user_actions,
+            'form'          : form,
+            'user_actions'  : self._get_user_actions(request),
         }
         return render_to_xml_response('blocks/balance.xml', ctx)
 
+
+#DT: test for specific handler in balance
+#    def gas_income(self, request):
+#        log.debug("gas_income")
+#        form = TransationGASForm
+#        if request.method == 'POST':
+#            formset = form(request, request.POST)
+#            if formset.is_valid():
+#                with transaction.commit_on_success():
+#                    for form in formset:
+#                        # Check for data: empty formsets are full of empty data ;)
+#                        if form.cleaned_data:
+#                            form.save()
+#                return self.response_success()
+##        ctx = {
+##            'resource'      : self.resource,
+##            'sanet_urn'     : "%s/%s" % (self.resource.resource_type, self.resource.id),
+##            'form'          : form(request),
+##            'user_actions'  : self._get_user_actions(request),
+##        }
+##        return render_to_xml_response('blocks/balance.xml', ctx)
+#        context = {
+#            "formset": form,
+#            #'opts' : PrincipalParamRoleRelation._meta,
+#            'is_popup': False,
+#            'save_as' : False,
+#            'save_on_top': False,
+#            #'errors': helpers.AdminErrorList(form, []),
+#            #'media': mark_safe(adminForm.media),
+#            'form_url' : request.build_absolute_uri(),
+#            'add'  : False,
+#            'change' : True,
+#            'has_add_permission': False,
+#            'has_delete_permission': True,
+#            'has_change_permission': True,
+#            'show_delete' : True,
+#        }
+#        return render_to_context_response(request, "html/formsets.html", context)
+
+#DT: test for override CREATE action without Model
+#    def _get_add_form_class(self):
+#        return TransationGASForm
+#fixme: CSRF Django token not rendered
+
+#DT: test TODO use note mecanism with Jquery script
+# NEW_NOTE_FORM_TEXT
