@@ -640,7 +640,7 @@ class TransationGASForm(BalanceGASForm):
 
 #-------------------------------------------------------------------------------
 
-#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
+#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect,
 
 #LF        self.fields['target'].initial = '0'
 #LF        self.__gas = request.resource.gas
