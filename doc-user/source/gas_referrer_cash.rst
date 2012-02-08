@@ -270,7 +270,7 @@ Quota dei gasisti
 
 [FAQ] Pagamento della quota:
 
-Solo un referente economico del GAS vede apparire i pulsanti di gestione della quota. 
+Solo un referente economico del GAS vede apparire i pulsanti di gestione della quota.
 Un referente economico dispone dei pulsanti **Visualizza** e **Modifica**. Cliccando su **Modifica** il referente economico passa in modalità di editing la griglia. A questo punto è in grado di inserire il pagamento della quota per un gasista: La griglia
 
 * Ogni riga rapresenta un gasista
@@ -308,7 +308,7 @@ Conti dei soggetti: Gasisti
 
 .. warning::
 
-   Conto gasista: Il conto del gasista somma i versamenti del prepagato meno le detrazione per gli ordini conseganti. 
+   Conto gasista: Il conto del gasista somma i versamenti del prepagato meno le detrazione per gli ordini conseganti.
 
 Il saldo economico di un gasista viene affiancato del totale delle prenotazione ancora modificabile (acquisti del paniere) e del totale delle prenotazione bloccate in corso di consegna.
 
