@@ -10,7 +10,7 @@
         "{% filter escapejs %}{% Human_readable_account entry.account %}{% endfilter %}",
         "{% filter escapejs %}{% Human_readable_kind entry.transaction.kind %}{% endfilter %}",
         "<h3>{{entry.amount|floatformat:"2"}}</h3>",
-        "{{entry.description|escapejs}}",
+        "{{entry.transaction.description|escapejs}}",
     ]
     {% if not forloop.last %}
     ,
