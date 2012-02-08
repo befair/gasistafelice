@@ -522,34 +522,16 @@ class BalanceForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
+#LF: balance and wallet_*  are always read-only so they MUST NOT be included in form...
 class BalanceGASForm(BalanceForm):
 
-    Wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
-    Wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
-
-    # COMMENT by fero: balance and Wallet_* (why capitalized variables?!?) are always read-only so
-    # they MUST NOT be included in form... other stuff now may be commented because we have to think
-    # about more intuitive way to do these operations
-#LF    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-#LF        help_text = _('define the amount with the sign - to debit money from this account'), 
-#LF        error_messages = {'required': _(u'You must insert an postive or negative amount for the operation')}
-#LF    )
-#LF    note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
-#LFhelp_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
-#LF#    target = forms.ModelChoiceField(label=_("Account"), queryset=Account.objects.none(), required=False)
-#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
-#LFhelp_text="define the target of the operation")
-#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
-#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+    wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
+    wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
         log.debug("BalanceGASForm")
         super(BalanceGASForm, self).__init__(request, *args, **kw)
-
-#LF        self.fields['target'].initial = '0'
-#LF        self.__gas = request.resource.gas
-
         eco_state = request.resource.balance_gasmembers
         eco_class = "Negative"
         if eco_state:
@@ -557,8 +539,8 @@ class BalanceGASForm(BalanceForm):
                 eco_class = "Plus"
             elif eco_state < 20 and eco_state >= 0:
                 eco_class = "Alert"
-        self.fields['Wallet_gasmembers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
-        self.fields['Wallet_gasmembers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+        self.fields['wallet_gasmembers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
+        self.fields['wallet_gasmembers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
 
         eco_state = request.resource.balance_suppliers
         eco_class = "Negative"
@@ -567,35 +549,50 @@ class BalanceGASForm(BalanceForm):
                 eco_class = "Plus"
             elif eco_state < 20 and eco_state >= 0:
                 eco_class = "Alert"
-        self.fields['Wallet_suppliers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
-        self.fields['Wallet_suppliers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+        self.fields['wallet_suppliers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
+        self.fields['wallet_suppliers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
 
-#LF        self.__loggedusr = request.user
-#LF
-#LF        # SOLIDAL PACT
-#LF        pacts = request.resource.pacts
-#LF        if pacts and pacts.count() > 0:
-#LF            self.fields['pact'].queryset = pacts
-#LF#            self.fields['pact'].initial = pacts[0]
-#LF
-#LF        # MEMBERS
-#LF        gms = request.resource.gasmembers
-#LF        if gms and gms.count() > 0:
-#LF            self.fields['person'].queryset = gms
-#LF
         # Set readonly fields for wallet_*
-        for field_name in ( 'Wallet_gasmembers' , 'Wallet_suppliers'):
+        for field_name in ( 'wallet_gasmembers' , 'wallet_suppliers'):
             self.fields[field_name].widget.attrs['readonly'] = True
             self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
+
+#-------------------------------------------------------------------------------
+
+#LF: other stuff now may be commented because we have to think
+# about more intuitive way to do these operations
+#UGLY: fixme when succeed to open popup for cash referrer operations
+#class TransationGASForm(forms.Form):
+class TransationGASForm(BalanceGASForm):
+
+    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+        help_text = _('define the amount with the sign - to debit money from this account'), 
+        error_messages = {'required': _(u'You must insert an postive or negative amount for the operation')})
+
+    target = forms.ChoiceField(required=True, choices = [('0',_('Income')), ('1',_('Expense'))], widget=forms.RadioSelect, help_text="define the type of the operation")
+
+    note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+help_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
+
+    def __init__(self, request, *args, **kw):
+        log.debug("TransationGASForm")
+        super(TransationGASForm, self).__init__(request, *args, **kw)
+        self.__loggedusr = request.user
+        self.__gas = request.resource.gas
+
     def clean(self):
 
-        cleaned_data = super(BalanceGASForm, self).clean()
+        cleaned_data = super(TransationGASForm, self).clean()
         log.debug("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
-        except KeyError:
-            log.debug("BalanceGASForm: cannot retrieve economic identifier. FORM ATTACK!")
+            cleaned_data['economic_target'] = cleaned_data['target']
+            cleaned_data['economic_note'] = cleaned_data['note']
+            if cleaned_data['economic_note'] == '':
+                raise ValidationError(_("transaction require a causal explanation"))
+        except KeyError, e:
+            log.debug("BalanceGASForm: cannot retrieve economic data: " +  e.message)
             raise
 
         return cleaned_data
@@ -603,6 +600,10 @@ class BalanceGASForm(BalanceForm):
     @transaction.commit_on_success
     def save(self):
 
+        log.debug("SAVESAVESAVESAVESAVE  TransationGASForm")
+        #self.instance.gas = self._gas
+        #DT: not needeed all derived class are read only
+        #super(TransationGASForm, self).save()
         #Do economic work
         if not self.__gas:
             return
@@ -612,10 +613,57 @@ class BalanceGASForm(BalanceForm):
             obj=ObjectWithContext(self.__gas)
         ):
             log.debug("PermissionDenied %s in economic operation form" % self.__loggedusr)
-            raise PermissionDenied("BalanceGASForm: You are not a cash_referrer, you cannot do economic operation!")
+            raise PermissionDenied("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!")
 #        #Do economic work
 #        try:
 #            self.economic_operation()
 #        except ValueError, e:
 #            log.debug("retry later " +  e.message)
+
+    class Meta:
+#        model = GAS
+#        fields = ('...')
+        gf_fieldsets = [(None, { 
+            'fields' : ( '',
+                'amount',
+                'target',
+                'note',
+        )})]
+
+
+#-------------------------------------------------------------------------------
+
+#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
+
+#LF        self.fields['target'].initial = '0'
+#LF        self.__gas = request.resource.gas
+
+#-------------------------------------------------------------------------------
+
+#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
+
+#LF        # SOLIDAL PACT
+#LF        pacts = request.resource.pacts
+#LF        if pacts and pacts.count() > 0:
+#LF            self.fields['pact'].queryset = pacts
+#LF#            self.fields['pact'].initial = pacts[0]
+
+#        try:
+#            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
+#        except GASSupplierSolidalPact.DoesNotExist:
+#            #ok
+#            pass
+#        else:
+#            raise ValidationError(_("Pact between this GAS and this Supplier already exists"))
+
+#-------------------------------------------------------------------------------
+
+#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+
+#LF        # MEMBERS
+#LF        gms = request.resource.gasmembers
+#LF        if gms and gms.count() > 0:
+#LF            self.fields['person'].queryset = gms
+#LF
+
 
