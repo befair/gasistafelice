@@ -44,7 +44,7 @@ class Block(BlockWithList):
                     ResourceBlockAction( 
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
-                        name=CREATE, verbose_name=_("Add order"), 
+                        name=CREATE, verbose_name=_("Add order"),
                         popup_form=True
                     ),
                  ]

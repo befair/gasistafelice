@@ -290,6 +290,10 @@ class Block(AbstractBlock):
             return self.remove_note(request, resource_type, resource_id)
         elif args == "manage_roles":
             return self.manage_roles(request)
+#UGLY: fixme when succeed to open popup for cash referrer operations
+##DT: test for specific handler in balance
+#        elif args == "gas_income":
+#            return self.gas_income(request)
         elif args.startswith("transition"):
             t_name = args.split("/")[1]
             allowed_transitions = get_allowed_transitions(request.resource, request.user)
@@ -386,7 +390,7 @@ class Block(AbstractBlock):
         user_actions = self._get_user_actions(request)
             
         #
-        # Prepere data for the templage
+        # Prepare data for the templage
         #
         ctx = {
             'resource'      : res,
