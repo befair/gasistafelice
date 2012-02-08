@@ -29,59 +29,48 @@ class Block(BlockSSDataTables):
         1: 'transaction__date',
         2: '',
         3: '',
-        4: '',
-        5: 'amount',
-        6: 'transaction__description',
+        4: 'amount',
+        5: 'transaction__description',
     }
 
-#        2: 'transaction__issuer',
-#        3: 'transaction__source',
-#        4: 'transaction__kind',
-#        5: 'amount',
-#        6: 'transaction__description',
-
-#Caught FieldError while rendering: Cannot resolve keyword 'entry' into field. Choices are: account, amount, entry_id, id, transaction
-#        5: 'entry__amount',
-#        6: 'entry__description',
-#        6: 'is_confirmed'
-
-#        "{{entry.account.name|escapejs}}",
-#        "{{entry.urn|escapejs}}",
-#        "{{entry.transaction.kind|escapejs}}",
+#WAS        2: 'transaction__issuer',
+#WAS        3: 'transaction__source',
+#WAS        4: 'transaction__kind',
 
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions
         return request.resource.economic_movements
 
+#TODO: Filter grid by
+# Date From --> To
+# Kind iof transctions: can be checkbox list multiselect
+# Subject: Radio or multiple checkbox onto values [GAS borselino, GASMemmbers, Suppliers]
 #    def options_response(self, request, resource_type, resource_id):
 #        """Get options for transaction block. 
 #        WARNING: call to this method doesn't pass through get_response
 #        so you have to reset self.request and self.resource attribute if you want
 #        """
-
-#        #log.debug("transaction options_response")
-
 #        self.request = request
 #        self.resource = request.resource
 #        fields = []
-
+#        #DATE FROM
 #        fields.append({
 #            'field_type'   : 'datetime',
 #            'field_label'  : 'from date',
 #            'field_name'   : 'from',
 #            'field_values' : [{ 'value' : '22/09/2012', 'selected' : ''}]
 #        })
-
+#        #DATE TO
 #        fields.append({
 #            'field_type'   : 'datetime',
 #            'field_label'  : 'to date',
 #            'field_name'   : 'to',
 #            'field_values' : [{ 'value' : '28/09/2012', 'label' : 'labelvalue', 'selected' : 'sel'}]
 #        })
-
 #        ctx = {
 #            'block_name' : self.description,
 #            'fields': fields,
 #        }
+#        #Can use html template loader
 #        return render_to_xml_response('eco-options.xml', ctx)
 
