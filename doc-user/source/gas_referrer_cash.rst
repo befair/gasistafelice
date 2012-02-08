@@ -84,9 +84,13 @@ Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le
 |head2_start|
 -------------
 
-* Consegne effettuate
+* Gestione di un ordine
 
-* Importi
+* Ricarica del prepagato per i gasisti
+
+* gestione delle quote annuli per i gasisti
+
+* Conto dei soggetti: visualizzazione dello stato, delle transazione e correzione economiche
 
 
 
@@ -150,13 +154,15 @@ si fa nella scheda dell'ordine
 
 Inserire l'ammontare richiesto dal produttore. Ovviamente è un valore positivo con centessimi.
 Aggiungere note se necesario. Di solito viene annotato il numero della fattura del produttore o altre informazioni in modo da risalire al documento rilasciato. Questo documento varia in funzione del regime fiscale del produttore. 
-Cliccare su *Invoice receipt* per associare la richiesta di pagamento del produttore.
+Cliccare su **Invoice receipt** per associare la richiesta di pagamento del produttore.
 
 .. warning::
 
     per un dato ordine avrette 3 totali:
         I - Il totale sommato delle prenotazioni delle famiglie
+
         II - L'ammontare richiesto dal produttore dopo avere consegnato
+
         III - Il pagamento finale del produttore. Che potrà anche essere la somma di più ordini fatti
         Queste 3 ciffre sono idelamente uguali.
 
@@ -176,9 +182,9 @@ La griglia presenta l'insieme delle persone che hanno prenotato durante l'apertu
 Di default il sistema presenta il totale previsto della prenotazione.
 Ovviamente durante la consegna questa cifra per famiglia può variare per mille motivi. 
 
-E proprio in questa griglia che vengono gestite queste variazione. Se l'utente loggato dispon del ruolo economico o è il referente di questo ordine allora appiaono 2 pulsanti *Visualiza* e *Modifica*
+E proprio in questa griglia che vengono gestite queste variazione. Se l'utente loggato dispon del ruolo economico o è il referente di questo ordine allora appiaono 2 pulsanti **Visualizza** e **Modifica**
 
-Cliccando su *Modifica* la griglia entra in modalità di editing
+Cliccando su **Modifica** la griglia entra in modalità di editing
 
 .. _ordine_decurta:
 
@@ -190,7 +196,7 @@ Cliccando su *Modifica* la griglia entra in modalità di editing
 
 Il referente dell'ordine o uno dei referenti economico puo sistemare ciascun famiglia segondo le informazione e il svolgersi della consegna.
 
-Una volta messa a posto tutte le famiglie il referente clicca su *decurta conto gasista per un dato ordine* per creare le transazione economiche.
+Una volta messa a posto tutte le famiglie il referente clicca su **decurta conto gasista per un dato ordine** per creare le transazione economiche.
 
 Per ciascun famiglia viene creata una transazione economica dal conto del gasista verso 
 
@@ -210,21 +216,13 @@ Una volta fatto i punti 1) e 2) l'ordine passa allo stato evasso. Cioè rimane a
 In pratica gli ordini vengono pagato direttamente. Al volo. Succede che alcuni produttori vengono paghati dopo aver accumulato alcune consegne. Ad esempio se un produttore di verdure consegna ogni settimana ma, da accordo con il GAS, viene pagato solo una volta al mese, allora alla fine del mese, al momento di farci pagare, questo produttore ad accumulato 4 fatture. Sono 4 Insoluti. Questi 4 Insoluti vengono addizionati e mostrato a video per aiutare il referente economia ad rintracciare gli insoluti. 
 
 
-Verifica conti dei soggetti
-+++++++++++++++++++++++++++
-
-* Verifica i conti produttori
-* Verifica i conti gasisti
-* Verifica la cassa del GAS
-* Verifica il borsellino del GAS
-
 Ricarica di un Gasista
 ++++++++++++++++++++++
 
 La gestione delle ricariche segue il modello del prepagato. Un gasista consegna soldi al referente economico che lo registra nel gestionale. La ricarica accredita il conto gasista. 
 
 La gestione delle ricariche è abilitata per i referenti economici
-Un economico accede al riquadro delle ricariche my-GF-ECO-Ricarica_ andando su:
+Un economico accede al riquadro delle ricariche GF-ECO-Ricarica_ andando su:
 DES > pagina del GAS > tab Conto
 
 La griglia delle ricariche presenta la lista dei gasisti del GAS. 
@@ -240,7 +238,7 @@ Il referente economico ripete l'operazione per tutti gasisti da ricaricare lasci
 Una volta inserito tutti gasisti da ricaricare, il referente economico preme su **Prepagato: ricarica il conto gasista**
 La pagina viene rinfrescata e le somme vengono accreditate ad ciascuno gasista. L'economico può controllare l'effettivo versamento scorrendo la colonna *Last recharge*. 
 
-.. _my-GF-ECO-Ricarica:
+.. _GF-ECO-Ricarica:
 
 .. figure:: _static/eco_ricarica.png
     :alt: riquadro di gestione economica delle ricarciche
@@ -248,6 +246,89 @@ La pagina viene rinfrescata e le somme vengono accreditate ad ciascuno gasista. 
 
     Griglia per la gestione delle ricariche
 
+
+
+Quota dei gasisti
++++++++++++++++++
+
+.. _GF-eco-quota:
+
+.. figure:: _static/eco-quota.png
+    :alt: riquadro di gestione economica delle quote
+    :align: center
+
+    Griglia per la gestione delle quote dei gasisti
+
+[FAQ] Pagamento della quota:
+
+Solo un referente economico del GAS vede apparire i pulsanti di gestione della quota. 
+Un referente economico dispone dei pulsanti **Visualizza** e **Modifica**. Cliccando su **Modifica** il referente economico passa in modalità di editing la griglia. A questo punto è in grado di inserire il pagamento della quota per un gasista: La griglia
+
+* Ogni riga rapresenta un gasista
+* La colonna *Last fee* presenta l'ultima volta in cui è stato versato la quota per il relativo gasista
+* Una scelta nella colonna *Anno* deve essere fatta per attivare la transazione
+* Per attivare la transazione deve essere spuntato la checkbox di pagamento nella colonna *Quota*
+
+Si ripete l'operazione per ogni gasista come desiderato: anno è flag di richiesta transazione.
+
+Per creare le transazioni cliccare sul pulsante **GAS membri: pagamento quota annuale del gasista**
+
+La quota è annuale. Ciascun GAS decide come gestirla. partendo dal calendario o dal momento del versamento effetivo di un gasista.
+
+Il sistema deve prevedere se impostare la transazione prelevando dal conto del sogetto o se è solamente una transazione in **+** sul conto del GAS. In pratica questo secondo caso corrisponde ad un versamento in contante dal gasista per il solo pagamento della quota.
+
+.. TODO::
+
+    Il sistema non prevede rilancio sulla situazione del gasista. In un primo tempo il sistema potrà evidenziare le righe in sfondo rosso per un gasista che ha già versato almeno una quota e se l'ultima quota versata è superiore ad un hanno fa.
+
+
+
+Conti dei soggetti: Produttori
+++++++++++++++++++++++++++++++
+
+La visualizzazione del conto del soggetto produttore nel DES si trova:
+
+* Scheda del produttore
+
+* Un patto di solidarietà tra un GAS e il produttore
+
+* Scheda del GAS nella parte economica
+
+Conti dei soggetti: Gasisti
++++++++++++++++++++++++++++
+
+.. warning::
+
+   Conto gasista: Il conto del gasista somma i versamenti del prepagato meno le detrazione per gli ordini conseganti. 
+
+Il saldo economico di un gasista viene affiancato del totale delle prenotazione ancora modificabile (acquisti del paniere) e del totale delle prenotazione bloccate in corso di consegna.
+
+Un conto gasista è sogetto a particolare transazione economiche. Ad esempio la correzione di errore. Queste sono fattibile solo dai referenti economici.
+
+La visualizzazione del conto del soggetto gasista nel DES si trova:
+
+* Scheda del gasista
+
+* Scheda del GAS al quale aderisce nella parte economica
+
+
+Conti dei soggetti: GAS cassa
++++++++++++++++++++++++++++++
+
+La visualizzazione del conto del soggetto GAS nel DES si trova:
+
+* Scheda del GAS
+
+Conti dei soggetti: GAS borsellino
+++++++++++++++++++++++++++++++++++
+
+La visualizzazione del conto del soggetto GAS nel DES si trova:
+
+* Scheda del GAS
+
+
+Correggere una transazione
+++++++++++++++++++++++++++
 
 [FAQ] Ho sbagliato a ricaricare un gasista
 
@@ -257,9 +338,6 @@ L'economico non può ritornare su una transazione economica. In questo caso l'ec
 
 * Se l'ammontare accreditato sul conto è superiore a quanto sborsato realmente dal gasista allora rimane solo una correzione in negativo da portare sul conto gasista. cf. my-correct-gasmember_
 
-
-Correggere una transazione
-++++++++++++++++++++++++++
 
 .. _my-correct-gasmember:
 
