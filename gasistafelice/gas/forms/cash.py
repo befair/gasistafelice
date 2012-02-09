@@ -268,12 +268,14 @@ EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 class InvoiceOrderForm(forms.Form):
 
     #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
-    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2, error_messages={'required': _(u'You must insert an postive amount for the operation')})
+    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2,
+        error_messages={'required': _(u'You must insert an postive amount for the operation')}
+    )
     note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("InvoiceOrderForm")
+        #log.debug("InvoiceOrderForm")
 
         super(InvoiceOrderForm, self).__init__(*args, **kw)
 
@@ -311,26 +313,23 @@ class InvoiceOrderForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(InvoiceOrderForm, self).clean()
-#Domthu: only for test purpose
-#        log.debug("cleaned_data %s" % cleaned_data)
-#        try:
-#            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
-#        except KeyError:
-#            log.debug("InvoiceOrderForm: cannot retrieve order identifier. FORM ATTACK!")
-#            raise
+        try:
+            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
+            cleaned_data['invoice_note'] = cleaned_data['note']
+        except KeyError, e:
+            log.debug("InvoiceOrderForm: cannot retrieve invoice data: " +  e.message)
+            raise
 
         return cleaned_data
 
     @transaction.commit_on_success
     def save(self):
-        #raise ValueError("prova")
 
         #Do economic work
         if not self.__order:
             return
 
         #Control logged user
-        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, 
             obj=ObjectWithContext(self.__gas)
         ):
@@ -342,7 +341,7 @@ class InvoiceOrderForm(forms.Form):
             raise PermissionDenied("order is not in good state!")
 
         self.__order.invoice_amount = self.cleaned_data['invoice_amount']
-        self.__order.invoice_note = self.cleaned_data['note']
+        self.__order.invoice_note = self.cleaned_data['invoice_note']
         #log.debug("Invoice amount %s---" % self.__order.invoice_amount)
 
         try:
@@ -567,13 +566,20 @@ class BalanceGASForm(BalanceForm):
 class TransationGASForm(BalanceGASForm):
 
     amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-        help_text = _('define the amount with the sign - to debit money from this account'), 
-        error_messages = {'required': _(u'You must insert an postive or negative amount for the operation')})
+        help_text = _('Insert the amount of money (no sign)'), 
+        error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
+    )
 
-    target = forms.ChoiceField(required=True, choices = [('0',_('Income')), ('1',_('Expense'))], widget=forms.RadioSelect, help_text="define the type of the operation")
+    target = forms.ChoiceField(required=True, 
+        choices = [('0',_('Income: Event, Donate, Sponsor, Fund... +GAS')), ('1',_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))], 
+        widget=forms.RadioSelect, help_text="define the type of the operation", 
+        error_messages={'required': _('You must select the type of operation')}
+    )
 
     note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
-help_text = _('Register the reason of this movment'), error_messages={'required': _(u'You must declare the causal of the movment')})
+        help_text = _('Reason of the movement'), 
+        error_messages={'required': _(u'You must declare the causal of this transaction')}
+    )
 
     def __init__(self, request, *args, **kw):
         log.debug("TransationGASForm")
@@ -592,7 +598,7 @@ help_text = _('Register the reason of this movment'), error_messages={'required'
             if cleaned_data['economic_note'] == '':
                 raise ValidationError(_("transaction require a causal explanation"))
         except KeyError, e:
-            log.debug("BalanceGASForm: cannot retrieve economic data: " +  e.message)
+            log.debug("BalanceGASForm: cannot retrieve economic data: " + e.message)
             raise
 
         return cleaned_data
@@ -620,15 +626,15 @@ help_text = _('Register the reason of this movment'), error_messages={'required'
 #        except ValueError, e:
 #            log.debug("retry later " +  e.message)
 
-    class Meta:
-#        model = GAS
-#        fields = ('...')
-        gf_fieldsets = [(None, { 
-            'fields' : ( '',
-                'amount',
-                'target',
-                'note',
-        )})]
+#    class Meta:
+##        model = GAS
+##        fields = ('...')
+#        gf_fieldsets = [(None, { 
+#            'fields' : ( '',
+#                'amount',
+#                'target',
+#                'note',
+#        )})]
 
 
 #-------------------------------------------------------------------------------
