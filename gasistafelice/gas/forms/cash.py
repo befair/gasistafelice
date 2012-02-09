@@ -317,7 +317,7 @@ class InvoiceOrderForm(forms.Form):
             cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
             cleaned_data['invoice_note'] = cleaned_data['note']
         except KeyError, e:
-            log.debug("InvoiceOrderForm: cannot retrieve invoice data: " +  e.message)
+            log.debug("InvoiceOrderForm: cannot retrieve invoice data: " + e.message)
             raise
 
         return cleaned_data
@@ -347,7 +347,7 @@ class InvoiceOrderForm(forms.Form):
         try:
             self.__order.save()
         except ValueError, e:
-            log.debug("retry later " +  e.message)
+            log.debug("retry later " + e.message)
         else:
             #Update State if possible
             self.__order.control_economic_state()
@@ -479,7 +479,7 @@ class InsoluteOrderForm(forms.Form):
                 try:
                     self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
                 except ValueError, e:
-                    log.debug("retry later " +  e.message)
+                    log.debug("retry later " + e.message)
                 else:
                     #log.debug("Insolute(%s) saved " % len(refs))
                     for _order in refs:
@@ -566,18 +566,18 @@ class BalanceGASForm(BalanceForm):
 class TransationGASForm(BalanceGASForm):
 
     amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-        help_text = _('Insert the amount of money (no sign)'), 
+        help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
     target = forms.ChoiceField(required=True, 
-        choices = [('0',_('Income: Event, Donate, Sponsor, Fund... +GAS')), ('1',_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))], 
-        widget=forms.RadioSelect, help_text="define the type of the operation", 
+        choices = [('0',_('Income: Event, Donate, Sponsor, Fund... +GAS')), ('1',_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))],
+        widget=forms.RadioSelect, help_text="define the type of the operation",
         error_messages={'required': _('You must select the type of operation')}
     )
 
     note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
-        help_text = _('Reason of the movement'), 
+        help_text = _('Reason of the movement'),
         error_messages={'required': _(u'You must declare the causal of this transaction')}
     )
 
