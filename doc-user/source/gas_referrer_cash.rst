@@ -129,7 +129,9 @@ Un esempio di documento di consegna è visibile cui Documento_ordine .. seealso:
 
 La fattura e il report di consegna modificato sono i 2 documenti che servono rispettivamente al punto 1) e 2) per evadere l'ordine
 
-Nota: E possibile vedere la lista degli ordini chiusi nella pagina del suo GAS
+[FAQ] Rissalire ai ordini chiusi da trattare economicamente:
+
+E possibile vedere la lista degli ordini chiusi nella pagina del suo GAS
 
 .. _ordini_chiusi:
 
@@ -139,7 +141,7 @@ Nota: E possibile vedere la lista degli ordini chiusi nella pagina del suo GAS
 
     Griglia che elenca gli ordini chiusi
 
-Cliccando su una riga si raggiunge la scheda dell'ordine
+Cliccando su una riga si raggiunge la scheda dell'ordine dove è possibile nel tab **Pagamento** gestire la consegna economica
 
 1) Registrazione fattura
 si fa nella scheda dell'ordine
@@ -174,6 +176,15 @@ Altro esempio il produttore consegna per 80,32 euro. Il produttore arrotonda la 
 I casi per il quale queste 3 cifre divergono sono tante. In ogni modo il sistema proverà a mostrare queste 3 ciffre, quando inserite nel sistema, in modo da aiutare il controllo e l'immissione da parte del referente. Questa indicazione si trova sotto la cassela di inserimento del prezzo. 
 "Ordine chiuso: (I) Totale prenotato dalle famiglie --> (II) fattura richiesta dal Produttore --> (III) Pagamento effettivo del GAS"
 
+Quando avete registrato la fattura il sistema non permette più di modificarla. Al momento del salvataggio il sistema controlla se avvanzare o no lo stato dell'ordine da **Chiuso** a **Da pagare**
+
+.. _order_invoiced:
+
+.. figure:: _static/ord_invoiced.png
+    :alt: ordine chiuso con registrazione fattura effettuata
+    :align: center
+
+    ordine chiuso con registrazione fattura effettuata
 
 2) Decurta del conto gasista
 
