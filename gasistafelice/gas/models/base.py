@@ -350,7 +350,7 @@ class GAS(models.Model, PermissionResource):
         +----------- incomes [P,I]+
         |                +--- recharges [I] 
         |                +--- fees [I]
-        |                +--- TODO: Other
+        |                +--- TODO: OutOfNetwork
         """
 
         self.subject.init_accounting_system()

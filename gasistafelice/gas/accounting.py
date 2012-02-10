@@ -5,6 +5,7 @@ from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
 
 from gasistafelice.base.models import Person
+from gasistafelice.consts import INCOME, EXPENSE
 
 class GasAccountingProxy(AccountingProxy):
     """
@@ -208,5 +209,45 @@ class GasAccountingProxy(AccountingProxy):
             self.system.accounts.filter(parent__name="suppliers", name__in=s_account)
 
         return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
+
+    def extra_operation(self, amount, target, causal, date):
+        """
+        Another account operation for this subject
+
+        For a GAS the target operation can be income or expense operation
+        """
+
+        if amount < 0:
+            raise MalformedTransaction("Payment amounts must be non-negative")
+        gas = self.subject.instance
+        if target == INCOME:
+            #source_account = self.system['/cash']
+            source_account = None
+            #exit_point = self.system['/expenses/OutOfNetwork']
+            #entry_point =  self.system['/incomes/OutOfNetwork']
+            target_account = self.system['/cash']
+        elif  target == EXPENSE:
+            source_account = self.system['/cash']
+            #exit_point = self.system['/incomes/OutOfNetwork']
+            #entry_point =  self.system['/expenses/OutOfNetwork']
+            #target_account = self.system['/cash']
+            target_account = None
+        else:
+            raise MalformedTransaction("Payment target %s not identified" % target)
+
+        description = _("%(gas)s %(target)s %(causal)s") % {
+            'gas': gas.id_in_des,
+            'target': target,
+            'causal': causal
+        }
+        issuer = self.subject
+        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind='GAS_EXTRA')
+#        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')
+
+#        +----------- expenses [P,E]+
+#        |                +--- TODO: OutOfNetwork
+#        +----------- incomes [P,I]+
+#        |                +--- TODO: OutOfNetwork
+
 
 
