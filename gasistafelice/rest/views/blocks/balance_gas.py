@@ -55,15 +55,23 @@ class Block(AbstractBlock):
         if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
             form = TransationGASForm(request)
         if args == "INCOME":
+            log.debug("balance_gas INCOME")
             if request.method == 'POST':
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
                     form_post = TransationGASForm(request, request.POST)
                 else:
                     form_post = BalanceGASForm(request, request.POST)
                 if form_post.is_valid():
+                    log.debug("balance_gas VALID")
                     with transaction.commit_on_success():
                         if form_post.cleaned_data:
+                            log.debug("SAVINGSAVINGSAVING TransationGASForm")
                             form_post.save()
+                        else:
+                            log.debug("NOT NOT NOT CLEAN CLEAN CLEAN TransationGASForm")
+                else:
+                    log.debug("NOT NOT NOT VALID VALID VALID TransationGASForm")
+
                     #FIXME: handler attached: ajaxified form undefined
 #                    return self.response_success()
 #                else:
