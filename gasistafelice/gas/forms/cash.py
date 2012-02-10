@@ -590,15 +590,16 @@ class TransationGASForm(BalanceGASForm):
     def clean(self):
 
         cleaned_data = super(TransationGASForm, self).clean()
-        log.debug("cleaned_data %s" % cleaned_data)
+        log.debug("TransationGASForm cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_note'] = cleaned_data['note']
             if cleaned_data['economic_note'] == '':
-                raise ValidationError(_("transaction require a causal explanation"))
+                log.debug("TransationGASForm: required note")
+                raise ValidationError(_("TransationGASForm: transaction require a causal explanation"))
         except KeyError, e:
-            log.debug("BalanceGASForm: cannot retrieve economic data: " + e.message)
+            log.debug("TransationGASForm: cannot retrieve economic data: " + e.message)
             raise
 
         return cleaned_data
@@ -609,7 +610,7 @@ class TransationGASForm(BalanceGASForm):
         log.debug("SAVESAVESAVESAVESAVE  TransationGASForm")
         #self.instance.gas = self._gas
         #DT: not needeed all derived class are read only
-        #super(TransationGASForm, self).save()
+        super(TransationGASForm, self).save()
         #Do economic work
         if not self.__gas:
             return
@@ -618,7 +619,7 @@ class TransationGASForm(BalanceGASForm):
         if not self.__loggedusr.has_perm(CASH, 
             obj=ObjectWithContext(self.__gas)
         ):
-            log.debug("PermissionDenied %s in economic operation form" % self.__loggedusr)
+            log.debug("TransationGASForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
             raise PermissionDenied("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!")
 #        #Do economic work
 #        try:
