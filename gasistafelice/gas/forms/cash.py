@@ -21,8 +21,11 @@ from gasistafelice.lib.fields.forms import CurrencyField
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 from flexi_auth.models import ObjectWithContext
-from gasistafelice.consts import CASH  #Permission
-from gasistafelice.consts import GAS_MEMBER  #Role
+from gasistafelice.consts import (
+        CASH,  #Permission
+        GAS_MEMBER,  #Role
+        INCOME, EXPENSE  #Transactions
+)
 
 from datetime import tzinfo, timedelta, datetime, date
 
@@ -563,7 +566,7 @@ class TransationGASForm(BalanceGASForm):
     )
 
     target = forms.ChoiceField(required=True, 
-        choices = [('0',_('Income: Event, Donate, Sponsor, Fund... +GAS')), ('1',_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))], 
+        choices = [(INCOME,_('Income: Event, Donate, Sponsor, Fund... +GAS')), (EXPENSE,_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))], 
         widget=forms.RadioSelect, help_text="define the type of the operation", 
         error_messages={'required': _('You must select the type of operation')}
     )
@@ -604,6 +607,7 @@ class TransationGASForm(BalanceGASForm):
 
         return cleaned_data
 
+#FIXME: The save routine is not called. Reeingenering of the balance_gas.py needed
     @transaction.commit_on_success
     def save(self):
 
@@ -621,11 +625,16 @@ class TransationGASForm(BalanceGASForm):
         ):
             log.debug("TransationGASForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
             raise PermissionDenied("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!")
-#        #Do economic work
-#        try:
-#            self.economic_operation()
-#        except ValueError, e:
-#            log.debug("retry later " +  e.message)
+        #Do economic work
+        try:
+            self.__gas.accounting.extra_operation(
+                    cleaned_data['economic_amount'],
+                    cleaned_data['economic_target'],
+                    cleaned_data['economic_causal'],
+                    cleaned_data['economic_date'],
+            )
+        except ValueError, e:
+            log.debug("retry later " +  e.message)
 
 #    class Meta:
 ##        model = GAS
@@ -643,7 +652,6 @@ class TransationGASForm(BalanceGASForm):
 #LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
 
 #LF        self.fields['target'].initial = '0'
-#LF        self.__gas = request.resource.gas
 
 #-------------------------------------------------------------------------------
 
