@@ -14,6 +14,7 @@ from gasistafelice.supplier.models import Supplier
 from django.forms.formsets import formset_factory
 from django.forms import widgets
 from django.contrib.admin import widgets as admin_widgets
+from gasistafelice.lib.widgets import DateFormatAwareWidget
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.lib.fields.forms import CurrencyField
@@ -23,7 +24,7 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.consts import CASH  #Permission
 from gasistafelice.consts import GAS_MEMBER  #Role
 
-from datetime import tzinfo, timedelta, datetime
+from datetime import tzinfo, timedelta, datetime, date
 
 import logging
 log = logging.getLogger(__name__)
@@ -572,6 +573,11 @@ class TransationGASForm(BalanceGASForm):
         error_messages={'required': _(u'You must declare the causal of this transaction')}
     )
 
+    date = forms.DateField(initial=date.today, required=True
+        , help_text=_("Adjust the operation date if necesary")
+        , widget=DateFormatAwareWidget
+    )
+
     def __init__(self, request, *args, **kw):
         log.debug("TransationGASForm")
         super(TransationGASForm, self).__init__(request, *args, **kw)
@@ -591,6 +597,7 @@ class TransationGASForm(BalanceGASForm):
             if cleaned_data['economic_causal'] == '':
                 log.debug("TransationGASForm: required causal")
                 raise ValidationError(_("TransationGASForm: transaction require a causal explanation"))
+            cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
             log.debug("TransationGASForm: cannot retrieve economic data: " + e.message)
             raise
