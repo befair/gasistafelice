@@ -302,7 +302,6 @@ class InvoiceOrderForm(forms.Form):
         #self.fields['note'].widget.attrs['class'] = 'input_long'
         self.fields['amount'].widget.attrs['class'] = 'input_payment'
 
-        self.fields['amount'].widget.attrs['class'] = 'input_payment'
         if not self.__order.is_closed():
             self.fields['amount'].widget.attrs['readonly'] = True
             self.fields['amount'].widget.attrs['disabled'] = 'disabled'
@@ -487,9 +486,18 @@ class InsoluteOrderForm(forms.Form):
                         _order.control_economic_state()
 
 
-
 #-------------------------------------------------------------------------------
 
+def get_eco_class(eco_state):
+    eco_class = "negative"
+    _sold = float(eco_state)
+    if _sold > 20:
+        eco_class = "positive"
+    elif -10 < _sold and _sold < 10:
+        eco_class = "stalled"
+    return "balance " + eco_class
+
+#-------------------------------------------------------------------------------
 
 class BalanceForm(forms.Form):
 
@@ -504,22 +512,15 @@ class BalanceForm(forms.Form):
 
         #self.fields['note'].widget.attrs['class'] = 'input_long'
         eco_state = request.resource.balance
-        eco_class = "Negative"
-        if eco_state:
-            if eco_state > 20:
-                eco_class = "Plus"
-            elif eco_state < 20 and eco_state >= 0:
-                eco_class = "Alert"
+        eco_class = get_eco_class(eco_state)
         self.fields['balance'].initial = ("%.2f" % round(request.resource.balance, 2)).replace('.','€')
-        self.fields['balance'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+        self.fields['balance'].widget.attrs['class'] = eco_class
         self.__loggedusr = request.user
 
         # LF: Balance is a readonly field
         field_name = 'balance'
         self.fields[field_name].widget.attrs['readonly'] = True
         self.fields[field_name].widget.attrs['disabled'] = 'disabled'
-
-#-------------------------------------------------------------------------------
 
 #LF: balance and wallet_*  are always read-only so they MUST NOT be included in form...
 class BalanceGASForm(BalanceForm):
@@ -532,24 +533,14 @@ class BalanceGASForm(BalanceForm):
         log.debug("BalanceGASForm")
         super(BalanceGASForm, self).__init__(request, *args, **kw)
         eco_state = request.resource.balance_gasmembers
-        eco_class = "Negative"
-        if eco_state:
-            if eco_state > 20:
-                eco_class = "Plus"
-            elif eco_state < 20 and eco_state >= 0:
-                eco_class = "Alert"
+        eco_class = get_eco_class(eco_state)
         self.fields['wallet_gasmembers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
-        self.fields['wallet_gasmembers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+        self.fields['wallet_gasmembers'].widget.attrs['class'] = eco_class
 
         eco_state = request.resource.balance_suppliers
-        eco_class = "Negative"
-        if eco_state:
-            if eco_state > 20:
-                eco_class = "Plus"
-            elif eco_state < 20 and eco_state >= 0:
-                eco_class = "Alert"
+        eco_class = get_eco_class(eco_state)
         self.fields['wallet_suppliers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
-        self.fields['wallet_suppliers'].widget.attrs['class'] = 'balance input_payment ' + eco_class
+        self.fields['wallet_suppliers'].widget.attrs['class'] = eco_class
 
         # Set readonly fields for wallet_*
         for field_name in ( 'wallet_gasmembers' , 'wallet_suppliers'):
@@ -566,7 +557,7 @@ class BalanceGASForm(BalanceForm):
 class TransationGASForm(BalanceGASForm):
 
     amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-        help_text = _('Insert the amount of money (no sign)'), 
+        help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
@@ -576,7 +567,7 @@ class TransationGASForm(BalanceGASForm):
         error_messages={'required': _('You must select the type of operation')}
     )
 
-    note = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+    causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
         help_text = _('Reason of the movement'), 
         error_messages={'required': _(u'You must declare the causal of this transaction')}
     )
@@ -586,6 +577,8 @@ class TransationGASForm(BalanceGASForm):
         super(TransationGASForm, self).__init__(request, *args, **kw)
         self.__loggedusr = request.user
         self.__gas = request.resource.gas
+        self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
+        self.fields['causal'].widget.attrs['class'] = 'input_long'
 
     def clean(self):
 
@@ -594,9 +587,9 @@ class TransationGASForm(BalanceGASForm):
         try:
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
             cleaned_data['economic_target'] = cleaned_data['target']
-            cleaned_data['economic_note'] = cleaned_data['note']
-            if cleaned_data['economic_note'] == '':
-                log.debug("TransationGASForm: required note")
+            cleaned_data['economic_causal'] = cleaned_data['causal']
+            if cleaned_data['economic_causal'] == '':
+                log.debug("TransationGASForm: required causal")
                 raise ValidationError(_("TransationGASForm: transaction require a causal explanation"))
         except KeyError, e:
             log.debug("TransationGASForm: cannot retrieve economic data: " + e.message)
