@@ -682,3 +682,50 @@ class TransationGASForm(BalanceGASForm):
 #LF
 
 
+#    class Meta:
+##        model = GAS
+##        fields = ('...')
+#        gf_fieldsets = [(None, { 
+#            'fields' : ( '',
+#                'amount',
+#                'target',
+#                'note',
+#        )})]
+
+
+#-------------------------------------------------------------------------------
+
+#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect, 
+
+#LF        self.fields['target'].initial = '0'
+#LF        self.__gas = request.resource.gas
+
+#-------------------------------------------------------------------------------
+
+#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
+
+#LF        # SOLIDAL PACT
+#LF        pacts = request.resource.pacts
+#LF        if pacts and pacts.count() > 0:
+#LF            self.fields['pact'].queryset = pacts
+#LF#            self.fields['pact'].initial = pacts[0]
+
+#        try:
+#            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
+#        except GASSupplierSolidalPact.DoesNotExist:
+#            #ok
+#            pass
+#        else:
+#            raise ValidationError(_("Pact between this GAS and this Supplier already exists"))
+
+#-------------------------------------------------------------------------------
+
+#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+
+#LF        # MEMBERS
+#LF        gms = request.resource.gasmembers
+#LF        if gms and gms.count() > 0:
+#LF            self.fields['person'].queryset = gms
+#LF
+
+

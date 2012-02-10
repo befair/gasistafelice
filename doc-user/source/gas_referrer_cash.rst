@@ -210,7 +210,6 @@ Una volta messa a posto tutte le famiglie il referente clicca su **decurta conto
 
 Per ciascun famiglia viene creata una transazione economica dal conto del gasista verso la cassa del GAS.
 
-
 [FAQ] Aggiungere una famiglia
 Aggiungere una famiglia non compressa nel report al momento della chiusura ordine.
 Succede speso che alcuni ritardatari possono ordinare dopo che il report del gestionale fu stato inviato al produttore. Succede che durante la consegna una famiglia a dato ad un altra alcuni prodotti. Succede che una famiglia ha contattato il produttore, direttamente o via il referente, pr farci consegnare prodotti in più o non prenotati...
@@ -224,7 +223,6 @@ Per tutti questi casi si puo aggiungere una famiglia alla decurtazione dell'ordi
 Una volta fatto i punti 1) e 2) l'ordine passa allo stato evasso. Cioè rimane appesso in attessa di essere pagato da un referente economico.
 
 In pratica gli ordini vengono pagato direttamente. Al volo. Succede che alcuni produttori vengono paghati dopo aver accumulato alcune consegne. Ad esempio se un produttore di verdure consegna ogni settimana ma, da accordo con il GAS, viene pagato solo una volta al mese, allora alla fine del mese, al momento di farci pagare, questo produttore ad accumulato 4 fatture. Sono 4 Insoluti. Questi 4 Insoluti vengono addizionati e mostrato a video per aiutare il referente economia ad rintracciare gli insoluti.
-
 
 Ricarica di un Gasista
 ++++++++++++++++++++++
