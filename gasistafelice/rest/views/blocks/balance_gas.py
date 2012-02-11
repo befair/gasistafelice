@@ -6,9 +6,8 @@ from django.db import transaction
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from gasistafelice.lib.shortcuts import render_to_xml_response
 from gasistafelice.rest.views.blocks import details
-from gasistafelice.gas.forms import cash as order_cash_forms
 
 from gasistafelice.consts import CASH, INCOME
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
@@ -60,8 +59,18 @@ class Block(AbstractBlock):
                     with transaction.commit_on_success():
                         if form.cleaned_data:
                             print("SAVINGSAVINGSAVING TransationGASForm")
-                            form.save()
+                            try:
+
+                                form.save()
 #                                return self.response_success()
+
+                            except ValueError, e:
+                                msg = "Transation ERROR" +  e.message
+                                print(msg)
+                                #return self.response_error(form.errors)
+                                #form._errors.append(msg)
+                                #form.ValidationError(_(msg))
+                                form._errors["amount"] = form.error_class([msg])
 
 #WAS: forms errors not rendered --> DO NOTHING render ctx for showing errors
 # return self.response_error(form.errors)
