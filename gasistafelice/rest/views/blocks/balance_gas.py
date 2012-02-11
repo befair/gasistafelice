@@ -22,10 +22,15 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_gas"
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
-    BLOCK_DESCRIPTION = _("Balance")
+#    BLOCK_DESCRIPTION = _("Balance")
+
+    def __init__(self):
+        super(Block, self).__init__()
+        self.description = _("Balance")
 
     #UGLY: fixme when succeed to open popup for cash referrer operations
     def _get_user_actions(self, request):
+
 ##        #COMMENT BY fero: no need for these actions now
 #        return []
         user_actions = []
@@ -37,7 +42,7 @@ class Block(AbstractBlock):
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
                         name=INCOME, verbose_name=_("Account transaction"),
-                        popup_form=True,
+                        popup_form=False,
                     ),
                 ]
                 break
@@ -50,32 +55,33 @@ class Block(AbstractBlock):
         super(Block, self).get_response(request, resource_type, resource_id, args)
         res = self.resource
         #UGLY: fixme when succeed to open popup for cash referrer operations
-        form = BalanceGASForm(request)
         gas = res.gas
-        if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
-            form = TransationGASForm(request)
         if args == "INCOME":
             log.debug("balance_gas INCOME")
             if request.method == 'POST':
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
-                    form_post = TransationGASForm(request, request.POST)
+                    form = TransationGASForm(request, request.POST)
                 else:
-                    form_post = BalanceGASForm(request, request.POST)
-                if form_post.is_valid():
+                    form = BalanceGASForm(request, request.POST)
+                if form.is_valid():
                     log.debug("balance_gas VALID")
                     with transaction.commit_on_success():
-                        if form_post.cleaned_data:
+                        if form.cleaned_data:
                             log.debug("SAVINGSAVINGSAVING TransationGASForm")
-                            form_post.save()
+                            form.save()
                         else:
                             log.debug("NOT NOT NOT CLEAN CLEAN CLEAN TransationGASForm")
+                    #FIXME: handler attached: ajaxified form undefined
+                    return self.response_success()
                 else:
                     log.debug("NOT NOT NOT VALID VALID VALID TransationGASForm")
+                    return self.response_error(form.errors)
 
-                    #FIXME: handler attached: ajaxified form undefined
-#                    return self.response_success()
-#                else:
-#                    return self.response_error(form_post.errors)
+        else:
+            if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+                form = TransationGASForm(request)
+            else:
+                form = BalanceGASForm(request)
 
         ctx = {
             'resource'      : res,
@@ -83,7 +89,7 @@ class Block(AbstractBlock):
             'form'          : form,
             'user_actions'  : self._get_user_actions(request),
         }
-        return render_to_xml_response('blocks/balance.xml', ctx)
+        return render_to_xml_response('blocks/balance_gas.xml', ctx)
 
 
 #DT: test for specific handler in balance
