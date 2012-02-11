@@ -600,11 +600,11 @@ class TransationGASForm(BalanceGASForm):
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
                 log.debug("TransationGASForm: required causal")
-                raise ValidationError(_("TransationGASForm: transaction require a causal explanation"))
+                raise forms.ValidationError(_("TransationGASForm: transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
             log.debug("TransationGASForm: cannot retrieve economic data: " + e.message)
-            raise ValidationError(_("TransationGASForm: cannot retrieve economic data: " + e.message))
+            raise forms.ValidationError(_("TransationGASForm: cannot retrieve economic data: " + e.message))
 
         return cleaned_data
 
@@ -624,15 +624,12 @@ class TransationGASForm(BalanceGASForm):
             log.debug("TransationGASForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
             raise PermissionDenied("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!")
         log.debug("TransationGASForm: Do economic work")
-        try:
-            self.__gas.accounting.extra_operation(
-                    self.cleaned_data['economic_amount'],
-                    self.cleaned_data['economic_target'],
-                    self.cleaned_data['economic_causal'],
-                    self.cleaned_data['economic_date'],
-            )
-        except ValueError, e:
-            log.debug("TransationGASForm: retry later " +  e.message)
+        self.__gas.accounting.extra_operation(
+                self.cleaned_data['economic_amount'],
+                self.cleaned_data['economic_target'],
+                self.cleaned_data['economic_causal'],
+                self.cleaned_data['economic_date'],
+        )
 
 #    class Meta:
 ##        model = GAS
