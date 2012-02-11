@@ -10,7 +10,7 @@ from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_respon
 from gasistafelice.rest.views.blocks import details
 from gasistafelice.gas.forms import cash as order_cash_forms
 
-from gasistafelice.consts import CASH, CREATE, INCOME
+from gasistafelice.consts import CASH, INCOME
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.gas.forms.cash import BalanceGASForm, TransationGASForm
@@ -22,17 +22,14 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_gas"
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
-#    BLOCK_DESCRIPTION = _("Balance")
+    BLOCK_DESCRIPTION = _("Balance")
+#    def __init__(self):
+#        super(Block, self).__init__()
+#        self.description = _("Balance")
 
-    def __init__(self):
-        super(Block, self).__init__()
-        self.description = _("Balance")
-
-    #UGLY: fixme when succeed to open popup for cash referrer operations
     def _get_user_actions(self, request):
 
-##        #COMMENT BY fero: no need for these actions now
-#        return []
+#COMMENT BY fero: no need for these actions now
         user_actions = []
         gas_list = self.resource.gas_list
         for gas in gas_list:
@@ -46,36 +43,28 @@ class Block(AbstractBlock):
                     ),
                 ]
                 break
-#DT                        name=CREATE, verbose_name=_("Account transaction"),
-#DT                        name=INCOME, verbose_name=_("Account transaction"),
-#DT                        name="gas_income", verbose_name=_("Account transaction"),
         return user_actions
 
     def get_response(self, request, resource_type, resource_id, args):
         super(Block, self).get_response(request, resource_type, resource_id, args)
         res = self.resource
-        #UGLY: fixme when succeed to open popup for cash referrer operations
+        #TODO-not-a-priority domthu: show as popup
         gas = res.gas
         if args == "INCOME":
-            log.debug("balance_gas INCOME")
             if request.method == 'POST':
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
                     form = TransationGASForm(request, request.POST)
                 else:
                     form = BalanceGASForm(request, request.POST)
                 if form.is_valid():
-                    log.debug("balance_gas VALID")
                     with transaction.commit_on_success():
                         if form.cleaned_data:
-                            log.debug("SAVINGSAVINGSAVING TransationGASForm")
+                            print("SAVINGSAVINGSAVING TransationGASForm")
                             form.save()
-                        else:
-                            log.debug("NOT NOT NOT CLEAN CLEAN CLEAN TransationGASForm")
-                    #FIXME: handler attached: ajaxified form undefined
-                    return self.response_success()
-                else:
-                    log.debug("NOT NOT NOT VALID VALID VALID TransationGASForm")
-                    return self.response_error(form.errors)
+#                                return self.response_success()
+
+#WAS: forms errors not rendered --> DO NOTHING render ctx for showing errors
+# return self.response_error(form.errors)
 
         else:
             if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
@@ -90,50 +79,3 @@ class Block(AbstractBlock):
             'user_actions'  : self._get_user_actions(request),
         }
         return render_to_xml_response('blocks/balance_gas.xml', ctx)
-
-
-#DT: test for specific handler in balance
-#    def gas_income(self, request):
-#        log.debug("gas_income")
-#        form = TransationGASForm
-#        if request.method == 'POST':
-#            formset = form(request, request.POST)
-#            if formset.is_valid():
-#                with transaction.commit_on_success():
-#                    for form in formset:
-#                        # Check for data: empty formsets are full of empty data ;)
-#                        if form.cleaned_data:
-#                            form.save()
-#                return self.response_success()
-##        ctx = {
-##            'resource'      : self.resource,
-##            'sanet_urn'     : "%s/%s" % (self.resource.resource_type, self.resource.id),
-##            'form'          : form(request),
-##            'user_actions'  : self._get_user_actions(request),
-##        }
-##        return render_to_xml_response('blocks/balance.xml', ctx)
-#        context = {
-#            "formset": form,
-#            #'opts' : PrincipalParamRoleRelation._meta,
-#            'is_popup': False,
-#            'save_as' : False,
-#            'save_on_top': False,
-#            #'errors': helpers.AdminErrorList(form, []),
-#            #'media': mark_safe(adminForm.media),
-#            'form_url' : request.build_absolute_uri(),
-#            'add'  : False,
-#            'change' : True,
-#            'has_add_permission': False,
-#            'has_delete_permission': True,
-#            'has_change_permission': True,
-#            'show_delete' : True,
-#        }
-#        return render_to_context_response(request, "html/formsets.html", context)
-
-#DT: test for override CREATE action without Model
-#    def _get_add_form_class(self):
-#        return TransationGASForm
-#fixme: CSRF Django token not rendered
-
-#DT: test TODO use note mecanism with Jquery script
-# NEW_NOTE_FORM_TEXT
