@@ -58,18 +58,16 @@ class Block(AbstractBlock):
                 if form.is_valid():
                     with transaction.commit_on_success():
                         if form.cleaned_data:
-                            print("SAVINGSAVINGSAVING TransationGASForm")
                             try:
 
                                 form.save()
 #                                return self.response_success()
 
                             except ValueError, e:
-                                msg = "Transation ERROR" +  e.message
-                                print(msg)
-                                #return self.response_error(form.errors)
-                                #form._errors.append(msg)
-                                #form.ValidationError(_(msg))
+                                msg = _("Transaction invoice ERROR: ") + e.message
+                                #WAS return self.response_error(form.errors)
+                                #WAS form._errors.append(msg)
+                                #WAS form.ValidationError(_(msg))
                                 form._errors["amount"] = form.error_class([msg])
 
 #WAS: forms errors not rendered --> DO NOTHING render ctx for showing errors

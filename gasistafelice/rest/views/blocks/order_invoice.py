@@ -62,7 +62,14 @@ class Block(AbstractBlock):
                 if form.is_valid():
                     with transaction.commit_on_success():
                         if form.cleaned_data:
-                            form.save()
+                            try:
+
+                                form.save()
+#                                return self.response_success()
+
+                            except ValueError, e:
+                                msg = _("Transaction invoice ERROR: ") + e.message
+                                form._errors["amount"] = form.error_class([msg])
 
         else:
                 form = InvoiceOrderForm(request)
