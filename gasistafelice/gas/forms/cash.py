@@ -505,7 +505,7 @@ def get_eco_class(eco_state):
 
 class BalanceForm(forms.Form):
 
-    balance = CurrencyField(label=_('Balance'), required=True, max_digits=8, decimal_places=2)
+    balance = CurrencyField(label=_('Balance'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
@@ -614,27 +614,25 @@ class TransationGASForm(BalanceGASForm):
         log.debug("SAVESAVESAVESAVESAVE  TransationGASForm")
         #self.instance.gas = self._gas
         #DT: not needeed all derived class are read only
-        super(TransationGASForm, self).save()
+        #super(TransationGASForm, self).save()
         #Do economic work
         if not self.__gas:
             return
 
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
-        if not self.__loggedusr.has_perm(CASH, 
-            obj=ObjectWithContext(self.__gas)
-        ):
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
             log.debug("TransationGASForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
             raise PermissionDenied("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!")
-        #Do economic work
+        log.debug("TransationGASForm: Do economic work")
         try:
             self.__gas.accounting.extra_operation(
-                    cleaned_data['economic_amount'],
-                    cleaned_data['economic_target'],
-                    cleaned_data['economic_causal'],
-                    cleaned_data['economic_date'],
+                    self.cleaned_data['economic_amount'],
+                    self.cleaned_data['economic_target'],
+                    self.cleaned_data['economic_causal'],
+                    self.cleaned_data['economic_date'],
             )
         except ValueError, e:
-            log.debug("retry later " +  e.message)
+            log.debug("TransationGASForm: retry later " +  e.message)
 
 #    class Meta:
 ##        model = GAS
