@@ -318,7 +318,7 @@ class SupplierForm(forms.Form):
         if id:
             enabled = self.cleaned_data.get('enabled')
             log.debug("Save SupplierForm enabled(%s)" % enabled)
-            #Suspend all pact related to this producer
+            #TODO: Suspend all pact related to this producer
             #if not enabled:
 
             self.instance.save()

@@ -588,6 +588,7 @@ class TransationGASForm(BalanceGASForm):
         self.__gas = request.resource.gas
         self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
         self.fields['causal'].widget.attrs['class'] = 'input_long'
+#        self._messages['info'].append(("You can register economic movement for this GAS here"))
 
     def clean(self):
 
@@ -603,11 +604,10 @@ class TransationGASForm(BalanceGASForm):
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
             log.debug("TransationGASForm: cannot retrieve economic data: " + e.message)
-            raise
+            raise ValidationError(_("TransationGASForm: cannot retrieve economic data: " + e.message))
 
         return cleaned_data
 
-#FIXME: The save routine is not called. Reengineering of the balance_gas.py needed
     @transaction.commit_on_success
     def save(self):
 
