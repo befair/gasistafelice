@@ -304,9 +304,9 @@ class SupplierForm(forms.Form):
 
     id = forms.IntegerField(required=True, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
-    log.debug("Create SupplierForm (%s)" % id)
 
     def __init__(self, request, *args, **kw):
+        log.debug("Create SupplierForm")
         super(SupplierForm, self).__init__(*args, **kw)
 
     #@transaction.commit_on_success
