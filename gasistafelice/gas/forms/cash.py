@@ -279,8 +279,6 @@ class InvoiceOrderForm(forms.Form):
 
     def __init__(self, request, *args, **kw):
 
-        #log.debug("InvoiceOrderForm")
-
         super(InvoiceOrderForm, self).__init__(*args, **kw)
 
         #SOLIDAL PACT
@@ -321,7 +319,7 @@ class InvoiceOrderForm(forms.Form):
             cleaned_data['invoice_note'] = cleaned_data['note']
         except KeyError, e:
             log.debug("InvoiceOrderForm: cannot retrieve invoice data: " + e.message)
-            raise
+            raise forms.ValidationError(_("InvoiceOrderForm: cannot retrieve invoice data: " + e.message))
 
         return cleaned_data
 
@@ -369,8 +367,6 @@ class InsoluteOrderForm(forms.Form):
     note = forms.CharField(label=_('Causale'), required=False, widget=forms.TextInput)
 
     def __init__(self, request, *args, **kw):
-
-        log.debug("InsoluteOrderForm")
 
         super(InsoluteOrderForm, self).__init__(*args, **kw)
 
@@ -509,8 +505,6 @@ class BalanceForm(forms.Form):
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("BalanceForm")
-
         super(BalanceForm, self).__init__(*args, **kw)
         self.__gas_list = request.resource.gas_list
 
@@ -534,8 +528,8 @@ class BalanceGASForm(BalanceForm):
 
     def __init__(self, request, *args, **kw):
 
-        log.debug("BalanceGASForm")
         super(BalanceGASForm, self).__init__(request, *args, **kw)
+
         eco_state = request.resource.balance_gasmembers
         eco_class = get_eco_class(eco_state)
         self.fields['wallet_gasmembers'].initial = ("%.2f" % round(eco_state, 2)).replace('.','€')
@@ -582,13 +576,12 @@ class TransationGASForm(BalanceGASForm):
     )
 
     def __init__(self, request, *args, **kw):
-        log.debug("TransationGASForm")
+
         super(TransationGASForm, self).__init__(request, *args, **kw)
         self.__loggedusr = request.user
         self.__gas = request.resource.gas
         self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
         self.fields['causal'].widget.attrs['class'] = 'input_long'
-#        self._messages['info'].append(("You can register economic movement for this GAS here"))
 
     def clean(self):
 
@@ -611,10 +604,9 @@ class TransationGASForm(BalanceGASForm):
     @transaction.commit_on_success
     def save(self):
 
-        log.debug("SAVESAVESAVESAVESAVE  TransationGASForm")
-        #self.instance.gas = self._gas
         #DT: not needeed all derived class are read only
         #super(TransationGASForm, self).save()
+
         #Do economic work
         if not self.__gas:
             return
@@ -623,7 +615,7 @@ class TransationGASForm(BalanceGASForm):
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
             log.debug("TransationGASForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
             raise PermissionDenied("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!")
-        log.debug("TransationGASForm: Do economic work")
+
         self.__gas.accounting.extra_operation(
                 self.cleaned_data['economic_amount'],
                 self.cleaned_data['economic_target'],
