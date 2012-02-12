@@ -21,7 +21,7 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_gas"
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
-    BLOCK_DESCRIPTION = _("Balance")
+    BLOCK_DESCRIPTION = ug("Balance")
 #    def __init__(self):
 #        super(Block, self).__init__()
 #        self.description = _("Balance")

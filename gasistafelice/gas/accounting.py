@@ -223,17 +223,20 @@ class GasAccountingProxy(AccountingProxy):
         if amount < 0:
             raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
         gas = self.subject.instance
-        non_des_system = self.get_non_des_system()
+        non_des = self.get_non_des_accounting()
+        if not non_des:
+            raise Person.DoesNotExist
+        non_des_system = non_des.system
         if target == INCOME:
-            source_account = non_des_system['/cash']
-            exit_point =  get_account(non_des_system, '/expenses', 'OutOfDES', account_type.expense)
-            entry_point = get_account(self.system, '/incomes', 'OutOfDES', account_type.income)
+            source_account = non_des_system['/wallet']
+            exit_point = self.get_account(non_des_system, '/expenses', 'OutOfDES', account_type.expense)
+            entry_point = self.get_account(self.system, '/incomes', 'OutOfDES', account_type.income)
             target_account = self.system['/cash']   #WAS gas.accounting.system['/cash']
         elif  target == EXPENSE:
             source_account = self.system['/cash']
-            exit_point = get_account(self.system, '/expenses', 'OutOfDES', account_type.expense)
-            entry_point =  get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
-            target_account = non_des_system['/cash']
+            exit_point = self.get_account(self.system, '/expenses', 'OutOfDES', account_type.expense)
+            entry_point = self.get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
+            target_account = non_des_system['/wallet']
         else:
             #WAS raise MalformedTransaction(_(u"Payment target %s not identified" % target))
             #coercing to Unicode: need string or buffer, __proxy__ found
@@ -247,7 +250,6 @@ class GasAccountingProxy(AccountingProxy):
         #WAS raise description = _(u"%(gas)s %(target)s %(causal)s") % { ...
         #WAS exceptions must be old-style classes or derived from BaseException, not unicode
 
-
         issuer = self.subject
         kind = 'GAS_EXTRA'
 #        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind=kind)
@@ -258,10 +260,14 @@ class GasAccountingProxy(AccountingProxy):
 #        +----------- incomes [P,I]+
 #        |                +--- TODO: OutOfDES
 
-    def get_account(system, parent_path, name, kind):
+    def get_account(self, system, parent_path, name, kind):
         path = parent_path + '/' + name
-        account = system[path]
-        if not account:
+        #log.debug('get_account path: %s' % path)
+        try:
+            account = system[path]
+        except:
+#WAS        if not account: but raise exception "Account matching query does not exist."
+            #if not exist create it
             system.add_account(parent_path=parent_path, name=name, kind=kind)
             account = system[path]
         if not account:
@@ -272,22 +278,11 @@ class GasAccountingProxy(AccountingProxy):
         })
         return account
 
-    def get_non_des_system(self):
-        #Possibility 1:
+    def get_non_des_accounting(self):
         des = self.subject.instance.des
-
         try:
             return des.accounting
         except AttributeError as e:
-            #Create accounting system for a NonDES in the DES accounting system
-
-            #Possibility 1: Set DES as subject (@economic_subject) and create Accounting proxy
-#            des.subject.init_accounting_system()
-#            system = des.accounting.system
-#            system.add_account(parent_path='/', name='cash', kind=account_type.asset)
-
-            #Possibility 2 (LF): Create fictif person and use it as NonDES account
-
             msg = "calling non-existent out of DES account: %s" % e.message
             log.warning(msg)
             raise MalformedTransaction(msg)
