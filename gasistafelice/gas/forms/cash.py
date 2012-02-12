@@ -392,11 +392,12 @@ class InsoluteOrderForm(forms.Form):
                 tot_ordered += ins.tot_price
                 tot_invoiced += ins.invoice_amount or 0
                 tot_eco_entries += ins.tot_curtail
-                stat = _("%(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                stat = _("Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                     'fam'    : "%.2f" % round(ins.tot_price, 2)
                     , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
                     , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
                     , 'state'  : ins.current_state.name
+                    , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
                     } )
                 _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
 #            self.fields['orders2'].queryset = insolutes
