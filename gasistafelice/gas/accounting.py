@@ -1,11 +1,14 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
+from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
 
 from gasistafelice.base.models import Person
 from gasistafelice.consts import INCOME, EXPENSE
+
+import logging
+log = logging.getLogger(__name__)
 
 class GasAccountingProxy(AccountingProxy):
     """
@@ -30,7 +33,7 @@ class GasAccountingProxy(AccountingProxy):
         (e.g. a list of supplier orders this payment is related to).   
         """
         if amount < 0:
-            raise MalformedTransaction("Payment amounts must be non-negative")
+            raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
         #gas = order.gas
         gas = self.subject.instance
         supplier = order.supplier
@@ -189,7 +192,7 @@ class GasAccountingProxy(AccountingProxy):
                 members.add(member)
             return members
         else:
-            raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order})
+            raise TypeError(_(u"GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order}))
 
     def entries(self):
         """
@@ -218,36 +221,73 @@ class GasAccountingProxy(AccountingProxy):
         """
 
         if amount < 0:
-            raise MalformedTransaction("Payment amounts must be non-negative")
+            raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
         gas = self.subject.instance
+        non_des_system = self.get_non_des_system()
         if target == INCOME:
-            #source_account = self.system['/cash']
-            source_account = None
-            #exit_point = self.system['/expenses/OutOfNetwork']
-            #entry_point =  self.system['/incomes/OutOfNetwork']
-            target_account = self.system['/cash']
+            source_account = non_des_system['/cash']
+            exit_point =  get_account(non_des_system, '/expenses', 'OutOfDES', account_type.expense)
+            entry_point = get_account(self.system, '/incomes', 'OutOfDES', account_type.income)
+            target_account = self.system['/cash']   #WAS gas.accounting.system['/cash']
         elif  target == EXPENSE:
             source_account = self.system['/cash']
-            #exit_point = self.system['/incomes/OutOfNetwork']
-            #entry_point =  self.system['/expenses/OutOfNetwork']
-            #target_account = self.system['/cash']
-            target_account = None
+            exit_point = get_account(self.system, '/expenses', 'OutOfDES', account_type.expense)
+            entry_point =  get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
+            target_account = non_des_system['/cash']
         else:
+            #WAS raise MalformedTransaction(_(u"Payment target %s not identified" % target))
+            #coercing to Unicode: need string or buffer, __proxy__ found
             raise MalformedTransaction("Payment target %s not identified" % target)
 
-        description = _("%(gas)s %(target)s %(causal)s") % {
+        description = "%(gas)s %(target)s %(causal)s" % {
             'gas': gas.id_in_des,
             'target': target,
             'causal': causal
         }
+        #WAS raise description = _(u"%(gas)s %(target)s %(causal)s") % { ...
+        #WAS exceptions must be old-style classes or derived from BaseException, not unicode
+
+
         issuer = self.subject
-        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind='GAS_EXTRA')
-#        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')
+        kind = 'GAS_EXTRA'
+#        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind=kind)
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date=date, kind=kind)
 
 #        +----------- expenses [P,E]+
-#        |                +--- TODO: OutOfNetwork
+#        |                +--- TODO: OutOfDES
 #        +----------- incomes [P,I]+
-#        |                +--- TODO: OutOfNetwork
+#        |                +--- TODO: OutOfDES
 
+    def get_account(system, parent_path, name, kind):
+        path = parent_path + '/' + name
+        account = system[path]
+        if not account:
+            system.add_account(parent_path=parent_path, name=name, kind=kind)
+            account = system[path]
+        if not account:
+            raise MalformedTransaction("Unknow account: %(system)s %(path)s %(kind)s" % {
+            'system': system,
+            'path': path,
+            'kind': kind
+        })
+        return account
 
+    def get_non_des_system(self):
+        #Possibility 1:
+        des = self.subject.instance.des
 
+        try:
+            return des.accounting
+        except AttributeError as e:
+            #Create accounting system for a NonDES in the DES accounting system
+
+            #Possibility 1: Set DES as subject (@economic_subject) and create Accounting proxy
+#            des.subject.init_accounting_system()
+#            system = des.accounting.system
+#            system.add_account(parent_path='/', name='cash', kind=account_type.asset)
+
+            #Possibility 2 (LF): Create fictif person and use it as NonDES account
+
+            msg = "calling non-existent out of DES account: %s" % e.message
+            log.warning(msg)
+            raise MalformedTransaction(msg)

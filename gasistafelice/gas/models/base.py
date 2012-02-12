@@ -342,7 +342,7 @@ class GAS(models.Model, PermissionResource):
         |                | ..
         |                +--- <UID member #n>  [A]
         +----------- expenses [P,E]+
-        |                +--- TODO: OutOfNetwork
+        |                +--- TODO: OutOfDES
         |                +--- suppliers [P, E] +
         |                        +--- <UID supplier #1>  [E]
         |                        | ..
@@ -350,13 +350,13 @@ class GAS(models.Model, PermissionResource):
         +----------- incomes [P,I]+
         |                +--- recharges [I] 
         |                +--- fees [I]
-        |                +--- TODO: OutOfNetwork
+        |                +--- TODO: OutOfDES
         """
 
         self.subject.init_accounting_system()
         system = self.accounting.system
         # GAS's cash
-        system.add_account(parent_path='/', name='cash', kind=account_type.asset) 
+        system.add_account(parent_path='/', name='cash', kind=account_type.asset)
         # root for GAS members' accounts
         system.add_account(parent_path='/', name='members', kind=account_type.asset, is_placeholder=True)
         # a placeholder for organizing transactions representing payments to suppliers
