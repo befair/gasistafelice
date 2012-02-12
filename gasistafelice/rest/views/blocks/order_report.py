@@ -7,7 +7,8 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.order import GASSupplierOrderProductForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
+from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -84,7 +85,9 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         #return request.resource.stocks
         # GASSupplierOrderProduct objects
-        return request.resource.orderable_products.filter(gasmember_order_set__ordered_amount__gt=0).distinct()
+        return request.resource.orderable_products.filter(
+            gasmember_order_set__ordered_amount__gt=0
+        ).distinct()
 
     def _get_resource_families(self, request):
         return request.resource.ordered_products
@@ -92,9 +95,8 @@ class Block(BlockSSDataTables):
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
         return formset_factory(
-                    form=GASSupplierOrderProductForm,
-                    formset=BaseFormSetWithRequest,
-                    extra=qs.count()
+            form=GASSupplierOrderProductForm,
+            extra=qs.count()
         )
 
     def _get_records(self, request, querySet):
@@ -104,7 +106,7 @@ class Block(BlockSSDataTables):
         i = 0
         c = querySet.count()
         map_info = { }
-        av = False
+        av = True
 
         for i,el in enumerate(querySet):
 
@@ -120,7 +122,7 @@ class Block(BlockSSDataTables):
         data['form-INITIAL_FORMS'] = c #0
         data['form-MAX_NUM_FORMS'] = 0
 
-        formset = self._get_edit_multiple_form_class()(request, data)
+        formset = self._get_edit_multiple_form_class()(data)
 
         records = []
         for i, el in enumerate(querySet):

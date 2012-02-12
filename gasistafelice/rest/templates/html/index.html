@@ -666,7 +666,7 @@
             //
             var blocks_scripts_to_load = new Array()
             for (var b=0; b < blocks_config.length; b++) {
-                if ($.inArray(blocks_config[b].block_name, blocks_scripts_to_load)<0)
+                if ($.inArray(blocks_config[b].block_name, blocks_scripts_to_load) < 0)
                     blocks_scripts_to_load.push(blocks_config[b].block_name)
             }        
             
@@ -685,17 +685,23 @@
         
                         var block_box_id = 'block_' + jQuery.app + '_' + block.block_urn.replace(/\//g, '_') + 'box';    // MAIN BLOCK HTML ELEMENT                        
                         
-                        render_block_and_start_autorefresh_timer(block.block_name, block.block_urn, block.refresh_rate, block_box_id);
-
                         // Load control panel for each block
-                        // fero - copied some code from doUpdate
+                        // COMMENT LF: copied some code from doUpdate
+                        // COMMENT LF: needed some "fashion code" setting block_box_id
+                        // COMMENT LF: refactory need to block_init_load and set 
+                        // COMMENT LF: block_box_id and block_url in block_obj
                         var visible  = get_block_attribute(block.block_name, 'show');
                         if ( visible == undefined ) {
                             visible = "false";
                             if (block.start_open != "false") visible = "true";
                         }
-                        if (visible == "true") 
+                        if (visible == "true") {
+                            jQuery.BLOCKS[block.block_name].block_box_id = block_box_id;
                             jQuery.BLOCKS[block.block_name].get_control_panel();
+                        }
+
+                        render_block_and_start_autorefresh_timer(block.block_name, block.block_urn, block.refresh_rate, block_box_id);
+
                     }            
                 });
             }
@@ -1477,7 +1483,7 @@
                     minute: 0,
                     hourGrid: 4,
                     minuteGrid: 15,
-                    timeFormat: 'h:m',
+                    timeFormat: 'h:mm',
                 });
                         
                 // Move user focus on the datepicker
@@ -1490,17 +1496,15 @@
           try{
             $.get('{% url rest.views.user_urns %}', function(data) {
                 var user_urns = $.JSON.parse(data);
-                if (user_urns.length == 0) {
-                    alert('BUG: user with no urn cannot be logged in!');
-                } else {
-                    var i = 0;
-                    for (var j=0; j<user_urns.length; j++) {
-                        i++;
-                        new_user_urn = user_urns[j];
-                        //alert('init_user_urns_list ' + new_user_urn);
-                        opt_name = new_user_urn["name"];
-                        opt_url = new_user_urn["urn"];
-                        opt_type = opt_url.slice(0, opt_url.indexOf("/")) 
+                var i = 0;
+                for (var j=0; j<user_urns.length; j++) {
+                    i++;
+                    new_user_urn = user_urns[j];
+                    //alert('init_user_urns_list ' + new_user_urn);
+                    var opt_url = new_user_urn["urn"];
+                    var opt_type = opt_url.slice(0, opt_url.indexOf("/")); 
+                    if ($('#user_urn_'+opt_type) != undefined) {
+                        var opt_name = new_user_urn["name"];
                         var res = new jQuery.Resource(opt_url, opt_name).render();
                         var li = "<li>" + res + "</li>";
                         //if (i > 1) { r = '  |  ' + r; }
@@ -2087,11 +2091,11 @@
                     {% trans 'Welcome,' %}
                     <span id="user_name" class="user"></span>! 
                     <span id="user_data">
+                        <span id="user_urn_gasmember" class="menu_section" style="display:none">
+                            <h3>Ordinare</h3>
+                            <ul class="submenu"> </ul>
+                        </span>
                         <span id="user_urn">
-                            <span id="user_urn_gasmember" class="menu_section" style="display:none">
-                                <h3>I tuoi ordini</h3>
-                                <ul class="submenu"> </ul>
-                            </span>
                             <span id="user_urn_gas" class="menu_section" style="display:none">
                                 <h3>GAS</h3>
                                 <ul class="submenu"> </ul>

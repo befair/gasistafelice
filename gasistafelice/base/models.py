@@ -164,6 +164,8 @@ class Resource(object):
     @property
     def created_by(self):
         """Returns user that created the resource."""
+        #COMMENT fero: disabled user in history!
+        return User.objects.none()
        
         # There could be the case that a deleted id is reused, so, do not use .get method
         self_as_of_creation = \
@@ -183,6 +185,9 @@ class Resource(object):
     def last_update_by(self):
         """Returns user that has made the last update to the resource."""
        
+        #COMMENT fero: disabled user in history!
+        return User.objects.none()
+
         # There could be the case that a deleted id is reused, so, do not use .get method
         try:
             self_as_of_last_update = \
@@ -260,6 +265,9 @@ class Resource(object):
     @property
     def des(self):
         """Return the DES instance bound to the resource"""
+        from gasistafelice.des.models import Siteattr
+        return Siteattr.get_site()
+
         raise NotImplementedError("class: %s method: des" % self.__class__.__name__)
 
     @property
@@ -641,9 +649,20 @@ class Person(models.Model, PermissionResource):
     
     @property
     def pacts(self):
-        # TODO: what pacts are associated to a Person ?
-        pass
-    
+        """
+        A person is related to:
+        pacts signed with a GAS he/she belongs to
+        """
+        from gasistafelice.gas.models import GASSupplierSolidalPact
+        # initialize the return QuerySet 
+        qs = GASSupplierSolidalPact.objects.none()
+        
+        #add the suppliers who have signed a pact with a GAS this person belongs to
+        for gas in self.gas_list:
+            qs = qs | gas.pacts
+
+        return qs
+
     @property
     def suppliers(self):
         #TODO UNITTEST
@@ -920,10 +939,11 @@ class Place(models.Model, PermissionResource):
 
         self.zipcode = self.zipcode.strip()
         if self.zipcode:
-            try:
-                int(self.zipcode)
-            except ValueError:
-                raise ValidationError(_("Wrong ZIP CODE provided"))
+            if settings.VALIDATE_NUMERICAL_ZIPCODES:
+                try:
+                    int(self.zipcode)
+                except ValueError:
+                    raise ValidationError(_("Wrong ZIP CODE provided"))
 
         self.description = self.description.strip()
 
@@ -1100,6 +1120,7 @@ from django.contrib.auth.models import Group, Permission
 # groups for users
 GROUP_TECHS = "techs"
 GROUP_SUPPLIERS = "suppliers"
+GROUP_REFERRER_SUPPLIERS = "gas_referrer_suppliers"
 GROUP_USERS = "users"
 GROUP_MEMBERS = "gasmembers"
 
@@ -1116,6 +1137,7 @@ def init_perms_for_groups():
     
     g_techs = Group.objects.get(name=GROUP_TECHS)
     g_suppliers = Group.objects.get(name=GROUP_SUPPLIERS)
+    g_referrers_suppliers = Group.objects.get(name=GROUP_REFERRER_SUPPLIERS)
     g_gasmembers = Group.objects.get(name=GROUP_MEMBERS)
 
     techs_perms_d = {
@@ -1130,7 +1152,7 @@ def init_perms_for_groups():
         ProductCategory : ('add', 'change', 'delete'),
         SupplierStock : ('add', 'change', 'delete'),
         Product : ('add', 'change', 'delete'),
-        Supplier : ('add', 'change', 'delete'),
+        Supplier : ('add', 'change'),
         User : ('change',),
     }
 
@@ -1145,6 +1167,10 @@ def init_perms_for_groups():
         Supplier : ('change',),
     }
 
+    gas_referrer_supplier_perms_d = supplier_perms_d.update({
+        Supplier : ('add', 'change'),
+    })
+
     gm_perms_d = {
         Person : ('change',),
         Place : ('add', 'change',),
@@ -1154,6 +1180,7 @@ def init_perms_for_groups():
     group_perms_d_tuples = (
         (g_techs , techs_perms_d),
         (g_suppliers , supplier_perms_d),
+        (g_referrers_suppliers , gas_referrer_supplier_perms_d),
         (g_gasmembers , gm_perms_d),
     )
 
@@ -1181,6 +1208,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
 
         g_techs, created = Group.objects.get_or_create(name=GROUP_TECHS)
         g_suppliers, created = Group.objects.get_or_create(name=GROUP_SUPPLIERS)
+        g_referrers_suppliers, created = Group.objects.get_or_create(name=GROUP_REFERRER_SUPPLIERS)
         g_gasmembers, created = Group.objects.get_or_create(name=GROUP_MEMBERS)
 
         if created:
@@ -1191,7 +1219,7 @@ def setup_data_handler(sender, instance, created, **kwargs):
 
         role_group_map = {
             GAS_MEMBER : g_gasmembers,
-            GAS_REFERRER_SUPPLIER : g_suppliers,
+            GAS_REFERRER_SUPPLIER : g_referrers_suppliers,
             SUPPLIER_REFERRER : g_suppliers,
             GAS_REFERRER_TECH : g_techs,
         }

@@ -1,3 +1,27 @@
+04.02.2012 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.7-beta1
+    * NEWS
+
+        * Pianificazione ordini!
+        * Attivazione e disattivazione utenti (scheda "Admin" 
+          per i referenti informatici dei GAS)
+        * Messaggi all'utente nei moduli di creazione/modifica
+
+    * MIGLIORAMENTI
+
+        * Nome e visualizzazione di un ordine
+        * Alcune tabelle
+        * Visualizzazione messaggi in testa ai moduli di creazione/modifica
+
+    * FIX
+
+        * ricarica gasista (problema segnalato dai GAS in sperimentazione)
+        * alert "no user urns"
+        * permessi per aggiungi/modifica prodotti e fornitori
+        * aggiornamento automatico listini GAS su creazione/modifica prodotti
+        * sostituti un po' di "gassista" con "gasista"
+
 26.01.2012 Luca Ferroni <luca@befair.it>
 
     * Autoselezione ordine nella pagina di ordine quando il GAS vuole ordinare

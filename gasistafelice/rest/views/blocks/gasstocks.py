@@ -11,6 +11,9 @@ from gasistafelice.gas.forms.stocks import GASSupplierStockFormSet
 
 from flexi_auth.models import ObjectWithContext
 
+import logging
+log = logging.getLogger(__name__)
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#

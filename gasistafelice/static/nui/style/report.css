@@ -199,5 +199,7 @@
 .empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
 .taright{text-align:right;vertical-align:middle;}
 .taright th{margin-right:17px; padding-right:17px;}
-.tacenter{text-align:center;}
+.tacenter{text-align:center;vertical-align:middle;}
 .alert{color:red!important; background-color:#EAF5E2!important;}
+.dataTable tr td{vertical-align:middle;}
+th.taright{text-align:left;}

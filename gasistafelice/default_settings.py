@@ -358,7 +358,9 @@ ENABLE_OLAP_REPORTS = False
 
 DATE_FMT = "%d/%m/%Y"
 LONG_DATE_FMT = "%A %d %B %Y"
-MEDIUM_DATETIME_FMT = "%a %d %b %Y %H:%M"
+MEDIUM_DATE_FMT = "%a %d %b"
+MEDIUM_DATETIME_FMT = "%a %d %b %H:%M"
+LONG_DATETIME_FMT = "%A %d %B %Y %H:%M"
 
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #DOMTHU:
@@ -367,6 +369,14 @@ locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #locale.setlocale(locale.LC_ALL, 'it_IT')   #by default is .ISO8859-1
 #locale.setlocale(locale.LC_ALL, ('it_IT', 'ISO-8859-1'))
 #locale.setlocale(locale.LC_ALL, ('it_IT', '1252'))
+
+# From: http://en.wikipedia.org/wiki/Postal_code
+# A postal code (known in various countries as a post code, postcode, or ZIP code)
+# is a series of letters and/or digits appended to a postal address for the purpose of sorting mail.
+#
+# DES is a usually a small land, so limit postal codes to validate only if int(zipcode) succeed
+# could be a good practice
+VALIDATE_NUMERICAL_ZIPCODES = True
 
 INIT_OPTIONS = {
     'domain' : "ordini.desmacerata.it",

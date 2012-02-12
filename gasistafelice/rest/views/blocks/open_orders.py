@@ -23,7 +23,9 @@ class Block(BlockWithList):
     TEMPLATE_RESOURCE_LIST = "blocks/open_orders.xml"
 
     def _get_add_form_class(self):
-        return order_forms.form_class_factory_for_request(self.request, base=order_forms.AddOrderForm)
+        return order_forms.form_class_factory_for_request(
+            self.request, base=order_forms.AddPlannedOrderForm
+        )
 
     def _get_resource_list(self, request):
         return request.resource.orders.open()

@@ -47,7 +47,7 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                                   },
                     },
                     { "sType": "currency", "sClass": "taright", "sWidth": "10%","bSearchable":false },
-                    {"sWidth": "5%","bSearchable":false,"bSortable":false},
+                    {"sWidth": "5%","bSearchable":false,"bSortable":false, "sClass": "tacenter"},
                     {"bSortable":false, "sClass": "taright", "sWidth": "15%","bSearchable":false, 
                       "fnRender": function ( oObj ) {
                                     var step = $(oObj.aData[iQta]).attr('step');
@@ -60,8 +60,8 @@ jQuery.UIBlockBasketList = jQuery.UIBlockWithList.extend({
                                   },
                      },
                     { "sType": "currency","bSortable":false, "sClass": "taright", "sWidth": "10%","bSearchable":false },
-                    {"sWidth": "5%","bSearchable":false,"bSortable":false},
-                    {"sWidth": "5%","bSearchable":false,"bSortable":false},
+                    {"sWidth": "5%","bSearchable":false,"bSortable":false, "sClass": "tacenter"},
+                    {"sWidth": "5%","bSearchable":false,"bSortable":false, "sClass": "tacenter"},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

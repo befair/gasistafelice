@@ -1,9 +1,9 @@
 
-jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
+jQuery.UIBlockOrderCurtail = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("curtail", "table");
-        this.submit_name = "Decurta conto gassista per un dato ordine";
+        this.submit_name = "Decurta conto gasista per un dato ordine";
     },
         //this.active_view = "edit_multiple";
         //this.default_view = this.active_view;
@@ -23,9 +23,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "50%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
-                    { "sWidth": "20%", "bSortable" : false, "bSearchable" : false
-                        , "sClass": "input_payment taright"
-                    },
+                    { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "input_payment taright" }
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -39,18 +37,20 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     var iOrdered = 0;
                     var iTotal = 0;
                     var tmp = '';
-                    var idstr = 'text'
-                    for ( var i=0 ; i<aaData.length ; i++ )
-                    {
+                    var idstr = 'text';
+                    var i;
+                    for (i=0; i<aaData.length; i++) {
+
                         iTotal += parseFloat(aaData[i][iTot].substr(8).replace(',','.'));
-                        tmp = aaData[i][iTot+1].replace(',','.')
+                        tmp = aaData[i][iTot+1].replace(',','.');
+
                         if (tmp != '') {
                             if (tmp.indexOf(idstr) > 0) {
-                                tmp = tmp.slice(tmp.lastIndexOf(idstr))
-                                tmp = tmp.slice(tmp.indexOf('value="'))
-                                tmp = tmp.slice(tmp.indexOf('"') + 1)
-                                tmp = tmp.substr(0, tmp.indexOf('"'))
-                                tmp = tmp.replace(',','.')
+                                tmp = tmp.slice(tmp.lastIndexOf(idstr));
+                                tmp = tmp.slice(tmp.indexOf('value="'));
+                                tmp = tmp.slice(tmp.indexOf('"') + 1);
+                                tmp = tmp.substr(0, tmp.indexOf('"'));
+                                tmp = tmp.replace(',','.');
                                 //el = $(nRow.cells[3]).next('input') tmp = el.val();
                             }
                             iOrdered += parseFloat(tmp);
@@ -63,18 +63,21 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     $(nCells[2]).html('&#8364; ' + String(GetRoundedFloat(iOrdered)).replace('.',','));
 
                     if (iTotal != iOrdered) {
-                        sinit1 = '<font color="#green">   '
-                        sinit2 = '<font color="#red">   '
-                        if (iTotal > iOrdered)
+                        sinit1 = '<font color="#green">   ';
+                        sinit2 = '<font color="#red">   ';
+                        if (iTotal > iOrdered) {
                             sinit = sinit1;
-                        else
+                        } else {
                             sinit = sinit2;
-                        send = '</font>'
+                        }
+                        send = '</font>';
                         tmp = $(nCells[0]).html();
-                        if (tmp.indexOf(sinit1) > 0) 
-                            tmp = tmp.substr(0, tmp.indexOf(sinit1))
-                        else if (tmp.indexOf(sinit2) > 0) 
-                            tmp = tmp.substr(0, tmp.indexOf(sinit2))
+                        if (tmp.indexOf(sinit1) > 0) {
+                            tmp = tmp.substr(0, tmp.indexOf(sinit1));
+                        }
+                        else if (tmp.indexOf(sinit2) > 0) {
+                            tmp = tmp.substr(0, tmp.indexOf(sinit2));
+                        }
                         $(nCells[0]).html(tmp + sinit + ' Diff. &#8364; ' + String(GetRoundedFloat(iTotal - iOrdered)).replace('.',',') + send);
                     }
                     /* Modify Django management form info */
@@ -97,5 +100,5 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS["curtail"] = new jQuery.UIBlockOrderReport();
+jQuery.BLOCKS["curtail"] = new jQuery.UIBlockOrderCurtail();
 

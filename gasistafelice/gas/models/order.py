@@ -55,6 +55,10 @@ trans_state_d = {
 }
 
 OF = _('of')
+AT = _('at')
+ON = _('on')
+FROM = _('from')
+TO = _('to')
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -67,25 +71,51 @@ class GASSupplierOrder(models.Model, PermissionResource):
     """
     
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
-    datetime_start = models.DateTimeField(verbose_name=_('Date open'), default=datetime.now, help_text=_("when the order will be opened"))
-    datetime_end = models.DateTimeField(verbose_name=_('Date close'), help_text=_("when the order will be closed"), null=True, blank=True)
+    datetime_start = models.DateTimeField(verbose_name=_('date open'), 
+        default=datetime.now, help_text=_("when the order will be opened")
+    )
+    datetime_end = models.DateTimeField(verbose_name=_('date close'), 
+        help_text=_("when the order will be closed"), null=True, blank=True
+    )
     # minimum economic amount for the GASSupplierOrder to be accepted by the Supplier  
-    order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), null=True, blank=True)
+    order_minimum_amount = CurrencyField(verbose_name=_('Minimum amount'), 
+        null=True, blank=True
+    )
     # Where and when Delivery occurs
-    delivery = models.ForeignKey('Delivery', verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True)
+    # FUTURE TODO: must be ManyToManyField
+    delivery = models.ForeignKey('Delivery', 
+        verbose_name=_('Delivery'), related_name="order_set", null=True, blank=True
+    )
+
     # Where and when Withdrawal occurs
-    withdrawal = models.ForeignKey('Withdrawal', verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True)
+    # FUTURE TODO: must be ManyToManyField
+    withdrawal = models.ForeignKey('Withdrawal', 
+        verbose_name=_('Withdrawal'), related_name="order_set", null=True, blank=True
+    )
 
     # Delivery cost. To be set after delivery has happened
     delivery_cost = CurrencyField(verbose_name=_('Delivery cost'), null=True, blank=True)
 
-    gasstock_set = models.ManyToManyField(GASSupplierStock, verbose_name=_('GAS supplier stock'), help_text=_("products available for the order"), blank=True, through='GASSupplierOrderProduct')
+    gasstock_set = models.ManyToManyField(GASSupplierStock, 
+        verbose_name=_('GAS supplier stock'), 
+        help_text=_("products available for the order"), 
+        blank=True, through='GASSupplierOrderProduct'
+    )
 
-    referrer_person = models.ForeignKey(Person, null=True, blank=True, related_name="order_set", verbose_name=_("order referrer"))
-    delivery_referrer_person = models.ForeignKey(Person, null=True, related_name="delivery_for_order_set", blank=True, verbose_name=_("delivery referrer"))
-    withdrawal_referrer_person = models.ForeignKey(Person, null=True, related_name="withdrawal_for_order_set", blank=True, verbose_name=_("withdrawal referrer"))
+    referrer_person = models.ForeignKey(Person, null=True, blank=True, 
+        related_name="order_set", verbose_name=_("order referrer")
+    )
+    delivery_referrer_person = models.ForeignKey(Person, 
+        null=True, related_name="delivery_for_order_set", blank=True, 
+        verbose_name=_("delivery referrer")
+    )
+    withdrawal_referrer_person = models.ForeignKey(Person, 
+        null=True, related_name="withdrawal_for_order_set", blank=True, 
+        verbose_name=_("withdrawal referrer")
+    )
 
-    group_id = models.PositiveIntegerField(verbose_name=_('Order group'), null=True, blank=True, 
+    group_id = models.PositiveIntegerField(verbose_name=_('Order group'), 
+        null=True, blank=True, 
         help_text=_("If not null this order is aggregate with orders from other GAS")
     )
 
@@ -109,6 +139,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         super(GASSupplierOrder, self).__init__(*args, **kw)
 
     def __unicode__(self):
+
+        # TODO domthu: translation for order state names!
 
         d = {}
 
@@ -181,6 +213,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     'order_num' : self.pk,
                     'ref' : ref
         }
+
+        if self.group_id:
+            rv += " --> InterGAS. %s" % (self.group_id)
         #if settings.DEBUG:
         #    rv += " [%s]" % self.pk
         return rv
@@ -211,9 +246,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             if t in get_allowed_transitions(self, user):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
 
-#                #20111212 02:00 prepare reccurent plan for order
-#FIXME: not done when using manual opening
-#                self.set_default_gasstock_set()
+                #20111212 02:00 prepare reccurent plan for order
+                #FIXME: not done when using manual opening. Do it using worflow change state handler
+                #WAS: self.set_default_gasstock_set()
 
                 self.do_transition(t, user)
 
@@ -315,7 +350,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         pact_refs = self.pact.referrers
         if not pact_refs:
             pact_refs = self.pact.gas.referrers
-        pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
+
+        #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
+        if self.referrer_person:
+            pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
         return pact_refs
 
     @property
@@ -350,6 +388,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 #            return
 
         gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
+        if gasstocks and gasstocks.count() > 0:
+            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set count: %s " % gasstocks.count())
+        else:
+            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set ?????? %s " % gasstocks)
         for s in gasstocks:
             #maybe works the more intuitive...self.orderable_product_set.add( ???
             GASSupplierOrderProduct.objects.create(order=self, 
@@ -750,7 +792,8 @@ WHERE order_id = %s \
 
         super(GASSupplierOrder, self).save(*args, **kw)
 
-#20111212 02:00 prepare reccurent plan for order
+        #KO: 20111212 02:00 prepare reccurent plan for order. 
+        # becasue Do not create gasstock if order state is prepared
         if created:
             self.set_default_gasstock_set()
 
@@ -939,7 +982,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     @property
     def stock(self):
         return self.gasstock.stock
-    
+
     def save(self, *args, **kw):
         """Sef default initial price"""
         if not self.pk:
@@ -1050,7 +1093,8 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def tot_price(self):
         """Ordered price per ordered amount for this ordered product"""
-        #FIXME: we have to use self.ordered_price instead of self.ordered_product.order_price?
+        #FIXME INVESTIGATE: we have to use self.ordered_price instead of self.ordered_product.order_price?
+        #HINT: self.ordered_price is a copy of the price of the ordered_product when gasmember ordered it...
         return self.ordered_product.order_price * self.ordered_amount
 
     @property
@@ -1060,6 +1104,14 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def product(self):
         return self.ordered_product.product
+
+    @property
+    def stock(self):
+        return self.ordered_product.stock
+
+    @property
+    def order(self):
+        return self.ordered_product.order
 
     @property
     def supplier(self):
@@ -1192,8 +1244,15 @@ class Delivery(Appointment, PermissionResource):
     associated with SupplierOrders issued by a given GAS (or Retina of GAS).  
     """
     
-    place = models.ForeignKey(Place, related_name="delivery_set", help_text=_("where the order will be delivered by supplier"),verbose_name=_('place'))
-    date = models.DateTimeField(help_text=_("when the order will be delivered by supplier"),verbose_name=_('date'))    
+    place = models.ForeignKey(Place, 
+        related_name="delivery_set", 
+        help_text=_("where the order will be delivered by supplier"),
+        verbose_name=_('place')
+    )
+    date = models.DateTimeField(
+        help_text=_("when the order will be delivered by supplier"),
+        verbose_name=_('date')
+    )    
 
     history = HistoricalRecords()
 
@@ -1203,7 +1262,11 @@ class Delivery(Appointment, PermissionResource):
         verbose_name_plural = _('deliveries')
         
     def __unicode__(self):
-        return "%(date)s at %(place)s" % {'date':self.date, 'place':self.place}
+        return u"%(date)s %(at)s %(place)s" % {
+            'date':long_date(self.date).capitalize(), 
+            'at': AT, 
+            'place':self.place
+        }
     
     @property
     def gas_list(self):
@@ -1329,11 +1392,17 @@ class Withdrawal(Appointment, PermissionResource):
     to their GASMembers goods they ordered issuing GASMemberOrders to the GAS/Retina.  
     """
     
-    place = models.ForeignKey(Place, related_name="withdrawal_set", help_text=_("where the order will be withdrawn by GAS members"))
+    place = models.ForeignKey(Place, 
+        related_name="withdrawal_set", 
+        help_text=_("where the order will be withdrawn by GAS members")
+    )
+
     #TODO FIXME AFTER 6th of september: 
     # * date should be Date field
     # * start_time and end_time (with no defaults) must be managed in forms
-    date = models.DateTimeField(help_text=_("when the order will be withdrawn by GAS members"))
+    date = models.DateTimeField(
+        help_text=_("when the order will be withdrawn by GAS members")
+    )
 
     # a Withdrawal appointment usually span a time interval
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
@@ -1347,11 +1416,13 @@ class Withdrawal(Appointment, PermissionResource):
         verbose_name_plural = _('wihtdrawals')
     
     def __unicode__(self):
-        return "At %(place)s on %(date)s from %(start_time)s to %(end_time)s" % {
+        return u"%(on)s %(date)s %(from)s %(start_time)s %(to)s %(end_time)s %(at)s %(place)s" % {
                     'start_time':self.start_time.strftime("%H:%M"), 
                     'end_time':self.end_time.strftime("%H:%M"), 
-                    'date':self.date.strftime("%d-%m-%Y"), 
-                    'place':self.place
+                    'date':long_date(self.date).capitalize(), 
+                    'place':self.place,
+                    'on' : ON, 'at': AT,
+                    'from' : FROM, 'to': TO,
         }
     
     

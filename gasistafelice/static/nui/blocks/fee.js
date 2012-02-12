@@ -3,7 +3,7 @@ jQuery.UIBlockFee = jQuery.UIBlockWithList.extend({
 
     init: function() {
         this._super("fee", "table");
-        this.submit_name = "GAS membri: pagamento quota annuale del gassista";
+        this.submit_name = "GAS membri: pagamento quota annuale del gasista";
     },
         //this.active_view = "edit_multiple";
         //this.default_view = this.active_view;
@@ -27,7 +27,7 @@ jQuery.UIBlockFee = jQuery.UIBlockWithList.extend({
                     { "sWidth": "30%", "bSortable" : true, "bSearchable" : true},
                     { "sWidth": "40%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
-                    { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
+                    { "sWidth": "10%", "bSortable" : false, "bSearchable" : false}
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

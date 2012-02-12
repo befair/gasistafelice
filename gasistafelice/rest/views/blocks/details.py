@@ -43,6 +43,9 @@ from gasistafelice.supplier.forms import SupplierRoleForm
 
 #from users.models import can_write_to_resource
 
+import logging
+log = logging.getLogger(__name__)
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -228,9 +231,22 @@ class Block(AbstractBlock):
             if form.is_valid():
                 form.save()
                 return self.response_success()
+            else:
+                try:
+                    #TODO fero
+                    form.write_down_messages()
+                except AttributeError as e:
+                    log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
+                    pass #don't worry for this exception...
                 
         else:
             form = form_class(request, instance=request.resource)
+            try:
+                #TODO fero
+                form.write_down_messages()
+            except AttributeError as e:
+                log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
+                pass #don't worry for this exception...
 
         fields = form.base_fields.keys()
         fieldsets = form_class.Meta.gf_fieldsets
@@ -318,7 +334,7 @@ class Block(AbstractBlock):
             element_type  = ''
             element_warning = ''    # 'on' will make the value look red
             
-            #print "DETTAGLIO PRE: ", type(c)
+            #log.debug("DETTAGLIO PRE: ", type(c))
             
             if isinstance(display_field, types.StringTypes) or isinstance(display_field, types.UnicodeType):
                 element_type  = 'str'

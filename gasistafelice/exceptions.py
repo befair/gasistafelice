@@ -4,3 +4,6 @@ class NoSenseException(Exception):
 
 class InvalidStateException(Exception):
     pass
+
+class DatabaseInconsistent(Exception):
+    pass

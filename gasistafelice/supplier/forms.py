@@ -96,10 +96,10 @@ class SingleSupplierStockForm(forms.Form):
             log.debug("New SingleSupplierStockForm")
 
 SingleSupplierStockFormSet = formset_factory(
-                                  form=SingleSupplierStockForm, 
-                                  formset=BaseFormSetWithRequest, 
-                                  extra=5,
-                              )
+    form=SingleSupplierStockForm, 
+    formset=BaseFormSetWithRequest, 
+    extra=5,
+)
 
 
 
@@ -144,6 +144,7 @@ class EditStockForm(forms.ModelForm):
         self.fields['product_muppu'].initial = self._product.muppu
         self.fields['product_vat_percent'].initial = int(self._product.vat_percent*100)
         self.fields['product_category'].initial = self._product.category
+        self.fields['availability'].initial = bool(request.resource.amount_available)
 
         # If Supplier is not the Producer ==>
         # can't change product info!
@@ -175,11 +176,12 @@ class EditStockForm(forms.ModelForm):
         return cleaned_data
 
     def save(self):
-        log.debug("Saving updated product: %s" % self.instance)
+        log.debug("Saving updated product: %s" % self.instance.__dict__)
         log.debug("cleaned data = %s" % self.cleaned_data)
         product = self.cleaned_data['product']
         product.save()
         self.instance.product = product
+        self.instance.amount_available = self.cleaned_data['amount_available']
         self.instance.save()
         
     class Meta:
@@ -223,6 +225,7 @@ class AddStockForm(EditStockForm):
         self.fields['product_name'].widget.attrs['class'] = 'input_medium'
         self.fields['product_description'].widget.attrs['class'] = 'input_long'
         self.fields['product_vat_percent'].initial = 20
+        self.fields['availability'].initial = True
 
 #        # If Supplier is not the Producer ==>
 #        # can't change product info!
@@ -232,7 +235,8 @@ class AddStockForm(EditStockForm):
 #                    self.fields[k].widget.attrs['disabled'] = 'disabled'
 
     def clean(self):
-        #AAA: super(EditStockForm IS RIGHT! Leave it here pls
+
+        #AAA fero: super(EditStockForm IS RIGHT! Leave it here pls
         cleaned_data = super(EditStockForm, self).clean()
         cleaned_data['supplier'] = self._supplier
         cleaned_data['amount_available'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
@@ -266,14 +270,11 @@ class AddStockForm(EditStockForm):
             price = self.cleaned_data['price'],
             units_minimum_amount = self.cleaned_data['units_minimum_amount'],
             units_per_box = self.cleaned_data['units_per_box'],
-            supplier = self._supplier
+            supplier = self._supplier,
+            code = self.cleaned_data.get('code'),
+            amount_available = self.cleaned_data['amount_available'],
+            supplier_category = self.cleaned_data.get('supplier_category')
         )
-        if self.cleaned_data.get('code'):
-            stock.code = self.cleaned_data['code']
-        if self.cleaned_data.get('amount_available'):
-            stock.amount_available = self.cleaned_data['amount_available']
-        if self.cleaned_data.get('supplier_category'):
-            stock.supplier_category = self.cleaned_data['supplier_category']
         stock.save()
         
 

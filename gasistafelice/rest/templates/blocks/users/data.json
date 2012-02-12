@@ -6,8 +6,13 @@
     [
 
         "{{ss.id|escapejs}}",
+        "{{ss.username|escapejs}}",
         "{{ss.first_name|escapejs}}",
         "{{ss.last_name|escapejs}}",
+        "{{ss.email|escapejs}}",
+        "{{ss.last_login|date:"Y b d H:i"}}",
+        "{{ss.date_joined|date:"Y b d H:i"}}",
+        "{% filter escapejs %}{% bool_img ss.is_staff %}{% endfilter %}",
         "{% filter escapejs %}{% bool_img ss.is_active %}{% endfilter %}",
 
     ]

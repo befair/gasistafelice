@@ -1,22 +1,46 @@
 
-
-TODO 20120126
+DONE
 ----
 
-* Nome dell'ordine secondo gli stati e tradurre
-* Tooltip risorse
-* Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS
 * Risolvere bug, NO USER URNS
+* Visualizzazione messaggi utente nelle form ove presenti
+* Nome dell'ordine secondo gli stati e tradurre
 
-* Vertical align "order_report"
+* TEST eseguiti:
+--> apri ordine
+--> modifica ordine
+--> apri ordine con pianificazione
+--> modifica report
+--> modifica paniere
+
+* Permessi per aggiungi/modifica prodotti
+* Fix aggiornamento automatico listini GAS su creazione/modifica prodotti
+* Formato orario
+
+DEVEL:
+
 * Resource API GMO.stock e sostituire 
 * Frequency_choices costante e in giorni
 * s/_qta/_amount
+
+TODO 20120405
+----
+
+* Sincronizza utenti forum
+* Link al forum in alto
+* Elimina prodotto
+* Tooltip risorse
+* Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS
+
+* Vertical align "order_report"
 * Informazioni aggiuntive blocco "users" registrazione, scheda "admin" nel GAS
 
 * Notifica su registrazione nuovo utente
 * Sistemare notifiche interne e via mail
 * Eliminazione ordini deve chiedere (vuoi eliminare questo o tutti i successivi?)
+
+* Se ad un ordine aperto modifico la data di apertura nel futuro, rimane aperto.
+  Impedire la modifica della data di apertura?
 
 APPUNTI
 -------

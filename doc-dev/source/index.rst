@@ -15,6 +15,7 @@ Contents:
    GUIDELINES 
    LICENSE
    devel
+   upgrades/UPGRADE_TO_0.7
 
 Indices and tables
 ==================

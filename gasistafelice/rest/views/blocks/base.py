@@ -28,6 +28,9 @@ from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.consts import CREATE, EDIT_MULTIPLE
 CREATE_PDF = "createpdf"
 
+import logging
+log = logging.getLogger(__name__)
+
 #from users.models import can_write_to_resource
 #------------------------------------------------------------------------------#
 # Actions                                                                      #
@@ -89,10 +92,23 @@ class BlockWithList(AbstractBlock):
             form = form_class(request, request.POST)
             if form.is_valid():
                 form.save()
-                return HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (request.resource.resource_type, request.resource.pk))
+                return self.response_success()
                 
+            else:
+                try:
+                    #TODO-not-a-priority fero
+                    form.write_down_messages()
+                except AttributeError as e:
+                    log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
+                    pass #don't worry for this exception...
         else:
             form = form_class(request)
+            try:
+                #TODO-not-a-priority fero
+                form.write_down_messages()
+            except AttributeError as e:
+                log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
+                pass #don't worry for this exception...
 
         fields = form.base_fields.keys()
         fieldsets = form_class.Meta.gf_fieldsets
@@ -222,7 +238,16 @@ class BlockSSDataTables(BlockWithList):
             if request.method == 'POST':
 
                 form_class = self._get_edit_multiple_form_class()
-                formset = form_class(request, request.POST)
+                try:
+                    formset = form_class(request, request.POST)
+                except AttributeError as e:
+                    # TODO-not-a-priority: fero ... thinking about it....
+                    # NOTE fero: Form refactory neeeded: 'WSGIRequest' object has no attribute 'get'
+                    # NOTE fero: Following NOTES-FERO we will do: 
+                    # NOTE fero: if isinstance(form_class, FormRequestWrapper)
+                    # NOTE fero:    f = form_class(request, request.POST)
+                    # NOTE fero:    formset = f.form
+                    formset = form_class(request.POST)
 
                 if formset.is_valid():
                     with transaction.commit_on_success():

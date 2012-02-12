@@ -83,23 +83,26 @@ class Block(BlockSSDataTables):
             ),
         ]
 
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-            user_actions += [
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"),
-                    popup_form=False,
-                    method="get",
-                ),
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
-                    popup_form=False,
-                    method="get",
-                ),
-            ]
+# COMMENT fero: disabled because it does not work 
+# COMMENT fero: (calls Supplier.product which is a no-sense, probably Supplier.products?)
+# COMMENT fero: but also for needs to change SupplierForm in SingleSupplierForm (a row in formset)
+#        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+#            user_actions += [
+#                ResourceBlockAction(
+#                    block_name = self.BLOCK_NAME,
+#                    resource = request.resource,
+#                    name=VIEW, verbose_name=_("Show"),
+#                    popup_form=False,
+#                    method="get",
+#                ),
+#                ResourceBlockAction(
+#                    block_name = self.BLOCK_NAME,
+#                    resource = request.resource,
+#                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
+#                    popup_form=False,
+#                    method="get",
+#                ),
+#            ]
         return user_actions
 
     def _get_resource_list(self, request):

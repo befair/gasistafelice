@@ -21,13 +21,18 @@ class Block(BlockSSDataTables):
 
     BLOCK_NAME = "users"
     BLOCK_DESCRIPTION = _("Users")
-    BLOCK_VALID_RESOURCE_TYPES = ["gas"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
-    COLUMN_INDEX_NAME_MAP = { 
+    COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
-        1: 'first_name',
-        2: 'last_name',
-        3: 'is_active'
+        1: 'username',
+        2: 'first_name',
+        3: 'last_name',
+        4: 'email',
+        5: 'last_login',
+        6: 'date_joined',
+        7: 'is_active',
+        8: 'is_staff'
     }
 
     def _get_user_actions(self, request):
@@ -92,8 +97,8 @@ class Block(BlockSSDataTables):
 
             map_info[el.pk] = {'formset_index' : i}
 
-        data['form-TOTAL_FORMS'] = c #i 
-        data['form-INITIAL_FORMS'] = c #0
+        data['form-TOTAL_FORMS'] = c
+        data['form-INITIAL_FORMS'] = c
         data['form-MAX_NUM_FORMS'] = 0
 
         formset = self._get_edit_multiple_form_class()(request, data)
@@ -105,8 +110,13 @@ class Block(BlockSSDataTables):
 
             records.append({
                'id' : "%s %s" % (form['pk'], form['id']),
+                'username' : el.username,
                 'first_name' : el.first_name,
                 'last_name' : el.last_name,
+                'email' : el.email,
+                'last_login' : el.last_login,
+                'date_joined' : el.date_joined,
+                'is_staff' : el.is_staff,
                 'is_active' : form['is_active'],
             })
 

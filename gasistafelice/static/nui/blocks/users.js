@@ -29,10 +29,15 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
+                    {"bSearchable":true,"bSortable":true,"sWidth":"4%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"40%"},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"40%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"17%"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"17%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

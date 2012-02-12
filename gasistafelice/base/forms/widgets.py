@@ -86,20 +86,20 @@ class MultiContactWidget(forms.MultiWidget):
         return self.num_contacts
 
     def decompress(self, value):
-        #print("Compress a MultiContactWidget. Value =", value)
+        #log.debug("Compress a MultiContactWidget. Value =", value)
         if value:
 
             contact_id_set = value
             contacts = []
             for curr_id in contact_id_set:
                 if curr_id.isdigit():
-                    #print("Search pk=",curr_id)
+                    #log.debug("Search pk=",curr_id)
                     contact_found = Contact.objects.filter(pk=curr_id)
-                    #print("Found=",contact_found)
+                    #log.debug("Found=",contact_found)
                     if contact_found != None:
                         contacts.append(contact_found)
             
-            #print("All contacts=",contacts)
+            #log.debug("All contacts=",contacts)
             return contacts
         else:
             return ''

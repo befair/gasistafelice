@@ -42,13 +42,20 @@ jQuery.Resource = Class.extend({
         if (this.name == undefined) {
             alert(gettext('Please provide a name for this resource before rendering it'));
         }
-        var res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
+        var res = "";
 
-        res = res.replace(/@@resource_type@@/g, this.type);
-        res = res.replace(/@@name@@/g, this.name);
-        res = res.replace(/@@urn@@/g,  this.urn);
-        res = res.replace(/@@url@@/g, this.url);
-        return res
+        //AAAAA FIXME TODO: ancora non è implementata la pagina della risorsa categoria
+        //TOGLIERE L'IF QUANDO SARà IMPLEMENTATA
+        if ((this.type == 'productcategory')|| (this.type == 'delivery')|| (this.type == 'withdrawal')) { 
+            res = this.name;
+        } else {
+            res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
+            res = res.replace(/@@resource_type@@/g, this.type);
+            res = res.replace(/@@name@@/g, this.name);
+            res = res.replace(/@@urn@@/g,  this.urn);
+            res = res.replace(/@@url@@/g, this.url);
+        }
+        return res;
     },
 
 });
@@ -83,12 +90,17 @@ jQuery.UIBlock = Class.extend({
 
     get_control_panel: function() {
         
-        var block_obj = this;
+        var block_el = $('#' + this.block_box_id);
+        var block_urn = block_el.attr('block_urn');
+        this.url = jQuery.pre + jQuery.app + '/' + block_urn;
         
+        var block_obj = this;
+
         $.ajax({
             type:'GET',
             url: block_obj.url + 'options',
             dataType: 'xml',
+            async: false,
             complete: function(r, s){
                 
                 if (s == "success") {
@@ -96,6 +108,7 @@ jQuery.UIBlock = Class.extend({
                     var jQel = jQuery(jQuery.parseXml(r.responseText));
                     if (jQel.children('error').length > 0)
                         return jQel.text()
+
 
                     if (jQel.find('field').length) {
                         var form_container = $('<div class="opt_content_div"><form id="'+ block_obj.block_name + '-options_form">\n</form></div>');
@@ -117,10 +130,11 @@ jQuery.UIBlock = Class.extend({
                             }
                             
                             var checked = '';
-                            if (_ft == 'checkbox')
+                            if ((_ft == 'checkbox')||(_ft == 'radio')) {
                                 var _fchk = $(this).children('value').attr('xselected');
                                 if (_fchk == 'True')
                                     checked = 'checked="checked"';
+                            }
                             
                             if(_ft != 'select')
                                 form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+"</label></td></tr>" );
@@ -128,19 +142,22 @@ jQuery.UIBlock = Class.extend({
                                 form.append("<tr><td><label>"+_fl+":</label></td><td><select name='gfCP_"+_fv+"'></select></td></tr>" );
                         });
 
-                        block_obj.block_el.prev('.block_control_panel').html(form_container);
+                        //KO: block_el.prev('.block_control_panel').html(form_container);
+                        //    because block is not in page yet!
+                        block_el.find('.block_control_panel').first().html(form_container);
 
-                        block_obj.block_el.parent().find('.opt_content_div input').each( function () {
+                        block_el.parent().find('.opt_content_div input').each( function () {
                             $(this).change(function (e) {
                                 block_obj.extra_queryString = $('#'+ block_obj.block_name + '-options_form').serialize();
                                 block_obj.update_handler(block_obj.block_box_id);
                             })
+                            block_obj.extra_queryString = $('#'+ block_obj.block_name + '-options_form').serialize();
                         });
 
                       }
                 }
                 else {
-                    block_obj.block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
+                    block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
                 }
             }
         });	
@@ -496,13 +513,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
                 
-                //AAAAA FIXME TODO: ancora non è implementata la pagina della risorsa categoria
-                //TOGLIERE L'IF QUANDO SARà IMPLEMENTATA
-                if (urn.split('/')[0] == 'productcategory') { 
-                    a = a.replace(/@@resource@@/g, name);
-                } else {
-                    a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
-                }
+                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
 
                 var actions = '';
                 var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
@@ -543,7 +554,8 @@ jQuery.retrieve_form = function (action_el) {
     var action_name = action_el.val();
     var action_url = action_el.attr("url");
 	
-    var form_html = "";
+    var jqForm = "";
+    var jqMessagelist = "";
     var form_script = "";
 
     var url = action_url;
@@ -552,9 +564,10 @@ jQuery.retrieve_form = function (action_el) {
         url : action_url, 
         success : function(d){
 
-            form_html = $(d).find('form');
-            form_html.attr('action', action_url);
-            form_html.find('.submit-row').each( function () { $(this).remove();});
+            jqMessagelist = $(d).find('.messagelist');
+            jqForm = $(d).find('form');
+            jqForm.attr('action', action_url);
+            jqForm.find('.submit-row').each( function () { $(this).remove();});
             form_script = $(d).find('script');
         },
         async : false,
@@ -567,11 +580,12 @@ jQuery.retrieve_form = function (action_el) {
 	var options = { 
 		success : function (responseText, statusText)  { 
             if (responseText.match('class="errorlist"')) {
-                form_html = $(responseText).find('form');
-                form_html.attr('action', action_url);
-                form_html.find('.submit-row').each( function () { $(this).remove();});
+                jqMessagelist = $(responseText).find('.messagelist');
+                jqForm = $(responseText).find('form');
+                jqForm.attr('action', action_url);
+                jqForm.find('.submit-row').each( function () { $(this).remove();});
                 form_script = $(responseText).find('script');
-                $(NEW_NOTE_DIALOG).html(form_html);
+                $(NEW_NOTE_DIALOG).html(jqForm);
                 eval(form_script);
             } 
             else {
@@ -603,12 +617,13 @@ jQuery.retrieve_form = function (action_el) {
 	$(NEW_NOTE_DIALOG).dialog('destroy');
 	
 	$(NEW_NOTE_DIALOG).empty();
-	$(NEW_NOTE_DIALOG).append(form_html);
+	$(NEW_NOTE_DIALOG).append(jqMessagelist);
+	$(NEW_NOTE_DIALOG).append(jqForm);
     eval(form_script);
 	
 	var buttons = new Object();
 	buttons[gettext('Confirm')] = function() {
-		$(form_html).ajaxSubmit(options);
+		$(jqForm).ajaxSubmit(options);
 	};
 	
 	$(NEW_NOTE_DIALOG).dialog({

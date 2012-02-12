@@ -57,7 +57,7 @@ class EcoGASMemberForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(EcoGASMemberForm, self).clean()
-        print("cleaned_data %s" % cleaned_data)
+        log.debug("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError:
@@ -134,7 +134,7 @@ class EcoGASMemberRechargeForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(EcoGASMemberRechargeForm, self).clean()
-        print("cleaned_data %s" % cleaned_data)
+        log.debug("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError:
@@ -212,7 +212,7 @@ class EcoGASMemberFeeForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(EcoGASMemberFeeForm, self).clean()
-        print("cleaned_data %s" % cleaned_data)
+        log.debug("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError:
@@ -312,7 +312,7 @@ class InvoiceOrderForm(forms.Form):
 
         cleaned_data = super(InvoiceOrderForm, self).clean()
 #Domthu: only for test purpose
-#        print("cleaned_data %s" % cleaned_data)
+#        log.debug("cleaned_data %s" % cleaned_data)
 #        try:
 #            cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
 #        except KeyError:
@@ -343,7 +343,7 @@ class InvoiceOrderForm(forms.Form):
 
         self.__order.invoice_amount = self.cleaned_data['invoice_amount']
         self.__order.invoice_note = self.cleaned_data['note']
-        #print"Invoice amount %s---" % self.__order.invoice_amount
+        #log.debug("Invoice amount %s---" % self.__order.invoice_amount)
 
         try:
             self.__order.save()
@@ -352,7 +352,7 @@ class InvoiceOrderForm(forms.Form):
         else:
             #Update State if possible
             self.__order.control_economic_state()
-            #print"Invoice saved"
+            #log.debug("Invoice saved")
 
 #-------------------------------------------------------------------------------
 
@@ -424,7 +424,7 @@ class InsoluteOrderForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(InsoluteOrderForm, self).clean()
-        print("cleaned_data %s" % cleaned_data)
+        log.debug("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
         except KeyError:
@@ -462,7 +462,7 @@ class InsoluteOrderForm(forms.Form):
 
         p_amount = self.cleaned_data['insolute_amount']
         p_note = self.cleaned_data['note']
-        #print"insolute amount %s---" % p_amount
+        #log.debug("insolute amount %s---" % p_amount)
         #refs=[self.__order]
         refs=[]
         insolutes = self.cleaned_data['orders_to_pay']
@@ -482,7 +482,7 @@ class InsoluteOrderForm(forms.Form):
                 except ValueError, e:
                     log.debug("retry later " +  e.message)
                 else:
-                    #print"Insolute(%s) saved " % len(refs)
+                    #log.debug("Insolute(%s) saved " % len(refs))
                     for _order in refs:
                         #Update State if possible
                         _order.control_economic_state()
@@ -591,7 +591,7 @@ class BalanceGASForm(BalanceForm):
     def clean(self):
 
         cleaned_data = super(BalanceGASForm, self).clean()
-        print("cleaned_data %s" % cleaned_data)
+        log.debug("cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
         except KeyError:

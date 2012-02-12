@@ -77,7 +77,8 @@ def site_settings(request):
 def user_urns(request):
     """ Return all urn for utils links
 
-    [{"url": "gasmember/1", "name": "CAM - Dominique Thual (Castelraimondo) "}, {"url": "gas/1", "name": "Gas di Montagna(CAM)"}]
+    [{"url": "gasmember/1", "name": "CAM - Dominique Thual (Castelraimondo) "}, 
+     {"url": "gas/1", "name": "Gas di Montagna(CAM)"}]
     """
 
     rv = []

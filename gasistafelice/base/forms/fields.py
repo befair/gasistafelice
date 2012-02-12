@@ -63,7 +63,7 @@ class PlaceField(forms.MultiValueField):
             return ''
 
     def clean(self, data_list):
-        #print("Clean PlaceField, DL=",data_list)
+        #log.debug("Clean PlaceField, DL=",data_list)
         nameaddr = data_list[1]
         cap = data_list[2]
         city = data_list[3]
@@ -161,7 +161,7 @@ class MultiContactField(forms.MultiValueField):
                 
         if not email_found:
             # no email -> ValidationError
-            print("no email found")
+            log.debug("no email found")
             raise forms.ValidationError("At least an email contact expected")
         
         return super(MultiContactField, self).clean(value)
