@@ -13,10 +13,21 @@ from gasistafelice.rest.views.blocks import details
 
 from gasistafelice.lib.shortcuts import render_to_context_response
 
+#from gasistafelice.gas.forms.base import EditGasForm
+
 class Block(details.Block):
 
     BLOCK_NAME = "gas_details"
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
+
+    def get_description(self):
+        return _("Details about %(name)s") % {
+            'name' : self.resource.gas.name,
+        }
+
+    def _get_edit_form_class(self):
+        log.debug ("Loading my edit form class...")
+        return EditGasForm
 
     def _get_user_actions(self, request):
         """Who can edit GAS informations, has also the ability to configure it."""
@@ -36,7 +47,7 @@ class Block(details.Block):
             for i,act in enumerate(user_actions):
                 # Change URL for action EDIT, insert "configure" action
                 if act.name == EDIT:
-                   act.url = reverse('admin:gas_gas_change', args=(request.resource.pk,)) 
+#                   act.url = reverse('admin:gas_gas_change', args=(request.resource.pk,)) 
                    user_actions.insert(i+1, act_configure)
                    break
                    

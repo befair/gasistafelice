@@ -38,6 +38,7 @@ def index(request):
         'MEDIA_URL' : settings.MEDIA_URL,
         'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
     }
+    log.debug("before render_to_ctx")
     return render_to_context_response(request, "html/index.html", ctx)
     
 #---------------------------------------------------------------------#
@@ -191,6 +192,7 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
     
     response = ""
     
+    log.debug("view_factory:type = ",view_type);
     handler = load_block_handler(view_type)
     
     if (args != "options"):

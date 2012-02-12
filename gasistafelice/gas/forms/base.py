@@ -11,6 +11,8 @@ from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from gasistafelice.gas.models.base import GAS
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -105,3 +107,26 @@ class SingleUserForm(forms.Form):
             #ss = User()
             log.debug("New SingleUserForm")
 
+
+class BaseGasForm(forms.ModelForm):
+    pass
+
+class AddGasForm(BaseGasForm):
+    pass
+
+class EditGasForm(BaseGasForm):
+    pass
+# se commento la riga sopra, e de-commento la righe sotto, si vede
+# l'errore descritto nella mail
+#    name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
+#
+#    def __init__(self, request, *args, *kw):
+#        super(EditGasForm, self).__init__(*args, *kw)
+#
+#        model = self._meta.model
+#
+#    class Meta:
+#        model = GAS
+#        fields = (
+#            'name',
+#        )
