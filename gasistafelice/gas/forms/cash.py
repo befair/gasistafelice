@@ -586,7 +586,7 @@ class TransationGASForm(BalanceGASForm):
     def clean(self):
 
         cleaned_data = super(TransationGASForm, self).clean()
-        log.debug(u"TransationGASForm cleaned_data %s" % cleaned_data)
+        #log.debug(u"TransationGASForm cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
             cleaned_data['economic_target'] = cleaned_data['target']
