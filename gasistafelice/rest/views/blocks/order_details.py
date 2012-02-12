@@ -28,13 +28,17 @@ class Block(details.Block):
         #if refs and request.user in refs:
 
         # REMOVE programmatically managed transitions
-        for action in ['transition/make unpaid', 'transition/Close and send email']:
-            try:
-                for ua in user_actions:
-                    if ua.name == action:
-                        user_actions.remove(ua)
-            except ValueError:
-                pass
+        for ua in user_actions:
+            print ua.name
+            if ua.name == 'transition/make unpaid' or ua.name == 'transition/close and send email':
+                user_actions.remove(ua)
+#        for action in ['transition/make unpaid', 'transition/close and send email']:
+#            try:
+#                for ua in user_actions:
+#                    if ua.name == action:
+#                        user_actions.remove(ua)
+#            except ValueError:
+#                pass
 
         #FIXME: disabled actions until implemented
 
