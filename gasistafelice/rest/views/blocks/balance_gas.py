@@ -1,6 +1,6 @@
 """View for block details specialized for a GASSupplierOrder"""
 
-from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.http import HttpResponse
 from django.db import transaction
 
@@ -37,7 +37,7 @@ class Block(AbstractBlock):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
-                        name=INCOME, verbose_name=_("Account transaction"),
+                        name=INCOME, verbose_name=ug("Account transaction"),
                         popup_form=False,
                     ),
                 ]
@@ -63,8 +63,8 @@ class Block(AbstractBlock):
                                 form.save()
 #                                return self.response_success()
 
-                            except ValueError, e:
-                                msg = _("Transaction invoice ERROR: ") + e.message
+                            except Exception, e:
+                                msg = ug("Transaction invoice ERROR: ") + e.message
                                 #WAS return self.response_error(form.errors)
                                 #WAS form._errors.append(msg)
                                 #WAS form.ValidationError(_(msg))

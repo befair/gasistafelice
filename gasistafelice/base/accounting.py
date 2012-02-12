@@ -31,13 +31,11 @@ class PersonAccountingProxy(AccountingProxy):
             raise MalformedTransaction("A person can't pay membership fees to a GAS that (s)he is not member of")
         source_account = self.system['/wallet']
         exit_point = self.system['/expenses/gas/' + gas.uid + '/fees']
-        #FIXME: 'GAS' object has no attribute 'system
-        #SOLVED: Do not pass gas but gas.accounting(.system)
         entry_point =  gas.accounting.system['/incomes/fees']
         target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
         description = _("Year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
-        issuer = self.subject 
+        issuer = self.subject
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
 
