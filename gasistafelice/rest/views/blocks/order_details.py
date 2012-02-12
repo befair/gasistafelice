@@ -27,7 +27,8 @@ class Block(details.Block):
         #refs = [] #request.resource.cash_referrers
         #if refs and request.user in refs:
 
-        # REMOVE programmatically managed transitions
+        #UGLY: remove this code when send email transition is done. 
+        #REMOVE temporarly un-managed transitions
         for ua in user_actions:
             print ua.name
             if ua.name == 'transition/make unpaid' or ua.name == 'transition/close and send email':
