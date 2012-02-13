@@ -83,13 +83,13 @@ def user_urns(request):
     rv = []
     if request.user.is_superuser:
         
-        for obj in GASMember.objects.all():
+        for obj in GASMember.objects.all()[:30]:
             rv.append( obj.as_dict() )
-        for obj in GAS.objects.all():
+        for obj in GAS.objects.all()[:30]:
             rv.append( obj.as_dict() )
-        for obj in GASSupplierSolidalPact.objects.all():
+        for obj in GASSupplierSolidalPact.objects.all()[:30]:
             rv.append( obj.as_dict() )
-        for obj in Supplier.objects.all():
+        for obj in Supplier.objects.all()[:30]:
             rv.append( obj.as_dict() )
         
     else:
