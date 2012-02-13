@@ -122,6 +122,7 @@ class GasAccountingProxy(AccountingProxy):
         if not refs:
             refs = [order]
         yet_payed, description = self.get_supplier_order_data(order, refs)
+        #Insolute aggregated payment contain many orders that are payed in simultaneous. Refs must be a list of each order that are relative to this unique transaction
         if yet_payed <= 0:
             # pay supplier
             self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr)

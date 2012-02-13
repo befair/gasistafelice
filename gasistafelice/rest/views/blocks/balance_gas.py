@@ -7,8 +7,6 @@ from django.db import transaction
 from flexi_auth.models import ObjectWithContext
 
 from gasistafelice.lib.shortcuts import render_to_xml_response
-from gasistafelice.rest.views.blocks import details
-
 from gasistafelice.consts import CASH, INCOME
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
@@ -53,22 +51,20 @@ class Block(AbstractBlock):
             if request.method == 'POST':
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
                     form = TransationGASForm(request, request.POST)
-                else:
-                    form = BalanceGASForm(request, request.POST)
-                if form.is_valid():
-                    with transaction.commit_on_success():
-                        if form.cleaned_data:
-                            try:
+                    if form.is_valid():
+                        with transaction.commit_on_success():
+                            if form.cleaned_data:
+                                try:
 
-                                form.save()
-#                                return self.response_success()
+                                    form.save()
+    #                                return self.response_success()
 
-                            except Exception, e:
-                                msg = ug("Transaction invoice ERROR: ") + e.message
-                                #WAS return self.response_error(form.errors)
-                                #WAS form._errors.append(msg)
-                                #WAS form.ValidationError(_(msg))
-                                form._errors["amount"] = form.error_class([msg])
+                                except Exception, e:
+                                    msg = ug("Transaction invoice ERROR: ") + e.message
+                                    #WAS return self.response_error(form.errors)
+                                    #WAS form._errors.append(msg)
+                                    #WAS form.ValidationError(_(msg))
+                                    form._errors["amount"] = form.error_class([msg])
 
 #WAS: forms errors not rendered --> DO NOTHING render ctx for showing errors
 # return self.response_error(form.errors)

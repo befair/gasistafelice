@@ -271,11 +271,11 @@ EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class InvoiceOrderForm(forms.Form):
 
-    #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
-    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2,
-        error_messages={'required': _(u'You must insert an postive amount for the operation')}
+    #order_info = forms.CharField(label=ug('Information'), required=False, widget=widgets.TextInput())
+    amount = CurrencyField(label=ug('Invoice'), required=True, max_digits=8, decimal_places=2,
+        error_messages={'required': ug(u'You must insert an postive amount for the operation')}
     )
-    note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
+    note = forms.CharField(label=ug('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
@@ -359,18 +359,30 @@ class InvoiceOrderForm(forms.Form):
 
 class InsoluteOrderForm(forms.Form):
 
-#    orders2 = forms.ModelMultipleChoiceField(label=_("Insolute order(s)"), 
-#        queryset=GASSupplierOrder.objects.none(), required=True, widget=forms.CheckboxSelectMultiple
-#    )
-    orders = forms.MultipleChoiceField(label=_("Insolute order(s)"), required=True, widget=forms.CheckboxSelectMultiple)
-    amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
-    note = forms.CharField(label=_('Causale'), required=False, widget=forms.TextInput)
+    orders = forms.MultipleChoiceField(label=ug("Insolute order(s)"), required=True
+        , help_text = ug("Select one or multiple orders to pay in this operation.")
+        , widget=forms.CheckboxSelectMultiple
+    )
+
+    amount = CurrencyField(label=ug('Payment'), required=True, max_digits=8, decimal_places=2)
+
+    causal = forms.CharField(label=ug('Causal'), required=True, widget=forms.TextInput,
+        help_text = ug('Some indication about the payment: by bank or cash, bank number transaction...'), 
+        error_messages={'required': ug(u'You must declare the causal of this payment')}
+    )
+
+    date = forms.DateField(initial=date.today, required=True
+        , help_text = ug("Adjust the operation date if necesary")
+        , widget=DateFormatAwareWidget
+    )
+
 
     def __init__(self, request, *args, **kw):
 
+        log.debug("InsoluteOrderForm __init__")
         super(InsoluteOrderForm, self).__init__(*args, **kw)
 
-        #SOLIDAL PACT
+        #TODO: refactor for SOLIDAL PACT --> do not use order as ressource but insolutes
         self.__order = request.resource.order
         self.__gas = request.resource.gas
 
@@ -404,12 +416,12 @@ class InsoluteOrderForm(forms.Form):
             self.fields['orders'].choices = _choice
 
             #set order informations
-            stat = _("%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                 'fam'    : "%.2f" % round(tot_ordered, 2)
                 , 'fatt' : "%.2f" % round(tot_invoiced, 2)
                 , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
                 , 'state'  : self.__order.current_state.name
-            })
+            }
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
         self.fields['amount'].widget.attrs['class'] = 'input_payment'
@@ -423,25 +435,19 @@ class InsoluteOrderForm(forms.Form):
     def clean(self):
 
         cleaned_data = super(InsoluteOrderForm, self).clean()
-        log.debug(u"cleaned_data %s" % cleaned_data)
+        log.debug("InsoluteOrderForm cleaned_data %s" % cleaned_data)
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
-        except KeyError:
-            #FIXME: if no gmo we don't have to show button.
-            log.debug(u"InsoluteOrderForm: cannot retrieve order identifier. FORM ATTACK!")
-            raise
-
-        try:
             cleaned_data['orders_to_pay'] = cleaned_data['orders']
-        except KeyError:
-            log.debug(u"InsoluteOrderForm: cannot retrieve orders identifiers. FORM ATTACK!")
-            raise 
-           
+        except KeyError, e:
+            log.debug("InsoluteOrderForm: cannot retrieve orders identifiers: " + e.message)
+            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: " + e.message))
+
         return cleaned_data
 
     @transaction.commit_on_success
     def save(self):
-        #raise ValueError("prova")
+        raise ValueError("prova")
 
         #Do economic work
         if not self.__order:
@@ -459,9 +465,11 @@ class InsoluteOrderForm(forms.Form):
             log.debug(u"PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(ug(u"order is not in good state!"))
 
+        raise PermissionDenied(ug(u"TEST TEST order is not in good state!"))
+
         p_amount = self.cleaned_data['insolute_amount']
         p_note = self.cleaned_data['note']
-        #log.debug(u"insolute amount %s---" % p_amount)
+        log.debug(u"insolute amount %s---" % p_amount)
         #refs=[self.__order]
         refs=[]
         insolutes = self.cleaned_data['orders_to_pay']
@@ -475,15 +483,21 @@ class InsoluteOrderForm(forms.Form):
                 else:
                     if _ins and (_ins.is_unpaid() or _ins.is_closed()):
                         refs.append(_ins)
+
+            print "refs: %s " % refs
+            raise forms.ValidationError(_("TransationGASForm: cannot retrieve economic data: " + e.message))
+
             if len(refs) > 0:
                 try:
-                    self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
+                    #MAKE ONLY ONE TRANSACTION with the amount but the ref must contains all orders reference in order to matche this unique transcation
+#WAS                    self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
+                    self.__gas.accounting.pay_supplier_order(order=refs[0], amount=p_amount, descr=p_note, refs=refs)
                 except ValueError, e:
-                    log.debug("retry later " + e.message)
+                    log.debug(u"retry later " + e.message)
                 else:
-                    #log.debug(u"Insolute(%s) saved " % len(refs))
+                    log.debug(u"Insolute(%s) saved " % len(refs))
                     for _order in refs:
-                        #Update State if possible
+                        #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
                         _order.control_economic_state()
 
 
@@ -502,7 +516,7 @@ def get_eco_class(eco_state):
 
 class BalanceForm(forms.Form):
 
-    balance = CurrencyField(label=_('Balance'), required=False, max_digits=8, decimal_places=2)
+    balance = CurrencyField(label=ug('Balance'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
@@ -524,8 +538,8 @@ class BalanceForm(forms.Form):
 #LF: balance and wallet_*  are always read-only so they MUST NOT be included in form...
 class BalanceGASForm(BalanceForm):
 
-    wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
-    wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
+    wallet_gasmembers = CurrencyField(label=ug('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
+    wallet_suppliers = CurrencyField(label=ug('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
@@ -555,24 +569,24 @@ class BalanceGASForm(BalanceForm):
 #class TransationGASForm(forms.Form):
 class TransationGASForm(BalanceGASForm):
 
-    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
-        help_text = _('Insert the amount of money (no sign)'),
-        error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
+    amount = CurrencyField(label=ug('Operation'), required=True, max_digits=8, decimal_places=2,
+        help_text = ug('Insert the amount of money (no sign)'),
+        error_messages = {'required': ug('You must insert an postive or negative amount for the operation')}
     )
 
-    target = forms.ChoiceField(required=True,
-        choices = [(INCOME,_('Income: Event, Donate, Sponsor, Fund... +GAS')), (EXPENSE,_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))],
-        widget=forms.RadioSelect, help_text="define the type of the operation",
-        error_messages={'required': _('You must select the type of operation')}
+    target = forms.ChoiceField(required=True, 
+        choices = [(INCOME,ug('Income: Event, Donate, Sponsor, Fund... +GAS')), (EXPENSE,ug('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))],
+        widget=forms.RadioSelect, help_text = ug("define the type of the operation"),
+        error_messages={'required': ug('You must select the type of operation')}
     )
 
-    causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
-        help_text = _('Reason of the movement'),
-        error_messages={'required': _(u'You must declare the causal of this transaction')}
+    causal = forms.CharField(label=ug('Causal'), required=True, widget=forms.TextInput,
+        help_text = ug('Reason of the movement'),
+        error_messages={'required': ug(u'You must declare the causal of this transaction')}
     )
 
     date = forms.DateField(initial=date.today, required=True
-        , help_text=_("Adjust the operation date if necesary")
+        , help_text = ug("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
 
@@ -643,7 +657,7 @@ class TransationGASForm(BalanceGASForm):
 
 #-------------------------------------------------------------------------------
 
-#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _(u'You must select one pact (or create it in your GAS details if empty)')})
+#LF    pact = forms.ModelChoiceField(label=ug('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': ug(u'You must select one pact (or create it in your GAS details if empty)')})
 
 #LF        # SOLIDAL PACT
 #LF        pacts = request.resource.pacts
@@ -661,12 +675,13 @@ class TransationGASForm(BalanceGASForm):
 
 #-------------------------------------------------------------------------------
 
-#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=ug("Person"))
 
 #LF        # MEMBERS
 #LF        gms = request.resource.gasmembers
 #LF        if gms and gms.count() > 0:
 #LF            self.fields['person'].queryset = gms
 #LF
+
 
 
