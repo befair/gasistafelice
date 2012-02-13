@@ -5,6 +5,8 @@ from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.db import transaction
 from django.contrib.admin import widgets as admin_widgets
 
+from workflows.utils import set_initial_state
+
 from gasistafelice.gas.forms.order.base import AddOrderForm
 from gasistafelice.lib.widgets import DateFormatAwareWidget
 from gasistafelice.gas.models.order import GASSupplierOrder, Delivery
@@ -131,6 +133,7 @@ class AddPlannedOrderForm(AddOrderForm):
 
         new_obj = copy.copy(self.instance)
         new_obj.pk = None
+        set_initial_state(new_obj)
 
         return new_obj
 

@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.contrib.auth.models import User
 
 from workflows.models import Workflow, Transition
+from workflows.utils  import set_initial_state
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
 from history.models import HistoricalRecords
 
@@ -378,7 +379,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         At this time of the software development every Product bound to pact,
         and so to the GAS, are included in list of orderable products for this order. 
 
-        In future, we could have the ability to choice products one-by-one, but this is not
+        In future, we could have the ability to choose products one-by-one, but this is not
         our case now, so don't care about it.        
         '''
 
@@ -398,6 +399,19 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 gasstock=s, initial_price=s.price, order_price=s.price, 
                 delivered_price=s.price
             )
+
+    #--------------------------------------------------------------------------------
+
+    def revert_order(self, force=False):
+        """Can revert order to initial state.
+
+        Meant to be used just for debug or recovery situations"""
+
+        if not force:
+            return
+
+        self.gasstock_set.delete()
+        set_initial_state(self)
 
     def add_product(self, s):
         '''

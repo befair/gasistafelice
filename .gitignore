@@ -16,6 +16,7 @@ gasistafelice/fixtures/gas/import.json
 gasistafelice/fixtures/esupplier/import.json
 gasistafelice/fixtures/supplier/import.json
 *import.json
-gasistafelice/*.log
+*.log
+
 
 
