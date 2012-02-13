@@ -139,14 +139,13 @@ class BlockWithList(AbstractBlock):
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        self.request = request
-        self.resource = resource = request.resource
+        super(BlockWithList, self).get_response(request, resource_type, resource_id, args)
 
         if args == "":
 
             context = {
                 'block_type' : self.name,
-                'resource'   : resource,
+                'resource'   : self.resource,
                 'resource_list'   : self._get_resource_list(request),
                 'user_actions'    : self._get_user_actions(request),
             }
