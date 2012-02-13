@@ -25,13 +25,22 @@ MANAGERS = ADMINS
 #DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'desmc_forum',                      # Or path to database file if using sqlite3.
-        'USER': 'desadmin',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'forumdb',        
+        'USER': 'dbuserforum',         
+        'PASSWORD': '',           
+        'HOST': '',             
+        'PORT': '',           
+    },
+    'gasistafelice' : {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'gasistafelicedb',
+        'USER': 'userwhoreadauth_tables',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
+
 }
 
 
@@ -191,6 +200,7 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache_db'
 
 AUTHENTICATION_BACKENDS = (
+    'gasistafelice.auth_backend.GasistaFeliceBackend',
     'django.contrib.auth.backends.ModelBackend',
     'askbot.deps.django_authopenid.backends.AuthBackend',
 )
