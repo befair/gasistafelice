@@ -1599,6 +1599,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
         return acc_tot
 
+    @property
+    def insolutes(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        orders = GASSupplierOrder.objects.closed().filter(pact=self) | \
+            GASSupplierOrder.objects.unpaid().filter(pact=self)
+        return orders
 
 #------------------------------------------------------------------------------
 

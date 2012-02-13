@@ -24,7 +24,7 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.consts import (
         CASH,  #Permission
         GAS_MEMBER,  #Role
-        INCOME, EXPENSE  #Transactions
+        INCOME, EXPENSE, INVOICE_COLLECTION  #Transactions
 )
 
 from datetime import tzinfo, timedelta, datetime, date
@@ -485,7 +485,7 @@ class InsoluteOrderForm(forms.Form):
                         refs.append(_ins)
 
             print "refs: %s " % refs
-            raise forms.ValidationError(_("TransationGASForm: cannot retrieve economic data: " + e.message))
+            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: " + e.message))
 
             if len(refs) > 0:
                 try:
@@ -683,5 +683,153 @@ class TransationGASForm(BalanceGASForm):
 #LF            self.fields['person'].queryset = gms
 #LF
 
+#-------------------------------------------------------------------------------
 
+class TransationPACTForm(BalanceForm):
+
+    amount = CurrencyField(label=ug('Operation'), required=True, max_digits=8, decimal_places=2,
+        help_text = ug('Insert the amount of money (no sign)'),
+        error_messages = {'required': ug('You must insert an postive or negative amount for the operation')}
+    )
+
+    target = forms.ChoiceField(required=True,
+        choices = [ (INCOME,ug('Correction for supplier: +Supplier -GAS')),
+                    (EXPENSE,ug('Correction for GAS: +GAS -Supplier ')),
+                    (INVOICE_COLLECTION,ug('Insolute'))
+        ],
+        widget=forms.RadioSelect, help_text = ug("define the type of the operation"),
+        error_messages={'required': ug('You must select the type of operation')}
+    )
+
+    orders = forms.MultipleChoiceField(label=ug("Insolute order(s)"), required=False
+        , help_text = ug("If Target is Insolute you must select almost one order to pay in this operation.")
+        , widget=forms.CheckboxSelectMultiple
+    )
+
+    causal = forms.CharField(label=ug('Causal'), required=True, widget=forms.TextInput,
+        help_text = ug('Reason of the movement'),
+        error_messages={'required': ug(u'You must declare the causal of this transaction')}
+    )
+
+    date = forms.DateField(initial=date.today, required=True
+        , help_text = ug("Adjust the operation date if necesary")
+        , widget=DateFormatAwareWidget
+    )
+
+#LF    pact = forms.ModelChoiceField(label=ug('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': ug(u'You must select one pact (or create it in your GAS details if empty)')})
+
+    def __init__(self, request, *args, **kw):
+
+        super(TransationPACTForm, self).__init__(request, *args, **kw)
+        self.__loggedusr = request.user
+        self.__gas = request.resource.gas
+        self.__pact = request.resource.pact
+        self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
+        self.fields['causal'].widget.attrs['class'] = 'input_long'
+
+
+        _choice = self.fields['target'].choices
+        #Avoid multiple delete during post (in case of raise some exception)
+        if len(_choice) > 2:
+            del _choice[-1]
+            self.fields['target'].choices = _choice
+            #Hide order form field
+            del self.fields['orders']
+
+
+        insolutes = self.__pact.insolutes
+        if not insolutes:
+            #Hide Insolute choice
+            _choice = self.fields['target'].choices
+            if _choice.count() > 2:
+                del _choice[-1]
+                self.fields['target'].choices = _choice
+                #Hide order form field
+                del self.fields['orders']
+
+        else:
+            _choice = []
+            tot_orders = 0
+            tot_ordered = 0
+            tot_invoiced = 0
+            tot_eco_entries = 0
+            stat = ''
+            for ins in insolutes:
+                tot_orders += 1
+                tot_ordered += ins.tot_price
+                tot_invoiced += ins.invoice_amount or 0
+                tot_eco_entries += ins.tot_curtail
+                stat = _("Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                    'fam'    : "%.2f" % round(ins.tot_price, 2)
+                    , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+                    , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+                    , 'state'  : ins.current_state.name
+                    , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+                    } )
+                _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+    #            self.fields['orders2'].queryset = insolutes
+            self.fields['orders'].choices = _choice
+
+            #set order informations
+            stat = "Orders(%(num)s) - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                'fam'    : "%.2f" % round(tot_ordered, 2)
+                , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+                , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+                , 'num'  : str(tot_orders)
+            }
+            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+
+#LF        # SOLIDAL PACT
+#LF        pacts = request.resource.pacts
+#LF        if pacts and pacts.count() > 0:
+#LF            self.fields['pact'].queryset = pacts
+#LF#            self.fields['pact'].initial = pacts[0]
+
+    def clean(self):
+
+        cleaned_data = super(TransationPACTForm, self).clean()
+        #log.debug(u"TransationPACTForm cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
+            cleaned_data['economic_target'] = cleaned_data['target']
+            cleaned_data['economic_causal'] = cleaned_data['causal']
+            if cleaned_data['economic_causal'] == '':
+                log.debug(u"TransationPACTForm: required causal")
+                raise forms.ValidationError(ug("TransationPACTForm: transaction require a causal explanation"))
+            cleaned_data['economic_date'] = cleaned_data['date']
+        except KeyError, e:
+            log.debug(u"TransationPACTForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(_("TransationPACTForm: cannot retrieve economic data: " + e.message))
+
+#        try:
+#            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
+#        except GASSupplierSolidalPact.DoesNotExist:
+#            #ok
+#            pass
+#        else:
+#            raise ValidationError(_("Pact between this GAS and this Supplier already exists"))
+
+        return cleaned_data
+
+    @transaction.commit_on_success
+    def save(self):
+
+        #DT: not needeed all derived class are read only
+        #super(TransationPACTForm, self).save()
+
+        #Do economic work
+        if not self.__gas:
+            return
+
+        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
+            log.debug(u"TransationPACTForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
+            raise PermissionDenied(ug(u"TransationPACTForm: You are not a cash_referrer, you cannot do economic operation!"))
+
+        self.__gas.accounting.extra_operation(
+                self.cleaned_data['economic_amount'],
+                self.cleaned_data['economic_target'],
+                self.cleaned_data['economic_causal'],
+                self.cleaned_data['economic_date'],
+        )
 
