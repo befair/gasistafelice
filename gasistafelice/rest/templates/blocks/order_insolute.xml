@@ -10,6 +10,9 @@
 			{% block headers %} {% endblock %}
 		</thead>
 		<tbody>
+            {% if form.errors %}
+            {{ form.non_field_errors }}
+            {% endif %}
             {{ form.as_table }}
 		</tbody>
         <tfoot>
@@ -24,5 +27,4 @@
 
     {% block extra_xml_content %} {% endblock %}
 </block>
-
 
