@@ -84,11 +84,11 @@ class EcoGASMemberForm(forms.Form):
             obj=ObjectWithContext(self.__order.gas)
         ):
             log.debug(u"PermissionDenied %s in cash order form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"You are not a cash_referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_closed():
-            log.debug(u"PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug(u"order is not in good state!"))
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied(_("order is not in good state!"))
 
         gm = self.cleaned_data['gasmember']
 
@@ -166,12 +166,12 @@ class EcoGASMemberRechargeForm(forms.Form):
         ):
 
             log.debug(u"PermissionDenied %s in cash recharge form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"You are not a cash_referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot update GASMembers cash!"))
 
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
             log.debug(u"PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-            raise PermissionDenied(ug(u"You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!"))
 
         # This kind of amount is ever POSITIVE!
         gm.person.accounting.do_recharge(self.__gas, recharged)
@@ -246,12 +246,12 @@ class EcoGASMemberFeeForm(forms.Form):
         ):
 
             log.debug(u"PermissionDenied %s in cash fee form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"You are not a cash_referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot update GASMembers cash!"))
 
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
             log.debug(u"PermissionDenied %s in cash fee for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-            raise PermissionDenied(ug(u"You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!"))
 
         gm.person.accounting.pay_membership_fee(self.__gas, year)
 
@@ -271,11 +271,11 @@ EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class InvoiceOrderForm(forms.Form):
 
-    #order_info = forms.CharField(label=ug('Information'), required=False, widget=widgets.TextInput())
-    amount = CurrencyField(label=ug('Invoice'), required=True, max_digits=8, decimal_places=2,
-        error_messages={'required': ug(u'You must insert an postive amount for the operation')}
+    #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
+    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2,
+        error_messages={'required': _('You must insert an postive amount for the operation')}
     )
-    note = forms.CharField(label=ug('Note'), required=False, widget=forms.Textarea)
+    note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
     def __init__(self, request, *args, **kw):
 
@@ -319,7 +319,7 @@ class InvoiceOrderForm(forms.Form):
             cleaned_data['invoice_note'] = cleaned_data['note']
         except KeyError, e:
             log.debug(u"InvoiceOrderForm: cannot retrieve invoice data: " + e.message)
-            raise forms.ValidationError(_("InvoiceOrderForm: cannot retrieve invoice data: " + e.message))
+            raise forms.ValidationError(_("InvoiceOrderForm: cannot retrieve invoice data: ") + e.message)
 
         return cleaned_data
 
@@ -335,11 +335,11 @@ class InvoiceOrderForm(forms.Form):
             obj=ObjectWithContext(self.__gas)
         ):
             log.debug(u"PermissionDenied %s in cash invoice receipt form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"You are not a cash_referrer, you cannot manage receipt invoice cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot manage receipt invoice cash!"))
 
         if not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug(u"order is not in good state!"))
+            raise PermissionDenied(_("order is not in good state!"))
 
         self.__order.invoice_amount = self.cleaned_data['invoice_amount']
         self.__order.invoice_note = self.cleaned_data['invoice_note']
@@ -359,20 +359,20 @@ class InvoiceOrderForm(forms.Form):
 
 class InsoluteOrderForm(forms.Form):
 
-    orders = forms.MultipleChoiceField(label=ug("Insolute order(s)"), required=True
-        , help_text = ug("Select one or multiple orders to pay in this operation.")
+    orders = forms.MultipleChoiceField(label=_("Insolute order(s)"), required=True
+        , help_text = _("Select one or multiple orders to pay in this operation.")
         , widget=forms.CheckboxSelectMultiple
     )
 
-    amount = CurrencyField(label=ug('Payment'), required=True, max_digits=8, decimal_places=2)
+    amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
 
-    causal = forms.CharField(label=ug('Causal'), required=True, widget=forms.TextInput,
-        help_text = ug('Some indication about the payment: by bank or cash, bank number transaction...'), 
-        error_messages={'required': ug(u'You must declare the causal of this payment')}
+    causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+        help_text = _('Some indication about the payment: by bank or cash, bank number transaction...'), 
+        error_messages={'required': _('You must declare the causal of this payment')}
     )
 
     date = forms.DateField(initial=date.today, required=True
-        , help_text = ug("Adjust the operation date if necesary")
+        , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
 
@@ -404,13 +404,13 @@ class InsoluteOrderForm(forms.Form):
                 tot_ordered += ins.tot_price
                 tot_invoiced += ins.invoice_amount or 0
                 tot_eco_entries += ins.tot_curtail
-                stat = _("Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                     'fam'    : "%.2f" % round(ins.tot_price, 2)
                     , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
                     , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
                     , 'state'  : ins.current_state.name
                     , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
-                    } )
+                    } 
                 _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
 #            self.fields['orders2'].queryset = insolutes
             self.fields['orders'].choices = _choice
@@ -441,7 +441,7 @@ class InsoluteOrderForm(forms.Form):
             cleaned_data['orders_to_pay'] = cleaned_data['orders']
         except KeyError, e:
             log.debug("InsoluteOrderForm: cannot retrieve orders identifiers: " + e.message)
-            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: " + e.message))
+            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -459,13 +459,13 @@ class InsoluteOrderForm(forms.Form):
             obj=ObjectWithContext(self.__gas)
         ):
             log.debug(u"PermissionDenied %s in cash insolute form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"You are not a cash_referrer, you cannot manage insolute order cash!"))
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot manage insolute order cash!"))
 
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug(u"order is not in good state!"))
+            raise PermissionDenied(_("order is not in good state!"))
 
-        raise PermissionDenied(ug(u"TEST TEST order is not in good state!"))
+        raise PermissionDenied("TEST TEST order is not in good state!")
 
         p_amount = self.cleaned_data['insolute_amount']
         p_note = self.cleaned_data['note']
@@ -485,7 +485,7 @@ class InsoluteOrderForm(forms.Form):
                         refs.append(_ins)
 
             print "refs: %s " % refs
-            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: " + e.message))
+            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
 
             if len(refs) > 0:
                 try:
@@ -506,7 +506,7 @@ class InsoluteOrderForm(forms.Form):
 def get_eco_class(eco_state):
     eco_class = "negative"
     _sold = float(eco_state)
-    if _sold > 20:
+    if _sold >= 10:
         eco_class = "positive"
     elif -10 < _sold and _sold < 10:
         eco_class = "stalled"
@@ -516,12 +516,12 @@ def get_eco_class(eco_state):
 
 class BalanceForm(forms.Form):
 
-    balance = CurrencyField(label=ug('Balance'), required=False, max_digits=8, decimal_places=2)
+    balance = CurrencyField(label=_('Balance'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
         super(BalanceForm, self).__init__(*args, **kw)
-        self.__gas_list = request.resource.gas_list
+        #self.__gas_list = request.resource.gas_list
 
         #self.fields['note'].widget.attrs['class'] = 'input_long'
         eco_state = request.resource.balance
@@ -538,8 +538,8 @@ class BalanceForm(forms.Form):
 #LF: balance and wallet_*  are always read-only so they MUST NOT be included in form...
 class BalanceGASForm(BalanceForm):
 
-    wallet_gasmembers = CurrencyField(label=ug('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
-    wallet_suppliers = CurrencyField(label=ug('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
+    wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
+    wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
@@ -569,26 +569,26 @@ class BalanceGASForm(BalanceForm):
 #class TransationGASForm(forms.Form):
 class TransationGASForm(BalanceGASForm):
 
-    amount = CurrencyField(label=ug('Operation'), required=True, max_digits=8, decimal_places=2,
-        help_text = ug('Insert the amount of money (no sign)'),
-        error_messages = {'required': ug('You must insert an postive or negative amount for the operation')}
+    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+        help_text = _('Insert the amount of money (no sign)'),
+        error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
     target = forms.ChoiceField(required=True, 
-        choices = [(INCOME,ug('Income: Event, Donate, Sponsor, Fund... +GAS')),
-            (EXPENSE,ug('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))
+        choices = [(INCOME,_('Income: Event, Donate, Sponsor, Fund... +GAS')),
+            (EXPENSE,_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))
         ],
-        widget=forms.RadioSelect, help_text = ug("define the type of the operation"),
-        error_messages={'required': ug('You must select the type of operation')}
+        widget=forms.RadioSelect, help_text = _("define the type of the operation"),
+        error_messages={'required': _('You must select the type of operation')}
     )
 
-    causal = forms.CharField(label=ug('Causal'), required=True, widget=forms.TextInput,
-        help_text = ug('Reason of the movement'),
-        error_messages={'required': ug(u'You must declare the causal of this transaction')}
+    causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+        help_text = _('Reason of the movement'),
+        error_messages={'required': _('You must declare the causal of this transaction')}
     )
 
     date = forms.DateField(initial=date.today, required=True
-        , help_text = ug("Adjust the operation date if necesary")
+        , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
 
@@ -610,11 +610,11 @@ class TransationGASForm(BalanceGASForm):
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
                 log.debug(u"TransationGASForm: required causal")
-                raise forms.ValidationError(ug("TransationGASForm: transaction require a causal explanation"))
+                raise forms.ValidationError(_("TransationGASForm: transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
             log.debug(u"TransationGASForm: cannot retrieve economic data: " + e.message)
-            raise forms.ValidationError(_("TransationGASForm: cannot retrieve economic data: " + e.message))
+            raise forms.ValidationError(_("TransationGASForm: cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -631,7 +631,7 @@ class TransationGASForm(BalanceGASForm):
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
             log.debug(u"TransationGASForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"TransationGASForm: You are not a cash_referrer, you cannot do economic operation!"))
+            raise PermissionDenied(_("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!"))
 
         self.__gas.accounting.extra_operation(
                 self.cleaned_data['economic_amount'],
@@ -642,7 +642,7 @@ class TransationGASForm(BalanceGASForm):
 
 #-------------------------------------------------------------------------------
 
-#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=ug("Person"))
+#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
 
 #LF        # MEMBERS
 #LF        gms = request.resource.gasmembers
@@ -654,36 +654,36 @@ class TransationGASForm(BalanceGASForm):
 
 class TransationPACTForm(BalanceForm):
 
-    amount = CurrencyField(label=ug('Operation'), required=True, max_digits=8, decimal_places=2,
-        help_text = ug('Insert the amount of money (no sign)'),
-        error_messages = {'required': ug('You must insert an postive or negative amount for the operation')}
+    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+        help_text = _('Insert the amount of money (no sign)'),
+        error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
     target = forms.ChoiceField(required=True,
-        choices = [ (INCOME,ug('Correction for supplier: +Supplier -GAS')),
-                    (EXPENSE,ug('Correction for GAS: +GAS -Supplier ')),
-                    (INVOICE_COLLECTION,ug('Insolute'))
+        choices = [ (INCOME,_('Correction for supplier: +Supplier -GAS')),
+                    (EXPENSE,_('Correction for GAS: +GAS -Supplier ')),
+                    (INVOICE_COLLECTION,_('Insolute'))
         ],
-        widget=forms.RadioSelect, help_text = ug("define the type of the operation"),
-        error_messages={'required': ug('You must select the type of operation')}
+        widget=forms.RadioSelect, help_text = _("define the type of the operation"),
+        error_messages={'required': _('You must select the type of operation')}
     )
 
-    orders = forms.MultipleChoiceField(label=ug("Insolute order(s)"), required=False
-        , help_text = ug("If Target is Insolute you must select almost one order to pay in this operation.")
+    orders = forms.MultipleChoiceField(label=_("Insolute order(s)"), required=False
+        , help_text = _("If Target is Insolute you must select almost one order to pay in this operation.")
         , widget=forms.CheckboxSelectMultiple
     )
 
-    causal = forms.CharField(label=ug('Causal'), required=True, widget=forms.TextInput,
-        help_text = ug('Reason of the movement'),
-        error_messages={'required': ug(u'You must declare the causal of this transaction')}
+    causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+        help_text = _('Reason of the movement'),
+        error_messages={'required': _('You must declare the causal of this transaction')}
     )
 
     date = forms.DateField(initial=date.today, required=True
-        , help_text = ug("Adjust the operation date if necesary")
+        , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
 
-#LF    pact = forms.ModelChoiceField(label=ug('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': ug(u'You must select one pact (or create it in your GAS details if empty)')})
+#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _('You must select one pact (or create it in your GAS details if empty)')})
 
     def __init__(self, request, *args, **kw):
 
@@ -694,15 +694,8 @@ class TransationPACTForm(BalanceForm):
         self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
         self.fields['causal'].widget.attrs['class'] = 'input_long'
 
-
         _choice = self.fields['target'].choices
         #Avoid multiple delete during post (in case of raise some exception)
-        if len(_choice) > 2:
-            del _choice[-1]
-            self.fields['target'].choices = _choice
-            #Hide order form field
-            del self.fields['orders']
-
 
         insolutes = self.__pact.insolutes
         if not insolutes:
@@ -726,15 +719,14 @@ class TransationPACTForm(BalanceForm):
                 tot_ordered += ins.tot_price
                 tot_invoiced += ins.invoice_amount or 0
                 tot_eco_entries += ins.tot_curtail
-                stat = _("Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                     'fam'    : "%.2f" % round(ins.tot_price, 2)
                     , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
                     , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
                     , 'state'  : ins.current_state.name
                     , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
-                    } )
+                    } 
                 _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
-    #            self.fields['orders2'].queryset = insolutes
             self.fields['orders'].choices = _choice
 
             #set order informations
@@ -757,16 +749,21 @@ class TransationPACTForm(BalanceForm):
         cleaned_data = super(TransationPACTForm, self).clean()
         #log.debug(u"TransationPACTForm cleaned_data %s" % cleaned_data)
         try:
+            self.fields["orders"].errors = _("Insolute transaction require almost one order to be payed")
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
                 log.debug(u"TransationPACTForm: required causal")
-                raise forms.ValidationError(ug("TransationPACTForm: transaction require a causal explanation"))
+                raise forms.ValidationError(_("TransationPACTForm: transaction require a causal explanation"))
+            if cleaned_data['economic_target'] == INVOICE_COLLECTION:
+                cleaned_data['economic_orders'] = cleaned_data['orders']
+                if not cleaned_data['economic_orders'] or len(cleaned_data['economic_orders']) <= 0:
+                    self._errors["orders"] = self.error_class([_("Insolute transaction require almost one order to be payed")])
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            log.debug(u"TransationPACTForm: cannot retrieve economic data: " + e.message)
-            raise forms.ValidationError(_("TransationPACTForm: cannot retrieve economic data: " + e.message))
+            log.debug("TransationPACTForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(_("TransationPACTForm: cannot retrieve economic data: ") + e.message)
 
 #        try:
 #            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
@@ -785,18 +782,25 @@ class TransationPACTForm(BalanceForm):
         #super(TransationPACTForm, self).save()
 
         #Do economic work
-        if not self.__gas:
+        if not self.__pact:
             return
 
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
-            log.debug(u"TransationPACTForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
-            raise PermissionDenied(ug(u"TransationPACTForm: You are not a cash_referrer, you cannot do economic operation!"))
+            log.debug("TransationPACTForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot do economic operation!"))
 
-        self.__gas.accounting.extra_operation(
-                self.cleaned_data['economic_amount'],
-                self.cleaned_data['economic_target'],
-                self.cleaned_data['economic_causal'],
-                self.cleaned_data['economic_date'],
-        )
+        if self.cleaned_data['economic_target'] == INVOICE_COLLECTION:
+            #Pay Insolute
+            log.debug("TransationPACTForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
+        else:
+            #Do correction
+            self.__pact.supplier.accounting.extra_operation(
+                    self.__gas,
+                    self.__pact,
+                    self.cleaned_data['economic_amount'],
+                    self.cleaned_data['economic_target'],
+                    self.cleaned_data['economic_causal'],
+                    self.cleaned_data['economic_date'],
+            )
 

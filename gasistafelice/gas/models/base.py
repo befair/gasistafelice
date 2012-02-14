@@ -1586,17 +1586,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        #TODO: split trx from GAS's transcations and GAS activities transactions
-        all_pact_trx = LedgerEntry.objects.none()   #set()
-        #all_pact_trx |= self.gas.accounting.entries('/expenses/suppliers' + self.supplier.uid)
-        all_pact_trx |= self.supplier.accounting.entries('/incomes/gas/' + self.gas.uid)
-        return all_pact_trx
+        return self.supplier.accounting.entries_pact(self.gas)
 
     @property
     def balance(self):
         """Accounting sold for this pact"""
         #acc_tot = self.gas.accounting.system['/expenses/supplier/' + self.supplier.uid].balance
-        acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
+        #acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
+        acc_tot = self.supplier.accounting.system['/wallet'].balance
         return acc_tot
 
     @property

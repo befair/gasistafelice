@@ -25,7 +25,6 @@ class Block(AbstractBlock):
 
         user_actions = []
         gas_list = self.resource.gas.gas_list
-        print "gas_list %s " % gas_list
         for gas in gas_list:
             if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
                 user_actions += [

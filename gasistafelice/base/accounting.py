@@ -98,21 +98,6 @@ class PersonAccountingProxy(AccountingProxy):
 #    def issuer(self):
 
 
-    def entries(self, base_path='/'):
-        """
-        List all LedgerEntries (account, transaction, amount)
-
-        Show transactions for gasmembers link to GAS kind='GAS_WITHDRAWAL' + another kind?
-        """
-        member_account = gasmember.person.uid
-        gas_account = gasmember.gas.uid
-        accounts = self.system.accounts.filter(name="wallet") | \
-            self.system.accounts.filter(parent__name="members", name__in=member_account) | \
-            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/fees", name__in=member_account) | \
-            self.system.accounts.filter(parent__name="expenses/gas/" + gas_account + "/recharges", name__in=member_account)
-
-        return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
-
     def entries_gasmember(self, gasmember):
         """
         List all LedgerEntries (account, transaction, amount)

@@ -41,7 +41,7 @@ class GasAccountingProxy(AccountingProxy):
         exit_point = self.system['/expenses/suppliers/' + supplier.uid]
         entry_point =  supplier.accounting.system['/incomes/gas/' + gas.uid]
         target_account = supplier.accounting.system['/wallet']
-        description = _("Ord.%(pk)s %(gas)s --> %(supplier)s") % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
+        description = "Ord.%(pk)s %(gas)s --> %(supplier)s" % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
         if descr:
             description += ". %s" % descr.replace(description + ". ", "")
         #issuer = gas Not the instance
@@ -73,11 +73,11 @@ class GasAccountingProxy(AccountingProxy):
         # TODO: if this operation would make member's account negative, raise a warning
         gas = self.subject.instance
         if not member.person.is_member(gas):
-            raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
+            raise MalformedTransaction(_("A GAS can withdraw only from its members' accounts"))
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
         #'gas': gas.id_in_des, 
-        description = _("%(person)s %(order)s") % {'person': member.person.report_name, 'order': order.report_name}
+        description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
         issuer = self.subject
         transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
         if refs:
@@ -193,7 +193,7 @@ class GasAccountingProxy(AccountingProxy):
                 members.add(member)
             return members
         else:
-            raise TypeError(_(u"GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order}))
+            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order}))
 
     def entries(self):
         """
@@ -222,7 +222,7 @@ class GasAccountingProxy(AccountingProxy):
         """
 
         if amount < 0:
-            raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
+            raise MalformedTransaction(_("Payment amounts must be non-negative"))
         gas = self.subject.instance
         non_des = self.get_non_des_accounting()
         if not non_des:
@@ -239,16 +239,16 @@ class GasAccountingProxy(AccountingProxy):
             entry_point = self.get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
             target_account = non_des_system['/wallet']
         else:
-            #WAS raise MalformedTransaction(_(u"Payment target %s not identified" % target))
+            #WAS raise MalformedTransaction(_("Payment target %s not identified" % target))
             #coercing to Unicode: need string or buffer, __proxy__ found
-            raise MalformedTransaction("Payment target %s not identified" % target)
+            raise MalformedTransaction(ug("Payment target %s not identified") % target)
 
         description = "%(gas)s %(target)s %(causal)s" % {
             'gas': gas.id_in_des,
             'target': target,
             'causal': causal
         }
-        #WAS raise description = _(u"%(gas)s %(target)s %(causal)s") % { ...
+        #WAS raise description = _("%(gas)s %(target)s %(causal)s") % { ...
         #WAS exceptions must be old-style classes or derived from BaseException, not unicode
 
         issuer = self.subject
@@ -263,7 +263,7 @@ class GasAccountingProxy(AccountingProxy):
 
     def get_account(self, system, parent_path, name, kind):
         path = parent_path + '/' + name
-        #log.debug('get_account path: %s' % path)
+        #print('get_account path: %s' % path)
         try:
             account = system[path]
         except:
@@ -272,7 +272,7 @@ class GasAccountingProxy(AccountingProxy):
             system.add_account(parent_path=parent_path, name=name, kind=kind)
             account = system[path]
         if not account:
-            raise MalformedTransaction("Unknow account: %(system)s %(path)s %(kind)s" % {
+            raise MalformedTransaction(ug("Unknow account: %(system)s %(path)s %(kind)s") % {
             'system': system,
             'path': path,
             'kind': kind
@@ -284,6 +284,6 @@ class GasAccountingProxy(AccountingProxy):
         try:
             return des.accounting
         except AttributeError as e:
-            msg = "calling non-existent out of DES account: %s" % e.message
+            msg = _("calling non-existent out of DES account: %s") % e.message
             log.warning(msg)
             raise MalformedTransaction(msg)
