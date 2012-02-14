@@ -55,7 +55,6 @@ Nel gestionale un referente produttore ha la possibilità di gestire la decurtaz
 
    L'economico non deve sapere niente della consegna. Interessa solo il totale monetario per ogni famiglia consegnata e l'ammontare della fattura.
 
-
 Il sistema attuale non prevede che l'economico o il referente gestisce la consegna economica al livello del prodotto.
  il sistema si accontenta di movimentare il valore economico di prodotti consegnati per famiglia.
 
@@ -71,7 +70,6 @@ Il verificarsi dei punti 1 e 2, qualsiasi l'ordine di apparenza, provoca il camb
 L'ordine diventa un insoluto che si somma ai ipotetici altri insoluti da pagare al produttore.
 
 Il punto 3 è asincrono. Se il pagamento viene registrato insieme al punto 1 e 2 l' ordine cambio stato ad **ARCHIVIATO**.
-
 
 Un ordine può essere annullato.  .. seealso:: gas_referrer_supplier.rst
  
@@ -240,8 +238,7 @@ Una volta fatto i punti 1) e 2) l'ordine passa allo stato evaso **Insoluto**. Ci
 In pratica, speso gli ordini vengono pagato direttamente. Al volo. Pero succede che alcuni produttori vengono pagati dopo aver accumulato alcune consegne. Ad esempio se un produttore di verdure consegna ogni settimana ma, da accordo con il GAS, viene pagato solo una volta al mese, allora alla fine del mese, al momento di farci pagare, questo produttore ad accumulato 4 fatture. Sono 4 Insoluti. Questi 4 Insoluti vengono addizionati e mostrato a video per aiutare il referente economo ad rintracciare il totale insoluto.
 
 
-La registrazione del pagamento archivia definitivamente un ordine. 
-
+La registrazione del pagamento archivia definitivamente un ordine.
 
 
 Ricarica di un Gasista
@@ -292,6 +289,7 @@ Quota dei gasisti
 [FAQ] Pagamento della quota:
 
 Solo un referente economico del GAS vede apparire i pulsanti di gestione della quota.
+
 Un referente economico dispone dei pulsanti **Visualizza** e **Modifica**. Cliccando su **Modifica** il referente economico passa in modalità di editing la griglia. A questo punto è in grado di inserire il pagamento della quota per un gasista: La griglia
 
 * Ogni riga rappresenta un gasista

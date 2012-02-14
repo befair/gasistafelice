@@ -41,6 +41,7 @@ class Block(BlockSSDataTables):
         #Accounting.LedgerEntry  or Transactions
         return request.resource.economic_movements
 
+
 #TODO: Filter grid by
 # Date From --> To
 # Kind iof transctions: can be checkbox list multiselect

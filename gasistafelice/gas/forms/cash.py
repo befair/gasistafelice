@@ -575,7 +575,9 @@ class TransationGASForm(BalanceGASForm):
     )
 
     target = forms.ChoiceField(required=True, 
-        choices = [(INCOME,ug('Income: Event, Donate, Sponsor, Fund... +GAS')), (EXPENSE,ug('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))],
+        choices = [(INCOME,ug('Income: Event, Donate, Sponsor, Fund... +GAS')),
+            (EXPENSE,ug('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))
+        ],
         widget=forms.RadioSelect, help_text = ug("define the type of the operation"),
         error_messages={'required': ug('You must select the type of operation')}
     )
@@ -637,41 +639,6 @@ class TransationGASForm(BalanceGASForm):
                 self.cleaned_data['economic_causal'],
                 self.cleaned_data['economic_date'],
         )
-
-#    class Meta:
-##        model = GAS
-##        fields = ('...')
-#        gf_fieldsets = [(None, { 
-#            'fields' : ( '',
-#                'amount',
-#                'target',
-#                'note',
-#        )})]
-
-
-#-------------------------------------------------------------------------------
-
-#LF    target = forms.ChoiceField(choices = [('0',_('only GAS')), ('1',_('GAS <--> GASMember')), ('2',_('GAS <--> Supplier'))], widget=forms.RadioSelect,
-
-#LF        self.fields['target'].initial = '0'
-
-#-------------------------------------------------------------------------------
-
-#LF    pact = forms.ModelChoiceField(label=ug('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': ug(u'You must select one pact (or create it in your GAS details if empty)')})
-
-#LF        # SOLIDAL PACT
-#LF        pacts = request.resource.pacts
-#LF        if pacts and pacts.count() > 0:
-#LF            self.fields['pact'].queryset = pacts
-#LF#            self.fields['pact'].initial = pacts[0]
-
-#        try:
-#            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
-#        except GASSupplierSolidalPact.DoesNotExist:
-#            #ok
-#            pass
-#        else:
-#            raise ValidationError(_("Pact between this GAS and this Supplier already exists"))
 
 #-------------------------------------------------------------------------------
 
