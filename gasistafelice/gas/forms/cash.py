@@ -465,41 +465,14 @@ class InsoluteOrderForm(forms.Form):
             log.debug(u"PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(_("order is not in good state!"))
 
-        raise PermissionDenied("TEST TEST order is not in good state!")
-
-        p_amount = self.cleaned_data['insolute_amount']
-        p_note = self.cleaned_data['note']
-        log.debug(u"insolute amount %s---" % p_amount)
-        #refs=[self.__order]
-        refs=[]
-        insolutes = self.cleaned_data['orders_to_pay']
-        if insolutes:
-            for ins_pk in insolutes:
-                try:
-                    _ins = GASSupplierOrder.objects.get(pk=ins_pk)
-                except GASSupplierOrder.DoesNotExist:
-                    log.debug(u"InsoluteOrderForm: cannot retrieve order instance. Identifier (%s)." % ins_pk)
-                    raise
-                else:
-                    if _ins and (_ins.is_unpaid() or _ins.is_closed()):
-                        refs.append(_ins)
-
-            print "refs: %s " % refs
-            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
-
-            if len(refs) > 0:
-                try:
-                    #MAKE ONLY ONE TRANSACTION with the amount but the ref must contains all orders reference in order to matche this unique transcation
-#WAS                    self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
-                    self.__gas.accounting.pay_supplier_order(order=refs[0], amount=p_amount, descr=p_note, refs=refs)
-                except ValueError, e:
-                    log.debug(u"retry later " + e.message)
-                else:
-                    log.debug(u"Insolute(%s) saved " % len(refs))
-                    for _order in refs:
-                        #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
-                        _order.control_economic_state()
-
+        pay_insolutes(
+                self.__order.gas,
+                self.__order.pact,
+                self.cleaned_data['insolute_amount'],
+                self.cleaned_data['orders_to_pay'],
+                self.cleaned_data['causal'],
+                self.cleaned_data['date'],
+        )
 
 #-------------------------------------------------------------------------------
 
@@ -792,7 +765,14 @@ class TransationPACTForm(BalanceForm):
 
         if self.cleaned_data['economic_target'] == INVOICE_COLLECTION:
             #Pay Insolute
-            log.debug("TransationPACTForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
+            pay_insolutes(
+                    self.__gas,
+                    self.__pact,
+                    self.cleaned_data['economic_amount'],
+                    self.cleaned_data['economic_orders'],
+                    self.cleaned_data['economic_causal'],
+                    self.cleaned_data['economic_date'],
+            )
         else:
             #Do correction
             self.__pact.supplier.accounting.extra_operation(
@@ -804,3 +784,84 @@ class TransationPACTForm(BalanceForm):
                     self.cleaned_data['economic_date'],
             )
 
+
+def pay_insolutes(gas, pact, amount, insolutes, descr, date):
+    log.debug("pay insolute GAS: %(gas)s - pact: %(pact)s - amount: %(amount)s - Insolutes: %(inso)s - descr: %(descr)s - date: %(date)s" % {
+                'gas'    : gas
+                , 'pact' : pact
+                , 'amount' : amount
+                , 'inso'  : insolutes
+                , 'descr'  : descr
+                , 'date'  : date
+    })
+    refs=[]
+    if insolutes:
+        multiple_ords = ""
+        for ins_pk in insolutes:
+            try:
+                _ins = GASSupplierOrder.objects.get(pk=ins_pk)
+            except GASSupplierOrder.DoesNotExist:
+                log.debug("pay_insolutes: cannot retrieve order instance. Identifier (%s)." % ins_pk)
+            else:
+                if _ins and (_ins.is_unpaid() or _ins.is_closed()):
+                    refs.append(_ins)
+                    if multiple_ords == "":
+                        multiple_ords = "[" + str(_ins.pk)
+                    else:
+                        multiple_ords += ", " + str(_ins.pk)
+
+        print "refs: %s " % refs
+
+        if len(refs) > 0:
+            if len(refs) == 1:
+                multiple_ords = None
+            else:
+                multiple_ords += "]"
+
+            log.debug("pay_insolutes: descr (%s)." % descr)
+            try:
+                #MAKE ONLY ONE TRANSACTION with the amount but the ref must contains all orders reference in order to matche this unique transcation
+                gas.accounting.pay_supplier_order(order=refs[0], amount=amount, descr=descr, refs=refs, date=date, multiple=multiple_ords)
+            except ValueError, e:
+                log.debug("retry later " + e.message)
+                raise forms.ValidationError(_("error while saving insolute economic data: ") + e.message)
+            else:
+                log.debug("Insolute(%s) saved " % len(refs))
+                for _order in refs:
+                    #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
+                    _order.control_economic_state()
+        else:
+            raise forms.ValidationError(_("cannot retrieve economic orders"))
+
+#        p_amount = self.cleaned_data['insolute_amount']
+#        p_note = self.cleaned_data['causal']
+#        log.debug(u"insolute amount %s---" % p_amount)
+#        #refs=[self.__order]
+#        refs=[]
+#        insolutes = self.cleaned_data['orders_to_pay']
+#        if insolutes:
+#            for ins_pk in insolutes:
+#                try:
+#                    _ins = GASSupplierOrder.objects.get(pk=ins_pk)
+#                except GASSupplierOrder.DoesNotExist:
+#                    log.debug(u"InsoluteOrderForm: cannot retrieve order instance. Identifier (%s)." % ins_pk)
+#                    raise
+#                else:
+#                    if _ins and (_ins.is_unpaid() or _ins.is_closed()):
+#                        refs.append(_ins)
+
+#            print "refs: %s " % refs
+#            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
+
+#            if len(refs) > 0:
+#                try:
+#                    #MAKE ONLY ONE TRANSACTION with the amount but the ref must contains all orders reference in order to matche this unique transcation
+##WAS                    self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
+#                    self.__gas.accounting.pay_supplier_order(order=refs[0], amount=p_amount, descr=p_note, refs=refs)
+#                except ValueError, e:
+#                    log.debug(u"retry later " + e.message)
+#                else:
+#                    log.debug(u"Insolute(%s) saved " % len(refs))
+#                    for _order in refs:
+#                        #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
+#                        _order.control_economic_state()

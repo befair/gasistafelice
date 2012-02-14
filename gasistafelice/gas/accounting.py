@@ -21,7 +21,7 @@ class GasAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``GAS``' model.    
     """
     
-    def pay_supplier(self, order, amount, refs=None, descr=None):
+    def pay_supplier(self, order, amount, refs=None, descr=None, date=None, multiple=None):
         """
         Transfer a given (positive) amount ``amount`` of money from the GAS's cash
         to a supplier for which a solidal pact is currently active.
@@ -34,19 +34,21 @@ class GasAccountingProxy(AccountingProxy):
         """
         if amount < 0:
             raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
-        #gas = order.gas
         gas = self.subject.instance
         supplier = order.supplier
         source_account = self.system['/cash']
         exit_point = self.system['/expenses/suppliers/' + supplier.uid]
         entry_point =  supplier.accounting.system['/incomes/gas/' + gas.uid]
         target_account = supplier.accounting.system['/wallet']
-        description = "Ord.%(pk)s %(gas)s --> %(supplier)s" % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
+        if multiple:
+            description = "Ord.%s" % multiple
+        else:
+            description = "Ord.%s" % order.pk
+        description += " %(gas)s --> %(supplier)s" % {'gas': gas.id_in_des, 'supplier': supplier,}
         if descr:
             description += ". %s" % descr.replace(description + ". ", "")
-        #issuer = gas Not the instance
         issuer =  self.subject
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT', date=date)
         if refs:
             transaction.add_references(refs)
 
@@ -83,7 +85,7 @@ class GasAccountingProxy(AccountingProxy):
         if refs:
             transaction.add_references(refs)
 
-    def pay_supplier_order(self, order, amount, refs=None, descr=None):
+    def pay_supplier_order(self, order, amount, refs=None, descr=None, date=None, multiple=None):
         """
         Register the payment of a supplier order.
 
@@ -125,7 +127,7 @@ class GasAccountingProxy(AccountingProxy):
         #Insolute aggregated payment contain many orders that are payed in simultaneous. Refs must be a list of each order that are relative to this unique transaction
         if yet_payed <= 0:
             # pay supplier
-            self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr)
+            self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr, date=date, multiple=multiple)
         elif yet_payed != amount:
             #TODO: ECO update payment
             tx = self.get_supplier_order_transaction(self, order, refs)
