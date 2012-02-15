@@ -343,12 +343,13 @@ class GAS(models.Model, PermissionResource):
         |                +--- <UID member #n>  [A]
         +----------- expenses [P,E]+
         |                +--- TODO: OutOfDES
+        |                +--- TODO: member (correction or other)
         |                +--- suppliers [P, E] +
         |                        +--- <UID supplier #1>  [E]
         |                        | ..
         |                        +--- <UID supplier #n>  [E]
         +----------- incomes [P,I]+
-        |                +--- recharges [I] 
+        |                +--- recharges [I]
         |                +--- fees [I]
         |                +--- TODO: OutOfDES
         """

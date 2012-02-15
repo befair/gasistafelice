@@ -265,7 +265,6 @@ class GasAccountingProxy(AccountingProxy):
 
     def get_account(self, system, parent_path, name, kind):
         path = parent_path + '/' + name
-        #print('get_account path: %s' % path)
         try:
             account = system[path]
         except:

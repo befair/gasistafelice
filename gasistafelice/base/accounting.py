@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
+from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
 
 from gasistafelice.consts import INCOME, EXPENSE, ASSET, LIABILITY, EQUITY
@@ -34,7 +34,7 @@ class PersonAccountingProxy(AccountingProxy):
         entry_point =  gas.accounting.system['/incomes/fees']
         target_account = gas.accounting.system['/cash']
         amount = gas.membership_fee
-        description = _("Year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
+        description = ug("Year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
         issuer = self.subject
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
@@ -135,23 +135,41 @@ class PersonAccountingProxy(AccountingProxy):
 
         gas_acc = gas.accounting
         gas_system = gas.accounting.system
-        if target == INCOME:
-            source_account = self.system['/wallet']
-            exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
+        kind = 'GM_EXTRA'
+
+        #UGLY: remove me when done and executed one command that regenerate all missing accounts
+        self.missing_accounts(gas)
+
+        if target == INCOME: #Correction for gasmember: +gasmember -GAS
+            source_account = gas_system['/cash']
+            exit_point = gas_system['/expenses/member']
             entry_point = gas_system['/incomes/recharges']
             target_account = gas_system['/members/' + person.uid]
-        elif  target == EXPENSE:
+        elif  target == EXPENSE: #Correction for GAS: +GAS -gasmember
             source_account = gas_system['/members/' + person.uid]
-            exit_point = gas_system['/incomes/recharges']
-            entry_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
+            exit_point = gas_system['/expenses/gas']
+            entry_point = gas_system['/incomes/member']
+            target_account = gas_system['/cash']
+        elif  target == ASSET: #Detraction for Gasmember: -gasmember
+            source_account = gas_system['/members/' + person.uid]
+            exit_point = gas_system['/expenses/member']
+            entry_point = self.system['/incomes/other']
             target_account = self.system['/wallet']
-#        elif  target == ASSET:
-#        elif  target == LIABILITY:
-#        elif  target == EQUITY:
+            kind = ug('ADJUST')
+        elif  target == LIABILITY: #Addition for Gasmember: +gasmember
+            source_account = self.system['/wallet']
+            exit_point = self.system['/expenses/other']
+            entry_point = gas_system['/incomes/recharges']
+            target_account = gas_system['/members/' + person.uid]
+            kind = ug('ADJUST')
+        elif  target == EQUITY: #Restitution for gasmember: empty container +gasmember -GAS
+            source_account = gas_system['/cash']
+            exit_point = gas_system['/expenses/member']
+            entry_point = gas_system['/incomes/recharges']
+            target_account = gas_system['/members/' + person.uid]
+            kind = ug('EMPTY')
         else:
-            #WAS raise MalformedTransaction(_("Payment target %s not identified" % target))
-            #coercing to Unicode: need string or buffer, __proxy__ found
-            raise MalformedTransaction(_("Payment target %s not identified") % target)
+            raise MalformedTransaction(ug("Payment target %s not identified") % target)
 
         description = "%(gas)s %(target)s %(causal)s" % {
             'gas': gas.id_in_des,
@@ -159,11 +177,36 @@ class PersonAccountingProxy(AccountingProxy):
             'causal': causal
         }
         issuer = self.subject
-        kind = 'GAS_EXTRA'
+        print "date %s " % date
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date=date, kind=kind)
 
+#		. gasmember ROOT (/)
+#		|----------- wallet [A]
+#		+----------- incomes [P,I]	+
+#		|				+--- TODO: Other (Private order, correction, Deposit)
+#		+----------- expenses [P,E]	+  UNUSED because we use the gas_system[/incomes/recharges]
+#						+--- TODO: Other (Correction, Donation, )
+
+#        . GAS ROOT (/)
+#        |----------- cash [A]
+#        +----------- members [P,A]+
+#        |                +--- <UID member #1>  [A]
+#        |                | ..
+#        |                +--- <UID member #n>  [A]
 #        +----------- expenses [P,E]+
-#        |                +--- TODO: OutOfDES
+#        |                +--- TODO: member (correction or other)
+#        |                +--- TODO: gas (correction or other)
 #        +----------- incomes [P,I]+
-#        |                +--- TODO: OutOfDES
+#        |                +--- recharges [I]
+#        |                +--- TODO: member (correction or other)
+
+    #UGLY: remove me when done and executed one command that regenerate all missing accounts
+    def missing_accounts(self, gas):
+        gas_acc = gas.accounting
+        gas_system = gas.accounting.system
+        xsys = gas_acc.get_account(gas_system, '/expenses', 'member', account_type.expense)
+        xsys = gas_acc.get_account(gas_system, '/expenses', 'gas', account_type.expense)
+        xsys = gas_acc.get_account(gas_system, '/incomes', 'member', account_type.income)
+        xsys = gas_acc.get_account(self.system, '/expenses', 'other', account_type.expense)
+        xsys = gas_acc.get_account(self.system, '/incomes', 'other', account_type.income)
 
