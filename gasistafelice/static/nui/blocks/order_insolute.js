@@ -70,12 +70,21 @@ jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
         
     },
 
-//    post_load_handler : function() {
-//        $("#insolute_id").ajaxForm(function(){
-//            //alert("handler attached: ajaxified form " + $("#amount").value );
-//        })
-//        this._super();
-//    },
+
+    post_load_handler : function() {
+        var form_el = $("#insolute_id");
+        form_el.ajaxForm({
+            dataType : 'xml',
+            success : function(responseXML, statusText, xhr, $form)  {
+            if (xhr.responseText.match('class="errorlist"')) {
+                form_html = $(xhr.responseText).find('tbody');
+                form_el.find('tbody').html(form_html.html());
+            } else 
+                window.location.reload();
+            }
+        });
+        this._super();
+    },
 
     //------------------------------------------------------------------------------//
     //                                                                              //
