@@ -1,10 +1,10 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
 from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
 
-#from gasistafelice.base.models import GAS, GASMember
+from gasistafelice.consts import INCOME, EXPENSE, ASSET, LIABILITY, EQUITY
 
 class PersonAccountingProxy(AccountingProxy):
     """
@@ -28,7 +28,7 @@ class PersonAccountingProxy(AccountingProxy):
         """
         person = self.subject.instance
         if not person.is_member(gas):
-            raise MalformedTransaction("A person can't pay membership fees to a GAS that (s)he is not member of")
+            raise MalformedTransaction(ug("A person can't pay membership fees to a GAS that (s)he is not member of"))
         source_account = self.system['/wallet']
         exit_point = self.system['/expenses/gas/' + gas.uid + '/fees']
         entry_point =  gas.accounting.system['/incomes/fees']
@@ -62,9 +62,9 @@ class PersonAccountingProxy(AccountingProxy):
         """
         person = self.subject.instance
         if amount < 0:
-            raise MalformedTransaction("Amount of a recharge must be non-negative")
+            raise MalformedTransaction(ug("Amount of a recharge must be non-negative"))
         elif not person.is_member(gas):
-            raise MalformedTransaction("A person can't make an account recharge for a GAS that (s)he is not member of")
+            raise MalformedTransaction(ug("A person can't make an account recharge for a GAS that (s)he is not member of"))
         else:
             source_account = self.system['/wallet']
             exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
@@ -77,7 +77,7 @@ class PersonAccountingProxy(AccountingProxy):
 
 #Transaction
 #    date = models.DateTimeField(default=datetime.now)
-#    description = models.CharField(max_length=512, help_text=_("Reason of the transaction"))
+#    description = models.CharField(max_length=512, help_text=ug("Reason of the transaction"))
 #    issuer = models.ForeignKey(Subject, related_name='issued_transactions_set')
 #    source = models.ForeignKey(CashFlow)
 #    split_set = models.ManyToManyField(Split)
@@ -118,4 +118,52 @@ class PersonAccountingProxy(AccountingProxy):
 
         return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
 
+    def extra_operation(self, gas, amount, target, causal, date):
+        """
+        Another account operation for this subject
+
+        For a GASMEMBER the target operation can be income or expense operation
+        The operation can implicate a GAS economic change
+        """
+
+        if amount < 0:
+            raise MalformedTransaction(ug("Payment amounts must be non-negative"))
+
+        person = self.subject.instance
+        if not person.is_member(gas):
+            raise MalformedTransaction(ug("A person can't pay membership fees to a GAS that (s)he is not member of"))
+
+        gas_acc = gas.accounting
+        gas_system = gas.accounting.system
+        if target == INCOME:
+            source_account = self.system['/wallet']
+            exit_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
+            entry_point = gas_system['/incomes/recharges']
+            target_account = gas_system['/members/' + person.uid]
+        elif  target == EXPENSE:
+            source_account = gas_system['/members/' + person.uid]
+            exit_point = gas_system['/incomes/recharges']
+            entry_point = self.system['/expenses/gas/' + gas.uid + '/recharges']
+            target_account = self.system['/wallet']
+#        elif  target == ASSET:
+#        elif  target == LIABILITY:
+#        elif  target == EQUITY:
+        else:
+            #WAS raise MalformedTransaction(_("Payment target %s not identified" % target))
+            #coercing to Unicode: need string or buffer, __proxy__ found
+            raise MalformedTransaction(_("Payment target %s not identified") % target)
+
+        description = "%(gas)s %(target)s %(causal)s" % {
+            'gas': gas.id_in_des,
+            'target': target,
+            'causal': causal
+        }
+        issuer = self.subject
+        kind = 'GAS_EXTRA'
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date=date, kind=kind)
+
+#        +----------- expenses [P,E]+
+#        |                +--- TODO: OutOfDES
+#        +----------- incomes [P,I]+
+#        |                +--- TODO: OutOfDES
 

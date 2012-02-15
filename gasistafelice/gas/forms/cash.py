@@ -24,7 +24,7 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.consts import (
         CASH,  #Permission
         GAS_MEMBER,  #Role
-        INCOME, EXPENSE, INVOICE_COLLECTION  #Transactions
+        INCOME, EXPENSE, INVOICE_COLLECTION, ASSET, LIABILITY, EQUITY  #Transactions
 )
 
 from datetime import tzinfo, timedelta, datetime, date
@@ -615,17 +615,10 @@ class TransationGASForm(BalanceGASForm):
 
 #-------------------------------------------------------------------------------
 
-#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
-
-#LF        # MEMBERS
-#LF        gms = request.resource.gasmembers
-#LF        if gms and gms.count() > 0:
-#LF            self.fields['person'].queryset = gms
-#LF
-
-#-------------------------------------------------------------------------------
-
 class TransationPACTForm(BalanceForm):
+
+#DT     Use this if we have to insert this block in the GAS economic Tab too
+#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _('You must select one pact (or create it in your GAS details if empty)')})
 
     amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
         help_text = _('Insert the amount of money (no sign)'),
@@ -655,8 +648,6 @@ class TransationPACTForm(BalanceForm):
         , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
-
-#LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _('You must select one pact (or create it in your GAS details if empty)')})
 
     def __init__(self, request, *args, **kw):
 
@@ -722,7 +713,6 @@ class TransationPACTForm(BalanceForm):
         cleaned_data = super(TransationPACTForm, self).clean()
         #log.debug(u"TransationPACTForm cleaned_data %s" % cleaned_data)
         try:
-            self.fields["orders"].errors = _("Insolute transaction require almost one order to be payed")
             cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
@@ -833,35 +823,87 @@ def pay_insolutes(gas, pact, amount, insolutes, descr, date):
         else:
             raise forms.ValidationError(_("cannot retrieve economic orders"))
 
-#        p_amount = self.cleaned_data['insolute_amount']
-#        p_note = self.cleaned_data['causal']
-#        log.debug(u"insolute amount %s---" % p_amount)
-#        #refs=[self.__order]
-#        refs=[]
-#        insolutes = self.cleaned_data['orders_to_pay']
-#        if insolutes:
-#            for ins_pk in insolutes:
-#                try:
-#                    _ins = GASSupplierOrder.objects.get(pk=ins_pk)
-#                except GASSupplierOrder.DoesNotExist:
-#                    log.debug(u"InsoluteOrderForm: cannot retrieve order instance. Identifier (%s)." % ins_pk)
-#                    raise
-#                else:
-#                    if _ins and (_ins.is_unpaid() or _ins.is_closed()):
-#                        refs.append(_ins)
+#-------------------------------------------------------------------------------
 
-#            print "refs: %s " % refs
-#            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
+class TransationGMForm(BalanceForm):
 
-#            if len(refs) > 0:
-#                try:
-#                    #MAKE ONLY ONE TRANSACTION with the amount but the ref must contains all orders reference in order to matche this unique transcation
-##WAS                    self.__gas.accounting.pay_supplier_order(order=self.__order, amount=p_amount, descr=p_note, refs=refs)
-#                    self.__gas.accounting.pay_supplier_order(order=refs[0], amount=p_amount, descr=p_note, refs=refs)
-#                except ValueError, e:
-#                    log.debug(u"retry later " + e.message)
-#                else:
-#                    log.debug(u"Insolute(%s) saved " % len(refs))
-#                    for _order in refs:
-#                        #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
-#                        _order.control_economic_state()
+#DT     Use this if we have to insert this block in the GAS economic Tab too
+#LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
+
+    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+        help_text = _('Insert the amount of money (no sign)'),
+        error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
+    )
+
+    target = forms.ChoiceField(required=True,
+        choices = [ (INCOME,_('Correction for gasmember: +gasmember -GAS')),
+                    (EXPENSE,_('Correction for GAS: +GAS -gasmember ')),
+                    (ASSET,_('Detraction for Gasmember: -gasmember ')),
+                    (LIABILITY,_('Addition for Gasmember: +gasmember ')),
+                    (EQUITY,_('Restitution for gasmember: +gasmember -GAS'))
+        ],
+        widget=forms.RadioSelect, help_text = _("define the type of the operation"),
+        error_messages={'required': _('You must select the type of operation')}
+    )
+
+    causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
+        help_text = _('Reason of the movement'),
+        error_messages={'required': _('You must declare the causal of this transaction')}
+    )
+
+    date = forms.DateField(initial=date.today, required=True
+        , help_text = _("Adjust the operation date if necesary")
+        , widget=DateFormatAwareWidget
+    )
+
+    def __init__(self, request, *args, **kw):
+
+        super(TransationGMForm, self).__init__(request, *args, **kw)
+        self.__loggedusr = request.user
+        self.__gas = request.resource.gas
+        self.__gm = request.resource.gasmember
+        self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
+        self.fields['causal'].widget.attrs['class'] = 'input_long'
+
+    def clean(self):
+
+        cleaned_data = super(TransationGMForm, self).clean()
+        #log.debug(u"TransationGMForm cleaned_data %s" % cleaned_data)
+        try:
+            cleaned_data['economic_amount'] = abs(cleaned_data['amount'])
+            cleaned_data['economic_target'] = cleaned_data['target']
+            cleaned_data['economic_causal'] = cleaned_data['causal']
+            if cleaned_data['economic_causal'] == '':
+                log.debug(u"TransationGMForm: required causal")
+                raise forms.ValidationError(_("TransationGMForm: transaction require a causal explanation"))
+            cleaned_data['economic_date'] = cleaned_data['date']
+        except KeyError, e:
+            log.debug("TransationGMForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(_("TransationGMForm: cannot retrieve economic data: ") + e.message)
+
+#LF        # MEMBERS
+#LF        gms = request.resource.gasmembers
+#LF        if gms and gms.count() > 0:
+#LF            self.fields['person'].queryset = gms
+
+        return cleaned_data
+
+    @transaction.commit_on_success
+    def save(self):
+
+        #Do economic work
+        if not self.__gm:
+            return
+
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
+            log.debug("TransationGMForm: PermissionDenied %s in economic operation form" % self.__loggedusr)
+            raise PermissionDenied(_("You are not a cash_referrer, you cannot do economic operation!"))
+
+        self.__gm.person.accounting.extra_operation(
+                self.__gas,
+                self.cleaned_data['economic_amount'],
+                self.cleaned_data['economic_target'],
+                self.cleaned_data['economic_causal'],
+                self.cleaned_data['economic_date'],
+        )
+

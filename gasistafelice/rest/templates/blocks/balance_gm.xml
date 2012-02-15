@@ -1,0 +1,31 @@
+{% load i18n %}
+<block type="{{ block_type }}" 
+       resource_type="{{ resource.resource_type }}" 
+       resource_id="{{ resource.id }}">
+       
+	<content type="table">
+
+		<table>
+		<thead>
+			{% block headers %} {% endblock %}
+		</thead>
+		<tbody>
+            {% if form.errors %}
+            {{ form.non_field_errors }}
+            {% endif %}
+            {{ form.as_table }}
+		</tbody>
+        <tfoot>
+            {% block footer %} {% endblock %}
+        </tfoot>
+		</table>
+		{% block extra_html_content %} {% endblock %}
+
+	</content>
+    
+    {% include "blocks/user_actions.xml" %}
+
+    {% block extra_xml_content %} {% endblock %}
+</block>
+
+
