@@ -35,7 +35,7 @@ jQuery.UIBlockBalancePACT = jQuery.UIBlock.extend({
         //template elements
         var content_template = '\
         <div>\
-            <form id="fbalancegas" method="POST" action="@@action_url@@">\
+            <form id="fbalancepact" method="POST" action="@@action_url@@">\
             <div class="list_actions">@@list_actions@@</div> \
             @@content@@\
             </form>\
@@ -71,7 +71,7 @@ jQuery.UIBlockBalancePACT = jQuery.UIBlock.extend({
     },
 
     post_load_handler : function() {
-        var form_el = $("#fbalancegas");
+        var form_el = $("#fbalancepact");
         form_el.ajaxForm({
             dataType : 'xml',
             success : function(responseXML, statusText, xhr, $form)  {
