@@ -51,7 +51,7 @@ class SupplierAccountingProxy(AccountingProxy):
 #        target_account = gas.system['/cash']
 #        description = _("Refund for %(gas)s <-- %(supplier)s ") % {'gas': gas.id_in_des, 'supplier': supplier,}
 #        issuer = supplier 
-#        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='REFUND')
+#        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'REFUND')
 #        if refs:
 #            transaction.add_references(refs)
 
@@ -136,7 +136,7 @@ class SupplierAccountingProxy(AccountingProxy):
         }
         issuer = self.subject
         kind = 'PACT_EXTRA'
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date=date, kind=kind)
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 
     #UGLY: remove me when done and executed one command that regenerate all missing accounts
     def missing_accounts(self, gas):

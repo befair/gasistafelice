@@ -17,7 +17,7 @@ class PersonAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``Person``' model.    
     """
     
-    def pay_membership_fee(self, gas, year):
+    def pay_membership_fee(self, gas, year, date=None):
         """
         Pay the annual membership fee for a GAS this person is member of.
         
@@ -36,7 +36,7 @@ class PersonAccountingProxy(AccountingProxy):
         amount = gas.membership_fee
         description = ug("Year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
         issuer = self.subject
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='MEMBERSHIP_FEE')
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
 
     def last_entry(self, base_path):
@@ -52,7 +52,7 @@ class PersonAccountingProxy(AccountingProxy):
         #FIXME: self <gasistafelice.base.accounting.PersonAccountingProxy object at 0xabaf86c>
         #       base_path '/expenses/gas/gas-1/recharges'
 
-    def do_recharge(self, gas, amount, note=""):
+    def do_recharge(self, gas, amount, note="", date=None):
         """
         Do a recharge of amount ``amount`` to the corresponding member account
         in the GAS ``gas``.
@@ -72,7 +72,7 @@ class PersonAccountingProxy(AccountingProxy):
             target_account = gas.accounting.system['/members/' + person.uid]
             description = unicode(person.report_name)
             issuer = self.subject
-            transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='RECHARGE')
+            transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'RECHARGE')
             transaction.add_references([person, gas])
 
 #Transaction
@@ -177,8 +177,7 @@ class PersonAccountingProxy(AccountingProxy):
             'causal': causal
         }
         issuer = self.subject
-        print "date %s " % date
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date=date, kind=kind)
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 
 #		. gasmember ROOT (/)
 #		|----------- wallet [A]

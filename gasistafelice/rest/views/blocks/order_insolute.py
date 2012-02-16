@@ -46,59 +46,33 @@ class Block(AbstractBlock):
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        print "InsoluteOrderForm      get_response"
         super(Block, self).get_response(request, resource_type, resource_id, args)
 
         res = self.resource
 
-        user_actions = self._get_user_actions(request)
-#        if args == "":
-        print "InsoluteOrderForm      ARGS"
+        if args == "INCOME":
+            if request.method == 'POST':
+                form = InsoluteOrderForm(request, request.POST)
+                if form.is_valid():
+                    with transaction.commit_on_success():
+                        if form.cleaned_data:
+                            try:
+
+                                form.save()
+#                                return self.response_success()
+#                                return HttpResponse(_("Insolute saved"))
+
+                            except Exception, e:
+                                msg = ug("Transaction Insolute ERROR: ") + e.message
+                                form._errors["amount"] = form.error_class([msg])
+
+        else:
+            form = InsoluteOrderForm(request)
+
         ctx = {
-            'resource' : res,
-            'sanet_urn' : "%s/%s" % (resource_type, resource_id),
-            'form' : InsoluteOrderForm(request),
-            'user_actions' : user_actions,
+            'resource'      : res,
+            'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
+            'form'          : form,
+            'user_actions'  : self._get_user_actions(request),
         }
         return render_to_xml_response('blocks/order_insolute.xml', ctx)
-#        elif args == "INCOME" or args == "CREATE":
-#            if request.method == 'POST':
-#                print "InsoluteOrderForm      POST"
-#                form = InsoluteOrderForm(request, request.POST)
-
-#                if form.is_valid():
-#                    with transaction.commit_on_success():
-#                        if form.cleaned_data:
-#                            form.save()
-#                    #FIXME: handler attached: ajaxified form undefined
-#                    #return self.response_success()
-#                    return HttpResponse(_("Insolute saved"))
-#                else:
-#                    return self.response_error(form.errors)
-
-#        if args == "INCOME":
-#            if request.method == 'POST':
-#                form = InsoluteOrderForm(request, request.POST)
-#                if form.is_valid():
-#                    with transaction.commit_on_success():
-#                        if form.cleaned_data:
-#                            try:
-
-#                                form.save()
-##                                return self.response_success()
-##                                return HttpResponse(_("Insolute saved"))
-
-#                            except Exception, e:
-#                                msg = ug("Transaction Insolute ERROR: ") + e.message
-#                                form._errors["amount"] = form.error_class([msg])
-
-#        else:
-#            form = InsoluteOrderForm(request)
-
-#        ctx = {
-#            'resource'      : res,
-#            'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
-#            'form'          : form,
-#            'user_actions'  : self._get_user_actions(request),
-#        }
-#        return render_to_xml_response('blocks/order_insolute.xml', ctx)

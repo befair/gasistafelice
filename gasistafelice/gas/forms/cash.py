@@ -380,16 +380,15 @@ class InsoluteOrderForm(forms.Form):
                 self.fields['causal'].widget.attrs['readonly'] = True
                 self.fields['causal'].widget.attrs['disabled'] = 'disabled'
                 self.fields['causal'].help_text = ''
+                self.fields['causal'].required = False
                 self.fields['date'].initial = date_payed
-                self.fields['date'].widget.attrs['readonly'] = True
-                self.fields['date'].widget.attrs['disabled'] = 'disabled'
                 self.fields['date'].help_text = ''
                 del self.fields['orders']
                 #set order informations
                 stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
                     'fam'    : "%.2f" % round(self.__order.tot_price, 2)
-                    , 'fatt' : "%.2f" % round(self.__order.invoice_amount, 2)
-                    , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
+                    , 'fatt' : "%.2f" % round(self.__order.invoice_amount or 0, 2)
+                    , 'eco'  : "%.2f" % round(self.__order.tot_curtail or 0, 2)
                     , 'state'  : self.__order.current_state.name
                 }
 
@@ -425,7 +424,7 @@ class InsoluteOrderForm(forms.Form):
 
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
-        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+        self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             self.fields['amount'].widget.attrs['readonly'] = True
             self.fields['amount'].widget.attrs['disabled'] = 'disabled'
@@ -439,7 +438,6 @@ class InsoluteOrderForm(forms.Form):
         cleaned_data = super(InsoluteOrderForm, self).clean()
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
-            cleaned_data['orders_to_pay'] = cleaned_data['orders']
         except KeyError, e:
             raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
 
@@ -447,14 +445,12 @@ class InsoluteOrderForm(forms.Form):
 
     @transaction.commit_on_success
     def save(self):
-        raise ValueError("prova")
 
         #Do economic work
         if not self.__order:
             return
 
         #Control logged user
-        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
             raise PermissionDenied(ug("You are not a cash_referrer, you cannot manage insolute order cash!"))
 
@@ -462,14 +458,26 @@ class InsoluteOrderForm(forms.Form):
             log.debug(u"PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(ug("order is not in good state!"))
 
-        pay_insolutes(
-                self.__order.gas,
-                self.__order.pact,
-                self.cleaned_data['insolute_amount'],
-                self.cleaned_data['orders_to_pay'],
-                self.cleaned_data['causal'],
-                self.cleaned_data['date'],
-        )
+        #cc_orders = cleaned_data.get("orders")
+        yet_payed, descr, date_payed =self.__gas.accounting.get_supplier_order_data(self.__order)
+        if yet_payed > 0: # and not cc_orders:
+            pay_insolutes(
+                    self.__order.gas,
+                    self.__order.pact,
+                    self.cleaned_data['insolute_amount'],
+                    [self.__order.pk],
+                    self.cleaned_data['causal'],
+                    self.cleaned_data['date'],
+            )
+        else:
+            pay_insolutes(
+                    self.__order.gas,
+                    self.__order.pact,
+                    self.cleaned_data['insolute_amount'],
+                    self.cleaned_data['orders'],
+                    self.cleaned_data['causal'],
+                    self.cleaned_data['date'],
+            )
 
 #-------------------------------------------------------------------------------
 
@@ -672,18 +680,22 @@ class TransationPACTForm(BalanceForm):
             tot_eco_entries = 0
             stat = ''
             for ins in insolutes:
-                tot_orders += 1
-                tot_ordered += ins.tot_price
-                tot_invoiced += ins.invoice_amount or 0
-                tot_eco_entries += ins.tot_curtail
-                stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                    'fam'    : "%.2f" % round(ins.tot_price, 2)
-                    , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-                    , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
-                    , 'state'  : ins.current_state.name
-                    , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
-                    } 
-                _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+                #In the SUPPLIER FORM we only pay unpayed orders.
+                #To modify one payed order: go to it's sheet.
+                yet_payed, descr, date_payed =self.__gas.accounting.get_supplier_order_data(ins)
+                if yet_payed == 0:
+                    tot_orders += 1
+                    tot_ordered += ins.tot_price
+                    tot_invoiced += ins.invoice_amount or 0
+                    tot_eco_entries += ins.tot_curtail
+                    stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                        'fam'    : "%.2f" % round(ins.tot_price, 2)
+                        , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+                        , 'state'  : ins.current_state.name
+                        , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+                        } 
+                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
             self.fields['orders'].choices = _choice
 
             #set order informations

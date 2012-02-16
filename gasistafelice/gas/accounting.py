@@ -48,7 +48,7 @@ class GasAccountingProxy(AccountingProxy):
         if descr:
             description += ". %s" % descr.replace(description + ". ", "")
         issuer =  self.subject
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT', date=date)
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'PAYMENT')
         if refs:
             transaction.add_references(refs)
 
@@ -129,9 +129,10 @@ class GasAccountingProxy(AccountingProxy):
             # pay supplier
             self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr, date=date, multiple=multiple)
         elif yet_payed != amount:
-            #TODO: ECO update payment
-            tx = self.get_supplier_order_transaction(self, order, refs)
+            tx = self.get_supplier_order_transaction(order, refs)
             if tx:
+                #FIXME: something wrong. The old transaction is deleted and the new one loose refs
+                #simple accounting: transaction.ledger_entries.delete() but do not recreate the link to the original refs that permit to retrieve the transaction itsel finding by order. see: get_supplier_order_data
                 update_transaction(tx, amount=amount)
 
     def get_supplier_order_data(self, order, refs=None):
@@ -256,7 +257,7 @@ class GasAccountingProxy(AccountingProxy):
         issuer = self.subject
         kind = 'GAS_EXTRA'
 #        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind=kind)
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date=date, kind=kind)
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 
 #        +----------- expenses [P,E]+
 #        |                +--- TODO: OutOfDES
