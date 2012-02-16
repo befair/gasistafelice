@@ -35,7 +35,7 @@ class Block(BlockSSDataTables):
 
 #WAS        2: 'transaction__issuer',
 #WAS        3: 'transaction__source',
-#WAS        4: 'transaction__kind',
+#WAS        3: 'transaction__kind', --> FIXME: In case of translation the search does not operate correctly
 
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions

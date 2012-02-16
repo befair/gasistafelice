@@ -25,11 +25,13 @@ jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
 //        5: 'description',
 //        6: 'is_confirmed'
 
+//                "aaSorting": [[1,'desc'], [0,'desc']],
+
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers',
                 'bLengthChange': true,
                 "iDisplayLength": 50,
-                "aaSorting": [[1,'desc'], [0,'desc']],
+                "aaSorting": [[1,'desc']],
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),
