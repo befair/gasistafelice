@@ -63,25 +63,20 @@ class EcoGASMemberForm(forms.Form):
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError:
-            log.debug(u"EcoGASMemberForm: cannot retrieve GASMember identifier. FORM ATTACK!")
-            raise 
+            raise forms.ValidationError(_("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
         except GASMember.DoesNotExist:
-            log.debug(u"EcoGASMemberForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
-            raise
-           
+            raise forms.ValidationError(_("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
         return cleaned_data
 
     @transaction.commit_on_success
     def save(self):
 
-        #Control logged user
-        #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
-        #refs = gas.cash_referrers
-        #if refs and request.user in refs:
-        if not self.__loggedusr.has_perm(CASH, 
-            obj=ObjectWithContext(self.__order.gas)
-        ):
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot update GASMembers cash!"))
+        #Control logged user KO if superuser
+        #DT: refs = gas.cash_referrers
+        #DT: if refs and request.user in refs:
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__order.gas)) and \
+            not self.__loggedusr == self.__order.referrer_person.user:
+            raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
@@ -106,7 +101,7 @@ class EcoGASMemberForm(forms.Form):
                 # A ledger entry already exists
                 if original_amounted != amounted:
                     gm.gas.accounting.withdraw_from_member_account_update(
-                        gm, amounted, refs, self.__order
+                        gm, amounted, refs
                     )
 
             else:
@@ -258,7 +253,6 @@ EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class InvoiceOrderForm(forms.Form):
 
-    #order_info = forms.CharField(label=_('Information'), required=False, widget=widgets.TextInput())
     amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2,
         error_messages={'required': _('You must insert an postive amount for the operation')}
     )
@@ -268,7 +262,6 @@ class InvoiceOrderForm(forms.Form):
 
         super(InvoiceOrderForm, self).__init__(*args, **kw)
 
-        #SOLIDAL PACT
         self.__order = request.resource.order
         if self.__order:
             #set order informations
@@ -278,8 +271,6 @@ class InvoiceOrderForm(forms.Form):
                 , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
                 , 'state'  : self.__order.current_state.name
             })
-            #    , 'euro' : EURO
-            #self.fields['order_info'].initial = stat
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
 
@@ -288,8 +279,7 @@ class InvoiceOrderForm(forms.Form):
                 self.fields['amount'].initial = "%.2f" % round(self.__order.invoice_amount, 2)
             if self.__order.invoice_note:
                 self.fields['note'].initial = self.__order.invoice_note
-        #self.fields['note'].widget.attrs['class'] = 'input_long'
-        self.fields['amount'].widget.attrs['class'] = 'input_payment'
+        self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
 
         if not self.__order.is_closed():
             self.fields['amount'].widget.attrs['readonly'] = True
@@ -316,11 +306,12 @@ class InvoiceOrderForm(forms.Form):
         if not self.__order:
             return
 
-        #Control logged user
-        if not self.__loggedusr.has_perm(CASH, 
-            obj=ObjectWithContext(self.__gas)
-        ):
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot manage receipt invoice cash!"))
+        #Control logged user KO if superuser
+        #DT: refs = gas.cash_referrers
+        #DT: if refs and request.user in refs:
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__order.gas)) and \
+            not self.__loggedusr == self.__order.referrer_person.user:
+            raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
@@ -328,16 +319,10 @@ class InvoiceOrderForm(forms.Form):
 
         self.__order.invoice_amount = self.cleaned_data['invoice_amount']
         self.__order.invoice_note = self.cleaned_data['invoice_note']
-        #log.debug(u"Invoice amount %s---" % self.__order.invoice_amount)
 
-        try:
-            self.__order.save()
-        except ValueError, e:
-            log.debug(u"retry later " + e.message)
-        else:
-            #Update State if possible
-            self.__order.control_economic_state()
-            #log.debug(u"Invoice saved")
+        self.__order.save()
+        #Update State if possible
+        self.__order.control_economic_state()
 
 #-------------------------------------------------------------------------------
 

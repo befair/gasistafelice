@@ -32,7 +32,8 @@ class Block(AbstractBlock):
         user_actions = []
         order = self.resource.order
 
-        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)):
+        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \
+            request.user == order.referrer_person.user:
 
             if order.is_closed():
 
@@ -67,7 +68,7 @@ class Block(AbstractBlock):
                                 form.save()
 #                                return self.response_success()
 
-                            except ValueError, e:
+                            except Exception, e:
                                 msg = _("Transaction invoice ERROR: ") + e.message
                                 form._errors["amount"] = form.error_class([msg])
 

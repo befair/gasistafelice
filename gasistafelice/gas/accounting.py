@@ -56,6 +56,7 @@ class GasAccountingProxy(AccountingProxy):
 
         tx = Transaction.objects.get_by_reference(refs).get(kind='GAS_WITHDRAWAL')
         if tx:
+            #FIXME: Update make me loose old transaction references
             update_transaction(tx, amount=updated_amount)
             return True
         return False

@@ -58,7 +58,8 @@ class Block(BlockSSDataTables):
 
         order = self.resource.order
 
-        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)):
+        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \
+            request.user == order.referrer_person.user:
 
             if order.is_closed():
 
