@@ -729,7 +729,7 @@ WHERE order_id = %s \
 
     @property
     def payment(self):
-        yet_payed, descr =self.gas.accounting.get_supplier_order_data(self)
+        yet_payed, descr, date =self.gas.accounting.get_supplier_order_data(self)
         return yet_payed
 
     @property

@@ -123,7 +123,7 @@ class GasAccountingProxy(AccountingProxy):
         #retrieve existing payment
         if not refs:
             refs = [order]
-        yet_payed, description = self.get_supplier_order_data(order, refs)
+        yet_payed, description, date_payed = self.get_supplier_order_data(order, refs)
         #Insolute aggregated payment contain many orders that are payed in simultaneous. Refs must be a list of each order that are relative to this unique transaction
         if yet_payed <= 0:
             # pay supplier
@@ -142,9 +142,9 @@ class GasAccountingProxy(AccountingProxy):
             refs = [order]
         tx = self.get_supplier_order_transaction(order, refs)
         if tx:
-            return tx.source.amount, tx.description
+            return tx.source.amount, tx.description, tx.date
         else:
-            return 0, ''
+            return 0, '', None
 
     def get_supplier_order_transaction(self, order, refs=None):
         """

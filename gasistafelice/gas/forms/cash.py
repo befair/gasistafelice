@@ -373,45 +373,63 @@ class InsoluteOrderForm(forms.Form):
         if self.__order:
 
             #set insolute data and informations
-            yet_payed, descr =self.__gas.accounting.get_supplier_order_data(self.__order)
+            yet_payed, descr, date_payed =self.__gas.accounting.get_supplier_order_data(self.__order)
             if yet_payed > 0:
                 self.fields['amount'].initial = "%.2f" % round(yet_payed, 2)
-                self.fields['note'].initial = descr
+                self.fields['causal'].initial = descr
+                self.fields['causal'].widget.attrs['readonly'] = True
+                self.fields['causal'].widget.attrs['disabled'] = 'disabled'
+                self.fields['causal'].help_text = ''
+                self.fields['date'].initial = date_payed
+                self.fields['date'].widget.attrs['readonly'] = True
+                self.fields['date'].widget.attrs['disabled'] = 'disabled'
+                self.fields['date'].help_text = ''
+                del self.fields['orders']
+                #set order informations
+                stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                    'fam'    : "%.2f" % round(self.__order.tot_price, 2)
+                    , 'fatt' : "%.2f" % round(self.__order.invoice_amount, 2)
+                    , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
+                    , 'state'  : self.__order.current_state.name
+                }
 
-            insolutes = self.__order.insolutes
-            _choice = []
-            tot_ordered = 0
-            tot_invoiced = 0
-            tot_eco_entries = 0
-            stat = ''
-            for ins in insolutes:
-                tot_ordered += ins.tot_price
-                tot_invoiced += ins.invoice_amount or 0
-                tot_eco_entries += ins.tot_curtail
-                stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                    'fam'    : "%.2f" % round(ins.tot_price, 2)
-                    , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-                    , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
-                    , 'state'  : ins.current_state.name
-                    , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
-                    } 
-                _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
-#            self.fields['orders2'].queryset = insolutes
-            self.fields['orders'].choices = _choice
+            else:
+                insolutes = self.__order.insolutes
+                _choice = []
+                tot_ordered = 0
+                tot_invoiced = 0
+                tot_eco_entries = 0
+                stat = ''
+                for ins in insolutes:
+                    tot_ordered += ins.tot_price
+                    tot_invoiced += ins.invoice_amount or 0
+                    tot_eco_entries += ins.tot_curtail
+                    stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                        'fam'    : "%.2f" % round(ins.tot_price, 2)
+                        , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+                        , 'state'  : ins.current_state.name
+                        , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+                        } 
+                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+    #            self.fields['orders2'].queryset = insolutes
+                self.fields['orders'].choices = _choice
 
-            #set order informations
-            stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                'fam'    : "%.2f" % round(tot_ordered, 2)
-                , 'fatt' : "%.2f" % round(tot_invoiced, 2)
-                , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
-                , 'state'  : self.__order.current_state.name
-            }
+                #set order informations
+                stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+                    'fam'    : "%.2f" % round(tot_ordered, 2)
+                    , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+                    , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+                    , 'state'  : self.__order.current_state.name
+                }
+
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
         self.fields['amount'].widget.attrs['class'] = 'input_payment'
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             self.fields['amount'].widget.attrs['readonly'] = True
             self.fields['amount'].widget.attrs['disabled'] = 'disabled'
+        self.fields['causal'].widget.attrs['class'] = 'input_long'
 
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
@@ -437,9 +455,7 @@ class InsoluteOrderForm(forms.Form):
 
         #Control logged user
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
-        if not self.__loggedusr.has_perm(CASH, 
-            obj=ObjectWithContext(self.__gas)
-        ):
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
             raise PermissionDenied(ug("You are not a cash_referrer, you cannot manage insolute order cash!"))
 
         if not self.__order.is_unpaid() and not self.__order.is_closed():
@@ -477,7 +493,6 @@ class BalanceForm(forms.Form):
         super(BalanceForm, self).__init__(*args, **kw)
         #self.__gas_list = request.resource.gas_list
 
-        #self.fields['note'].widget.attrs['class'] = 'input_long'
         eco_state = request.resource.balance
         eco_class = get_eco_class(eco_state)
         self.fields['balance'].initial = ("%.2f" % round(request.resource.balance, 2)).replace('.','€')
