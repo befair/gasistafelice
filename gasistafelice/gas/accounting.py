@@ -6,6 +6,7 @@ from simple_accounting.utils import register_transaction, register_simple_transa
 
 from gasistafelice.base.models import Person
 from gasistafelice.consts import INCOME, EXPENSE
+from datetime import datetime
 
 import logging
 log = logging.getLogger(__name__)
@@ -48,20 +49,22 @@ class GasAccountingProxy(AccountingProxy):
         if descr:
             description += ". %s" % descr.replace(description + ". ", "")
         issuer =  self.subject
+        if not date:
+            date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'PAYMENT')
         if refs:
             transaction.add_references(refs)
 
-    def withdraw_from_member_account_update(self, member, updated_amount, refs):
+    def withdraw_from_member_account_update(self, member, updated_amount, refs, date):
 
         tx = Transaction.objects.get_by_reference(refs).get(kind='GAS_WITHDRAWAL')
         if tx:
-            #FIXME: Update make me loose old transaction references
-            update_transaction(tx, amount=updated_amount)
+            #FIXME: Update make me loose old transaction 
+            update_transaction(tx, amount=updated_amount, date=date)
             return True
         return False
 
-    def withdraw_from_member_account(self, member, new_amount, refs, order):
+    def withdraw_from_member_account(self, member, new_amount, refs, order, date):
         """
         Withdraw a given amount ``new_amount`` of money from the account of a member
         of this GAS and bestow it to the GAS's cash.
@@ -79,10 +82,12 @@ class GasAccountingProxy(AccountingProxy):
             raise MalformedTransaction(_("A GAS can withdraw only from its members' accounts"))
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        #'gas': gas.id_in_des, 
+        #'gas': gas.id_in_des,
         description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
         issuer = self.subject
-        transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
+        if not date:
+            date = datetime.now()  #_date.today
+        transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=date, kind='GAS_WITHDRAWAL')
         if refs:
             transaction.add_references(refs)
 
@@ -257,6 +262,8 @@ class GasAccountingProxy(AccountingProxy):
 
         issuer = self.subject
         kind = 'GAS_EXTRA'
+        if not date:
+            date = datetime.now()  #_date.today
 #        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind=kind)
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 

@@ -101,11 +101,11 @@ class EcoGASMemberForm(forms.Form):
                 # A ledger entry already exists
                 if original_amounted != amounted:
                     gm.gas.accounting.withdraw_from_member_account_update(
-                        gm, amounted, refs
+                        gm, amounted, refs, date.today
                     )
 
             else:
-                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order)
+                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order, date.today)
 
 
 class EcoGASMemberRechargeForm(forms.Form):
@@ -180,6 +180,12 @@ def get_year_choices():
     next_year = (dt+year).strftime('%Y')
     return [ ('0', '----'), (last_year, last_year), (actual_year, actual_year), (next_year, next_year)]
 
+def add_time(_date):
+    now = datetime.now()
+    t = now.time()
+    print _date
+    print datetime.combine(_date, t)
+    return datetime.combine(_date, t)
 
 class EcoGASMemberFeeForm(forms.Form):
     """Return form class for row level operation on cash ordered data.
@@ -596,7 +602,7 @@ class TransationGASForm(BalanceGASForm):
                 self.cleaned_data['economic_amount'],
                 self.cleaned_data['economic_target'],
                 self.cleaned_data['economic_causal'],
-                self.cleaned_data['economic_date'],
+                add_time(self.cleaned_data['economic_date']),
         )
 
 #-------------------------------------------------------------------------------
@@ -748,7 +754,7 @@ class TransationPACTForm(BalanceForm):
                     self.cleaned_data['economic_amount'],
                     self.cleaned_data['economic_orders'],
                     self.cleaned_data['economic_causal'],
-                    self.cleaned_data['economic_date'],
+                    add_time(self.cleaned_data['economic_date']),
             )
         else:
             #Do correction
@@ -758,7 +764,7 @@ class TransationPACTForm(BalanceForm):
                     self.cleaned_data['economic_amount'],
                     self.cleaned_data['economic_target'],
                     self.cleaned_data['economic_causal'],
-                    self.cleaned_data['economic_date'],
+                    add_time(self.cleaned_data['economic_date']),
             )
 
 
@@ -788,7 +794,10 @@ def pay_insolutes(gas, pact, amount, insolutes, descr, date):
             #log.debug("pay_insolutes: descr (%s)." % descr)
             try:
                 #MAKE ONLY ONE TRANSACTION with the amount but the ref must contains all orders reference in order to matche this unique transcation
+                log.debug("Entering gas.accounting.pay_supplier_order amount=%s descr=%s" %
+(amount, descr))
                 gas.accounting.pay_supplier_order(order=refs[0], amount=amount, descr=descr, refs=refs, date=date, multiple=multiple_ords)
+                log.debug("Finished gas.accounting.pay_supplier_order")
             except ValueError, e:
                 #log.debug("retry later " + e.message)
                 raise forms.ValidationError(_("error while saving insolute economic data: ") + e.message)
@@ -878,6 +887,6 @@ class TransationGMForm(BalanceForm):
                 self.cleaned_data['economic_amount'],
                 self.cleaned_data['economic_target'],
                 self.cleaned_data['economic_causal'],
-                self.cleaned_data['economic_date'],
+                add_time(self.cleaned_data['economic_date']),
         )
 

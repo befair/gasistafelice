@@ -223,7 +223,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def report_name(self):
-        log.debug("report_namereport_namereport_namereport_namereport_name")
         rep_date = medium_date(self.datetime_end)
         if self.delivery:
             if self.delivery.date:
@@ -744,17 +743,20 @@ WHERE order_id = %s \
             #log.debug("KAPPAO invoice_amount %s " % self.pk)
             return
         #2/3 control members curtails
+        qs = self.purchasers
+        print "Order purchasers(%s) %s " % (qs.count(), qs)
         qs = self.ordered_gasmembers
+        print "Order ordered_gasmembers(%s) %s " % (qs.count(), qs)
         accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
+        print "Order accounted_amounts(%s) %s " % (accounted_amounts.count(), accounted_amounts)
         for item in qs:
-            pass_member = False
             for member in accounted_amounts:
                 if member.pk == item.pk:
-                    pass_member = True
-                    break
-            if not pass_member:
-                #log.debug("KAPPAO member(%s) %s " % (item, self.pk))
-                return
+                    if not member.accounted_amount:
+                        #Find almost one purchaser without associated transaction
+                        break
+                        #log.debug("KAPPAO member(%s) %s " % (item, self.pk))
+                        return
         #3/3 control accounting payment
         tx = self.gas.accounting.get_supplier_order_transaction(self)
         if tx:
