@@ -178,17 +178,17 @@ LOGGING = {
         },
         'logfile':{
             'level':'INFO',
-            'class':'logging.handlers.RotatingFileHandler',
+            'class':'lib.loghandlers.GroupWriteRotatingFileHandler',
             'filename': LOG_FILE,
-            'maxBytes': 1048576,
+            'maxBytes': 1024*1024*5,
             'backupCount' : 5,
             'formatter': 'simple'
         },
         'logfile_debug':{
             'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
+            'class':'lib.loghandlers.GroupWriteRotatingFileHandler',
             'filename': LOG_FILE_DEBUG,
-            'maxBytes': 1048576,
+            'maxBytes': 1024*1024*5,
             'backupCount' : 10,
             'formatter': 'verbose'
         },
