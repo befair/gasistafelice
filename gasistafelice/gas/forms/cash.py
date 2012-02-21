@@ -1,5 +1,5 @@
-#!/usr/local/bin/python
-# coding: utf-8
+# -*- coding: utf-8 -*-
+
 import os, sys
 
 from django import forms
@@ -27,7 +27,7 @@ from gasistafelice.consts import (
         INCOME, EXPENSE, INVOICE_COLLECTION, ASSET, LIABILITY, EQUITY  #Transactions
 )
 
-from datetime import tzinfo, timedelta, datetime, date
+import datetime
 
 import logging
 log = logging.getLogger(__name__)
@@ -101,11 +101,11 @@ class EcoGASMemberForm(forms.Form):
                 # A ledger entry already exists
                 if original_amounted != amounted:
                     gm.gas.accounting.withdraw_from_member_account_update(
-                        gm, amounted, refs, date.today
+                        gm, amounted, refs
                     )
 
             else:
-                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order, date.today)
+                gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order)
 
 
 class EcoGASMemberRechargeForm(forms.Form):
@@ -173,19 +173,20 @@ EcoGASMemberRechargeFormSet = formset_factory(
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
-    dt = datetime.now()
-    year = timedelta(days=365)
+    dt = datetime.datetime.now()
+    year = datetime.timedelta(days=365)
     last_year = (dt-year).strftime('%Y')
     actual_year = dt.strftime('%Y')
     next_year = (dt+year).strftime('%Y')
     return [ ('0', '----'), (last_year, last_year), (actual_year, actual_year), (next_year, next_year)]
 
 def add_time(_date):
-    now = datetime.now()
-    t = now.time()
-    print _date
-    print datetime.combine(_date, t)
-    return datetime.combine(_date, t)
+    if _date == datetime.date.today():
+        now = datetime.datetime.now()
+        t = now.time()
+    else:
+        t = datetime.datetime.time(0,0)
+    return datetime.datetime.combine(_date, t)
 
 class EcoGASMemberFeeForm(forms.Form):
     """Return form class for row level operation on cash ordered data.
@@ -255,7 +256,7 @@ EcoGASMemberFeeFormSet = formset_factory(
 #-------------------------------------------------------------------------------
 
 EURO_HTML = '&euro;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
-EURO_LABEL = 'Eur.'  # €  &amp;euro; &#8364; &euro;  &#128;  &#x80;
+EURO_LABEL = 'Eur.'  # € &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class InvoiceOrderForm(forms.Form):
 
@@ -347,8 +348,8 @@ class InsoluteOrderForm(forms.Form):
         error_messages={'required': _('You must declare the causal of this payment')}
     )
 
-    date = forms.DateField(initial=date.today, required=True
-        , help_text = _("Adjust the operation date if necesary")
+    date = forms.DateField(initial=datetime.date.today, required=True
+        , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
 
@@ -555,7 +556,7 @@ class TransationGASForm(BalanceGASForm):
         error_messages={'required': _('You must declare the causal of this transaction')}
     )
 
-    date = forms.DateField(initial=date.today, required=True
+    date = forms.DateField(initial=datetime.date.today, required=True
         , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
@@ -636,7 +637,7 @@ class TransationPACTForm(BalanceForm):
         error_messages={'required': _('You must declare the causal of this transaction')}
     )
 
-    date = forms.DateField(initial=date.today, required=True
+    date = forms.DateField(initial=datetime.date.today, required=True
         , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
@@ -837,7 +838,7 @@ class TransationGMForm(BalanceForm):
         error_messages={'required': _('You must declare the causal of this transaction')}
     )
 
-    date = forms.DateField(initial=date.today, required=True
+    date = forms.DateField(initial=datetime.date.today, required=True
         , help_text = _("Adjust the operation date if necesary")
         , widget=DateFormatAwareWidget
     )
