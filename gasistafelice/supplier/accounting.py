@@ -2,9 +2,10 @@ from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
-from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
+from simple_accounting.utils import register_transaction
 
 from gasistafelice.consts import INCOME, EXPENSE
+from datetime import datetime
 
 class SupplierAccountingProxy(AccountingProxy):
     """
@@ -136,6 +137,8 @@ class SupplierAccountingProxy(AccountingProxy):
         }
         issuer = self.subject
         kind = 'PACT_EXTRA'
+        if not date:
+            date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 
     #UGLY: remove me when done and executed one command that regenerate all missing accounts

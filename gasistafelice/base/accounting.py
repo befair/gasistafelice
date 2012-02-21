@@ -2,9 +2,10 @@ from django.utils.translation import ugettext as ug, ugettext_lazy as _
 
 from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
-from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details
+from simple_accounting.utils import register_transaction
 
 from gasistafelice.consts import INCOME, EXPENSE, ASSET, LIABILITY, EQUITY
+from datetime import datetime
 
 class PersonAccountingProxy(AccountingProxy):
     """
@@ -36,6 +37,8 @@ class PersonAccountingProxy(AccountingProxy):
         amount = gas.membership_fee
         description = ug("Year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
         issuer = self.subject
+        if not date:
+            date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'MEMBERSHIP_FEE')
         transaction.add_references([person, gas])
 
@@ -72,6 +75,8 @@ class PersonAccountingProxy(AccountingProxy):
             target_account = gas.accounting.system['/members/' + person.uid]
             description = unicode(person.report_name)
             issuer = self.subject
+            if not date:
+                date = datetime.now()  #_date.today
             transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'RECHARGE')
             transaction.add_references([person, gas])
 
@@ -177,6 +182,8 @@ class PersonAccountingProxy(AccountingProxy):
             'causal': causal
         }
         issuer = self.subject
+        if not date:
+            date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 
 #		. gasmember ROOT (/)
