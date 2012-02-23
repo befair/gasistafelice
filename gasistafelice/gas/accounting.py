@@ -1,8 +1,14 @@
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
-from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
+from simple_accounting.models import (AccountingProxy, Transaction, 
+    LedgerEntry, account_type, TransactionReference
+)
+from simple_accounting.utils import (register_transaction, 
+    register_simple_transaction, transaction_details, 
+    update_transaction
+)
 
 from gasistafelice.base.models import Person
 from gasistafelice.consts import INCOME, EXPENSE
@@ -10,6 +16,8 @@ import datetime
 
 import logging
 log = logging.getLogger(__name__)
+
+GAS_WITHDRAWAL = 'GAS_WITHDRAWAL'
 
 class GasAccountingProxy(AccountingProxy):
     """
@@ -57,7 +65,7 @@ class GasAccountingProxy(AccountingProxy):
 
     def withdraw_from_member_account_update(self, member, updated_amount, refs, date):
 
-        tx = Transaction.objects.get_by_reference(refs).get(kind='GAS_WITHDRAWAL')
+        tx = Transaction.objects.get_by_reference(refs).get(kind=GAS_WITHDRAWAL)
         if tx:
             #FIXME: Update make me loose old transaction 
             update_transaction(tx, amount=updated_amount, date=date)
@@ -86,7 +94,7 @@ class GasAccountingProxy(AccountingProxy):
         description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
         issuer = self.subject
         transaction = register_simple_transaction(source_account, target_account, new_amount, 
-            description, issuer, date=date, kind='GAS_WITHDRAWAL'
+            description, issuer, date=date, kind=GAS_WITHDRAWAL
         )
         if refs:
             transaction.add_references(refs)
@@ -175,34 +183,48 @@ class GasAccountingProxy(AccountingProxy):
         representing the total amount of money already accounted for with respect 
         to the entire set of orders placed by that GAS member within ``order``.
         
-        A (member) order is considered to be "accounted" iff a transaction recording it
+        A (member) order is considered to be "accounted" if a transaction recording it
         exists within that GAS's accounting system.
         
         If ``order`` has not been placed by the GAS owning this accounting system,
         raise ``TypeError``.
         """
+        from gasistafelice.gas.models import GASMember
+
         gas = self.subject.instance
         if order.pact.gas == gas:
-            members = set()
-            for member in order.purchasers:
-                # retrieve transactions related to this GAS member and order,
-                # including only withdrawals made by the GAS from members' accounts
-                #NOTE: DOMTHU useful for list 
-                #txs = Transaction.objects.get_by_reference([member, order]).filter(kind='GAS_WITHDRAWAL')
-                #member.accounted_amount = sum([tx.source.amount for tx in txs])
-                #NOTE: in this method we MUST have only one transaction 
-                # for each (member, order) couple
-                try:
-                    tx = Transaction.objects.get_by_reference([member, order]).get(kind='GAS_WITHDRAWAL')
-                except Transaction.DoesNotExist:
-                    member.accounted_amount = None
-                else:
-                    member.accounted_amount = tx.source.amount
 
-                members.add(member)
+            order_txs = Transaction.objects.get_by_reference([order])
+            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+
+            members_d = {}
+            ctype_gm = ContentType.objects.get_for_model(GASMember)
+
+            # For each WITHDRAW related to the order
+            for tx in order_txs:
+
+                try:
+                    # Retrieve GASMember reference
+                    gm_ref = tx.reference_set.get(content_type=ctype_gm)
+                except TransactionReference.DoesNotExist as e:
+                    # We have hit a WITHDRAW related to order, 
+                    # but not to a GASMember
+                    pass
+                else:
+                    gm = gm_ref.instance
+                    members_d[gm] = members_d.get(gm,0) + tx.source.amount
+
+            members = set()
+            for gm, amount in members_d.items():
+                gm.accounted_amount = amount
+                members.add(gm)
+
             return members
+            
         else:
-            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order}))
+            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+                'gas': gas.id_in_des, 'order': order
+            }))
 
     def entries(self):
         """
