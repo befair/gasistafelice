@@ -21,9 +21,10 @@ jQuery.UIBlockOrderCurtail = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     { "sWidth": "10%", "bSortable" : false, "bSearchable" : false},
-                    { "sWidth": "50%", "bSortable" : false, "bSearchable" : false},
+                    { "sWidth": "40%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
-                    { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "input_payment taright" }
+                    { "sWidth": "20%", "bSortable" : false, "bSearchable" : false, "sClass": "input_payment taright" },
+                    { "sWidth": "10%", "bSortable" : false, "bSearchable" : false, "sClass": "tacenter"},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
