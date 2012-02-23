@@ -63,10 +63,10 @@ class EcoGASMemberForm(forms.Form):
         cleaned_data = super(EcoGASMemberForm, self).clean()
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
-        except KeyError:
-            raise forms.ValidationError(_("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
+        except KeyError as e:
+            raise forms.ValidationError(ug("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
         except GASMember.DoesNotExist:
-            raise forms.ValidationError(_("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
+            raise forms.ValidationError(ug("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
         return cleaned_data
 
     @transaction.commit_on_success
@@ -114,6 +114,73 @@ class EcoGASMemberForm(forms.Form):
             #Update State if possible
             self.__order.control_economic_state()
 
+#--------------------------------------------------------------------------------
+
+class NewEcoGASMemberForm(forms.Form):
+    """Return an empty form class for row level operation on cash ordered data
+    use in Curtail -> ADD FAMILY
+    Movement between GASMember.account --> GAS.account
+    """
+
+    gasmember = forms.ModelChoiceField(queryset=GASMember.objects.none())
+    amounted = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2)
+    applied = forms.BooleanField(required=False, initial=False)
+
+    def __init__(self, request, *args, **kw):
+        super(NewEcoGASMemberForm, self).__init__(*args, **kw)
+        gm_qs = request.resource.gasmembers
+        purchs_ids = map(lambda gm: gm.pk, request.resource.purchasers)
+        self.fields['gasmember'].queryset = gm_qs.exclude(pk__in=purchs_ids)
+        self.fields['amounted'].widget.attrs['class'] = 'taright'
+        self.__loggedusr = request.user
+        self.__order = request.resource.order
+
+    def create_fake_purchaser(self, purchaser, price, note):
+
+        return GASMemberOrder.objects.create(
+            ordered_product = self.__order.orderable_products[0],
+            ordered_amount = 1,
+            withdrawn_amount = 9999,
+            is_confirmed = True,
+            note = "[NEW FAM] %s" % note,
+            ordered_price = price,
+            purchaser = purchaser
+        )
+
+    def clean(self):
+
+        cleaned_data = super(NewEcoGASMemberForm, self).clean()
+        return cleaned_data
+
+    @transaction.commit_on_success
+    def save(self):
+
+        #Control logged user KO if superuser
+        if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__order.gas)) and \
+            not self.__loggedusr == self.__order.referrer_person.user:
+            raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
+
+        if not self.__order.is_closed():
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
+            raise PermissionDenied(ug("order is not in good state!"))
+
+        #Do economic work
+        gm = self.cleaned_data['gasmember']
+        amounted = self.cleaned_data.get('amounted') or 0
+        enabled = self.cleaned_data.get('applied')
+
+        if amounted > 0 and enabled:
+
+            log.debug("Save NewEcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
+            amounted = abs(amounted)
+            self.create_fake_purchaser(gm, amounted, 
+                note=ug("added by: %s") % self.__loggedusr
+            )
+            refs = [gm, self.__order]
+            gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order)
+
+
+#--------------------------------------------------------------------------------
 
 class EcoGASMemberRechargeForm(forms.Form):
     """Return form class for row level operation on cash ordered data
@@ -173,10 +240,10 @@ class EcoGASMemberRechargeForm(forms.Form):
         gm.person.accounting.do_recharge(self.__gas, recharged)
 
 EcoGASMemberRechargeFormSet = formset_factory(
-                                form=EcoGASMemberRechargeForm,
-                                formset=BaseFormSetWithRequest,
-                                extra=0 #must be 0 no add form
-                          )
+    form=EcoGASMemberRechargeForm,
+    formset=BaseFormSetWithRequest,
+    extra=0 #must be 0 no add form
+)
 
 def get_year_choices():
     #DOMTHU: return [ ('2001', '2001'), ('2002', '2002'), ('2003', '2003')]
@@ -252,10 +319,10 @@ class EcoGASMemberFeeForm(forms.Form):
         gm.person.accounting.pay_membership_fee(self.__gas, year)
 
 EcoGASMemberFeeFormSet = formset_factory(
-                                form=EcoGASMemberFeeForm,
-                                formset=BaseFormSetWithRequest,
-                                extra=0 #must be 0 no add form
-                          )
+    form=EcoGASMemberFeeForm,
+    formset=BaseFormSetWithRequest,
+    extra=0 #must be 0 no add form
+)
 
 
 
@@ -309,7 +376,7 @@ class InvoiceOrderForm(forms.Form):
             cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
             cleaned_data['invoice_note'] = cleaned_data['note']
         except KeyError, e:
-            raise forms.ValidationError(_("InvoiceOrderForm: cannot retrieve invoice data: ") + e.message)
+            raise forms.ValidationError(ug("InvoiceOrderForm: cannot retrieve invoice data: ") + e.message)
 
         return cleaned_data
 
@@ -438,7 +505,7 @@ class InsoluteOrderForm(forms.Form):
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
         except KeyError, e:
-            raise forms.ValidationError(_("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ug("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -585,10 +652,10 @@ class TransationGASForm(BalanceGASForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(_("TransationGASForm: transaction require a causal explanation"))
+                raise forms.ValidationError(ug("TransationGASForm: transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(_("TransationGASForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ug("TransationGASForm: cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -721,14 +788,14 @@ class TransationPACTForm(BalanceForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(_("TransationPACTForm: transaction require a causal explanation"))
+                raise forms.ValidationError(ug("TransationPACTForm: transaction require a causal explanation"))
             if cleaned_data['economic_target'] == INVOICE_COLLECTION:
                 cleaned_data['economic_orders'] = cleaned_data['orders']
                 if not cleaned_data['economic_orders'] or len(cleaned_data['economic_orders']) <= 0:
-                    self._errors["orders"] = self.error_class([_("Insolute transaction require almost one order to be payed")])
+                    self._errors["orders"] = self.error_class([ug("Insolute transaction require almost one order to be payed")])
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(_("TransationPACTForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ug("TransationPACTForm: cannot retrieve economic data: ") + e.message)
 
 #        try:
 #            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
@@ -736,7 +803,7 @@ class TransationPACTForm(BalanceForm):
 #            #ok
 #            pass
 #        else:
-#            raise ValidationError(_("Pact between this GAS and this Supplier already exists"))
+#            raise ValidationError(ug("Pact between this GAS and this Supplier already exists"))
 
         return cleaned_data
 
@@ -808,14 +875,14 @@ def pay_insolutes(gas, pact, amount, insolutes, descr, date):
                 log.debug("Finished gas.accounting.pay_supplier_order")
             except ValueError, e:
                 #log.debug("retry later " + e.message)
-                raise forms.ValidationError(_("error while saving insolute economic data: ") + e.message)
+                raise forms.ValidationError(ug("error while saving insolute economic data: ") + e.message)
             else:
                 #log.debug("Insolute(%s) saved " % len(refs))
                 for _order in refs:
                     #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
                     _order.control_economic_state()
         else:
-            raise forms.ValidationError(_("cannot retrieve economic orders"))
+            raise forms.ValidationError(ug("cannot retrieve economic orders"))
 
 #-------------------------------------------------------------------------------
 
@@ -868,10 +935,10 @@ class TransationGMForm(BalanceForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(_("TransationGMForm: transaction require a causal explanation"))
+                raise forms.ValidationError(ug("TransationGMForm: transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(_("TransationGMForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ug("TransationGMForm: cannot retrieve economic data: ") + e.message)
 
 #LF        # MEMBERS
 #LF        gms = request.resource.gasmembers

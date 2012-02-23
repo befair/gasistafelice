@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.db import transaction
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 
@@ -7,7 +8,7 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 
 from gasistafelice.gas.models import GASMember, GASMemberOrder
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.cash import EcoGASMemberForm
+from gasistafelice.gas.forms.cash import EcoGASMemberForm, NewEcoGASMemberForm
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 
@@ -116,7 +117,7 @@ class Block(BlockSSDataTables):
         return formset_factory(
             form=EcoGASMemberForm,
             formset=BaseFormSetWithRequest,
-            extra=0
+            extra=1
         )
 
     def _getItem(self, pairs, colname, default):
@@ -175,6 +176,54 @@ class Block(BlockSSDataTables):
                'apply' : form['applied'],
             })
 
+        form = NewEcoGASMemberForm(request, prefix="new-fam")
+        records.append({
+           'purchaser_id' : 0,
+           'gasmember' : form['gasmember'],
+           'sum_amount' : 0,
+           'amounted' : form['amounted'],
+           'apply' : form['applied'],
+        })
+
         return formset, records, {}
+
+    def _do_post_edit_multiple(self):
+
+        request = self.request
+        form_class = self._get_edit_multiple_form_class()
+
+        post_d = request.POST.copy()
+
+        new_fam_d = {}
+        for k,v in request.POST.items():
+            if k.startswith('new-fam'):
+                new_fam_d[k[len('new-fam-'):]] = v
+                post_d.pop(k)
+                
+        try:
+            formset = form_class(request, post_d)
+        except AttributeError as e:
+            # TODO-not-a-priority: fero ... thinking about it....
+            # NOTE fero: Form refactory neeeded: 'WSGIRequest' object has no attribute 'get'
+            # NOTE fero: Following NOTES-FERO we will do: 
+            # NOTE fero: if isinstance(form_class, FormRequestWrapper)
+            # NOTE fero:    f = form_class(request, request.POST)
+            # NOTE fero:    formset = f.form
+            formset = form_class(post_d)
+
+        new_fam_form = NewEcoGASMemberForm(request, new_fam_d)
+
+        if formset.is_valid() and new_fam_form.is_valid():
+            with transaction.commit_on_success():
+                for form in formset:
+                    # Check for data: empty formsets are full of empty data ;)
+                    if form.cleaned_data:
+                        form.save()
+                    if new_fam_form.cleaned_data:
+                        new_fam_form.save()
+
+            return self.response_success()
+        else:
+            return self.response_error(formset.errors)
 
 

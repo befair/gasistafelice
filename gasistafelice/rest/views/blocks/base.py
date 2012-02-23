@@ -202,6 +202,32 @@ class BlockSSDataTables(BlockWithList):
     def _get_edit_multiple_form_class(self):
         raise NotImplementedError("_get_edit_multiple_form_class should be implemented in subclass")
 
+    def _do_post_edit_multiple(self):
+
+        request = self.request
+
+        form_class = self._get_edit_multiple_form_class()
+        try:
+            formset = form_class(request, request.POST)
+        except AttributeError as e:
+            # TODO-not-a-priority: fero ... thinking about it....
+            # NOTE fero: Form refactory neeeded: 'WSGIRequest' object has no attribute 'get'
+            # NOTE fero: Following NOTES-FERO we will do: 
+            # NOTE fero: if isinstance(form_class, FormRequestWrapper)
+            # NOTE fero:    f = form_class(request, request.POST)
+            # NOTE fero:    formset = f.form
+            formset = form_class(request.POST)
+
+        if formset.is_valid():
+            with transaction.commit_on_success():
+                for form in formset:
+                    # Check for data: empty formsets are full of empty data ;)
+                    if form.cleaned_data:
+                        form.save()
+            return self.response_success()
+        else:
+            return self.response_error(formset.errors)
+
     #------------------------------------------------------------------------------#    
     #                                                                              #     
     #------------------------------------------------------------------------------#
@@ -236,27 +262,7 @@ class BlockSSDataTables(BlockWithList):
 
             if request.method == 'POST':
 
-                form_class = self._get_edit_multiple_form_class()
-                try:
-                    formset = form_class(request, request.POST)
-                except AttributeError as e:
-                    # TODO-not-a-priority: fero ... thinking about it....
-                    # NOTE fero: Form refactory neeeded: 'WSGIRequest' object has no attribute 'get'
-                    # NOTE fero: Following NOTES-FERO we will do: 
-                    # NOTE fero: if isinstance(form_class, FormRequestWrapper)
-                    # NOTE fero:    f = form_class(request, request.POST)
-                    # NOTE fero:    formset = f.form
-                    formset = form_class(request.POST)
-
-                if formset.is_valid():
-                    with transaction.commit_on_success():
-                        for form in formset:
-                            # Check for data: empty formsets are full of empty data ;)
-                            if form.cleaned_data:
-                                form.save()
-                    return self.response_success()
-                else:
-                    return self.response_error(formset.errors)
+                return self._do_post_edit_multiple()
                     
             querySet = self._get_resource_list(request) 
             #columnIndexNameMap is required for correct sorting behavior

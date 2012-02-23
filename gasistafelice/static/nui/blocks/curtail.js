@@ -83,7 +83,7 @@ jQuery.UIBlockOrderCurtail = jQuery.UIBlockWithList.extend({
                     }
                     /* Modify Django management form info */
                     /* FIXME TODO AFTER 6 UGLY !!!*/
-                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart-1);
                 }
             });
 
