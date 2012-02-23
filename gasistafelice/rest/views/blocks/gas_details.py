@@ -13,7 +13,10 @@ from gasistafelice.rest.views.blocks import details
 
 from gasistafelice.lib.shortcuts import render_to_context_response
 
-#from gasistafelice.gas.forms.base import EditGasForm
+from gasistafelice.gas.forms.base import EditGasForm
+
+import logging
+log = logging.getLogger(__name__)
 
 class Block(details.Block):
 

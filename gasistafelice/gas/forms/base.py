@@ -108,7 +108,21 @@ class SingleUserForm(forms.Form):
 
 
 class BaseGasForm(forms.ModelForm):
-    pass
+    def __init__(self, request, *args, **kw):
+        super(BaseGasForm, self).__init__(*args, **kw)
+
+        model = self._meta.model
+
+    class Meta:
+        model = GAS
+        fields = (
+            'name', 'description'
+        )
+        gf_fieldsets = [(None, {
+            'fields' : (
+                'name'
+            ),
+        })]
 
 class AddGasForm(BaseGasForm):
     pass

@@ -21,7 +21,9 @@ from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 from gasistafelice import consts
 
-import time, datetime
+import time, datetime, logging
+log = logging.getLogger(__name__)
+
 
 #------------------------------------------------------------------------------#
 #                                                                              #
