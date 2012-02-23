@@ -100,6 +100,7 @@ class EcoGASMemberForm(forms.Form):
 
             original_amounted = self.cleaned_data['original_amounted']
 
+            #WAS: decide to remove this options 
             if original_amounted is not None:
                 # A ledger entry already exists
                 if original_amounted != amounted:
@@ -109,6 +110,9 @@ class EcoGASMemberForm(forms.Form):
 
             else:
                 gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order, date.today)
+
+            #Update State if possible
+            self.__order.control_economic_state()
 
 
 class EcoGASMemberRechargeForm(forms.Form):
