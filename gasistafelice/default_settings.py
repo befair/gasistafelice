@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+FORM_DEBUG = False
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()

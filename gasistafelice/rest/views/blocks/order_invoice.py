@@ -15,6 +15,8 @@ from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.gas.forms.cash import InvoiceOrderForm
 
+from django.conf import settings
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -69,8 +71,11 @@ class Block(AbstractBlock):
 #                                return self.response_success()
 
                             except Exception, e:
-                                msg = _("Transaction invoice ERROR: ") + e.message
-                                form._errors["amount"] = form.error_class([msg])
+                                if settings.FORM_DEBUG:
+                                    raise
+                                else:
+                                    msg = _("Transaction invoice ERROR: ") + e.message
+                                    form._errors["amount"] = form.error_class([msg])
 
         else:
                 form = InvoiceOrderForm(request)
