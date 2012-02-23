@@ -197,8 +197,9 @@ class GasAccountingProxy(AccountingProxy):
             order_txs = Transaction.objects.get_by_reference([order])
             order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
 
-            members_d = {}
             ctype_gm = ContentType.objects.get_for_model(GASMember)
+
+            members_d = {}
 
             # For each WITHDRAW related to the order
             for tx in order_txs:
@@ -213,6 +214,54 @@ class GasAccountingProxy(AccountingProxy):
                 else:
                     gm = gm_ref.instance
                     members_d[gm] = members_d.get(gm,0) + tx.source.amount
+
+            members = set()
+            for gm, amount in members_d.items():
+                gm.accounted_amount = amount
+                members.add(gm)
+
+            return members
+            
+        else:
+            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+                'gas': gas.id_in_des, 'order': order
+            }))
+
+    def accounted_amount_by_gas_member(self, order):
+        """
+        Given a supplier order ``order``, return an annotated set of GAS members
+        partecipating to that order.
+        
+        Each GAS member instance will have an ``.accounted_amount`` attribute,
+        representing the total amount of money already accounted for with respect 
+        to the entire set of orders placed by that GAS member within ``order``.
+        
+        A (member) order is considered to be "accounted" if a transaction recording it
+        exists within that GAS's accounting system.
+        
+        If ``order`` has not been placed by the GAS owning this accounting system,
+        raise ``TypeError``.
+        """
+        from gasistafelice.gas.models import GASMember
+
+        gas = self.subject.instance
+        if order.pact.gas == gas:
+
+            order_txs = Transaction.objects.get_by_reference([order])
+            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+
+            ctype_gm = ContentType.objects.get_for_model(GASMember)
+            # Retrieve order WITHDRAWs related to GASMembers
+            order_txs = order_txs.filter(reference_set__content_type=ctype_gm)
+
+            members_d = {}
+
+            # For each WITHDRAW related to the order
+            for tx in order_txs:
+
+                gm_ref = tx.reference_set.get(content_type=ctype_gm)
+                gm = gm_ref.instance
+                members_d[gm] = members_d.get(gm,0) + tx.source.amount
 
             members = set()
             for gm, amount in members_d.items():
