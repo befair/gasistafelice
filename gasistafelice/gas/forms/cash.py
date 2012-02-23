@@ -47,6 +47,7 @@ class EcoGASMemberForm(forms.Form):
     gm_id = forms.IntegerField(widget=forms.HiddenInput)
     original_amounted = CurrencyField(required=False, widget=forms.HiddenInput())
     amounted = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2) #, widget=forms.TextInput())
+    applied = forms.BooleanField(required=False)
 
     #TODO: domthu: note and delete
     #note = forms.CharField(required=False, widget=forms.TextInput(), max_length=64)
@@ -88,8 +89,10 @@ class EcoGASMemberForm(forms.Form):
 
         #Do economic work
         amounted = self.cleaned_data.get('amounted')
+        enabled = self.cleaned_data.get('applied')
 
-        if amounted:
+        if amounted and enabled:
+            log.debug("Save EcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
             # This kind of amount is ever POSITIVE!
             amounted = abs(amounted)
 

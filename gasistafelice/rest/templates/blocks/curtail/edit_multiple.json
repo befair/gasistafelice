@@ -9,6 +9,7 @@
         "{{row.gasmember|escapejs}}",
         "&#8364; {{row.sum_amount|floatformat:"2"}}",
         "{{row.amounted|escapejs}}",
+        "{{row.apply|escapejs}}",
 
     ]
     {% if not forloop.last %}

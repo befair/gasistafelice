@@ -37,7 +37,8 @@ class Block(BlockSSDataTables):
         0: 'ordered_product__order', 
         1: 'purchaser',
         2: 'sum_amount',
-        3: ''
+        3: '',
+        4: 'apply'
     }
 #        2: 'tot_product',
 #        3: 'sum_qta',
@@ -149,6 +150,7 @@ class Block(BlockSSDataTables):
                '%s-gm_id' % key_prefix : item.pk,
                '%s-original_amounted' % key_prefix : item.accounted_amount,
                '%s-amounted' % key_prefix : "%.2f" % round(accounted_wallet, 2),
+               '%s-applied' % key_prefix : not bool(item.accounted_amount),
             })
 
             map_info[item.pk] = {'formset_index' : i}
@@ -170,6 +172,7 @@ class Block(BlockSSDataTables):
                'gasmember' : item,
                'sum_amount' : item.sum_amount,
                'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['original_amounted']),
+               'apply' : form['applied'],
             })
 
         return formset, records, {}
