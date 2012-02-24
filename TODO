@@ -1,34 +1,74 @@
 
-DONE
-----
+TODO 0.8
+--------
 
-* Risolvere bug, NO USER URNS
-* Visualizzazione messaggi utente nelle form ove presenti
-* Nome dell'ordine secondo gli stati e tradurre
+In carico a Dominique:
 
-* TEST eseguiti:
---> apri ordine
---> modifica ordine
---> apri ordine con pianificazione
---> modifica report
---> modifica paniere
+* Parte economica:
+  - decurtazione: check "applica tutti" $(*.input[type=checked]).val() = false
+  - decurtazione+simple_accounting: consentire transazioni di valore 0
+  - non fare "update_transaction", ma "register_simple_transaction" della
+    differenza quando si modifica il decurtato per un gasista 
+  - Verificare visualizzazione transazioni
+  - Eliminare uno dei due gas accounting.accounted_amount_by_gasmember 
+    (preferibilmente il primo) dopo aver verificato che funziona
+* Sistemare ugettext e ugettext_lazy
 
-* Permessi per aggiungi/modifica prodotti
-* Fix aggiornamento automatico listini GAS su creazione/modifica prodotti
-* Formato orario
+In carico a fero:
 
-DEVEL:
-
-* Resource API GMO.stock e sostituire 
-* Frequency_choices costante e in giorni
-* s/_qta/_amount
-
-TODO 20120405
-----
-
-* Sincronizza utenti forum
+* Verifica e FIX che non carica la pagina per un ordine archiviato
+* Far scomparire il pulsante "Archivia" dalla gestione dell'ordine
+* Riabilitare le notifiche
 * Link al forum in alto
 * Elimina prodotto
+* Pagina di errore 505
+
+
+TODO 0.9
+--------
+
+* Perfezionare le notifiche
+* Invio email su chiusura ordine
+* Primo rilascio InterGAS
+* Popup su operazioni economiche
+* Presentazione del saldo
+* "eliminazione" (disabilitazione) GASMember:
+    - Integrare South 
+    - Aggiungere campo is_active nel GASMember
+    - Gestione del campo in un form/azione come "Elimina gasista"
+    - Gestire "aggiungi gasista"
+    - Gestire il filtro gasisti attivi o no, nelle query e/o nei manager
+
+TODO 1.0
+--------
+
+* Sistemazione InterGAS
+* Notifiche su registrazione
+* Verifica email del produttore
+* Pagina iniziale: individuazione del browser
+  e link al download di Firefox
+* Screencast e finalizzazione manuale
+
+
+TODO 1.1
+--------
+
+* Report PDF 
+* Listini gasisti pre-ordini
+
+TODO 1.2
+--------
+
+* Completa cartone
+
+TODO 2.0
+--------
+
+* Sistema delega
+
+TODO 20120105
+----
+
 * Tooltip risorse
 * Disabilitare permesso "users" nell'admin interface per i referenti informatici dei GAS
 

@@ -4,12 +4,9 @@
 [submodule "submodules/django-flexi-auth"]
 	path = submodules/django-flexi-auth
 	url = git://github.com/seldon/django-flexi-auth.git
-[submodule "submodules/django-askbot"]
-	path = submodules/django-askbot
-	url = git://github.com/feroda/askbot-devel.git
 [submodule "submodules/django-notification"]
 	path = submodules/django-notification
 	url = https://github.com/feroda/django-notification.git
 [submodule "submodules/django-simple-accounting"]
 	path = submodules/django-simple-accounting
-	url = git://github.com/seldon/django-simple-accounting.git
+	url = git@github.com:feroda/django-simple-accounting.git

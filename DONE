@@ -1,0 +1,30 @@
+
+DONE 0.7
+--------
+
+* Risolvere bug, NO USER URNS
+* Visualizzazione messaggi utente nelle form ove presenti
+* Nome dell'ordine secondo gli stati e tradurre
+
+* TEST eseguiti:
+--> apri ordine
+--> modifica ordine
+--> apri ordine con pianificazione
+--> modifica report
+--> modifica paniere
+
+* Permessi per aggiungi/modifica prodotti
+* Fix aggiornamento automatico listini GAS su creazione/modifica prodotti
+* Formato orario
+
+DEVEL:
+
+* Resource API GMO.stock e sostituire 
+* Frequency_choices costante e in giorni
+* s/_qta/_amount
+
+SYSTEM:
+
+* Sincronizza utenti forum
+
+
