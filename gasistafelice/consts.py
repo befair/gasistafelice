@@ -22,6 +22,8 @@ CONFIRM = 'confirm'
 CASH = 'cash'
 
 ## accounting-related constants
+NONDES_NAME = 'NonDES'
+NONDES_SURNAME = 'Account'
 # account types
 INCOME = 'INCOME'
 EXPENSE = 'EXPENSE'

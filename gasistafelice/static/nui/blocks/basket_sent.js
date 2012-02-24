@@ -26,11 +26,11 @@ jQuery.UIBlockBasketSentList = jQuery.UIBlockWithList.extend({
                 "aaSorting": [[2,"asc"]],
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true, "sWidth": "30%"},
-                    {"bSearchable":false,"bSortable":true, "sWidth": "15%"},
-                    {"bSearchable":false,"bSortable":true, "sWidth": "25%"},
-                    { "sType": "currency", "sClass": "taright", "sWidth": "10%","bSearchable":false },
-                    {"bSortable":false, "sClass": "taright", "sWidth": "10%","bSearchable":false},
-                    { "sType": "currency","bSortable":false, "sClass": "taright", "sWidth": "10%","bSearchable":false },
+                    {"bSearchable":true,"bSortable":true, "sWidth": "15%"},
+                    {"bSearchable":true,"bSortable":true, "sWidth": "25%"},
+                    {"bSearchable":true, "bSortable":true, "sType": "currency", "sClass": "taright", "sWidth": "10%"},
+                    {"bSearchable":true, "bSortable":true, "sClass": "taright", "sWidth": "10%"},
+                    {"bSearchable":false, "sType": "currency","bSortable":false, "sClass": "taright", "sWidth": "10%"},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

@@ -15,6 +15,8 @@ from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.gas.forms.cash import InvoiceOrderForm
 
+from django.conf import settings
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -32,9 +34,10 @@ class Block(AbstractBlock):
         user_actions = []
         order = self.resource.order
 
-        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)):
+        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \
+            request.user == order.referrer_person.user:
 
-            if order.is_closed():
+            if order.is_closed() or order.is_unpaid():
 
                 user_actions += [
                     ResourceBlockAction(
@@ -62,16 +65,21 @@ class Block(AbstractBlock):
                 if form.is_valid():
                     with transaction.commit_on_success():
                         if form.cleaned_data:
-                            form.save()
-                    #FIXME: handler attached: ajaxified form undefined
-#                    return self.response_success()
-#                else:
-#                    return self.response_error(form.errors)
+                            try:
+
+                                form.save()
+#                                return self.response_success()
+
+                            except Exception, e:
+                                if settings.FORM_DEBUG:
+                                    raise
+                                else:
+                                    msg = _("Transaction invoice ERROR: ") + e.message
+                                    form._errors["amount"] = form.error_class([msg])
 
         else:
                 form = InvoiceOrderForm(request)
 
-#        if args == "":
         ctx = {
             'resource'      : res,
             'sanet_urn'     : "%s/%s" % (resource_type, resource_id),

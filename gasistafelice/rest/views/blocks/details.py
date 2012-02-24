@@ -386,7 +386,7 @@ class Block(AbstractBlock):
         user_actions = self._get_user_actions(request)
             
         #
-        # Prepere data for the templage
+        # Prepare data for the templage
         #
         ctx = {
             'resource'      : res,

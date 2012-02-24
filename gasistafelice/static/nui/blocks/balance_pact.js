@@ -2,7 +2,7 @@
 //                                                                              //
 //------------------------------------------------------------------------------//
 
-jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
+jQuery.UIBlockBalancePACT = jQuery.UIBlock.extend({
 
     action_handler : function(action_el) {
         if (action_el.attr('name') == "new_note") {
@@ -35,7 +35,7 @@ jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
         //template elements
         var content_template = '\
         <div>\
-            <form id="insolute_id" method="POST" action="@@action_url@@">\
+            <form id="fbalancepact" method="POST" action="@@action_url@@">\
             <div class="list_actions">@@list_actions@@</div> \
             @@content@@\
             </form>\
@@ -70,9 +70,8 @@ jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
         
     },
 
-
     post_load_handler : function() {
-        var form_el = $("#insolute_id");
+        var form_el = $("#fbalancepact");
         form_el.ajaxForm({
             dataType : 'xml',
             success : function(responseXML, statusText, xhr, $form)  {
@@ -93,5 +92,5 @@ jQuery.UIBlockOrderInsolute = jQuery.UIBlock.extend({
 
 })
 
-jQuery.BLOCKS["order_insolute"] = new jQuery.UIBlockOrderInsolute("order_insolute");
+jQuery.BLOCKS["balance_pact"] = new jQuery.UIBlockBalancePACT("balance_pact");
 

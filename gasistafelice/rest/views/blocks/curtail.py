@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.db import transaction
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 
@@ -7,7 +8,9 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 
 from gasistafelice.gas.models import GASMember, GASMemberOrder
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.forms.cash import EcoGASMemberForm, BaseFormSetWithRequest, formset_factory
+from gasistafelice.gas.forms.cash import EcoGASMemberForm, NewEcoGASMemberForm
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -35,7 +38,8 @@ class Block(BlockSSDataTables):
         0: 'ordered_product__order', 
         1: 'purchaser',
         2: 'sum_amount',
-        3: ''
+        3: '',
+        4: 'apply'
     }
 #        2: 'tot_product',
 #        3: 'sum_qta',
@@ -56,9 +60,10 @@ class Block(BlockSSDataTables):
 
         order = self.resource.order
 
-        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)):
+        if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \
+            request.user == order.referrer_person.user:
 
-            if order.is_closed():
+            if order.is_closed() or order.is_unpaid():
 
                 user_actions += [
                     ResourceBlockAction(
@@ -112,7 +117,7 @@ class Block(BlockSSDataTables):
         return formset_factory(
             form=EcoGASMemberForm,
             formset=BaseFormSetWithRequest,
-            extra=0
+            extra=1
         )
 
     def _getItem(self, pairs, colname, default):
@@ -146,6 +151,7 @@ class Block(BlockSSDataTables):
                '%s-gm_id' % key_prefix : item.pk,
                '%s-original_amounted' % key_prefix : item.accounted_amount,
                '%s-amounted' % key_prefix : "%.2f" % round(accounted_wallet, 2),
+               '%s-applied' % key_prefix : not bool(item.accounted_amount),
             })
 
             map_info[item.pk] = {'formset_index' : i}
@@ -167,8 +173,57 @@ class Block(BlockSSDataTables):
                'gasmember' : item,
                'sum_amount' : item.sum_amount,
                'amounted' : "%s %s %s" % (form['gm_id'], form['amounted'], form['original_amounted']),
+               'apply' : form['applied'],
             })
 
+        form = NewEcoGASMemberForm(request, prefix="new-fam")
+        records.append({
+           'purchaser_id' : 0,
+           'gasmember' : form['gasmember'],
+           'sum_amount' : 0,
+           'amounted' : form['amounted'],
+           'apply' : form['applied'],
+        })
+
         return formset, records, {}
+
+    def _do_post_edit_multiple(self):
+
+        request = self.request
+        form_class = self._get_edit_multiple_form_class()
+
+        post_d = request.POST.copy()
+
+        new_fam_d = {}
+        for k,v in request.POST.items():
+            if k.startswith('new-fam'):
+                new_fam_d[k[len('new-fam-'):]] = v
+                post_d.pop(k)
+                
+        try:
+            formset = form_class(request, post_d)
+        except AttributeError as e:
+            # TODO-not-a-priority: fero ... thinking about it....
+            # NOTE fero: Form refactory neeeded: 'WSGIRequest' object has no attribute 'get'
+            # NOTE fero: Following NOTES-FERO we will do: 
+            # NOTE fero: if isinstance(form_class, FormRequestWrapper)
+            # NOTE fero:    f = form_class(request, request.POST)
+            # NOTE fero:    formset = f.form
+            formset = form_class(post_d)
+
+        new_fam_form = NewEcoGASMemberForm(request, new_fam_d)
+
+        if formset.is_valid() and new_fam_form.is_valid():
+            with transaction.commit_on_success():
+                for form in formset:
+                    # Check for data: empty formsets are full of empty data ;)
+                    if form.cleaned_data:
+                        form.save()
+                    if new_fam_form.cleaned_data:
+                        new_fam_form.save()
+
+            return self.response_success()
+        else:
+            return self.response_error(formset.errors)
 
 

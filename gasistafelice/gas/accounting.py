@@ -1,10 +1,23 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 
 from simple_accounting.exceptions import MalformedTransaction
-from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry
-from simple_accounting.utils import register_transaction, register_simple_transaction, transaction_details, update_transaction
+from simple_accounting.models import (AccountingProxy, Transaction, 
+    LedgerEntry, account_type, TransactionReference
+)
+from simple_accounting.utils import (register_transaction, 
+    register_simple_transaction, transaction_details, 
+    update_transaction
+)
 
 from gasistafelice.base.models import Person
+from gasistafelice.consts import INCOME, EXPENSE
+import datetime
+
+import logging
+log = logging.getLogger(__name__)
+
+GAS_WITHDRAWAL = 'GAS_WITHDRAWAL'
 
 class GasAccountingProxy(AccountingProxy):
     """
@@ -17,7 +30,7 @@ class GasAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``GAS``' model.    
     """
     
-    def pay_supplier(self, order, amount, refs=None, descr=None):
+    def pay_supplier(self, order, amount, refs=None, descr=None, date=None, multiple=None):
         """
         Transfer a given (positive) amount ``amount`` of money from the GAS's cash
         to a supplier for which a solidal pact is currently active.
@@ -29,32 +42,37 @@ class GasAccountingProxy(AccountingProxy):
         (e.g. a list of supplier orders this payment is related to).   
         """
         if amount < 0:
-            raise MalformedTransaction("Payment amounts must be non-negative")
-        #gas = order.gas
+            raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
         gas = self.subject.instance
         supplier = order.supplier
         source_account = self.system['/cash']
         exit_point = self.system['/expenses/suppliers/' + supplier.uid]
         entry_point =  supplier.accounting.system['/incomes/gas/' + gas.uid]
         target_account = supplier.accounting.system['/wallet']
-        description = _("Ord.%(pk)s %(gas)s --> %(supplier)s") % {'pk': order.pk, 'gas': gas.id_in_des, 'supplier': supplier,}
+        if multiple:
+            description = "Ord.%s" % multiple
+        else:
+            description = "Ord.%s" % order.pk
+        description += " %(gas)s --> %(supplier)s" % {'gas': gas.id_in_des, 'supplier': supplier,}
         if descr:
             description += ". %s" % descr.replace(description + ". ", "")
-        #issuer = gas Not the instance
         issuer =  self.subject
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, kind='PAYMENT')
+        transaction = register_transaction(source_account, exit_point, entry_point, 
+            target_account, amount, description, issuer, date, 'PAYMENT'
+        )
         if refs:
             transaction.add_references(refs)
 
-    def withdraw_from_member_account_update(self, member, updated_amount, refs):
+    def withdraw_from_member_account_update(self, member, updated_amount, refs, date):
 
-        tx = Transaction.objects.get_by_reference(refs).get(kind='GAS_WITHDRAWAL')
+        tx = Transaction.objects.get_by_reference(refs).get(kind=GAS_WITHDRAWAL)
         if tx:
-            update_transaction(tx, amount=updated_amount)
+            #FIXME: Update make me loose old transaction 
+            update_transaction(tx, amount=updated_amount, date=date)
             return True
         return False
 
-    def withdraw_from_member_account(self, member, new_amount, refs, order):
+    def withdraw_from_member_account(self, member, new_amount, refs, order, date=None):
         """
         Withdraw a given amount ``new_amount`` of money from the account of a member
         of this GAS and bestow it to the GAS's cash.
@@ -69,17 +87,19 @@ class GasAccountingProxy(AccountingProxy):
         # TODO: if this operation would make member's account negative, raise a warning
         gas = self.subject.instance
         if not member.person.is_member(gas):
-            raise MalformedTransaction("A GAS can withdraw only from its members' accounts")
+            raise MalformedTransaction(_("A GAS can withdraw only from its members' accounts"))
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
-        #'gas': gas.id_in_des, 
-        description = _("%(person)s %(order)s") % {'person': member.person.report_name, 'order': order.report_name}
+        #'gas': gas.id_in_des,
+        description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
         issuer = self.subject
-        transaction = register_simple_transaction(source_account, target_account, new_amount, description, issuer, date=None, kind='GAS_WITHDRAWAL')
+        transaction = register_simple_transaction(source_account, target_account, new_amount, 
+            description, issuer, date=date, kind=GAS_WITHDRAWAL
+        )
         if refs:
             transaction.add_references(refs)
 
-    def pay_supplier_order(self, order, amount, refs=None, descr=None):
+    def pay_supplier_order(self, order, amount, refs=None, descr=None, date=None, multiple=None):
         """
         Register the payment of a supplier order.
 
@@ -117,14 +137,16 @@ class GasAccountingProxy(AccountingProxy):
         #retrieve existing payment
         if not refs:
             refs = [order]
-        yet_payed, description = self.get_supplier_order_data(order, refs)
+        yet_payed, description, date_payed = self.get_supplier_order_data(order, refs)
+        #Insolute aggregated payment contain many orders that are payed in simultaneous. Refs must be a list of each order that are relative to this unique transaction
         if yet_payed <= 0:
             # pay supplier
-            self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr)
+            self.pay_supplier(order=order, amount=amount, refs=refs, descr=descr, date=date, multiple=multiple)
         elif yet_payed != amount:
-            #TODO: ECO update payment
-            tx = self.get_supplier_order_transaction(self, order, refs)
+            tx = self.get_supplier_order_transaction(order, refs)
             if tx:
+                #FIXME: something wrong. The old transaction is deleted and the new one loose refs
+                #simple accounting: transaction.ledger_entries.delete() but do not recreate the link to the original refs that permit to retrieve the transaction itsel finding by order. see: get_supplier_order_data
                 update_transaction(tx, amount=amount)
 
     def get_supplier_order_data(self, order, refs=None):
@@ -135,9 +157,9 @@ class GasAccountingProxy(AccountingProxy):
             refs = [order]
         tx = self.get_supplier_order_transaction(order, refs)
         if tx:
-            return tx.source.amount, tx.description
+            return tx.source.amount, tx.description, tx.date
         else:
-            return 0, ''
+            return 0, '', None
 
     def get_supplier_order_transaction(self, order, refs=None):
         """
@@ -161,34 +183,97 @@ class GasAccountingProxy(AccountingProxy):
         representing the total amount of money already accounted for with respect 
         to the entire set of orders placed by that GAS member within ``order``.
         
-        A (member) order is considered to be "accounted" iff a transaction recording it
+        A (member) order is considered to be "accounted" if a transaction recording it
         exists within that GAS's accounting system.
         
         If ``order`` has not been placed by the GAS owning this accounting system,
         raise ``TypeError``.
         """
+        from gasistafelice.gas.models import GASMember
+
         gas = self.subject.instance
         if order.pact.gas == gas:
-            members = set()
-            for member in order.purchasers:
-                # retrieve transactions related to this GAS member and order,
-                # including only withdrawals made by the GAS from members' accounts
-                #NOTE: DOMTHU useful for list 
-                #txs = Transaction.objects.get_by_reference([member, order]).filter(kind='GAS_WITHDRAWAL')
-                #member.accounted_amount = sum([tx.source.amount for tx in txs])
-                #NOTE: in this method we MUST have only one transaction 
-                # for each (member, order) couple
-                try:
-                    tx = Transaction.objects.get_by_reference([member, order]).get(kind='GAS_WITHDRAWAL')
-                except Transaction.DoesNotExist:
-                    member.accounted_amount = None
-                else:
-                    member.accounted_amount = tx.source.amount
 
-                members.add(member)
+            order_txs = Transaction.objects.get_by_reference([order])
+            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+
+            ctype_gm = ContentType.objects.get_for_model(GASMember)
+
+            members_d = {}
+
+            # For each WITHDRAW related to the order
+            for tx in order_txs:
+
+                try:
+                    # Retrieve GASMember reference
+                    gm_ref = tx.reference_set.get(content_type=ctype_gm)
+                except TransactionReference.DoesNotExist as e:
+                    # We have hit a WITHDRAW related to order, 
+                    # but not to a GASMember
+                    pass
+                else:
+                    gm = gm_ref.instance
+                    members_d[gm] = members_d.get(gm,0) + tx.source.amount
+
+            members = set()
+            for gm, amount in members_d.items():
+                gm.accounted_amount = amount
+                members.add(gm)
+
             return members
+            
         else:
-            raise TypeError("GAS %(gas)s has not placed order %(order)s" % {'gas': gas.id_in_des, 'order': order})
+            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+                'gas': gas.id_in_des, 'order': order
+            }))
+
+    def accounted_amount_by_gas_member(self, order):
+        """
+        Given a supplier order ``order``, return an annotated set of GAS members
+        partecipating to that order.
+        
+        Each GAS member instance will have an ``.accounted_amount`` attribute,
+        representing the total amount of money already accounted for with respect 
+        to the entire set of orders placed by that GAS member within ``order``.
+        
+        A (member) order is considered to be "accounted" if a transaction recording it
+        exists within that GAS's accounting system.
+        
+        If ``order`` has not been placed by the GAS owning this accounting system,
+        raise ``TypeError``.
+        """
+        from gasistafelice.gas.models import GASMember
+
+        gas = self.subject.instance
+        if order.pact.gas == gas:
+
+            order_txs = Transaction.objects.get_by_reference([order])
+            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+
+            ctype_gm = ContentType.objects.get_for_model(GASMember)
+            # Retrieve order WITHDRAWs related to GASMembers
+            order_txs = order_txs.filter(reference_set__content_type=ctype_gm)
+
+            members_d = {}
+
+            # For each WITHDRAW related to the order
+            for tx in order_txs:
+
+                gm_ref = tx.reference_set.get(content_type=ctype_gm)
+                gm = gm_ref.instance
+                members_d[gm] = members_d.get(gm,0) + tx.source.amount
+
+            members = set()
+            for gm, amount in members_d.items():
+                gm.accounted_amount = amount
+                members.add(gm)
+
+            return members
+            
+        else:
+            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+                'gas': gas.id_in_des, 'order': order
+            }))
 
     def entries(self):
         """
@@ -209,4 +294,77 @@ class GasAccountingProxy(AccountingProxy):
 
         return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
 
+    def extra_operation(self, amount, target, causal, date):
+        """
+        Another account operation for this subject
 
+        For a GAS the target operation can be income or expense operation
+        """
+
+        if amount < 0:
+            raise MalformedTransaction(_("Payment amounts must be non-negative"))
+        gas = self.subject.instance
+        non_des = self.get_non_des_accounting()
+        if not non_des:
+            raise Person.DoesNotExist
+        non_des_system = non_des.system
+        if target == INCOME:
+            source_account = non_des_system['/wallet']
+            exit_point = self.get_account(non_des_system, '/expenses', 'OutOfDES', account_type.expense)
+            entry_point = self.get_account(self.system, '/incomes', 'OutOfDES', account_type.income)
+            target_account = self.system['/cash']   #WAS gas.accounting.system['/cash']
+        elif  target == EXPENSE:
+            source_account = self.system['/cash']
+            exit_point = self.get_account(self.system, '/expenses', 'OutOfDES', account_type.expense)
+            entry_point = self.get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
+            target_account = non_des_system['/wallet']
+        else:
+            #WAS raise MalformedTransaction(_("Payment target %s not identified" % target))
+            #coercing to Unicode: need string or buffer, __proxy__ found
+            raise MalformedTransaction(ug("Payment target %s not identified") % target)
+
+        description = "%(gas)s %(target)s %(causal)s" % {
+            'gas': gas.id_in_des,
+            'target': target,
+            'causal': causal
+        }
+        #WAS raise description = _("%(gas)s %(target)s %(causal)s") % { ...
+        #WAS exceptions must be old-style classes or derived from BaseException, not unicode
+
+        issuer = self.subject
+        kind = 'GAS_EXTRA'
+        if not date:
+            date = datetime.datetime.now()  #_date.today
+#        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind=kind)
+        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
+
+#        +----------- expenses [P,E]+
+#        |                +--- TODO: OutOfDES
+#        +----------- incomes [P,I]+
+#        |                +--- TODO: OutOfDES
+
+    def get_account(self, system, parent_path, name, kind):
+        path = parent_path + '/' + name
+        try:
+            account = system[path]
+        except:
+#WAS        if not account: but raise exception "Account matching query does not exist."
+            #if not exist create it
+            system.add_account(parent_path=parent_path, name=name, kind=kind)
+            account = system[path]
+        if not account:
+            raise MalformedTransaction(ug("Unknow account: %(system)s %(path)s %(kind)s") % {
+            'system': system,
+            'path': path,
+            'kind': kind
+        })
+        return account
+
+    def get_non_des_accounting(self):
+        des = self.subject.instance.des
+        try:
+            return des.accounting
+        except AttributeError as e:
+            msg = _("calling non-existent out of DES account: %s") % e.message
+            log.warning(msg)
+            raise MalformedTransaction(msg)

@@ -342,21 +342,22 @@ class GAS(models.Model, PermissionResource):
         |                | ..
         |                +--- <UID member #n>  [A]
         +----------- expenses [P,E]+
-        |                +--- TODO: OutOfNetwork
+        |                +--- TODO: OutOfDES
+        |                +--- TODO: member (correction or other)
         |                +--- suppliers [P, E] +
         |                        +--- <UID supplier #1>  [E]
         |                        | ..
         |                        +--- <UID supplier #n>  [E]
         +----------- incomes [P,I]+
-        |                +--- recharges [I] 
+        |                +--- recharges [I]
         |                +--- fees [I]
-        |                +--- TODO: Other
+        |                +--- TODO: OutOfDES
         """
 
         self.subject.init_accounting_system()
         system = self.accounting.system
         # GAS's cash
-        system.add_account(parent_path='/', name='cash', kind=account_type.asset) 
+        system.add_account(parent_path='/', name='cash', kind=account_type.asset)
         # root for GAS members' accounts
         system.add_account(parent_path='/', name='members', kind=account_type.asset, is_placeholder=True)
         # a placeholder for organizing transactions representing payments to suppliers
@@ -1586,19 +1587,22 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        #TODO: split trx from GAS's transcations and GAS activities transactions
-        all_pact_trx = LedgerEntry.objects.none()   #set()
-        #all_pact_trx |= self.gas.accounting.entries('/expenses/suppliers' + self.supplier.uid)
-        all_pact_trx |= self.supplier.accounting.entries('/incomes/gas/' + self.gas.uid)
-        return all_pact_trx
+        return self.supplier.accounting.entries_pact(self.gas)
 
     @property
     def balance(self):
         """Accounting sold for this pact"""
         #acc_tot = self.gas.accounting.system['/expenses/supplier/' + self.supplier.uid].balance
-        acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
+        #acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
+        acc_tot = self.supplier.accounting.system['/wallet'].balance
         return acc_tot
 
+    @property
+    def insolutes(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        orders = GASSupplierOrder.objects.closed().filter(pact=self) | \
+            GASSupplierOrder.objects.unpaid().filter(pact=self)
+        return orders
 
 #------------------------------------------------------------------------------
 

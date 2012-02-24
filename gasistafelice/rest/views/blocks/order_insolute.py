@@ -1,16 +1,13 @@
-"""View for block details specialized for a GASSupplierOrder"""
+"""View for block insolute management for a GASSupplierOrder"""
 
-from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.http import HttpResponse
 from django.db import transaction
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
-from gasistafelice.rest.views.blocks import details
-from gasistafelice.gas.forms import cash as order_cash_forms
-
-from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE, INCOME
+from gasistafelice.lib.shortcuts import render_to_xml_response
+from gasistafelice.consts import CASH, INCOME
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.gas.forms.cash import InsoluteOrderForm
@@ -22,10 +19,10 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "order_insolute"
     BLOCK_VALID_RESOURCE_TYPES = ["order"]
-
-    def __init__(self):
-        super(Block, self).__init__()
-        self.description = _("Insolute management")
+    BLOCK_DESCRIPTION = ug("Insolute management")
+#    def __init__(self):
+#        super(Block, self).__init__()
+#        self.description = ug("Insolute management")
 
     def _get_user_actions(self, request):
 
@@ -40,7 +37,7 @@ class Block(AbstractBlock):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
-                        name=INCOME, verbose_name=_("Insolute payment"),
+                        name=INCOME, verbose_name=ug("Insolute payment"),
                         popup_form=False,
                     ),
                 ]
@@ -53,27 +50,29 @@ class Block(AbstractBlock):
 
         res = self.resource
 
-        user_actions = self._get_user_actions(request)
-        if args == "":
-            ctx = {
-                'resource'      : res,
-                'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
-                'form'          : InsoluteOrderForm(request),
-                'user_actions'  : user_actions,
-            }
-            return render_to_xml_response('blocks/order_insolute.xml', ctx)
-        elif args == "INCOME":
+        if args == "INCOME":
             if request.method == 'POST':
-
                 form = InsoluteOrderForm(request, request.POST)
-
                 if form.is_valid():
                     with transaction.commit_on_success():
                         if form.cleaned_data:
-                            form.save()
-                    #FIXME: handler attached: ajaxified form undefined
-                    #return self.response_success()
-                    return HttpResponse(_("Insolute saved"))
-                else:
-                    return self.response_error(form.errors)
+                            try:
 
+                                form.save()
+#                                return self.response_success()
+#                                return HttpResponse(_("Insolute saved"))
+
+                            except Exception, e:
+                                msg = ug("Transaction Insolute ERROR: ") + e.message
+                                form._errors["amount"] = form.error_class([msg])
+
+        else:
+            form = InsoluteOrderForm(request)
+
+        ctx = {
+            'resource'      : res,
+            'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
+            'form'          : form,
+            'user_actions'  : self._get_user_actions(request),
+        }
+        return render_to_xml_response('blocks/order_insolute.xml', ctx)

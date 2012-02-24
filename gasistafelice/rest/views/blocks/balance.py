@@ -1,6 +1,6 @@
 """View for block details specialized for a GASSupplierOrder"""
 
-from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.http import HttpResponse
 from django.db import transaction
 
@@ -22,7 +22,7 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance"
     BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "gasmember"]
-    BLOCK_DESCRIPTION = _("Balance")
+    BLOCK_DESCRIPTION = ug("Balance")
 
     def _get_user_actions(self, request):
         #COMMENT BY fero: no need for these actions now
@@ -38,7 +38,7 @@ class Block(AbstractBlock):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
-                        name=INCOME, verbose_name=_("Balance state"),
+                        name=INCOME, verbose_name=ug("Balance state"),
                         popup_form=False,
                     ),
                 ]
@@ -83,7 +83,7 @@ class Block(AbstractBlock):
 #
 #    BLOCK_NAME = "balance"
 #    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "gasmember"]
-#    BLOCK_DESCRIPTION = _("balance")
+#    BLOCK_DESCRIPTION = ug("balance")
 #
 #    def get_response(self, request, resource_type, resource_id, args):
 #

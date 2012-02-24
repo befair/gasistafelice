@@ -1,0 +1,41 @@
+{% load i18n %}
+
+{%
+forms.widgets import Widget, Select, MultiWidget, DateInput
+%}
+{% comment %}
+load gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
+{% endcomment %}
+
+<cpanel type="form">
+    <xtitle>{{block_name}} Options</xtitle>
+    {%for field in fields%}
+_________________________________________
+    <div id="{{field.field_name}}"></div>
+_________________________________________
+        {{ field.field_name|date:"j-M" }}
+_________________________________________
+    <field
+            {% if field.field_type == 'datetime' %}
+                type="{{field.field_type}}"
+                widget="DateInput"
+            {% else %}
+
+            {% endif %}
+            label="{{field.field_label}}"
+            {% if field.field_label.urn %}
+            urn="{{field.field_label.urn}}"
+            {% endif %}
+            var="{{field.field_name}}">
+
+id="{{field.field_name}}"
+
+       {%for field_value in field.field_values%}
+        <value label="{{ field_value.label }}" xselected="{{ field_value.selected }}">{{field_value.value}}</value>
+       {%endfor%}
+
+    </field>
+   {%endfor%}
+
+
+</cpanel>

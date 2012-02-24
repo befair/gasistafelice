@@ -304,9 +304,9 @@ class SupplierForm(forms.Form):
 
     id = forms.IntegerField(required=True, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
-    log.debug("Create SupplierForm (%s)" % id)
 
     def __init__(self, request, *args, **kw):
+        log.debug("Create SupplierForm")
         super(SupplierForm, self).__init__(*args, **kw)
 
     #@transaction.commit_on_success
@@ -317,8 +317,8 @@ class SupplierForm(forms.Form):
         log.debug("Save SupplierForm id(%s)" % id)
         if id:
             enabled = self.cleaned_data.get('enabled')
-            log.debug("Save SupplierForm enabled(%s)" % enabled)
-            #Suspend all pact related to this producer
+            #log.debug("Save SupplierForm enabled(%s)" % enabled)
+            #TODO: Suspend all pact related to this producer
             #if not enabled:
 
             self.instance.save()

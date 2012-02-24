@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+FORM_DEBUG = False
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()
@@ -178,17 +179,17 @@ LOGGING = {
         },
         'logfile':{
             'level':'INFO',
-            'class':'logging.handlers.RotatingFileHandler',
+            'class':'lib.loghandlers.GroupWriteRotatingFileHandler',
             'filename': LOG_FILE,
-            'maxBytes': 1048576,
+            'maxBytes': 1024*1024*5,
             'backupCount' : 5,
             'formatter': 'simple'
         },
         'logfile_debug':{
             'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
+            'class':'lib.loghandlers.GroupWriteRotatingFileHandler',
             'filename': LOG_FILE_DEBUG,
-            'maxBytes': 1048576,
+            'maxBytes': 1024*1024*5,
             'backupCount' : 10,
             'formatter': 'verbose'
         },
@@ -281,7 +282,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance', 'transactions']
+        'blocks' : ['balance_gm', 'transactions']
     }],
     'supplier' : [{
         'name' : 'products',
@@ -331,7 +332,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance', 'transactions']
+        'blocks' : ['balance_pact', 'transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',

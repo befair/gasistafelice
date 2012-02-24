@@ -14,6 +14,7 @@ from gasistafelice.base.models import PermissionResource, Place, DefaultTransiti
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
 from gasistafelice.lib import ClassProperty
+from gasistafelice.lib.djangolib import queryset_from_iterable
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
 from gasistafelice.gas.managers import AppointmentManager, OrderManager
@@ -223,7 +224,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def report_name(self):
-        log.debug("report_namereport_namereport_namereport_namereport_name")
         rep_date = medium_date(self.datetime_end)
         if self.delivery:
             if self.delivery.date:
@@ -661,9 +661,8 @@ WHERE order_id = %s \
         """
         The set of GAS members participating to this supplier order.
         """
-        # FIXME: for consistency, the return value should be a ``QuerySet``
-        purchasers = set([order.purchaser for order in self.member_orders])
-        return purchasers
+        purchasers = [order.purchaser for order in self.member_orders]
+        return queryset_from_iterable(GASMember, purchasers).distinct()
     
     @property
     def member_orders(self):
@@ -729,7 +728,7 @@ WHERE order_id = %s \
 
     @property
     def payment(self):
-        yet_payed, descr =self.gas.accounting.get_supplier_order_data(self)
+        yet_payed, descr, date =self.gas.accounting.get_supplier_order_data(self)
         return yet_payed
 
     @property
@@ -739,31 +738,33 @@ WHERE order_id = %s \
         return mvt_urn
 
     def control_economic_state(self):
-        #1/3 control invoice receipt
+
+        # 1/3 control invoice receipt
         if not self.invoice_amount:
             #log.debug("KAPPAO invoice_amount %s " % self.pk)
             return
-        #2/3 control members curtails
-        qs = self.ordered_gasmembers
+        
+        # 2/3 control members curtails
         accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
-        for item in qs:
-            pass_member = False
-            for member in accounted_amounts:
-                if member.pk == item.pk:
-                    pass_member = True
-                    break
-            if not pass_member:
-                #log.debug("KAPPAO member(%s) %s " % (item, self.pk))
-                return
-        #3/3 control accounting payment
+        log.debug("Order accounted_amounts(%s) %s " % (accounted_amounts.count(), accounted_amounts))
+        if not len(accounted_amounts):
+            return
+
+        purchasers = self.purchasers
+        log.debug("Order purchasers(%s) %s " % (purchasers.count(), purchasers))
+
+        if purchasers.count() > len(accounted_amounts):
+            return
+
+        # 3/3 control accounting payment to supplier
         tx = self.gas.accounting.get_supplier_order_transaction(self)
         if tx:
             #change state to STATUS_ARCHIVED
-            #log.debug("GOTO STATUS_ARCHIVED %s " % self.pk)
+            log.debug("GOTO STATUS_ARCHIVED %s " % self.pk)
             t_name = TRANSITION_ARCHIVE
         else:
             #change state to STATUS_UNPAID
-            #log.debug("GOTO STATUS_UNPAID %s " % self.pk)
+            log.debug("GOTO STATUS_UNPAID %s " % self.pk)
             t_name = TRANSITION_UNPAID
 
         # Act as superuser
@@ -904,6 +905,7 @@ WHERE order_id = %s \
     )
 
 #-------------------------------------------------------------------------------
+
 class GASSupplierOrderProduct(models.Model, PermissionResource):
     """A Product (actually, a GASSupplierStock) available to GAS Members in the context of a given GASSupplierOrder.
     See `here <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#ListinoFornitoreGasista>`__  for details (ITA only).
@@ -1124,10 +1126,6 @@ class GASMemberOrder(models.Model, PermissionResource):
         return self.ordered_product.stock
 
     @property
-    def order(self):
-        return self.ordered_product.order
-
-    @property
     def supplier(self):
         return self.ordered_product.supplier
 
@@ -1138,7 +1136,6 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def order(self):
         """GASSupplierOrder this GASMemberOrder belongs to."""
-
         return self.ordered_product.order
 
     @property

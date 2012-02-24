@@ -23,7 +23,7 @@ from django.contrib.sites.models import Site
 from gasistafelice.lib import ClassProperty
 from gasistafelice.base.models import PermissionResource, Person
 from gasistafelice.base.utils import get_resource_icon_path
-from gasistafelice.consts import DES_ADMIN
+from gasistafelice.consts import DES_ADMIN, NONDES_NAME, NONDES_SURNAME
 from flexi_auth.models import ParamRole
 from flexi_auth.utils import register_parametric_role
 
@@ -399,6 +399,32 @@ class DES(Site, PermissionResource):
         for sup in self.suppliers:
             acc_tot += sup.balance
         return acc_tot
+
+    @property
+    def accounting(self):
+        """
+        return a Person Account.
+
+        The NonDES person is a fictitious one that symbolize the Out Of Network accounting
+        It permit to count money transfert between (entering or escaping) the DES and the market
+        """
+        try:
+            nondes = Person.objects.get(name__exact=NONDES_NAME,surname__exact=NONDES_SURNAME)
+        except Person.DoesNotExist:
+            #Create accounting system for a NonDES in the DES accounting system
+
+            #Possibility 1: Set DES as subject (@economic_subject) and create Accounting proxy
+#            des.subject.init_accounting_system()
+#            system = des.accounting.system
+#            system.add_account(parent_path='/', name='cash', kind=account_type.asset)
+
+            #Possibility 2 (LF): Create fictitious person and use it as NonDES account
+
+            #Create the fictitious person account without address and user
+            nondes = Person(name = NONDES_NAME, surname = NONDES_SURNAME)
+            nondes.save()
+
+        return nondes.accounting
 
 
 #------------------------------------------------------------------------------
