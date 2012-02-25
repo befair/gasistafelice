@@ -684,7 +684,10 @@ function GetRoundedFloat(v) {
     if (v == 0) { return 0; }
     if (v.toString().indexOf('.') == -1) { return v; }
     return ((v.toFixed) ? v.toFixed(2) : (Math.round(v * 100) / 100));
-} 
+}
+function checkall(chk){
+$(chk).parents('table:eq(0)').find(':checkbox').attr('checked', chk.checked);
+}
 
 //---------------------------------------------
 // Clock
