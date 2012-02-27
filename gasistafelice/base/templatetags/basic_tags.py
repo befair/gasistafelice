@@ -32,6 +32,10 @@ def bool_img(value):
     return rv
 
 @register.simple_tag
+def bool_img_accepting_0(value):
+    return bool_img(value is not None)
+
+@register.simple_tag
 def bool_img_not(value):
     return bool_img(not value)
 

@@ -145,13 +145,18 @@ class Block(BlockSSDataTables):
 
             #'GASMember_Deferred_gas_id_id_in_gas_membership_fee' object has no attribute 'accounted_amount'
             log.debug("Accounted amounts: member %s, amount %s" % (item, item.accounted_amount))
-            accounted_wallet = item.accounted_amount or item.sum_amount
-                    
+            # WARNING: check EXACTLY for None value to know if a transaction is applied
+            applied = item.accounted_amount is not None 
+            if applied:
+                accounted_wallet = item.accounted_amount
+            else:
+                accounted_wallet = item.sum_amount
+
             data.update({
                '%s-gm_id' % key_prefix : item.pk,
                '%s-original_amounted' % key_prefix : item.accounted_amount,
                '%s-amounted' % key_prefix : "%.2f" % round(accounted_wallet, 2),
-               '%s-applied' % key_prefix : not bool(item.accounted_amount),
+               '%s-applied' % key_prefix : applied,
             })
 
             map_info[item.pk] = {'formset_index' : i}

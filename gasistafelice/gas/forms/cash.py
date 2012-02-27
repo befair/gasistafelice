@@ -67,6 +67,15 @@ class EcoGASMemberForm(forms.Form):
             raise forms.ValidationError(ug("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
         except GASMember.DoesNotExist:
             raise forms.ValidationError(ug("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
+
+        amounted = cleaned_data.get('amounted')
+        enabled = cleaned_data.get('applied')
+
+        if enabled:
+            log.debug("Curtail applied. Amounted = %s" % amounted)
+            if amounted is None:
+                raise forms.ValidationError(ug("You have to write a number (even 0) for a curtail that you want to apply"))
+
         return cleaned_data
 
     @transaction.commit_on_success
@@ -80,19 +89,19 @@ class EcoGASMemberForm(forms.Form):
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_closed():
-            log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug("order is not in good state!"))
+            log.debug("PermissionDenied %s Order not in state closed (%s)" % (
+                self.__loggedusr, self.__order.current_state.name)
+            )
+            raise PermissionDenied(ug("order is not in the right state!"))
 
         gm = self.cleaned_data['gasmember']
-
-        #TODO: Seldon or Fero. Control if Order is in the rigth Workflow STATE
 
         #Do economic work
         amounted = self.cleaned_data.get('amounted')
         enabled = self.cleaned_data.get('applied')
 
-        if amounted and enabled:
-            log.debug("Save EcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
+        if enabled and amounted is not None:
+            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (enabled, amounted))
             # This kind of amount is ever POSITIVE!
             amounted = abs(amounted)
 
@@ -122,7 +131,10 @@ class NewEcoGASMemberForm(forms.Form):
     Movement between GASMember.account --> GAS.account
     """
 
-    gasmember = forms.ModelChoiceField(queryset=GASMember.objects.none())
+    gasmember = forms.ModelChoiceField(
+        queryset=GASMember.objects.none(), 
+        required=False
+    )
     amounted = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2)
     applied = forms.BooleanField(required=False, initial=False)
 

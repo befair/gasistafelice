@@ -63,11 +63,11 @@ class GasAccountingProxy(AccountingProxy):
         if refs:
             transaction.add_references(refs)
 
-    def withdraw_from_member_account_update(self, member, updated_amount, refs, date):
+    def withdraw_from_member_account_update(self, member, updated_amount, refs, date=None):
 
         tx = Transaction.objects.get_by_reference(refs).get(kind=GAS_WITHDRAWAL)
         if tx:
-            #FIXME: Update make me loose old transaction 
+            # WARNING: if you update a transaction, you will lose old transaction info. Use with care!
             update_transaction(tx, amount=updated_amount, date=date)
             return True
         return False
