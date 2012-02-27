@@ -1,21 +1,13 @@
 
 jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
 
-    init: function() {
-        this._super("users", "table");
+    init: function(block_name) {
+        this._super(block_name, "table");
         this.submit_name = "Attivazione utenti";
     },
 //        this.active_view = "edit_multiple";
 //        this.default_view = this.active_view;
 
-
-//    action_handler : function(action_el) {
-//        if (action_el.attr('name') == 'createpdf') {
-//            window.location = action_el.attr('url');
-//        } else {
-//            return this._super(action_el);
-//        }
-//    },
 
     rendering_table_post_load_handler: function() {
 
@@ -59,5 +51,8 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS["users"] = new jQuery.UIBlockUserList();
+//jQuery.BLOCKS["users"] = new jQuery.UIBlockUserList();
+jQuery.BLOCKS["gas_users"] = new jQuery.UIBlockUserList("gas_users");
+jQuery.BLOCKS["users"] = new jQuery.UIBlockUserList("supplier_users");
+
 

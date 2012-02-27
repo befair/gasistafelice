@@ -1,17 +1,17 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
-from django.core import urlresolvers
+#from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
-from gasistafelice.consts import EDIT, CONFIRM, EDIT_MULTIPLE, VIEW
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables   #, ResourceBlockAction
+#from gasistafelice.consts import EDIT, CONFIRM, EDIT_MULTIPLE, VIEW
 
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from gasistafelice.gas.forms.base import SingleUserForm
 from django.forms.formsets import formset_factory
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 
-from flexi_auth.models import ObjectWithContext
+#from flexi_auth.models import ObjectWithContext
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -20,8 +20,8 @@ from flexi_auth.models import ObjectWithContext
 class Block(BlockSSDataTables):
 
     BLOCK_NAME = "users"
-    BLOCK_DESCRIPTION = _("Users")
-    BLOCK_VALID_RESOURCE_TYPES = ["gas"]
+#    BLOCK_DESCRIPTION = _("Users")
+#    BLOCK_VALID_RESOURCE_TYPES = ["gas", "supplier"]
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
@@ -35,35 +35,35 @@ class Block(BlockSSDataTables):
         8: 'is_staff'
     }
 
-    def _get_user_actions(self, request):
+#    def _get_user_actions(self, request):
 
-        user_actions = []
+#        user_actions = []
 
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-            user_actions += [
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"), 
-                    popup_form=False,
-                    method="get",
-                ),
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
-                    popup_form=False,
-                    method="get",
-                ),
+#        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+#            user_actions += [
 #                ResourceBlockAction( 
 #                    block_name = self.BLOCK_NAME,
 #                    resource = request.resource,
-#                    name=CONFIRM, verbose_name=_("Active"), 
+#                    name=VIEW, verbose_name=_("Show"), 
 #                    popup_form=False,
+#                    method="get",
 #                ),
-            ]
+#                ResourceBlockAction( 
+#                    block_name = self.BLOCK_NAME,
+#                    resource = request.resource,
+#                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
+#                    popup_form=False,
+#                    method="get",
+#                ),
+##                ResourceBlockAction( 
+##                    block_name = self.BLOCK_NAME,
+##                    resource = request.resource,
+##                    name=CONFIRM, verbose_name=_("Active"), 
+##                    popup_form=False,
+##                ),
+#            ]
 
-        return user_actions
+#        return user_actions
         
     def _get_resource_list(self, request):
         # User list

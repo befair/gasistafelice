@@ -104,3 +104,14 @@ class SingleUserForm(forms.Form):
             #ss = User()
             log.debug("New SingleUserForm")
 
+#class GASSingleUserForm(SingleUserForm):
+
+#    def __init__(self, request, *args, **kw):
+#        super(GASSingleUserForm, self).__init__(*args, **kw)
+
+#class SupplierSingleUserForm(SingleUserForm):
+
+#    def __init__(self, request, *args, **kw):
+#        super(SupplierSingleUserForm, self).__init__(*args, **kw)
+
+
