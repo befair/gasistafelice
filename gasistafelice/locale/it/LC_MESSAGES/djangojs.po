@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 03:48+0100\n"
+"POT-Creation-Date: 2012-02-27 11:16+0100\n"
 "PO-Revision-Date: 2011-11-27 06:18+1200\n"
 "Last-Translator: Luca Ferroni <luca@befair.it>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -16,6 +16,113 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: site_static/admin/js/SelectFilter2.js:77
+msgid "Clear all"
+msgstr ""
+
+#: site_static/admin/js/actions.js:18
+msgid "%(sel)s of %(cnt)s selected"
+msgid_plural "%(sel)s of %(cnt)s selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: site_static/admin/js/actions.js:109
+msgid ""
+"You have unsaved changes on individual editable fields. If you run an "
+"action, your unsaved changes will be lost."
+msgstr ""
+
+#: site_static/admin/js/actions.js:121 site_static/admin/js/actions.min.js:6
+msgid ""
+"You have selected an action, but you haven't saved your changes to "
+"individual fields yet. Please click OK to save. You'll need to re-run the "
+"action."
+msgstr ""
+
+#: site_static/admin/js/actions.js:123 site_static/admin/js/actions.min.js:6
+msgid ""
+"You have selected an action, and you haven't made any changes on individual "
+"fields. You're probably looking for the Go button rather than the Save "
+"button."
+msgstr ""
+
+#: site_static/admin/js/calendar.js:24 site_static/admin/js/dateparse.js:32
+msgid ""
+"January February March April May June July August September October November "
+"December"
+msgstr ""
+
+#: site_static/admin/js/calendar.js:25
+msgid "S M T W T F S"
+msgstr ""
+
+#
+# LOGACK
+#
+#: site_static/admin/js/collapse.js:9 site_static/admin/js/collapse.js:21
+#: site_static/admin/js/collapse.min.js:1
+#, fuzzy
+msgid "Show"
+msgstr "Mostra tutti"
+
+#: site_static/admin/js/collapse.js:16 site_static/admin/js/collapse.min.js:1
+msgid "Hide"
+msgstr ""
+
+#: site_static/admin/js/dateparse.js:33
+msgid "Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:49
+#: site_static/admin/js/admin/DateTimeShortcuts.js:84
+msgid "Now"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:53
+msgid "Clock"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:80
+msgid "Choose a time"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:85
+msgid "Midnight"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:86
+msgid "6 a.m."
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:87
+msgid "Noon"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:91
+#: site_static/admin/js/admin/DateTimeShortcuts.js:188
+#: static/nui/blocks/periodicreports_list.js:38
+#: static/nui/blocks/periodicreports_list.js:83
+#: static/nui/blocks/reports_list.js:44 static/nui/blocks/reports_list.js:88
+msgid "Cancel"
+msgstr "Annulla"
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:133
+#: site_static/admin/js/admin/DateTimeShortcuts.js:182
+msgid "Today"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:137
+msgid "Calendar"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:180
+msgid "Yesterday"
+msgstr ""
+
+#: site_static/admin/js/admin/DateTimeShortcuts.js:184
+msgid "Tomorrow"
+msgstr ""
 
 #: static/nui/blocks/advsearch.js:110 static/nui/blocks/alarms.js:25
 #: static/nui/blocks/calendar.js:114 static/nui/blocks/globalstatus.js:25
@@ -61,42 +168,42 @@ msgid "An error occurred while retring the data from server"
 msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
 #: static/nui/blocks/basket.js:66 static/nui/blocks/basket_sent.js:35
-#: static/nui/blocks/curtail.js:30 static/nui/blocks/fee.js:32
+#: static/nui/blocks/curtail.js:29 static/nui/blocks/fee.js:32
 #: static/nui/blocks/order.js:66 static/nui/blocks/order_report.js:39
 #: static/nui/blocks/recharge.js:33 static/nui/blocks/stocks.js:28
-#: static/nui/blocks/suppliers_report.js:50
+#: static/nui/blocks/suppliers_report.js:50 static/nui/blocks/users.js:41
 msgid "Display _MENU_ records per page"
 msgstr ""
 
 #: static/nui/blocks/basket.js:67 static/nui/blocks/basket_sent.js:36
-#: static/nui/blocks/curtail.js:31 static/nui/blocks/fee.js:33
+#: static/nui/blocks/curtail.js:30 static/nui/blocks/fee.js:33
 #: static/nui/blocks/order.js:67 static/nui/blocks/order_report.js:40
 #: static/nui/blocks/recharge.js:34 static/nui/blocks/stocks.js:29
-#: static/nui/blocks/suppliers_report.js:51
+#: static/nui/blocks/suppliers_report.js:51 static/nui/blocks/users.js:42
 msgid "Nothing found"
 msgstr ""
 
 #: static/nui/blocks/basket.js:68 static/nui/blocks/basket_sent.js:37
-#: static/nui/blocks/curtail.js:32 static/nui/blocks/fee.js:34
+#: static/nui/blocks/curtail.js:31 static/nui/blocks/fee.js:34
 #: static/nui/blocks/order.js:68 static/nui/blocks/order_report.js:41
 #: static/nui/blocks/recharge.js:35 static/nui/blocks/stocks.js:30
-#: static/nui/blocks/suppliers_report.js:52
+#: static/nui/blocks/suppliers_report.js:52 static/nui/blocks/users.js:43
 msgid "Showing _START_ to _END_ of _TOTAL_ records"
 msgstr ""
 
 #: static/nui/blocks/basket.js:69 static/nui/blocks/basket_sent.js:38
-#: static/nui/blocks/curtail.js:33 static/nui/blocks/fee.js:35
+#: static/nui/blocks/curtail.js:32 static/nui/blocks/fee.js:35
 #: static/nui/blocks/order.js:69 static/nui/blocks/order_report.js:42
 #: static/nui/blocks/recharge.js:36 static/nui/blocks/stocks.js:31
-#: static/nui/blocks/suppliers_report.js:53
+#: static/nui/blocks/suppliers_report.js:53 static/nui/blocks/users.js:44
 msgid "Showing 0 to 0 of 0 records"
 msgstr ""
 
 #: static/nui/blocks/basket.js:70 static/nui/blocks/basket_sent.js:39
-#: static/nui/blocks/curtail.js:34 static/nui/blocks/fee.js:36
+#: static/nui/blocks/curtail.js:33 static/nui/blocks/fee.js:36
 #: static/nui/blocks/order.js:70 static/nui/blocks/order_report.js:43
 #: static/nui/blocks/recharge.js:37 static/nui/blocks/stocks.js:32
-#: static/nui/blocks/suppliers_report.js:54
+#: static/nui/blocks/suppliers_report.js:54 static/nui/blocks/users.js:45
 msgid "(filtered from _MAX_ total records)"
 msgstr ""
 
@@ -139,7 +246,7 @@ msgstr "Aggiungi nota"
 #: static/nui/blocks/states_logack.js:557
 #: static/nui/blocks/stock_details.js:336
 #: static/nui/blocks/supplier_details.js:336
-#: static/nui/scripts/jquery.rees.js:581
+#: static/nui/scripts/jquery.rees.js:601
 msgid "Confirm"
 msgstr "Conferma"
 
@@ -515,12 +622,6 @@ msgstr "Rimuovi"
 msgid "There aren't measures linked to this resource"
 msgstr "Non ci sono misure associate alla risorsa"
 
-#: static/nui/blocks/periodicreports_list.js:38
-#: static/nui/blocks/periodicreports_list.js:83
-#: static/nui/blocks/reports_list.js:44 static/nui/blocks/reports_list.js:88
-msgid "Cancel"
-msgstr "Annulla"
-
 #: static/nui/blocks/periodicreports_list.js:44
 #: static/nui/blocks/reports_list.js:49
 msgid "New report"
@@ -860,15 +961,15 @@ msgstr "Testo"
 msgid "Please provide a name for this resource before rendering it"
 msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
 
-#: static/nui/scripts/jquery.rees.js:142 static/nui/scripts/jquery.rees.js:195
+#: static/nui/scripts/jquery.rees.js:157 static/nui/scripts/jquery.rees.js:210
 msgid "An error occurred while retrieving the data from server ("
 msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
-#: static/nui/scripts/jquery.rees.js:313
+#: static/nui/scripts/jquery.rees.js:328
 msgid "Submit"
 msgstr "Invia"
 
-#: static/nui/scripts/jquery.rees.js:505
+#: static/nui/scripts/jquery.rees.js:521
 msgid "There are no elements related to this resource."
 msgstr "Non ci sono elementi associati alla risorsa."
 
