@@ -31,7 +31,7 @@ Verificare che sia installato il nuovo modulo
 
 # python
 >>> import simple_accounting
->>> simple_accounting.__file___
+>>> simple_accounting.__file__
 (posizione del file __init__.pyc)
 >>> CTRL+D
 
