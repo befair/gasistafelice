@@ -8,12 +8,10 @@ In carico a Dominique:
   - Verificare visualizzazione transazioni
   - Eliminare uno dei due gas accounting.accounted_amount_by_gasmember 
     (preferibilmente il primo) dopo aver verificato che funziona
-* Sistemare ugettext e ugettext_lazy
 
 
 In carico a fero:
 
-* Far scomparire il pulsante "Archivia" dalla gestione dell'ordine
 * Riabilitare le notifiche
 * Link al forum in alto
 * Elimina prodotto
@@ -39,6 +37,8 @@ TODO 0.9
     - Gestione del campo in un form/azione come "Elimina gasista"
     - Gestire "aggiungi gasista"
     - Gestire il filtro gasisti attivi o no, nelle query e/o nei manager
+
+* Annulla ordine
 
 TODO 1.0
 --------

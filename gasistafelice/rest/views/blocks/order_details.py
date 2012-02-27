@@ -29,20 +29,16 @@ class Block(details.Block):
 
         #UGLY: remove this code when send email transition is done. 
         #REMOVE temporarly un-managed transitions
+        new_user_actions = []
         for ua in user_actions:
-            print ua.name
-            if ua.name == 'transition/make unpaid' or ua.name == 'transition/close and send email':
-                user_actions.remove(ua)
-#        for action in ['transition/make unpaid', 'transition/close and send email']:
-#            try:
-#                for ua in user_actions:
-#                    if ua.name == action:
-#                        user_actions.remove(ua)
-#            except ValueError:
-#                pass
+            print("User action: %s" % ua.name)
+            if ua.name not in [
+                'transition/make unpaid',
+                'transition/close and send email', #FIXME: disabled actions until implemented
+                'transition/archive'
+            ]:
+                new_user_actions.append(ua)
 
-        #FIXME: disabled actions until implemented
-
-        return user_actions
+        return new_user_actions
 
 
