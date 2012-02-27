@@ -4,7 +4,7 @@ import os, locale
 import consts
 from django.utils.translation import ugettext_lazy as _
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 FORM_DEBUG = False
 
