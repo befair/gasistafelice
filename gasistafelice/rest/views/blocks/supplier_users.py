@@ -26,7 +26,8 @@ class Block(users.Block):
 
         user_actions = []
 
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)) or \
+            request.user in request.resource.referrers:
             user_actions += [
                 ResourceBlockAction( 
                     block_name = self.BLOCK_NAME,
