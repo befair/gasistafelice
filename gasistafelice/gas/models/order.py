@@ -47,9 +47,27 @@ log = logging.getLogger(__name__)
 import logging
 log = logging.getLogger(__name__)
 
+#-------------------------------------------------------------------------------
+# Some stuff needed for translation
+
+# NOTE LF: put some string to translate here... I don't know
+# why makemessages don't find them
+some_string_to_translate__ = (
+    _("open: %(date_start)s"),
+    _(" - close: %(date_end)s"),
+    _("close: %(date_end)s"),
+    _(" --> delivery: %(date_delivery)s"),
+    _("to be delivered: %(date_delivery)s  --> to pay"),
+    _(" --> delivered: %(date_delivery)s --> to pay"),
+    _("archived: %(date_delivery)s"),
+    _("canceled: %(date_delivery)s"),
+    _("Ord. %(order_num)s %(pact)s - %(state)s")
+)
+
 trans_state_d = {
     'Open' : 'Aperto',
     'Close': 'Chiuso',
+    'Closed': 'Chiuso',
     'Archived' : 'Archiviato',
     'Prepared' : 'Preparato',
     'Unpaid' : 'Insoluto',
@@ -61,6 +79,8 @@ AT = _('at')
 ON = _('on')
 FROM = _('from')
 TO = _('to')
+
+#-------------------------------------------------------------------------------
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -161,36 +181,36 @@ class GASSupplierOrder(models.Model, PermissionResource):
             state = self.current_state.name
             date_info = "("
             if state == STATUS_PREPARED:
-                date_info += ug("apertura: %(date_start)s")
+                date_info += ug("open: %(date_start)s")
                 if self.datetime_end:
-                    date_info += ug(" - chiusura: %(date_end)s")
+                    date_info += ug(" - close: %(date_end)s")
     
             elif state == STATUS_OPEN:
                 if self.datetime_end:
-                    date_info += ug("chiusura: %(date_end)s")
+                    date_info += ug("close: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug(" --> consegna: %(date_delivery)s")
+                    date_info += ug(" --> delivery: %(date_delivery)s")
     
             elif state == STATUS_CLOSED:
 #                if self.datetime_end:
 #                    date_info += ug("Closed: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug("in consegna: %(date_delivery)s  --> to pay")
+                    date_info += ug("to be delivered: %(date_delivery)s  --> to pay")
 
     
             elif state == STATUS_UNPAID:
                 if d['date_delivery']:
-                    date_info += ug(" --> consegnato: %(date_delivery)s --> to pay")
+                    date_info += ug(" --> delivered: %(date_delivery)s --> to pay")
 
             elif state == STATUS_ARCHIVED:
                 if d['date_delivery']:
-                    date_info += ug("archiviato: %(date_delivery)s")
+                    date_info += ug("archived: %(date_delivery)s")
     
             elif state == STATUS_CANCELED:
                 if d['date_delivery']:
-                    date_info += ug("annullato: %(date_delivery)s")
+                    date_info += ug("canceled: %(date_delivery)s")
 
             else:
                 date_info += "TODO ?(%s)" % state
@@ -209,7 +229,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = _("Ord. %(order_num)s %(pact)s - %(state)s") % {
+        rv = ug("Ord. %(order_num)s %(pact)s - %(state)s") % {
                     'pact' : self.pact,
                     'state' : state,
                     'order_num' : self.pk,
@@ -472,7 +492,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(_("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(ug("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
 
     def forward(self, user):
         """Apply default transition"""
@@ -938,7 +958,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        rv = _('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
+        rv = ug('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
@@ -1013,7 +1033,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             log.debug('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
             for gmo in self.gasmember_order_set:
                 #gmo.order_price = self.order_price
-                gmo.note = _("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.note = ug("Price changed on %(date)s") % { 'date' : datetime.now() }
                 gmo.save()
 
 
@@ -1151,7 +1171,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(_("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(ug("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
 
     def forward(self, user):
         """Apply default transition"""

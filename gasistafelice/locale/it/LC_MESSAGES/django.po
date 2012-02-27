@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GASISTA-FELICE-0.6\n"
+"Project-Id-Version: GASISTA-FELICE-0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-27 11:15+0100\n"
+"POT-Creation-Date: 2012-02-27 17:05+0100\n"
 "PO-Revision-Date: 2012-01-05 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -24,12 +24,12 @@ msgstr "DES"
 
 #: flexi_auth_settings.py:31 des/models.py:54 gas/models/base.py:110
 #: gas/models/base.py:712 gas/models/base.py:1304 gas/models/base.py:1359
-#: gas/models/order.py:899 rest/views/blocks/gas_list.py:19
+#: gas/models/order.py:913 rest/views/blocks/gas_list.py:19
 msgid "GAS"
 msgstr "GAS"
 
 #: flexi_auth_settings.py:32 gas/models/base.py:1305 gas/models/base.py:1360
-#: gas/models/order.py:900
+#: gas/models/order.py:914
 #: rest/templates/blocks/suppliers_report/report.html:48
 #: rest/templates/html/index.html:2286
 msgid "Supplier"
@@ -308,7 +308,7 @@ msgstr "Longitudine"
 msgid "lat"
 msgstr "Latitudine"
 
-#: base/models.py:909 gas/models/order.py:1261
+#: base/models.py:909 gas/models/order.py:1275
 msgid "place"
 msgstr "Luogo"
 
@@ -398,23 +398,23 @@ msgstr "Contatto"
 msgid "Preferred"
 msgstr "Preferito"
 
-#: base/templatetags/basic_tags.py:41
+#: base/templatetags/basic_tags.py:45
 msgid "Curtail"
 msgstr "Decurtazione"
 
-#: base/templatetags/basic_tags.py:43
+#: base/templatetags/basic_tags.py:47
 msgid "Recharge"
 msgstr "Ricarica"
 
-#: base/templatetags/basic_tags.py:45
+#: base/templatetags/basic_tags.py:49
 msgid "Fee"
 msgstr "Quota"
 
-#: base/templatetags/basic_tags.py:47
+#: base/templatetags/basic_tags.py:51
 msgid "Pay"
 msgstr "Paga"
 
-#: base/templatetags/basic_tags.py:49
+#: base/templatetags/basic_tags.py:53
 msgid "Collect"
 msgstr ""
 
@@ -536,25 +536,6 @@ msgstr "Aggiornamento di prodotto per il GAS"
 msgid "a product has been updated for GAS"
 msgstr "Il prodotto è stato aggiornato per il GAS"
 
-#: gas/accounting.py:90
-#, fuzzy
-msgid "A GAS can withdraw only from its members' accounts"
-msgstr "Un prelievo dal conto gasista fatto dal GAS"
-
-#: gas/accounting.py:226 gas/accounting.py:274
-#, fuzzy, python-format
-msgid "GAS %(gas)s has not placed order %(order)s"
-msgstr "%(gasstock)s di ordine %(order)s"
-
-#: gas/accounting.py:305 supplier/accounting.py:102
-msgid "Payment amounts must be non-negative"
-msgstr ""
-
-#: gas/accounting.py:368
-#, python-format
-msgid "calling non-existent out of DES account: %s"
-msgstr ""
-
 #: gas/const.py:4
 msgid "open"
 msgstr "aperto"
@@ -599,143 +580,140 @@ msgstr "Archivia"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: gas/forms/cash.py:337
+#: gas/forms/cash.py:349
 msgid "Invoice"
 msgstr "Fattura"
 
-#: gas/forms/cash.py:338
+#: gas/forms/cash.py:350
 msgid "You must insert an postive amount for the operation"
 msgstr "Devi inserire una quantità positiva per questa operazione"
 
-#: gas/forms/cash.py:340
+#: gas/forms/cash.py:352
 msgid "Note"
 msgstr "Nota"
 
-#: gas/forms/cash.py:413 gas/forms/cash.py:704
+#: gas/forms/cash.py:425 gas/forms/cash.py:716
 msgid "Insolute order(s)"
 msgstr "Ordini da pagare"
 
-#: gas/forms/cash.py:414
-#, fuzzy
+#: gas/forms/cash.py:426
 msgid "Select one or multiple orders to pay in this operation."
-msgstr "Seleziona solo un ordine alla volta"
+msgstr "Seleziona uno o più ordini da pagare in questa operazione."
 
-#: gas/forms/cash.py:418
+#: gas/forms/cash.py:430
 msgid "Payment"
 msgstr "Pagamento"
 
-#: gas/forms/cash.py:420 gas/forms/cash.py:628 gas/forms/cash.py:709
-#: gas/forms/cash.py:910
+#: gas/forms/cash.py:432 gas/forms/cash.py:640 gas/forms/cash.py:721
+#: gas/forms/cash.py:922
 msgid "Causal"
 msgstr "Causale"
 
-#: gas/forms/cash.py:421
+#: gas/forms/cash.py:433
 msgid ""
 "Some indication about the payment: by bank or cash, bank number "
 "transaction..."
 msgstr ""
+"Alcune indicazioni del pagamento: tramite banca o contanti, numero banca "
+"Transazione..."
 
-#: gas/forms/cash.py:422
-#, fuzzy
+#: gas/forms/cash.py:434
 msgid "You must declare the causal of this payment"
-msgstr "Devi scrivere la causale di questo movimento"
+msgstr "Devi dichiarare la causale di questo pagamento"
 
-#: gas/forms/cash.py:426
+#: gas/forms/cash.py:438
 msgid "Adjust the operation date if needed"
-msgstr ""
+msgstr "Regolare la data di operazione se necessario"
 
-#: gas/forms/cash.py:563
+#: gas/forms/cash.py:575
 msgid "Balance"
 msgstr "Saldo"
 
-#: gas/forms/cash.py:584
+#: gas/forms/cash.py:596
 msgid "Wallet GASMembers"
 msgstr "Portafoglio gasisti"
 
-#: gas/forms/cash.py:585
+#: gas/forms/cash.py:597
 msgid "Wallet Suppliers"
 msgstr "Portafoglio fornitori"
 
-#: gas/forms/cash.py:615 gas/forms/cash.py:690 gas/forms/cash.py:894
+#: gas/forms/cash.py:627 gas/forms/cash.py:702 gas/forms/cash.py:906
 msgid "Operation"
 msgstr "Operazione"
 
-#: gas/forms/cash.py:616 gas/forms/cash.py:691 gas/forms/cash.py:895
+#: gas/forms/cash.py:628 gas/forms/cash.py:703 gas/forms/cash.py:907
 msgid "Insert the amount of money (no sign)"
-msgstr ""
+msgstr "Inserire la somma di denaro (senza segno)"
 
-#: gas/forms/cash.py:617 gas/forms/cash.py:692 gas/forms/cash.py:896
+#: gas/forms/cash.py:629 gas/forms/cash.py:704 gas/forms/cash.py:908
 msgid "You must insert an postive or negative amount for the operation"
 msgstr "Devi inserire un importo positivo o negativo per l'operazione"
 
-#: gas/forms/cash.py:621
+#: gas/forms/cash.py:633
 msgid "Income: Event, Donate, Sponsor, Fund... +GAS"
-msgstr ""
+msgstr "Entrata: evento, donazione, sponsor, fondi... +GAS"
 
-#: gas/forms/cash.py:622
+#: gas/forms/cash.py:634
 msgid ""
 "Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS"
 msgstr ""
+"Spese: utenze, conto bancario, amministrazione, eventi, affitto... -GAS"
 
-#: gas/forms/cash.py:624 gas/forms/cash.py:700 gas/forms/cash.py:906
+#: gas/forms/cash.py:636 gas/forms/cash.py:712 gas/forms/cash.py:918
 msgid "define the type of the operation"
-msgstr ""
+msgstr "definisci il tipo di operazione"
 
-#: gas/forms/cash.py:625 gas/forms/cash.py:701 gas/forms/cash.py:907
-#, fuzzy
+#: gas/forms/cash.py:637 gas/forms/cash.py:713 gas/forms/cash.py:919
 msgid "You must select the type of operation"
-msgstr "Devi inserire una quantità positiva per questa operazione"
+msgstr "Devi selezionare il tipo di operazione"
 
-#: gas/forms/cash.py:629 gas/forms/cash.py:710 gas/forms/cash.py:911
-#, fuzzy
+#: gas/forms/cash.py:641 gas/forms/cash.py:722 gas/forms/cash.py:923
 msgid "Reason of the movement"
-msgstr "Registra il motivo di questo movimento"
+msgstr "Ragione di questo movimento"
 
-#: gas/forms/cash.py:630 gas/forms/cash.py:711 gas/forms/cash.py:912
-#, fuzzy
+#: gas/forms/cash.py:642 gas/forms/cash.py:723 gas/forms/cash.py:924
 msgid "You must declare the causal of this transaction"
-msgstr "Devi scrivere la causale di questo movimento"
+msgstr "Devi dichiarare la causale di questo movimento"
 
-#: gas/forms/cash.py:634 gas/forms/cash.py:715 gas/forms/cash.py:916
+#: gas/forms/cash.py:646 gas/forms/cash.py:727 gas/forms/cash.py:928
 msgid "Adjust the operation date if necesary"
 msgstr ""
 
-#: gas/forms/cash.py:696
+#: gas/forms/cash.py:708
 msgid "Correction for supplier: +Supplier -GAS"
 msgstr ""
 
-#: gas/forms/cash.py:697
+#: gas/forms/cash.py:709
 msgid "Correction for GAS: +GAS -Supplier "
 msgstr ""
 
-#: gas/forms/cash.py:698
-#, fuzzy
+#: gas/forms/cash.py:710
 msgid "Insolute"
-msgstr "Un pagamento generico"
+msgstr "Da pagare"
 
-#: gas/forms/cash.py:705
+#: gas/forms/cash.py:717
 msgid ""
 "If Target is Insolute you must select almost one order to pay in this "
 "operation."
 msgstr ""
 
-#: gas/forms/cash.py:900
+#: gas/forms/cash.py:912
 msgid "Correction for gasmember: +gasmember -GAS"
 msgstr ""
 
-#: gas/forms/cash.py:901
+#: gas/forms/cash.py:913
 msgid "Correction for GAS: +GAS -gasmember "
 msgstr ""
 
-#: gas/forms/cash.py:902
+#: gas/forms/cash.py:914
 msgid "Detraction for Gasmember: -gasmember "
 msgstr ""
 
-#: gas/forms/cash.py:903
+#: gas/forms/cash.py:915
 msgid "Addition for Gasmember: +gasmember "
 msgstr ""
 
-#: gas/forms/cash.py:904
+#: gas/forms/cash.py:916
 msgid "Restitution for gasmember: empty container +gasmember -GAS"
 msgstr ""
 
@@ -787,7 +765,7 @@ msgstr "Indirizzo o luogo di ritiro"
 msgid "Date start"
 msgstr "Data di apertura"
 
-#: gas/forms/order/base.py:64 gas/models/order.py:77
+#: gas/forms/order/base.py:64 gas/models/order.py:91
 msgid "when the order will be opened"
 msgstr "Quando l'ordine verrà aperto"
 
@@ -795,7 +773,7 @@ msgstr "Quando l'ordine verrà aperto"
 msgid "Date end"
 msgstr "Data di chiusura"
 
-#: gas/forms/order/base.py:70 gas/models/order.py:80
+#: gas/forms/order/base.py:70 gas/models/order.py:94
 msgid "when the order will be closed"
 msgstr "Quando l'ordine verrà chiuso"
 
@@ -813,7 +791,7 @@ msgstr ""
 "Devi selezionare un referente (o crearne uno nel tuo GAS se la selezione è "
 "vuota)"
 
-#: gas/forms/order/base.py:237 gas/models/order.py:75
+#: gas/forms/order/base.py:237 gas/models/order.py:89
 msgid "pact"
 msgstr "patto"
 
@@ -828,49 +806,46 @@ msgid "Send email to the LIST of the GAS?"
 msgstr "Invia una mail alla lista del GAS?"
 
 #: gas/forms/order/gmo.py:55
-#, fuzzy, python-format
+#, python-format
 msgid "You %(logged)s are not authorized to make an order for %(person)s"
-msgstr "Non sei autorizzato a fare un ordine per %(person)s"
+msgstr "%(logged)s, non sei autorizzato a fare un ordine per %(person)s"
 
 #: gas/forms/order/gmo.py:86 gas/forms/order/gmo.py:103
 #, python-format
 msgid "[ord by %s] "
-msgstr ""
+msgstr "[ord da %s] "
 
 #: gas/forms/order/plan.py:20
 msgid "week"
-msgstr ""
+msgstr "settimana"
 
 #: gas/forms/order/plan.py:21
 msgid "two weeks"
-msgstr ""
+msgstr "due settimane"
 
 #: gas/forms/order/plan.py:22
 msgid "three weeks"
-msgstr ""
+msgstr "tre settimane"
 
 #: gas/forms/order/plan.py:23
-#, fuzzy
 msgid "monthly"
-msgstr "un mese"
+msgstr "mensile"
 
 #: gas/forms/order/plan.py:24
-#, fuzzy
 msgid "two months"
-msgstr "un mese"
+msgstr "due mesi"
 
 #: gas/forms/order/plan.py:25
-#, fuzzy
 msgid "three months"
-msgstr "un mese"
+msgstr "tre mesi"
 
 #: gas/forms/order/plan.py:26
 msgid "half year"
-msgstr ""
+msgstr "semestre"
 
 #: gas/forms/order/plan.py:27
 msgid "year"
-msgstr ""
+msgstr "anno"
 
 #: gas/forms/order/plan.py:36
 msgid "Is this a periodic order?"
@@ -1084,9 +1059,8 @@ msgid "Default delivery place"
 msgstr "Luogo di consegna predefinito"
 
 #: gas/models/base.py:600
-#, fuzzy
 msgid "to specify if different from withdrawal place"
-msgstr "da specificare se è diverso dal luogo di consegna"
+msgstr "da specificare se diverso dal luogo di ritiro"
 
 #: gas/models/base.py:604
 msgid "Auto populate products"
@@ -1136,12 +1110,14 @@ msgstr ""
 
 #: gas/models/base.py:634
 msgid "Notice days before order close"
-msgstr ""
+msgstr "Giorni di preavviso prima della chiusura dell'ordine"
 
 #: gas/models/base.py:636
 msgid ""
 "How many days before do you want your GAS receive reminder on closing orders?"
 msgstr ""
+"Quanti giorni prima vuoi ricevere un promemoria degli ordini di chiusura del "
+"tuo GAS?"
 
 #: gas/models/base.py:648 gas/models/base.py:649
 msgid "GAS options"
@@ -1213,7 +1189,7 @@ msgstr "Importo minimo"
 msgid "step of increment"
 msgstr "Incremento"
 
-#: gas/models/base.py:1156 gas/models/order.py:102
+#: gas/models/base.py:1156 gas/models/order.py:116
 msgid "GAS supplier stock"
 msgstr "Prodotto fornitore per il GAS"
 
@@ -1293,268 +1269,275 @@ msgstr "Referenti"
 msgid "%(gas)s - %(supplier)s"
 msgstr "%(gas)s - %(supplier)s"
 
-#: gas/models/order.py:59 supplier/forms.py:128
+#: gas/models/order.py:53
+#, python-format
+msgid "open: %(date_start)s"
+msgstr "apertura: %(date_start)s"
+
+#: gas/models/order.py:54
+#, python-format
+msgid " - close: %(date_end)s"
+msgstr " - chiusura: %(date_end)s"
+
+#: gas/models/order.py:55
+#, python-format
+msgid "close: %(date_end)s"
+msgstr "chiusura: %(date_end)s"
+
+#: gas/models/order.py:56
+#, python-format
+msgid " --> delivery: %(date_delivery)s"
+msgstr " --> consegna: %(date_delivery)s"
+
+#: gas/models/order.py:57
+#, python-format
+msgid "to be delivered: %(date_delivery)s  --> to pay"
+msgstr "da consegnare: %(date_delivery)s --> da pagare"
+
+#: gas/models/order.py:58
+#, python-format
+msgid " --> delivered: %(date_delivery)s --> to pay"
+msgstr " --> consegnato: %(date_delivery)s --> da pagare"
+
+#: gas/models/order.py:59
+#, python-format
+msgid "archived: %(date_delivery)s"
+msgstr "archiviato: %(date_delivery)s"
+
+#: gas/models/order.py:60
+#, python-format
+msgid "canceled: %(date_delivery)s"
+msgstr "annullato: %(date_delivery)s"
+
+#: gas/models/order.py:61
+#, python-format
+msgid "Ord. %(order_num)s %(pact)s - %(state)s"
+msgstr "Ord. %(order_num)s %(pact)s - %(state)s"
+
+#: gas/models/order.py:73 supplier/forms.py:128
 msgid "of"
 msgstr "di"
 
-#: gas/models/order.py:60
-#, fuzzy
+#: gas/models/order.py:74
 msgid "at"
-msgstr "Latitudine"
+msgstr "in"
 
-#: gas/models/order.py:61
-#, fuzzy
+#: gas/models/order.py:75
 msgid "on"
-msgstr "Longitudine"
-
-#: gas/models/order.py:62
-msgid "from"
-msgstr ""
-
-#: gas/models/order.py:63
-msgid "to"
-msgstr ""
+msgstr "in data"
 
 #: gas/models/order.py:76
-#, fuzzy
-msgid "date open"
-msgstr "Data di chiusura"
+msgid "from"
+msgstr "da"
 
-#: gas/models/order.py:79
-#, fuzzy
+#: gas/models/order.py:77
+msgid "to"
+msgstr "a"
+
+#: gas/models/order.py:90
+msgid "date open"
+msgstr "Data di apertura"
+
+#: gas/models/order.py:93
 msgid "date close"
 msgstr "Data di chiusura"
 
-#: gas/models/order.py:83
+#: gas/models/order.py:97
 msgid "Minimum amount"
 msgstr "Importo minimo"
 
-#: gas/models/order.py:89
+#: gas/models/order.py:103
 msgid "Delivery"
 msgstr "Consegna"
 
-#: gas/models/order.py:95
+#: gas/models/order.py:109
 msgid "Withdrawal"
 msgstr "Ritiro"
 
-#: gas/models/order.py:99
+#: gas/models/order.py:113
 msgid "Delivery cost"
 msgstr "Costo di consegna"
 
-#: gas/models/order.py:103
+#: gas/models/order.py:117
 msgid "products available for the order"
 msgstr "prodotti disponibili in questo ordine"
 
-#: gas/models/order.py:108
+#: gas/models/order.py:122
 msgid "order referrer"
 msgstr "Referente dell'ordine"
 
-#: gas/models/order.py:112
+#: gas/models/order.py:126
 msgid "delivery referrer"
 msgstr "Referente di consegna"
 
-#: gas/models/order.py:116
+#: gas/models/order.py:130
 msgid "withdrawal referrer"
 msgstr "Referente di ritiro"
 
-#: gas/models/order.py:119
+#: gas/models/order.py:133
 msgid "Order group"
 msgstr "Gruppo dell'ordine"
 
-#: gas/models/order.py:121
+#: gas/models/order.py:135
 msgid "If not null this order is aggregate with orders from other GAS"
 msgstr "Se valorizzato, questo ordine è aggregato con ordini di altri GAS"
 
-#: gas/models/order.py:124
-#, fuzzy
+#: gas/models/order.py:138
 msgid "invoice amount"
-msgstr "importo minimo"
+msgstr "totale fattura"
 
-#: gas/models/order.py:125
+#: gas/models/order.py:139
 msgid "invoice number"
-msgstr ""
+msgstr "numero fattura"
 
-#: gas/models/order.py:128
+#: gas/models/order.py:142
 msgid "Order was generated by another order"
-msgstr ""
+msgstr "Ordine generato da un altro ordine"
 
-#: gas/models/order.py:128
-#, fuzzy
+#: gas/models/order.py:142
 msgid "planned order"
-msgstr "Ordini preparati"
+msgstr "ordine pianificato"
 
-#: gas/models/order.py:135
+#: gas/models/order.py:149
 msgid "order issued to supplier"
-msgstr "Ordine a fornitore"
+msgstr "ordine al fornitore"
 
-#: gas/models/order.py:136
+#: gas/models/order.py:150
 msgid "orders issued to supplier"
-msgstr "Ordini a fornitore"
+msgstr "ordini al fornitore"
 
-#: gas/models/order.py:212
-#, python-format
-msgid "Ord. %(order_num)s %(pact)s - %(state)s"
-msgstr ""
-
-#: gas/models/order.py:475
-msgid ""
-"Workflow for specific GASSupplierOrder is not allowed. Just provide a "
-"default order workflow for your GAS"
-msgstr ""
-"Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
-"solamente un workflow di default per il tuo GAS "
-
-#: gas/models/order.py:901
+#: gas/models/order.py:915
 msgid "Current state"
 msgstr "Stato corrente"
 
-#: gas/models/order.py:903
-#, fuzzy
+#: gas/models/order.py:917
 msgid "Referrer"
-msgstr "Referenti"
+msgstr "Referente"
 
-#: gas/models/order.py:904
+#: gas/models/order.py:918
 msgid "Withdrawal referrer"
 msgstr "Referente di ritiro"
 
-#: gas/models/order.py:915
-msgid "order"
-msgstr "Ordine"
-
-#: gas/models/order.py:916
-msgid "gas stock"
-msgstr "Stock del GAS"
-
-#: gas/models/order.py:919
-msgid "maximum amount"
-msgstr "Importo massimo"
-
-#: gas/models/order.py:923
-msgid "initial price"
-msgstr "Prezzo iniziale"
-
-#: gas/models/order.py:925
-msgid "order price"
-msgstr "Prezzo ordine"
-
-#: gas/models/order.py:927
-msgid "delivered price"
-msgstr "Prezzo effettivo"
-
 #: gas/models/order.py:929
-msgid "delivered amount"
-msgstr "Quantità spedita"
+msgid "order"
+msgstr "ordine"
 
-#: gas/models/order.py:936
-msgid "gas supplier order product"
-msgstr "Prodotto disponibile per gasisti"
+#: gas/models/order.py:930
+msgid "gas stock"
+msgstr "stock del GAS"
+
+#: gas/models/order.py:933
+msgid "maximum amount"
+msgstr "importo massimo"
 
 #: gas/models/order.py:937
-msgid "gas supplier order products"
-msgstr "Prodotti disponibili per gasisti"
+msgid "initial price"
+msgstr "prezzo iniziale"
+
+#: gas/models/order.py:939
+msgid "order price"
+msgstr "prezzo di ordine"
 
 #: gas/models/order.py:941
-#, python-format
-msgid "%(gasstock)s of order %(order)s"
-msgstr "%(gasstock)s di ordine %(order)s"
+msgid "delivered price"
+msgstr "prezzo consegnato"
 
-#: gas/models/order.py:1016
-#, python-format
-msgid "Price changed on %(date)s"
-msgstr "Prezzo cambiato in data %(date)s"
+#: gas/models/order.py:943
+msgid "delivered amount"
+msgstr "quantità spedita"
 
-#: gas/models/order.py:1074
+#: gas/models/order.py:950
+msgid "gas supplier order product"
+msgstr "prodotto disponibile per gasisti"
+
+#: gas/models/order.py:951
+msgid "gas supplier order products"
+msgstr "prodotti ordinabili"
+
+#: gas/models/order.py:1088
 msgid "purchaser"
 msgstr "Acquirente"
 
-#: gas/models/order.py:1075
-msgid "order product"
-msgstr "Prodotti"
-
-#: gas/models/order.py:1077
-msgid "ordered price"
-msgstr "Prezzo ordine"
-
-#: gas/models/order.py:1079
-msgid "order amount"
-msgstr "Quantità ordinata"
-
-#: gas/models/order.py:1083
-msgid "widthdrawn amount"
-msgstr "Importo ritirato"
-
-#: gas/models/order.py:1087
-msgid "confirmed"
-msgstr "Confermato"
-
 #: gas/models/order.py:1089
+msgid "order product"
+msgstr "prodotto ordinato"
+
+#: gas/models/order.py:1091
+msgid "ordered price"
+msgstr "prezzo di ordine"
+
+#: gas/models/order.py:1093
+msgid "order amount"
+msgstr "quantità ordinata"
+
+#: gas/models/order.py:1097
+msgid "widthdrawn amount"
+msgstr "quantità ritirata"
+
+#: gas/models/order.py:1101
+msgid "confirmed"
+msgstr "confermato"
+
+#: gas/models/order.py:1103
 msgid "product note"
 msgstr "nota sul prodotto"
 
-#: gas/models/order.py:1089
+#: gas/models/order.py:1103
 msgid ""
 "GAS member can write some short message about this product for the producer"
 msgstr ""
 "Un gasista può scrivere un breve messaggio su questo prodotto per il "
 "produttore"
 
-#: gas/models/order.py:1095
+#: gas/models/order.py:1109
 msgid "GAS member order"
 msgstr "Ordine gasista"
 
-#: gas/models/order.py:1096
+#: gas/models/order.py:1110
 msgid "GAS member orders"
 msgstr "Ordini gasista"
 
-#: gas/models/order.py:1154
-msgid ""
-"Workflow for specific GASMemberOrder is not allowed. Just provide a default "
-"order workflow for your GAS"
-msgstr ""
-"Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
-"solamente un workflow di default per il tuo GAS "
-
-#: gas/models/order.py:1260
+#: gas/models/order.py:1274
 msgid "where the order will be delivered by supplier"
 msgstr "dove l'ordine sarà consegnato dal fornitore"
 
-#: gas/models/order.py:1264
+#: gas/models/order.py:1278
 msgid "when the order will be delivered by supplier"
 msgstr "quando l'ordine sarà consegnato dal fornitore"
 
-#: gas/models/order.py:1265
+#: gas/models/order.py:1279
 msgid "date"
 msgstr "Data"
 
-#: gas/models/order.py:1272
+#: gas/models/order.py:1286
 msgid "delivery"
 msgstr "consegna"
 
-#: gas/models/order.py:1273
+#: gas/models/order.py:1287
 msgid "deliveries"
 msgstr "consegne"
 
-#: gas/models/order.py:1408
+#: gas/models/order.py:1422
 msgid "where the order will be withdrawn by GAS members"
 msgstr "dove l'ordine sarà ritirato dai gasisti"
 
-#: gas/models/order.py:1415
+#: gas/models/order.py:1429
 msgid "when the order will be withdrawn by GAS members"
 msgstr "quando l'ordine sarà ritirato dai gasisti"
 
-#: gas/models/order.py:1419
+#: gas/models/order.py:1433
 msgid "when the withdrawal will start"
 msgstr "quando inizierà il ritiro"
 
-#: gas/models/order.py:1420
+#: gas/models/order.py:1434
 msgid "when the withdrawal will end"
 msgstr "quando terminerà il ritiro"
 
-#: gas/models/order.py:1426
+#: gas/models/order.py:1440
 msgid "wihtdrawal"
 msgstr "ritiro"
 
-#: gas/models/order.py:1427
+#: gas/models/order.py:1441
 msgid "wihtdrawals"
 msgstr "ritiri"
 
@@ -1853,44 +1836,40 @@ msgid "Total cost"
 msgstr "Costo totale"
 
 #: rest/templates/blocks/suppliers_report/report.html:33
-#, fuzzy
 msgid "Suppliers count"
-msgstr "Fornitori"
+msgstr "Numero di fornitori"
 
 #: rest/templates/blocks/suppliers_report/report.html:34
-#, fuzzy
 msgid "Products count"
-msgstr "Codice prodotto"
+msgstr "Numero di prodotti"
 
 #: rest/templates/blocks/suppliers_report/report.html:35
-#, fuzzy
 msgid "Pacts count"
-msgstr "Conto"
+msgstr "Numero di patti"
 
 #: rest/templates/blocks/suppliers_report/report.html:47
 msgid "Id"
 msgstr "Id"
 
 #: rest/templates/blocks/suppliers_report/report.html:50
-#, fuzzy
 msgid "Address"
-msgstr "Indirizzo principale"
+msgstr "Indirizzo"
 
 #: rest/templates/blocks/suppliers_report/report.html:50
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: rest/templates/blocks/suppliers_report/report.html:51
 msgid "Phone"
-msgstr ""
+msgstr "Telefono"
 
 #: rest/templates/blocks/suppliers_report/report.html:51
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #: rest/templates/html/index.html:2091
 msgid "Welcome,"
-msgstr ""
+msgstr "Benvenuto,"
 
 #: rest/templates/html/index.html:2118
 msgid "Home page"
@@ -1912,7 +1891,7 @@ msgstr "Cerca"
 
 #: rest/templates/html/index.html:2270 rest/templates/html/index.html:2271
 msgid "Reset"
-msgstr ""
+msgstr "Azzera"
 
 #: rest/templates/html/index.html:2274
 msgid "Options"
@@ -2109,17 +2088,16 @@ msgstr ""
 "alcun ordine"
 
 #: rest/views/blocks/order_invoice.py:30
-#, fuzzy
 msgid "Invoice management"
-msgstr "importo minimo"
+msgstr "Gestione della fattura"
 
 #: rest/views/blocks/order_invoice.py:46
 msgid "Invoice receipt"
-msgstr ""
+msgstr "Registrazione fattura"
 
 #: rest/views/blocks/order_invoice.py:77
-msgid "Transaction invoice ERROR: "
-msgstr ""
+msgid "Error in invoice registration: "
+msgstr "Errore nella registrazione della fattura: "
 
 #: rest/views/blocks/order_report.py:36
 msgid "Order report"
@@ -2135,19 +2113,18 @@ msgid "Who is %(name)s?"
 msgstr "Chi è %(name)s?"
 
 #: rest/views/blocks/person_details.py:66
-#, fuzzy
 msgid "Password changed successfully."
 msgstr "Password modificata con successo"
 
 #: rest/views/blocks/person_details.py:77
-#, fuzzy, python-format
+#, python-format
 msgid "Change password: %s"
-msgstr "Cambia password"
+msgstr "Cambia password: %s"
 
 #: rest/views/blocks/person_gasmembers.py:18
 #, python-format
 msgid "%(name)s's GAS memberships"
-msgstr "%(name)s nei GAS"
+msgstr "%(name)s dei GAS aderiti"
 
 #: rest/views/blocks/persons.py:18
 msgid "People"
@@ -2186,9 +2163,8 @@ msgid "Economic transactions"
 msgstr "Transazioni economiche"
 
 #: rest/views/blocks/users.py:23
-#, fuzzy
 msgid "Users"
-msgstr "Utente"
+msgstr "Utenti"
 
 #: sanet_users/models.py:36
 msgid "Redirect after logon"
@@ -2254,6 +2230,10 @@ msgstr "La tua password è stata cambiata"
 msgid "Personal settings"
 msgstr "Impostazioni personali"
 
+#: supplier/accounting.py:102
+msgid "Payment amounts must be non-negative"
+msgstr "Gli importi di pagamento non possono essere negativi"
+
 #: supplier/accounting.py:104
 msgid "Refund amounts must be non-negative"
 msgstr ""
@@ -2294,9 +2274,8 @@ msgid "Distribution info"
 msgstr ""
 
 #: supplier/forms.py:208
-#, fuzzy
 msgid "Supplier info"
-msgstr "Nome del fornitore"
+msgstr "Informazioni sul fornitore"
 
 #: supplier/models.py:51
 msgid "seat"
@@ -2304,27 +2283,27 @@ msgstr "sede"
 
 #: supplier/models.py:58
 msgid "amount of employers"
-msgstr ""
+msgstr "numero di impiegati"
 
 #: supplier/models.py:59 supplier/models.py:513
 msgid "certifications"
-msgstr "Certificazioni"
+msgstr "certificazioni"
 
 #: supplier/models.py:60
 msgid "logo"
-msgstr ""
+msgstr "logo"
 
 #: supplier/models.py:62
 msgid "IBAN"
-msgstr ""
+msgstr "IBAN"
 
 #: supplier/models.py:69 supplier/models.py:942
 msgid "supplier"
-msgstr "Fornitore"
+msgstr "fornitore"
 
 #: supplier/models.py:70
 msgid "suppliers"
-msgstr "Fornitori"
+msgstr "fornitori"
 
 #: supplier/models.py:358
 #, python-format
@@ -2377,7 +2356,7 @@ msgstr "agenti del fornitore"
 
 #: supplier/models.py:497
 msgid "symbol"
-msgstr ""
+msgstr "simbolo"
 
 #: supplier/models.py:512
 msgid "certification"
@@ -2489,9 +2468,8 @@ msgid "vat percent"
 msgstr "IVA"
 
 #: supplier/models.py:805 supplier/models.py:983
-#, fuzzy
 msgid "deleted"
-msgstr "elimina"
+msgstr "eliminato"
 
 #: supplier/models.py:810 supplier/models.py:944
 msgid "product"
@@ -2554,9 +2532,34 @@ msgstr "categoria"
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
 
-#, fuzzy
+#~ msgid "A GAS can withdraw only from its members' accounts"
+#~ msgstr "Un GAS può prelevare solo dai conti dei suoi gasisti"
+
+#~ msgid "GAS %(gas)s has not placed order %(order)s"
+#~ msgstr "Il GAS %(gas)s non ha fatto l'ordine %(order)s"
+
+#~ msgid ""
+#~ "Workflow for specific GASSupplierOrder is not allowed. Just provide a "
+#~ "default order workflow for your GAS"
+#~ msgstr ""
+#~ "Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
+#~ "solamente un workflow di default per il tuo GAS "
+
+#~ msgid "%(gasstock)s of order %(order)s"
+#~ msgstr "%(gasstock)s di ordine %(order)s"
+
+#~ msgid "Price changed on %(date)s"
+#~ msgstr "Prezzo cambiato in data %(date)s"
+
+#~ msgid ""
+#~ "Workflow for specific GASMemberOrder is not allowed. Just provide a "
+#~ "default order workflow for your GAS"
+#~ msgstr ""
+#~ "Un workflow per uno specifico ordine gasista non è consentito. Fornisci "
+#~ "solamente un workflow di default per il tuo GAS "
+
 #~ msgid "Year %(year)s --> %(person)s"
-#~ msgstr "%(id_in_gas)s - %(gas_member)s"
+#~ msgstr "Anno %(year)s --> %(person)s"
 
 #~ msgid "Ord.%(pk)s %(gas)s --> %(supplier)s"
 #~ msgstr "Ord. %(pk)s %(gas)s --> %(supplier)s"
@@ -2573,16 +2576,14 @@ msgstr "Profilo per %(user)s"
 #~ msgid "last update by"
 #~ msgstr "ultima modifica da"
 
-#, fuzzy
 #~ msgid "Balance state"
-#~ msgstr "Data di apertura"
+#~ msgstr "Stato del bilancio"
 
 #~ msgid "Account transaction"
 #~ msgstr "Transazioni del conto"
 
-#, fuzzy
 #~ msgid "Refund for %(gas)s <-- %(supplier)s "
-#~ msgstr "%(gas)s - %(supplier)s"
+#~ msgstr "Rimborso per %(gas)s <-- %(supplier)s"
 
 #~ msgid "define the amount with the sign - to debit money from this account"
 #~ msgstr "scrivi l'importo con il segno - per addebitare su questo conto"
@@ -2680,17 +2681,11 @@ msgstr "Profilo per %(user)s"
 #~ msgid "Created order %s"
 #~ msgstr "Creato l'ordine %s"
 
-#~ msgid "close on %(date)s"
-#~ msgstr "chiude in data %(date)s"
-
 #~ msgid "closed on %(date)s"
 #~ msgstr "chiuso in data %(date)s"
 
 #~ msgid "prepared"
 #~ msgstr "preparato"
-
-#~ msgid " --> to be delivered on %(date)s"
-#~ msgstr "da consegnare il %(date)s"
 
 #~ msgid " delivered on %(date)s"
 #~ msgstr "consegnato il %(date)s"

@@ -87,7 +87,7 @@ class GasAccountingProxy(AccountingProxy):
         # TODO: if this operation would make member's account negative, raise a warning
         gas = self.subject.instance
         if not member.person.is_member(gas):
-            raise MalformedTransaction(_("A GAS can withdraw only from its members' accounts"))
+            raise MalformedTransaction(ug("A GAS can withdraw only from its members' accounts"))
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
         #'gas': gas.id_in_des,
@@ -223,7 +223,7 @@ class GasAccountingProxy(AccountingProxy):
             return members
             
         else:
-            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+            raise TypeError(ug("GAS %(gas)s has not placed order %(order)s" % {
                 'gas': gas.id_in_des, 'order': order
             }))
 
@@ -271,7 +271,7 @@ class GasAccountingProxy(AccountingProxy):
             return members
             
         else:
-            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+            raise TypeError(ug("GAS %(gas)s has not placed order %(order)s" % {
                 'gas': gas.id_in_des, 'order': order
             }))
 
@@ -302,7 +302,7 @@ class GasAccountingProxy(AccountingProxy):
         """
 
         if amount < 0:
-            raise MalformedTransaction(_("Payment amounts must be non-negative"))
+            raise MalformedTransaction(ug("Payment amounts must be non-negative"))
         gas = self.subject.instance
         non_des = self.get_non_des_accounting()
         if not non_des:
@@ -319,7 +319,7 @@ class GasAccountingProxy(AccountingProxy):
             entry_point = self.get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
             target_account = non_des_system['/wallet']
         else:
-            #WAS raise MalformedTransaction(_("Payment target %s not identified" % target))
+            #WAS raise MalformedTransaction(ug("Payment target %s not identified" % target))
             #coercing to Unicode: need string or buffer, __proxy__ found
             raise MalformedTransaction(ug("Payment target %s not identified") % target)
 
@@ -328,7 +328,7 @@ class GasAccountingProxy(AccountingProxy):
             'target': target,
             'causal': causal
         }
-        #WAS raise description = _("%(gas)s %(target)s %(causal)s") % { ...
+        #WAS raise description = ug("%(gas)s %(target)s %(causal)s") % { ...
         #WAS exceptions must be old-style classes or derived from BaseException, not unicode
 
         issuer = self.subject
@@ -354,17 +354,12 @@ class GasAccountingProxy(AccountingProxy):
             account = system[path]
         if not account:
             raise MalformedTransaction(ug("Unknow account: %(system)s %(path)s %(kind)s") % {
-            'system': system,
-            'path': path,
-            'kind': kind
-        })
+                'system': system,
+                'path': path,
+                'kind': kind
+            })
         return account
 
     def get_non_des_accounting(self):
         des = self.subject.instance.des
-        try:
-            return des.accounting
-        except AttributeError as e:
-            msg = _("calling non-existent out of DES account: %s") % e.message
-            log.warning(msg)
-            raise MalformedTransaction(msg)
+        return des.accounting

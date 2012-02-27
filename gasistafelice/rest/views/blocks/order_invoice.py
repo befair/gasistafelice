@@ -74,7 +74,7 @@ class Block(AbstractBlock):
                                 if settings.FORM_DEBUG:
                                     raise
                                 else:
-                                    msg = _("Transaction invoice ERROR: ") + e.message
+                                    msg = _("Error in invoice registration: ") + e.message
                                     form._errors["amount"] = form.error_class([msg])
 
         else:

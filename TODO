@@ -5,9 +5,6 @@ TODO 0.8
 In carico a Dominique:
 
 * Parte economica:
-  - decurtazione: check "applica tutti" $(*.input[type=checked]).val() = false
-  - non fare "update_transaction", ma "register_simple_transaction" della
-    differenza quando si modifica il decurtato per un gasista 
   - Verificare visualizzazione transazioni
   - Eliminare uno dei due gas accounting.accounted_amount_by_gasmember 
     (preferibilmente il primo) dopo aver verificato che funziona
@@ -16,14 +13,17 @@ In carico a Dominique:
 
 In carico a fero:
 
-* Verifica e FIX che non carica la pagina per un ordine archiviato
 * Far scomparire il pulsante "Archivia" dalla gestione dell'ordine
 * Riabilitare le notifiche
 * Link al forum in alto
 * Elimina prodotto
 * Pagina di errore 505
 
-  - decurtazione+simple_accounting: consentire transazioni di valore 0
+Fix da gasisti
+----------------
+
+* [Orlando] Verifica e FIX che non carica la pagina per un ordine archiviato - farsi dare l'ordine preciso
+* [Peppe] Scheda del fornitore - gestisci ruoli
 
 TODO 0.9
 --------
