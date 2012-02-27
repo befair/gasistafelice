@@ -55,9 +55,6 @@ class Block(BlockSSDataTables):
   
         user_actions = []
 
-        #FIXME: Check if order is in "closed_state"  Not in Open STATE for CASH REFERRER
-        #if request.user.has_perm(CASH, obj=ObjectWithContext(request.resource)):
-
         order = self.resource.order
 
         if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \

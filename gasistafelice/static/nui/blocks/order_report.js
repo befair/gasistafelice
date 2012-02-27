@@ -11,6 +11,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
     action_handler : function(action_el) {
         if (action_el.attr('name') == 'createpdf') {
             window.location = action_el.attr('url');
+        } else if (action_el.attr('name') == 'emailmepdf') {
+            window.location = action_el.attr('url');
+        } else if (action_el.attr('name') == 'emailprodpdf') {
+            window.location = action_el.attr('url');
         } else {
             return this._super(action_el);
         }
