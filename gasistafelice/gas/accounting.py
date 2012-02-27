@@ -84,7 +84,7 @@ class GasAccountingProxy(AccountingProxy):
         but we use only one GAS_WITHDRAWAL transaction with update. 
         """
         from django.db.models import Count, Sum
-
+     
         gas = self.subject.instance
         existing_amount = 0
         if order.pact.gas == gas:
@@ -94,7 +94,8 @@ class GasAccountingProxy(AccountingProxy):
             order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
             #Fixme: 
             existing_amount = order_txs.aggregate(Sum('source__amount'))
-            return existing_amount, order_txs.count()
+            number_of_txs = order_txs.count()
+            return existing_amount, number_of_txs
             
         else:
             raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
@@ -114,8 +115,8 @@ class GasAccountingProxy(AccountingProxy):
         (e.g. a list of GAS member orders this withdrawal is related to).
         """
         # Only for test Control if yet exist some transaction for this refs.
-        computed_amount, existing_txs = self.get_amount_by_gas_member(member, order)
-        log.debug("ACCOUNTING %(computed_amount)s %(existing_txs)s" % {'computed_amount': computed_amount, 'existing_txs': existing_txs})
+        #computed_amount, existing_txs = self.get_amount_by_gas_member(member, order)
+        #log.debug("ACCOUNTING %(computed_amount)s %(existing_txs)s" % {'computed_amount': computed_amount, 'existing_txs': existing_txs})
 
         gas = self.subject.instance
         if not member.person.is_member(gas):

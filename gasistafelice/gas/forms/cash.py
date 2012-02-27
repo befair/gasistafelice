@@ -100,14 +100,6 @@ class EcoGASMemberForm(forms.Form):
 
             original_amounted = self.cleaned_data['original_amounted']
 
-            # Only for test Control if yet exist some transaction for this refs.
-            computed_amount, existing_txs = gm.gas.accounting.get_amount_by_gas_member(gm, self.__order)
-            log.debug("BEFORE %(original_amounted)s %(computed_amount)s %(existing_txs)s" % {
-                    'computed_amount': computed_amount, 
-                    'existing_txs': existing_txs,
-                    'original_amounted': original_amounted
-            })
-
             #WAS: decide to remove this options 
             if original_amounted is not None:
                 # A ledger entry already exists
@@ -119,13 +111,13 @@ class EcoGASMemberForm(forms.Form):
             else:
                 gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order)
 
-            # Only for test Control if yet exist some transaction for this refs.
-            computed_amount, existing_txs = gm.gas.accounting.get_amount_by_gas_member(gm, self.__order)
-            log.debug("BEFORE %(original_amounted)s %(computed_amount)s %(existing_txs)s" % {
-                    'computed_amount': computed_amount, 
-                    'existing_txs': existing_txs,
-                    'original_amounted': original_amounted
-            })
+#            # Only for test Control if yet exist some transaction for this refs.
+#            computed_amount, existing_txs = gm.gas.accounting.get_amount_by_gas_member(gm, self.__order)
+#            log.debug("BEFORE %(original_amounted)s %(computed_amount)s %(existing_txs)s" % {
+#                    'computed_amount': computed_amount, 
+#                    'existing_txs': existing_txs,
+#                    'original_amounted': original_amounted
+#            })
 
             #Update State if possible
             self.__order.control_economic_state()
