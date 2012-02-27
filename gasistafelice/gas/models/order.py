@@ -3,7 +3,16 @@
 from django.db import models
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.core.mail import send_mail, EmailMessage
 
+# Some template stuff needed for template rendering
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+from django.utils.encoding import smart_unicode
+# End
 from workflows.models import Workflow, Transition
 from workflows.utils  import set_initial_state
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
@@ -913,6 +922,161 @@ WHERE order_id = %s \
         allowed_users = self.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
         return user in allowed_users 
     
+    #-----------------------------------------------#
+
+    def send_email(self, to, cc=[], more_info='', issued_by=None):
+
+        if not isinstance(to, list):
+            to = [to]
+
+        try:
+            sender = self.gas.preferred_email_contacts[0].value
+        except IndexError as e:
+            raise ConfigurationError(_("GAS cannot send email, because no preferred email for GAS specified"))
+
+        subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
+            'gas_id_in_des' : self.gas.id_in_des,
+            'ord' : self
+        }
+
+        message = u"In allegato l'ordine del GAS %(gas)s." % { 'gas': self.gas }
+
+        #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
+
+        email = EmailMessage(
+            subject = subject,
+            body = message,
+            from_email = sender,
+            to = to, cc = cc,
+        )
+        email.attach(
+            u"%s.pdf" % self.order.get_valid_name(), 
+            self.get_pdf_data(requested_by=issued_by), 
+            'application/pdf'
+        )
+        email.send()
+
+        return 
+
+    def send_email_to_supplier(self, cc=[], more_info='', issued_by=None):
+        supplier_email = self.supplier.preferred_email_address
+        return self.send_email(
+            [supplier_email], 
+            cc=cc, more_info=more_info,
+            issued_by=issued_by
+        )
+
+    def get_pdf_data(self, requested_by=None):
+        """Return PDF raw content to be rendered somewhere (email, or http)"""
+
+        if not requested_by:
+            requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+
+        orderables_aggregate = self.orderable_products.filter(
+            gasmember_order_set__ordered_amount__gt=0
+        ).distinct()
+
+        ordereds = self.ordered_products.order_by('purchaser__person__name')
+        
+        fams, total_calc, subTotals, fam_count = self.__get_pdfrecords_families(ordereds)
+        context_dict = {
+            'order' : self,
+            'recProd' : self.__get_pdfrecords_products(orderables_aggregate),
+            'prod_count' : orderables_aggregate.count(),
+            'recFam' : fams, 
+            'fam_count' : fam_count, 
+            'subFam' : subTotals, 
+            'total_amount' : self.tot_price, #total da Model
+            'total_calc' : total_calc, #total dal calcolato
+            'have_note' : bool(self.allnotes.count() > 0),
+            'user' : requested_by,
+        }
+
+        REPORT_TEMPLATE = "blocks/order_report/report.html"
+
+        template = get_template(REPORT_TEMPLATE)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
+
+    def __get_pdfrecords_families(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        #memorize family, total price and number of products
+        subTotals = []
+        fam_count = 0
+        actualFamily = -1
+        loadedFamily = -1
+        rowFam = -1
+        description = ""
+        product = ""
+        tot_fam = 0
+        nProducts = 0
+        tot_Ord = 0
+
+        for el in querySet:
+            rowFam = el.purchaser.pk
+            if actualFamily == -1 or actualFamily != rowFam:
+                if actualFamily != -1:
+                    subTotals.append({
+                       'family_id' : actualFamily,
+                       'gasmember' : description,
+                       'basket_price' : tot_fam,
+                       'basket_products' : nProducts,
+                    })
+                    tot_fam = 0
+                    nProducts = 0
+                actualFamily = rowFam
+                fam_count += 1
+                description = smart_unicode(el.purchaser.person)
+            product = smart_unicode(el.product)
+
+            tot_fam += el.tot_price
+            nProducts += 1
+            tot_Ord += el.tot_price
+
+            records.append({
+               'product' : product,
+               'price_ordered' : el.ordered_price,
+               'price_delivered' : el.ordered_product.order_price,
+               'price_changed' : el.has_changed,
+               'amount' : el.ordered_amount,
+               'tot_price' : el.tot_price,
+               'family_id' : rowFam,
+               'note' : el.note,
+            })
+
+        if actualFamily != -1 and tot_fam > 0:
+            subTotals.append({
+               'family_id' : actualFamily,
+               'gasmember' : description,
+               'basket_price' : tot_fam,
+               'basket_products' : nProducts,
+            })
+
+        return records, tot_Ord, subTotals, fam_count
+
+    def __get_pdfrecords_products(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        c = querySet.count()
+
+        for el in querySet:
+            if el.tot_price > 0:
+                records.append({
+                   'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
+                   'price' : el.order_price,
+                   'tot_gasmembers' : el.tot_gasmembers,
+                   'tot_amount' : el.tot_amount,
+                   'tot_price' : el.tot_price,
+                })
+
+        return records
+
     #-----------------------------------------------#
 
     display_fields = (

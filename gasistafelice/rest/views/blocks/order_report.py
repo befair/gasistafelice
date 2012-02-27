@@ -10,17 +10,9 @@ from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
 from django.forms.formsets import formset_factory
 
-from django.http import HttpResponse
-from django.template.loader import get_template
-#from django.template.loader import render_to_string
-from django.template import Context
-#from django.template import RequestContext
-import xhtml2pdf.pisa as pisa
-import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
 
-from django.utils.encoding import smart_unicode
 from flexi_auth.models import ObjectWithContext
 
 import logging
@@ -143,84 +135,6 @@ class Block(BlockSSDataTables):
 
         return formset, records, {}
 
-
-    def _get_pdfrecords_products(self, querySet):
-        """Return records of rendered table fields."""
-
-        records = []
-        c = querySet.count()
-
-        for el in querySet:
-            if el.tot_price > 0:
-                records.append({
-                   'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
-                   'price' : el.order_price,
-                   'tot_gasmembers' : el.tot_gasmembers,
-                   'tot_amount' : el.tot_amount,
-                   'tot_price' : el.tot_price,
-                })
-
-        return records
-
-    def _get_pdfrecords_families(self, querySet):
-        """Return records of rendered table fields."""
-
-        records = []
-        #memorize family, total price and number of products
-        subTotals = []
-        fam_count = 0
-        actualFamily = -1
-        loadedFamily = -1
-        rowFam = -1
-        description = ""
-        product = ""
-        tot_fam = 0
-        nProducts = 0
-        tot_Ord = 0
-
-        for el in querySet:
-            rowFam = el.purchaser.pk
-            if actualFamily == -1 or actualFamily != rowFam:
-                if actualFamily != -1:
-                    subTotals.append({
-                       'family_id' : actualFamily,
-                       'gasmember' : description,
-                       'basket_price' : tot_fam,
-                       'basket_products' : nProducts,
-                    })
-                    tot_fam = 0
-                    nProducts = 0
-                actualFamily = rowFam
-                fam_count += 1
-                description = smart_unicode(el.purchaser.person)
-            product = smart_unicode(el.product)
-
-            tot_fam += el.tot_price
-            nProducts += 1
-            tot_Ord += el.tot_price
-
-            records.append({
-               'product' : product,
-               'price_ordered' : el.ordered_price,
-               'price_delivered' : el.ordered_product.order_price,
-               'price_changed' : el.has_changed,
-               'amount' : el.ordered_amount,
-               'tot_price' : el.tot_price,
-               'family_id' : rowFam,
-               'note' : el.note,
-            })
-
-        if actualFamily != -1 and tot_fam > 0:
-            subTotals.append({
-               'family_id' : actualFamily,
-               'gasmember' : description,
-               'basket_price' : tot_fam,
-               'basket_products' : nProducts,
-            })
-
-        return records, tot_Ord, subTotals, fam_count
-
-
     def get_response(self, request, resource_type, resource_id, args):
 
         self.request = request
@@ -233,33 +147,8 @@ class Block(BlockSSDataTables):
 
     def _create_pdf(self):
 
-        # Dati di esempio
-        #order = self.resource.order
-        order = self.resource
-        #TODO: order_by('somefield')
-        querySet = self._get_resource_list(self.request)
-        fams, total_calc, subTotals, fam_count = self._get_pdfrecords_families(self._get_resource_families(self.request).order_by('purchaser__person__name'))
-        context_dict = {
-            'order' : order,
-            'recProd' : self._get_pdfrecords_products(querySet),
-            'prod_count' : querySet.count(),
-            'recFam' : fams, 
-            'fam_count' : fam_count, 
-            'subFam' : subTotals, 
-            'user' : self.request.user,
-            'total_amount' : order.tot_price, #total da Model
-            'total_calc' : total_calc, #total dal calcolato
-            'have_note' : bool(order.allnotes.count() > 0),
-        }
+        pdf = self.resource.get_pdf_data(requested_by=self.request.user)
 
-        REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME
-
-        template = get_template(REPORT_TEMPLATE)
-        context = Context(context_dict)
-        html = template.render(context)
-        result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
-        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=GAS_" + order.get_valid_name() + ".pdf"

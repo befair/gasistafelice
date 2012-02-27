@@ -422,7 +422,10 @@ class Resource(object):
 
         Usually you SHOULD NOT NEED TO OVERRIDE IT in subclasses
         """
-        return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_email_contacts.values_list('value'))))
+        if settings.EMAIL_DEBUG:
+            return EMAIL_DEBUG_ADDR
+        else:
+            return ", ".join(unordered_uniq(map(lambda x: x[0], self.preferred_email_contacts.values_list('value'))))
 
     @property
     def preferred_email_contacts(self):

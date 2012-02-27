@@ -7,6 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 FORM_DEBUG = False
+EMAIL_DEBUG = True
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()
@@ -396,6 +399,8 @@ MAINTENANCE_MODE = False
 # Default category for all uncategorized products
 DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
 JUNK_EMAIL = 'devnull@desmacerata.it'
+EMAIL_DEBUG_ADDR = 'gftest@gasistafelice.org'
+DEFAULT_SENDER_EMAIL = 'gasistafelice@desmacerata.it'
 
 # Superuser username
 
