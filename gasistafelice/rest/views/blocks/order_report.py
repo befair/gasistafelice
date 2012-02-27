@@ -55,16 +55,21 @@ class Block(BlockSSDataTables):
 
         order = self.resource.order
 
-        user_actions += [
-            ResourceBlockAction(
-                block_name = self.BLOCK_NAME,
-                resource = request.resource,
-                name=CREATE_PDF, verbose_name=_("Create PDF"),
-                popup_form=False,
-            ),
-        ]
+        if request.user == order.gas.tech_referrers \
+            or request.user in order.supplier.referrers:
 
-        if request.user == order.referrer_person.user:
+            user_actions += [
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE_PDF, verbose_name=_("Create PDF"),
+                    popup_form=False,
+                ),
+            ]
+
+        print ("request.user %s,  order.supplier.referrers %s" % (request.user, order.supplier.referrers))
+        if request.user == order.referrer_person.user \
+            or request.user in order.supplier.referrers:
 
             if order.is_closed() or order.is_unpaid():
                 user_actions += [
