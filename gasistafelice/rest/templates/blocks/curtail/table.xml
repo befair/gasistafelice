@@ -6,7 +6,7 @@
     <th>{% trans "GASMember" %}</th>
     <th title='{% trans "SUM ordered amount" %}'>{% trans "Sum Amount" %}</th>
     <th title='{% trans "Withdrawal amounted" %}'>{% trans "Amounted" %}</th>
-    <th title='' class="tacenter"><input type="checkbox" onclick="checkall(this);"></input></th>
+    <th title='{% trans "Apply" %}' class="tacenter"><input type="checkbox" onclick="checkall(this);"></input></th>
 {% endblock %}
 
 
