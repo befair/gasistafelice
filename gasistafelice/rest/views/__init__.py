@@ -223,6 +223,12 @@ def resource_page(request, resource_type, resource_id):
                     if section['name'] == 'admin':
                         page_config.remove(section)
 
+        elif resource_type == Supplier.resource_type:
+            if request.user not in resource.referrers:
+                for section in page_config:
+                    if section['name'] == 'admin':
+                        page_config.remove(section)
+
     return create_page_settings_from_config(page_config, resource, resource.ancestors)
 
 
