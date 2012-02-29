@@ -17,6 +17,7 @@ gasistafelice/fixtures/esupplier/import.json
 gasistafelice/fixtures/supplier/import.json
 *import.json
 *.log
+submodules/django-simple-accounting
 
 
 
