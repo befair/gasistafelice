@@ -59,7 +59,6 @@ class Block(BlockSSDataTables):
                 ),
             ]
 
-        print ("request.user %s,  order.supplier.referrers %s" % (request.user, order.supplier.referrers))
         if request.user == order.referrer_person.user \
             or request.user in order.supplier.referrers:
 
@@ -168,11 +167,19 @@ class Block(BlockSSDataTables):
         if args == CREATE_PDF:
             return self._create_pdf()
         if args == SENDME_PDF:
-            return self._create_pdf()
+            return self._send_email_logged()
         if args == SENDPROD_PDF:
-            return self._create_pdf()
+            return self._send_email_prod()
         else:
             return super(Block, self).get_response(request, resource_type, resource_id, args)
+
+    def _send_email_logged(self):
+        to = self.request.user.email
+        self.resource.send_email([to],None, 'Order Email me', self.request.user)
+
+    def _send_email_prod(self):
+        cc = self.request.user.email
+        self.resource.send_email_to_supplier([cc], 'Order Email prod', self.request.user)
 
     def _create_pdf(self):
 

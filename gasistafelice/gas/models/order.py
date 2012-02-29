@@ -930,9 +930,16 @@ WHERE order_id = %s \
             to = [to]
 
         try:
+            log.debug('self.gas.preferred_email_contacts %s ' % self.gas.preferred_email_contacts)
             sender = self.gas.preferred_email_contacts[0].value
         except IndexError as e:
-            raise ConfigurationError(_("GAS cannot send email, because no preferred email for GAS specified"))
+            #raise AttributeError(msg)
+            #WAS: msg = _("GAS cannot send email, because no preferred email for GAS specified")
+            #      cannot concatenate 'str' and '__proxy__' objects
+            msg = ug("GAS cannot send email, because no preferred email for GAS specified")
+            more_info += msg
+            sender = settings.DEFAULT_FROM_EMAIL
+            more_info += '%s --> %s' % (msg, sender)
 
         subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
             'gas_id_in_des' : self.gas.id_in_des,
@@ -940,7 +947,7 @@ WHERE order_id = %s \
         }
 
         message = u"In allegato l'ordine del GAS %(gas)s." % { 'gas': self.gas }
-
+        message += more_info
         #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
 
         email = EmailMessage(
@@ -949,9 +956,10 @@ WHERE order_id = %s \
             from_email = sender,
             to = to, cc = cc,
         )
+        #FIXME: No handlers could be found for logger "xhtml2pdf"
         email.attach(
-            u"%s.pdf" % self.order.get_valid_name(), 
-            self.get_pdf_data(requested_by=issued_by), 
+            u"%s.pdf" % self.order.get_valid_name(),
+            self.get_pdf_data(requested_by=issued_by),
             'application/pdf'
         )
         email.send()
@@ -961,7 +969,7 @@ WHERE order_id = %s \
     def send_email_to_supplier(self, cc=[], more_info='', issued_by=None):
         supplier_email = self.supplier.preferred_email_address
         return self.send_email(
-            [supplier_email], 
+            [supplier_email],
             cc=cc, more_info=more_info,
             issued_by=issued_by
         )
@@ -1000,6 +1008,10 @@ WHERE order_id = %s \
         result = StringIO.StringIO()
         pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
+        if not pdf.err:
+            return result.getvalue()
+        else:
+            log.debug('Some problem while generate pdf err: %s' % pdf.err)
 
     def __get_pdfrecords_families(self, querySet):
         """Return records of rendered table fields."""
