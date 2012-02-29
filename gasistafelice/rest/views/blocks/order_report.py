@@ -174,12 +174,21 @@ class Block(BlockSSDataTables):
             return super(Block, self).get_response(request, resource_type, resource_id, args)
 
     def _send_email_logged(self):
-        to = self.request.user.email
-        self.resource.send_email([to],None, 'Order Email me', self.request.user)
+        try:
+            to = self.request.user.email
+            self.resource.send_email([to],None, 'Order Email me', self.request.user)
+            #FIXME: 'Block' object has no attribute 'response_dict'
+            return self.response_success()
+        except Exception, e:
+            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _send_email_prod(self):
-        cc = self.request.user.email
-        self.resource.send_email_to_supplier([cc], 'Order Email prod', self.request.user)
+        try:
+            cc = self.request.user.email
+            self.resource.send_email_to_supplier([cc], 'Order Email prod', self.request.user)
+            return self.response_success()
+        except Exception, e:
+            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _create_pdf(self):
 
@@ -189,7 +198,7 @@ class Block(BlockSSDataTables):
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=GAS_" + order.get_valid_name() + ".pdf"
             return response
-        return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
+        return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
 
 
     def fetch_resources(uri, rel):
