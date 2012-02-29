@@ -3,7 +3,16 @@
 from django.db import models
 from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.core.mail import send_mail, EmailMessage
 
+# Some template stuff needed for template rendering
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+from django.utils.encoding import smart_unicode
+# End
 from workflows.models import Workflow, Transition
 from workflows.utils  import set_initial_state
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
@@ -47,9 +56,27 @@ log = logging.getLogger(__name__)
 import logging
 log = logging.getLogger(__name__)
 
+#-------------------------------------------------------------------------------
+# Some stuff needed for translation
+
+# NOTE LF: put some string to translate here... I don't know
+# why makemessages don't find them
+some_string_to_translate__ = (
+    _("open: %(date_start)s"),
+    _(" - close: %(date_end)s"),
+    _("close: %(date_end)s"),
+    _(" --> delivery: %(date_delivery)s"),
+    _("to be delivered: %(date_delivery)s  --> to pay"),
+    _(" --> delivered: %(date_delivery)s --> to pay"),
+    _("archived: %(date_delivery)s"),
+    _("canceled: %(date_delivery)s"),
+    _("Ord. %(order_num)s %(pact)s - %(state)s")
+)
+
 trans_state_d = {
     'Open' : 'Aperto',
     'Close': 'Chiuso',
+    'Closed': 'Chiuso',
     'Archived' : 'Archiviato',
     'Prepared' : 'Preparato',
     'Unpaid' : 'Insoluto',
@@ -61,6 +88,8 @@ AT = _('at')
 ON = _('on')
 FROM = _('from')
 TO = _('to')
+
+#-------------------------------------------------------------------------------
 
 class GASSupplierOrder(models.Model, PermissionResource):
     """An order issued by a GAS to a Supplier.
@@ -161,36 +190,36 @@ class GASSupplierOrder(models.Model, PermissionResource):
             state = self.current_state.name
             date_info = "("
             if state == STATUS_PREPARED:
-                date_info += ug("apertura: %(date_start)s")
+                date_info += ug("open: %(date_start)s")
                 if self.datetime_end:
-                    date_info += ug(" - chiusura: %(date_end)s")
+                    date_info += ug(" - close: %(date_end)s")
     
             elif state == STATUS_OPEN:
                 if self.datetime_end:
-                    date_info += ug("chiusura: %(date_end)s")
+                    date_info += ug("close: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug(" --> consegna: %(date_delivery)s")
+                    date_info += ug(" --> delivery: %(date_delivery)s")
     
             elif state == STATUS_CLOSED:
 #                if self.datetime_end:
 #                    date_info += ug("Closed: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug("in consegna: %(date_delivery)s  --> to pay")
+                    date_info += ug("to be delivered: %(date_delivery)s  --> to pay")
 
     
             elif state == STATUS_UNPAID:
                 if d['date_delivery']:
-                    date_info += ug(" --> consegnato: %(date_delivery)s --> to pay")
+                    date_info += ug(" --> delivered: %(date_delivery)s --> to pay")
 
             elif state == STATUS_ARCHIVED:
                 if d['date_delivery']:
-                    date_info += ug("archiviato: %(date_delivery)s")
+                    date_info += ug("archived: %(date_delivery)s")
     
             elif state == STATUS_CANCELED:
                 if d['date_delivery']:
-                    date_info += ug("annullato: %(date_delivery)s")
+                    date_info += ug("canceled: %(date_delivery)s")
 
             else:
                 date_info += "TODO ?(%s)" % state
@@ -209,7 +238,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = _("Ord. %(order_num)s %(pact)s - %(state)s") % {
+        rv = ug("Ord. %(order_num)s %(pact)s - %(state)s") % {
                     'pact' : self.pact,
                     'state' : state,
                     'order_num' : self.pk,
@@ -472,7 +501,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(_("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(ug("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
 
     def forward(self, user):
         """Apply default transition"""
@@ -895,6 +924,161 @@ WHERE order_id = %s \
     
     #-----------------------------------------------#
 
+    def send_email(self, to, cc=[], more_info='', issued_by=None):
+
+        if not isinstance(to, list):
+            to = [to]
+
+        try:
+            sender = self.gas.preferred_email_contacts[0].value
+        except IndexError as e:
+            raise ConfigurationError(_("GAS cannot send email, because no preferred email for GAS specified"))
+
+        subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
+            'gas_id_in_des' : self.gas.id_in_des,
+            'ord' : self
+        }
+
+        message = u"In allegato l'ordine del GAS %(gas)s." % { 'gas': self.gas }
+
+        #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
+
+        email = EmailMessage(
+            subject = subject,
+            body = message,
+            from_email = sender,
+            to = to, cc = cc,
+        )
+        email.attach(
+            u"%s.pdf" % self.order.get_valid_name(), 
+            self.get_pdf_data(requested_by=issued_by), 
+            'application/pdf'
+        )
+        email.send()
+
+        return 
+
+    def send_email_to_supplier(self, cc=[], more_info='', issued_by=None):
+        supplier_email = self.supplier.preferred_email_address
+        return self.send_email(
+            [supplier_email], 
+            cc=cc, more_info=more_info,
+            issued_by=issued_by
+        )
+
+    def get_pdf_data(self, requested_by=None):
+        """Return PDF raw content to be rendered somewhere (email, or http)"""
+
+        if not requested_by:
+            requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+
+        orderables_aggregate = self.orderable_products.filter(
+            gasmember_order_set__ordered_amount__gt=0
+        ).distinct()
+
+        ordereds = self.ordered_products.order_by('purchaser__person__name')
+        
+        fams, total_calc, subTotals, fam_count = self.__get_pdfrecords_families(ordereds)
+        context_dict = {
+            'order' : self,
+            'recProd' : self.__get_pdfrecords_products(orderables_aggregate),
+            'prod_count' : orderables_aggregate.count(),
+            'recFam' : fams, 
+            'fam_count' : fam_count, 
+            'subFam' : subTotals, 
+            'total_amount' : self.tot_price, #total da Model
+            'total_calc' : total_calc, #total dal calcolato
+            'have_note' : bool(self.allnotes.count() > 0),
+            'user' : requested_by,
+        }
+
+        REPORT_TEMPLATE = "blocks/order_report/report.html"
+
+        template = get_template(REPORT_TEMPLATE)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
+
+    def __get_pdfrecords_families(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        #memorize family, total price and number of products
+        subTotals = []
+        fam_count = 0
+        actualFamily = -1
+        loadedFamily = -1
+        rowFam = -1
+        description = ""
+        product = ""
+        tot_fam = 0
+        nProducts = 0
+        tot_Ord = 0
+
+        for el in querySet:
+            rowFam = el.purchaser.pk
+            if actualFamily == -1 or actualFamily != rowFam:
+                if actualFamily != -1:
+                    subTotals.append({
+                       'family_id' : actualFamily,
+                       'gasmember' : description,
+                       'basket_price' : tot_fam,
+                       'basket_products' : nProducts,
+                    })
+                    tot_fam = 0
+                    nProducts = 0
+                actualFamily = rowFam
+                fam_count += 1
+                description = smart_unicode(el.purchaser.person)
+            product = smart_unicode(el.product)
+
+            tot_fam += el.tot_price
+            nProducts += 1
+            tot_Ord += el.tot_price
+
+            records.append({
+               'product' : product,
+               'price_ordered' : el.ordered_price,
+               'price_delivered' : el.ordered_product.order_price,
+               'price_changed' : el.has_changed,
+               'amount' : el.ordered_amount,
+               'tot_price' : el.tot_price,
+               'family_id' : rowFam,
+               'note' : el.note,
+            })
+
+        if actualFamily != -1 and tot_fam > 0:
+            subTotals.append({
+               'family_id' : actualFamily,
+               'gasmember' : description,
+               'basket_price' : tot_fam,
+               'basket_products' : nProducts,
+            })
+
+        return records, tot_Ord, subTotals, fam_count
+
+    def __get_pdfrecords_products(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        c = querySet.count()
+
+        for el in querySet:
+            if el.tot_price > 0:
+                records.append({
+                   'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
+                   'price' : el.order_price,
+                   'tot_gasmembers' : el.tot_gasmembers,
+                   'tot_amount' : el.tot_amount,
+                   'tot_price' : el.tot_price,
+                })
+
+        return records
+
+    #-----------------------------------------------#
+
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
         display.Resource(name="supplier", verbose_name=_("Supplier")),
@@ -938,7 +1122,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        rv = _('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
+        rv = ug('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
@@ -1013,7 +1197,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             log.debug('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
             for gmo in self.gasmember_order_set:
                 #gmo.order_price = self.order_price
-                gmo.note = _("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.note = ug("Price changed on %(date)s") % { 'date' : datetime.now() }
                 gmo.save()
 
 
@@ -1151,7 +1335,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(_("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(ug("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
 
     def forward(self, user):
         """Apply default transition"""

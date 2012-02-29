@@ -1,4 +1,20 @@
 
+DONE 0.8
+--------
+
+* Parte economica:
+ - decurtazione+simple_accounting: verifica aggiorna transazioni
+ - decurtazione+simple_accounting: consentire transazioni di valore 0
+ - decurtazione: check "applica tutti" $(*.input[type=checked]).val() = false
+
+* Traduzione
+    * Sistemare ugettext e ugettext_lazy
+    * tradurre
+
+* Far scomparire il pulsante "Archivia" dalla gestione dell'ordine
+* Pagina di errore 505
+* DES -> Admin -> Abilitazione fornitore
+
 DONE 0.7
 --------
 

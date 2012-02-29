@@ -23,12 +23,14 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
     gas_choice = forms.ModelChoiceField(
         label="Sei del gas...",
         queryset = GAS.objects.all(),
-        required=False
+        required=False,
+        help_text=_("after your registration you have to wait for account activation by a GAS tech referrer")
     )
     supplier_choice = forms.ModelChoiceField(
         label="Sei il fornitore...",
         queryset = Supplier.objects.all(),
-        required=False
+        required=False,
+        help_text=_("if you are not in this list, or you are the first user for this supplier, please contact a GAS tech referrer that could activate your account.")
     )
 
     name = forms.CharField( label="Nome")

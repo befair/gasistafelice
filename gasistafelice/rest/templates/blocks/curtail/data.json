@@ -9,7 +9,7 @@
         "{{row|escapejs}}",
         "&#8364; {{row.sum_amount|floatformat:"2"}}",
         "{{row.accounted_amount|floatformat:"2"}}",
-        "{% filter escapejs %}{% bool_img row.accounted_amount %}{% endfilter %}",
+        "{% filter escapejs %}{% bool_img_accepting_0 row.accounted_amount %}{% endfilter %}",
 
     ]
     {% if not forloop.last %}

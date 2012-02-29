@@ -5,24 +5,22 @@ TODO 0.8
 In carico a Dominique:
 
 * Parte economica:
-  - decurtazione: check "applica tutti" $(*.input[type=checked]).val() = false
-  - decurtazione+simple_accounting: consentire transazioni di valore 0
-  - non fare "update_transaction", ma "register_simple_transaction" della
-    differenza quando si modifica il decurtato per un gasista 
   - Verificare visualizzazione transazioni
   - Eliminare uno dei due gas accounting.accounted_amount_by_gasmember 
     (preferibilmente il primo) dopo aver verificato che funziona
-* Sistemare ugettext e ugettext_lazy
+
 
 In carico a fero:
 
-* Verifica e FIX che non carica la pagina per un ordine archiviato
-* Far scomparire il pulsante "Archivia" dalla gestione dell'ordine
 * Riabilitare le notifiche
 * Link al forum in alto
 * Elimina prodotto
-* Pagina di errore 505
 
+Fix da gasisti
+----------------
+
+* [Orlando] Verifica e FIX che non carica la pagina per un ordine archiviato - farsi dare l'ordine preciso
+* [Peppe] Scheda del fornitore - gestisci ruoli --> fix alla registrazione
 
 TODO 0.9
 --------
@@ -39,6 +37,8 @@ TODO 0.9
     - Gestire "aggiungi gasista"
     - Gestire il filtro gasisti attivi o no, nelle query e/o nei manager
 
+* Annulla ordine
+
 TODO 1.0
 --------
 
@@ -47,13 +47,13 @@ TODO 1.0
 * Verifica email del produttore
 * Pagina iniziale: individuazione del browser
   e link al download di Firefox
-* Screencast e finalizzazione manuale
 
 
 TODO 1.1
 --------
 
-* Report PDF 
+* Screencast e finalizzazione manuale
+* Report PDF su ordine chiuso e successivi ... come varia?
 * Listini gasisti pre-ordini
 
 TODO 1.2

@@ -32,6 +32,10 @@ def bool_img(value):
     return rv
 
 @register.simple_tag
+def bool_img_accepting_0(value):
+    return bool_img(value is not None)
+
+@register.simple_tag
 def bool_img_not(value):
     return bool_img(not value)
 
@@ -44,7 +48,7 @@ def Human_readable_kind(kind):
     if kind == 'MEMBERSHIP_FEE':
         return _("Fee")
     if kind == 'PAYMENT':
-        return _("Pay")
+        return _("Payment")
     if kind == 'REFUND':
         return _("Collect")
     else:
