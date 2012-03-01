@@ -46,6 +46,7 @@ log = logging.getLogger(__name__)
 
 
 # Some template stuff needed for template rendering
+from django.core.mail import send_mail, EmailMessage
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.template import Context
@@ -1078,6 +1079,7 @@ class GASMember(models.Model, PermissionResource):
 
     def send_email(self, to, cc=[], more_info='', issued_by=None):
 
+        log.debug("Basket send_email: %s" % to)
         if not isinstance(to, list):
             to = [to]
 
@@ -1130,7 +1132,7 @@ class GASMember(models.Model, PermissionResource):
     def send_email_to_gasmember(self, cc=[], more_info='', issued_by=None):
         gasmember_email = self.preferred_email_address
         return self.send_email(
-            [supplier_email],
+            [gasmember_email],
             cc=cc, more_info=more_info,
             issued_by=issued_by
         )

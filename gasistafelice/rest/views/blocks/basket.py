@@ -216,11 +216,12 @@ class Block(BlockSSDataTables):
 
     def _send_email_logged(self):
         try:
-            to = self.request.user.email
-            self.resource.send_email([to],None, 'Order Email me', self.request.user)
+            #WAS: to = self.request.user.email
+            #WAS: self.resource.send_email([to],None, 'Order Email me', self.request.user)
+            self.resource.send_email_to_gasmember(None, 'Order Email me', self.request.user)
             return self.response_success()
         except Exception, e:
-            return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
+            return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e))
 
     def _create_pdf(self):
 
