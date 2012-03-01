@@ -69,14 +69,18 @@ class Block(BlockSSDataTables):
                         resource = request.resource,
                         name=SENDME_PDF, verbose_name=_("Send email PDF me"),
                         popup_form=False,
-                    ),
-                    ResourceBlockAction(
-                        block_name = self.BLOCK_NAME,
-                        resource = request.resource,
-                        name=SENDPROD_PDF, verbose_name=_("Send email PDF supplier"),
-                        popup_form=False,
                     )
                 ]
+                if order.supplier.config.receive_order_via_email_on_finalize:                        
+                    user_actions += [
+                        ResourceBlockAction(
+                            block_name = self.BLOCK_NAME,
+                            resource = request.resource,
+                            name=SENDPROD_PDF, verbose_name=_("Send email PDF supplier"),
+                            popup_form=False,
+                        )
+                    ]
+
 
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
