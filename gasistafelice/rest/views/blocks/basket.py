@@ -1,12 +1,10 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from flexi_auth.models import ObjectWithContext
-
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF
 from gasistafelice.consts import EDIT, CONFIRM
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from gasistafelice.lib.shortcuts import render_to_response, render_to_context_response
 from gasistafelice.lib.http import HttpResponse
 
 from gasistafelice.gas.models import GASMember
@@ -15,14 +13,7 @@ from gasistafelice.gas.forms.order.gmo import BasketGASMemberOrderForm
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 
-from django.http import HttpResponse
-from django.template.loader import get_template
-from django.template import Context
-import xhtml2pdf.pisa as pisa
-import cStringIO as StringIO
 import cgi, os
-from django.conf import settings
-from datetime import datetime
 
 import logging
 log = logging.getLogger(__name__)
@@ -72,14 +63,22 @@ class Block(BlockSSDataTables):
 
                 ]
 
-        user_actions += [
-            ResourceBlockAction(
-                block_name = self.BLOCK_NAME,
-                resource = request.resource,
-                name=CREATE_PDF, verbose_name=_("Create PDF"),
-                popup_form=False,
-            ),
-        ]
+        if request.user == request.resource.person.user:
+
+            user_actions += [
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE_PDF, verbose_name=_("Create PDF"),
+                    popup_form=False,
+                ),
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=SENDME_PDF, verbose_name=_("Send email PDF gasmember"),
+                    popup_form=False,
+                )
+            ]
 
         return user_actions
         
@@ -190,6 +189,8 @@ class Block(BlockSSDataTables):
             args = self.KW_DATA
         elif args == CREATE_PDF:
             return self._create_pdf()
+        elif args == SENDME_PDF:
+            return self._send_email_logged()
         
         #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
         if args == self.KW_DATA:
@@ -208,13 +209,27 @@ class Block(BlockSSDataTables):
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
 
+
+    def _send_email_logged(self):
+        try:
+            to = self.request.user.email
+            self.resource.send_email([to],None, 'Order Email me', self.request.user)
+            #FIXME: 'Block' object has no attribute 'response_dict'
+            return self.response_success()
+        except Exception, e:
+            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
+
     def _create_pdf(self):
 
-        pdf = self.resource.get_pdf_data(requested_by=self.request.user)
+        pdf, html = self.resource.get_pdf_data(requested_by=self.request.user)
 
-        if not pdf.err:
-            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \
-                            (gasmember.id_in_gas, '{0:%Y%m%d_%H%M}'.format(datetime.now()))
+        if not pdf:
+            self.response_error(_('Report not generated')) 
+        elif not pdf.err:
+            response = HttpResponse(html, mimetype='application/pdf')
+            response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             return response
-        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
+        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
+
+
+

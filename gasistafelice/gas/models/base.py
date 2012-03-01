@@ -1088,36 +1088,60 @@ class GASMember(models.Model, PermissionResource):
         try:
             sender = self.gas.preferred_email_contacts[0].value
         except IndexError as e:
-            raise ConfigurationError(_("GAS cannot send email, because no preferred email for GAS specified"))
+            #raise AttributeError(msg)
+            #WAS: msg = _("GAS cannot send email, because no preferred email for GAS specified")
+            #      cannot concatenate 'str' and '__proxy__' objects
+            msg = ug("GAS cannot send email, because no preferred email for GASMember specified")
+            more_info += msg
+            sender = settings.DEFAULT_FROM_EMAIL
+            more_info += '%s --> %s' % (msg, sender)
 
         subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
             'gas_id_in_des' : self.gas.id_in_des,
             'ord' : self
         }
 
-        message = u"In allegato l'ordine del GAS %(gas)s." % { 'gas': self.gas }
+        message = u"In allegato il paniere del gasista %(gas)s." % { 'gasmember': self }
+        message += more_info
 
         #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
-
         email = EmailMessage(
             subject = subject,
             body = message,
             from_email = sender,
             to = to, cc = cc,
         )
-        email.attach(
-            u"%s.pdf" % self.order.get_valid_name(), 
-            self.get_pdf_data(requested_by=issued_by), 
-            'application/pdf'
-        )
+
+        #FIXME: No handlers could be found for logger "xhtml2pdf"
+        pdf , html = self.get_pdf_data(requested_by=issued_by)
+        if not pdf:
+            email.body += _('Report not generated') 
+        elif not pdf.err:
+            email.attach(
+                u"%s.pdf" % self.get_valid_name(),
+                html,
+                'application/pdf'
+            )
+        else:
+            email.body += _('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err)
+
         email.send()
 
         return 
 
+    def get_valid_name(self):
+        from django.template.defaultfilters import slugify
+        from django.utils.encoding import smart_str
+        n = "%(id)s_%(datetime)s" % {
+            'id'        : smart_str(slugify(self.id_in_gas).replace('-', '_')),
+            'datetime'  : '{0:%Y%m%d_%H%M}'.format(datetime.datetime.now())
+        }
+        return n
+
     def send_email_to_gasmember(self, cc=[], more_info='', issued_by=None):
         gasmember_email = self.preferred_email_address
         return self.send_email(
-            [supplier_email], 
+            [supplier_email],
             cc=cc, more_info=more_info,
             issued_by=issued_by
         )
@@ -1147,7 +1171,11 @@ class GASMember(models.Model, PermissionResource):
         result = StringIO.StringIO()
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
         pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
-
+        if not pdf.err:
+            return pdf, result.getvalue()
+        else:
+            log.debug('Some problem while generate pdf err: %s' % pdf.err)
+            return None, pdf.err
 
     def _get_pdfrecords(self, querySet):
         """Return records of rendered table fields."""

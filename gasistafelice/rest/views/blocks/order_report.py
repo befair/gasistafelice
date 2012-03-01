@@ -12,7 +12,7 @@ from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
 from django.forms.formsets import formset_factory
 
 import cgi, os
-from django.conf import settings
+from django.http import HttpResponse
 
 from flexi_auth.models import ObjectWithContext
 
@@ -69,14 +69,18 @@ class Block(BlockSSDataTables):
                         resource = request.resource,
                         name=SENDME_PDF, verbose_name=_("Send email PDF me"),
                         popup_form=False,
-                    ),
-                    ResourceBlockAction(
-                        block_name = self.BLOCK_NAME,
-                        resource = request.resource,
-                        name=SENDPROD_PDF, verbose_name=_("Send email PDF producer"),
-                        popup_form=False,
                     )
                 ]
+                if order.supplier.config.receive_order_via_email_on_finalize:                        
+                    user_actions += [
+                        ResourceBlockAction(
+                            block_name = self.BLOCK_NAME,
+                            resource = request.resource,
+                            name=SENDPROD_PDF, verbose_name=_("Send email PDF supplier"),
+                            popup_form=False,
+                        )
+                    ]
+
 
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
@@ -169,7 +173,7 @@ class Block(BlockSSDataTables):
         if args == SENDME_PDF:
             return self._send_email_logged()
         if args == SENDPROD_PDF:
-            return self._send_email_prod()
+            return self._send_email_supplier()
         else:
             return super(Block, self).get_response(request, resource_type, resource_id, args)
 
@@ -182,7 +186,7 @@ class Block(BlockSSDataTables):
         except Exception, e:
             raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
-    def _send_email_prod(self):
+    def _send_email_supplier(self):
         try:
             cc = self.request.user.email
             self.resource.send_email_to_supplier([cc], 'Order Email prod', self.request.user)
@@ -192,14 +196,15 @@ class Block(BlockSSDataTables):
 
     def _create_pdf(self):
 
-        pdf = self.resource.get_pdf_data(requested_by=self.request.user)
+        pdf, html = self.resource.get_pdf_data(requested_by=self.request.user)
 
-        if not pdf.err:
-            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
-            response['Content-Disposition'] = "attachment; filename=GAS_" + order.get_valid_name() + ".pdf"
+        if not pdf:
+            self.response_error(_('Report not generated')) 
+        elif not pdf.err:
+            response = HttpResponse(html, mimetype='application/pdf')
+            response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             return response
-        return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
-
+        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
 
     def fetch_resources(uri, rel):
         path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
