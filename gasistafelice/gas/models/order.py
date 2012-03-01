@@ -263,9 +263,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
         super(GASSupplierOrder, self).do_transition(transition, user)
         signals.order_state_update.send(sender=self, transition=transition)
 
-    def open_if_needed(self):
+    def open_if_needed(self, sendemail=False, issuer=None):
         """Check datetime_start and open order if needed."""
-        log.debug("open_if_neededopen_if_neededopen_if_neededopen_if_neededopen_if_needed")
         if self.datetime_start <= datetime.now():
 
             # Act as superuser
@@ -281,9 +280,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 #WAS: self.set_default_gasstock_set()
 
                 self.do_transition(t, user)
+                
+                if sendemail:
+                    supplier_receive = self.supplier.config.receive_order_via_email_on_finalize                        
+                    #by = self.get_email(user, issuer)
+                    log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
+                    
 
 
-    def close_if_needed(self):
+    def close_if_needed(self, sendemail=False, issuer=None):
         """Check for datetime_end and close order if needed."""
 
         if self.datetime_end:
@@ -298,6 +303,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 if t in get_allowed_transitions(self, user):
                     log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
                     self.do_transition(t, user)
+
+                    if sendemail:
+                        supplier_receive = self.supplier.config.receive_order_via_email_on_finalize                        
+                        #by = self.get_email(user, issuer)
+                        log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
+                    
 
     def get_valid_name(self):
         from django.template.defaultfilters import slugify

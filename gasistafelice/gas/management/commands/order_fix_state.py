@@ -16,9 +16,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         for order in GASSupplierOrder.objects.prepared():
-            order.open_if_needed()
+            #Pass argument for issuer is cron job. The function will send email if necesary
+            order.open_if_needed(True)
 
         for order in GASSupplierOrder.objects.open():
-            order.close_if_needed()
+            #Pass argument for issuer is cron job. The function will send email if necesary
+            order.close_if_needed(True)
             
         return 0
