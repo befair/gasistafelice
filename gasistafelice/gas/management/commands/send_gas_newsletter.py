@@ -9,7 +9,7 @@ from datetime import tzinfo, timedelta, datetime
 
 class Command(BaseCommand):
     args = ""
-    help = 'For each GAS in the des, send weekly news letter informations'
+    help = 'For each GAS in the des, send weekly newsletter info'
 
     def handle(self, *args, **options):
         """usage sample: $ python manage.py send_gas_newsletter """

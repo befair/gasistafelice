@@ -4,58 +4,51 @@ from django.conf import settings
 
 from gasistafelice.gas.models import GAS, GASMember
 
-from datetime import tzinfo, timedelta, datetime
+import datetime
 
 class Command(BaseCommand):
-    args = "<Integer>"
+    args = ""
     help = 'For each GAS in the des, send order information'
 
     def handle(self, *args, **options):
-        """usage sample: $ python manage.py send_gas_notification 2"""
-
-        try:
-            delta_day = int(args[0])
-        except:
-            raise CommandError("Usage send_gas_notification: %s" % (self.args))
+        """usage sample: $ python manage.py send_gas_notification"""
 
         g = 0
         o = 0
         _msg = None
-        next_day = datetime.now()+timedelta(days=delta_day)
-        print 'next_day: %s' % next_day
+        delta_day = None
+
         try:
             for gas in GAS.objects.all():
+                delta_day = gas.config.notice_days_before_order_close
+                next_day = datetime.datetime.now()+datetime.timedelta(days=delta_day)
+                print 'next_day: %s' % next_day
+                weeknumber = datetime.date.today().isocalendar()[1]
+                subject = "[NEWS] %s - %s (%s)" % (gas.id_in_des, gas, weeknumber)
+
+                if delta_day == 1:
+                    pre_msg = "Domani "
+                else:
+                    pre_msg = "Fra %d giorni " % delta_day
+
                 _msg = []
                 g = gas.pk
                 print gas
                 for order in gas.orders.open().filter(
                         datetime_end__year = next_day.year, 
                         datetime_end__month = next_day.month, 
-                        datetime_end__day = next_day.day):
+                        datetime_end__day = next_day.day
+                ):
                     o = order.pk
                     print order
+                    _msg.append("%s si chiude l'ordine %s" % (pre_msg, order))
 
-                    if delta_day == 1:
-                        _msg.append('Domani chiude l\'ordine per %s' % (order))
-                    else:
-                        _msg.append('Chiusura fra % giorni dell\'ordine %s' % (delta_day, order))
-            #tmpl = args[0]
 
                 if len(_msg) > 0:
-                    print '---------------SEND EMAIL FOR ONE GAS and continue if other GAS todo-----'
+                    gas.send_email_to_gasmembers(subject, _msg.join("\n"))
 
+        except Exception as e:
+            raise CommandError("send_gas_notification %s (%s/%s) last_msg: %s, error=%s" % (delta_day, g, o, _msg, e))
 
-        #Open order automatically without using parameter if pact.use_motor
-        #Not needeed due to .open() working on date instead of workflow state
-
-
-        #TODO: Close order automatically without using parameter if datetime_end is tomorow and pact.use_motor
-
-
-
-        except:
-            raise CommandError("send_gas_notification %s (%s/%s) last_msg: %s" % (delta_day, g, o, _msg))
-
-        #print((tmpl % d).encode('UTF-8'))
         return 0
 

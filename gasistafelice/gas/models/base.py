@@ -394,7 +394,7 @@ class GAS(models.Model, PermissionResource):
     @property
     def gasmembers(self):
         """All GASMember for this GAS"""
-        return self.gasmember_set.all().order_by('person__surname', 'person__name')
+        return self.gasmember_set.filter(person__user__is_active=True).order_by('person__surname', 'person__name')
 
     @property
     def orders(self):
@@ -514,6 +514,35 @@ class GAS(models.Model, PermissionResource):
         for gm in self.gasmembers:
             acc_tot = gm.balance
         return acc_tot
+
+    def send_email_to_gasmembers(self, subject, message, more_to=[]):
+
+        log.debug("GAS send_email: %s" % message)
+
+        try:
+            sender = self.preferred_email_contacts[0].value
+        except IndexError as e:
+            msg = ug("GAS cannot send email, because no preferred email for GASMember specified")
+            message += '\n' + msg
+            sender = settings.DEFAULT_FROM_EMAIL
+            message += '\n%s --> %s' % (msg, sender)
+
+        to = []
+
+        for gm in self.gasmembers:
+            to = gm.preferred_email_contacts[0].value
+
+        for addr in to + more_to:
+
+            email = EmailMessage(
+                subject = subject,
+                body = message,
+                from_email = sender,
+                to = addr
+            )
+
+            email.send()
+        return 
 
 
 #------------------------------------------------------------------------------
@@ -1087,7 +1116,6 @@ class GASMember(models.Model, PermissionResource):
             sender = self.gas.preferred_email_contacts[0].value
         except IndexError as e:
             msg = ug("GAS cannot send email, because no preferred email for GASMember specified")
-            more_info += msg
             sender = settings.DEFAULT_FROM_EMAIL
             more_info += '%s --> %s' % (msg, sender)
 

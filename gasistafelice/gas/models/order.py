@@ -282,7 +282,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 self.do_transition(t, user)
                 
                 if sendemail:
-                    supplier_receive = self.supplier.config.receive_order_via_email_on_finalize                        
                     #by = self.get_email(user, issuer)
                     log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
                     
@@ -944,11 +943,7 @@ WHERE order_id = %s \
             log.debug('self.gas.preferred_email_contacts %s ' % self.gas.preferred_email_contacts)
             sender = self.gas.preferred_email_contacts[0].value
         except IndexError as e:
-            #raise AttributeError(msg)
-            #WAS: msg = _("GAS cannot send email, because no preferred email for GAS specified")
-            #      cannot concatenate 'str' and '__proxy__' objects
             msg = ug("GAS cannot send email, because no preferred email for GAS specified")
-            more_info += msg
             sender = settings.DEFAULT_FROM_EMAIL
             more_info += '%s --> %s' % (msg, sender)
 
