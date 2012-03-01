@@ -208,6 +208,19 @@ class Supplier(models.Model, PermissionResource):
         return qs.distinct()
 
     @property
+    def users(self):
+        """All User linked as platform operators for this resource.
+
+        User who have role SUPPLIER_REFERRER."""
+
+        # retrieve 'Supplier Referrer' parametric role for this supplier
+        pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=self)
+        # retrieve all Users having this role
+        return pr.get_users() 
+
+        return self.supplier_referrers
+
+    @property
     def stocks(self):
         return self.stock_set.all()
 

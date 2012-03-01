@@ -72,6 +72,36 @@ class GasAccountingProxy(AccountingProxy):
             return True
         return False
 
+    def get_amount_by_gas_member(self, gasmember, order):
+        """
+        Given a supplier order ``order``, return an annotated set for a specific GAS members
+        partecipating to that order.
+
+        If ``order`` has not been placed by the GAS owning this accounting system,
+        raise ``TypeError``.
+
+        20120227 This function is deprecated because we do not use mulitple GAS_WITHDRAWAL for one reference [gasmember, order]
+        but we use only one GAS_WITHDRAWAL transaction with update. 
+        """
+        from django.db.models import Count, Sum
+     
+        gas = self.subject.instance
+        existing_amount = 0
+        if order.pact.gas == gas:
+
+            #refs = [gm, self.__order] in cash.py
+            order_txs = Transaction.objects.get_by_reference([gasmember, order])
+            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+            #Fixme: 
+            existing_amount = order_txs.aggregate(Sum('source__amount'))
+            number_of_txs = order_txs.count()
+            return existing_amount, number_of_txs
+            
+        else:
+            raise TypeError(_("GAS %(gas)s has not placed order %(order)s" % {
+                'gas': gas.id_in_des, 'order': order
+            }))
+
     def withdraw_from_member_account(self, member, new_amount, refs, order, date=None):
         """
         Withdraw a given amount ``new_amount`` of money from the account of a member
@@ -84,7 +114,10 @@ class GasAccountingProxy(AccountingProxy):
         References for this transaction may be passed as the ``refs`` argument
         (e.g. a list of GAS member orders this withdrawal is related to).
         """
-        # TODO: if this operation would make member's account negative, raise a warning
+        # Only for test Control if yet exist some transaction for this refs.
+        #computed_amount, existing_txs = self.get_amount_by_gas_member(member, order)
+        #log.debug("ACCOUNTING %(computed_amount)s %(existing_txs)s" % {'computed_amount': computed_amount, 'existing_txs': existing_txs})
+
         gas = self.subject.instance
         if not member.person.is_member(gas):
             raise MalformedTransaction(ug("A GAS can withdraw only from its members' accounts"))
@@ -98,6 +131,8 @@ class GasAccountingProxy(AccountingProxy):
         )
         if refs:
             transaction.add_references(refs)
+
+        # TODO: if this operation would make member's account negative, raise a warning
 
     def pay_supplier_order(self, order, amount, refs=None, descr=None, date=None, multiple=None):
         """

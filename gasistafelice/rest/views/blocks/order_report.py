@@ -1,7 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF, SENDPROD_PDF
+
 from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
@@ -44,16 +45,39 @@ class Block(BlockSSDataTables):
   
         user_actions = []
 
-        #FIXME: Check if order is in "closed_state"  Not in Open STATE
-        #if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-        user_actions += [
-            ResourceBlockAction(
-                block_name = self.BLOCK_NAME,
-                resource = request.resource,
-                name=CREATE_PDF, verbose_name=_("Create PDF"),
-                popup_form=False,
-            ),
-        ]
+        order = self.resource.order
+
+        if request.user == order.gas.tech_referrers \
+            or request.user in order.supplier.referrers:
+
+            user_actions += [
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE_PDF, verbose_name=_("Create PDF"),
+                    popup_form=False,
+                ),
+            ]
+
+        if request.user == order.referrer_person.user \
+            or request.user in order.supplier.referrers:
+
+            if order.is_closed() or order.is_unpaid():
+                user_actions += [
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=SENDME_PDF, verbose_name=_("Send email PDF me"),
+                        popup_form=False,
+                    ),
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=SENDPROD_PDF, verbose_name=_("Send email PDF producer"),
+                        popup_form=False,
+                    )
+                ]
+
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
             user_actions += [
@@ -142,8 +166,29 @@ class Block(BlockSSDataTables):
 
         if args == CREATE_PDF:
             return self._create_pdf()
+        if args == SENDME_PDF:
+            return self._send_email_logged()
+        if args == SENDPROD_PDF:
+            return self._send_email_prod()
         else:
             return super(Block, self).get_response(request, resource_type, resource_id, args)
+
+    def _send_email_logged(self):
+        try:
+            to = self.request.user.email
+            self.resource.send_email([to],None, 'Order Email me', self.request.user)
+            #FIXME: 'Block' object has no attribute 'response_dict'
+            return self.response_success()
+        except Exception, e:
+            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
+
+    def _send_email_prod(self):
+        try:
+            cc = self.request.user.email
+            self.resource.send_email_to_supplier([cc], 'Order Email prod', self.request.user)
+            return self.response_success()
+        except Exception, e:
+            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _create_pdf(self):
 
@@ -153,7 +198,7 @@ class Block(BlockSSDataTables):
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=GAS_" + order.get_valid_name() + ".pdf"
             return response
-        return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
+        return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
 
 
     def fetch_resources(uri, rel):

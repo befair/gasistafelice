@@ -260,7 +260,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'admin',
         'descr' : 'Admin',
-        'blocks' : ['users'],   # 'users' Referrer and roles
+        'blocks' : ['gas_users'],   # 'users' Referrer and roles
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
@@ -299,6 +299,10 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'info',
         'descr': 'Scheda del fornitore',
         'blocks': ['supplier_details', 'categories', 'closed_orders']
+    },{
+        'name' : 'admin',
+        'descr' : 'Admin',
+        'blocks' : ['supplier_users'],   # 'users' Referrer and roles
     },{
         'name' : 'accounting',
         'descr' : 'Conto',

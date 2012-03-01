@@ -81,11 +81,11 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
                 gmo.ordered_price = self.cleaned_data.get('ordered_price')
                 gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
                 gmo.note = self.cleaned_data.get('note')
-                delegate = None
-                if self._loggedusr == gmo.order.referrer_person.user:
+
+                if self._gmusr != self._loggedusr and self._loggedusr == gmo.order.referrer_person.user:
                     delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
-                if delegate and gmo.note.find(delegate) == -1:
-                    gmo.note = delegate + gmo.note
+                    if gmo.note.find(delegate) == -1:
+                        gmo.note = delegate + gmo.note
                 if gmo.ordered_amount == 0:
                     log.debug(u"REMOVING GASMemberOrder (%s) from amount widget (+ -)" % gmo.pk)
                     gmo.delete()
@@ -98,11 +98,10 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
             elif self.cleaned_data.get('ordered_amount'):
                     gsop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gsop_id'))
                     note = self.cleaned_data.get('note')
-                    delegate = None
-                    if self._loggedusr == gsop.order.referrer_person.user:
+                    if self._gmusr != self._loggedusr and self._loggedusr == gsop.order.referrer_person.user:
                         delegate = _("[ord by %s] ") % gsop.order.referrer_person.report_name
-                    if delegate and note.find(delegate) == -1:
-                        note = delegate + note
+                        if note.find(delegate) == -1:
+                            note = delegate + note
 
                     # INTEGRITY NOTE: Ensure no duplicate entry into database is done 
                     # into GASMemberOrder Model with set unique_together
