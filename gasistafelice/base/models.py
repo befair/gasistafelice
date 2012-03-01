@@ -1170,7 +1170,8 @@ def init_perms_for_groups():
         Supplier : ('change',),
     }
 
-    gas_referrer_supplier_perms_d = supplier_perms_d.update({
+    gas_referrer_supplier_perms_d = supplier_perms_d.copy()
+    gas_referrer_supplier_perms_d.update({
         Supplier : ('add', 'change'),
     })
 
