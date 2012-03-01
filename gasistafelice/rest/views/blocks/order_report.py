@@ -165,25 +165,43 @@ class Block(BlockSSDataTables):
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        self.request = request
-        self.resource = resource = request.resource
+        try:
+            rv = super(Block, self).get_response(request, resource_type, resource_id, args)
+        except NotImplementedError:
+            # Not implemented args are implemented in this method
+            pass
 
         if args == CREATE_PDF:
-            return self._create_pdf()
-        if args == SENDME_PDF:
-            return self._send_email_logged()
-        if args == SENDPROD_PDF:
-            return self._send_email_supplier()
-        else:
-            return super(Block, self).get_response(request, resource_type, resource_id, args)
+            rv = self._create_pdf()
+        elif args == SENDME_PDF:
+            rv = self._send_email_logged()
+        elif args == SENDPROD_PDF:
+            rv = self._send_email_supplier()
+        
+#        #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
+#        if args == self.KW_DATA:
+#            from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
+#            
+#            querySet = self._get_resource_list(request) 
+#            #columnIndexNameMap is required for correct sorting behavior
+#            columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
+#            #path to template used to generate json (optional)
+#            jsonTemplatePath = 'blocks/%s/data.json' % self.BLOCK_NAME
+
+#            val_querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
+#            #TODO FIXME: AFTER 6 
+#            formset, records, moreData = self._get_records(request, querySet)
+#            rv = render_datatables(request, records, dt_params, jsonTemplatePath)
+
+        return rv
 
     def _send_email_logged(self):
         try:
             to = self.request.user.email
             self.resource.send_email([to],None, 'Order Email me', self.request.user)
-            #FIXME: 'Block' object has no attribute 'response_dict'
             return self.response_success()
-        except Exception, e:
+        except Exception, e: 
+            #exceptions must be old-style classes or derived from BaseException, not HttpResponse
             raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _send_email_supplier(self):
@@ -196,15 +214,15 @@ class Block(BlockSSDataTables):
 
     def _create_pdf(self):
 
-        pdf, html = self.resource.get_pdf_data(requested_by=self.request.user)
+        pdf_data = self.resource.get_pdf_data(requested_by=self.request.user)
 
-        if not pdf:
-            self.response_error(_('Report not generated')) 
-        elif not pdf.err:
-            response = HttpResponse(html, mimetype='application/pdf')
+        if not pdf_data:
+            rv = self.response_error(_('Report not generated')) 
+        else:
+            response = HttpResponse(pdf_data, mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
-            return response
-        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
+            rv = response
+        return rv
 
     def fetch_resources(uri, rel):
         path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))

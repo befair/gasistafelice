@@ -969,17 +969,15 @@ WHERE order_id = %s \
         )
 
         #FIXME: No handlers could be found for logger "xhtml2pdf"
-        pdf , html = self.get_pdf_data(requested_by=issued_by)
-        if not pdf:
-            email.body += _('Report not generated') 
-        elif not pdf.err:
+        pdf_data = self.get_pdf_data(requested_by=issued_by)
+        if not pdf_data:
+            email.body += ug('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
+        else:
             email.attach(
                 u"%s.pdf" % self.get_valid_name(),
-                html,
+                pdf_data,
                 'application/pdf'
             )
-        else:
-            email.body += _('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err)
 
         email.send()
 
@@ -1025,13 +1023,14 @@ WHERE order_id = %s \
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
-        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result ) #, link_callback = fetch_resources )
-        if not pdf.err:
-            return pdf, result.getvalue()
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
+        pisadoc = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
+        if not pisadoc.err:
+            rv = result.getvalue()
         else:
-            log.debug('Some problem while generate pdf err: %s' % pdf.err)
-            return None, pdf.err
+            log.debug('Some problem while generate pdf err: %s' % pisadoc.err)
+            rv = None
+        return rv
 
     def __get_pdfrecords_families(self, querySet):
         """Return records of rendered table fields."""
