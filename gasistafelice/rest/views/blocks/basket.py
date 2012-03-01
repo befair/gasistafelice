@@ -173,45 +173,6 @@ class Block(BlockSSDataTables):
         return formset, records, {}
 
 
-
-    def _get_pdfrecords(self, request, querySet):
-        """Return records of rendered table fields."""
-
-        records = []
-        actualProduttore = -1
-        rowOrder = -1
-        description = ""
-        producer = ""
-        tot_prod = 0
-
-        for el in querySet:
-            rowOrder = el.order.pk
-            if actualProduttore == -1 or actualProduttore != rowOrder:
-                if actualProduttore != -1:
-                    tot_prod = 0
-                actualProduttore = rowOrder
-                description = unicode(el.order)
-                producer = el.supplier
-            tot_prod += el.tot_price
-
-            records.append({
-               'order' : rowOrder,
-               'order_description' : description,
-               'supplier' : producer,
-               'amount' : el.ordered_amount,
-               'product' : el.product,
-               'price_ordered' : el.ordered_price,
-               'price_delivered' : el.ordered_product.order_price,
-               'price_changed' : el.has_changed,
-               'tot_price' : el.tot_price,
-               'tot_prod' : tot_prod,
-               'order_confirmed' : el.is_confirmed,
-               'note' : el.note,
-            })
-
-        return records
-
-
     def _set_records(self, request, records):
         pass
 
@@ -249,27 +210,8 @@ class Block(BlockSSDataTables):
 
     def _create_pdf(self):
 
-        gasmember = self.resource
-        querySet = self._get_resource_list(self.request) | \
-            self.request.resource.basket_to_be_delivered
-        querySet = querySet.order_by('ordered_product__order__pk') 
-        context_dict = {
-            'gasmember' : gasmember,
-            'records' : self._get_pdfrecords(self.request, querySet),
-            'rec_count' : querySet.count(),
-            'user' : self.request.user,
-            'total_amount' : self.resource.total_basket,
-            'CSS_URL' : settings.MEDIA_ROOT,
-        }
+        pdf = self.resource.get_pdf_data(requested_by=self.request.user)
 
-        REPORT_TEMPLATE = "blocks/%s/report.html" % self.BLOCK_NAME
-
-        template = get_template(REPORT_TEMPLATE)
-        context = Context(context_dict)
-        html = template.render(context)
-        result = StringIO.StringIO()
-        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
         if not pdf.err:
             response = HttpResponse(result.getvalue(), mimetype='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=GASMember_%s_%s.pdf' % \

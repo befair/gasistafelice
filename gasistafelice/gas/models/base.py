@@ -45,6 +45,15 @@ import logging
 log = logging.getLogger(__name__)
 
 
+# Some template stuff needed for template rendering
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+from django.utils.encoding import smart_unicode
+# End
+
 #-------------------------------------------------------------------------------
 @economic_subject
 class GAS(models.Model, PermissionResource):
@@ -1067,6 +1076,118 @@ class GASMember(models.Model, PermissionResource):
                 'note': latest.description,
             }
         return rv
+
+    
+    #----------------------------------------------#
+
+    def send_email(self, to, cc=[], more_info='', issued_by=None):
+
+        if not isinstance(to, list):
+            to = [to]
+
+        try:
+            sender = self.gas.preferred_email_contacts[0].value
+        except IndexError as e:
+            raise ConfigurationError(_("GAS cannot send email, because no preferred email for GAS specified"))
+
+        subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
+            'gas_id_in_des' : self.gas.id_in_des,
+            'ord' : self
+        }
+
+        message = u"In allegato l'ordine del GAS %(gas)s." % { 'gas': self.gas }
+
+        #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
+
+        email = EmailMessage(
+            subject = subject,
+            body = message,
+            from_email = sender,
+            to = to, cc = cc,
+        )
+        email.attach(
+            u"%s.pdf" % self.order.get_valid_name(), 
+            self.get_pdf_data(requested_by=issued_by), 
+            'application/pdf'
+        )
+        email.send()
+
+        return 
+
+    def send_email_to_gasmember(self, cc=[], more_info='', issued_by=None):
+        gasmember_email = self.preferred_email_address
+        return self.send_email(
+            [supplier_email], 
+            cc=cc, more_info=more_info,
+            issued_by=issued_by
+        )
+
+    def get_pdf_data(self, requested_by=None):
+        """Return PDF raw content to be rendered somewhere (email, or http)"""
+
+        if not requested_by:
+            requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+
+        querySet = self.basket | self.basket_to_be_delivered
+        querySet = querySet.order_by('ordered_product__order__pk') 
+        context_dict = {
+            'gasmember' : self,
+            'records' : self._get_pdfrecords(querySet),
+            'rec_count' : querySet.count(),
+            'user' : requested_by,
+            'total_amount' : self.total_basket,
+            'CSS_URL' : settings.MEDIA_ROOT,
+        }
+
+        REPORT_TEMPLATE = "blocks/basket/report.html"
+
+        template = get_template(REPORT_TEMPLATE)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
+
+
+    def _get_pdfrecords(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        actualProduttore = -1
+        rowOrder = -1
+        description = ""
+        producer = ""
+        tot_prod = 0
+
+        for el in querySet:
+            rowOrder = el.order.pk
+            if actualProduttore == -1 or actualProduttore != rowOrder:
+                if actualProduttore != -1:
+                    tot_prod = 0
+                actualProduttore = rowOrder
+                description = unicode(el.order)
+                producer = el.supplier
+            tot_prod += el.tot_price
+
+            records.append({
+               'order' : rowOrder,
+               'order_description' : description,
+               'supplier' : producer,
+               'amount' : el.ordered_amount,
+               'product' : el.product,
+               'price_ordered' : el.ordered_price,
+               'price_delivered' : el.ordered_product.order_price,
+               'price_changed' : el.has_changed,
+               'tot_price' : el.tot_price,
+               'tot_prod' : tot_prod,
+               'order_confirmed' : el.is_confirmed,
+               'note' : el.note,
+            })
+
+        return records
+
+    #-----------------------------------------------#
+
 
 #------------------------------------------------------------------------------
 
