@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF
 from gasistafelice.consts import EDIT, CONFIRM
 
 from gasistafelice.lib.shortcuts import render_to_response, render_to_context_response
@@ -63,14 +63,22 @@ class Block(BlockSSDataTables):
 
                 ]
 
-        user_actions += [
-            ResourceBlockAction(
-                block_name = self.BLOCK_NAME,
-                resource = request.resource,
-                name=CREATE_PDF, verbose_name=_("Create PDF"),
-                popup_form=False,
-            ),
-        ]
+        if request.user == request.resource.person.user:
+
+            user_actions += [
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=CREATE_PDF, verbose_name=_("Create PDF"),
+                    popup_form=False,
+                ),
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name=SENDME_PDF, verbose_name=_("Send email PDF gasmember"),
+                    popup_form=False,
+                )
+            ]
 
         return user_actions
         
@@ -181,6 +189,8 @@ class Block(BlockSSDataTables):
             args = self.KW_DATA
         elif args == CREATE_PDF:
             return self._create_pdf()
+        elif args == SENDME_PDF:
+            return self._send_email_logged()
         
         #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
         if args == self.KW_DATA:
@@ -198,6 +208,16 @@ class Block(BlockSSDataTables):
             return render_datatables(request, records, dt_params, jsonTemplatePath)
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
+
+
+    def _send_email_logged(self):
+        try:
+            to = self.request.user.email
+            self.resource.send_email([to],None, 'Order Email me', self.request.user)
+            #FIXME: 'Block' object has no attribute 'response_dict'
+            return self.response_success()
+        except Exception, e:
+            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _create_pdf(self):
 

@@ -73,7 +73,7 @@ class Block(BlockSSDataTables):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
-                        name=SENDPROD_PDF, verbose_name=_("Send email PDF producer"),
+                        name=SENDPROD_PDF, verbose_name=_("Send email PDF supplier"),
                         popup_form=False,
                     )
                 ]
