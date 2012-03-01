@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.conf import settings
@@ -130,7 +130,7 @@ class GAS(models.Model, PermissionResource):
         self.note = self.note.strip()
 
         if self.headquarter is None:
-            raise ValidationError(_("Default headquarter place must be set"))
+            raise ValidationError(ug("Default headquarter place must be set"))
 
         return super(GAS, self).clean()
 
@@ -208,16 +208,12 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def users(self):
-        #WAS: us = User.objects.none()
-        #WAS: add the suppliers who have signed a pact with a GAS this person belongs to
-        #WAS: for member in self.gasmembers:
-        #WAS:     if member.person.user:
-        #WAS:         us |= member.person.user
+        
         usr_ids = set()
         for member in self.gasmembers:
 
-            #COMMENT LF: specifications say that every GASMember MUST
-            #COMMENT LF: be bound to a User: so raise an Exception if not True
+            # Specifications say that every GASMember MUST be bound
+            # to a User: so raise an Exception if not True
             if not member.person.user:
                 raise DatabaseInconsistent(
                     "Member %s is not bound to a valid User" % member
@@ -330,7 +326,7 @@ class GAS(models.Model, PermissionResource):
             # This should never happen, but it is reasonable
             # that an installation has only one DES
             if DES.objects.count() > 1:
-                raise AttributeError(_("You have to bind GAS %s to a DES") % self.name)
+                raise AttributeError(ug("You have to bind GAS %s to a DES") % self.name)
             else:
                 self.des = DES.objects.all()[0]
 
@@ -659,7 +655,7 @@ class GASConfig(models.Model):
         app_label = 'gas'
 
     def __unicode__(self):
-        return _('Configuration for GAS "%s"') % self.gas 
+        return ug('Configuration for GAS "%s"') % self.gas 
 
     @property
     def delivery_place(self):
@@ -787,7 +783,7 @@ class GASMember(models.Model, PermissionResource):
     def verbose_name(self):
         """Return GASMember representation along with his own card number in GAS"""
         #See ticket #54
-        return _("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
+        return ug("%(id_in_gas)s - %(gas_member)s") % {'gas_member' : self, 'id_in_gas': self.id_in_gas}
 
     @property
     def parent(self):
@@ -871,7 +867,7 @@ class GASMember(models.Model, PermissionResource):
         try:
             assert self.person.user # GAS members must have an account on the system
         except User.DoesNotExist:
-            raise ValidationError(_("GAS Members must be registered users"))
+            raise ValidationError(ug("GAS Members must be registered users"))
         return super(GASMember, self).clean()
 
     def save(self, *args, **kw):
@@ -1088,23 +1084,19 @@ class GASMember(models.Model, PermissionResource):
         try:
             sender = self.gas.preferred_email_contacts[0].value
         except IndexError as e:
-            #raise AttributeError(msg)
-            #WAS: msg = _("GAS cannot send email, because no preferred email for GAS specified")
-            #      cannot concatenate 'str' and '__proxy__' objects
             msg = ug("GAS cannot send email, because no preferred email for GASMember specified")
             more_info += msg
             sender = settings.DEFAULT_FROM_EMAIL
             more_info += '%s --> %s' % (msg, sender)
 
-        subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
+        subject = u"[ORD] %(gas_id_in_des)s - %(ord)s" % {
             'gas_id_in_des' : self.gas.id_in_des,
             'ord' : self
         }
 
-        message = u"In allegato il paniere del gasista %(gas)s." % { 'gasmember': self }
+        message = u"In allegato il paniere del gasista %(gasmember)s." % { 'gasmember': self }
         message += more_info
 
-        #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
         email = EmailMessage(
             subject = subject,
             body = message,
@@ -1113,20 +1105,17 @@ class GASMember(models.Model, PermissionResource):
         )
 
         #FIXME: No handlers could be found for logger "xhtml2pdf"
-        pdf , html = self.get_pdf_data(requested_by=issued_by)
-        if not pdf:
-            email.body += _('Report not generated') 
-        elif not pdf.err:
+        pdf_data = self.get_pdf_data(requested_by=issued_by)
+        if not pdf_data:
+            email.body += ug('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
+        else:
             email.attach(
                 u"%s.pdf" % self.get_valid_name(),
-                html,
+                pdf_data,
                 'application/pdf'
             )
-        else:
-            email.body += _('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err)
 
         email.send()
-
         return 
 
     def get_valid_name(self):
@@ -1170,12 +1159,13 @@ class GASMember(models.Model, PermissionResource):
         html = template.render(context)
         result = StringIO.StringIO()
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("iso-8859-1", "ignore")), result)
-        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
-        if not pdf.err:
-            return pdf, result.getvalue()
+        pisadoc = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
+        if not pisadoc.err:
+            rv = result.getvalue()
         else:
-            log.debug('Some problem while generate pdf err: %s' % pdf.err)
-            return None, pdf.err
+            log.debug('Some problem while generate pdf err: %s' % pisadoc.err)
+            rv = None
+        return rv
 
     def _get_pdfrecords(self, querySet):
         """Return records of rendered table fields."""
@@ -1517,9 +1507,9 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         unique_together = (('gas', 'supplier'),)
 
     def __unicode__(self):
-#        return _("Pact between %(gas)s and %(supplier)s") % \
+#        return ug("Pact between %(gas)s and %(supplier)s") % \
 #                      { 'gas' : self.gas, 'supplier' : self.supplier}
-        return _("%(gas)s - %(supplier)s") % \
+        return ug("%(gas)s - %(supplier)s") % \
                       { 'gas' : self.gas.id_in_des, 'supplier' : self.supplier}
 
     @ClassProperty

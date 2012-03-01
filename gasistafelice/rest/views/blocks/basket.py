@@ -177,8 +177,11 @@ class Block(BlockSSDataTables):
 
     def get_response(self, request, resource_type, resource_id, args):
 
-        self.resource = request.resource
-        self.request = request
+        try:
+            rv = super(Block, self).get_response(request, resource_type, resource_id, args)
+        except NotImplementedError:
+            # Not implemented args are implemented in this method
+            pass
 
         if args == CONFIRM:
             for gmo in self.resource.basket:
@@ -187,10 +190,11 @@ class Block(BlockSSDataTables):
 
             #IMPORTANT: unset args to compute table results!
             args = self.KW_DATA
+
         elif args == CREATE_PDF:
-            return self._create_pdf()
+            rv = self._create_pdf()
         elif args == SENDME_PDF:
-            return self._send_email_logged()
+            rv = self._send_email_logged()
         
         #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
         if args == self.KW_DATA:
@@ -205,31 +209,30 @@ class Block(BlockSSDataTables):
             querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
             #TODO FIXME: AFTER 6 
             formset, records, moreData = self._get_records(request, querySet)
-            return render_datatables(request, records, dt_params, jsonTemplatePath)
+            rv = render_datatables(request, records, dt_params, jsonTemplatePath)
 
-        return super(Block, self).get_response(request, resource_type, resource_id, args)
+        return rv
 
 
     def _send_email_logged(self):
         try:
             to = self.request.user.email
             self.resource.send_email([to],None, 'Order Email me', self.request.user)
-            #FIXME: 'Block' object has no attribute 'response_dict'
             return self.response_success()
         except Exception, e:
-            raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
+            return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _create_pdf(self):
 
-        pdf, html = self.resource.get_pdf_data(requested_by=self.request.user)
+        pdf_data = self.resource.get_pdf_data(requested_by=self.request.user)
 
-        if not pdf:
-            self.response_error(_('Report not generated')) 
-        elif not pdf.err:
-            response = HttpResponse(html, mimetype='application/pdf')
+        if not pdf_data:
+            rv = self.response_error(_('Report not generated')) 
+        else:
+            response = HttpResponse(pdf_data, mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
-            return response
-        return HttpResponse(_('We had some errors<pre>%s</pre>') % cgi.escape(pdf.err))
+            rv = response
+        return rv
 
 
 

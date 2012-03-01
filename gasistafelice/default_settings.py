@@ -405,6 +405,7 @@ DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
 JUNK_EMAIL = 'devnull@desmacerata.it'
 EMAIL_DEBUG_ADDR = 'gftest@gasistafelice.org'
 DEFAULT_SENDER_EMAIL = 'gasistafelice@desmacerata.it'
+SUPPORT_EMAIL="dev@gasistafelice.org"
 
 # Superuser username
 
