@@ -14,7 +14,7 @@ from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.supplier.models import SupplierStock, Product, \
     ProductPU, ProductMU, ProductCategory, \
-    UnitsConversion
+    UnitsConversion, Supplier
 
 from decimal import Decimal
 import logging
@@ -327,4 +327,25 @@ class SupplierForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
+class BaseSupplierForm(forms.ModelForm):
+    def __init__(self, request, *args, **kw):
+        super(BaseSupplierForm, self).__init__(*args, **kw)
 
+        model = self._meta.model
+
+    class Meta:
+        model = Supplier
+        fields = (
+            'name', 'seat', 'website', 'logo', 'flavour','vat_number','certifications'
+        )
+        gf_fieldsets = [(None, {
+            'fields' : (
+                'name','seat', 'website','logo','flavour', 'vat_number','certifications'
+            )
+        })]
+
+class AddSupplierForm(BaseSupplierForm):
+    pass
+
+class EditSupplierForm(BaseSupplierForm):
+    pass
