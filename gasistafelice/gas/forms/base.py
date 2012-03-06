@@ -131,17 +131,3 @@ class AddGasForm(BaseGasForm):
 
 class EditGasForm(BaseGasForm):
     pass
-# se commento la riga sopra, e de-commento la righe sotto, si vede
-# l'errore descritto nella mail
-#    name = models.CharField(max_length=128, unique=True,verbose_name=_('name'))
-#
-#    def __init__(self, request, *args, *kw):
-#        super(EditGasForm, self).__init__(*args, *kw)
-#
-#        model = self._meta.model
-#
-#    class Meta:
-#        model = GAS
-#        fields = (
-#            'name',
-#        )
