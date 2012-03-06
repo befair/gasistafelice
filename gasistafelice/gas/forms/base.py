@@ -116,11 +116,13 @@ class BaseGasForm(forms.ModelForm):
     class Meta:
         model = GAS
         fields = (
-            'name', 'description'
+            'description', 'name','id_in_des','birthday','headquarter','contact_set',
+            'logo','association_act','intent_act','activist_set'
         )
         gf_fieldsets = [(None, {
             'fields' : (
-                'name'
+                'name','id_in_des','birthday','headquarter','contact_set','logo',
+                'description', 'association_act','intent_act','activist_set'
             ),
         })]
 
