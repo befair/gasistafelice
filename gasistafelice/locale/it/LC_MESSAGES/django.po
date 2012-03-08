@@ -436,8 +436,7 @@ msgid ""
 "new registration from %(username)s %(usersurname)s with email %(email)s. "
 "User active status is %(active)s. Motivation: %(motivation)s..."
 msgstr ""
-"Nuova registrazione di %(username)s %(usersurname)s con l'email %(email)s.
-"
+"Nuova registrazione di %(username)s %(usersurname)s con l'email %(email)s. "
 "Lo stato dell'utente attivo è %(active)s. Motivazione: %(motivation)s..."
 
 #: des/models.py:55
@@ -2262,12 +2261,12 @@ msgid ""
 "An active solidal pact must be in place between a supplier and the GAS (s)he "
 "is refunding"
 msgstr "Un attivo patto solidale deve essere in atto tra un fornitore e un GAS(s)he "
-"viene rimborsato
+"viene rimborsato"
 
 #: supplier/accounting.py:131
 #, python-format
 msgid "Payment target %s not identified"
-msgstr "Il pagamento bersaglio %s non è identificato"
+msgstr "Il destinatario del pagamento %s non è identificato"
 
 #: supplier/forms.py:117
 msgid "Price (vat included)"
