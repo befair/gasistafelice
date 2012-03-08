@@ -92,12 +92,12 @@ class AddPlannedOrderForm(AddOrderForm):
 #WAS:            if _repeat_until_date and tmp_date and _repeat_until_date > tmp_date:
 
             if not _repeat_until_date:
-                raise forms.validationerror(ug("To plan an order you must set an end planning date"))
+                raise forms.ValidationError(ug("To plan an order you must set an end planning date"))
 
             start_date = cleaned_data['datetime_start'].date()
             min_repeat_until_date = start_date + timedelta(days=_repeat_frequency)
             if _repeat_until_date < min_repeat_until_date:
-                raise forms.validationerror(ug("To plan an order you must set an end planning date later than start date + frequency"))
+                raise forms.ValidationError(ug("To plan an order you must set an end planning date later than start date + frequency"))
 
                 
 #NOTE fero: just be positive and do not rely on self.instance: 
