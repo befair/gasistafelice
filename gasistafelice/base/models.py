@@ -1156,7 +1156,7 @@ def init_perms_for_groups():
         SupplierStock : ('add', 'change', 'delete'),
         Product : ('add', 'change', 'delete'),
         Supplier : ('add', 'change'),
-        User : ('change',),
+        User : ('add', 'change',), # add User is important for Add GASMember Form! Leave it here now. TODO
     }
 
     supplier_perms_d = {
