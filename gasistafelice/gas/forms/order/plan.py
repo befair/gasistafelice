@@ -71,7 +71,7 @@ class AddPlannedOrderForm(AddOrderForm):
             _repeat_until_date = cleaned_data['repeat_until_date']
 
             if not cleaned_data.get('datetime_end'):
-                raise forms.validationerror(ug("To plan an order you must set an end date and time"))
+                raise forms.ValidationError(ug("To plan an order you must set an end date and time"))
 
 #NOTE fero: I do not completely agree. 
 #NOTE fero: You can leave an order open for 3 month, but plan it every 1 month,
