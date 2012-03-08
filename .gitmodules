@@ -12,5 +12,5 @@
 	ignore = dirty
 [submodule "submodules/django-simple-accounting"]
 	path = submodules/django-simple-accounting
-	url = git@github.com:feroda/django-simple-accounting.git
+	url = git://github.com/feroda/django-simple-accounting.git
 	ignore = dirty
