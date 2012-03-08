@@ -1140,6 +1140,12 @@ class SupplierStock(models.Model, PermissionResource):
                     minimum_amount=self.detail_minimum_amount,
                     step=self.detail_step,
             )
+        else:
+            for gasstock in self.gasstocks:
+
+                gasstock.minimum_amount = self.detail_minimum_amount
+                gasstock.step = self.detail_step
+                gasstock.save()
 
     #-- Resource API --#
 

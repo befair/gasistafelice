@@ -224,7 +224,7 @@ class AddStockForm(EditStockForm):
         self._product = Product()
         self.fields['product_name'].widget.attrs['class'] = 'input_medium'
         self.fields['product_description'].widget.attrs['class'] = 'input_long'
-        self.fields['product_vat_percent'].initial = 20
+        self.fields['product_vat_percent'].initial = 21
         self.fields['availability'].initial = True
 
 #        # If Supplier is not the Producer ==>
@@ -243,17 +243,19 @@ class AddStockForm(EditStockForm):
         cleaned_data['product_vat_percent'] = Decimal(cleaned_data['product_vat_percent'])/100
 
         #MU and PU settings must be compatible with UnitsConversion table
-        pu = cleaned_data['product_pu']
-        mu = cleaned_data.get('product_mu')
-        mu_qs = ProductMU.objects.filter(symbol__exact=pu.symbol) 
+        if cleaned_data.get('product_pu'):
+            # Some other checks that can be performed only if 'product_pu' is set
+            pu = cleaned_data['product_pu']
+            mu = cleaned_data.get('product_mu')
+            mu_qs = ProductMU.objects.filter(symbol__exact=pu.symbol) 
 
-        # Update product with new info
-        for k,v in cleaned_data.items():
-             if k.startswith('product_'):
-                setattr(self._product, k[len('product_'):], v)
+            # Update product with new info
+            for k,v in cleaned_data.items():
+                 if k.startswith('product_'):
+                    setattr(self._product, k[len('product_'):], v)
 
-        log.debug(self._product.vat_percent)
-        cleaned_data['product'] = self._product
+            log.debug(self._product.vat_percent)
+            cleaned_data['product'] = self._product
         log.debug(self.errors)
 
         return cleaned_data
@@ -270,6 +272,8 @@ class AddStockForm(EditStockForm):
             price = self.cleaned_data['price'],
             units_minimum_amount = self.cleaned_data['units_minimum_amount'],
             units_per_box = self.cleaned_data['units_per_box'],
+            detail_minimum_amount = self.cleaned_data['detail_minimum_amount'],
+            detail_step = self.cleaned_data['detail_step'],
             supplier = self._supplier,
             code = self.cleaned_data.get('code'),
             amount_available = self.cleaned_data['amount_available'],

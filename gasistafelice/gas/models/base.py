@@ -1261,8 +1261,6 @@ class GASSupplierStock(models.Model, PermissionResource):
                         default=1, verbose_name=_('step of increment')
     )
 
-    #TODO: Notify system
-
     history = HistoricalRecords()
 
     def __unicode__(self):
