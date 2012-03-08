@@ -251,7 +251,7 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks': ['open_orders', 'closed_orders', 'prepared_orders'], 
     },{
         'name' : 'suppliers',
-        'descr': 'Fornitori',
+        'descr': 'Patti',
         'blocks': ['gas_pacts', 'categories'], 
     },{
         'name' : 'info',
