@@ -72,7 +72,7 @@ msgstr "Un rimborso fatto da un fornitore ad un GAS"
 msgid ""
 "Can't create a %(model)s QuerySet: %(obj)s is not an instance of model "
 "%(model)s"
-msgstr ""
+msgstr "Non puoi creare un %(model)s QuerySet: %(obj)s non è una istanza del modello "
 
 #: admin/models.py:32
 msgid "GAS membership"
@@ -134,7 +134,7 @@ msgstr "Cooperativa"
 
 #: base/const.py:15
 msgid "Freelance"
-msgstr ""
+msgstr "Indipendente"
 
 #: base/const.py:27
 msgid "PHONE"
@@ -241,7 +241,7 @@ msgstr "Nome utente"
 
 #: base/models.py:840
 msgid "GAS membership can only be tested against a GAS model instance"
-msgstr ""
+msgstr "I membri GAS possono solo essere testati contro una istanza del modello GAS"
 
 #: base/models.py:857 base/forms/fields.py:98 supplier/models.py:57
 msgid "flavour"
@@ -436,6 +436,9 @@ msgid ""
 "new registration from %(username)s %(usersurname)s with email %(email)s. "
 "User active status is %(active)s. Motivation: %(motivation)s..."
 msgstr ""
+"Nuova registrazione di %(username)s %(usersurname)s con l'email %(email)s.
+"
+"Lo stato dell'utente attivo è %(active)s. Motivazione: %(motivation)s..."
 
 #: des/models.py:55
 msgid "Gasmembers"
@@ -690,15 +693,15 @@ msgstr "Devi dichiarare la causale di questo movimento"
 
 #: gas/forms/cash.py:646 gas/forms/cash.py:727 gas/forms/cash.py:928
 msgid "Adjust the operation date if necesary"
-msgstr ""
+msgstr "Regolare l'operazione data se necessario"
 
 #: gas/forms/cash.py:708
 msgid "Correction for supplier: +Supplier -GAS"
-msgstr ""
+msgstr "Correzione per fornitore: +Supplier -GAS"
 
 #: gas/forms/cash.py:709
 msgid "Correction for GAS: +GAS -Supplier "
-msgstr ""
+msgstr "Correzione per GAS: +GAS -Supplier "
 
 #: gas/forms/cash.py:710
 msgid "Insolute"
@@ -709,26 +712,28 @@ msgid ""
 "If Target is Insolute you must select almost one order to pay in this "
 "operation."
 msgstr ""
+"Se l'obbiettivo è sconosciuto tu devi selezionare quasi un ordine da pagare in questa "
+"operazione."
 
 #: gas/forms/cash.py:912
 msgid "Correction for gasmember: +gasmember -GAS"
-msgstr ""
+msgstr "Correzione per il gasista: +gasmember -GAS"
 
 #: gas/forms/cash.py:913
 msgid "Correction for GAS: +GAS -gasmember "
-msgstr ""
+msgstr "Correzione per GAS: +GAS -gasmember "
 
 #: gas/forms/cash.py:914
 msgid "Detraction for Gasmember: -gasmember "
-msgstr ""
+msgstr "Detrazione per il Gasista: -gasmember "
 
 #: gas/forms/cash.py:915
 msgid "Addition for Gasmember: +gasmember "
-msgstr ""
+msgstr "Addizione per il Gasista: +gasmember "
 
 #: gas/forms/cash.py:916
 msgid "Restitution for gasmember: empty container +gasmember -GAS"
-msgstr ""
+msgstr "Restituzione per il gasista: contenitore vuoto +gasmember -GAS"
 
 #: gas/forms/pact.py:29 gas/models/base.py:1306
 msgid "Date signed"
@@ -862,15 +867,15 @@ msgstr "anno"
 
 #: gas/forms/order/plan.py:36
 msgid "Is this a periodic order?"
-msgstr ""
+msgstr "Si tratta di un ordine periodico?"
 
 #: gas/forms/order/plan.py:37
 msgid "Check the little square to plan this order as much times as you want"
-msgstr ""
+msgstr "Seleziona un piccolo spazio per pianificare questo ordine tante volte quanto tu vuoi"
 
 #: gas/forms/order/plan.py:41
 msgid "Required if you want to plan orders"
-msgstr ""
+msgstr "Richiedi se vuoi una pianificazione degli ordini"
 
 #: gas/models/base.py:57
 msgid "GAS code"
@@ -1097,11 +1102,11 @@ msgstr "Questo GAS non esiste più o è stato bandito (da parte di chi ?)"
 
 #: gas/models/base.py:618
 msgid "Use scheduler"
-msgstr ""
+msgstr "Usa il motore"
 
 #: gas/models/base.py:619
 msgid "Enable scheduler for automatic and planned operations"
-msgstr ""
+msgstr "Abilita il motore per le operazioni automatiche e programmate"
 
 #: gas/models/base.py:622
 msgid "GAS members orders are auto confirmed"
@@ -1119,7 +1124,8 @@ msgstr ""
 msgid ""
 "The GAS is not available (holidays, closed). The scheduler uses this flag to "
 "operate or not some automatisms"
-msgstr ""
+msgstr "Il GAS non è disponibile (vacanze, chiuso). Il motore utilizza questo flag per "
+"operare o meno alcuni automatismi"
 
 #: gas/models/base.py:634
 msgid "Notice days before order close"
@@ -1171,7 +1177,7 @@ msgstr "Ultimo pagamento della quota associativa"
 
 #: gas/models/base.py:705
 msgid "use_list"
-msgstr ""
+msgstr "use_list"
 
 #: gas/models/base.py:721
 msgid "Account"
@@ -1841,7 +1847,7 @@ msgstr "Prodotti"
 
 #: rest/templates/blocks/order_report/report.html:68
 msgid "Families"
-msgstr ""
+msgstr "Famiglie"
 
 #: rest/templates/blocks/order_report/report.html:69
 #: rest/templates/blocks/order_report/report.html:160
@@ -2007,7 +2013,7 @@ msgstr "Si sono verificati alcuni errori<pre>%s</pre>"
 
 #: rest/views/blocks/basket_sent.py:30
 msgid "Basket to deliver"
-msgstr ""
+msgstr "Carrello per fornire"
 
 #: rest/views/blocks/catalog_list.py:11
 msgid "Lista prodotti supplier/gas in ordine"
@@ -2249,18 +2255,19 @@ msgstr "Gli importi di pagamento non possono essere negativi"
 
 #: supplier/accounting.py:104
 msgid "Refund amounts must be non-negative"
-msgstr ""
+msgstr "Il rimborso degli importi deve essere non-negativo"
 
 #: supplier/accounting.py:108
 msgid ""
 "An active solidal pact must be in place between a supplier and the GAS (s)he "
 "is refunding"
-msgstr ""
+msgstr "Un attivo patto solidale deve essere in atto tra un fornitore e un GAS(s)he "
+"viene rimborsato
 
 #: supplier/accounting.py:131
 #, python-format
 msgid "Payment target %s not identified"
-msgstr ""
+msgstr "Il pagamento bersaglio %s non è identificato"
 
 #: supplier/forms.py:117
 msgid "Price (vat included)"
@@ -2276,15 +2283,15 @@ msgstr "Disponibilità"
 
 #: supplier/forms.py:123
 msgid "Package"
-msgstr ""
+msgstr "Pacchetto"
 
 #: supplier/forms.py:126
 msgid "Units"
-msgstr ""
+msgstr "Unità"
 
 #: supplier/forms.py:200
 msgid "Distribution info"
-msgstr ""
+msgstr "Distribuzioni di informazioni"
 
 #: supplier/forms.py:208
 msgid "Supplier info"
@@ -2321,7 +2328,7 @@ msgstr "fornitori"
 #: supplier/models.py:358
 #, python-format
 msgid "The specified flavour is not valid. Valid choices are %(choices)s"
-msgstr ""
+msgstr "Il sapore specificato non è valido. Le scelte valide sono %(choices)s"
 
 #: supplier/models.py:381
 msgid "Platform referrers"
