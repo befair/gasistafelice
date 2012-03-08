@@ -31,7 +31,7 @@ class Block(details.Block):
         #REMOVE temporarly un-managed transitions
         new_user_actions = []
         for ua in user_actions:
-            print("User action: %s" % ua.name)
+            #print("User action: %s" % ua.name)
             if ua.name not in [
                 'transition/make unpaid',
                 'transition/close and send email', #FIXME: disabled actions until implemented
