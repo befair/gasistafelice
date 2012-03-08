@@ -762,6 +762,7 @@ class GASMember(models.Model, PermissionResource):
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
+        ordering = ('gas__name',)
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
