@@ -1331,7 +1331,9 @@ class GASSupplierStock(models.Model, PermissionResource):
         #    log.debug('Solidal pact unactive')
         #    return False;
         try:
-            #FIXME: Generate error raise self.model.DoesNotExist: GASSupplierStock matching query does not exist
+            # WAS: FIXME: Generate error raise self.model.DoesNotExist: GASSupplierStock matching query does not exist
+            # COMMENT LF: It was because you called it in non-existent GASSupplierStock
+            # COMMENT LF: see "if self.pk" in self.save()
             gss = GASSupplierStock.objects.get(pk=self.pk)
             if not gss is None:
                 return bool(self.enabled != gss.enabled)
@@ -1343,21 +1345,36 @@ class GASSupplierStock(models.Model, PermissionResource):
     def save(self, *args, **kwargs):
 
         # CASCADING
-        if self.has_changed_availability:
+        if self.pk:
+            created = False
+            if self.has_changed_availability:
 
-            log.debug('   Changing for PDS %s(%s) and stock %s(%s)' %  (
-                self.pact, self.pact.pk, self.stock, self.stock.pk
+                log.debug('   Changing for PDS %s(%s) and stock %s(%s)' %  (
+                    self.pact, self.pact.pk, self.stock, self.stock.pk
+                ) )
+                #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
+                for order in self.orders.open():
+                    log.debug("Change availability GSO order %s" % order)
+                    if self.enabled:
+                        order.add_product(self)
+                    else:
+                        # Delete GASSupplierOrderProduct for GASSupplierOrder 
+                        # in Open State or Closed state. Delete GASMemberOrder associated
+                        order.remove_product(self)
+        else:
+            created = True
+
+        super(GASSupplierStock, self).save(*args, **kwargs)
+
+        if created:
+            log.debug('   Adding product %s(%s) to open orders' %  (
+                self.stock, self.stock.pk
             ) )
             #For each GASSupplierOrder in Open or Closed state Add or delete GASSupplierOrderProduct
             for order in self.orders.open():
                 log.debug("Change availability GSO order %s" % order)
                 if self.enabled:
                     order.add_product(self)
-                else:
-                    #Delete GASSupplierOrderProduct for GASSupplierOrder in Open State or Closed state. Delete GASMemberOrder associated
-                    order.remove_product(self)
-
-        super(GASSupplierStock, self).save(*args, **kwargs)
 
     #-- Resource API --#
 
