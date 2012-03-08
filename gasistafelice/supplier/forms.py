@@ -280,21 +280,23 @@ class AddStockForm(EditStockForm):
 
 #------------------------------------------------------------------------------
 
-class SupplierRoleForm(BaseRoleForm):
+# LF: this is not used anymore. Binding users to Supplier role happens in Supplier --> Admin
 
-    def __init__(self, request, *args, **kw):
-
-        self._supplier = request.resource.supplier
-        kw['initial'] = kw.get('initial',{}).update({
-            'role' : ParamRole.get_role(SUPPLIER_REFERRER, supplier=self._supplier)
-        })
-
-        super(SupplierRoleForm, self).__init__(request, *args, **kw)
-
-        if request.user in self._supplier.tech_referrers:
-            # If user if a supplier referrer tech (i.e: gas referrer)
-            self.fields['person'].queryset = \
-                self.fields['person'].queryset.filter(gasmember__gas=request.user.person.gas) 
+#WAS: class SupplierRoleForm(BaseRoleForm):
+#WAS: 
+#WAS:     def __init__(self, request, *args, **kw):
+#WAS: 
+#WAS:         self._supplier = request.resource.supplier
+#WAS:         kw['initial'] = kw.get('initial',{}).update({
+#WAS:             'role' : ParamRole.get_role(SUPPLIER_REFERRER, supplier=self._supplier)
+#WAS:         })
+#WAS: 
+#WAS:         super(SupplierRoleForm, self).__init__(request, *args, **kw)
+#WAS: 
+#WAS:         if request.user in self._supplier.tech_referrers:
+#WAS:             # If user if a supplier referrer tech (i.e: gas referrer)
+#WAS:             self.fields['person'].queryset = \
+#WAS:                 self.fields['person'].queryset.filter(gasmember__gas=request.user.person.gas) 
 
 
 #-------------------------------------------------------------------------------
