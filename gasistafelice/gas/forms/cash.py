@@ -752,7 +752,7 @@ class TransationPACTForm(BalanceForm):
         if not insolutes:
             #Hide Insolute choice
             _choice = self.fields['target'].choices
-            if _choice.count() > 2:
+            if len(_choice) > 2:
                 del _choice[-1]
                 self.fields['target'].choices = _choice
                 #Hide order form field

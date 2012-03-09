@@ -785,7 +785,8 @@ WHERE order_id = %s \
         
         # 2/3 control members curtails
         accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
-        log.debug("Order accounted_amounts(%s) %s " % (accounted_amounts.count(), accounted_amounts))
+        
+        log.debug("Order accounted_amounts(%s) %s " % (len(accounted_amounts), accounted_amounts))
         if not len(accounted_amounts):
             return
 

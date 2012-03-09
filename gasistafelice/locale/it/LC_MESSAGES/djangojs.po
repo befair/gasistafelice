@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-27 11:16+0100\n"
+"POT-Creation-Date: 2012-03-09 12:48+0100\n"
 "PO-Revision-Date: 2011-11-27 06:18+1200\n"
 "Last-Translator: Luca Ferroni <luca@befair.it>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -169,41 +169,46 @@ msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
 #: static/nui/blocks/basket.js:66 static/nui/blocks/basket_sent.js:35
 #: static/nui/blocks/curtail.js:29 static/nui/blocks/fee.js:32
-#: static/nui/blocks/order.js:66 static/nui/blocks/order_report.js:39
-#: static/nui/blocks/recharge.js:33 static/nui/blocks/stocks.js:28
-#: static/nui/blocks/suppliers_report.js:50 static/nui/blocks/users.js:41
+#: static/nui/blocks/gas_users.js:35 static/nui/blocks/order.js:66
+#: static/nui/blocks/order_report.js:39 static/nui/blocks/recharge.js:33
+#: static/nui/blocks/stocks.js:28 static/nui/blocks/supplier_users.js:35
+#: static/nui/blocks/suppliers_report.js:50 static/nui/blocks/users.js:35
 msgid "Display _MENU_ records per page"
 msgstr ""
 
 #: static/nui/blocks/basket.js:67 static/nui/blocks/basket_sent.js:36
 #: static/nui/blocks/curtail.js:30 static/nui/blocks/fee.js:33
-#: static/nui/blocks/order.js:67 static/nui/blocks/order_report.js:40
-#: static/nui/blocks/recharge.js:34 static/nui/blocks/stocks.js:29
-#: static/nui/blocks/suppliers_report.js:51 static/nui/blocks/users.js:42
+#: static/nui/blocks/gas_users.js:36 static/nui/blocks/order.js:67
+#: static/nui/blocks/order_report.js:40 static/nui/blocks/recharge.js:34
+#: static/nui/blocks/stocks.js:29 static/nui/blocks/supplier_users.js:36
+#: static/nui/blocks/suppliers_report.js:51 static/nui/blocks/users.js:36
 msgid "Nothing found"
 msgstr ""
 
 #: static/nui/blocks/basket.js:68 static/nui/blocks/basket_sent.js:37
 #: static/nui/blocks/curtail.js:31 static/nui/blocks/fee.js:34
-#: static/nui/blocks/order.js:68 static/nui/blocks/order_report.js:41
-#: static/nui/blocks/recharge.js:35 static/nui/blocks/stocks.js:30
-#: static/nui/blocks/suppliers_report.js:52 static/nui/blocks/users.js:43
+#: static/nui/blocks/gas_users.js:37 static/nui/blocks/order.js:68
+#: static/nui/blocks/order_report.js:41 static/nui/blocks/recharge.js:35
+#: static/nui/blocks/stocks.js:30 static/nui/blocks/supplier_users.js:37
+#: static/nui/blocks/suppliers_report.js:52 static/nui/blocks/users.js:37
 msgid "Showing _START_ to _END_ of _TOTAL_ records"
 msgstr ""
 
 #: static/nui/blocks/basket.js:69 static/nui/blocks/basket_sent.js:38
 #: static/nui/blocks/curtail.js:32 static/nui/blocks/fee.js:35
-#: static/nui/blocks/order.js:69 static/nui/blocks/order_report.js:42
-#: static/nui/blocks/recharge.js:36 static/nui/blocks/stocks.js:31
-#: static/nui/blocks/suppliers_report.js:53 static/nui/blocks/users.js:44
+#: static/nui/blocks/gas_users.js:38 static/nui/blocks/order.js:69
+#: static/nui/blocks/order_report.js:42 static/nui/blocks/recharge.js:36
+#: static/nui/blocks/stocks.js:31 static/nui/blocks/supplier_users.js:38
+#: static/nui/blocks/suppliers_report.js:53 static/nui/blocks/users.js:38
 msgid "Showing 0 to 0 of 0 records"
 msgstr ""
 
 #: static/nui/blocks/basket.js:70 static/nui/blocks/basket_sent.js:39
 #: static/nui/blocks/curtail.js:33 static/nui/blocks/fee.js:36
-#: static/nui/blocks/order.js:70 static/nui/blocks/order_report.js:43
-#: static/nui/blocks/recharge.js:37 static/nui/blocks/stocks.js:32
-#: static/nui/blocks/suppliers_report.js:54 static/nui/blocks/users.js:45
+#: static/nui/blocks/gas_users.js:39 static/nui/blocks/order.js:70
+#: static/nui/blocks/order_report.js:43 static/nui/blocks/recharge.js:37
+#: static/nui/blocks/stocks.js:32 static/nui/blocks/supplier_users.js:39
+#: static/nui/blocks/suppliers_report.js:54 static/nui/blocks/users.js:39
 msgid "(filtered from _MAX_ total records)"
 msgstr ""
 
