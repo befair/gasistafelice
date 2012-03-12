@@ -47,8 +47,9 @@ class Block(BlockSSDataTables):
 
         order = self.resource.order
 
-        #TODO fero: permission GET_ORDER_DOC
+        #TODO fero: add permission GET_ORDER_DOC
         if request.user == order.gas.tech_referrers \
+            or request.user in order.gas.supplier_referrers \
             or request.user in order.supplier.referrers \
             or request.user.is_superuser:
 
@@ -63,6 +64,7 @@ class Block(BlockSSDataTables):
 
         #TODO fero: permission GET_ORDER_DOC
         if request.user == order.referrer_person.user \
+            or request.user in order.gas.supplier_referrers \
             or request.user in order.supplier.referrers \
             or request.user.is_superuser:
 
