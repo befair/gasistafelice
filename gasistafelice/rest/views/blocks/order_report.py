@@ -50,7 +50,7 @@ class Block(BlockSSDataTables):
         #TODO fero: permission GET_ORDER_DOC
         if request.user == order.gas.tech_referrers \
             or request.user in order.supplier.referrers \
-            or request.user.is_superuser():
+            or request.user.is_superuser:
 
             user_actions += [
                 ResourceBlockAction(
@@ -64,7 +64,7 @@ class Block(BlockSSDataTables):
         #TODO fero: permission GET_ORDER_DOC
         if request.user == order.referrer_person.user \
             or request.user in order.supplier.referrers \
-            or request.user.is_superuser():
+            or request.user.is_superuser:
 
             if order.is_closed() or order.is_unpaid():
                 user_actions += [
