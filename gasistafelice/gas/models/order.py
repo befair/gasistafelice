@@ -1416,7 +1416,6 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        if self.is_archived()
         allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
         return user in allowed_users
     
