@@ -223,6 +223,21 @@ class GAS(models.Model, PermissionResource):
         return User.objects.filter(pk__in = usr_ids)
 
     @property
+    def users_all(self):
+        
+        usr_ids = set()
+        for member in self.gasmember_set.order_by('person__surname', 'person__name'):
+
+            # Specifications say that every GASMember MUST be bound
+            # to a User: so raise an Exception if not True
+            if not member.person.user:
+                raise DatabaseInconsistent(
+                    "Member %s is not bound to a valid User" % member
+                )
+            usr_ids.add(member.person.user.pk)
+        return User.objects.filter(pk__in = usr_ids)
+
+    @property
     def persons(self):
         qs = Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
         return qs.distinct()
