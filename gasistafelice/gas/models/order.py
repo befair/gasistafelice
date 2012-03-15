@@ -354,7 +354,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
         """
         Return `True` if the GAS supplier order is to be considered as 'archived'; `False` otherwise.
         """
-        #return not self.is_active()
         return self.current_state.name == STATUS_ARCHIVED
 
     def is_closed(self):
@@ -921,7 +920,10 @@ WHERE order_id = %s \
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators
-        allowed_users = self.referrers | self.gas.tech_referrers | self.gas.supplier_referrers
+        if self.is_archived():
+            allowed_users = []
+        else:
+            allowed_users = self.referrers | self.gas.tech_referrers | self.gas.supplier_referrers
         return user in allowed_users 
     
     # Row-level DELETE permission
@@ -1414,6 +1416,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
+        if self.is_archived()
         allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
         return user in allowed_users
     
