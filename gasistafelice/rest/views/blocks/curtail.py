@@ -213,7 +213,7 @@ class Block(BlockSSDataTables):
             # NOTE fero:    formset = f.form
             formset = form_class(post_d)
 
-        print("post_d: %s, new_fam_d: %s" % (post_d, new_fam_d))
+        log.debug("post_d: %s, new_fam_d: %s" % (post_d, new_fam_d))
         new_fam_form = NewEcoGASMemberForm(request, new_fam_d)
 
         if formset.is_valid() and new_fam_form.is_valid():
