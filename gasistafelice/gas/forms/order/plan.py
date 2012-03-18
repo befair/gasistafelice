@@ -54,7 +54,7 @@ class AddPlannedOrderForm(AddOrderForm):
         Validate order planning at these conditions:
 
         * if repeat_order is set:
-            * datetime_end must be set
+            * [DEPRECATED] datetime_end must be set
             * repeat_until_date must be set
             * repeat_until_date must be > datetime_start + _repeat_frequency
 
@@ -70,8 +70,9 @@ class AddPlannedOrderForm(AddOrderForm):
             _repeat_items = None
             _repeat_until_date = cleaned_data['repeat_until_date']
 
-            if not cleaned_data.get('datetime_end'):
-                raise forms.ValidationError(ug("To plan an order you must set an end date and time"))
+            #Domthu: 20120318 can be unknow datetime, see Fero-Orlando directive.
+#            if not cleaned_data.get('datetime_end'):
+#                raise forms.ValidationError(ug("To plan an order you must set an end date and time"))
 
 #NOTE fero: I do not completely agree. 
 #NOTE fero: You can leave an order open for 3 month, but plan it every 1 month,
@@ -183,28 +184,34 @@ class AddPlannedOrderForm(AddOrderForm):
             x_obj.root_plan = self.instance 
 
             r_q = self._repeat_frequency*num
-            r_dd = self.instance.delivery.date
+            if self.instance.delivery and self.instance.delivery.date:
+                r_dd = self.instance.delivery.date
+            else:
+                r_dd = None
 
             #TODO: withdrawal appointment
 
             # Set date for open, close and delivery order
             x_obj.datetime_start += timedelta(days=r_q)
-            x_obj.datetime_end += timedelta(days=r_q)
-            r_dd += timedelta(days=r_q)
+            if x_obj.datetime_end:
+                x_obj.datetime_end += timedelta(days=r_q)
+            if r_dd:
+                r_dd += timedelta(days=r_q)
 
-            try:
-                delivery, created = Delivery.objects.get_or_create(
-                    date=r_dd,
-                    place=self.instance.delivery.place
-                )
-            except Delivery.MultipleObjectsReturned as e:
-                log.error("Delivery.objects.get_or_create(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
-                    r_dd, self.instance.delivery.place
-                ))
-                raise
-                
-            else:
-                x_obj.delivery = delivery
+            if self.instance.delivery:
+                try:
+                    delivery, created = Delivery.objects.get_or_create(
+                        date=r_dd,
+                        place=self.instance.delivery.place
+                    )
+                except Delivery.MultipleObjectsReturned as e:
+                    log.error("Delivery.objects.get_or_create(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
+                        r_dd, self.instance.delivery.place
+                    ))
+                    raise
+                    
+                else:
+                    x_obj.delivery = delivery
 
 #WAS: INTERGAS 4
 
@@ -238,7 +245,6 @@ class AddPlannedOrderForm(AddOrderForm):
         super(AddPlannedOrderForm, self).save()
 
         if self.instance and self.is_repeated:
-            if 
             self.create_repeated_orders()
 
     class Meta(AddOrderForm.Meta):
