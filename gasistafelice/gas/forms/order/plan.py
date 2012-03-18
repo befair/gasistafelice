@@ -238,6 +238,7 @@ class AddPlannedOrderForm(AddOrderForm):
         super(AddPlannedOrderForm, self).save()
 
         if self.instance and self.is_repeated:
+            if 
             self.create_repeated_orders()
 
     class Meta(AddOrderForm.Meta):

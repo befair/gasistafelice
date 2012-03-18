@@ -28,6 +28,7 @@ from gasistafelice.consts import (
 )
 
 import datetime
+from gasistafelice.utils import short_date
 
 import logging
 log = logging.getLogger(__name__)
@@ -442,7 +443,7 @@ def get_html_insolute(insolutes, EURO_TRANS):
             , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
             , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
             , 'state'  : ins.current_state.name
-            , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+            , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
             } 
 #        stat = "<a class='ctx_enabled' href='#rest/%(urn)s' >Ord.%(order)s %(state)s </a>- Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
 #            , 'urn'  : ins.urn
@@ -805,7 +806,7 @@ class TransationPACTForm(BalanceForm):
                         , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
                         , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
                         , 'state'  : ins.current_state.name
-                        , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+                        , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
                         } 
                     _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
             self.fields['orders'].choices = _choice
