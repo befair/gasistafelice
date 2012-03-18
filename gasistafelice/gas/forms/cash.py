@@ -427,6 +427,34 @@ class InvoiceOrderForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
+def get_html_insolute(insolutes):
+    _choice = []
+    tot_ordered = 0
+    tot_invoiced = 0
+    tot_eco_entries = 0
+    stat = ''
+    for ins in insolutes:
+        tot_ordered += ins.tot_price
+        tot_invoiced += ins.invoice_amount or 0
+        tot_eco_entries += ins.tot_curtail
+        stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            'fam'    : "%.2f" % round(ins.tot_price, 2)
+            , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+            , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+            , 'state'  : ins.current_state.name
+            , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+            } 
+        _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+#            self.fields['orders2'].queryset = insolutes
+
+    #set order informations
+    stat = "Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+        'fam'    : "%.2f" % round(tot_ordered, 2)
+        , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+        , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+    }
+
+    return _choice, stat
 
 class InsoluteOrderForm(forms.Form):
 
@@ -480,33 +508,12 @@ class InsoluteOrderForm(forms.Form):
 
             else:
                 insolutes = self.__order.insolutes
-                _choice = []
-                tot_ordered = 0
-                tot_invoiced = 0
-                tot_eco_entries = 0
-                stat = ''
-                for ins in insolutes:
-                    tot_ordered += ins.tot_price
-                    tot_invoiced += ins.invoice_amount or 0
-                    tot_eco_entries += ins.tot_curtail
-                    stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                        'fam'    : "%.2f" % round(ins.tot_price, 2)
-                        , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
-                        , 'state'  : ins.current_state.name
-                        , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
-                        } 
-                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
-    #            self.fields['orders2'].queryset = insolutes
-                self.fields['orders'].choices = _choice
-
-                #set order informations
-                stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                    'fam'    : "%.2f" % round(tot_ordered, 2)
-                    , 'fatt' : "%.2f" % round(tot_invoiced, 2)
-                    , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+                _choice, stat = get_html_insolute(insolutes)
+                stat = "%(state)s - %(stat)s" % {
+                    'stat'    : stat
                     , 'state'  : self.__order.current_state.name
                 }
+                self.fields['orders'].choices = _choice
 
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
@@ -604,6 +611,15 @@ class BalanceGASForm(BalanceForm):
     wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
     wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
+#    #orders_grd = forms.ModelMultipleChoiceField(
+#    orders_grd = forms.ModelChoiceField(
+#        label=_('gas'), choices=GASSupplierOrder.objects.none(), 
+#        required=False, 
+#        widget=forms.CheckboxSelectMultiple
+#    )
+
+    wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
+
     def __init__(self, request, *args, **kw):
 
         super(BalanceGASForm, self).__init__(request, *args, **kw)
@@ -622,6 +638,11 @@ class BalanceGASForm(BalanceForm):
         for field_name in ( 'wallet_gasmembers' , 'wallet_suppliers'):
             self.fields[field_name].widget.attrs['readonly'] = True
             self.fields[field_name].widget.attrs['disabled'] = 'disabled'
+
+        #show insolutes
+        _choice, stat = get_html_insolute(request.resource.gas.insolutes)
+        #self.fields['orders_grd'].choices = _choice
+        self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
 
 
 #-------------------------------------------------------------------------------

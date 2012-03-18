@@ -557,8 +557,13 @@ class GAS(models.Model, PermissionResource):
             )
 
             email.send()
-        return 
+        return
 
+    @property
+    def insolutes(self):
+        from gasistafelice.gas.models.order import GASSupplierOrder
+        orders = GASSupplierOrder.objects.unpaid().filter(pact__gas=self)
+        return orders
 
 #------------------------------------------------------------------------------
 
