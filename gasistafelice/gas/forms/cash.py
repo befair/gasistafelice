@@ -88,7 +88,7 @@ class EcoGASMemberForm(forms.Form):
             not self.__loggedusr == self.__order.referrer_person.user:
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (
                 self.__loggedusr, self.__order.current_state.name)
             )
@@ -180,7 +180,7 @@ class NewEcoGASMemberForm(forms.Form):
             not self.__loggedusr == self.__order.referrer_person.user:
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(ug("order is not in good state!"))
 
@@ -382,7 +382,7 @@ class InvoiceOrderForm(forms.Form):
                 self.fields['note'].initial = self.__order.invoice_note
         self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             self.fields['amount'].widget.attrs['readonly'] = True
             self.fields['amount'].widget.attrs['disabled'] = 'disabled'
 
@@ -414,7 +414,7 @@ class InvoiceOrderForm(forms.Form):
             not self.__loggedusr == self.__order.referrer_person.user:
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(ug("order is not in good state!"))
 
