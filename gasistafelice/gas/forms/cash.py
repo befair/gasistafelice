@@ -427,7 +427,7 @@ class InvoiceOrderForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
-def get_html_insolute(insolutes):
+def get_html_insolute(insolutes, EURO_TRANS):
     _choice = []
     tot_ordered = 0
     tot_invoiced = 0
@@ -437,15 +437,16 @@ def get_html_insolute(insolutes):
         tot_ordered += ins.tot_price
         tot_invoiced += ins.invoice_amount or 0
         tot_eco_entries += ins.tot_curtail
-        stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+        stat = "Ord.%(order)s %(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
             'fam'    : "%.2f" % round(ins.tot_price, 2)
             , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
             , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
             , 'state'  : ins.current_state.name
             , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
             } 
-        _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
-#            self.fields['orders2'].queryset = insolutes
+#        stat = "<a class='ctx_enabled' href='#rest/%(urn)s' >Ord.%(order)s %(state)s </a>- Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+#            , 'urn'  : ins.urn
+        _choice.append((ins.pk, stat.replace('(euro)s',EURO_TRANS)))
 
     #set order informations
     stat = "Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
@@ -508,7 +509,7 @@ class InsoluteOrderForm(forms.Form):
 
             else:
                 insolutes = self.__order.insolutes
-                _choice, stat = get_html_insolute(insolutes)
+                _choice, stat = get_html_insolute(insolutes, EURO_LABEL)
                 stat = "%(state)s - %(stat)s" % {
                     'stat'    : stat
                     , 'state'  : self.__order.current_state.name
@@ -615,7 +616,7 @@ class BalanceGASForm(BalanceForm):
 #    orders_grd = forms.ModelChoiceField(
 #        label=_('gas'), queryset=GASSupplierOrder.objects.none(), 
     orders_grd = forms.MultipleChoiceField(
-        label=_('gas'), choices=GASSupplierOrder.objects.none(), 
+        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
         required=False, 
         widget=forms.CheckboxSelectMultiple
     )
@@ -642,9 +643,9 @@ class BalanceGASForm(BalanceForm):
             self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
         #show insolutes
-        _choice, stat = get_html_insolute(request.resource.gas.insolutes)
+        #FIXME: render list of link inside one form fields
+        _choice, stat = get_html_insolute(request.resource.gas.insolutes, EURO_LABEL)
         self.fields['orders_grd'].choices = _choice
-        print _choice
         #self.fields['orders_grd'].queryset = _choice
         self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
 
