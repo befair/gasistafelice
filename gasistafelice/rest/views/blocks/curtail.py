@@ -60,7 +60,7 @@ class Block(BlockSSDataTables):
         if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \
             request.user == order.referrer_person.user:
 
-            if order.is_closed() or order.is_unpaid():
+            if order.is_closed(): # or order.is_unpaid():
 
                 user_actions += [
                     ResourceBlockAction(
@@ -221,12 +221,24 @@ class Block(BlockSSDataTables):
                 for form in formset:
                     # Check for data: empty formsets are full of empty data ;)
                     if form.cleaned_data:
-                        form.save()
+                        try:
+
+                            form.save()
+
+                        except Exception, e:
+                            msg = _("Curtail ERROR: ") + e.message
+                            form._errors[0] = form.error_class([msg])
+
                 if new_fam_form.cleaned_data:
-                    new_fam_form.save()
+                    try:
+
+                        new_fam_form.save()
+
+                    except Exception, e:
+                        msg = _("Curtail ERROR: ") + e.message
+                        new_fam_form._errors[0] = form.error_class([msg])
 
             return self.response_success()
         else:
             return self.response_error(formset.errors)
-
 

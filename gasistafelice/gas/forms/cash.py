@@ -612,11 +612,11 @@ class BalanceGASForm(BalanceForm):
     wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
 #    #orders_grd = forms.ModelMultipleChoiceField(
-#    orders_grd = forms.ModelChoiceField(
-#        label=_('gas'), choices=GASSupplierOrder.objects.none(), 
-#        required=False, 
-#        widget=forms.CheckboxSelectMultiple
-#    )
+    orders_grd = forms.ModelChoiceField(
+        label=_('gas'), queryset=GASSupplierOrder.objects.none(), 
+        required=False, 
+        widget=forms.CheckboxSelectMultiple
+    )
 
     wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
 
@@ -642,6 +642,8 @@ class BalanceGASForm(BalanceForm):
         #show insolutes
         _choice, stat = get_html_insolute(request.resource.gas.insolutes)
         #self.fields['orders_grd'].choices = _choice
+        print _choice
+        self.fields['orders_grd'].queryset = _choice
         self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
 
 
