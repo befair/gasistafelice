@@ -251,8 +251,9 @@ class AddPlannedOrderForm(AddOrderForm):
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
-                , ('datetime_start', 'datetime_end')
-                , 'delivery_datetime'
+                , 'datetime_start'
+                , ('datetime_end', 'empty_end')
+                , ('delivery_datetime', 'empty_delivery')
                 , 'referrer_person'
                 , ('repeat_order', 'repeat_frequency', 'repeat_until_date')
             ]
