@@ -118,9 +118,8 @@ li:tree_element div.content {
 	padding:2px 2px;
 }
 
-.user{
-	background-color:#D7ECC7;
-}
+//.user{ background-color:#D7ECC7; }
+
 #user_data{
 	display: inline;
 }

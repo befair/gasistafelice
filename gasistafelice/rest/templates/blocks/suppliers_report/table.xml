@@ -4,7 +4,7 @@
 {% block headers %}
     <th>{% trans "Id" %}</th>
     <th>{% trans "Supplier" %}</th>
-    <th>{% trans "Agent" %}</th>
+    <th>{% trans "Frontman" %}</th>
     <th title='{% trans "Address" %}'>{% trans "City" %}</th>
     <th title='{% trans "Email" %}'>{% trans "Email" %}</th>
     <th title='{% trans "Phone" %}'>{% trans "Phone" %}</th>

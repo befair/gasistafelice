@@ -216,7 +216,7 @@ class SupplierAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (None, {
-            'fields': ('name', 'seat', 'website', 'logo')
+            'fields': ('name', 'frontman', 'seat', 'website', 'logo')
         }),
         ('Details', {
             'fields': ('flavour', 'vat_number','certifications',)

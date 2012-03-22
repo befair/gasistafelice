@@ -84,7 +84,7 @@ class Supplier(models.Model, PermissionResource):
         if self.frontman:
             return self.frontman.report_name
         else:
-            return "aaaa"
+            return ugettext("unset")
 
     @property
     def report_name(self):
@@ -389,12 +389,14 @@ class Supplier(models.Model, PermissionResource):
             self.config = SupplierConfig.objects.create(supplier=self)
 
     display_fields = (
+        display.Resource(name="frontman", verbose_name=_("Frontman")),
         seat, vat_number, website, flavour, 
         display.ResourceList(name="info_people", verbose_name=_("Contacts")),
         display.ResourceList(name="referrers_people", verbose_name=_("Platform referrers")),
         display.ResourceList(name="pacts", verbose_name=_("Pacts")),
     )
     #COMMENT domthu: i don't understand where referrers_people is defined?
+    #COMMENT fero: you are tired :) they are in the Resource super class :)
 
     #--------------------------#
 
