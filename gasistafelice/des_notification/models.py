@@ -148,6 +148,7 @@ def notify_order_state_update(sender, **kwargs):
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))
     try:
+        #FIXME
         notification.send(recipients, "order_state_update", 
             extra_content, on_site=True
         )

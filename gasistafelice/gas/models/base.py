@@ -1568,14 +1568,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         """
         Return all users being referrers for this solidal pact (GAS-to-Supplier interface).
         """
+        # FIXME: should be def supplier_referrers. referrers should be == to info_people
         # retrieve 'GAS supplier referrer' parametric role for this pact
         pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
         # retrieve all Users having this role
         return pr.get_users()    
 
     @property
-    def supplier_referrers_people(self):
-        #return Person.objects.all()
+    def referrers_people(self):
         prs = Person.objects.none()
         if self.referrers:
             prs = Person.objects.filter(user__in=self.referrers)
