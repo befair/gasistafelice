@@ -1,16 +1,17 @@
 
 TODO:
 
-* DOMINIQUE: ordini.desmacerata.it: scheda "admin" non appare al superuser e referenti informatici
-* Creazione utente da "aggiungi gasista" non mette in "User" email, nome, cognome
 * Evidenziare SITO DI TEST :8000
-* Decurtazione gasisti --> chiudi a parità di importo fattura
-* DOMINIQUE: Data di consegna impostata anche se non impostata
 
 Da verificare:
 
 * Elimina PrincipalParamRole su eliminazione di un oggetto (Fornitore, oppure Patto, o GAS)
 
+DONE: 
+
+* Creazione utente da "aggiungi gasista" non mette in "User" email, nome, cognome
+* DOMINIQUE: ordini.desmacerata.it: scheda "admin" non appare al superuser e referenti informatici
+* DOMINIQUE: Data di consegna impostata anche se non impostata
 
 TODO 0.8
 --------
