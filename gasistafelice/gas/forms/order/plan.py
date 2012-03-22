@@ -44,7 +44,7 @@ class AddPlannedOrderForm(AddOrderForm):
 
     def __init__(self, *args, **kw):
         super(AddPlannedOrderForm, self).__init__(*args, **kw)
-        self._messages['info'].append(("If you want you can plan your orders with some frequency until a specific date"))
+        self._messages['info'].append(ug("If you want you can plan your orders with some frequency until a specific date"))
 
     def clean(self):
         """Validate data here. Not in save().

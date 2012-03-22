@@ -213,6 +213,7 @@ class Block(BlockSSDataTables):
             # NOTE fero:    formset = f.form
             formset = form_class(post_d)
 
+        log.debug("post_d: %s, new_fam_d: %s" % (post_d, new_fam_d))
         new_fam_form = NewEcoGASMemberForm(request, new_fam_d)
 
         if formset.is_valid() and new_fam_form.is_valid():
@@ -221,8 +222,8 @@ class Block(BlockSSDataTables):
                     # Check for data: empty formsets are full of empty data ;)
                     if form.cleaned_data:
                         form.save()
-                    if new_fam_form.cleaned_data:
-                        new_fam_form.save()
+                if new_fam_form.cleaned_data:
+                    new_fam_form.save()
 
             return self.response_success()
         else:
