@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-22 18:21+0100\n"
+"POT-Creation-Date: 2012-03-22 19:15+0100\n"
 "PO-Revision-Date: 2012-03-08 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -617,6 +617,54 @@ msgstr "Archivia"
 msgid "Cancel"
 msgstr "Annulla"
 
+#: gas/forms/cash.py:68
+msgid "EcoGASMemberForm: cannot retrieve gasmember: "
+msgstr ""
+
+#: gas/forms/cash.py:70
+msgid "EcoGASMemberForm: cannot retrieve gasmember with id "
+msgstr ""
+
+#: gas/forms/cash.py:78
+msgid ""
+"You have to write a number (even 0) for a curtail that you want to apply"
+msgstr ""
+
+#: gas/forms/cash.py:90 gas/forms/cash.py:182 gas/forms/cash.py:419
+msgid ""
+"You are not a cash_referrer or the order's referrer, you cannot update "
+"GASMembers cash!"
+msgstr ""
+
+#: gas/forms/cash.py:96
+msgid "order is not in the right state!"
+msgstr ""
+
+#: gas/forms/cash.py:186 gas/forms/cash.py:423 gas/forms/cash.py:557
+msgid "order is not in good state!"
+msgstr ""
+
+#: gas/forms/cash.py:198
+#, python-format
+msgid "added by: %s"
+msgstr ""
+
+#: gas/forms/cash.py:253 gas/forms/cash.py:334
+msgid "You are not a cash_referrer, you cannot update GASMembers cash!"
+msgstr ""
+
+#: gas/forms/cash.py:258
+msgid ""
+"You are not a cash_referrer for the GAS of the gasmember, you cannot "
+"recharge GASMembers cash!"
+msgstr ""
+
+#: gas/forms/cash.py:338
+msgid ""
+"You are not a cash_referrer for the GAS of the gasmember, you cannot "
+"register fee GASMembers cash!"
+msgstr ""
+
 #: gas/forms/cash.py:358
 msgid "Actual total"
 msgstr "Importo reale"
@@ -637,6 +685,10 @@ msgid ""
 msgstr ""
 "%(state)s - Previsto: %(fam)s %(euro)s --> Reale: %(fatt)s %(euro)s --> "
 "Pagato: %(eco)s %(euro)s"
+
+#: gas/forms/cash.py:403
+msgid "InvoiceOrderForm: cannot retrieve invoice data: "
+msgstr ""
 
 #: gas/forms/cash.py:466 gas/forms/cash.py:754
 msgid "Insolute order(s)"
@@ -666,6 +718,14 @@ msgstr "Devi dichiarare la causale di questo pagamento"
 #: gas/forms/cash.py:479
 msgid "Adjust the operation date if needed"
 msgstr "Regolare la data di operazione se necessario"
+
+#: gas/forms/cash.py:540
+msgid "InsoluteOrderForm: cannot retrieve economic data: "
+msgstr ""
+
+#: gas/forms/cash.py:553
+msgid "You are not a cash_referrer, you cannot manage insolute order cash!"
+msgstr ""
 
 #: gas/forms/cash.py:595
 msgid "Balance"
@@ -731,6 +791,20 @@ msgstr "Devi dichiarare la causale di questo movimento"
 msgid "Adjust the operation date if necesary"
 msgstr ""
 
+#: gas/forms/cash.py:705
+msgid "TransationGASForm: transaction require a causal explanation"
+msgstr ""
+
+#: gas/forms/cash.py:708
+msgid "TransationGASForm: cannot retrieve economic data: "
+msgstr ""
+
+#: gas/forms/cash.py:724
+msgid ""
+"TransationGASForm: You are not a cash_referrer, you cannot do economic "
+"operation!"
+msgstr ""
+
 #: gas/forms/cash.py:746
 msgid "Correction for supplier: +Supplier -GAS"
 msgstr ""
@@ -747,6 +821,30 @@ msgstr "Da pagare"
 msgid ""
 "If Target is Insolute you must select almost one order to pay in this "
 "operation."
+msgstr ""
+
+#: gas/forms/cash.py:841
+msgid "TransationPACTForm: transaction require a causal explanation"
+msgstr ""
+
+#: gas/forms/cash.py:845
+msgid "Insolute transaction require almost one order to be payed"
+msgstr ""
+
+#: gas/forms/cash.py:848
+msgid "TransationPACTForm: cannot retrieve economic data: "
+msgstr ""
+
+#: gas/forms/cash.py:872 gas/forms/cash.py:1008
+msgid "You are not a cash_referrer, you cannot do economic operation!"
+msgstr ""
+
+#: gas/forms/cash.py:928
+msgid "error while saving insolute economic data: "
+msgstr ""
+
+#: gas/forms/cash.py:935
+msgid "cannot retrieve economic orders"
 msgstr ""
 
 #: gas/forms/cash.py:950
@@ -767,6 +865,14 @@ msgstr ""
 
 #: gas/forms/cash.py:954
 msgid "Restitution for gasmember: empty container +gasmember -GAS"
+msgstr ""
+
+#: gas/forms/cash.py:988
+msgid "TransationGMForm: transaction require a causal explanation"
+msgstr ""
+
+#: gas/forms/cash.py:991
+msgid "TransationGMForm: cannot retrieve economic data: "
 msgstr ""
 
 #: gas/forms/pact.py:29 gas/models/base.py:1511
@@ -1958,20 +2064,21 @@ msgid "GASMember"
 msgstr "Gasista"
 
 #: rest/templates/blocks/curtail/table.xml:7
-msgid "SUM ordered amount"
-msgstr "SOMMA quantità ordinata"
+msgid "Expected cash amount to deduct"
+msgstr ""
 
 #: rest/templates/blocks/curtail/table.xml:7
-msgid "Sum Amount"
-msgstr "Totale importo"
+msgid "Expected curtail"
+msgstr ""
 
 #: rest/templates/blocks/curtail/table.xml:8
-msgid "Withdrawal amounted"
-msgstr "Decurtato al ritiro"
+msgid "Actual amounted to withdraw"
+msgstr ""
 
 #: rest/templates/blocks/curtail/table.xml:8
-msgid "Amounted"
-msgstr "Decurtato"
+#, fuzzy
+msgid "Actual curtail"
+msgstr "Importo reale"
 
 #: rest/templates/blocks/curtail/table.xml:9
 msgid "Apply"
@@ -2861,6 +2968,18 @@ msgstr "categoria"
 #, python-format
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
+
+#~ msgid "SUM ordered amount"
+#~ msgstr "SOMMA quantità ordinata"
+
+#~ msgid "Sum Amount"
+#~ msgstr "Totale importo"
+
+#~ msgid "Withdrawal amounted"
+#~ msgstr "Decurtato al ritiro"
+
+#~ msgid "Amounted"
+#~ msgstr "Decurtato"
 
 #~ msgid "Invoice management"
 #~ msgstr "Gestione della fattura"
