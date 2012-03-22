@@ -71,13 +71,13 @@ class BaseOrderForm(forms.ModelForm):
         widget=SplitDateTimeFormatAwareWidget
     )
 
-    empty_end = forms.BooleanField(label=_('Do not use Date end'), required=False)
+    empty_end = forms.BooleanField(label=_('Do not set date end'), required=False)
 
     delivery_datetime = forms.SplitDateTimeField(required=False, 
         label=_('Delivery on/at'), widget=SplitDateTimeFormatAwareWidget
     )
 
-    empty_delivery = forms.BooleanField(label=_('Delivery on/at'), required=False)
+    empty_delivery = forms.BooleanField(label=_('Do not set delivery'), required=False)
 
     referrer_person = forms.ModelChoiceField(label=_('referrer').capitalize(), 
         queryset=Person.objects.none(), required=True, 
