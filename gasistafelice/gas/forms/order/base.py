@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
 from gasistafelice.utils import datetime_round_ten_minutes
-from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
+from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget, SplitDateTimeFieldWithClean
 
 from gasistafelice.base.models import Place, Person
 from gasistafelice.gas.models import ( 
@@ -66,14 +66,18 @@ class BaseOrderForm(forms.ModelForm):
         initial=now_round_ten_minutes
     )
 
-    datetime_end = forms.SplitDateTimeField(label=_('Date end'), required=False, 
+    datetime_end = SplitDateTimeFieldWithClean(label=_('Date end'), required=False, 
         help_text=_("when the order will be closed"), 
         widget=SplitDateTimeFormatAwareWidget
     )
 
+    empty_end = forms.BooleanField(label=_('Do not set date end'), required=False)
+
     delivery_datetime = forms.SplitDateTimeField(required=False, 
         label=_('Delivery on/at'), widget=SplitDateTimeFormatAwareWidget
     )
+
+    empty_delivery = forms.BooleanField(label=_('Do not set delivery'), required=False)
 
     referrer_person = forms.ModelChoiceField(label=_('referrer').capitalize(), 
         queryset=Person.objects.none(), required=True, 
@@ -97,7 +101,7 @@ class BaseOrderForm(forms.ModelForm):
             #KO: not rendered the form and the relative warning
             #NOTE fero: it shouldn't arrive here...no matter for me if it is and HARD exception
             #raise PermissionDenied(ug("You cannot open an order without referrers"))
-            log.warning("AddOrderForm.__init__(): trying to create a new order without referrers!")
+            log.warning("BaseOrderForm.__init__(): trying to create a new order without referrers!")
 
         self.fields['referrer_person'].queryset = referrers
         if self.fields.get('withdrawal_referrer_person'):
@@ -120,10 +124,17 @@ class BaseOrderForm(forms.ModelForm):
 
         cleaned_data = self.cleaned_data
         dt_start = cleaned_data.get("datetime_start")
+        e_end = self.cleaned_data.get('empty_end')
+        e_del = self.cleaned_data.get('empty_delivery')
+        if e_end:
+            del cleaned_data["datetime_end"]
+            del cleaned_data["delivery_datetime"]
+        elif e_del:
+            del cleaned_data["delivery_datetime"]
         dt_end = cleaned_data.get("datetime_end")
         dt_delivery = cleaned_data.get("delivery_datetime")
 
-        #log.debug("AddOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_delivery))
+        #log.debug("BaseOrderForm compare date [%s<%s<%s]" % (dt_start, dt_end, dt_delivery))
         # Only do something if both fields are valid so far.
         if dt_start and dt_end:
             if dt_start >= dt_end:
@@ -368,8 +379,9 @@ class AddOrderForm(BaseOrderForm):
 
         gf_fieldsets = [(None, {
             'fields' : ['pact'
-                            , ('datetime_start', 'datetime_end')
-                            , 'delivery_datetime'
+                            , 'datetime_start'
+                            , ('datetime_end', 'empty_end')
+                            , ('delivery_datetime', 'empty_delivery')
                             , 'referrer_person'
             ]
         })]

@@ -39,7 +39,11 @@ class PersonAccountingProxy(AccountingProxy):
         issuer = self.subject
         if not date:
             date = datetime.now()  #_date.today
-        transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'MEMBERSHIP_FEE')
+
+        transaction = register_transaction(source_account, exit_point, 
+            entry_point, target_account, amount, description, issuer, 
+            date, 'MEMBERSHIP_FEE'
+        )
         transaction.add_references([person, gas])
 
     def last_entry(self, base_path):
@@ -77,7 +81,10 @@ class PersonAccountingProxy(AccountingProxy):
             issuer = self.subject
             if not date:
                 date = datetime.now()  #_date.today
-            transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, 'RECHARGE')
+            transaction = register_transaction(source_account, exit_point, 
+                entry_point, target_account, amount, description, issuer, 
+                date, 'RECHARGE'
+            )
             transaction.add_references([person, gas])
 
 #Transaction

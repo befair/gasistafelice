@@ -24,6 +24,8 @@ def queryset_from_iterable(model, iterable):
 #-----------------------------------------------------------------------------------
 
 def long_date(d):
+    if not d:
+        return '' #'?'
     # NOTE fero: order is important: check first datetime
     if isinstance(d, datetime):
        fmt = settings.LONG_DATETIME_FMT
@@ -32,11 +34,19 @@ def long_date(d):
     return d.strftime(fmt).decode('utf-8')
 
 def medium_date(d):
+    if not d:
+        return '' #'?'
     # NOTE fero: order is important: check first datetime
     if isinstance(d, datetime):
        fmt = settings.MEDIUM_DATETIME_FMT
     else:
        fmt = settings.MEDIUM_DATE_FMT
+    return d.strftime(fmt).decode('utf-8')
+
+def short_date(d):
+    if not d:
+        return '' #'?'
+    fmt = settings.SHORT_DATE_FMT
     return d.strftime(fmt).decode('utf-8')
 
 #--------------------------------------------------------------------------------

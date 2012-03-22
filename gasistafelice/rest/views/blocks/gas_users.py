@@ -54,3 +54,9 @@ class Block(users.Block):
 #                    extra=qs.count()   #0
 #        )
 # 
+
+    def _get_resource_list(self, request):
+        # User list even if not abilitate or GASMembers not active
+        return request.resource.users_all
+
+

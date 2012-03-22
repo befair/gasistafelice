@@ -28,6 +28,7 @@ from gasistafelice.consts import (
 )
 
 import datetime
+from gasistafelice.utils import short_date
 
 import logging
 log = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ class EcoGASMemberForm(forms.Form):
             not self.__loggedusr == self.__order.referrer_person.user:
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (
                 self.__loggedusr, self.__order.current_state.name)
             )
@@ -180,7 +181,7 @@ class NewEcoGASMemberForm(forms.Form):
             not self.__loggedusr == self.__order.referrer_person.user:
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(ug("order is not in good state!"))
 
@@ -382,7 +383,7 @@ class InvoiceOrderForm(forms.Form):
                 self.fields['note'].initial = self.__order.invoice_note
         self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             self.fields['amount'].widget.attrs['readonly'] = True
             self.fields['amount'].widget.attrs['disabled'] = 'disabled'
 
@@ -414,7 +415,7 @@ class InvoiceOrderForm(forms.Form):
             not self.__loggedusr == self.__order.referrer_person.user:
             raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
-        if not self.__order.is_closed():
+        if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
             raise PermissionDenied(ug("order is not in good state!"))
 
@@ -427,6 +428,35 @@ class InvoiceOrderForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
+def get_html_insolute(insolutes, EURO_TRANS):
+    _choice = []
+    tot_ordered = 0
+    tot_invoiced = 0
+    tot_eco_entries = 0
+    stat = ''
+    for ins in insolutes:
+        tot_ordered += ins.tot_price
+        tot_invoiced += ins.invoice_amount or 0
+        tot_eco_entries += ins.tot_curtail
+        stat = "Ord.%(order)s %(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            'fam'    : "%.2f" % round(ins.tot_price, 2)
+            , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+            , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+            , 'state'  : ins.current_state.name
+            , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
+            } 
+#        stat = "<a class='ctx_enabled' href='#rest/%(urn)s' >Ord.%(order)s %(state)s </a>- Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+#            , 'urn'  : ins.urn
+        _choice.append((ins.pk, stat.replace('(euro)s',EURO_TRANS)))
+
+    #set order informations
+    stat = "Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+        'fam'    : "%.2f" % round(tot_ordered, 2)
+        , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+        , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+    }
+
+    return _choice, stat
 
 class InsoluteOrderForm(forms.Form):
 
@@ -480,33 +510,12 @@ class InsoluteOrderForm(forms.Form):
 
             else:
                 insolutes = self.__order.insolutes
-                _choice = []
-                tot_ordered = 0
-                tot_invoiced = 0
-                tot_eco_entries = 0
-                stat = ''
-                for ins in insolutes:
-                    tot_ordered += ins.tot_price
-                    tot_invoiced += ins.invoice_amount or 0
-                    tot_eco_entries += ins.tot_curtail
-                    stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                        'fam'    : "%.2f" % round(ins.tot_price, 2)
-                        , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
-                        , 'state'  : ins.current_state.name
-                        , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
-                        } 
-                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
-    #            self.fields['orders2'].queryset = insolutes
-                self.fields['orders'].choices = _choice
-
-                #set order informations
-                stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                    'fam'    : "%.2f" % round(tot_ordered, 2)
-                    , 'fatt' : "%.2f" % round(tot_invoiced, 2)
-                    , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+                _choice, stat = get_html_insolute(insolutes, EURO_LABEL)
+                stat = "%(state)s - %(stat)s" % {
+                    'stat'    : stat
                     , 'state'  : self.__order.current_state.name
                 }
+                self.fields['orders'].choices = _choice
 
             self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
@@ -604,6 +613,17 @@ class BalanceGASForm(BalanceForm):
     wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
     wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
+#    #orders_grd = forms.ModelMultipleChoiceField(
+#    orders_grd = forms.ModelChoiceField(
+#        label=_('gas'), queryset=GASSupplierOrder.objects.none(), 
+    orders_grd = forms.MultipleChoiceField(
+        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
+        required=False, 
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
+
     def __init__(self, request, *args, **kw):
 
         super(BalanceGASForm, self).__init__(request, *args, **kw)
@@ -622,6 +642,13 @@ class BalanceGASForm(BalanceForm):
         for field_name in ( 'wallet_gasmembers' , 'wallet_suppliers'):
             self.fields[field_name].widget.attrs['readonly'] = True
             self.fields[field_name].widget.attrs['disabled'] = 'disabled'
+
+        #show insolutes
+        #FIXME: render list of link inside one form fields
+        _choice, stat = get_html_insolute(request.resource.gas.insolutes, EURO_LABEL)
+        self.fields['orders_grd'].choices = _choice
+        #self.fields['orders_grd'].queryset = _choice
+        self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
 
 
 #-------------------------------------------------------------------------------
@@ -779,7 +806,7 @@ class TransationPACTForm(BalanceForm):
                         , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
                         , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
                         , 'state'  : ins.current_state.name
-                        , 'order'  : str(ins.pk) + ins.datetime_end.strftime(" - %Y-%m-%d")
+                        , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
                         } 
                     _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
             self.fields['orders'].choices = _choice

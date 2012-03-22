@@ -65,6 +65,7 @@ some_string_to_translate__ = (
     _("open: %(date_start)s"),
     _(" - close: %(date_end)s"),
     _("close: %(date_end)s"),
+    _("close: unset"),
     _(" --> delivery: %(date_delivery)s"),
     _("to be delivered: %(date_delivery)s  --> to pay"),
     _(" --> delivered: %(date_delivery)s --> to pay"),
@@ -195,8 +196,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     date_info += ug(" - close: %(date_end)s")
     
             elif state == STATUS_OPEN:
+
                 if self.datetime_end:
                     date_info += ug("close: %(date_end)s")
+                else:
+                    date_info += ug("close: unset")
 
                 if d['date_delivery']:
                     date_info += ug(" --> delivery: %(date_delivery)s")
