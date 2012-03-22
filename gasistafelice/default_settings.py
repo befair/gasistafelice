@@ -369,6 +369,8 @@ LONG_DATE_FMT = "%A %d %B %Y"
 MEDIUM_DATE_FMT = "%a %d %b"
 MEDIUM_DATETIME_FMT = "%a %d %b %H:%M"
 LONG_DATETIME_FMT = "%A %d %B %Y %H:%M"
+SHORT_DATE_FMT = "%Y-%m-%d"
+
 
 locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #DOMTHU:

@@ -181,7 +181,7 @@ class GasAccountingProxy(AccountingProxy):
             tx = self.get_supplier_order_transaction(order, refs)
             if tx:
                 #FIXME: something wrong. The old transaction is deleted and the new one loose refs
-                #simple accounting: transaction.ledger_entries.delete() but do not recreate the link to the original refs that permit to retrieve the transaction itsel finding by order. see: get_supplier_order_data
+                #simple accounting: transaction.ledger_entries.delete() but do not recreate the link to the original refs that permit to retrieve the transaction itself finding by order. see: get_supplier_order_data
                 update_transaction(tx, amount=amount)
 
     def get_supplier_order_data(self, order, refs=None):
