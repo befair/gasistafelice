@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-22 17:28+0100\n"
+"POT-Creation-Date: 2012-03-22 18:21+0100\n"
 "PO-Revision-Date: 2012-03-08 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -215,8 +215,7 @@ msgstr "Utente"
 #: base/models.py:559
 msgid ""
 "bind to a user if you want to give this person an access to the platform"
-msgstr ""
-"collega la persona ad un utente se deve accedere al gestionale"
+msgstr "collega la persona ad un utente se deve accedere al gestionale"
 
 #: base/models.py:561 gas/models/base.py:69
 msgid "main address"
@@ -423,7 +422,7 @@ msgstr "Ricarica"
 msgid "Fee"
 msgstr "Quota"
 
-#: base/templatetags/basic_tags.py:51 gas/forms/cash.py:468
+#: base/templatetags/basic_tags.py:51 gas/forms/cash.py:471
 #: rest/templates/blocks/stored_orders/table.xml:12
 msgid "Payment"
 msgstr "Pagamento"
@@ -618,32 +617,41 @@ msgstr "Archivia"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: gas/forms/cash.py:358 rest/templates/blocks/stored_orders/table.xml:10
-msgid "Invoice"
-msgstr "Fattura"
+#: gas/forms/cash.py:358
+msgid "Actual total"
+msgstr "Importo reale"
 
 #: gas/forms/cash.py:359
-msgid "You must insert an postive amount for the operation"
-msgstr "Devi inserire una quantità positiva per questa operazione"
+msgid "You must insert an postive amount"
+msgstr "Devi inserire un importo positivo"
 
 #: gas/forms/cash.py:361 rest/templates/blocks/order/table.xml:8
 msgid "Note"
 msgstr "Nota"
 
-#: gas/forms/cash.py:463 gas/forms/cash.py:751
+#: gas/forms/cash.py:371
+#, python-format
+msgid ""
+"%(state)s - Expected: %(fam)s %(euro)s --> Actual: %(fatt)s %(euro)s --> "
+"Paid: %(eco)s %(euro)s"
+msgstr ""
+"%(state)s - Previsto: %(fam)s %(euro)s --> Reale: %(fatt)s %(euro)s --> "
+"Pagato: %(eco)s %(euro)s"
+
+#: gas/forms/cash.py:466 gas/forms/cash.py:754
 msgid "Insolute order(s)"
 msgstr "Ordini da pagare"
 
-#: gas/forms/cash.py:464
+#: gas/forms/cash.py:467
 msgid "Select one or multiple orders to pay in this operation."
 msgstr "Seleziona uno o più ordini da pagare in questa operazione."
 
-#: gas/forms/cash.py:470 gas/forms/cash.py:675 gas/forms/cash.py:756
-#: gas/forms/cash.py:957
+#: gas/forms/cash.py:473 gas/forms/cash.py:678 gas/forms/cash.py:759
+#: gas/forms/cash.py:960
 msgid "Causal"
 msgstr "Causale"
 
-#: gas/forms/cash.py:471
+#: gas/forms/cash.py:474
 msgid ""
 "Some indication about the payment: by bank or cash, bank number "
 "transaction..."
@@ -651,113 +659,113 @@ msgstr ""
 "Alcune indicazioni del pagamento: tramite banca o contanti, numero banca "
 "Transazione..."
 
-#: gas/forms/cash.py:472
+#: gas/forms/cash.py:475
 msgid "You must declare the causal of this payment"
 msgstr "Devi dichiarare la causale di questo pagamento"
 
-#: gas/forms/cash.py:476
+#: gas/forms/cash.py:479
 msgid "Adjust the operation date if needed"
 msgstr "Regolare la data di operazione se necessario"
 
-#: gas/forms/cash.py:592
+#: gas/forms/cash.py:595
 msgid "Balance"
 msgstr "Saldo"
 
-#: gas/forms/cash.py:613
+#: gas/forms/cash.py:616
 msgid "Wallet GASMembers"
 msgstr "Portafoglio gasisti"
 
-#: gas/forms/cash.py:614
+#: gas/forms/cash.py:617
 msgid "Wallet Suppliers"
 msgstr "Portafoglio fornitori"
 
-#: gas/forms/cash.py:620
+#: gas/forms/cash.py:623
 #, fuzzy
 msgid "Insolutes"
 msgstr "Da pagare"
 
-#: gas/forms/cash.py:625
+#: gas/forms/cash.py:628
 #, fuzzy
 msgid "Wallet Insolute"
 msgstr "Da pagare"
 
-#: gas/forms/cash.py:662 gas/forms/cash.py:737 gas/forms/cash.py:941
+#: gas/forms/cash.py:665 gas/forms/cash.py:740 gas/forms/cash.py:944
 msgid "Operation"
 msgstr "Operazione"
 
-#: gas/forms/cash.py:663 gas/forms/cash.py:738 gas/forms/cash.py:942
+#: gas/forms/cash.py:666 gas/forms/cash.py:741 gas/forms/cash.py:945
 msgid "Insert the amount of money (no sign)"
 msgstr "Inserire la somma di denaro (senza segno)"
 
-#: gas/forms/cash.py:664 gas/forms/cash.py:739 gas/forms/cash.py:943
+#: gas/forms/cash.py:667 gas/forms/cash.py:742 gas/forms/cash.py:946
 msgid "You must insert an postive or negative amount for the operation"
 msgstr "Devi inserire un importo positivo o negativo per l'operazione"
 
-#: gas/forms/cash.py:668
+#: gas/forms/cash.py:671
 msgid "Income: Event, Donate, Sponsor, Fund... +GAS"
 msgstr "Entrata: evento, donazione, sponsor, fondi... +GAS"
 
-#: gas/forms/cash.py:669
+#: gas/forms/cash.py:672
 msgid ""
 "Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS"
 msgstr ""
 "Spese: utenze, conto bancario, amministrazione, eventi, affitto... -GAS"
 
-#: gas/forms/cash.py:671 gas/forms/cash.py:747 gas/forms/cash.py:953
+#: gas/forms/cash.py:674 gas/forms/cash.py:750 gas/forms/cash.py:956
 msgid "define the type of the operation"
 msgstr "definisci il tipo di operazione"
 
-#: gas/forms/cash.py:672 gas/forms/cash.py:748 gas/forms/cash.py:954
+#: gas/forms/cash.py:675 gas/forms/cash.py:751 gas/forms/cash.py:957
 msgid "You must select the type of operation"
 msgstr "Devi selezionare il tipo di operazione"
 
-#: gas/forms/cash.py:676 gas/forms/cash.py:757 gas/forms/cash.py:958
+#: gas/forms/cash.py:679 gas/forms/cash.py:760 gas/forms/cash.py:961
 msgid "Reason of the movement"
 msgstr "Ragione di questo movimento"
 
-#: gas/forms/cash.py:677 gas/forms/cash.py:758 gas/forms/cash.py:959
+#: gas/forms/cash.py:680 gas/forms/cash.py:761 gas/forms/cash.py:962
 msgid "You must declare the causal of this transaction"
 msgstr "Devi dichiarare la causale di questo movimento"
 
-#: gas/forms/cash.py:681 gas/forms/cash.py:762 gas/forms/cash.py:963
+#: gas/forms/cash.py:684 gas/forms/cash.py:765 gas/forms/cash.py:966
 msgid "Adjust the operation date if necesary"
 msgstr ""
 
-#: gas/forms/cash.py:743
+#: gas/forms/cash.py:746
 msgid "Correction for supplier: +Supplier -GAS"
 msgstr ""
 
-#: gas/forms/cash.py:744
+#: gas/forms/cash.py:747
 msgid "Correction for GAS: +GAS -Supplier "
 msgstr ""
 
-#: gas/forms/cash.py:745
+#: gas/forms/cash.py:748
 msgid "Insolute"
 msgstr "Da pagare"
 
-#: gas/forms/cash.py:752
+#: gas/forms/cash.py:755
 msgid ""
 "If Target is Insolute you must select almost one order to pay in this "
 "operation."
 msgstr ""
 
-#: gas/forms/cash.py:947
+#: gas/forms/cash.py:950
 msgid "Correction for gasmember: +gasmember -GAS"
 msgstr ""
 
-#: gas/forms/cash.py:948
+#: gas/forms/cash.py:951
 msgid "Correction for GAS: +GAS -gasmember "
 msgstr ""
 
-#: gas/forms/cash.py:949
+#: gas/forms/cash.py:952
 msgid "Detraction for Gasmember: -gasmember "
 msgstr ""
 
-#: gas/forms/cash.py:950
+#: gas/forms/cash.py:953
 msgid "Addition for Gasmember: +gasmember "
 msgstr ""
 
-#: gas/forms/cash.py:951
+#: gas/forms/cash.py:954
 msgid "Restitution for gasmember: empty container +gasmember -GAS"
 msgstr ""
 
@@ -2069,6 +2077,10 @@ msgstr "Disponibilità"
 msgid "Ordered price"
 msgstr "Prezzo di ordine"
 
+#: rest/templates/blocks/stored_orders/table.xml:10
+msgid "Invoice"
+msgstr "Fattura"
+
 #: rest/templates/blocks/stored_orders/table.xml:11
 msgid "Gasmember's curtail sum"
 msgstr "Totale decurtazione gasista"
@@ -2414,12 +2426,12 @@ msgstr ""
 "alcun ordine"
 
 #: rest/views/blocks/order_invoice.py:30
-msgid "Invoice management"
-msgstr "Gestione della fattura"
+msgid "Actual total registration"
+msgstr "Registrazione importo reale"
 
 #: rest/views/blocks/order_invoice.py:46
-msgid "Invoice receipt"
-msgstr "Registrazione fattura"
+msgid "Register"
+msgstr "Registra"
 
 #: rest/views/blocks/order_invoice.py:77
 msgid "Error in invoice registration: "
@@ -2431,11 +2443,11 @@ msgstr "Report dell'ordine"
 
 #: rest/views/blocks/order_report.py:76
 msgid "Send email PDF me"
-msgstr ""
+msgstr "Inviami il PDF via mail"
 
 #: rest/views/blocks/order_report.py:85
 msgid "Send email PDF supplier"
-msgstr ""
+msgstr "Invia il PDF al fornitore"
 
 #: rest/views/blocks/pacts.py:17
 msgid "Solidal pacts"
@@ -2849,6 +2861,12 @@ msgstr "categoria"
 #, python-format
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
+
+#~ msgid "Invoice management"
+#~ msgstr "Gestione della fattura"
+
+#~ msgid "Invoice receipt"
+#~ msgstr "Registrazione fattura"
 
 #~ msgid "Default headquarter place must be set"
 #~ msgstr "Una sede di default deve essere impostata"

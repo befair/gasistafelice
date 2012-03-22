@@ -27,7 +27,7 @@ class Block(AbstractBlock):
 
     def __init__(self):
         super(Block, self).__init__()
-        self.description = _("Invoice management")
+        self.description = _("Actual total registration")
 
     def _get_user_actions(self, request):
 
@@ -43,7 +43,7 @@ class Block(AbstractBlock):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
-                        name=INCOME, verbose_name=_("Invoice receipt"),
+                        name=INCOME, verbose_name=_("Register"),
                         popup_form=False,
                     ),
                 ]

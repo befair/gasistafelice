@@ -3,7 +3,7 @@
 import os, sys
 
 from django import forms
-from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 
@@ -65,9 +65,9 @@ class EcoGASMemberForm(forms.Form):
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError as e:
-            raise forms.ValidationError(ug("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
+            raise forms.ValidationError(ugettext("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
         except GASMember.DoesNotExist:
-            raise forms.ValidationError(ug("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
+            raise forms.ValidationError(ugettext("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
 
         amounted = cleaned_data.get('amounted')
         enabled = cleaned_data.get('applied')
@@ -75,7 +75,7 @@ class EcoGASMemberForm(forms.Form):
         if enabled:
             log.debug("Curtail applied. Amounted = %s" % amounted)
             if amounted is None:
-                raise forms.ValidationError(ug("You have to write a number (even 0) for a curtail that you want to apply"))
+                raise forms.ValidationError(ugettext("You have to write a number (even 0) for a curtail that you want to apply"))
 
         return cleaned_data
 
@@ -87,13 +87,13 @@ class EcoGASMemberForm(forms.Form):
         #DT: if refs and request.user in refs:
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__order.gas)) and \
             not self.__loggedusr == self.__order.referrer_person.user:
-            raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (
                 self.__loggedusr, self.__order.current_state.name)
             )
-            raise PermissionDenied(ug("order is not in the right state!"))
+            raise PermissionDenied(ugettext("order is not in the right state!"))
 
         gm = self.cleaned_data['gasmember']
 
@@ -179,11 +179,11 @@ class NewEcoGASMemberForm(forms.Form):
         #Control logged user KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__order.gas)) and \
             not self.__loggedusr == self.__order.referrer_person.user:
-            raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug("PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug("order is not in good state!"))
+            raise PermissionDenied(ugettext("order is not in good state!"))
 
         #Do economic work
         gm = self.cleaned_data['gasmember']
@@ -195,7 +195,7 @@ class NewEcoGASMemberForm(forms.Form):
             log.debug("Save NewEcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
             amounted = abs(amounted)
             self.create_fake_purchaser(gm, amounted, 
-                note=ug("added by: %s") % self.__loggedusr
+                note=ugettext("added by: %s") % self.__loggedusr
             )
             refs = [gm, self.__order]
             gm.gas.accounting.withdraw_from_member_account(gm, amounted, refs, self.__order)
@@ -250,12 +250,12 @@ class EcoGASMemberRechargeForm(forms.Form):
             obj=ObjectWithContext(self.__gas)
         ):
 
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer, you cannot update GASMembers cash!"))
 
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
             log.debug(u"PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-            raise PermissionDenied(ug("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!"))
 
         # This kind of amount is ever POSITIVE!
         gm.person.accounting.do_recharge(self.__gas, recharged)
@@ -331,11 +331,11 @@ class EcoGASMemberFeeForm(forms.Form):
         #Control logged user
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer, you cannot update GASMembers cash!"))
 
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
-            raise PermissionDenied(ug("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!"))
 
         gm.person.accounting.pay_membership_fee(self.__gas, year)
 
@@ -355,8 +355,8 @@ EURO_LABEL = 'Eur.'  # € &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class InvoiceOrderForm(forms.Form):
 
-    amount = CurrencyField(label=_('Invoice'), required=True, max_digits=8, decimal_places=2,
-        error_messages={'required': _('You must insert an postive amount for the operation')}
+    amount = CurrencyField(label=_('Actual total'), required=True, max_digits=8, decimal_places=2,
+        error_messages={'required': _('You must insert an postive amount')}
     )
     note = forms.CharField(label=_('Note'), required=False, widget=forms.Textarea)
 
@@ -367,13 +367,16 @@ class InvoiceOrderForm(forms.Form):
         self.__order = request.resource.order
         if self.__order:
             #set order informations
-            stat = ("%(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            #WAS stat = ("%(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+            stat = ugettext("%(state)s - Expected: %(fam)s %(euro)s --> Actual: %(fatt)s %(euro)s --> Paid: %(eco)s %(euro)s") % {
                 'fam'    : "%.2f" % round(self.__order.tot_price, 2)
                 , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
                 , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
-                , 'state'  : self.__order.current_state.name
-            })
-            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+                , 'state': self.__order.current_state.name
+                , 'euro' : EURO_HTML
+            }
+            #WAS: why??!? self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+            self.fields['amount'].help_text = stat
 
 
             #set invoice data
@@ -397,7 +400,7 @@ class InvoiceOrderForm(forms.Form):
             cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
             cleaned_data['invoice_note'] = cleaned_data['note']
         except KeyError, e:
-            raise forms.ValidationError(ug("InvoiceOrderForm: cannot retrieve invoice data: ") + e.message)
+            raise forms.ValidationError(ugettext("InvoiceOrderForm: cannot retrieve invoice data: ") + e.message)
 
         return cleaned_data
 
@@ -413,11 +416,11 @@ class InvoiceOrderForm(forms.Form):
         #DT: if refs and request.user in refs:
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__order.gas)) and \
             not self.__loggedusr == self.__order.referrer_person.user:
-            raise PermissionDenied(ug("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer or the order's referrer, you cannot update GASMembers cash!"))
 
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug("order is not in good state!"))
+            raise PermissionDenied(ugettext("order is not in good state!"))
 
         self.__order.invoice_amount = self.cleaned_data['invoice_amount']
         self.__order.invoice_note = self.cleaned_data['invoice_note']
@@ -534,7 +537,7 @@ class InsoluteOrderForm(forms.Form):
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
         except KeyError, e:
-            raise forms.ValidationError(ug("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ugettext("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -547,11 +550,11 @@ class InsoluteOrderForm(forms.Form):
 
         #Control logged user
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot manage insolute order cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer, you cannot manage insolute order cash!"))
 
         if not self.__order.is_unpaid() and not self.__order.is_closed():
             log.debug(u"PermissionDenied %s Order not in state closed or unpaid (%s)" % (self.__loggedusr, self.__order.current_state.name))
-            raise PermissionDenied(ug("order is not in good state!"))
+            raise PermissionDenied(ugettext("order is not in good state!"))
 
         #cc_orders = cleaned_data.get("orders")
         yet_payed, descr, date_payed =self.__gas.accounting.get_supplier_order_data(self.__order)
@@ -699,10 +702,10 @@ class TransationGASForm(BalanceGASForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(ug("TransationGASForm: transaction require a causal explanation"))
+                raise forms.ValidationError(ugettext("TransationGASForm: transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(ug("TransationGASForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ugettext("TransationGASForm: cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -718,7 +721,7 @@ class TransationGASForm(BalanceGASForm):
 
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
-            raise PermissionDenied(ug("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!"))
+            raise PermissionDenied(ugettext("TransationGASForm: You are not a cash_referrer, you cannot do economic operation!"))
 
         self.__gas.accounting.extra_operation(
                 self.cleaned_data['economic_amount'],
@@ -835,14 +838,14 @@ class TransationPACTForm(BalanceForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(ug("TransationPACTForm: transaction require a causal explanation"))
+                raise forms.ValidationError(ugettext("TransationPACTForm: transaction require a causal explanation"))
             if cleaned_data['economic_target'] == INVOICE_COLLECTION:
                 cleaned_data['economic_orders'] = cleaned_data['orders']
                 if not cleaned_data['economic_orders'] or len(cleaned_data['economic_orders']) <= 0:
-                    self._errors["orders"] = self.error_class([ug("Insolute transaction require almost one order to be payed")])
+                    self._errors["orders"] = self.error_class([ugettext("Insolute transaction require almost one order to be payed")])
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(ug("TransationPACTForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ugettext("TransationPACTForm: cannot retrieve economic data: ") + e.message)
 
 #        try:
 #            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
@@ -850,7 +853,7 @@ class TransationPACTForm(BalanceForm):
 #            #ok
 #            pass
 #        else:
-#            raise ValidationError(ug("Pact between this GAS and this Supplier already exists"))
+#            raise ValidationError(ugettext("Pact between this GAS and this Supplier already exists"))
 
         return cleaned_data
 
@@ -866,7 +869,7 @@ class TransationPACTForm(BalanceForm):
 
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot do economic operation!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer, you cannot do economic operation!"))
 
         if self.cleaned_data['economic_target'] == INVOICE_COLLECTION:
             #Pay Insolute
@@ -922,14 +925,14 @@ def pay_insolutes(gas, pact, amount, insolutes, descr, date):
                 log.debug("Finished gas.accounting.pay_supplier_order")
             except ValueError, e:
                 #log.debug("retry later " + e.message)
-                raise forms.ValidationError(ug("error while saving insolute economic data: ") + e.message)
+                raise forms.ValidationError(ugettext("error while saving insolute economic data: ") + e.message)
             else:
                 #log.debug("Insolute(%s) saved " % len(refs))
                 for _order in refs:
                     #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
                     _order.control_economic_state()
         else:
-            raise forms.ValidationError(ug("cannot retrieve economic orders"))
+            raise forms.ValidationError(ugettext("cannot retrieve economic orders"))
 
 #-------------------------------------------------------------------------------
 
@@ -982,10 +985,10 @@ class TransationGMForm(BalanceForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(ug("TransationGMForm: transaction require a causal explanation"))
+                raise forms.ValidationError(ugettext("TransationGMForm: transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(ug("TransationGMForm: cannot retrieve economic data: ") + e.message)
+            raise forms.ValidationError(ugettext("TransationGMForm: cannot retrieve economic data: ") + e.message)
 
 #LF        # MEMBERS
 #LF        gms = request.resource.gasmembers
@@ -1002,7 +1005,7 @@ class TransationGMForm(BalanceForm):
             return
 
         if not self.__loggedusr.has_perm(CASH, obj=ObjectWithContext(self.__gas)):
-            raise PermissionDenied(ug("You are not a cash_referrer, you cannot do economic operation!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer, you cannot do economic operation!"))
 
         self.__gm.person.accounting.extra_operation(
                 self.__gas,
