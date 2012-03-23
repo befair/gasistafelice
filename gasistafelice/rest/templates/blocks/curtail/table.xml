@@ -4,8 +4,8 @@
 {% block headers %}
     <th>{% trans "Id" %}</th>
     <th>{% trans "GASMember" %}</th>
-    <th title='{% trans "Expected cash amount to deduct" %}'>{% trans "Expected curtail" %}</th>
-    <th title='{% trans "Actual amounted to withdraw" %}'>{% trans "Actual curtail" %}</th>
+    <th title='{% trans "Expected cash amount in the order report" %}'>{% trans "Expected curtail" %}</th>
+    <th title='{% trans "Actual amount to curtail basing on withdrawn products" %}'>{% trans "Actual curtail" %}</th>
     <th title='{% trans "Apply" %}' class="tacenter"><input type="checkbox" onclick="checkall(this);"></input></th>
 {% endblock %}
 
