@@ -1528,7 +1528,7 @@
         function load_configuration()
         {
             var url_settings = '{% url rest.views.site_settings %}';
-            
+
             $.ajax({
                 dataType:'text',
                 url: url_settings,
@@ -1552,6 +1552,10 @@
                             var value = $(this).attr('value');
                             jQuery.labsglobals[name] = value;
                         });
+                        if(jQuery.labsglobals['isdbghost'].indexOf(':8000') > 0)
+                            //alert ('jQuery.labsglobals[isdbghost]' + jQuery.labsglobals['isdbghost']);
+                            $('#container').addClass("dbg");
+                            $('#body_content').addClass("dbg");   //section_tabs
 
                         if(jQuery.labsglobals['debug']== 'False')
                             $('#debug_info').hide();

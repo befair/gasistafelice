@@ -65,7 +65,9 @@ def site_settings(request):
         'site_id'              : site.pk,
         'site_name'            : unicode(site),
         'isdebug'              : settings.DEBUG,
+        'isdbghost'            : request.get_host(),
     }
+#WAS        'isdbghost'            : string.find(request.get_host(), ":"),
     return render_to_xml_response("settings.xml", ctx)
 
 #---------------------------------------------------------------------#
