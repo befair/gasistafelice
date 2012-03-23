@@ -1,18 +1,18 @@
 
 TODO:
 
-* SE validata implementazione economica ordine s/order_invoice/order_registration (nome blocco)
-* Evidenziare SITO DI TEST :8000
-* Aggiungi famiglia: bug se passa in automatico a "insoluto".
+* DOMINIQUE: sostituire /order_invoice/order_registration (nome blocco, nome file)
+* DOMINIQUE: cambiare colore di sfondo per evidenziare SITO DI TEST :8000
+* FERO: Aggiungi famiglia: bug se passa in automatico a "insoluto".
 * Aggiungi famiglia: bug di visualizzazione "totale previsto" (aumenta)
 * Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
  - ricarica gasista va bene solo per saldi positivi
 * Da Lucia Provincia di MC: problema di visualizzare il saldo solo al gasista e referente contabile
  - o altre persone minime necessarie. Per evitare imbarazzo
-* Vari blocchi di operazioni di transazioni arbitrarie non funzionano
+* DOMINIQUE: Vari blocchi di operazioni di transazioni arbitrarie non funzionano
 * VERIFICARE: admin e referente fornitore devono poter modificare gli ordini fatti dai gasisti
 
-* AAAA: CONSULTARE: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
+* CONSULTATO DOMINIQUE: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
 che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.
 
 
