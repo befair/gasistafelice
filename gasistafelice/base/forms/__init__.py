@@ -92,10 +92,11 @@ class EditPersonForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = (
-            'name', 'surname', 'contact_set', 'address'
+            'name', 'surname', 'contact_set', 'address', 'user'
         )
         gf_fieldsets = [(None, { 
             'fields' : (
                 ('name', 'surname'),  
-                'address', 'contact_set'),  
+                'address', 'contact_set',
+                'user'),  
         })]

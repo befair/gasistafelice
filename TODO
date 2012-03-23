@@ -1,16 +1,33 @@
 
 TODO:
 
-* DOMINIQUE: ordini.desmacerata.it: scheda "admin" non appare al superuser e referenti informatici
-* Creazione utente da "aggiungi gasista" non mette in "User" email, nome, cognome
+* SE validata implementazione economica ordine s/order_invoice/order_registration (nome blocco)
 * Evidenziare SITO DI TEST :8000
-* Decurtazione gasisti --> chiudi a parità di importo fattura
-* DOMINIQUE: Data di consegna impostata anche se non impostata
+* Aggiungi famiglia: bug se passa in automatico a "insoluto".
+* Aggiungi famiglia: bug di visualizzazione "totale previsto" (aumenta)
+* Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
+ - ricarica gasista va bene solo per saldi positivi
+* Da Lucia Provincia di MC: problema di visualizzare il saldo solo al gasista e referente contabile
+ - o altre persone minime necessarie. Per evitare imbarazzo
+* Vari blocchi di operazioni di transazioni arbitrarie non funzionano
+* VERIFICARE: admin e referente fornitore devono poter modificare gli ordini fatti dai gasisti
+
+* AAAA: CONSULTARE: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
+che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.
+
+
+
+NOTA: sembra che i dati attuali siano prezzi senza IVA, almeno Gironelli....
 
 Da verificare:
 
 * Elimina PrincipalParamRole su eliminazione di un oggetto (Fornitore, oppure Patto, o GAS)
 
+DONE: 
+
+* Creazione utente da "aggiungi gasista" non mette in "User" email, nome, cognome
+* DOMINIQUE: ordini.desmacerata.it: scheda "admin" non appare al superuser e referenti informatici
+* DOMINIQUE: Data di consegna impostata anche se non impostata
 
 TODO 0.8
 --------

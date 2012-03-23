@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 class Block(BlockSSDataTables):
 
     BLOCK_NAME = "curtail"
-    BLOCK_DESCRIPTION = _("Curtail purchaser")
+    BLOCK_DESCRIPTION = _("Curtail gasmember")
     BLOCK_VALID_RESOURCE_TYPES = ["order"] 
 
     COLUMN_INDEX_NAME_MAP = {

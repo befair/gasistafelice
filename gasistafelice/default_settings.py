@@ -317,9 +317,13 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Ordine',
         'blocks': ['order_details', 'order_report']
     },{ 
-        'name' : 'delivery',
+        'name' : 'registration',
+        'descr': 'Registrazione',
+        'blocks': ['order_invoice', 'curtail']
+    },{ 
+        'name' : 'pay',
         'descr': 'Pagamento',
-        'blocks': ['order_invoice', 'curtail', 'order_insolute']
+        'blocks': ['order_insolute']
     }],
 
     'person' : [{
