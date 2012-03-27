@@ -280,7 +280,7 @@ def add_time(_date):
         now = datetime.datetime.now()
         t = now.time()
     else:
-        t = datetime.datetime.time(0,0)
+        t = datetime.datetime.min.time()   #time(0,0)
     return datetime.datetime.combine(_date, t)
 
 class EcoGASMemberFeeForm(forms.Form):
