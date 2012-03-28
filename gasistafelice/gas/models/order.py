@@ -684,10 +684,6 @@ WHERE order_id = %s \
         return self.gasstock_set.all()
 
     @property
-    def gas(self):
-        return self.pact.gas
-
-    @property
     def gasmembers(self):
         return self.gas.gasmembers
 
@@ -1202,6 +1198,10 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         return self.order.pact
 
     @property
+    def des(self):
+        return self.order.des
+
+    @property
     def gas(self):
         return self.order.pact.gas
 
@@ -1281,7 +1281,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         return user in allowed_users 
 
     def can_delegate(self, user):
-        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
+        allowed_users = self.des.referrers | self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
         #WAS self.pact.gas_supplier_referrers  -->  self.pact.referrers
         return user in allowed_users
 
@@ -1361,6 +1361,10 @@ class GASMemberOrder(models.Model, PermissionResource):
     def order(self):
         """GASSupplierOrder this GASMemberOrder belongs to."""
         return self.ordered_product.order
+
+    @property
+    def des(self):
+        return self.order.des
 
     @property
     def gas(self):
@@ -1446,7 +1450,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         return user in allowed_users
     
     def can_delegate(self, user):
-        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
+        allowed_users = self.des.referrers | self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
         return user in allowed_users
 
     #---------------------------------------------------#
