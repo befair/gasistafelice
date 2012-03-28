@@ -1594,6 +1594,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # retrieve all Users having this role
         return pr.get_users()    
 
+    #FIXME: remove when this property is subsituted by referrers_people's property in all part of the application
+    @property
+    def supplier_referrers_people(self):
+        return self.referrers_people
+ 
     @property
     def referrers_people(self):
         prs = Person.objects.none()
