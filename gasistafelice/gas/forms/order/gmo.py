@@ -47,7 +47,9 @@ class BaseGASMemberOrderForm(forms.Form):
             if id:
                 gmo = GASMemberOrder.objects.get(pk=id)
                 if gmo.ordered_amount != self.cleaned_data.get('ordered_amount'): 
-                    if not self._loggedusr == gmo.order.referrer_person.user:
+                    #if not self._loggedusr == gmo.order.referrer_person.user:
+                    if not gmo.can_delegate(self._loggedusr):
+
                         log.debug(u"---- %s (%s) BASE VALIDATION not enabled for %s" % (
                             self.__class__.__name__,
                             self._gmusr, self._loggedusr
@@ -83,14 +85,28 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
                 gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
                 gmo.note = self.cleaned_data.get('note')
 
-                if self._gmusr != self._loggedusr and self._loggedusr == gmo.order.referrer_person.user:
-                    log.debug(u"---- %s (%s) DELEGATE UPDATE for %s" % (
-                        self.__class__.__name__,
-                        self._gmusr, self._loggedusr
-                    ))
-                    delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
-                    if gmo.note.find(delegate) == -1:
-                        gmo.note = delegate + gmo.note
+                if self._gmusr != self._loggedusr:
+                    #if self._loggedusr == gmo.order.referrer_person.user:
+                    if gmo.can_delegate(self._loggedusr):
+                        log.debug(u"---- %s (%s) DELEGATE UPDATE for %s" % (
+                            self.__class__.__name__,
+                            self._gmusr, self._loggedusr
+                        ))
+                        delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
+                        if gmo.note.find(delegate) == -1:
+                            gmo.note = delegate + gmo.note
+                    else:
+                        log.debug(u"---- %s (%s) DELEGATE UPDATE not enabled for %s" % (
+                            self.__class__.__name__,
+                            self._gmusr, self._loggedusr
+                        ))
+                        raise forms.ValidationError(
+                            _(u"You %(logged)s are not authorized to update an order for %(person)s") % {
+                                'logged' : u"(%s)" % self._loggedusr, 
+                                'person' :self._gmusr
+                        })
+                        return;
+
                 if gmo.ordered_amount == 0:
                     log.debug(u"REMOVING GASMemberOrder (%s) from amount widget (+ -)" % gmo.pk)
                     gmo.delete()
@@ -103,14 +119,28 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
             elif self.cleaned_data.get('ordered_amount'):
                     gsop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gsop_id'))
                     note = self.cleaned_data.get('note')
-                    if self._gmusr != self._loggedusr and self._loggedusr == gsop.order.referrer_person.user:
-                        log.debug(u"---- %s (%s) DELEGATE CREATE for %s" % (
-                            self.__class__.__name__,
-                            self._gmusr, self._loggedusr
-                        ))
-                        delegate = _("[ord by %s] ") % gsop.order.referrer_person.report_name
-                        if note.find(delegate) == -1:
-                            note = delegate + note
+                    #if self._gmusr != self._loggedusr and self._loggedusr == gsop.order.referrer_person.user:
+                    if self._gmusr != self._loggedusr:
+                        if gsop.can_delegate(self._loggedusr):
+                            log.debug(u"---- %s (%s) DELEGATE CREATE for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                            #delegate = _("[ord by %s] ") % gsop.order.referrer_person.report_name
+                            delegate = _("[ord by %s] ") % self._loggedusr
+                            if note.find(delegate) == -1:
+                                note = delegate + note
+                        else:
+                            log.debug(u"---- %s (%s) DELEGATE CREATE not enabled for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                            raise forms.ValidationError(
+                                _(u"You %(logged)s are not authorized to create an order for %(person)s") % {
+                                    'logged' : u"(%s)" % self._loggedusr, 
+                                    'person' :self._gmusr
+                            })
+                            return;
 
                     # INTEGRITY NOTE: Ensure no duplicate entry into database is done 
                     # into GASMemberOrder Model with set unique_together
@@ -157,25 +187,28 @@ class BasketGASMemberOrderForm(BaseGASMemberOrderForm):
                 #On basket do nothing if no change needed
                 if gmo.ordered_amount != self.cleaned_data.get('ordered_amount') or enabled: 
 
-                    if not self._loggedusr == gmo.order.referrer_person.user:
-                        log.debug(u"---- %s (%s) BASKET EXECUTING not enabled for %s" % (
-                            self.__class__.__name__,
-                            self._gmusr, self._loggedusr
-                        ))
-                        raise forms.ValidationError(
-                            _(u"You %(logged)s are not authorized to make an order for %(person)s") % {
-                                'logged' : u"(%s)" % self._loggedusr, 
-                                'person' :self._gmusr
-                        })
-                        return;
-                    else:
-                        delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
-                        if gmo.note.find(delegate) == -1:
-                            gmo.note = delegate + gmo.note
-                        log.debug(u"---- %s (%s) DELEGATE change BASKET for %s" % (
-                            self.__class__.__name__,
-                            self._gmusr, self._loggedusr
-                        ))
+                    if self._gmusr != self._loggedusr:
+                        #if self._loggedusr == gmo.order.referrer_person.user:
+                        if gmo.can_delegate(self._loggedusr):
+                            #delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
+                            delegate = _("[ord by %s] ") % self._loggedusr
+                            if gmo.note.find(delegate) == -1:
+                                gmo.note = delegate + gmo.note
+                            log.debug(u"---- %s (%s) DELEGATE BASKET for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                        else:
+                            log.debug(u"---- %s (%s) DELEGATE BASKET not enabled for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                            raise forms.ValidationError(
+                                _(u"You %(logged)s are not authorized to modify order's basket for %(person)s") % {
+                                    'logged' : u"(%s)" % self._loggedusr, 
+                                    'person' :self._gmusr
+                            })
+                            return;
                 
                     gmo.ordered_price = self.cleaned_data.get('ordered_price')
                     gmo.ordered_amount = self.cleaned_data.get('ordered_amount')

@@ -395,8 +395,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
             pact_refs = self.pact.gas.referrers
 
         #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
-        if self.referrer_person:
+        if self.referrer_person and self.referrer_person.user:
             pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
+        #WAS self.referrer_person.user
         return pact_refs
 
     @property
@@ -936,7 +937,7 @@ WHERE order_id = %s \
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators  
-        allowed_users = self.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.referrers | self.gas.tech_referrers | self.pact.referrers   
         return user in allowed_users 
     
     #-----------------------------------------------#
@@ -1256,7 +1257,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # * GAS administrators        
         try:
             order = context['order']
-            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.referrers
             return user in allowed_users
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
@@ -1267,7 +1268,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators        
-        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
         return user in allowed_users
     
     # Row-level DELETE permission
@@ -1276,8 +1277,14 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against
         # * GAS administrators    
-        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers        
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.referrers           
         return user in allowed_users 
+
+    def can_delegate(self, user):
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
+        #WAS self.pact.gas_supplier_referrers  -->  self.pact.referrers
+        return user in allowed_users
+
 
 
 class GASMemberOrder(models.Model, PermissionResource):
@@ -1360,6 +1367,11 @@ class GASMemberOrder(models.Model, PermissionResource):
         """Which GAS this order belongs"""
         return self.purchaser.gas
 
+    @property
+    def pact(self):
+        """GASSupplierOrderPact this GASMemberOrder belongs to."""
+        return self.ordered_product.order.pact
+
     # Workflow management
 
     @property
@@ -1420,7 +1432,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
         return user in allowed_users
     
     # Row-level DELETE permission
@@ -1430,9 +1442,13 @@ class GASMemberOrder(models.Model, PermissionResource):
         # * order referrers (if any)
         # * referrers for the pact the order is placed against 
         # * GAS administrators                
-        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.gas_supplier_referrers
+        allowed_users = self.purchaser | self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
         return user in allowed_users
     
+    def can_delegate(self, user):
+        allowed_users = self.order.referrers | self.gas.tech_referrers | self.pact.referrers   
+        return user in allowed_users
+
     #---------------------------------------------------#
      
 
@@ -1577,7 +1593,8 @@ class Delivery(Appointment, PermissionResource):
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
-            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.referrers
+        #WAS order.pact.gas_supplier_referrers  -->  order.pact.referrers                 
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
@@ -1602,7 +1619,7 @@ class Delivery(Appointment, PermissionResource):
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
-            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.referrers                    
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
@@ -1734,7 +1751,7 @@ class Withdrawal(Appointment, PermissionResource):
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
-            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.referrers                    
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
@@ -1759,7 +1776,7 @@ class Withdrawal(Appointment, PermissionResource):
         associated_orders = self.order_set.all()  
         if len(associated_orders) == 1:
             order = associated_orders[0] 
-            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.gas_supplier_referrers                    
+            allowed_users = order.referrers | order.gas.tech_referrers | order.pact.referrers                    
         elif len(self.gas_list) == 1:
             gas = self.gas_list[0]
             allowed_users = gas.tech_referrers
