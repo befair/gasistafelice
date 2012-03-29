@@ -401,11 +401,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
             order_refs = self.pact.gas.referrers
 
         # FIXME: 'NoneType' object has no attribute 'user'. 
-        # COMMENT: Cannot be real for any kind of referrer. But model permitted
-        # TO FIX: write validator `hasattr_user` for `referrer_*` fields.
+        # COMMENT: Cannot be real for any kind of referrer. But model permits this.
+        # TO FIX: write validator `attr_user_is_set` for `referrer_*` fields (in base/validators.py).
         # QUESTION: are we sure that this is a FIXME? In this case, would it be simpler
         # to perform this check as you have done here, and let users specify
         # a person as an order referrer even if it is not a user in the system ?
+        # ANSWER: discussed even with Orlando. No-sense here informational person.
+        # So Matteo will apply "TO FIX" up here.
         if self.referrer_person and self.referrer_person.user:
             order_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
 
