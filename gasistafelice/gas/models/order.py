@@ -385,20 +385,31 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def referrers(self):
         """Return all users being referrers for this order.
 
-        Thus, referrer for order pact, if not take all gas referrers
-        GAS teorie doesn't accept that one person is referrer for one person 
-        but intend to turn the referrer work bettwen several persons.
-        In the GAS you have one communicative referrer in order to centralize information
-        """
-        pact_refs = self.pact.referrers
-        if not pact_refs:
-            pact_refs = self.pact.gas.referrers
+        Referrers for a pact include people bound to the specific path,
+        or, if not specified, all gas referrers.
 
-        #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
+        This way we can manage two cases:
+        * Pacts that have specific operators
+        * Pacts who inherits operators from GAS and so involve all gas referrers
+
+        Remember that in Gasista Felice referrer == operator
+        (and info_people is for communicative referrers)
+        """
+
+        order_refs = self.pact.referrers
+        if not order_refs:
+            order_refs = self.pact.gas.referrers
+
+        # FIXME: 'NoneType' object has no attribute 'user'. 
+        # COMMENT: Cannot be real for any kind of referrer. But model permitted
+        # TO FIX: write validator `hasattr_user` for `referrer_*` fields.
+        # QUESTION: are we sure that this is a FIXME? In this case, would it be simpler
+        # to perform this check as you have done here, and let users specify
+        # a person as an order referrer even if it is not a user in the system ?
         if self.referrer_person and self.referrer_person.user:
-            pact_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
-        #WAS self.referrer_person.user
-        return pact_refs
+            order_refs |= User.objects.filter(pk=self.referrer_person.user.pk)
+
+        return order_refs
 
     @property
     def supplier_referrers_people(self):
