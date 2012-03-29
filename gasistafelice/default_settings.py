@@ -320,10 +320,10 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'registration',
         'descr': 'Registrazione',
         'blocks': ['order_invoice', 'curtail']
-    },{ 
-        'name' : 'pay',
-        'descr': 'Pagamento',
-        'blocks': ['order_insolute']
+#    },{ 
+#        'name' : 'pay',
+#        'descr': 'Pagamento',
+#        'blocks': ['order_insolute']
     }],
 
     'person' : [{
