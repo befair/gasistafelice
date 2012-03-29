@@ -13,6 +13,8 @@ TODO:
 * VERIFICARE: admin e referente fornitore devono poter modificare gli ordini fatti dai gasisti
 * MATTEO: validator attr_user_is_set. 
 * MATTEO: nascondere nella form di modifica ordine l'opzione "referente" se singolo referente per un patto
+* FERO: definire un modo coerente di rappresentazione ordine (forma estesa, forma ridotta)
+* DOMINIQUE: applicare il modo coerente di rappresentazione ordine
 
 * CONSULTATO DOMINIQUE: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
 che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.

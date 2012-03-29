@@ -84,7 +84,7 @@ class Supplier(models.Model, PermissionResource):
         if self.frontman:
             return self.frontman.report_name
         else:
-            return ugettext("unset")
+            return ugettext("frontman: unset")
 
     @property
     def report_name(self):
