@@ -41,6 +41,14 @@ class Block(BlockSSDataTables):
 #WAS        3: 'transaction__source',
 #WAS        3: 'transaction__kind', --> FIXME: In case of translation the search does not operate correctly
 
+    def __init__(self, *args, **kw):
+        
+        super(Block, self).__init__(*args, **kw)
+        
+        # Default start closed. Mainly for GAS -> Accounting tab ("Conto")
+        self.start_open   = False
+
+
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions
         return request.resource.economic_movements

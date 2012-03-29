@@ -40,6 +40,13 @@ class Block(BlockSSDataTables):
     }
 #        2: 'last_fee',
 
+    def __init__(self, *args, **kw):
+        
+        super(Block, self).__init__(*args, **kw)
+        
+        # Default start closed. Mainly for GAS -> Accounting tab ("Conto")
+        self.start_open   = False
+
     def _get_user_actions(self, request):
   
         user_actions = []
