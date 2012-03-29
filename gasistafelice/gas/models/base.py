@@ -777,6 +777,9 @@ class GASMember(models.Model, PermissionResource):
     )
         #display.Resource(name="person", verbose_name=_("Person")),
 
+    #FUTURE TODO: display_fields should be DisplayField classes with properties is_confidential
+    confidential_fields = ('economic_state',) 
+
     class Meta:
         verbose_name = _('GAS member')
         verbose_name_plural = _('GAS members')
@@ -1082,6 +1085,9 @@ class GASMember(models.Model, PermissionResource):
         # * tech referrers for that GAS
         allowed_users = self.gas.tech_referrers  
         return user in allowed_users
+
+    def can_view_confidential(self, user, context):
+        return user == self.person.user
 
     #--------------------------#
 

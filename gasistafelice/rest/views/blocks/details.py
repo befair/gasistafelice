@@ -35,7 +35,7 @@ from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.base.workflows_utils import get_allowed_transitions, do_transition
 
-from gasistafelice.consts import EDIT
+from gasistafelice.consts import EDIT, VIEW_CONFIDENTIAL
 
 # Roles form: dynamic use in manage_roles
 from gasistafelice.gas.forms.base import GASRoleForm
@@ -364,6 +364,16 @@ class Block(AbstractBlock):
                 element_type = 'none'
                 element_value = ''
             
+
+            if (display_field.name in self.resource.confidential_fields) and \
+                not self.request.user.has_perm(
+                    VIEW_CONFIDENTIAL, 
+                    obj=ObjectWithContext(self.request.resource)
+                ):
+
+                element_value = _("confidential data")
+                
+                    
             info_element = {
                 "name"  : display_field.name,
                 "text"  : display_field.verbose_name,

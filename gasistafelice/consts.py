@@ -20,6 +20,7 @@ ALL = 'all' # catchall
 EDIT_MULTIPLE = 'edit_multiple'
 CONFIRM = 'confirm'
 CASH = 'cash'
+VIEW_CONFIDENTIAL = 'view_confidential'
 
 ## accounting-related constants
 NONDES_NAME = 'NonDES'

@@ -2,8 +2,6 @@
 TODO:
 
 * DOMINIQUE: sostituire /order_invoice/order_registration (nome blocco, nome file)
-* FERO: Da Lucia Provincia di MC: problema di visualizzare il saldo solo al gasista e referente contabile
- - o altre persone minime necessarie. Per evitare imbarazzo
 * Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
  - ricarica gasista va bene solo per saldi positivi
 * DOMINIQUE: Vari blocchi di operazioni di transazioni arbitrarie non funzionano
@@ -30,6 +28,8 @@ DONE:
 * DOMINIQUE: cambiare colore di sfondo per evidenziare SITO DI TEST :8000
 * FERO: Aggiungi famiglia: bug se passa in automatico a "insoluto".
 * FERO: Aggiungi famiglia: bug di visualizzazione "totale previsto" (aumenta)
+* FERO: Da Lucia Provincia di MC: problema di visualizzare il saldo solo al gasista e referente contabile
+ - o altre persone minime necessarie. Per evitare imbarazzo
 
 TODO 0.8
 --------

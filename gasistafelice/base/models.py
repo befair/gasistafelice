@@ -51,6 +51,9 @@ class Resource(object):
      * how the resource relates to other resources
     """
 
+    # Attribute used to make a list of confidential lists
+    confidential_fields = ()
+
     # Attribute used to cache data
     volatile_fields = []
 
@@ -512,6 +515,7 @@ class Resource(object):
         """
         acc_tot = self.person.accounting.system['/wallet'].balance
         return acc_tot
+
 
 
 #------------------------------------------------------------------------------
