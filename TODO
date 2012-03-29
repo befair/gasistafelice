@@ -6,13 +6,12 @@ TODO:
  - ricarica gasista va bene solo per saldi positivi
 * DOMINIQUE: Vari blocchi di operazioni di transazioni arbitrarie non funzionano
 * MATTEO: validator attr_user_is_set. 
-* MATTEO: nascondere nella form di modifica ordine l'opzione "referente" se singolo referente per un patto
-* FERO: definire un modo coerente di rappresentazione ordine (forma estesa, forma ridotta)
+
+* FERO: nascondere nella form di modifica ordine l'opzione "referente" se singolo referente per un patto.
+  AAA NECESSARIO FARE UN SELECT A CASCATA: seleziono patto --> seleziono referente.
+
+* FERO: definire una coerente rappresentazione dell'ordine (forma estesa, forma ridotta)
 * DOMINIQUE: applicare il modo coerente di rappresentazione ordine
-
-* CONSULTATO DOMINIQUE: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
-che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.
-
 
 
 NOTA: sembra che i dati attuali siano prezzi senza IVA, almeno Gironelli....
@@ -30,6 +29,8 @@ DONE:
 * FERO: Aggiungi famiglia: bug di visualizzazione "totale previsto" (aumenta)
 * FERO: Da Lucia Provincia di MC: problema di visualizzare il saldo solo al gasista e referente contabile
  - o altre persone minime necessarie. Per evitare imbarazzo
+* FERO: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
+che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.
 
 TODO 0.8
 --------

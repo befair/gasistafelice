@@ -1,3 +1,10 @@
+29.03.2012 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.8.8
+    * NEWS
+        * Nascoste informazioni confidenziali sul saldo
+        * Fix parte economica per decurtazione e ottimizzazioni
+        
 23.03.2012 Luca Ferroni <luca@befair.it>
 
     * Versione 0.8.4
