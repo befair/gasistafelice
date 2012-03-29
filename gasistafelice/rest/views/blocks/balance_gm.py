@@ -7,7 +7,7 @@ from django.db import transaction
 from flexi_auth.models import ObjectWithContext
 
 from gasistafelice.lib.shortcuts import render_to_xml_response
-from gasistafelice.consts import CASH, INCOME, VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_TEXT
+from gasistafelice.consts import CASH, INCOME, VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.gas.forms.cash import BalanceForm, TransationGMForm
@@ -67,7 +67,7 @@ class Block(AbstractBlock):
                 form = BalanceForm(request)
             else:
                 form = None
-                extra_html = "<i>" + CONFIDENTIAL_VERBOSE_TEXT + "</i>"
+                extra_html = CONFIDENTIAL_VERBOSE_HTML
 
         ctx = {
             'resource'      : res,

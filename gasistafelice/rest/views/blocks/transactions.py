@@ -1,7 +1,11 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.http import HttpResponse
+
+from flexi_auth.models import ObjectWithContext
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables
+from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
 
 
 #from simple_accounting.models import economic_subject, AccountingDescriptor
@@ -40,6 +44,22 @@ class Block(BlockSSDataTables):
     def _get_resource_list(self, request):
         #Accounting.LedgerEntry  or Transactions
         return request.resource.economic_movements
+
+    def get_response(self, request, resource_type, resource_id, args):
+        """Check for confidential access permission and call superclass if needed"""
+
+        if resource_type == "gasmember":
+
+            if not request.user.has_perm(
+                VIEW_CONFIDENTIAL, obj=ObjectWithContext(request.resource)
+            ): 
+
+                return render_to_xml_response(
+                    "blocks/table_html_message.xml", 
+                    { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
+                )
+
+        return super(Block, self).get_response(request, resource_type, resource_id, args)
 
 
 #TODO: Filter grid by
