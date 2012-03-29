@@ -19,7 +19,7 @@
             {% block footer %} {% endblock %}
         </tfoot>
 		</table>
-		{% block extra_html_content %} {% endblock %}
+		{% block extra_html_content %} {{ extra_html|safe }}{% endblock %}
 
 	</content>
     

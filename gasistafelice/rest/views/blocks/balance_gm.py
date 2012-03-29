@@ -7,7 +7,7 @@ from django.db import transaction
 from flexi_auth.models import ObjectWithContext
 
 from gasistafelice.lib.shortcuts import render_to_xml_response
-from gasistafelice.consts import CASH, INCOME
+from gasistafelice.consts import CASH, INCOME, VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_TEXT
 from gasistafelice.rest.views.blocks.base import ResourceBlockAction
 from gasistafelice.rest.views.blocks import AbstractBlock
 from gasistafelice.gas.forms.cash import BalanceForm, TransationGMForm
@@ -42,6 +42,7 @@ class Block(AbstractBlock):
         super(Block, self).get_response(request, resource_type, resource_id, args)
         res = self.resource
         gas = res.gas
+        extra_html = None
         if args == "INCOME":
             if request.method == 'POST':
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
@@ -60,13 +61,19 @@ class Block(AbstractBlock):
         else:
             if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
                 form = TransationGMForm(request)
-            else:
+            elif request.user.has_perm(
+                VIEW_CONFIDENTIAL, obj=ObjectWithContext(res)
+            ): 
                 form = BalanceForm(request)
+            else:
+                form = None
+                extra_html = "<i>" + CONFIDENTIAL_VERBOSE_TEXT + "</i>"
 
         ctx = {
             'resource'      : res,
             'sanet_urn'     : "%s/%s" % (resource_type, resource_id),
             'form'          : form,
             'user_actions'  : self._get_user_actions(request),
+            'extra_html' : extra_html,
         }
         return render_to_xml_response('blocks/balance_gm.xml', ctx)
