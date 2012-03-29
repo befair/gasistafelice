@@ -804,10 +804,26 @@ WHERE order_id = %s \
             return
 
         purchasers = self.purchasers
-        log.debug("Order purchasers(%s) %s " % (purchasers.count(), purchasers))
+        c_purch = purchasers.count()
+        l_accounted = len(accounted_amounts)
 
-        if purchasers.count() > len(accounted_amounts):
+        log.debug("Order purchasers(%s) %s " % (c_purch, purchasers))
+
+        if c_purch > l_accounted:
+            # LF: leave this check here, is faster than the next "fine tune check"
             return
+        else:
+            #LF: we have to check "number of accounted amounts among purchasers"
+            #LF: in fact there may be new added families that need the following check.
+            #LF: keep in mind that if a gasmember places an order, 
+            #LF: there must be a transaction even if it is of 0 cash amount
+
+            n_added_families = 0
+            for gm in accounted_amounts:
+                if gm not in purchasers:
+                    n_added_families += 1
+                    if c_purch > (l_accounted - n_added_families):
+                        return
 
         # 3/3 control accounting payment to supplier
         tx = self.gas.accounting.get_supplier_order_transaction(self)
