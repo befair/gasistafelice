@@ -164,7 +164,8 @@ class NewEcoGASMemberForm(forms.Form):
             withdrawn_amount = 9999,
             is_confirmed = True,
             note = "[NEW FAM] %s" % note,
-            ordered_price = price,
+            #LF: ordered_price should be 0, otherwise expected amount will vary
+            ordered_price = 0,
             purchaser = purchaser
         )
 

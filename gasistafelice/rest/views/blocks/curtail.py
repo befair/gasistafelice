@@ -99,6 +99,10 @@ class Block(BlockSSDataTables):
                     break
             gasmembers.add(gasmember)
 
+            #log.debug("op = %s, sum = %s, acc= %s" % (
+            #    order.ordered_products.filter(purchaser=gasmember), 
+            #    gasmember.sum_amount, gasmember.accounted_amount)
+            #)
         return gasmembers
 
         #q_sql = request.resource.ordered_gasmembers_sql
