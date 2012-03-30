@@ -30,6 +30,7 @@ from gasistafelice.gas.managers import AppointmentManager, OrderManager
 from gasistafelice.gas import signals
 from gasistafelice.base.models import Person
 from gasistafelice.consts import *
+from gasistafelice.consts import FAKE_WITHDRAWN_AMOUNT
 from gasistafelice.gas.workflow_data import STATUS_PREPARED, STATUS_OPEN
 from gasistafelice.gas.workflow_data import STATUS_CLOSED, STATUS_UNPAID
 from gasistafelice.gas.workflow_data import STATUS_ARCHIVED, STATUS_CANCELED
@@ -1361,9 +1362,20 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     @property
     def tot_price(self):
-        """Ordered price per ordered amount for this ordered product"""
-        #FIXME INVESTIGATE: we have to use self.ordered_price instead of self.ordered_product.order_price?
-        #HINT: self.ordered_price is a copy of the price of the ordered_product when gasmember ordered it...
+        """Total expected to pay fot this order.
+
+        The price is computed using order_price which is 
+        the last snapshot of the price for a product in an order.
+        """
+
+        #TODO Matteo: s/tot_price/price_expected
+
+        #QUESTION: have we to use self.ordered_price instead of self.ordered_product.order_price?
+        #ANSWER: NO. ordered_price is a copy of the price of the ordered_product when gasmember ordered it.
+        
+        #FIXME: needed for new families
+        if self.withdrawn_amount == FAKE_WITHDRAWN_AMOUNT:
+            return 0
         return self.ordered_product.order_price * self.ordered_amount
 
     @property

@@ -2,6 +2,9 @@
 TODO:
 
 * DOMINIQUE: sostituire /order_invoice/order_registration (nome blocco, nome file)
+* DOMINIQUE: sostituire /balance_*/nomerisorsa_balance (nome blocco, nome file)
+* DOMINIQUE: sostituire /Transation/Transaction (nome form)
+
 * Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
  - ricarica gasista va bene solo per saldi positivi
 * DOMINIQUE: Vari blocchi di operazioni di transazioni arbitrarie non funzionano

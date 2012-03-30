@@ -24,7 +24,8 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.consts import (
         CASH,  #Permission
         GAS_MEMBER,  #Role
-        INCOME, EXPENSE, INVOICE_COLLECTION, ASSET, LIABILITY, EQUITY  #Transactions
+        INCOME, EXPENSE, INVOICE_COLLECTION, ASSET, LIABILITY, EQUITY,  #Transactions
+        FAKE_WITHDRAWN_AMOUNT
 )
 
 import datetime
@@ -161,7 +162,7 @@ class NewEcoGASMemberForm(forms.Form):
         return GASMemberOrder.objects.create(
             ordered_product = self.__order.orderable_products[0],
             ordered_amount = 1,
-            withdrawn_amount = 9999,
+            withdrawn_amount = FAKE_WITHDRAWN_AMOUNT,
             is_confirmed = True,
             note = "[NEW FAM] %s" % note,
             #LF: ordered_price should be 0, otherwise expected amount will vary

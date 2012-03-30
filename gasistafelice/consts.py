@@ -48,3 +48,6 @@ per rispettare la privacy delle persone. Tale scelta se necessario,
 come <a target="_blank" href="http://www.jagom.org/trac/reesgas/query?status=assigned&status=new&status=reopened&type=politico-strategico&or&keywords=~politico&col=id&col=summary&col=status&col=type&col=priority&col=milestone&col=component&order=priority">altre scelte politiche e strategiche del software</a>, 
 potrà essere ridiscussa nel tavolo del DES.</div>
 """
+# others...
+
+FAKE_WITHDRAWN_AMOUNT = 9999
