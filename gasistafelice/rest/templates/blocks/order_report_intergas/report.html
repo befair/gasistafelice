@@ -1,0 +1,178 @@
+{% extends "blocks/base/report.html" %}
+{% load i18n %}
+{% load basic_tags %}
+
+{% block customstyle %}
+.head{font-family: Monospace, Arial;}
+.sumQta{width:30%}
+.sumPricefield{width:40%; font-size:14px;font-weight:bolder;}
+.sumPricevalue{width:30%; color: #006400;font-size:18px;font-weight:bold;}
+.empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
+.taright{text-align:right;}
+.taright th{margin-right:17px; padding-right:17px;}
+.tacenter{text-align:center;}
+.taleft{text-align:left;}
+.tbl{width:96%; padding:3px 3px 0px 3px; marging:3px 3px 0px 3px; font-size:12px; vertical-align middle;}
+.Prod{border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;}
+.totProd{border: solid 2px #344960; font-size:14px; text-align: right;}
+.alert{color:red;}
+.uprice{width: 15%; color:darkgray; border: solid 1px #C6D7DE;}
+.qta{width: 10%; border: solid 1px #C6D7DE;}
+.totprice{width: 20%; color:#000;border: solid 1px #C6D7DE;}
+.product{border: solid 1px #C6D7DE;}
+.tab{width: 5%;}
+.fam{text-align:center;vertical-align:middle;border-top:solid 1px #000;border-bottom:solid 1px #000;font-weight:bold;}
+.bd{font-weight:bold;}
+div.code {background-color: #E5EECC; border: 1px dashed #D4D4D4; margin: 0; padding: 5px; width: 100%} /*622px;*/
+div.example_code p, div.code p, div.code div {font-family: courier new;}
+div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-family: courier new;
+ font-size: 110%; padding: 4px; width: 100%} /*612px;*/
+.note{font-size:1.0em;font-family:courier new; margin:3px 0px 0px 3px;padding:3px 0px 0px 3px; background-color:#FFFFF0;}
+{%endblock%}
+
+
+{%block page_header%}
+   <div class="head">
+        <h1>{{ order }}</h1>
+        <table style="width:96%; ">
+            <tr>
+                <td rowspan="2" style="width=20%" ><img alt="{{order.pact.gas}}" src="{{order.pact.gas.icon.url}}" width="100" heigth="100" /></td>
+                <td class="taleft" style="width=30%">
+                {{order.pact.gas}}<br />
+                {% for drp in order.delivery_referrer_persons %}
+                    {{drp}}<br />
+                    {% for cs in drp.contacts %}
+                        {{cs}}<br />
+                    {%  endfor %}
+                {%  endfor %}
+                {% for ref in order.referrers %}
+                    {{ref}}<br />
+                    {% for cs in ref.contact_set %}
+                        {{cs}}<br />
+                    {%  endfor %}
+                {%  endfor %}
+                {% for ip in order.info_people %}
+                    {{ip}}<br />
+                {%  endfor %}
+                <td class="taright" style="width=30%">
+                {{order.pact.supplier}}<br />
+                {% for c in order.pact.supplier.contacts %}
+                    {{c}}<br />
+                {%  endfor %}
+                {{order.pact.supplier.seat}}</td>
+                <td rowspan="2" style="width=20%"><img alt="{{order.pact.supplier}}" src="{{order.pact.supplier.icon.url}}" width="100" heigth="100" />
+                </td>
+            <tr>
+            </tr>
+                <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ prod_count }}</h2></td>
+                <td style="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
+                <td class="sumPricefield taright">{% trans "Total expected" %}</td>
+                {% if total_calc == total_amount%}
+                    <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
+<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
+                {% else %}
+                    <td class="sumPricevalue taright alert">&euro; {{total_amount|floatformat:"2"}}   /  calc:{{total_calc|floatformat:"2"}}
+<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
+                {% endif %}
+                </td>
+            </tr>
+        </table>
+   </div>
+{% if have_note %}
+<div class="code">
+    <div>
+        {% for not in order.allnotes %}
+            <p>{{not.comment}}</p>
+        {%  endfor %}
+    </div>
+</div>
+{% endif %}
+<hr />
+
+{%endblock%}
+
+{%block content%}
+<table class="tbl" border="0" cellpadding="1" cellspacing="1">
+<tbody>
+{% assign ActualFamily -1 %}
+
+    {% for row in recFam %}
+        {% if row.tot_price > 0  %}
+            <tr>
+                <td class="product">{{row.product|truncatewords:"200"}}
+                {% if row.note %}
+                    <div class="note">{{row.note|truncatewords:"69"}}</div>
+                {% endif %}
+                </td>
+                {% if row.price_changed %}
+                    <td class="taright alert uprice">&euro;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
+                {% else %}
+                    <td class="taright uprice">&euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
+                {% endif %}
+                {% if row.amount > 1 %}
+                    <td class="taright qta bd">{{row.amount|floatformat:"-2"}}</td>
+                {% else %}
+                    <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
+                {% endif %}
+                <td class="taright totprice">&euro;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
+
+                {% if ActualFamily == -1 or ActualFamily != row.family_id %}
+                    {% set ActualFamily = row.family_id %}
+                    {% for fam in subFam %}
+                        {% if fam.family_id == ActualFamily %}
+                            {% if fam.basket_products == 1 %}
+                                <td class="fam" >{{ fam.gasmember }}&nbsp;&euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                            {% else %}
+                                <td class="fam" rowspan="{{ fam.basket_products }}">{{ fam.gasmember }}<br /> &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </tr>
+
+        {%  endif %}
+
+    {%  endfor %}
+</tbody>
+</table>
+
+<hr />
+
+<table class="tbl" border="0" cellpadding="1" cellspacing="1">
+<thead>
+    <th>Prodotto</th>
+    <th>Quantit&agrave;</th>
+    <th>Prezzo totale</th>
+</thead>
+<tbody>
+    {% for pd in recProd %}
+        <tr>
+        {% if pd.tot_gasmembers > 1 %}
+            <td class="product"> {{ pd.product }} -&nbsp;&nbsp;&euro;&nbsp;{{pd.price|floatformat:"2"}}&nbsp;&nbsp;-->&nbsp;{{pd.tot_gasmembers}}</td>
+        {% else %}
+            <td class="product"> {{ pd.product }} -&nbsp;&nbsp;&euro;&nbsp;{{pd.price|floatformat:"2"}}</td>
+        {% endif %}
+            <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
+            <td class="taright totprice">&nbsp;&euro;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
+        </tr>
+    {%  endfor %}
+    <tr>
+        <td class="sumPricefield taright" colspan="2" >{% trans "Total cost" %}</td>
+        <td class="sumPricevalue taright">&euro; {{ total_amount|floatformat:"2"}}
+<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
+        </td>
+    </tr>
+</tbody>
+</table>
+{%endblock%}
+
+{%block page_foot%}
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td class="taleft">{{ user }}: {% now "l d F Y H:i" %}</td>
+        <td class="taright"><pdf:pagenumber></td>
+    </tr>
+</table>
+{%endblock%}
+
+
