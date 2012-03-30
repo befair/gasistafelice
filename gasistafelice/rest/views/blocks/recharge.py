@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
@@ -33,7 +34,8 @@ class Block(BlockSSDataTables):
         0: 'id',
         1: 'person__surname',
         2: '',
-        3: 'person__name'
+        3: '',
+        4: 'person__name'
     }
 #        2: 'last_recharge',
 
@@ -112,13 +114,14 @@ class Block(BlockSSDataTables):
         for i,item in enumerate(querySet):
 
             form = formset[map_info[item.pk]['formset_index']]
-
+            print "item.balanceitem.balanceitem.balanceitem.balance %s" % ("%.2f" % round(item.balance, 2)).replace('.','€')
             records.append({
                'id' : item.pk,
                'gasmember' : item,
                'last_recharge' : item.last_recharge,
                'recharging' : "%s %s" % (form['gm_id'], form['recharged']),
                'gasmember_urn' : item.urn,
+               'balance' : ("%.2f" % round(item.balance, 2)).replace('.','€'),
             })
 
         return formset, records, {}

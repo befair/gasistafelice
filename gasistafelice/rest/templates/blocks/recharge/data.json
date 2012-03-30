@@ -8,6 +8,7 @@
         "{{row.pk|escapejs}}",
         "{{row|escapejs}}",
         "{{row.last_recharge|escapejs}}",
+        "&#8364; {{row.balance|floatformat:2|escapejs}}",
         "",
         "{{row.urn|escapejs}}",
     ]
