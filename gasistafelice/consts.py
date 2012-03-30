@@ -24,9 +24,11 @@ CONFIRM = 'confirm'
 CASH = 'cash'
 VIEW_CONFIDENTIAL = 'view_confidential'
 
+
 ## accounting-related constants
 NONDES_NAME = 'NonDES'
 NONDES_SURNAME = 'Account'
+
 # account types
 INCOME = 'INCOME'
 EXPENSE = 'EXPENSE'
@@ -34,11 +36,15 @@ ASSET = 'ASSET'
 LIABILITY = 'LIABILITY'
 EQUITY = 'EQUITY'
 
+# TODO: to be moved in simple_accounting_settings.py
 # transaction types
 INVOICE_PAYMENT = 'INVOICE_PAYMENT'
 INVOICE_COLLECTION = 'INVOICE_COLLECTION'
 GAS_MEMBER_RECHARGE = 'GAS_MEMBER_RECHARGE'
 MEMBERSHIP_FEE_PAYMENT = 'MEMBERSHIP_FEE_PAYMENT' 
+PACT_EXTRA = 'PACT_EXTRA'
+GASMEMBER_EXTRA = 'GASMEMBER_EXTRA'
+
 
 # confidential text for blocks
 CONFIDENTIAL_VERBOSE_HTML = """

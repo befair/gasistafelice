@@ -4,7 +4,10 @@ from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
 from simple_accounting.utils import register_transaction
 
-from gasistafelice.consts import INCOME, EXPENSE, ASSET, LIABILITY, EQUITY
+from gasistafelice.consts import (
+    INCOME, EXPENSE, ASSET, LIABILITY, EQUITY,
+    GASMEMBER_EXTRA
+)
 from datetime import datetime
 
 class PersonAccountingProxy(AccountingProxy):
@@ -147,7 +150,7 @@ class PersonAccountingProxy(AccountingProxy):
 
         gas_acc = gas.accounting
         gas_system = gas.accounting.system
-        kind = 'GM_EXTRA'
+        kind = GASMEMBER_EXTRA
 
         #UGLY: remove me when done and executed one command that regenerate all missing accounts
         self.missing_accounts(gas)

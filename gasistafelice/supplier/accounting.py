@@ -4,7 +4,7 @@ from simple_accounting.exceptions import MalformedTransaction
 from simple_accounting.models import AccountingProxy, Transaction, LedgerEntry, account_type
 from simple_accounting.utils import register_transaction
 
-from gasistafelice.consts import INCOME, EXPENSE
+from gasistafelice.consts import INCOME, EXPENSE, PACT_EXTRA
 from datetime import datetime
 
 class SupplierAccountingProxy(AccountingProxy):
