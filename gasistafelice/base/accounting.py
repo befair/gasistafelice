@@ -6,7 +6,7 @@ from simple_accounting.utils import register_transaction
 
 from gasistafelice.consts import (
     INCOME, EXPENSE, ASSET, LIABILITY, EQUITY,
-    GASMEMBER_EXTRA
+    GASMEMBER_GAS, RECYCLE, ADJUST
 )
 from datetime import datetime
 
@@ -150,7 +150,7 @@ class PersonAccountingProxy(AccountingProxy):
 
         gas_acc = gas.accounting
         gas_system = gas.accounting.system
-        kind = GASMEMBER_EXTRA
+        kind = GASMEMBER_GAS
 
         #UGLY: remove me when done and executed one command that regenerate all missing accounts
         self.missing_accounts(gas)
@@ -170,19 +170,19 @@ class PersonAccountingProxy(AccountingProxy):
             exit_point = gas_system['/expenses/member']
             entry_point = self.system['/incomes/other']
             target_account = self.system['/wallet']
-            kind = ug('ADJUST')
+            kind = ADJUST
         elif  target == LIABILITY: #Addition for Gasmember: +gasmember
             source_account = self.system['/wallet']
             exit_point = self.system['/expenses/other']
             entry_point = gas_system['/incomes/recharges']
             target_account = gas_system['/members/' + person.uid]
-            kind = ug('ADJUST')
+            kind = ADJUST
         elif  target == EQUITY: #Restitution for gasmember: empty container +gasmember -GAS
             source_account = gas_system['/cash']
             exit_point = gas_system['/expenses/member']
             entry_point = gas_system['/incomes/recharges']
             target_account = gas_system['/members/' + person.uid]
-            kind = ug('EMPTY')
+            kind = RECYCLE
         else:
             raise MalformedTransaction(ug("Payment target %s not identified") % target)
 
