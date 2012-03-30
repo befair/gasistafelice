@@ -5,6 +5,7 @@
     <th>{% trans "Id" %}</th>
     <th>{% trans "GASMember" %}</th>
     <th title='{% trans "Last gasmember recharge" %}'>{% trans "Last recharge" %}</th>
+    <th>{% trans "Balance" %}</th>
     <th title='{% trans "Recharge gasmember" %}'>{% trans "Recharge" %}</th>
 {% endblock %}
 

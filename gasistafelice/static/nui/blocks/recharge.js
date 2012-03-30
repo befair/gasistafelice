@@ -24,8 +24,11 @@ jQuery.UIBlockRecharge = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     { "sWidth": "10%", "bSortable" : true, "bSearchable" : true},
-                    { "sWidth": "30%", "bSortable" : true, "bSearchable" : true},
-                    { "sWidth": "40%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
+                    { "sWidth": "25%", "bSortable" : true, "bSearchable" : true},
+                    { "sWidth": "35%", "bSortable" : false, "bSearchable" : false, "sClass": "taright"},
+                    { "sWidth": "10%", "bSortable" : false, "bSearchable" : false
+                        , "sClass": "taright"
+                    },
                     { "sWidth": "20%", "bSortable" : false, "bSearchable" : true
                         , "sClass": "taright"
                     },
@@ -39,7 +42,7 @@ jQuery.UIBlockRecharge = jQuery.UIBlockWithList.extend({
                 },
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
-                        var url = aaData[4];
+                        var url = aaData[5];
                         if (url != undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);

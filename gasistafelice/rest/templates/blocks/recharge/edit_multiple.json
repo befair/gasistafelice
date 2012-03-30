@@ -8,6 +8,7 @@
         "{{row.id|escapejs}}",
         "{{row.gasmember|escapejs}}",
         "{{row.last_recharge|escapejs}}",
+        "{{row.balance|escapejs}}",
         "{{row.recharging|escapejs}}",
         "{{row.gasmember_urn|escapejs}}",
 
