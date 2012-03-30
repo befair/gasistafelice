@@ -8,6 +8,7 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
+from gasistafelice.gas.models.order import GASSupplierOrderProduct
 from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
 from django.forms.formsets import formset_factory
 
@@ -46,74 +47,78 @@ class Block(BlockSSDataTables):
         user_actions = []
 
         order = self.resource.order
+        if order.group_id:
 
-        #TODO fero: add permission GET_ORDER_DOC
-        if request.user == order.gas.tech_referrers \
-            or request.user in order.gas.supplier_referrers \
-            or request.user in order.supplier.referrers \
-            or request.user.is_superuser:
+            #TODO fero: add permission GET_ORDER_DOC
+            if request.user == order.gas.tech_referrers \
+                or request.user in order.gas.supplier_referrers \
+                or request.user in order.supplier.referrers \
+                or request.user.is_superuser:
 
-            user_actions += [
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=CREATE_PDF, verbose_name=_("Create PDF"),
-                    popup_form=False,
-                ),
-            ]
-
-        #TODO fero: permission GET_ORDER_DOC
-        if request.user == order.referrer_person.user \
-            or request.user in order.gas.supplier_referrers \
-            or request.user in order.supplier.referrers \
-            or request.user.is_superuser:
-
-            if order.is_closed() or order.is_unpaid():
                 user_actions += [
-                    ResourceBlockAction( 
+                    ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
-                        name=SENDME_PDF, verbose_name=_("Send email PDF me"),
+                        name=CREATE_PDF, verbose_name=_("Create PDF"),
                         popup_form=False,
-                    )
+                    ),
                 ]
-                if order.supplier.config.receive_order_via_email_on_finalize:                        
+
+            #TODO fero: permission GET_ORDER_DOC
+            if request.user == order.referrer_person.user \
+                or request.user in order.gas.supplier_referrers \
+                or request.user in order.supplier.referrers \
+                or request.user.is_superuser:
+
+                if order.is_closed() or order.is_unpaid():
                     user_actions += [
-                        ResourceBlockAction(
+                        ResourceBlockAction( 
                             block_name = self.BLOCK_NAME,
                             resource = request.resource,
-                            name=SENDPROD_PDF, verbose_name=_("Send email PDF supplier"),
+                            name=SENDME_PDF, verbose_name=_("Send email PDF me"),
                             popup_form=False,
                         )
                     ]
+                    if order.supplier.config.receive_order_via_email_on_finalize:                        
+                        user_actions += [
+                            ResourceBlockAction(
+                                block_name = self.BLOCK_NAME,
+                                resource = request.resource,
+                                name=SENDPROD_PDF, verbose_name=_("Send email PDF supplier"),
+                                popup_form=False,
+                            )
+                        ]
 
 
 
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-            user_actions += [
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"),
-                    popup_form=False,
-                    method="get",
-                ),
-                ResourceBlockAction(
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
-                    popup_form=False,
-                    method="get",
-                ),
-            ]
+            if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+                user_actions += [
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=VIEW, verbose_name=_("Show"),
+                        popup_form=False,
+                        method="get",
+                    ),
+                    ResourceBlockAction(
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=EDIT_MULTIPLE, verbose_name=_("Edit"),
+                        popup_form=False,
+                        method="get",
+                    ),
+                ]
         return user_actions
 
     def _get_resource_list(self, request):
         #return request.resource.stocks
         # GASSupplierOrderProduct objects
-        return request.resource.orderable_products.filter(
-            gasmember_order_set__ordered_amount__gt=0
-        ).distinct()
+        if self.resource.order.group_id:
+            return request.resource.orderable_products.filter(
+                gasmember_order_set__ordered_amount__gt=0
+            ).distinct()
+
+        return GASSupplierOrderProduct.objects.none()
 
     def _get_resource_families(self, request):
         return request.resource.ordered_products
@@ -184,21 +189,6 @@ class Block(BlockSSDataTables):
         elif args == SENDPROD_PDF:
             rv = self._send_email_supplier()
         
-#        #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
-#        if args == self.KW_DATA:
-#            from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
-#            
-#            querySet = self._get_resource_list(request) 
-#            #columnIndexNameMap is required for correct sorting behavior
-#            columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
-#            #path to template used to generate json (optional)
-#            jsonTemplatePath = 'blocks/%s/data.json' % self.BLOCK_NAME
-
-#            val_querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
-#            #TODO FIXME: AFTER 6 
-#            formset, records, moreData = self._get_records(request, querySet)
-#            rv = render_datatables(request, records, dt_params, jsonTemplatePath)
-
         return rv
 
     def _send_email_logged(self):
