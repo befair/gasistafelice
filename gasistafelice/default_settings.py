@@ -317,6 +317,10 @@ RESOURCE_PAGE_BLOCKS = {
         'descr': 'Ordine',
         'blocks': ['order_details', 'order_report']
     },{ 
+        'name' : 'intergas',
+        'descr': 'Inter GAS',
+        'blocks': ['order_intergas']   #TODO: Order procedure Complete box
+    },{ 
         'name' : 'registration',
         'descr': 'Registrazione',
         'blocks': ['order_invoice', 'curtail']
