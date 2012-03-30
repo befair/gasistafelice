@@ -42,7 +42,7 @@ class Block(AbstractBlock):
         super(Block, self).get_response(request, resource_type, resource_id, args)
         res = self.resource
         gas = res.gas
-        extra_html = None
+        extra_html = ""
         if args == "INCOME":
             if request.method == 'POST':
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):

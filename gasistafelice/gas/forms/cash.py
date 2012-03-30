@@ -943,19 +943,22 @@ class TransationGMForm(BalanceForm):
 #DT     Use this if we have to insert this block in the GAS economic Tab too
 #LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
 
-    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+    amount = CurrencyField(label=_('cash amount').capitalize(), 
+        required=True, max_digits=8, decimal_places=2,
         help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
     target = forms.ChoiceField(required=True,
-        choices = [ (INCOME,_('Correction for gasmember: +gasmember -GAS')),
-                    (EXPENSE,_('Correction for GAS: +GAS -gasmember ')),
-                    (ASSET,_('Detraction for Gasmember: -gasmember ')),
-                    (LIABILITY,_('Addition for Gasmember: +gasmember ')),
-                    (EQUITY,_('Restitution for gasmember: empty container +gasmember -GAS'))
+        choices = [ (INCOME,_('Correction in favor to gasmember: +gasmember -GAS')),
+                    (EXPENSE,_('Correction in favor to GAS: +GAS -gasmember ')),
+                    (ASSET,_('Detraction from Gasmember: -gasmember ')),
+                    (LIABILITY,_('Addition to Gasmember: +gasmember ')),
+                    (EQUITY,_('Restitution in favor to gasmember: empty container +gasmember -GAS'))
         ],
-        widget=forms.RadioSelect, help_text = _("define the type of the operation"),
+        widget=forms.RadioSelect,
+        #help_text = _("select the kind for this operation"),
+        label=_("operation kind").capitalize(),
         error_messages={'required': _('You must select the type of operation')}
     )
 
