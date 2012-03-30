@@ -1,13 +1,9 @@
 
 TODO:
 
-* DOMINIQUE: sostituire /order_invoice/order_registration (nome blocco, nome file)
+* MATTEO: sostituire /order_invoice/order_registration (nome blocco, nome file)
+* MATTEO: sostituire /Transation/Transaction (nome form)
 * DOMINIQUE: sostituire /balance_*/nomerisorsa_balance (nome blocco, nome file)
-* DOMINIQUE: sostituire /Transation/Transaction (nome form)
-
-* Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
- - ricarica gasista va bene solo per saldi positivi
-* DOMINIQUE: Vari blocchi di operazioni di transazioni arbitrarie non funzionano
 * MATTEO: validator attr_user_is_set. 
 
 * FERO: nascondere nella form di modifica ordine l'opzione "referente" se singolo referente per un patto.
@@ -34,8 +30,11 @@ DONE:
  - o altre persone minime necessarie. Per evitare imbarazzo
 * FERO: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
 che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.
+* FERO+DOM Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
+ - ricarica gasista va bene solo per saldi positivi
+* FERO+DOM: Vari blocchi di operazioni di transazioni arbitrarie non funzionano
 
-TODO 0.8
+TODO 0.9
 --------
 
 In carico a Dominique:
@@ -58,8 +57,6 @@ Fix da gasisti
 * [Orlando] Verifica e FIX che non carica la pagina per un ordine archiviato - farsi dare l'ordine preciso
 * [Peppe] Scheda del fornitore - gestisci ruoli --> fix alla registrazione
 
-TODO 0.9
---------
 
 * Perfezionare le notifiche
 * Invio email su chiusura ordine

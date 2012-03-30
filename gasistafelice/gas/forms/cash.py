@@ -688,7 +688,7 @@ class TransationGASForm(BalanceGASForm):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
-        , help_text = _("Adjust the operation date if necesary")
+        , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
 
@@ -772,7 +772,7 @@ class TransationPACTForm(BalanceForm):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
-        , help_text = _("Adjust the operation date if necesary")
+        , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
 
@@ -976,7 +976,7 @@ class TransationGMForm(BalanceForm):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
-        , help_text = _("Adjust the operation date if necesary")
+        , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
 
