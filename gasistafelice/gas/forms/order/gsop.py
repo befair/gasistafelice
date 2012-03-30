@@ -32,10 +32,33 @@ class GASSupplierOrderProductForm(forms.Form):
             if not enabled:
                 gsop = GASSupplierOrderProduct.objects.get(pk=id)
                 log.debug("Making UNAVAILABLE orderable product %s in order %s" % (gsop, gsop.order.pk))
-                log.debug(u"GASMemberOrders status: [amount=euro %s, gasmembers=%s]" % (
+                log.debug(u"GASSupplierOrderProductForm status: [amount=euro %s, gasmembers=%s]" % (
                     gsop.tot_amount, gsop.tot_gasmembers
                 ))
                 gsop.delete()
 
 
+class GASSupplierOrderProductInterGAS(forms.Form):
+
+    id = forms.IntegerField(required=True, widget=forms.HiddenInput)
+    enabled = forms.BooleanField(required=False)
+
+    @transaction.commit_on_success
+    def save(self):
+
+        id = self.cleaned_data.get('id')
+        # log.debug("Save GASSupplierOrderProductInterGAS id(%s)" % id)
+
+        if id:
+            enabled = self.cleaned_data.get('enabled')
+            # log.debug("Save GASSupplierOrderProductForm enabled(%s)" % enabled)
+            # Delete is ok for gsop that have gmo but: 
+            # FIXME: if no gmo associated to gsop the field enabled remain always True?
+            if not enabled:
+                gsop = GASSupplierOrderProduct.objects.get(pk=id)
+                log.debug("Making UNAVAILABLE orderable product %s in order %s" % (gsop, gsop.order.pk))
+                log.debug(u"GASSupplierOrderProductInterGAS status: [amount=euro %s, gasmembers=%s]" % (
+                    gsop.tot_amount, gsop.tot_gasmembers
+                ))
+                gsop.delete()
 
