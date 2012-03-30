@@ -370,7 +370,7 @@ class InvoiceOrderForm(forms.Form):
         if self.__order:
             #set order informations
             #WAS stat = ("%(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-            stat = ugettext("%(state)s - Expected: %(fam)s %(euro)s --> Actual: %(fatt)s %(euro)s --> Paid: %(eco)s %(euro)s") % {
+            stat = ugettext("%(state)s - Expected: %(fam)s %(euro)s --> Actual: %(fatt)s %(euro)s --> Curtailed: %(eco)s %(euro)s") % {
                 'fam'    : "%.2f" % round(self.__order.tot_price, 2)
                 , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
                 , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
@@ -378,6 +378,7 @@ class InvoiceOrderForm(forms.Form):
                 , 'euro' : EURO_HTML
             }
             #WAS: why??!? self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+            #TODO versus: choices, stat = get_html_insolute([self.__order])
             self.fields['amount'].help_text = stat
 
 
@@ -434,6 +435,7 @@ class InvoiceOrderForm(forms.Form):
 #-------------------------------------------------------------------------------
 
 def get_html_insolute(insolutes, EURO_TRANS):
+
     _choice = []
     tot_ordered = 0
     tot_invoiced = 0
@@ -664,16 +666,19 @@ class BalanceGASForm(BalanceForm):
 #class TransationGASForm(forms.Form):
 class TransationGASForm(BalanceGASForm):
 
-    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+    amount = CurrencyField(label=_('cash amount').capitalize(), required=True, max_digits=8, decimal_places=2,
         help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
     target = forms.ChoiceField(required=True, 
-        choices = [(INCOME,_('Income: Event, Donate, Sponsor, Fund... +GAS')),
+        choices = [
+            (INCOME,_('Income: Event, Donate, Sponsor, Fund... +GAS')),
             (EXPENSE,_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))
         ],
-        widget=forms.RadioSelect, help_text = _("define the type of the operation"),
+        widget=forms.RadioSelect,
+        #help_text = _("select the kind for this operation"),
+        label=_("operation kind").capitalize(),
         error_messages={'required': _('You must select the type of operation')}
     )
 
@@ -739,7 +744,8 @@ class TransationPACTForm(BalanceForm):
 #DT     Use this if we have to insert this block in the GAS economic Tab too
 #LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _('You must select one pact (or create it in your GAS details if empty)')})
 
-    amount = CurrencyField(label=_('Operation'), required=True, max_digits=8, decimal_places=2,
+    amount = CurrencyField(label=_('cash amount').capitalize(), 
+        required=True, max_digits=8, decimal_places=2,
         help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
@@ -747,9 +753,11 @@ class TransationPACTForm(BalanceForm):
     target = forms.ChoiceField(required=True,
         choices = [ (INCOME,_('Correction for supplier: +Supplier -GAS')),
                     (EXPENSE,_('Correction for GAS: +GAS -Supplier ')),
-                    (INVOICE_COLLECTION,_('Insolute'))
+                    (INVOICE_COLLECTION,_('Orders payment'))
         ],
-        widget=forms.RadioSelect, help_text = _("define the type of the operation"),
+        widget=forms.RadioSelect,
+        #help_text = _("select the kind for this operation"),
+        label=_("operation kind").capitalize(),
         error_messages={'required': _('You must select the type of operation')}
     )
 
