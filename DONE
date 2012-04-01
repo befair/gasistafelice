@@ -1,6 +1,25 @@
 
-DONE
-----
+DONE 0.9
+--------
+
+* [Orlando] Verifica e FIX che non carica la pagina per un ordine archiviato - farsi dare l'ordine preciso
+* [Peppe] Scheda del fornitore - gestisci ruoli --> fix alla registrazione
+* Creazione utente da "aggiungi gasista" non mette in "User" email, nome, cognome
+* DOMINIQUE: ordini.desmacerata.it: scheda "admin" non appare al superuser e referenti informatici
+* DOMINIQUE: Data di consegna impostata anche se non impostata
+* VERIFICARE: admin e referente fornitore devono poter modificare gli ordini fatti dai gasisti
+* DOMINIQUE: cambiare colore di sfondo per evidenziare SITO DI TEST :8000
+* FERO: Aggiungi famiglia: bug se passa in automatico a "insoluto".
+* FERO: Aggiungi famiglia: bug di visualizzazione "totale previsto" (aumenta)
+* FERO: Da Lucia Provincia di MC: problema di visualizzare il saldo solo al gasista e referente contabile
+ - o altre persone minime necessarie. Per evitare imbarazzo
+* FERO: La scheda "PAGAMENTO" non va relativa all'ordine, ma relativo al patto
+che è scorporato dal singolo ordine. Li' il referente contabile va a pagare i singoli fornitori.
+* FERO+DOM Inizializzazione saldo gasisti: o funziona il blocco "saldo", oppure valutare dove farlo
+ - ricarica gasista va bene solo per saldi positivi
+* FERO+DOM: Vari blocchi di operazioni di transazioni arbitrarie non funzionano
+* FERO: definire una coerente rappresentazione dell'ordine (forma estesa, forma ridotta)
+
 
 
 DONE 0.8

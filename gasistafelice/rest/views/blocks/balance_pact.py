@@ -1,6 +1,6 @@
 """View for economic block specialized for a GASSupplierSolidalPact and GASSupplierOrder"""
 
-from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.http import HttpResponse
 from django.db import transaction
 
@@ -19,7 +19,7 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_pact"
     BLOCK_VALID_RESOURCE_TYPES = ["pact", "order"]
-    BLOCK_DESCRIPTION = ug("Balance")
+    BLOCK_DESCRIPTION = ugettext("Balance")
 
     def _get_user_actions(self, request):
 
@@ -31,7 +31,7 @@ class Block(AbstractBlock):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
-                        name=INCOME, verbose_name=ug("Account transaction"),
+                        name=INCOME, verbose_name=ugettext("Account transaction"),
                         popup_form=False,
                     ),
                 ]
@@ -54,7 +54,7 @@ class Block(AbstractBlock):
                                     form.save()
 
                                 except Exception, e:
-                                    msg = ug("Transaction pact ERROR: ") + e.message
+                                    msg = ugettext("Transaction pact ERROR: ") + e.message
                                     form._errors["amount"] = form.error_class([msg])
 
         else:

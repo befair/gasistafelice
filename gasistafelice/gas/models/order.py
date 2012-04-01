@@ -1,7 +1,7 @@
 """Models related to Order management (including state machine)."""
 
 from django.db import models
-from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, EmailMessage
 
@@ -69,7 +69,7 @@ some_string_to_translate__ = (
     _("close: unset"),
     _(" --> delivery: %(date_delivery)s"),
     _("to be delivered: %(date_delivery)s  --> to pay"),
-    _(" --> delivered: %(date_delivery)s --> to pay"),
+    _("delivered: %(date_delivery)s --> to pay"),
     _("archived: %(date_delivery)s"),
     _("canceled: %(date_delivery)s"),
     _("Ord. %(order_num)s %(pact)s - %(state)s")
@@ -192,39 +192,39 @@ class GASSupplierOrder(models.Model, PermissionResource):
             state = self.current_state.name
             date_info = "("
             if state == STATUS_PREPARED:
-                date_info += ug("open: %(date_start)s")
+                date_info += ugettext("open: %(date_start)s")
                 if self.datetime_end:
-                    date_info += ug(" - close: %(date_end)s")
+                    date_info += ugettext(" - close: %(date_end)s")
     
             elif state == STATUS_OPEN:
 
                 if self.datetime_end:
-                    date_info += ug("close: %(date_end)s")
+                    date_info += ugettext("close: %(date_end)s")
                 else:
-                    date_info += ug("close: unset")
+                    date_info += ugettext("close: unset")
 
                 if d['date_delivery']:
-                    date_info += ug(" --> delivery: %(date_delivery)s")
+                    date_info += ugettext(" --> delivery: %(date_delivery)s")
     
             elif state == STATUS_CLOSED:
 #                if self.datetime_end:
-#                    date_info += ug("Closed: %(date_end)s")
+#                    date_info += ugettext("Closed: %(date_end)s")
 
                 if d['date_delivery']:
-                    date_info += ug("to be delivered: %(date_delivery)s  --> to pay")
+                    date_info += ugettext("to be delivered: %(date_delivery)s  --> to pay")
 
     
             elif state == STATUS_UNPAID:
                 if d['date_delivery']:
-                    date_info += ug(" --> delivered: %(date_delivery)s --> to pay")
+                    date_info += ugettext("delivered: %(date_delivery)s --> to pay")
 
             elif state == STATUS_ARCHIVED:
                 if d['date_delivery']:
-                    date_info += ug("archived: %(date_delivery)s")
+                    date_info += ugettext("archived: %(date_delivery)s")
     
             elif state == STATUS_CANCELED:
                 if d['date_delivery']:
-                    date_info += ug("canceled: %(date_delivery)s")
+                    date_info += ugettext("canceled: %(date_delivery)s")
 
             else:
                 date_info += "TODO ?(%s)" % state
@@ -243,7 +243,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = ug("Ord. %(order_num)s %(pact)s - %(state)s") % {
+        rv = ugettext("Ord. %(order_num)s %(pact)s - %(state)s") % {
                     'pact' : self.pact,
                     'state' : state,
                     'order_num' : self.pk,
@@ -264,6 +264,16 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 rep_date = medium_date(self.delivery.date)
         return u"Ord.%s %s %s %s" % (self.pk, OF, rep_date, self.supplier.subject_name)
 
+    @property
+    def display_totals(self):
+        """Show totals expected, actual and curtailed"""
+
+        return ugettext(u"Expected: %(fam)s euro --> Actual: %(fatt)s euro --> Curtailed: %(eco)s euro") % {
+            'fam'    : "%.2f" % round(self.tot_price, 2)
+            , 'fatt' : "%.2f" % round(self.invoice_amount or 0, 2)
+            , 'eco'  : "%.2f" % round(self.tot_curtail, 2)
+        }
+        
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)
         signals.order_state_update.send(sender=self, transition=transition)
@@ -442,7 +452,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
 #COMMENT LF - TO BE REMOVED
 #        if not self.pact.gas.config.auto_populate_products:
-#            log.debug(ug("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
+#            log.debug(ugettext("GAS is not configured to auto populate all products. You have to select every product you want to put into the order"))
 #            return
 
         gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
@@ -510,7 +520,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             count = lst.count()
             for gmo in lst:
                 total += gmo.ordered_price
-                log.debug(ug('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s') % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
+                log.debug('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 signals.gmo_product_erased.send(sender=gmo)
                 gmo.delete()
             log.debug('Deleted gas members orders (%s) for total of %s euro' % (count, total))
@@ -529,7 +539,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(ug("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(ugettext("Workflow for specific GASSupplierOrder is not allowed. Just provide a default order workflow for your GAS"))
 
     def forward(self, user):
         """Apply default transition"""
@@ -977,7 +987,7 @@ WHERE order_id = %s \
             log.debug('self.gas.preferred_email_contacts %s ' % self.gas.preferred_email_contacts)
             sender = self.gas.preferred_email_contacts[0].value
         except IndexError as e:
-            msg = ug("GAS cannot send email, because no preferred email for GAS specified")
+            msg = ugettext("GAS cannot send email, because no preferred email for GAS specified")
             sender = settings.DEFAULT_FROM_EMAIL
             more_info += '%s --> %s' % (msg, sender)
 
@@ -1000,7 +1010,7 @@ WHERE order_id = %s \
         #FIXME: No handlers could be found for logger "xhtml2pdf"
         pdf_data = self.get_pdf_data(requested_by=issued_by)
         if not pdf_data:
-            email.body += ug('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
+            email.body += ugettext('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
         else:
             email.attach(
                 u"%s.pdf" % self.get_valid_name(),
@@ -1182,7 +1192,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
 
     def __unicode__(self):
-        rv = ug('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
+        rv = ugettext('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
         if settings.DEBUG:
             rv += " [%s]" % self.pk
         return rv
@@ -1261,7 +1271,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             log.debug('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
             for gmo in self.gasmember_order_set:
                 #gmo.order_price = self.order_price
-                gmo.note = ug("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.note = ugettext("Price changed on %(date)s") % { 'date' : datetime.now() }
                 gmo.save()
 
 
@@ -1425,7 +1435,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     @workflow.setter
     def workflow(self, value=None):
-        raise AttributeError(ug("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
+        raise AttributeError(ugettext("Workflow for specific GASMemberOrder is not allowed. Just provide a default order workflow for your GAS"))
 
     def forward(self, user):
         """Apply default transition"""
