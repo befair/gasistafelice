@@ -4,6 +4,7 @@ import os, sys
 
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.safestring import mark_safe
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 
@@ -368,17 +369,11 @@ class InvoiceOrderForm(forms.Form):
 
         self.__order = request.resource.order
         if self.__order:
-            #set order informations
-            #WAS stat = ("%(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-            stat = ugettext("%(state)s - Expected: %(fam)s %(euro)s --> Actual: %(fatt)s %(euro)s --> Curtailed: %(eco)s %(euro)s") % {
-                'fam'    : "%.2f" % round(self.__order.tot_price, 2)
-                , 'fatt' : "%.2f" % (self.__order.invoice_amount or 0)
-                , 'eco'  : "%.2f" % round(self.__order.tot_curtail, 2)
-                , 'state': self.__order.current_state.name
-                , 'euro' : EURO_HTML
+            # display statistic
+            stat = ugettext(u"%(state)s - %(totals)s") % {
+                'state': self.__order.current_state.name
+                , 'totals': self.__order.display_totals.replace("euro",EURO_HTML)
             }
-            #WAS: why??!? self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
-            #TODO versus: choices, stat = get_html_insolute([self.__order])
             self.fields['amount'].help_text = stat
 
 
@@ -434,36 +429,37 @@ class InvoiceOrderForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
-def get_html_insolute(insolutes, EURO_TRANS):
+def get_html_insolutes(insolutes, EURO_TRANS=EURO_HTML):
 
-    _choice = []
+    _choices = []
     tot_ordered = 0
     tot_invoiced = 0
     tot_eco_entries = 0
+    tot_insolutes = 0
     stat = ''
     for ins in insolutes:
+        tot_insolutes += 1
         tot_ordered += ins.tot_price
         tot_invoiced += ins.invoice_amount or 0
         tot_eco_entries += ins.tot_curtail
-        stat = "Ord.%(order)s %(state)s - Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-            'fam'    : "%.2f" % round(ins.tot_price, 2)
-            , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-            , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
-            , 'state'  : ins.current_state.name
-            , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
-            } 
-#        stat = "<a class='ctx_enabled' href='#rest/%(urn)s' >Ord.%(order)s %(state)s </a>- Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-#            , 'urn'  : ins.urn
-        _choice.append((ins.pk, stat.replace('(euro)s',EURO_TRANS)))
+
+        choice = ugettext(u"<span>%(html_order)s<br />%(totals)s</span>") % {
+            'state': ins.current_state.name
+            , 'totals' : ins.display_totals.replace("euro",EURO_TRANS)
+            , 'html_order': u'<a class="resource order inline" href="%s">%s</a>' % (ins.get_absolute_url_page(), ins)
+        }
+        _choices.append((ins.pk, mark_safe(choice)))
 
     #set order informations
-    stat = "Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+    stat = ugettext(u"Totals (%(n)s insolutes) --> Expected: %(fam)s %(euro)s --> Actual: %(fatt)s %(euro)s --> Curtailed: %(eco)s %(euro)s") % {
         'fam'    : "%.2f" % round(tot_ordered, 2)
         , 'fatt' : "%.2f" % round(tot_invoiced, 2)
         , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+        , 'euro' : EURO_TRANS
+        , 'n'    : tot_insolutes
     }
 
-    return _choice, stat
+    return _choices, mark_safe(stat)
 
 class InsoluteOrderForm(forms.Form):
 
@@ -480,6 +476,7 @@ class InsoluteOrderForm(forms.Form):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
+        , label = _("Date")
         , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
@@ -508,23 +505,17 @@ class InsoluteOrderForm(forms.Form):
                 self.fields['date'].help_text = ''
                 del self.fields['orders']
                 #set order informations
-                stat = "%(state)s - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                    'fam'    : "%.2f" % round(self.__order.tot_price, 2)
-                    , 'fatt' : "%.2f" % round(self.__order.invoice_amount or 0, 2)
-                    , 'eco'  : "%.2f" % round(self.__order.tot_curtail or 0, 2)
-                    , 'state'  : self.__order.current_state.name
+                stat = ugettext(u"%(state)s - %(totals)s") % {
+                    'state': self.__order.current_state.name
+                    , 'totals': self.__order.display_totals.replace("euro",EURO_HTML)
                 }
 
             else:
                 insolutes = self.__order.insolutes
-                _choice, stat = get_html_insolute(insolutes, EURO_LABEL)
-                stat = "%(state)s - %(stat)s" % {
-                    'stat'    : stat
-                    , 'state'  : self.__order.current_state.name
-                }
+                _choice, stat = get_html_insolutes(insolutes)
                 self.fields['orders'].choices = _choice
 
-            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+            self.fields['amount'].help_text = stat
 
         self.fields['amount'].widget.attrs['class'] = 'balance input_payment'
         if not self.__order.is_unpaid() and not self.__order.is_closed():
@@ -652,7 +643,7 @@ class BalanceGASForm(BalanceForm):
 
         #show insolutes
         #FIXME: render list of link inside one form fields
-        _choice, stat = get_html_insolute(request.resource.gas.insolutes, EURO_LABEL)
+        _choice, stat = get_html_insolutes(request.resource.gas.insolutes, EURO_LABEL)
         self.fields['orders_grd'].choices = _choice
         #self.fields['orders_grd'].queryset = _choice
         self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
@@ -688,6 +679,7 @@ class TransationGASForm(BalanceGASForm):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
+        , label = _("Date")
         , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
@@ -751,8 +743,8 @@ class TransationPACTForm(BalanceForm):
     )
 
     target = forms.ChoiceField(required=True,
-        choices = [ (INCOME,_('Correction for supplier: +Supplier -GAS')),
-                    (EXPENSE,_('Correction for GAS: +GAS -Supplier ')),
+        choices = [ (INCOME,_('Correction in favor to supplier: +Supplier -GAS')),
+                    (EXPENSE,_('Correction in favor to GAS: +GAS -Supplier ')),
                     (INVOICE_COLLECTION,_('Orders payment'))
         ],
         widget=forms.RadioSelect,
@@ -762,7 +754,7 @@ class TransationPACTForm(BalanceForm):
     )
 
     orders = forms.MultipleChoiceField(label=_("Insolute order(s)"), required=False
-        , help_text = _("If Target is Insolute you must select almost one order to pay in this operation.")
+        , help_text = _("If chosen operation kind is order payment, you must select at least one order to pay")
         , widget=forms.CheckboxSelectMultiple
     )
 
@@ -772,6 +764,7 @@ class TransationPACTForm(BalanceForm):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
+        , label = _("Date")
         , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
@@ -790,7 +783,7 @@ class TransationPACTForm(BalanceForm):
 
         insolutes = self.__pact.insolutes
         if not insolutes:
-            #Hide Insolute choice
+            # Hide Insolute choice
             _choice = self.fields['target'].choices
             if len(_choice) > 2:
                 del _choice[-1]
@@ -799,39 +792,43 @@ class TransationPACTForm(BalanceForm):
                 del self.fields['orders']
 
         else:
-            _choice = []
-            tot_orders = 0
-            tot_ordered = 0
-            tot_invoiced = 0
-            tot_eco_entries = 0
-            stat = ''
-            for ins in insolutes:
-                #In the SUPPLIER FORM we only pay unpayed orders.
-                #To modify one payed order: go to it's sheet.
-                yet_payed, descr, date_payed =self.__gas.accounting.get_supplier_order_data(ins)
-                if yet_payed == 0:
-                    tot_orders += 1
-                    tot_ordered += ins.tot_price
-                    tot_invoiced += ins.invoice_amount or 0
-                    tot_eco_entries += ins.tot_curtail
-                    stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                        'fam'    : "%.2f" % round(ins.tot_price, 2)
-                        , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
-                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
-                        , 'state'  : ins.current_state.name
-                        , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
-                        } 
-                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
-            self.fields['orders'].choices = _choice
-
-            #set order informations
-            stat = "Orders(%(num)s) - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
-                'fam'    : "%.2f" % round(tot_ordered, 2)
-                , 'fatt' : "%.2f" % round(tot_invoiced, 2)
-                , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
-                , 'num'  : str(tot_orders)
-            }
-            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
+            choices, stat = get_html_insolutes(insolutes)
+            self.fields['orders'].choices = choices
+            self.fields['amount'].help_text = stat
+#            _choice = []
+#            tot_orders = 0
+#            tot_ordered = 0
+#            tot_invoiced = 0
+#            tot_eco_entries = 0
+#            stat = ''
+#            for ins in insolutes:
+#                #WAS: #In the SUPPLIER FORM we only pay unpayed orders.
+#                #WAS: #to modify one payed order: go to it's sheet.
+#                #WAS: yet_payed, descr, date_payed =self.__gas.accounting.get_supplier_order_data(ins)
+#                #WAS: yet_payed == 0:
+#                #LF: insolutes are unpaid, so I can't see why it is needed this further check
+#                    tot_orders += 1
+#                    tot_ordered += ins.tot_price
+#                    tot_invoiced += ins.invoice_amount or 0
+#                    tot_eco_entries += ins.tot_curtail
+#                    stat = "Ord.%(order)s %(state)s -Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+#                        'fam'    : "%.2f" % round(ins.tot_price, 2)
+#                        , 'fatt' : "%.2f" % round(ins.invoice_amount or 0, 2)
+#                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
+#                        , 'state'  : ins.current_state.name
+#                        , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
+#                        } 
+#                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
+#            self.fields['orders'].choices = _choice
+#
+#            #set order informations
+#            stat = "Orders(%(num)s) - Total --> Fam: %(fam)s (euro)s --> Fatt: %(fatt)s (euro)s --> Pag: %(eco)s (euro)s" % {
+#                'fam'    : "%.2f" % round(tot_ordered, 2)
+#                , 'fatt' : "%.2f" % round(tot_invoiced, 2)
+#                , 'eco'  : "%.2f" % round(tot_eco_entries, 2)
+#                , 'num'  : str(tot_orders)
+#            }
+#            self.fields['amount'].help_text = stat.replace('(euro)s',EURO_HTML)
 
 #LF        # SOLIDAL PACT
 #LF        pacts = request.resource.pacts
@@ -976,6 +973,7 @@ class TransationGMForm(BalanceForm):
     )
 
     date = forms.DateField(initial=datetime.date.today, required=True
+        , label = _("Date")
         , help_text = _("Adjust the operation date if needed")
         , widget=DateFormatAwareWidget
     )
