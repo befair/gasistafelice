@@ -8,7 +8,9 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.models.order import GASSupplierOrderProduct
+
+from gasistafelice.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
+from gasistafelice.gas.models.base import GAS
 from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
 from django.forms.formsets import formset_factory
 
@@ -111,14 +113,26 @@ class Block(BlockSSDataTables):
         return user_actions
 
     def _get_resource_list(self, request):
-        #return request.resource.stocks
         # GASSupplierOrderProduct objects
+        #print "GAS_LIST %s " % self._get_intergas_gas_list()
         if self.resource.order.group_id:
-            return request.resource.orderable_products.filter(
-                gasmember_order_set__ordered_amount__gt=0
+            return GASSupplierOrderProduct.objects.filter(
+                order__in=self._get_intergas_orders(), gasmember_order_set__ordered_amount__gt=0
             ).distinct()
-
+        
         return GASSupplierOrderProduct.objects.none()
+
+    def _get_intergas_orders(self):
+        if self.resource.order.group_id:
+            return GASSupplierOrder.objects.filter(group_id=self.resource.order.group_id)
+        return GASSupplierOrderProduct.objects.none()
+
+    def _get_intergas_gas_list(self):
+        if self.resource.order.group_id:
+            gas_pks = set(gso.gas.pk for gso in self._get_intergas_orders())
+            return GAS.objects.filter(pk__in=gas_pks)
+
+        return GAS.objects.none()
 
     def _get_resource_families(self, request):
         return request.resource.ordered_products
@@ -132,7 +146,6 @@ class Block(BlockSSDataTables):
 
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
-
         data = {}
         i = 0
         c = querySet.count()
