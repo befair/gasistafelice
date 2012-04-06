@@ -103,7 +103,9 @@ class BaseOrderForm(forms.ModelForm):
             #raise PermissionDenied(ug("You cannot open an order without referrers"))
             log.warning("BaseOrderForm.__init__(): trying to create a new order without referrers!")
 
-        self.fields['referrer_person'].queryset = referrers
+        if self.fields.get('referrer_person'):
+            self.fields['referrer_person'].queryset = referrers
+        
         if self.fields.get('withdrawal_referrer_person'):
             self.fields['withdrawal_referrer_person'].queryset = referrers
 
@@ -271,7 +273,9 @@ class AddOrderForm(BaseOrderForm):
 
 #WAS: INTERGAS 1
 
-            self.set_initial_referrer()
+            #MODIFICA MATTEO
+            if self.fields.get('referrer_person'):
+                self.set_initial_referrer()
 
             # If we are managing some pacts (even 1) of the same GAS,
             # we can set some additional defaults
@@ -375,15 +379,17 @@ class AddOrderForm(BaseOrderForm):
 
     class Meta:
         model = GASSupplierOrder
+         
         fields = ['pact', 'datetime_start', 'datetime_end', 'referrer_person']
-
+        
         gf_fieldsets = [(None, {
             'fields' : ['pact'
                             , 'datetime_start'
                             , ('datetime_end', 'empty_end')
                             , ('delivery_datetime', 'empty_delivery')
                             , 'referrer_person'
-            ]
+        ]
+
         })]
 #WAS: INTERGAS 6
 #                            , 'email_gas'
