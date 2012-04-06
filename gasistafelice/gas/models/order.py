@@ -20,7 +20,6 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
-#MODIFICA MATTEO
 from gasistafelice.base import validators
 
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
@@ -140,18 +139,18 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     referrer_person = models.ForeignKey(Person, null=True, blank=True, 
         related_name="order_set", verbose_name=_("order referrer"),
-        #validators=[validators.attr_user_is_set]
+        #KO it passes person pk: validators=[validators.attr_user_is_set]
     )
 
     delivery_referrer_person = models.ForeignKey(Person, 
         null=True, related_name="delivery_for_order_set", blank=True, 
         verbose_name=_("delivery referrer"),
-        #validators=[validators.attr_user_is_set]
+        #KO it passes person pk: validators=[validators.attr_user_is_set]
     )
     withdrawal_referrer_person = models.ForeignKey(Person, 
         null=True, related_name="withdrawal_for_order_set", blank=True, 
         verbose_name=_("withdrawal referrer"),
-        #validators=[validators.attr_user_is_set]
+        #KO it passes person pk: validators=[validators.attr_user_is_set]
     )
 
     group_id = models.PositiveIntegerField(verbose_name=_('Order group'), 
