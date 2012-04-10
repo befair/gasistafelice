@@ -2,7 +2,7 @@ from django.utils.html import escape
 
 from ajax_select import LookupChannel
 
-from gasistafelice.base.models import Place
+from gasistafelice.base.models import Place, Person
 
 class PlaceLookup(LookupChannel):
 
@@ -33,6 +33,38 @@ class PlaceLookup(LookupChannel):
 #        #log.debug("values=", values)    
 #            
 #        return format % values 
+
+    def can_add(self,user,model):
+        """ customize can_add by allowing anybody to add a Group.
+            the superclass implementation uses django's permissions system to check.
+            only those allowed to add will be offered a [+ add] popup link
+            """
+        return True
+
+class PersonLookup(LookupChannel):
+
+    model = Person
+
+    def get_query(self,q,request):
+        qs = Person.objects.filter(name__icontains=q)
+        qs |= Person.objects.filter(surname__icontains=q)
+        qs |= Person.objects.filter(display_name__icontains=q)
+        return qs.order_by('surname','name')[:10]
+
+#    def get_result(self,obj):
+#        log.debug(obj,"BBBBBB")
+#        return unicode(obj)
+        
+    def format_match(self,obj):
+        return self.format_item_display(obj)
+
+    def format_item_display(self,obj):
+        try:
+            url = obj.avatar.url
+        except ValueError as e:
+            url = ""
+        
+        return u'<img src="%s" /> %s' % (url, escape(unicode(obj)))
 
     def can_add(self,user,model):
         """ customize can_add by allowing anybody to add a Group.

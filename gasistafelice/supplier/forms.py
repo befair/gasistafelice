@@ -351,6 +351,12 @@ class BaseSupplierForm(forms.ModelForm):
     )
     contact_set = MultiContactField(n=3,label=_('Contacts'))
 
+    frontman = make_ajax_field(Supplier, 
+        label = _("frontman"),
+        model_fieldname='frontman',
+        channel='personchannel', 
+        help_text=_("Search for person by name")
+    )
 
     def __init__(self, request, *args, **kw):
         super(BaseSupplierForm, self).__init__(*args, **kw)
@@ -396,11 +402,11 @@ class BaseSupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
         fields = (
-            'name', 'seat', 'website', 'contact_set', 'logo', 'flavour','vat_number','certifications'
+            'name', 'seat', 'website', 'contact_set', 'logo', 'frontman', 'flavour','vat_number','certifications'
         )
         gf_fieldsets = [(None, {
             'fields' : (
-                'name','seat', 'website', 'contact_set', 'logo','flavour', 'vat_number','certifications'
+                'name','seat', 'website', 'contact_set', 'logo','frontman', 'flavour', 'vat_number','certifications'
             )
         })]
 
