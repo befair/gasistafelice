@@ -74,6 +74,7 @@ class EditPersonForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kw):
         super(EditPersonForm, self).__init__(*args, **kw)
+
         model = self._meta.model
         autoselect_fields_check_can_add(self,model,request.user)
 

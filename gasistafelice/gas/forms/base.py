@@ -11,6 +11,8 @@ from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
+from gasistafelice.gas.models.base import GAS
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -115,3 +117,27 @@ class SingleUserForm(forms.Form):
 #        super(SupplierSingleUserForm, self).__init__(*args, **kw)
 
 
+class BaseGasForm(forms.ModelForm):
+    def __init__(self, request, *args, **kw):
+        super(BaseGasForm, self).__init__(*args, **kw)
+
+        model = self._meta.model
+
+    class Meta:
+        model = GAS
+        fields = (
+            'description', 'name','id_in_des','birthday','headquarter','contact_set',
+            'logo','association_act','intent_act','activist_set'
+        )
+        gf_fieldsets = [(None, {
+            'fields' : (
+                'name','id_in_des','birthday','headquarter','contact_set','logo',
+                'description', 'association_act','intent_act','activist_set'
+            ),
+        })]
+
+class AddGasForm(BaseGasForm):
+    pass
+
+class EditGasForm(BaseGasForm):
+    pass
