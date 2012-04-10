@@ -197,7 +197,7 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
     
     response = ""
     
-    log.debug("view_factory:type = ",view_type);
+    #log.debug("view_factory:type = ",view_type);
     handler = load_block_handler(view_type)
     
     if (args != "options"):

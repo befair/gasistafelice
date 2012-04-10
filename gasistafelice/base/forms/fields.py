@@ -13,6 +13,9 @@ from gasistafelice.base.forms.widgets import (
     PlaceWidget, ContactWidget, MultiContactWidget
 )
 
+import logging
+log = logging.getLogger(__name__)
+
 #--------------------------------------------------------------------------------
 
 class PlaceField(forms.MultiValueField):

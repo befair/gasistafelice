@@ -237,7 +237,7 @@ class Block(AbstractBlock):
                 except AttributeError as e:
                     log.warning('Refactory needed: calling non-existent write_down_messages on form_class=%s' % form_class)
                     pass #don't worry for this exception...
-                
+
         else:
             form = form_class(request, instance=request.resource)
             try:

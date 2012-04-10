@@ -13,7 +13,7 @@ from gasistafelice.rest.views.blocks import details
 
 from gasistafelice.lib.shortcuts import render_to_context_response
 
-from gasistafelice.gas.forms.base import EditGasForm
+from gasistafelice.gas.forms.base import EditGASForm
 
 import logging
 log = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class Block(details.Block):
 
     def _get_edit_form_class(self):
         log.debug ("Loading my edit form class...")
-        return EditGasForm
+        return EditGASForm
 
     def _get_user_actions(self, request):
         """Who can edit GAS informations, has also the ability to configure it."""
