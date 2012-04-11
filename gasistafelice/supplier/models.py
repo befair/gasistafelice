@@ -526,6 +526,7 @@ class Certification(models.Model, PermissionResource):
     class Meta:
         verbose_name = _("certification")
         verbose_name_plural = _("certifications")
+        ordering = ["name"]
 
     #-------------- Authorization API ---------------#
     

@@ -344,7 +344,7 @@ class BaseSupplierForm(forms.ModelForm):
 
 
     seat = make_ajax_field(Supplier, 
-        label = _("seat"),
+        label = _("seat").capitalize(),
         model_fieldname='seat',
         channel='placechannel', 
         help_text=_("Search for place by name, by address, or by city")
@@ -352,7 +352,7 @@ class BaseSupplierForm(forms.ModelForm):
     contact_set = MultiContactField(n=3,label=_('Contacts'))
 
     frontman = make_ajax_field(Supplier, 
-        label = _("frontman"),
+        label = _("frontman").capitalize(),
         model_fieldname='frontman',
         channel='personchannel', 
         help_text=_("Search for person by name")

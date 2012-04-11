@@ -165,7 +165,7 @@ class MultiContactField(forms.MultiValueField):
         if not email_found:
             # no email -> ValidationError
             log.debug("no email found")
-            raise forms.ValidationError("At least an email contact expected")
+            raise forms.ValidationError(_("At least an email contact expected"))
         
         return super(MultiContactField, self).clean(value)
 
@@ -213,7 +213,7 @@ class MultiContactField(forms.MultiValueField):
                 
                 if not found_one_pref:
                     # no preferred among the contacts -> error
-                    raise ValidationError("At least one preferred contact of type %s expected." % flav)
+                    raise ValidationError(_("At least one preferred contact of type %s expected.") % flav)
 
 
         if email_found == False:
