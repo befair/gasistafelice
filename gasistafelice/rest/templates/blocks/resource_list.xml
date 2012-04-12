@@ -7,7 +7,7 @@
 	
 		{% for res in resource_list %}
             {% block display_resource_entry %}
-			<info type="{{ res.resource_type }}" sanet_urn="{{ res.urn }}" name="{{res}}" />
+			<info type="{{ res.resource_type }}" sanet_urn="{{ res.urn }}" name="{{res}}" more_details="{{res.more_details}}" />
             {% endblock %}
 		{% endfor %} 
 		

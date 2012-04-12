@@ -36,7 +36,7 @@ jQuery.Resource = Class.extend({
         this.url = "#rest/"+urn;
         this.absolute_url = jQuery.pre + "rest/"+urn;
         this.name = name;
-        this.more_details = more_details||''
+        this.more_details = more_details || false;
     },
 
     render : function() {
@@ -50,13 +50,15 @@ jQuery.Resource = Class.extend({
         if ((this.type == 'productcategory')|| (this.type == 'delivery')|| (this.type == 'withdrawal')) { 
             res = this.name;
         } else {
-            res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
+            res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@</a>@@more_details@@";
             res = res.replace(/@@resource_type@@/g, this.type);
             res = res.replace(/@@name@@/g, this.name);
             res = res.replace(/@@urn@@/g,  this.urn);
             res = res.replace(/@@url@@/g, this.url);
             if (this.more_details) {
-                res += "<br /><span>" + this.more_details + "</span>";
+                res = res.replace(/@@more_details@@/g, '<p>' + this.more_details + '</p>');
+            } else {
+                res = res.replace(/@@more_details@@/g, '');
             }
         }
         return res;

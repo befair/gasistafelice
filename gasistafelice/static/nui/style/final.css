@@ -25,10 +25,10 @@
 	color:#005687;
 	text-indent:5px;
 	vertical-align:middle;
-	font-weight:bold;
 	font-size:15px;
 }
-/* WAS LF: border-bottom:1px dotted #ccc; */
+/* WAS LF: border-bottom:1px dotted #ccc; font-weight: bold; */
+
 
 .subtitle{
 	position:absolute;

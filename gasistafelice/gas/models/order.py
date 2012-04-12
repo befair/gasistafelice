@@ -179,8 +179,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def __unicode__(self):
 
-        # TODO domthu: translation for order state names!
-
         d = {}
 
         d['date_start'] = medium_date(self.datetime_start)
