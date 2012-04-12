@@ -227,7 +227,7 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'people',
         'descr' : 'Partecipanti',
-        'blocks' : ['gas_list', 'suppliers', 'persons']  #, 'suppliers_report'
+        'blocks' : ['gas_list', 'suppliers_report', 'persons']  #, 'suppliers'
     },{
         'name' : 'order',
         'descr' : 'Ordini',
