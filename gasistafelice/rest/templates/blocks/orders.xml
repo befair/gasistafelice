@@ -1,0 +1,11 @@
+{% extends "blocks/resource_list.xml" %}
+{% load i18n %}
+
+{% block display_resource_entry %}
+<info type="{{ res.resource_type }}" sanet_urn="{{ res.urn }}" name="{{res}}" more_details="{{ res.more_details }}"> 
+    {% block order_actions %}
+        <info_action title="Vai al patto" name="gotopact" url="{{ res.pact.get_absolute_url_page }}" background_url="{{ res.pact.icon.url }}" />
+    {% endblock %}
+</info>
+{% endblock %}
+

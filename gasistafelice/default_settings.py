@@ -264,7 +264,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance_gas', 'unpaid_orders', 'transactions', 'recharge', 'fee']
+        'blocks' : ['balance_gas', 'insolutes_orders', 'transactions', 'recharge', 'fee']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',

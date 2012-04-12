@@ -306,6 +306,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     #by = self.get_email(user, issuer)
                     log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
                     
+    def get_absolute_url_order_page_for_user(self, user):
+
+        gasmembers = user.person.gasmembers.filter(gas=self.gas)
+        if gasmembers.count():
+            absolute_url = gasmembers[0].get_absolute_url_page()
+        else:
+            absolute_url = None
+            
+        return absolute_url 
 
 
     def close_if_needed(self, sendemail=False, issuer=None):

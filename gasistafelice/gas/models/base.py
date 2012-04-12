@@ -564,7 +564,8 @@ class GAS(models.Model, PermissionResource):
     @property
     def insolutes(self):
         from gasistafelice.gas.models.order import GASSupplierOrder
-        orders = GASSupplierOrder.objects.unpaid().filter(pact__gas=self)
+        orders = GASSupplierOrder.objects.closed().filter(pact__gas=self) | \
+            GASSupplierOrder.objects.unpaid().filter(pact__gas=self)
         return orders
 
 #------------------------------------------------------------------------------

@@ -29,13 +29,14 @@ jQuery.render_bool = function (val) {
 /* Resource management facitilies */
 jQuery.Resource = Class.extend({
 
-    init : function(urn, name) {
+    init : function(urn, name, more_details) {
         this.urn = urn;
         this.type = urn.split('/')[0];
         this.id = urn.split('/')[1];
         this.url = "#rest/"+urn;
         this.absolute_url = jQuery.pre + "rest/"+urn;
         this.name = name;
+        this.more_details = more_details||''
     },
 
     render : function() {
@@ -54,6 +55,9 @@ jQuery.Resource = Class.extend({
             res = res.replace(/@@name@@/g, this.name);
             res = res.replace(/@@urn@@/g,  this.urn);
             res = res.replace(/@@url@@/g, this.url);
+            if (this.more_details) {
+                res += "<br /><span>" + this.more_details + "</span>";
+            }
         }
         return res;
     },
@@ -508,24 +512,31 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 
                 var name = $(this).attr('name');
                 var urn = $(this).attr('sanet_urn');
+                var more_details = $(this).attr('more_details');
                 var row_id = resource_type + '_row_' + urn.split('/').join('_');
 
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
                 
-                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
+                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name, more_details).render());
 
-                var actions = '';
-                var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
+                var actions = '<ul style="display:table">';
+                //WAS LF: this is just a link, not an action
+                //var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" title=\"@@action_title@@\">@@action_html@@</a>";
+                var action_template = "<li style=\"display:table-cell;\"><a href=\"@@action_url@@\" name=\"@@action_name@@\" in_popup=\"@@in_popup@@\" title=\"@@action_title@@\">@@action_div@@</a></li>";
+                var action_div = "<div class=\"row_action\" style=\"background-image: url('@@background_url@@');\"> </div>";
 
                 $(this).find('info_action').each(function() {
 
                     var action = action_template.replace(/@@action_name@@/g, $(this).attr("name"));
-                    action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
+                    action = action.replace(/@@action_title@@/g, $(this).attr("title"));
                     action = action.replace(/@@action_url@@/g, $(this).attr("url"));
-                    action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
+                    action = action.replace(/@@in_popup@@/g, $(this).attr("in_popup")||0);
+                    var this_action_div = action_div.replace(/@@background_url@@/g, $(this).attr("background_url"));
+                    action = action.replace(/@@action_div@@/g, this_action_div);
                     actions += action;
                 });
+                actions += "</ul>"
 
                 a = a.replace(/@@actions@@/g, actions);		
 

@@ -78,6 +78,10 @@ class BlockWithList(AbstractBlock):
     #                                                                              #     
     #------------------------------------------------------------------------------#
 
+    def _get_more_context_info(self, request):
+        """Return dict to be inserted in 'more_info' key of context dict"""
+        return {}
+
     def _get_resource_list(self, request):
         """Return resource list to be rendered"""
         raise NotImplementedError
@@ -150,6 +154,7 @@ class BlockWithList(AbstractBlock):
                 'resource'   : self.resource,
                 'resource_list'   : self._get_resource_list(request),
                 'user_actions'    : self._get_user_actions(request),
+                'more_info'     : self._get_more_context_info(request),
             }
 
             # Not used now

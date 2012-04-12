@@ -28,7 +28,10 @@ class Block(BlockWithList):
         )
 
     def _get_resource_list(self, request):
-        return request.resource.orders.open()
+        orders = request.resource.orders.open()
+        for order in orders:
+            order.order_url = order.get_absolute_url_order_page_for_user(request.user)
+        return orders
 
     def _get_user_actions(self, request):
 

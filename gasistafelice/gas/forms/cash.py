@@ -615,16 +615,13 @@ class BalanceGASForm(BalanceForm):
     wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
     wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
 
-#    #orders_grd = forms.ModelMultipleChoiceField(
-#    orders_grd = forms.ModelChoiceField(
-#        label=_('gas'), queryset=GASSupplierOrder.objects.none(), 
-    orders_grd = forms.MultipleChoiceField(
-        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
-        required=False, 
-        widget=forms.CheckboxSelectMultiple
-    )
-
-    wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
+#    orders_grd = forms.MultipleChoiceField(
+#        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
+#        required=False, 
+#        widget=forms.CheckboxSelectMultiple
+#    )
+#
+#    wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
@@ -646,11 +643,9 @@ class BalanceGASForm(BalanceForm):
             self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
         #show insolutes
-        #FIXME: render list of link inside one form fields
         _choice, stat = get_html_insolutes(request.resource.gas.insolutes, EURO_LABEL)
-        self.fields['orders_grd'].choices = _choice
-        #self.fields['orders_grd'].queryset = _choice
-        self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
+        #WAS LF: self.fields['orders_grd'].choices = _choice
+        #WAS LF: self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
 
 
 #-------------------------------------------------------------------------------
