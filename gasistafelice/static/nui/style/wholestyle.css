@@ -287,8 +287,8 @@ border:0px;
 .block_body {
 	display : block;
 	width : 100%;
-	/*RECENT overflow : auto;
-	padding-top: 2px;
+	overflow : auto;
+	/*padding-top: 2px;
 	padding-bottom: 2px;*/
 }
 
