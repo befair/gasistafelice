@@ -54,7 +54,9 @@ def short_date(d):
 def datetime_round_ten_minutes(dt):
 
     #dt.minutes = (dt.minutes/15)*15
-    dt += timedelta(minutes=5)
+
+    #WAS: dt += timedelta(minutes=5)
+    #NOTE LF: to be sure that an order is opened and not prepared
     dt -= timedelta(minutes=dt.minute % 10,
                      seconds=dt.second,
                      microseconds=dt.microsecond)
