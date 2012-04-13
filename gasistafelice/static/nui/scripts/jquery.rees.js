@@ -284,9 +284,17 @@ jQuery.UIBlock = Class.extend({
             else
                 method = "post";
 
-            //TODO: Notify user success/failure
-            $[method](action_el.attr("url"));
-            this.update_handler(this.block_box_id);
+            var accept = true;
+            var confirm_text = action_el.attr('confirm_text');
+            if (confirm_text) {
+                accept = confirm(confirm_text);
+            }
+
+            if (accept) {
+                //TODO: Notify user success/failure
+                $[method](action_el.attr("url"));
+                this.update_handler(this.block_box_id);
+            }
         }
 
         return false;
@@ -300,7 +308,7 @@ jQuery.UIBlock = Class.extend({
         
         //Render block actions
         var contents = jQel.find('content[type="user_actions"]');
-        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" method=\"@@action_method@@\" />";
+        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" method=\"@@action_method@@\" confirm_text=\"@@confirm_text@@\" />";
         var actions = '';
 
         if (contents.find('action').length > 0) {
@@ -311,6 +319,7 @@ jQuery.UIBlock = Class.extend({
                 action = action.replace(/@@action_url@@/g, $(this).attr("url"));
                 action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
                 action = action.replace(/@@action_method@@/g, $(this).attr("method"));
+                action = action.replace(/@@confirm_text@@/g, $(this).attr("confirm_text"));
                 actions += action;
             });
         }

@@ -40,26 +40,31 @@ log = logging.getLogger(__name__)
 
 class Action(object):
 
-    def __init__(self, name, verbose_name, url, popup_form=True, method="POST"):
+    def __init__(self, name, verbose_name, url, popup_form=True, method="POST", confirm_text=""):
 
         self.name = name
         self.verbose_name = verbose_name
         self.url = url
         self.popup_form = popup_form
         self.method = method
+        self.confirm_text = confirm_text
 
 class ResourceBlockAction(Action):
     """Action included in a resource block.
 
     Usually you should use this class"""
 
-    def __init__(self, resource, block_name, name, verbose_name, url=None, popup_form=True, method="POST"):
+    def __init__(self, resource, block_name, name, verbose_name, url=None, 
+        popup_form=True, method="POST", confirm_text=""
+    ):
 
         self.resource = resource
         self.block_name = block_name
         if not url:
             url = "%s/%s/%s" % (resource.urn, block_name, name)
-        super(ResourceBlockAction, self).__init__(name, verbose_name, url, popup_form, method=method)
+        super(ResourceBlockAction, self).__init__(name, verbose_name, 
+            url, popup_form, method=method, confirm_text=confirm_text
+        )
 
 #------------------------------------------------------------------------------#
 #                                                                              #

@@ -118,25 +118,26 @@ class Block(AbstractBlock):
             for t in get_allowed_transitions(request.resource, request.user):
                 #FIXME: related to gas/workflows_data.py ugettext_laxy FIXME
                 local_transitions = {
+                    'Open' : 'Apri',
                     'Close' : 'Chiudi',
                     'Close and send email' : 'Chiudi e invia email',
                     'Archive' : 'Archivia',
                     'Cancel' : 'Annulla',
                 }
                 
-                translated_t = local_transitions.get(t,t)
+                translated_t = local_transitions.get(t.name,t.name)
                 #ENDFIXME
 
-                user_actions.append( 
-                    ResourceBlockAction( 
-                        block_name = self.BLOCK_NAME,
-                        resource = request.resource,
-                        name="transition/%s" % t.name.lower(), 
-                        verbose_name=translated_t, 
-                        popup_form=False,
-                        url=None
-                    )
+                action = ResourceBlockAction( 
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name="transition/%s" % t.name.lower(), 
+                    verbose_name=translated_t, 
+                    popup_form=False,
+                    url=None
                 )
+
+                user_actions.append( action )
                 
 
         return user_actions

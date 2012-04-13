@@ -170,7 +170,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     class Meta:
         verbose_name = _('order issued to supplier')
-        verbose_name = _('orders issued to supplier')
+        verbose_name_plural = _('orders issued to supplier')
         ordering = ('datetime_end', 'datetime_start')
         app_label = 'gas'
         
@@ -545,6 +545,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def current_state(self):
         return get_state(self)
+
+    @property
+    def localized_current_state(self):
+        s = self.current_state.name
+        return trans_state_d.get(s, s)
 
     @property
     def workflow(self):
@@ -1177,7 +1182,7 @@ WHERE order_id = %s \
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
         display.Resource(name="supplier", verbose_name=_("Supplier")),
-        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
+        models.CharField(max_length=32, name="localized_current_state", verbose_name=_("Current state")),
         datetime_start, datetime_end, order_minimum_amount, 
         delivery, display.Resource(name="referrer_person", verbose_name=_("Referrer")),
         withdrawal, display.Resource(name="withdrawal_referrer_person", verbose_name=_("Withdrawal referrer")),
