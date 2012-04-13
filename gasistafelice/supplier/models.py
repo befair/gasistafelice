@@ -349,8 +349,12 @@ class Supplier(models.Model, PermissionResource):
         # Who can edit details of a Supplier in a DES ?
         # * DES administrators
         # * referrers for that supplier        
-        # * gas supplier_referrers for that supplier
-        allowed_users = self.des.admins | self.referrers | self.supplier_referrers
+        #WAS: * gas supplier_referrers for that supplier
+        #NOTE LF: to update supplier info and stocks the user must have at least
+        #NOTE LF: SUPPLIER_REFERRER role GAS_REFERRER_SUPPLIER is not enough
+
+        allowed_users = self.des.admins | self.referrers 
+        #WAS: allowed_users |= self.supplier_referrers
         return user in allowed_users 
     
     # Row-level DELETE permission
