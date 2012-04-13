@@ -1128,7 +1128,7 @@ class GASMember(models.Model, PermissionResource):
     def last_fee(self):
         """last fee for this gasmember"""
         rv = ''
-        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/fees')
+        latest = self.gas.accounting.last_person_fee(self.person)
         if latest:
             return u"%(amount)s\u20AC %(date)s<br />%(note)s" % {
                 'amount' : "%.2f" % latest.amount,

@@ -127,7 +127,7 @@ class BaseGASForm(forms.ModelForm):
 
 
     headquarter = make_ajax_field(GAS, 
-        label = _("headquarter"),
+        label = _("headquarter").capitalize(),
         model_fieldname='headquarter',
         channel='placechannel', 
         help_text=_("Search for place by name, by address, or by city")
@@ -183,12 +183,12 @@ class BaseGASForm(forms.ModelForm):
         model = GAS
         fields = (
             'description', 'name','id_in_des','birthday','headquarter','contact_set',
-            'logo','association_act','intent_act'
+            'logo','association_act','intent_act', 'membership_fee'
         )
         gf_fieldsets = [(None, {
             'fields' : (
-                'name','id_in_des','birthday','headquarter','contact_set','logo',
-                'description', 'association_act','intent_act'
+                'name','id_in_des','birthday','headquarter', 'membership_fee', 
+                'contact_set','logo', 'description', 'association_act','intent_act'
             ),
         })]
 

@@ -342,7 +342,7 @@ class EcoGASMemberFeeForm(forms.Form):
         if not gm in self.__gas.gasmembers:
             raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS, you cannot register fee GASMembers cash!"))
 
-        gm.person.accounting.pay_membership_fee(self.__gas, year)
+        gm.gas.accounting.pay_membership_fee(gm, year)
 
 EcoGASMemberFeeFormSet = formset_factory(
     form=EcoGASMemberFeeForm,

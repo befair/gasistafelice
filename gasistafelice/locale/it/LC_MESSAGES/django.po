@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.9.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-13 16:22+0200\n"
+"POT-Creation-Date: 2012-04-13 16:50+0200\n"
 "PO-Revision-Date: 2012-03-08 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <informatica@desmacerata."
 "it>\n"
@@ -1112,7 +1112,7 @@ msgstr "Quota di iscrizione al GAS "
 
 #: gas/models/base.py:71
 msgid "membership fee"
-msgstr "quota associativa versata"
+msgstr "quota associativa"
 
 #: gas/models/base.py:73
 msgid "Suppliers bound to the GAS through a solidal pact"

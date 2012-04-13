@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
 from simple_accounting.exceptions import MalformedTransaction
@@ -17,8 +17,6 @@ import datetime
 import logging
 log = logging.getLogger(__name__)
 
-GAS_WITHDRAWAL = 'GAS_WITHDRAWAL'
-
 class GasAccountingProxy(AccountingProxy):
     """
     This class is meant to be the place where implementing the accounting API 
@@ -30,6 +28,9 @@ class GasAccountingProxy(AccountingProxy):
     tailoring it to the specific needs of the ``GAS``' model.    
     """
     
+    GAS_WITHDRAWAL = 'GAS_WITHDRAWAL'
+    MEMBERSHIP_FEE = 'MEMBERSHIP_FEE'
+
     def pay_supplier(self, order, amount, refs=None, descr=None, date=None, multiple=None):
         """
         Transfer a given (positive) amount ``amount`` of money from the GAS's cash
@@ -42,7 +43,7 @@ class GasAccountingProxy(AccountingProxy):
         (e.g. a list of supplier orders this payment is related to).   
         """
         if amount < 0:
-            raise MalformedTransaction(ug(u"Payment amounts must be non-negative"))
+            raise MalformedTransaction(ugettext(u"Payment amounts must be non-negative"))
         gas = self.subject.instance
         supplier = order.supplier
         source_account = self.system['/cash']
@@ -66,7 +67,7 @@ class GasAccountingProxy(AccountingProxy):
 
     def withdraw_from_member_account_update(self, member, updated_amount, refs, date=None):
 
-        tx = Transaction.objects.get_by_reference(refs).get(kind=GAS_WITHDRAWAL)
+        tx = Transaction.objects.get_by_reference(refs).get(kind=GasAccountingProxy.GAS_WITHDRAWAL)
         if tx:
             # WARNING: if you update a transaction, you will lose old transaction info. Use with care!
             update_transaction(tx, amount=updated_amount, date=date)
@@ -92,7 +93,7 @@ class GasAccountingProxy(AccountingProxy):
 
             #refs = [gm, self.__order] in cash.py
             order_txs = Transaction.objects.get_by_reference([gasmember, order])
-            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+            order_txs = order_txs.filter(kind=GasAccountingProxy.GAS_WITHDRAWAL)
             #Fixme: 
             existing_amount = order_txs.aggregate(Sum('source__amount'))
             number_of_txs = order_txs.count()
@@ -120,8 +121,8 @@ class GasAccountingProxy(AccountingProxy):
         #log.debug("ACCOUNTING %(computed_amount)s %(existing_txs)s" % {'computed_amount': computed_amount, 'existing_txs': existing_txs})
 
         gas = self.subject.instance
-        if not member.person.is_member(gas):
-            raise MalformedTransaction(ug("A GAS can withdraw only from its members' accounts"))
+        if member.gas != gas:
+            raise MalformedTransaction(ugettext("A GAS can withdraw only from its members' accounts"))
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
         #'gas': gas.id_in_des,
@@ -133,7 +134,7 @@ class GasAccountingProxy(AccountingProxy):
             issuer, description, source_account, target_account
         ))
         transaction = register_simple_transaction(source_account, target_account, new_amount, 
-            description, issuer, date=date, kind=GAS_WITHDRAWAL
+            description, issuer, date=date, kind=GasAccountingProxy.GAS_WITHDRAWAL
         )
         if refs:
             transaction.add_references(refs)
@@ -236,7 +237,7 @@ class GasAccountingProxy(AccountingProxy):
         if order.pact.gas == gas:
 
             order_txs = Transaction.objects.get_by_reference([order])
-            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+            order_txs = order_txs.filter(kind=GasAccountingProxy.GAS_WITHDRAWAL)
 
             ctype_gm = ContentType.objects.get_for_model(GASMember)
 
@@ -264,7 +265,7 @@ class GasAccountingProxy(AccountingProxy):
             return members
             
         else:
-            raise TypeError(ug("GAS %(gas)s has not placed order %(order)s" % {
+            raise TypeError(ugettext("GAS %(gas)s has not placed order %(order)s" % {
                 'gas': gas.id_in_des, 'order': order
             }))
 
@@ -289,7 +290,7 @@ class GasAccountingProxy(AccountingProxy):
         if order.pact.gas == gas:
 
             order_txs = Transaction.objects.get_by_reference([order])
-            order_txs = order_txs.filter(kind=GAS_WITHDRAWAL)
+            order_txs = order_txs.filter(kind=GasAccountingProxy.GAS_WITHDRAWAL)
 
             ctype_gm = ContentType.objects.get_for_model(GASMember)
             # Retrieve order WITHDRAWs related to GASMembers
@@ -312,7 +313,7 @@ class GasAccountingProxy(AccountingProxy):
             return members
             
         else:
-            raise TypeError(ug("GAS %(gas)s has not placed order %(order)s" % {
+            raise TypeError(ugettext("GAS %(gas)s has not placed order %(order)s" % {
                 'gas': gas.id_in_des, 'order': order
             }))
 
@@ -343,7 +344,7 @@ class GasAccountingProxy(AccountingProxy):
         """
 
         if amount < 0:
-            raise MalformedTransaction(ug("Payment amounts must be non-negative"))
+            raise MalformedTransaction(ugettext("Payment amounts must be non-negative"))
         gas = self.subject.instance
         non_des = self.get_non_des_accounting()
         if not non_des:
@@ -360,16 +361,16 @@ class GasAccountingProxy(AccountingProxy):
             entry_point = self.get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
             target_account = non_des_system['/wallet']
         else:
-            #WAS raise MalformedTransaction(ug("Payment target %s not identified" % target))
+            #WAS raise MalformedTransaction(ugettext("Payment target %s not identified" % target))
             #coercing to Unicode: need string or buffer, __proxy__ found
-            raise MalformedTransaction(ug("Payment target %s not identified") % target)
+            raise MalformedTransaction(ugettext("Payment target %s not identified") % target)
 
         description = "%(gas)s %(target)s %(causal)s" % {
             'gas': gas.id_in_des,
             'target': target,
             'causal': causal
         }
-        #WAS raise description = ug("%(gas)s %(target)s %(causal)s") % { ...
+        #WAS raise description = ugettext("%(gas)s %(target)s %(causal)s") % { ...
         #WAS exceptions must be old-style classes or derived from BaseException, not unicode
 
         issuer = self.subject
@@ -394,7 +395,7 @@ class GasAccountingProxy(AccountingProxy):
             system.add_account(parent_path=parent_path, name=name, kind=kind)
             account = system[path]
         if not account:
-            raise MalformedTransaction(ug("Unknow account: %(system)s %(path)s %(kind)s") % {
+            raise MalformedTransaction(ugettext("Unknow account: %(system)s %(path)s %(kind)s") % {
                 'system': system,
                 'path': path,
                 'kind': kind
@@ -404,3 +405,53 @@ class GasAccountingProxy(AccountingProxy):
     def get_non_des_accounting(self):
         des = self.subject.instance.des
         return des.accounting
+
+    def pay_membership_fee(self, member, year, date=None):
+        """
+        Pay the annual membership fee for this GAS member.
+        
+        Fee amount is determined by the ``gas.membership_fee`` attribute.
+        
+        If the gas member belongs to another ``gas``, 
+        a ``MalformedTransaction`` exception is raised.
+        """
+        gas = self.subject.instance
+        if member.gas != gas:
+            raise MalformedTransaction(ugettext("A person can't pay membership fees to a GAS that (s)he is not member of"))
+
+        person = member.person
+        source_account = self.system['/members/' + person.uid]
+        target_account = self.system['/cash']
+
+        amount = gas.membership_fee
+        description = ugettext("year %(year)s --> %(person)s") % {'person': person.report_name, 'year': year,}
+        issuer = self.subject
+        if not date:
+            date = datetime.datetime.now()  #_date.today
+
+        transaction = register_simple_transaction(source_account, target_account, 
+            amount, description, issuer, date, kind=GasAccountingProxy.MEMBERSHIP_FEE
+        )
+        transaction.add_references([person, gas])
+
+
+    def last_person_fee(self, person):
+        """Get latest membership fee paid by a person.
+
+        Return None if this person is not ever been member of the GAS.
+
+        Person parameter is preferred instead of member parameter because membership is temporary
+        """
+
+        transactions = self.subject.issued_transactions_set.get_by_reference([person])
+        transactions = transactions.filter(
+            kind=GasAccountingProxy.MEMBERSHIP_FEE
+        )
+        fees = self.system['/cash'].ledger_entries.filter(transaction__in=transactions)
+
+        try:
+            last_fee = fees.latest('transaction__date')
+        except LedgerEntry.DoesNotExist:
+            last_fee = None
+        return last_fee
+
