@@ -8,7 +8,6 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-
 from gasistafelice.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
 from gasistafelice.gas.models.base import GAS
 from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
@@ -145,6 +144,7 @@ class Block(BlockSSDataTables):
 
     def _get_records(self, request, querySet):
         """Return records of rendered table fields."""
+
         data = {}
         i = 0
         c = querySet.count()
