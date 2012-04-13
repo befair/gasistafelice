@@ -177,7 +177,8 @@ class GASSupplierOrder(models.Model, PermissionResource):
     def __init__(self, *args, **kw):
         super(GASSupplierOrder, self).__init__(*args, **kw)
 
-    def __unicode__(self):
+    @property
+    def state_info(self):
 
         d = {}
 
@@ -238,6 +239,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         state = trans_state_d.get(state, state)
         state += " " + date_info
+        return state
+
+    @property
+    def common_name(self):
+        cn = ugettext("Ord. %(order_num)s %(pact)s") % {
+            'order_num' : self.pk,
+            'pact' : self.pact,
+        }
+        return cn
+
+    def __unicode__(self):
+
+        state = self.state_info
+
         ref = self.referrer_person
 
         if ref:
@@ -247,11 +262,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = ugettext("Ord. %(order_num)s %(pact)s - %(state)s") % {
-                    'pact' : self.pact,
-                    'state' : state,
-                    'order_num' : self.pk,
-                    'ref' : ref
+        rv = "%(common_name)s - %(state)s" % {
+            'common_name' : self.common_name,
+            'state' : state,
+            'ref' : ref
         }
 
         if self.group_id:
@@ -259,6 +273,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #if settings.DEBUG:
         #    rv += " [%s]" % self.pk
         return rv
+
 
     @property
     def report_name(self):
