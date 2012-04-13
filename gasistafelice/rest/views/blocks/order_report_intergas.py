@@ -114,7 +114,6 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         # GASSupplierOrderProduct objects
-        #print "GAS_LIST %s " % self._get_intergas_gas_list()
         if self.resource.order.group_id:
             return GASSupplierOrderProduct.objects.filter(
                 order__in=self._get_intergas_orders(), gasmember_order_set__ordered_amount__gt=0
@@ -125,7 +124,7 @@ class Block(BlockSSDataTables):
     def _get_intergas_orders(self):
         if self.resource.order.group_id:
             return GASSupplierOrder.objects.filter(group_id=self.resource.order.group_id)
-        return GASSupplierOrderProduct.objects.none()
+        return GASSupplierOrder.objects.none()
 
     def _get_intergas_gas_list(self):
         if self.resource.order.group_id:
@@ -223,13 +222,21 @@ class Block(BlockSSDataTables):
 
     def _create_pdf(self):
 
-        pdf_data = self.resource.get_pdf_data(requested_by=self.request.user)
+        #WAS pdf_data = self.resource.get_pdf_data(requested_by=self.request.user)
+        print "GAS_LIST %s " % self._get_intergas_gas_list()
+        order_list = self._get_intergas_orders()
+        print "order_list %s " % order_list
+        pdf_data = None
+        #for order in order_list:
+        #    pdf_data |= order.get_pdf_data(requested_by=self.request.user)
+
+        pdf_data = self.resource.get_intergas_pdf_data(requested_by=self.request.user)
 
         if not pdf_data:
             rv = self.response_error(_('Report not generated')) 
         else:
             response = HttpResponse(pdf_data, mimetype='application/pdf')
-            response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
+            response['Content-Disposition'] = "attachment; filename=InterGAS_" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv
 

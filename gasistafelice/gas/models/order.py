@@ -1137,6 +1137,107 @@ WHERE order_id = %s \
 
         return records
 
+    def get_intergas_orders(self):
+        if self.group_id:
+            return GASSupplierOrder.objects.filter(group_id=self.group_id)
+        return GASSupplierOrder.objects.none()
+
+
+    def get_intergas_pdf_data(self, requested_by=None):
+        """Return PDF raw content to be rendered somewhere (email, or http)"""
+
+        if not requested_by:
+            requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+        
+        print "order_list: %s" % self.get_intergas_orders()
+        orderables_aggregate = GASSupplierOrderProduct.objects.none()
+        for order in self.get_intergas_orders():
+            orderables_aggregate = orderables_aggregate | order.orderable_products.filter(
+                    gasmember_order_set__ordered_amount__gt=0
+                    ).distinct()
+        
+        ordereds = self.ordered_products
+
+        recProd, calc_tot_price, calc_prod_count = self.__get_intergas_pdfrecords_products(orderables_aggregate.order_by('gasstock__stock__product')) 
+
+        #families
+        calc_fam_count = '?'
+
+        context_dict = {
+            'order' : self,
+            'recProd' : recProd,
+            'prod_count' : calc_prod_count,
+            'total_amount' : calc_tot_price, 
+            'fam_count' : calc_fam_count, 
+            'have_note' : bool(self.allnotes.count() > 0),
+            'user' : requested_by,
+        }
+#Cannot resolve keyword 'gasstock_set' into field. Choices are: enabled, gassupplierorder, historicalorderable_product_set, id, minimum_amount, orderable_product_set, pact, step, stock
+        REPORT_TEMPLATE = "blocks/order_report_intergas/report.html"
+
+        template = get_template(REPORT_TEMPLATE)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
+        pisadoc = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
+        if not pisadoc.err:
+            rv = result.getvalue()
+        else:
+            log.debug('Some problem while generate pdf err: %s' % pisadoc.err)
+            rv = None
+        return rv
+
+    def __get_intergas_pdfrecords_products(self, querySet):
+        """Return records of rendered table fields."""
+
+        records = []
+        c = querySet.count()
+        _actual_stock = -1
+        _product = ''
+        _price = 0
+        _tot_gasmembers = 0
+        _tot_amount = 0
+        _tot_price = 0
+        calc_tot_price = 0 
+        calc_prod_count = 0
+
+        for el in querySet:
+            if el.tot_price > 0:
+                if ((_actual_stock != -1) & (_actual_stock != el.product.pk)):
+                    records.append({
+                       'product' : _product,
+                       'price' : _price,
+                       'tot_gasmembers' : _tot_gasmembers,
+                       'tot_amount' : _tot_amount,
+                       'tot_price' : _tot_price,
+                    })
+                if _actual_stock != el.product.pk:
+                    calc_prod_count += 1
+                    _actual_stock = el.product.pk
+                    _product = el.product.name.encode('utf-8', "ignore")
+                    _price = el.order_price
+                    _tot_gasmembers = el.tot_gasmembers
+                    _tot_amount = el.tot_amount
+                    _tot_price = el.tot_price
+                else:
+                    #_product = el.product.name.encode('utf-8', "ignore")
+                    _price += el.order_price
+                    _tot_gasmembers += el.tot_gasmembers
+                    _tot_amount += el.tot_amount
+                    _tot_price += el.tot_price
+                calc_tot_price += el.tot_price
+
+        if _actual_stock != -1:
+            records.append({
+               'product' : _product,
+               'price' : _price,
+               'tot_gasmembers' : _tot_gasmembers,
+               'tot_amount' : _tot_amount,
+               'tot_price' : _tot_price,
+            })
+        return records, calc_tot_price, calc_prod_count
+
     #-----------------------------------------------#
 
     display_fields = (

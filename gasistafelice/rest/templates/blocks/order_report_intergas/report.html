@@ -67,13 +67,8 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ prod_count }}</h2></td>
                 <td style="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
                 <td class="sumPricefield taright">{% trans "Total expected" %}</td>
-                {% if total_calc == total_amount%}
-                    <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
+                <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
 <img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
-                {% else %}
-                    <td class="sumPricevalue taright alert">&euro; {{total_amount|floatformat:"2"}}   /  calc:{{total_calc|floatformat:"2"}}
-<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
-                {% endif %}
                 </td>
             </tr>
         </table>
@@ -92,52 +87,6 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
 {%endblock%}
 
 {%block content%}
-<table class="tbl" border="0" cellpadding="1" cellspacing="1">
-<tbody>
-{% assign ActualFamily -1 %}
-
-    {% for row in recFam %}
-        {% if row.tot_price > 0  %}
-            <tr>
-                <td class="product">{{row.product|truncatewords:"200"}}
-                {% if row.note %}
-                    <div class="note">{{row.note|truncatewords:"69"}}</div>
-                {% endif %}
-                </td>
-                {% if row.price_changed %}
-                    <td class="taright alert uprice">&euro;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
-                {% else %}
-                    <td class="taright uprice">&euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
-                {% endif %}
-                {% if row.amount > 1 %}
-                    <td class="taright qta bd">{{row.amount|floatformat:"-2"}}</td>
-                {% else %}
-                    <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
-                {% endif %}
-                <td class="taright totprice">&euro;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
-
-                {% if ActualFamily == -1 or ActualFamily != row.family_id %}
-                    {% set ActualFamily = row.family_id %}
-                    {% for fam in subFam %}
-                        {% if fam.family_id == ActualFamily %}
-                            {% if fam.basket_products == 1 %}
-                                <td class="fam" >{{ fam.gasmember }}&nbsp;&euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
-                            {% else %}
-                                <td class="fam" rowspan="{{ fam.basket_products }}">{{ fam.gasmember }}<br /> &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            </tr>
-
-        {%  endif %}
-
-    {%  endfor %}
-</tbody>
-</table>
-
-<hr />
-
 <table class="tbl" border="0" cellpadding="1" cellspacing="1">
 <thead>
     <th>Prodotto</th>
