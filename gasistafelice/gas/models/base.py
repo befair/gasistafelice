@@ -1038,8 +1038,16 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def basket_to_be_delivered(self):
-        from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders.closed())
+        """GAS member's products ordered of closed orders"""
+
+        #WAS: from gasistafelice.gas.models import GASMemberOrder
+        #WAS: return GASMemberOrder.objects.filter(
+        #WAS:     purchaser=self,
+        #WAS:     ordered_product__order__in=self.orders.closed()
+        #WAS: )
+        return self.gasmember_order_set.filter(
+            ordered_product__order__in=self.orders.closed()
+        )
 
     @property
     def orderable_products(self):
