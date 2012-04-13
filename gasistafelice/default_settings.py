@@ -141,6 +141,9 @@ INSTALLED_APPS = [
     #'django.contrib.staticfiles',
 ]
 
+#INSTALLED_APPS.insert(0, 'django_extensions')
+
+
 try:
     import rosetta
 except ImportError:

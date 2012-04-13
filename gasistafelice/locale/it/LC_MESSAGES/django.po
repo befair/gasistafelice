@@ -74,23 +74,23 @@ msgstr "Un rimborso fatto da un fornitore ad un GAS"
 
 #: simple_accounting_settings.py:12
 msgid "An arbitrary money transfer related to a solidal pact"
-msgstr ""
+msgstr "Un arbitrario trasferimento di soldi relativo a un patto solidale"
 
 #: simple_accounting_settings.py:13
 msgid "A money transfer related to a gas member"
-msgstr ""
+msgstr "Un trasferimento economico relativo a un gasista"
 
 #: simple_accounting_settings.py:14
 msgid "Refund for an empty container returned"
-msgstr ""
+msgstr "Rimborso per un vuoto a rendere"
 
 #: simple_accounting_settings.py:15
 msgid "An arbitrary money transfer"
-msgstr ""
+msgstr "Un arbitrario trasferimento di soldi"
 
 #: simple_accounting_settings.py:16
 msgid "An extra money transfer related to a GAS"
-msgstr ""
+msgstr "Un trasferimento extra di denaro a un GAS"
 
 #: utils.py:20 lib/djangolib.py:67
 #, python-format
@@ -102,11 +102,11 @@ msgstr ""
 
 #: admin/models.py:32
 msgid "GAS membership"
-msgstr "gasista"
+msgstr "È membro del GAS"
 
 #: admin/models.py:33
 msgid "GAS memberships"
-msgstr "gasisti"
+msgstr "È membro dei GAS"
 
 #: admin/models.py:106
 msgid "Identity"
@@ -273,7 +273,7 @@ msgstr "Nome utente"
 
 #: base/models.py:850
 msgid "GAS membership can only be tested against a GAS model instance"
-msgstr ""
+msgstr "Il membro GAS può solo essere testato contro una istanza modello GAS"
 
 #: base/models.py:867 base/forms/fields.py:101 supplier/models.py:57
 msgid "flavour"
@@ -661,53 +661,55 @@ msgid "birthday"
 msgstr "Compleanno"
 
 #: gas/forms/cash.py:71
-#, fuzzy
 msgid "Cannot retrieve gasmember: "
-msgstr "Decurtazione gasista"
+msgstr "Non è possibile recuperare il gasista: "
 
 #: gas/forms/cash.py:74
 msgid "Cannot retrieve gasmember with id "
-msgstr ""
+msgstr "Non è possibile recuperare il gasista con id "
 
 #: gas/forms/cash.py:82
 msgid ""
 "You have to write a number (even 0) for a curtail that you want to apply"
-msgstr ""
+msgstr "Devi scrivere un numero (anche 0) per una riduzione che vuoi applicare"
 
 #: gas/forms/cash.py:94 gas/forms/cash.py:187 gas/forms/cash.py:420
 msgid ""
 "You are not a cash_referrer or the order's referrer, you cannot update "
 "GASMembers cash!"
-msgstr ""
+msgstr "Tu non sei un cash_referrer o l'ordine riferito, non puoi aggiornare "
+"GASMembers cash!"
 
 #: gas/forms/cash.py:100
 msgid "order is not in the right state!"
-msgstr ""
+msgstr "l'ordine non è nel giusto stato"
 
 #: gas/forms/cash.py:191 gas/forms/cash.py:424 gas/forms/cash.py:556
 msgid "order is not in good state!"
-msgstr ""
+msgstr "l'ordine non è in buono stato"
 
 #: gas/forms/cash.py:203
 #, python-format
 msgid "added by: %s"
-msgstr ""
+msgstr "aggiunto da: %s"
 
 #: gas/forms/cash.py:258 gas/forms/cash.py:339
 msgid "You are not a cash_referrer, you cannot update GASMembers cash!"
-msgstr ""
+msgstr "Tu non sei un cash_referrer, non puoi aggiornare GASMembers cash!"
 
 #: gas/forms/cash.py:263
 msgid ""
-"You are not a cash_referrer for the GAS of the gasmember, you cannot "
+"You are not a cash_referrer for the GAS, you cannot "
 "recharge GASMembers cash!"
-msgstr ""
+msgstr "Tu non sei un referente economico del GAS, non puoi "
+"ricaricare  gasisti!"
 
 #: gas/forms/cash.py:343
 msgid ""
 "You are not a cash_referrer for the GAS of the gasmember, you cannot "
 "register fee GASMembers cash!"
-msgstr ""
+msgstr "Tu non sei un referente economico del GAS, non puoi "
+"registrare le quote dei gasisti!"
 
 #: gas/forms/cash.py:363
 msgid "Actual total"
@@ -722,18 +724,18 @@ msgid "Note"
 msgstr "Nota"
 
 #: gas/forms/cash.py:375 gas/forms/cash.py:511
-#, fuzzy, python-format
+#, python-format
 msgid "%(state)s - %(totals)s"
-msgstr "%(id_in_gas)s - %(gas_member)s"
+msgstr "%(state)s - %(totals)s"
 
 #: gas/forms/cash.py:404
 msgid "Cannot retrieve invoice data: "
-msgstr ""
+msgstr "Non puoi recuperare i dati di fatturazione: "
 
 #: gas/forms/cash.py:449
 #, python-format
 msgid "<span>%(html_order)s<br />%(totals)s</span>"
-msgstr ""
+msgstr "<span>%(html_order)s<br />%(totals)s</span>"
 
 #: gas/forms/cash.py:457
 #, python-format
@@ -782,11 +784,11 @@ msgstr "Regolare la data dell'operazione se necessario"
 #: gas/forms/cash.py:539 gas/forms/cash.py:708 gas/forms/cash.py:858
 #: gas/forms/cash.py:1007
 msgid "Cannot retrieve economic data: "
-msgstr ""
+msgstr "Non puoi recuperare i dati economici"
 
 #: gas/forms/cash.py:552
 msgid "You are not a cash_referrer, you cannot manage insolute order cash!"
-msgstr ""
+msgstr "Tu non sei un cash_referrer, non puoi gestire il denaro degli ordini!"
 
 #: gas/forms/cash.py:594 rest/templates/blocks/recharge/table.xml:8
 #: rest/views/blocks/balance_gas.py:22 rest/views/blocks/balance_pact.py:22
@@ -840,15 +842,15 @@ msgid "You must declare the causal of this transaction"
 msgstr "Devi dichiarare la causale di questo movimento"
 
 #: gas/forms/cash.py:704 gas/forms/cash.py:850 gas/forms/cash.py:1003
-#, fuzzy
 msgid "Transaction require a causal explanation"
-msgstr "É obbligatorio specificare una causale per la transazione"
+msgstr "La transizione richiede una spiegazione casuale"
 
 #: gas/forms/cash.py:724
 msgid ""
 "TransationGASForm: You are not a cash_referrer, you cannot do economic "
 "operation!"
-msgstr ""
+msgstr "TransactionGASForm: Tu non sei un cash_referrer, non puoi fare operazioni "
+"economiche!"
 
 #: gas/forms/cash.py:747
 msgid "Correction in favor to supplier: +Supplier -GAS"
@@ -1017,24 +1019,24 @@ msgid "[ord by %s] "
 msgstr "[ord da %s] "
 
 #: gas/forms/order/gmo.py:104
-#, fuzzy, python-format
+#, python-format
 msgid "You %(logged)s are not authorized to update an order for %(person)s"
-msgstr "%(logged)s, non sei autorizzato a fare un ordine per %(person)s"
+msgstr "%(logged)s, non sei autorizzato a aggiornare un ordine per %(person)s"
 
 #: gas/forms/order/gmo.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "You %(logged)s are not authorized to create an order for %(person)s"
-msgstr "%(logged)s, non sei autorizzato a fare un ordine per %(person)s"
+msgstr "%(logged)s, non sei autorizzato a creare un ordine per %(person)s"
 
 #: gas/forms/order/gmo.py:207
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "You %(logged)s are not authorized to modify order's basket for %(person)s"
-msgstr "%(logged)s, non sei autorizzato a fare un ordine per %(person)s"
+msgstr "%(logged)s, non sei autorizzato a modificare ordini del carrello per %(person)s"
 
 #: gas/forms/order/intergas.py:23
 msgid "Is this order InterGAS?"
-msgstr ""
+msgstr "E' questo l'ordine InterGAS?"
 
 #: gas/forms/order/intergas.py:25 gas/models/base.py:726
 #: gas/models/base.py:754
@@ -1295,11 +1297,11 @@ msgstr "Questo GAS non esiste più o è stato bandito (da parte di chi ?)"
 
 #: gas/models/base.py:672
 msgid "Use scheduler"
-msgstr ""
+msgstr "Utilizzo motore"
 
 #: gas/models/base.py:673
 msgid "Enable scheduler for automatic and planned operations"
-msgstr ""
+msgstr "Abilità il motore per le operazioni automatiche e programmate"
 
 #: gas/models/base.py:676
 msgid "GAS members orders are auto confirmed"
@@ -2494,11 +2496,11 @@ msgstr "Esegui transazione"
 
 #: rest/views/blocks/balance_gas.py:65
 msgid "Transaction invoice ERROR: "
-msgstr ""
+msgstr "Transizione fattura ERROR: "
 
 #: rest/views/blocks/balance_pact.py:57
 msgid "Transaction pact ERROR: "
-msgstr ""
+msgstr "Transizione pacchetto ERROR: "
 
 #: rest/views/blocks/basket.py:60
 msgid "Confirm all"
@@ -2522,11 +2524,11 @@ msgstr "Si sono verificati alcuni errori<pre>%s</pre>"
 
 #: rest/views/blocks/basket.py:231 rest/views/blocks/order_report.py:226
 msgid "Report not generated"
-msgstr ""
+msgstr "Riporto non generato"
 
 #: rest/views/blocks/basket_sent.py:30
 msgid "Basket to deliver"
-msgstr ""
+msgstr "Carrello da consegnare"
 
 #: rest/views/blocks/catalog_list.py:11
 msgid "Lista prodotti supplier/gas in ordine"
@@ -2560,9 +2562,8 @@ msgid "Edit"
 msgstr "Modifica"
 
 #: rest/views/blocks/curtail.py:233 rest/views/blocks/curtail.py:242
-#, fuzzy
 msgid "Curtail ERROR: "
-msgstr "Decurtazione"
+msgstr "Decurtazione ERROR: "
 
 #: rest/views/blocks/details.py:64
 msgid "Details"
@@ -2573,14 +2574,13 @@ msgid "Manage roles"
 msgstr "Gestisci ruoli"
 
 #: rest/views/blocks/details.py:374
-#, fuzzy
 msgid "confidential data"
-msgstr "Dati di configurazione"
+msgstr "Dati riservati"
 
 #: rest/views/blocks/gas_details.py:27
 #, python-format
 msgid "Details about %(name)s"
-msgstr ""
+msgstr "Dettagli di %(name)s"
 
 #: rest/views/blocks/gas_details.py:45
 #: rest/views/blocks/supplier_details.py:36
@@ -2621,9 +2621,8 @@ msgid "not available"
 msgstr "Non disponibile"
 
 #: rest/views/blocks/insolutes_orders.py:13
-#, fuzzy
 msgid "Orders to be payed"
-msgstr "Aggiornato lo stato dell'ordine"
+msgstr "Ordini da pagare"
 
 #: rest/views/blocks/menu.py:21
 msgid "Context menu"
@@ -2785,18 +2784,19 @@ msgstr "Gli importi di pagamento non possono essere negativi"
 
 #: supplier/accounting.py:104
 msgid "Refund amounts must be non-negative"
-msgstr ""
+msgstr "Il rimborso degli importi non deve essere negativo"
 
 #: supplier/accounting.py:108
 msgid ""
 "An active solidal pact must be in place between a supplier and the GAS (s)he "
 "is refunding"
-msgstr ""
+msgstr "Un patto solidale attivo deve essere in atto tra un fornitore e un GAS (s)lui "
+"è rimborsato"
 
 #: supplier/accounting.py:131
 #, python-format
 msgid "Payment target %s not identified"
-msgstr ""
+msgstr "Pagamento bersaglio %s non identificato"
 
 #: supplier/forms.py:124
 msgid "Price (vat included)"
@@ -2808,15 +2808,15 @@ msgstr "IVA"
 
 #: supplier/forms.py:130
 msgid "Package"
-msgstr ""
+msgstr "Pacchetto"
 
 #: supplier/forms.py:133
 msgid "Units"
-msgstr ""
+msgstr "Unità"
 
 #: supplier/forms.py:207
 msgid "Distribution info"
-msgstr ""
+msgstr "Informazione di distribuzione"
 
 #: supplier/forms.py:215
 msgid "Supplier info"
@@ -2859,14 +2859,13 @@ msgid "suppliers"
 msgstr "fornitori"
 
 #: supplier/models.py:87
-#, fuzzy
 msgid "frontman: unset"
-msgstr "Agente"
+msgstr "Agente: non settato"
 
 #: supplier/models.py:371
 #, python-format
 msgid "The specified flavour is not valid. Valid choices are %(choices)s"
-msgstr ""
+msgstr "Il sapore specificato non è valido. Scelte valide sono %(choices)s"
 
 #: supplier/models.py:395
 msgid "Platform referrers"

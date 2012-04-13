@@ -260,7 +260,7 @@ class EcoGASMemberRechargeForm(forms.Form):
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
             log.debug(u"PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash referrer for the GAS, you cannot recharge GASMembers cash!"))
 
         # This kind of amount is ever POSITIVE!
         gm.person.accounting.do_recharge(self.__gas, recharged)
@@ -340,7 +340,7 @@ class EcoGASMemberFeeForm(forms.Form):
 
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
-            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS, you cannot register fee GASMembers cash!"))
 
         gm.person.accounting.pay_membership_fee(self.__gas, year)
 
