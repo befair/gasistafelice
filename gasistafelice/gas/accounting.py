@@ -50,10 +50,11 @@ class GasAccountingProxy(AccountingProxy):
         entry_point =  supplier.accounting.system['/incomes/gas/' + gas.uid]
         target_account = supplier.accounting.system['/wallet']
         if multiple:
-            description = "Ord.%s" % multiple
+            description = "Ord. %s" % multiple
+            description += " %(pact)s" % {'pact': order.pact,}
         else:
-            description = "Ord.%s" % order.pk
-        description += " %(gas)s --> %(supplier)s" % {'gas': gas.id_in_des, 'supplier': supplier,}
+            description = order.common_name
+
         if descr:
             description += ". %s" % descr.replace(description + ". ", "")
         issuer =  self.subject
@@ -124,8 +125,13 @@ class GasAccountingProxy(AccountingProxy):
         source_account = self.system['/members/' + member.person.uid]
         target_account = self.system['/cash']
         #'gas': gas.id_in_des,
-        description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
+        #WAS: description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
+        #NOTE LF: person is a repetition of gasmember person bound
+        description = order.common_name
         issuer = self.subject
+        log.debug("registering transaction: issuer=%s descr=%s source=%s target=%s" % (
+            issuer, description, source_account, target_account
+        ))
         transaction = register_simple_transaction(source_account, target_account, new_amount, 
             description, issuer, date=date, kind=GAS_WITHDRAWAL
         )

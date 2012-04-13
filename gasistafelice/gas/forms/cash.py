@@ -106,7 +106,7 @@ class EcoGASMemberForm(forms.Form):
         enabled = self.cleaned_data.get('applied')
 
         if enabled and amounted is not None:
-            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (enabled, amounted))
+            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (gm, amounted))
             # This kind of amount is ever POSITIVE!
             amounted = abs(amounted)
 
