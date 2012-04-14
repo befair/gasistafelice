@@ -24,8 +24,9 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = { 
         0: 'pk',
         1: 'product__name',
-        2: 'price',
-        3: 'amount_available'
+        2: 'product__category__name',
+        3: 'price',
+        4: 'amount_available'
     }
         #1: 'stock',
         #1: 'code',
@@ -69,7 +70,7 @@ class Block(BlockSSDataTables):
         
     def _get_resource_list(self, request):
         # SupplierStock list
-        return request.resource.stocks
+        return request.resource.stocks.order_by('product__category')
 
     def _get_add_form_class(self):
         return AddStockForm
@@ -116,6 +117,7 @@ class Block(BlockSSDataTables):
             records.append({
                 'id' : "%s %s" % (form['pk'], form['id']),
                 'product' : form['product'],
+                'category' : querySet[i].product.category,
                 'price' : form['price'],
                 'availability' : form['availability'],
             })

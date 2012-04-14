@@ -3,6 +3,7 @@ from django.conf import settings
 from django.template import resolve_variable, loader
 from django.template import TemplateSyntaxError
 from django.template.loader import get_template, select_template
+from django.template.defaultfilters import stringfilter
 
 from django.db import models
 import datetime, os.path
@@ -38,6 +39,11 @@ def bool_img_accepting_0(value):
 @register.simple_tag
 def bool_img_not(value):
     return bool_img(not value)
+
+@register.filter
+@stringfilter
+def truncatetostr(value, sep):
+    return value[:value.find(sep)]
 
 @register.simple_tag
 def Human_readable_kind(kind):

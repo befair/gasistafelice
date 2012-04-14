@@ -3106,7 +3106,7 @@ msgstr "Stock fornitore"
 
 #: supplier/models.py:1250
 msgid "Category"
-msgstr "categoria"
+msgstr "Categoria"
 
 #: users/models.py:14
 #, python-format
