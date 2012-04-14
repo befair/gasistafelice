@@ -27,12 +27,13 @@ class Block(BlockSSDataTables):
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
         1: 'stock__product__name',
-        2: 'stock__price',
-        3: 'stock__amount_available',
-        4: 'enabled',
-        5: 'tot_amount',
-        6: 'tot_gasmembers',
-        7: 'tot_price'
+        2: 'stock__product__category__name',
+        3: 'stock__price',
+        4: 'stock__amount_available',
+        5: 'enabled',
+        6: 'tot_amount',
+        7: 'tot_gasmembers',
+        8: 'tot_price'
     }
 #Cannot resolve keyword 'tot_amount' into field. Choices are: enabled, gassupplierorder, historicalorderable_product_set, id, minimum_amount, orderable_product_set, pact, step, stock
 
@@ -62,7 +63,7 @@ class Block(BlockSSDataTables):
 
     def _get_resource_list(self, request):
         #GASSupplierStock
-        return request.resource.gasstocks.order_by('stock__product__name')
+        return request.resource.gasstocks.order_by('stock__product__category__name', 'stock__product__name')
 
     def _get_edit_multiple_form_class(self):
         return GASSupplierStockFormSet
@@ -99,6 +100,7 @@ class Block(BlockSSDataTables):
             records.append({
                'id' : "%s %s " % (form['pk'], form['id']),
                'product' : querySet[i].stock.product,
+               'category' : querySet[i].stock.product.category,
                'price' : querySet[i].report_price,
                'availability' : querySet[i].stock.amount_available,
                'field_enabled' : enabling,
