@@ -19,7 +19,7 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         var block_obj = this;
-        var iQta = 5;
+        var iQta = 6;
         // Init dataTables
                 //'sPaginationType': 'full_numbers', 
                 //"oColVis": {"aiExclude": [ 0 ]},
@@ -37,7 +37,7 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                                     var _name = oObj.aData[ oObj.iDataColumn ];
                                     res = new jQuery.Resource(url, _name);
                                     return res.render();
-                                  },
+                                  }
                     },
                     {"bSortable":true,"bSearchable":true, "sWidth": "25%",
                       "fnRender": function ( oObj ) {
@@ -45,8 +45,9 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                                     var _name = oObj.aData[ oObj.iDataColumn ];
                                     res = new jQuery.Resource(url, _name);
                                     return res.render();
-                                  },
+                                  }
                     },
+                    {"bSortable":true,"bSearchable":true, "sWidth": "10%" },
                     {"bSortable":false,"bSearchable":false, "sWidth": "20%"},
                     {"bSortable":true, "sClass": "taright", "sType": "currency","bSearchable":false, "sWidth": "10%"},
                     {"bSortable":false,"bSearchable":false, "sWidth": "15%",
@@ -57,8 +58,8 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                                     var rv = '<span class="hand" onclick="fncOrder($(this),-'+ step +','+ min + ', ' + price + ', \'#total-order\'); return false;"><img src="/static/nui/img/remove.png"></span>'; 
                                     rv += oObj.aData[iQta];
                                     rv += '<span class="hand" onclick="fncOrder($(this),+'+ step +','+ min + ', ' + price + ', \'#total-order\'); return false;"><img src="/static/nui/img/add.png"></span>';
-                                    return rv
-                                  },
+                                    return rv;
+                                  }
                      },
                     {"bSortable":false, "sType": "currency","bSearchable":false, "sWidth": "10%" },
                 ],

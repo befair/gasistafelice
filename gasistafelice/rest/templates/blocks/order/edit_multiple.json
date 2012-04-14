@@ -1,4 +1,5 @@
 {% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
 
 {% block table_rows %}
     {% for row in records %}
@@ -7,6 +8,7 @@
         "{{row.id|escapejs}}",
         "{{row.supplier|escapejs}}",
         "{{row.product|escapejs}}",
+        "{{row.category.name|truncatetostr:'::'|escapejs}}",
         "{{row.note|escapejs}}",
         "&#8364; {{row.price|floatformat:"2"}}",
         "{{row.ordered_amount|escapejs}}",

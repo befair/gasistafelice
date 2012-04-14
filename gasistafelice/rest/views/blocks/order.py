@@ -34,10 +34,11 @@ class Block(BlockSSDataTables):
         0: 'pk',
         1: 'gasstock__stock__supplier__name',
         2: 'gasstock__stock__product__name',
-        3: '',
-        4: 'order_price',
-        5: 'tot_amount',
-        6: 'tot_price',
+        3: 'gasstock__stock__product__category__name',
+        4: '',
+        5: 'order_price',
+        6: 'tot_amount',
+        7: 'tot_price',
     }
 #        3: 'gasstock__stock__product__description',
 
@@ -101,16 +102,16 @@ class Block(BlockSSDataTables):
         qs = self._get_resource_list(self.request)
 
         return formset_factory(
-                    form=SingleGASMemberOrderForm,
-                    formset=BaseFormSetWithRequest, 
-                    extra=qs.count() - self.__get_gmos(qs).count()
+            form=SingleGASMemberOrderForm,
+            formset=BaseFormSetWithRequest, 
+            extra=qs.count() - self.__get_gmos(qs).count()
         )
 
     def __get_gmos(self, gsop):
         log.debug("order block __get_gmos (%s)" % (self.request.resource.gasmember))
         return GASMemberOrder.objects.filter(
-                    ordered_product__in=gsop,
-                    purchaser=self.request.resource.gasmember
+            ordered_product__in=gsop,
+            purchaser=self.request.resource.gasmember
         )
 
     def _get_records(self, request, querySet):
@@ -174,11 +175,11 @@ class Block(BlockSSDataTables):
 
             #try:
             form.fields['ordered_amount'].widget.attrs = { 
-                            'class' : 'amount',
-                            'step' : el.gasstock.step or 1,
-                            'minimum_amount' : el.gasstock.minimum_amount or 1,
-                            's_url' : el.supplier.urn,
-                            'p_url' : el.gasstock.stock.urn,
+                'class' : 'amount',
+                'step' : el.gasstock.step or 1,
+                'minimum_amount' : el.gasstock.minimum_amount or 1,
+                's_url' : el.supplier.urn,
+                'p_url' : el.gasstock.stock.urn,
             }
                             #'p_url' : el.product.urn,
 
@@ -186,6 +187,7 @@ class Block(BlockSSDataTables):
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gsop_id'], form['ordered_price']),
                'supplier' : el.supplier,
                'product' : el.product,
+               'category' : el.product.category,
                'note' : form['note'],
                'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
