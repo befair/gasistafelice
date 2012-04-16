@@ -130,16 +130,9 @@ class Block(BlockSSDataTables):
     def get_response(self, request, resource_type, resource_id, args):
         """Check for confidential access permission and call superclass if needed"""
 
-        gasmembers = request.resource.gas.gasmembers
-        n_gm = gasmembers.count()
-        
-        if n_gm > 1 and \
-            not ( request.user.has_perm(
-                VIEW_CONFIDENTIAL, obj=ObjectWithContext(gasmembers[0])
-            ) and \
-            request.user.has_perm(
-                VIEW_CONFIDENTIAL, obj=ObjectWithContext(gasmembers[1])
-            )): 
+        if not request.user.has_perm(
+                CASH, obj=ObjectWithContext(request.resource.gas)
+            ): 
 
             return render_to_xml_response(
                 "blocks/table_html_message.xml", 
