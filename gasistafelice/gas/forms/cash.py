@@ -609,7 +609,7 @@ class BalanceForm(forms.Form):
         self.fields[field_name].widget.attrs['readonly'] = True
         self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
-#LF: balance and wallet_*  are always read-only so they MUST NOT be included in form...
+#LF: balance and wallet_*  are always read-only so they SHOULD NOT be included in form...
 class BalanceGASForm(BalanceForm):
 
     wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)

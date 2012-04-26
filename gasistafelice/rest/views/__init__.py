@@ -21,7 +21,7 @@ from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 from gasistafelice import consts
 
-import time, datetime, logging
+import time, datetime, logging, copy
 log = logging.getLogger(__name__)
 
 
@@ -267,7 +267,7 @@ def create_page_settings_from_config(page_config, resource, parent=None):
 
 def get_resource_page_content_config(resource_type):
     
-    page_config = settings.RESOURCE_PAGE_BLOCKS[resource_type]
+    page_config = copy.deepcopy(settings.RESOURCE_PAGE_BLOCKS[resource_type])
     return page_config
     
 #------------------------------------------------------------------------------#
