@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA-FELICE-0.9.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-26 09:10+0200\n"
+"POT-Creation-Date: 2012-04-26 10:12+0200\n"
 "PO-Revision-Date: 2012-03-08 18:24\n"
 "Last-Translator: Referente informatico del DES-MC <informatica@desmacerata."
 "it>\n"
@@ -303,7 +303,7 @@ msgstr "Il membro GAS può solo essere testato contro una istanza modello GAS"
 msgid "flavour"
 msgstr "Tipo"
 
-#: base/models.py:868 des/models.py:436
+#: base/models.py:868 des/models.py:443
 msgid "value"
 msgstr "Valore"
 
@@ -330,7 +330,7 @@ msgstr "Il tipo di contatto deve essere uno fra %s"
 msgid "You can avoid to specify a name if you specify an address"
 msgstr "Puoi evitare di indicare un name se indichi un indirizzo"
 
-#: base/models.py:898 base/forms/fields.py:34 des/models.py:435
+#: base/models.py:898 base/forms/fields.py:34 des/models.py:442
 #: gas/models/base.py:66 supplier/models.py:50 supplier/models.py:515
 #: supplier/models.py:570 supplier/models.py:822 supplier/models.py:1264
 msgid "name"
@@ -546,15 +546,15 @@ msgstr "sito"
 msgid "sites"
 msgstr "siti"
 
-#: des/models.py:437
+#: des/models.py:444
 msgid "type"
 msgstr "tipo"
 
-#: des/models.py:461
+#: des/models.py:468
 msgid "environment variable"
 msgstr "variabile d'ambiente"
 
-#: des/models.py:462
+#: des/models.py:469
 msgid "environment variables"
 msgstr "variabili d'ambiente"
 
@@ -739,15 +739,15 @@ msgstr "Tu non sei un cash_referrer, non puoi aggiornare GASMembers cash!"
 #: gas/forms/cash.py:263
 msgid ""
 "You are not a cash referrer for the GAS, you cannot recharge GASMembers cash!"
-msgstr ""
-"Non sei un referente economico del GAS, non puoi ricaricare i gasisti!"
+msgstr "Non sei un referente economico del GAS, non puoi ricaricare i gasisti!"
 
 #: gas/forms/cash.py:343
 msgid ""
 "You are not a cash_referrer for the GAS, you cannot register fee GASMembers "
 "cash!"
 msgstr ""
-"Non sei un referente economico del GAS, non puoi registrare il pagamento delle quote dei gasisti!"
+"Non sei un referente economico del GAS, non puoi registrare il pagamento "
+"delle quote dei gasisti!"
 
 #: gas/forms/cash.py:363
 msgid "Actual total"
@@ -838,8 +838,8 @@ msgid "Wallet GASMembers"
 msgstr "Portafoglio gasisti"
 
 #: gas/forms/cash.py:616
-msgid "Wallet Suppliers"
-msgstr "Portafoglio fornitori"
+msgid "Solidal cash flow"
+msgstr "Flusso economico solidale"
 
 #: gas/forms/cash.py:659 gas/forms/cash.py:740 gas/forms/cash.py:954
 msgid "cash amount"
@@ -3145,6 +3145,9 @@ msgstr "Stock fornitore"
 #, python-format
 msgid "Profile for %(user)s"
 msgstr "Profilo per %(user)s"
+
+#~ msgid "Wallet Suppliers"
+#~ msgstr "Portafoglio fornitori"
 
 #~ msgid ""
 #~ "You are not a cash_referrer for the GAS of the gasmember, you cannot "

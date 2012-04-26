@@ -613,7 +613,7 @@ class BalanceForm(forms.Form):
 class BalanceGASForm(BalanceForm):
 
     wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
-    wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
+    wallet_suppliers = CurrencyField(label=_('Solidal cash flow'), required=False, max_digits=8, decimal_places=2)
 
 #    orders_grd = forms.MultipleChoiceField(
 #        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
