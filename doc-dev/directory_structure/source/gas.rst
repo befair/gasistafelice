@@ -1,2 +1,2 @@
-Core del progetto.
+Core del progetto
 =================

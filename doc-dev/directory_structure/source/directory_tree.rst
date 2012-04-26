@@ -3,10 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Gasista Felice's documentation!
-==========================================
+Benvenuti nella documentazione di Gasista Felice!
+=================================================
 
-Contents:
+Contenuti:
+==========
 
 .. toctree::
    :maxdepth: 2
@@ -20,28 +21,30 @@ Contents:
 
 
 Overview
-============
+========
 
 * **Base:**
-  economic accounts management, logging management, constants and base classes to extend in the other applications 
+  É l'app che contiene tutte le funzionalità di base estese da tutte le altre applicazioni. 
 
 * **Gas:**
-  extends and implements the classes into the **Base** application
+  L'applicazione principale di Gasista Felice, qui vengono gestite principalmente le informazioni dei Gasisti (account, conti ecc.) e gli ordini ai fornitori. 
 
 * **Supplier:**
-  contains the implementation of the forms useful to manage the suppliers and some information about Products, Suppliers, Producers. It relies to the **Base** app.
+  Contiene gli elementi per la gestione dei fornitori oltre ad informazioni su prodotti, fornitori e produttori.
 
 * **Des:**
-  API for DES management (create, edit, ...) and control of the relation between DES and other economical subjects. It also manages the authentication of the DES users.
+  API per la gestione del DES e delle relazioni tra questo e altri soggetti economici. Controlla anche l'autenticazione degli utenti del DES.
 
 * **Des_notification:**
-  application used to trace changes into the DES as well as to notify them.
+  Tiene traccia ed informa sulle modifiche all'interno del DES.
 
 * **Rest:**
-  application for the User Interface. The UI is composed of all the blocks of the program: a block collects fetures related with each other.
+  Intyerfaccia Utente. É composta da diversi blocchi, dove ogni blocco raggruppa funzionalità analoghe.
 
 
- Applications and modules::
+Struttura delle cartelle del programma
+======================================
+::
 
   base
     base/templatetags
