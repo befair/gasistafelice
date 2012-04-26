@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from flexi_auth.models import ObjectWithContext
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
+from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
 
 
 #from simple_accounting.models import economic_subject, AccountingDescriptor
@@ -60,12 +60,35 @@ class Block(BlockSSDataTables):
 
             if not request.user.has_perm(
                 VIEW_CONFIDENTIAL, obj=ObjectWithContext(request.resource)
+            ) and not request.user.has_perm(
+                CASH, obj=ObjectWithContext(request.resource.gas)
             ): 
 
                 return render_to_xml_response(
                     "blocks/table_html_message.xml", 
                     { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
                 )
+
+        elif resource_type == "site":
+
+            if not request.user in request.resource.gas_tech_referrers | \
+                request.resource.gas_cash_referrers:
+
+                return render_to_xml_response(
+                    "blocks/table_html_message.xml", 
+                    { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
+                )
+        else:
+
+            if not request.user.has_perm(
+                CASH, obj=ObjectWithContext(request.resource.gas)
+            ): 
+
+                return render_to_xml_response(
+                    "blocks/table_html_message.xml", 
+                    { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
+                )
+
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
 

@@ -127,6 +127,13 @@ class DES(Site, PermissionResource):
         return rv
 
     @property
+    def gas_cash_referrers(self):
+        rv = User.objects.none()
+        for g in self.gas_list:
+            rv |= g.cash_referrers
+        return rv
+
+    @property
     def supplier_referrers_people(self):
         prs = Person.objects.none()
         for g in self.gas_list:
