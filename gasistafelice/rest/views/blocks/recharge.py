@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 class Block(BlockSSDataTables):
 
     BLOCK_NAME = "recharge"
-    BLOCK_DESCRIPTION = _("Recharge gasmember")
+    BLOCK_DESCRIPTION = _("Gas members recharge and balance")
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
     COLUMN_INDEX_NAME_MAP = {
