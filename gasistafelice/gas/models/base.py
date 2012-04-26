@@ -165,7 +165,10 @@ class GAS(models.Model, PermissionResource):
         return user in allowed_users
 
     def can_cash(self, user, context):
-        return user in self.cash_referrers
+        #WAS: return user in self.cash_referrers
+        #NOTE LF: this is due to role/permission pyramid: see commit on 26th of april
+        return user in self.cash_referrers or \
+            user in self.tech_referrers
         
 
     @property
