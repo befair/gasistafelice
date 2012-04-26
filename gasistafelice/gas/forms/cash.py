@@ -67,9 +67,11 @@ class EcoGASMemberForm(forms.Form):
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError as e:
-            raise forms.ValidationError(ugettext("EcoGASMemberForm: cannot retrieve gasmember: ") + e.message)
+            log.error("EcoGASMemberForm: cannot retrieve gasmember: " + e.message)
+            raise forms.ValidationError(ugettext("Cannot retrieve gasmember: ") + e.message)
         except GASMember.DoesNotExist:
-            raise forms.ValidationError(ugettext("EcoGASMemberForm: cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
+            log.error("EcoGASMemberForm: cannot retrieve gasmember with id " + str(cleaned_data['gm_id']))
+            raise forms.ValidationError(ugettext("Cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
 
         amounted = cleaned_data.get('amounted')
         enabled = cleaned_data.get('applied')
@@ -104,7 +106,7 @@ class EcoGASMemberForm(forms.Form):
         enabled = self.cleaned_data.get('applied')
 
         if enabled and amounted is not None:
-            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (enabled, amounted))
+            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (gm, amounted))
             # This kind of amount is ever POSITIVE!
             amounted = abs(amounted)
 
@@ -258,7 +260,7 @@ class EcoGASMemberRechargeForm(forms.Form):
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
             log.debug(u"PermissionDenied %s in cash recharge for gasmember %s not in this gas %s" % self.__loggedusr, gm, self.__gas)
-            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS of the gasmember, you cannot recharge GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash referrer for the GAS, you cannot recharge GASMembers cash!"))
 
         # This kind of amount is ever POSITIVE!
         gm.person.accounting.do_recharge(self.__gas, recharged)
@@ -338,9 +340,9 @@ class EcoGASMemberFeeForm(forms.Form):
 
         gm = self.cleaned_data['gasmember']
         if not gm in self.__gas.gasmembers:
-            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS of the gasmember, you cannot register fee GASMembers cash!"))
+            raise PermissionDenied(ugettext("You are not a cash_referrer for the GAS, you cannot register fee GASMembers cash!"))
 
-        gm.person.accounting.pay_membership_fee(self.__gas, year)
+        gm.gas.accounting.pay_membership_fee(gm, year)
 
 EcoGASMemberFeeFormSet = formset_factory(
     form=EcoGASMemberFeeForm,
@@ -398,7 +400,8 @@ class InvoiceOrderForm(forms.Form):
             cleaned_data['invoice_amount'] = abs(cleaned_data['amount'])
             cleaned_data['invoice_note'] = cleaned_data['note']
         except KeyError, e:
-            raise forms.ValidationError(ugettext("InvoiceOrderForm: cannot retrieve invoice data: ") + e.message)
+            log.error("InvoiceOrderForm: cannot retrieve invoice data: " + e.message)
+            raise forms.ValidationError(ugettext("Cannot retrieve invoice data: ") + e.message)
 
         return cleaned_data
 
@@ -532,7 +535,8 @@ class InsoluteOrderForm(forms.Form):
         try:
             cleaned_data['insolute_amount'] = abs(cleaned_data['amount'])
         except KeyError, e:
-            raise forms.ValidationError(ugettext("InsoluteOrderForm: cannot retrieve economic data: ") + e.message)
+            log.error("InsoluteOrderForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(ugettext("Cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -605,22 +609,19 @@ class BalanceForm(forms.Form):
         self.fields[field_name].widget.attrs['readonly'] = True
         self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
-#LF: balance and wallet_*  are always read-only so they MUST NOT be included in form...
+#LF: balance and wallet_*  are always read-only so they SHOULD NOT be included in form...
 class BalanceGASForm(BalanceForm):
 
     wallet_gasmembers = CurrencyField(label=_('Wallet GASMembers'), required=False, max_digits=8, decimal_places=2)
-    wallet_suppliers = CurrencyField(label=_('Wallet Suppliers'), required=False, max_digits=8, decimal_places=2)
+    wallet_suppliers = CurrencyField(label=_('Solidal cash flow'), required=False, max_digits=8, decimal_places=2)
 
-#    #orders_grd = forms.ModelMultipleChoiceField(
-#    orders_grd = forms.ModelChoiceField(
-#        label=_('gas'), queryset=GASSupplierOrder.objects.none(), 
-    orders_grd = forms.MultipleChoiceField(
-        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
-        required=False, 
-        widget=forms.CheckboxSelectMultiple
-    )
-
-    wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
+#    orders_grd = forms.MultipleChoiceField(
+#        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
+#        required=False, 
+#        widget=forms.CheckboxSelectMultiple
+#    )
+#
+#    wallet_insolute = CurrencyField(label=_('Wallet Insolute'), required=False, max_digits=8, decimal_places=2)
 
     def __init__(self, request, *args, **kw):
 
@@ -642,11 +643,9 @@ class BalanceGASForm(BalanceForm):
             self.fields[field_name].widget.attrs['disabled'] = 'disabled'
 
         #show insolutes
-        #FIXME: render list of link inside one form fields
         _choice, stat = get_html_insolutes(request.resource.gas.insolutes, EURO_LABEL)
-        self.fields['orders_grd'].choices = _choice
-        #self.fields['orders_grd'].queryset = _choice
-        self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
+        #WAS LF: self.fields['orders_grd'].choices = _choice
+        #WAS LF: self.fields['wallet_insolute'].initial = stat.replace('(euro)s',EURO_HTML)
 
 
 #-------------------------------------------------------------------------------
@@ -701,10 +700,12 @@ class TransationGASForm(BalanceGASForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(ugettext("TransationGASForm: transaction require a causal explanation"))
+                log.error("TransationGASForm: transaction require a causal explanation")
+                raise forms.ValidationError(ugettext("Transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(ugettext("TransationGASForm: cannot retrieve economic data: ") + e.message)
+            log.error("TransationGASForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(ugettext("Cannot retrieve economic data: ") + e.message)
 
         return cleaned_data
 
@@ -845,14 +846,16 @@ class TransationPACTForm(BalanceForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(ugettext("TransationPACTForm: transaction require a causal explanation"))
+                log.error("TransationPACTForm: transaction require a causal explanation")
+                raise forms.ValidationError(ugettext("Transaction require a causal explanation"))
             if cleaned_data['economic_target'] == INVOICE_COLLECTION:
                 cleaned_data['economic_orders'] = cleaned_data['orders']
                 if not cleaned_data['economic_orders'] or len(cleaned_data['economic_orders']) <= 0:
                     self._errors["orders"] = self.error_class([ugettext("Insolute transaction require almost one order to be payed")])
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(ugettext("TransationPACTForm: cannot retrieve economic data: ") + e.message)
+            log.error("TransationPACTForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(ugettext("Cannot retrieve economic data: ") + e.message)
 
 #        try:
 #            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
@@ -932,14 +935,14 @@ def pay_insolutes(gas, pact, amount, insolutes, descr, date):
                 log.debug("Finished gas.accounting.pay_supplier_order")
             except ValueError, e:
                 #log.debug("retry later " + e.message)
-                raise forms.ValidationError(ugettext("error while saving insolute economic data: ") + e.message)
+                raise forms.ValidationError(ugettext("Error while saving insolute economic data: ") + e.message)
             else:
                 #log.debug("Insolute(%s) saved " % len(refs))
                 for _order in refs:
                     #NOTE: orders can be payed but receipt invoice and curtail families could not be yet done; so update State if possible
                     _order.control_economic_state()
         else:
-            raise forms.ValidationError(ugettext("cannot retrieve economic orders"))
+            raise forms.ValidationError(ugettext("Cannot retrieve economic orders"))
 
 #-------------------------------------------------------------------------------
 
@@ -996,10 +999,12 @@ class TransationGMForm(BalanceForm):
             cleaned_data['economic_target'] = cleaned_data['target']
             cleaned_data['economic_causal'] = cleaned_data['causal']
             if cleaned_data['economic_causal'] == '':
-                raise forms.ValidationError(ugettext("TransationGMForm: transaction require a causal explanation"))
+                log.error("TransationGMForm: transaction require a causal explanation")
+                raise forms.ValidationError(ugettext("Transaction require a causal explanation"))
             cleaned_data['economic_date'] = cleaned_data['date']
         except KeyError, e:
-            raise forms.ValidationError(ugettext("TransationGMForm: cannot retrieve economic data: ") + e.message)
+            log.error("TransationGMForm: cannot retrieve economic data: " + e.message)
+            raise forms.ValidationError(ugettext("Cannot retrieve economic data: ") + e.message)
 
 #LF        # MEMBERS
 #LF        gms = request.resource.gasmembers

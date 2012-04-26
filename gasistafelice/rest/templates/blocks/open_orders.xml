@@ -1,12 +1,17 @@
-{% extends "blocks/resource_list.xml" %}
-{% load i18n %}
+{% extends "blocks/orders.xml" %}
+{% load i18n basic_tags %}
 
-{% comment %}
-Take is as an example of "adding an element for each row in the list, but it doesn't work
 {% block display_resource_entry %}
-<info type="{{ res.resource_type }}" sanet_urn="{{ res.urn }}" name="{{res}}"> 
-    <info_action verbose_name="Ordina" name="order" url="{{ res.urn }}/gasmember_order" popup_form="1" />
+<info type="{{ res.resource_type }}" sanet_urn="{{ res.urn }}" name="{{res}}" more_details="{{ res.more_details }}"> 
+    {% block order_actions %}
+        {% comment %}
+        {% if res.order_url %}
+            <info_action title="Ordina" name="gotoorder" url="{{ res.order_url }}" background_url="{{ res.gas.icon.url }}" />
+        {% endif %}
+        {% endcomment %}
+        {{ block.super }}
+    {% endblock %}
+
 </info>
 {% endblock %}
-{% endcomment %}
 

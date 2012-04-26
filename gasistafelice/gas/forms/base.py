@@ -2,6 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from flexi_auth.models import ParamRole, Param
 from django.contrib.auth.models import User
+from django.db import transaction
 
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.forms import BaseRoleForm
@@ -11,7 +12,14 @@ from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-import logging
+from ajax_select import make_ajax_field
+from ajax_select.fields import autoselect_fields_check_can_add
+
+from gasistafelice.lib.widgets import DateFormatAwareWidget
+from gasistafelice.base.forms.fields import MultiContactField
+from gasistafelice.gas.models.base import GAS
+
+import logging, datetime
 log = logging.getLogger(__name__)
 
 class GASRoleForm(BaseRoleForm):
@@ -115,3 +123,77 @@ class SingleUserForm(forms.Form):
 #        super(SupplierSingleUserForm, self).__init__(*args, **kw)
 
 
+class BaseGASForm(forms.ModelForm):
+
+
+    headquarter = make_ajax_field(GAS, 
+        label = _("headquarter").capitalize(),
+        model_fieldname='headquarter',
+        channel='placechannel', 
+        help_text=_("Search for place by name, by address, or by city")
+    )
+    contact_set = MultiContactField(n=2,label=_('Contacts'))
+
+    birthday = forms.DateField(initial=datetime.date.today, required=True
+        , label = _("birthday").capitalize()
+        , widget=DateFormatAwareWidget
+    )
+
+    def __init__(self, request, *args, **kw):
+        super(BaseGASForm, self).__init__(*args, **kw)
+
+        model = self._meta.model
+        autoselect_fields_check_can_add(self,model,request.user)
+
+        #TODO: fero to refactory and move in GF Form baseclass...
+        self._messages = {
+            'error' : [],
+            'info' : [],
+            'warning' : [],
+        }
+
+    def write_down_messages(self):
+        """Used to return messages related to form.
+
+        Usually called:
+        * in request.method == "GET"
+        * when it is "POST" but form is invalid
+        """
+
+        # Write down messages only if we are GETting the form
+        for level, msg_list in self._messages.items():
+            for msg in msg_list:
+                getattr(messages, level)(self.request, msg)
+
+    @transaction.commit_on_success
+    def save(self, *args, **kw):
+        """Save related objects and then save model instance"""
+
+
+        for contact in self.cleaned_data['contact_set']:
+
+            if contact.value:
+                contact.save()
+            elif contact.pk:
+                self.cleaned_data['contact_set'].remove(contact)
+
+        return super(BaseGASForm, self).save(*args, **kw)
+
+    class Meta:
+        model = GAS
+        fields = (
+            'description', 'name','id_in_des','birthday','headquarter','contact_set',
+            'logo','association_act','intent_act', 'membership_fee'
+        )
+        gf_fieldsets = [(None, {
+            'fields' : (
+                'name','id_in_des','birthday','headquarter', 'membership_fee', 
+                'contact_set','logo', 'description', 'association_act','intent_act'
+            ),
+        })]
+
+class AddGASForm(BaseGASForm):
+    pass
+
+class EditGASForm(BaseGASForm):
+    pass

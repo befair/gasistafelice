@@ -8,6 +8,8 @@ from gasistafelice.consts import CREATE
 from gasistafelice.gas.models import GAS
 from gasistafelice.des.models import Siteattr, DES
 
+from gasistafelice.gas.forms.base import AddGASForm
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -34,14 +36,14 @@ class Block(BlockWithList):
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=CREATE, verbose_name=_("Add GAS"), 
-                    url=urlresolvers.reverse('admin:gas_gas_add')
+                    #WAS admin: url=urlresolvers.reverse('admin:gas_gas_add')
                 )
             )
 
         return user_actions
         
     def _get_add_form_class(self):
-        raise NotImplementedError("The add form page in use now is the admin interface page.")
+        return AddGASForm
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     

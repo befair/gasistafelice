@@ -232,6 +232,7 @@ class Block(BlockSSDataTables):
                         except Exception, e:
                             msg = _("Curtail ERROR: ") + e.message
                             form._errors[0] = form.error_class([msg])
+                            return self.response_error(form._errors)
 
                 if new_fam_form.cleaned_data:
                     try:
@@ -241,6 +242,7 @@ class Block(BlockSSDataTables):
                     except Exception, e:
                         msg = _("Curtail ERROR: ") + e.message
                         new_fam_form._errors[0] = form.error_class([msg])
+                        return self.response_error(form._errors)
 
             return self.response_success()
         else:

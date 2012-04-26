@@ -165,7 +165,10 @@ class GAS(models.Model, PermissionResource):
         return user in allowed_users
 
     def can_cash(self, user, context):
-        return user in self.cash_referrers
+        #WAS: return user in self.cash_referrers
+        #NOTE LF: this is due to role/permission pyramid: see commit on 26th of april
+        return user in self.cash_referrers or \
+            user in self.tech_referrers
         
 
     @property
@@ -351,7 +354,9 @@ class GAS(models.Model, PermissionResource):
         try:
             self.config
         except GASConfig.DoesNotExist:
-            self.config = GASConfig.objects.create(gas=self)
+            self.config = GASConfig.objects.create(
+                gas=self, auto_populate_products=True
+            )
 
     def setup_accounting(self):
         """ Accounting hierachy for GAS.
@@ -562,7 +567,8 @@ class GAS(models.Model, PermissionResource):
     @property
     def insolutes(self):
         from gasistafelice.gas.models.order import GASSupplierOrder
-        orders = GASSupplierOrder.objects.unpaid().filter(pact__gas=self)
+        orders = GASSupplierOrder.objects.closed().filter(pact__gas=self) | \
+            GASSupplierOrder.objects.unpaid().filter(pact__gas=self)
         return orders
 
 #------------------------------------------------------------------------------
@@ -655,15 +661,11 @@ class GASConfig(models.Model):
         help_text=_("to specify if different from withdrawal place")
     )
 
+    #auto_populate_products always True until Gasista Felice 2.0
     auto_populate_products = models.BooleanField(
         verbose_name=_('Auto populate products'), default=True, 
         help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated")
     )
-
-    @property
-    def auto_populate_products(self):
-        #auto_populate_products always True until Gasista Felice 2.0
-        return True
 
     is_active = models.BooleanField(
         verbose_name=_('Is active'), default=True, 
@@ -1039,8 +1041,16 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def basket_to_be_delivered(self):
-        from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders.closed())
+        """GAS member's products ordered of closed orders"""
+
+        #WAS: from gasistafelice.gas.models import GASMemberOrder
+        #WAS: return GASMemberOrder.objects.filter(
+        #WAS:     purchaser=self,
+        #WAS:     ordered_product__order__in=self.orders.closed()
+        #WAS: )
+        return self.gasmember_order_set.filter(
+            ordered_product__order__in=self.orders.closed()
+        )
 
     @property
     def orderable_products(self):
@@ -1121,7 +1131,7 @@ class GASMember(models.Model, PermissionResource):
     def last_fee(self):
         """last fee for this gasmember"""
         rv = ''
-        latest = self.person.accounting.last_entry('/expenses/gas/' + self.gas.uid + '/fees')
+        latest = self.gas.accounting.last_person_fee(self.person)
         if latest:
             return u"%(amount)s\u20AC %(date)s<br />%(note)s" % {
                 'amount' : "%.2f" % latest.amount,

@@ -141,6 +141,9 @@ INSTALLED_APPS = [
     #'django.contrib.staticfiles',
 ]
 
+#INSTALLED_APPS.insert(0, 'django_extensions')
+
+
 try:
     import rosetta
 except ImportError:
@@ -264,7 +267,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance_gas', 'unpaid_orders', 'transactions', 'recharge', 'fee']
+        'blocks' : ['balance_gas', 'insolutes_orders', 'transactions', 'recharge', 'fee']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
@@ -437,7 +440,8 @@ APTCHA_LETTER_ROTATION = (-25,25)
 # Ajax_select settings
 
 AJAX_LOOKUP_CHANNELS = {
-    'placechannel' : ( 'gasistafelice.base.forms.lookups' , 'PlaceLookup')
+    'placechannel' : ( 'gasistafelice.base.forms.lookups' , 'PlaceLookup'),
+    'personchannel' : ( 'gasistafelice.base.forms.lookups' , 'PersonLookup')
 }
 # magically include jqueryUI/js/css
 AJAX_SELECT_BOOTSTRAP = False

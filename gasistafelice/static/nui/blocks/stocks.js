@@ -21,6 +21,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%","bVisible":true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"50%","bVisible":true},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%","bVisible":true},
                     {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
                     {"bSearchable":true,"bSortable":true,"sWidth":"20%", "sClass": "tacenter"},
                 ],

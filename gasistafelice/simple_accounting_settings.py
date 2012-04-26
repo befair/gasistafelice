@@ -13,6 +13,7 @@ TRANSACTION_TYPES_D = {
      'GASMEMBER_GAS' : _("A money transfer related to a gas member"),
      'RECYCLE' : _("Refund for an empty container returned"),
      'ADJUST' : _("An arbitrary money transfer"),
+     'GAS_EXTRA' : _("An extra money transfer related to a GAS"),
 }
 
 TRANSACTION_TYPES = TRANSACTION_TYPES_D.items()

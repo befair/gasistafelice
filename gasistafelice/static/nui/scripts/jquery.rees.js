@@ -29,13 +29,14 @@ jQuery.render_bool = function (val) {
 /* Resource management facitilies */
 jQuery.Resource = Class.extend({
 
-    init : function(urn, name) {
+    init : function(urn, name, more_details) {
         this.urn = urn;
         this.type = urn.split('/')[0];
         this.id = urn.split('/')[1];
         this.url = "#rest/"+urn;
         this.absolute_url = jQuery.pre + "rest/"+urn;
         this.name = name;
+        this.more_details = more_details || false;
     },
 
     render : function() {
@@ -49,11 +50,16 @@ jQuery.Resource = Class.extend({
         if ((this.type == 'productcategory')|| (this.type == 'delivery')|| (this.type == 'withdrawal')) { 
             res = this.name;
         } else {
-            res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@ </a>";
+            res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@</a>@@more_details@@";
             res = res.replace(/@@resource_type@@/g, this.type);
             res = res.replace(/@@name@@/g, this.name);
             res = res.replace(/@@urn@@/g,  this.urn);
             res = res.replace(/@@url@@/g, this.url);
+            if (this.more_details) {
+                res = res.replace(/@@more_details@@/g, '<p>' + this.more_details + '</p>');
+            } else {
+                res = res.replace(/@@more_details@@/g, '');
+            }
         }
         return res;
     },
@@ -278,9 +284,17 @@ jQuery.UIBlock = Class.extend({
             else
                 method = "post";
 
-            //TODO: Notify user success/failure
-            $[method](action_el.attr("url"));
-            this.update_handler(this.block_box_id);
+            var accept = true;
+            var confirm_text = action_el.attr('confirm_text');
+            if (confirm_text) {
+                accept = confirm(confirm_text);
+            }
+
+            if (accept) {
+                //TODO: Notify user success/failure
+                $[method](action_el.attr("url"));
+                this.update_handler(this.block_box_id);
+            }
         }
 
         return false;
@@ -294,7 +308,7 @@ jQuery.UIBlock = Class.extend({
         
         //Render block actions
         var contents = jQel.find('content[type="user_actions"]');
-        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" method=\"@@action_method@@\" />";
+        var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" method=\"@@action_method@@\" confirm_text=\"@@confirm_text@@\" />";
         var actions = '';
 
         if (contents.find('action').length > 0) {
@@ -305,6 +319,7 @@ jQuery.UIBlock = Class.extend({
                 action = action.replace(/@@action_url@@/g, $(this).attr("url"));
                 action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
                 action = action.replace(/@@action_method@@/g, $(this).attr("method"));
+                action = action.replace(/@@confirm_text@@/g, $(this).attr("confirm_text"));
                 actions += action;
             });
         }
@@ -508,24 +523,31 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 
                 var name = $(this).attr('name');
                 var urn = $(this).attr('sanet_urn');
+                var more_details = $(this).attr('more_details');
                 var row_id = resource_type + '_row_' + urn.split('/').join('_');
 
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
                 
-                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name).render());
+                a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name, more_details).render());
 
-                var actions = '';
-                var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\">@@action_verbose_name@@</a>";
+                var actions = '<ul style="display:table">';
+                //WAS LF: this is just a link, not an action
+                //var action_template = "<a href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" title=\"@@action_title@@\">@@action_html@@</a>";
+                var action_template = "<li style=\"display:table-cell;\"><a href=\"@@action_url@@\" name=\"@@action_name@@\" in_popup=\"@@in_popup@@\" title=\"@@action_title@@\">@@action_div@@</a></li>";
+                var action_div = "<div class=\"row_action\" style=\"background-image: url('@@background_url@@');\"> </div>";
 
                 $(this).find('info_action').each(function() {
 
                     var action = action_template.replace(/@@action_name@@/g, $(this).attr("name"));
-                    action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
+                    action = action.replace(/@@action_title@@/g, $(this).attr("title"));
                     action = action.replace(/@@action_url@@/g, $(this).attr("url"));
-                    action = action.replace(/@@popup_form@@/g, $(this).attr("popup_form"));
+                    action = action.replace(/@@in_popup@@/g, $(this).attr("in_popup")||0);
+                    var this_action_div = action_div.replace(/@@background_url@@/g, $(this).attr("background_url"));
+                    action = action.replace(/@@action_div@@/g, this_action_div);
                     actions += action;
                 });
+                actions += "</ul>"
 
                 a = a.replace(/@@actions@@/g, actions);		
 
@@ -594,8 +616,9 @@ jQuery.retrieve_form = function (action_el) {
                 //
                 $(NEW_NOTE_DIALOG).dialog('destroy');
                 $(NEW_NOTE_DIALOG).dialog('close');
-
                 update_page();
+                //
+                //
 				// response = jQuery.parseXml(responseText);
 				// var resource_type = $(response).attr('resource_type');
 				// var resource_id   = $(response).attr('resource_id');

@@ -3,7 +3,8 @@ import os
 from gasistafelice.lib import load_symbol
 
 from django.conf import settings
-
+import logging
+log = logging.getLogger(__name__)
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -32,7 +33,7 @@ def load_symbols_from_dir(dir, lib, cname):
 
 def load_block_handler(block_name, module_base='rest'):
     class_path = "%s.views.blocks.%s.Block" % (module_base, block_name)
-    
+    #log.debug("load_block_handler(%s,%s)=%s" % (block_name,module_base,class_path));
     handler =load_symbol(class_path)()
     
     return handler

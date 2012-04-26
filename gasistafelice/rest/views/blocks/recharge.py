@@ -15,6 +15,7 @@ from django.template import Context
 from django.conf import settings
 
 from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE
+from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
 from flexi_auth.models import ObjectWithContext
 
 import logging
@@ -27,7 +28,7 @@ log = logging.getLogger(__name__)
 class Block(BlockSSDataTables):
 
     BLOCK_NAME = "recharge"
-    BLOCK_DESCRIPTION = _("Recharge gasmember")
+    BLOCK_DESCRIPTION = _("Gas members recharge and balance")
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
     COLUMN_INDEX_NAME_MAP = {
@@ -125,5 +126,19 @@ class Block(BlockSSDataTables):
             })
 
         return formset, records, {}
+
+    def get_response(self, request, resource_type, resource_id, args):
+        """Check for confidential access permission and call superclass if needed"""
+
+        if not request.user.has_perm(
+                CASH, obj=ObjectWithContext(request.resource.gas)
+            ): 
+
+            return render_to_xml_response(
+                "blocks/table_html_message.xml", 
+                { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
+            )
+
+        return super(Block, self).get_response(request, resource_type, resource_id, args)
 
 

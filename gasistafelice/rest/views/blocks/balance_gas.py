@@ -1,6 +1,6 @@
 """View for block details specialized for a GASSupplierOrder"""
 
-from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.http import HttpResponse
 from django.db import transaction
 
@@ -19,14 +19,14 @@ class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_gas"
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
-    BLOCK_DESCRIPTION = ug("Balance")
+    BLOCK_DESCRIPTION = ugettext("Balance")
 #    def __init__(self):
 #        super(Block, self).__init__()
-#        self.description = ug("Balance")
+#        self.description = ugettext("Balance")
 
     def _get_user_actions(self, request):
 
-#COMMENT BY fero: no need for these actions now
+        #COMMENT BY fero: no need for these actions now
         user_actions = []
         gas_list = self.resource.gas_list
         for gas in gas_list:
@@ -35,7 +35,7 @@ class Block(AbstractBlock):
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = self.resource,
-                        name=INCOME, verbose_name=ug("Account transaction"),
+                        name=INCOME, verbose_name=ugettext("Account transaction"),
                         popup_form=False,
                     ),
                 ]
@@ -45,7 +45,9 @@ class Block(AbstractBlock):
     def get_response(self, request, resource_type, resource_id, args):
         super(Block, self).get_response(request, resource_type, resource_id, args)
         res = self.resource
+
         #TODO-not-a-priority domthu: show as popup
+
         gas = res.gas
         if args == "INCOME":
             if request.method == 'POST':
@@ -60,7 +62,7 @@ class Block(AbstractBlock):
     #                                return self.response_success()
 
                                 except Exception, e:
-                                    msg = ug("Transaction invoice ERROR: ") + e.message
+                                    msg = ugettext("Transaction invoice ERROR: ") + e.message
                                     #WAS return self.response_error(form.errors)
                                     #WAS form._errors.append(msg)
                                     #WAS form.ValidationError(_(msg))

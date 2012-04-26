@@ -19,7 +19,7 @@ class Block(BlockWithList):
     BLOCK_VALID_RESOURCE_TYPES = ["site"] 
 
     def _get_resource_list(self, request):
-        return request.resource.persons
+        return request.resource.persons.order_by('?')[:50]
 
     def _get_user_actions(self, request):
 

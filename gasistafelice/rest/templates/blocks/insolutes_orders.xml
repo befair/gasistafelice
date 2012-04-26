@@ -1,0 +1,7 @@
+{% extends "blocks/orders.xml" %}
+{% load i18n %}
+
+{% block order_actions %}
+    <info_action title="Vai al patto per pagare" name="gotopay" url="{{ res.pact.get_absolute_url_page }}" background_url="{{ res.pact.icon.url }}" />
+{% endblock %}
+

@@ -1,0 +1,134 @@
+./fixtures
+Problem installing fixture '': /fixtures is not a known serialization format.
+./fixtures/gas
+Problem installing fixture '': /fixtures/gas is not a known serialization format.
+./fixtures/gas/test.json
+Problem installing fixture './fixtures/gas/test.json': Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/management/commands/loaddata.py", line 169, in handle
+    for obj in objects:
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/serializers/json.py", line 35, in Deserializer
+    for obj in PythonDeserializer(simplejson.load(stream), **options):
+  File "/usr/lib/python2.7/dist-packages/simplejson/__init__.py", line 328, in load
+    use_decimal=use_decimal, **kw)
+  File "/usr/lib/python2.7/dist-packages/simplejson/__init__.py", line 384, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python2.7/dist-packages/simplejson/decoder.py", line 402, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python2.7/dist-packages/simplejson/decoder.py", line 418, in raw_decode
+    obj, end = self.scan_once(s, idx)
+JSONDecodeError: Expecting , delimiter: line 25 column 1 (char 3455)
+
+./fixtures/gas/test_data.json
+Problem installing fixture './fixtures/gas/test_data.json': Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/management/commands/loaddata.py", line 174, in handle
+    obj.save(using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/serializers/base.py", line 165, in save
+    models.Model.save_base(self.object, using=using, raw=True)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/base.py", line 570, in save_base
+    created=(not record_exists), raw=raw, using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/dispatch/dispatcher.py", line 172, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/usr/local/lib/python2.7/dist-packages/simple_accounting/models.py", line 176, in setup_accounting
+    instance.setup_accounting()
+  File "/home/spegni/Documenti/lavoro/lucaferroni/progetti/gasistafelice/gasistafelice/../gasistafelice/gas/models/base.py", line 336, in setup_accounting
+    self.subject.init_accounting_system()
+  File "/usr/local/lib/python2.7/dist-packages/simple_accounting/models.py", line 94, in __get__
+    subject = Subject.objects.get(content_type=instance_ct, object_id=instance.pk)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Subject matching query does not exist.
+
+./fixtures/des
+Problem installing fixture '': /fixtures/des is not a known serialization format.
+./fixtures/des/initial_data.json
+Installed 5 object(s) from 1 fixture(s)
+./fixtures/supplier
+Problem installing fixture '': /fixtures/supplier is not a known serialization format.
+./fixtures/supplier/test.json
+Problem installing fixture './fixtures/supplier/test.json': Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/management/commands/loaddata.py", line 174, in handle
+    obj.save(using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/serializers/base.py", line 165, in save
+    models.Model.save_base(self.object, using=using, raw=True)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/base.py", line 570, in save_base
+    created=(not record_exists), raw=raw, using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/dispatch/dispatcher.py", line 172, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/usr/local/lib/python2.7/dist-packages/simple_accounting/models.py", line 176, in setup_accounting
+    instance.setup_accounting()
+  File "/home/spegni/Documenti/lavoro/lucaferroni/progetti/gasistafelice/gasistafelice/../gasistafelice/supplier/models.py", line 113, in setup_accounting
+    self.subject.init_accounting_system()
+  File "/usr/local/lib/python2.7/dist-packages/simple_accounting/models.py", line 94, in __get__
+    subject = Subject.objects.get(content_type=instance_ct, object_id=instance.pk)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Subject matching query does not exist.
+
+./fixtures/supplier/test_data.json
+Problem installing fixture './fixtures/supplier/test_data.json': Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/management/commands/loaddata.py", line 174, in handle
+    obj.save(using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/serializers/base.py", line 165, in save
+    models.Model.save_base(self.object, using=using, raw=True)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/base.py", line 570, in save_base
+    created=(not record_exists), raw=raw, using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/dispatch/dispatcher.py", line 172, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/usr/local/lib/python2.7/dist-packages/simple_accounting/models.py", line 176, in setup_accounting
+    instance.setup_accounting()
+  File "/home/spegni/Documenti/lavoro/lucaferroni/progetti/gasistafelice/gasistafelice/../gasistafelice/supplier/models.py", line 113, in setup_accounting
+    self.subject.init_accounting_system()
+  File "/usr/local/lib/python2.7/dist-packages/simple_accounting/models.py", line 94, in __get__
+    subject = Subject.objects.get(content_type=instance_ct, object_id=instance.pk)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/manager.py", line 132, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/query.py", line 349, in get
+    % self.model._meta.object_name)
+DoesNotExist: Subject matching query does not exist.
+
+./fixtures/supplier/initial_data.json
+Installed 131 object(s) from 1 fixture(s)
+./fixtures/auth
+Problem installing fixture '': /fixtures/auth is not a known serialization format.
+./fixtures/auth/test_data.json
+Installed 280 object(s) from 1 fixture(s)
+./fixtures/auth/initial_data.json
+Installed 11 object(s) from 1 fixture(s)
+./fixtures/base
+Problem installing fixture '': /fixtures/base is not a known serialization format.
+./fixtures/base/test.json
+Problem installing fixture './fixtures/base/test.json': Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/management/commands/loaddata.py", line 169, in handle
+    for obj in objects:
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/serializers/json.py", line 35, in Deserializer
+    for obj in PythonDeserializer(simplejson.load(stream), **options):
+  File "/usr/lib/python2.7/dist-packages/simplejson/__init__.py", line 328, in load
+    use_decimal=use_decimal, **kw)
+  File "/usr/lib/python2.7/dist-packages/simplejson/__init__.py", line 384, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python2.7/dist-packages/simplejson/decoder.py", line 402, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python2.7/dist-packages/simplejson/decoder.py", line 418, in raw_decode
+    obj, end = self.scan_once(s, idx)
+JSONDecodeError: Expecting object: line 39 column 1 (char 5642)
+
+./fixtures/base/test_data.json
+Problem installing fixture './fixtures/base/test_data.json': Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/management/commands/loaddata.py", line 174, in handle
+    obj.save(using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/core/serializers/base.py", line 165, in save
+    models.Model.save_base(self.object, using=using, raw=True)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/db/models/base.py", line 484, in save_base
+    signals.pre_save.send(sender=origin, instance=self, raw=raw, using=using)
+  File "/usr/local/lib/python2.7/dist-packages/Django-1.3-py2.7.egg/django/dispatch/dispatcher.py", line 172, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/spegni/Documenti/lavoro/lucaferroni/progetti/gasistafelice/gasistafelice/../gasistafelice/base/models.py", line 1220, in validate
+    instance.clean()
+  File "/home/spegni/Documenti/lavoro/lucaferroni/progetti/gasistafelice/gasistafelice/../gasistafelice/base/models.py", line 926, in clean
+    raise ValidationError(_("Wrong ZIP CODE provided"))
+ValidationError: [u'Wrong ZIP CODE provided']
+

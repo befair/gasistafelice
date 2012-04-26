@@ -3,6 +3,7 @@ from django import forms
 from django.forms.formsets import formset_factory
 from django.forms import ValidationError
 from django.db.utils import DatabaseError
+from django.db import transaction
 
 from flexi_auth.models import ParamRole
 from gasistafelice.lib.widgets import RelatedFieldWidgetCanAdd
@@ -14,7 +15,13 @@ from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import SUPPLIER_REFERRER
 from gasistafelice.supplier.models import SupplierStock, Product, \
     ProductPU, ProductMU, ProductCategory, \
-    UnitsConversion
+    UnitsConversion, Supplier
+
+from ajax_select import make_ajax_field
+from ajax_select.fields import autoselect_fields_check_can_add
+
+from gasistafelice.base.forms.fields import MultiContactField
+
 
 from decimal import Decimal
 import logging
@@ -333,4 +340,78 @@ class SupplierForm(forms.Form):
 
 #-------------------------------------------------------------------------------
 
+class BaseSupplierForm(forms.ModelForm):
 
+
+    seat = make_ajax_field(Supplier, 
+        label = _("seat").capitalize(),
+        model_fieldname='seat',
+        channel='placechannel', 
+        help_text=_("Search for place by name, by address, or by city")
+    )
+    contact_set = MultiContactField(n=3,label=_('Contacts'))
+
+    frontman = make_ajax_field(Supplier, 
+        label = _("frontman").capitalize(),
+        model_fieldname='frontman',
+        channel='personchannel', 
+        help_text=_("Search for person by name")
+    )
+
+    def __init__(self, request, *args, **kw):
+        super(BaseSupplierForm, self).__init__(*args, **kw)
+
+        model = self._meta.model
+        autoselect_fields_check_can_add(self,model,request.user)
+
+        #TODO: fero to refactory and move in GF Form baseclass...
+        self._messages = {
+            'error' : [],
+            'info' : [],
+            'warning' : [],
+        }
+
+    def write_down_messages(self):
+        """Used to return messages related to form.
+
+        Usually called:
+        * in request.method == "GET"
+        * when it is "POST" but form is invalid
+        """
+
+        # Write down messages only if we are GETting the form
+        for level, msg_list in self._messages.items():
+            for msg in msg_list:
+                getattr(messages, level)(self.request, msg)
+
+    @transaction.commit_on_success
+    def save(self, *args, **kw):
+        """Save related objects and then save model instance"""
+
+
+        for contact in self.cleaned_data['contact_set']:
+
+            if contact.value:
+                contact.save()
+            elif contact.pk:
+                self.cleaned_data['contact_set'].remove(contact)
+
+        return super(BaseSupplierForm, self).save(*args, **kw)
+
+
+    class Meta:
+        model = Supplier
+        fields = (
+            'name', 'seat', 'website', 'contact_set', 'logo', 'frontman', 'flavour','vat_number','certifications'
+        )
+        gf_fieldsets = [(None, {
+            'fields' : (
+                'name','seat', 'website', 'contact_set', 'logo','frontman', 'flavour', 'vat_number','certifications'
+            )
+        })]
+
+class AddSupplierForm(BaseSupplierForm):
+    pass
+
+class EditSupplierForm(BaseSupplierForm):
+    pass

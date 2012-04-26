@@ -21,7 +21,9 @@ from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 from gasistafelice import consts
 
-import time, datetime
+import time, datetime, logging, copy
+log = logging.getLogger(__name__)
+
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -38,6 +40,7 @@ def index(request):
         'MEDIA_URL' : settings.MEDIA_URL,
         'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
     }
+    log.debug("before render_to_ctx")
     return render_to_context_response(request, "html/index.html", ctx)
     
 #---------------------------------------------------------------------#
@@ -194,6 +197,7 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
     
     response = ""
     
+    #log.debug("view_factory:type = ",view_type);
     handler = load_block_handler(view_type)
     
     if (args != "options"):
@@ -263,7 +267,7 @@ def create_page_settings_from_config(page_config, resource, parent=None):
 
 def get_resource_page_content_config(resource_type):
     
-    page_config = settings.RESOURCE_PAGE_BLOCKS[resource_type]
+    page_config = copy.deepcopy(settings.RESOURCE_PAGE_BLOCKS[resource_type])
     return page_config
     
 #------------------------------------------------------------------------------#

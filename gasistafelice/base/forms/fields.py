@@ -3,7 +3,7 @@ from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 
 from django.core.validators import validate_email
-#TODO FS: from fooproj.people.lib.validators import validate_phone
+from gasistafelice.base.validators import validate_phone
 
 from gasistafelice.base.models import Place, Contact
 from gasistafelice.base.const import STATE_CHOICES, CONTACT_CHOICES
@@ -12,6 +12,9 @@ from django.core.exceptions import ValidationError
 from gasistafelice.base.forms.widgets import (
     PlaceWidget, ContactWidget, MultiContactWidget
 )
+
+import logging
+log = logging.getLogger(__name__)
 
 #--------------------------------------------------------------------------------
 
@@ -102,7 +105,6 @@ class ContactField(forms.MultiValueField):
         super(ContactField, self).__init__(fields, *args, **kw)
     
     def compress(self, data_list):
-        #log.debug("Compress a Contact Field, DL=",data_list)
         if data_list:
             curr_id = data_list[0]
             flavour = data_list[1]
@@ -126,12 +128,10 @@ class ContactField(forms.MultiValueField):
         return ''
         
     def clean(self, value):
-        #log.debug ("Contact to clean =", value)
         if value[1].lower() == 'email':
             validate_email(value[2])
-        if value[1].lower() == 'phone':
-            pass
-            #TODO: FS --> validate_phone(value[2])
+        if value[1].lower() == 'phone' and value[2].strip() != "":
+            validate_phone(value[2])
         return super(ContactField,self).clean(value)
             
 #--------------------------------------------------------------------------------
@@ -155,7 +155,6 @@ class MultiContactField(forms.MultiValueField):
         self.widget = MultiContactWidget(n)
 
     def clean(self, value):
-        #log.debug("Clean data=",value)
         email_found = False
         for currData in value:
             if currData[1] != None and currData[1].lower() == 'email' and currData[2].strip() != '':
@@ -165,12 +164,12 @@ class MultiContactField(forms.MultiValueField):
                 
         if not email_found:
             # no email -> ValidationError
-            raise forms.ValidationError("At least an email contact expected")
+            log.debug("no email found")
+            raise forms.ValidationError(_("At least an email contact expected"))
         
         return super(MultiContactField, self).clean(value)
 
     def compress(self, data_list):
-        #log.debug("Compress a MultiContactField, Data_List=",data_list)
         if self.widget == None:
             return
 
@@ -182,32 +181,42 @@ class MultiContactField(forms.MultiValueField):
 
         result = []
         email_found = False
-        
+ 
         # check there is one preferred contact per flavour
         # NB non-specified flavours are ignored
-        preferred_missing = set()
-        preferred_found = set()
-             
+        pref_per_flav = {} # a list of contacts per flavour
+
+        for curr_flav in CONTACT_CHOICES:
+            pref_per_flav[curr_flav[0]] = set()
+
         for curr_contact in data_list:
-            if not curr_contact:
+            if not curr_contact or curr_contact.value.strip() == "":
                 continue
 
             result.append(curr_contact)
-            email_found = email_found or (curr_contact.flavour.lower() == 
+            email_found = email_found or (curr_contact.flavour.lower() ==
                 "email")
-            
-            if curr_contact.is_preferred:
-                preferred_found.add(curr_contact.flavour)
-                if (curr_contact.flavour in preferred_missing):
-                    preferred_missing.remove(curr_contact.flavour)
-            elif not(curr_contact.flavour in preferred_found):
-                preferred_missing.add(curr_contact.flavour)
+
+            pref_per_flav[curr_contact.flavour].add(curr_contact)
+
+        for flav,cont_set in pref_per_flav.items():
+            if len(cont_set) == 1: # 1 contat for this flavour -> it's preferred
+                cont = cont_set.pop()
+                cont.is_preferred = True
+            elif len(cont_set) > 0:
+                found_one_pref = False
+                for cont in cont_set:
+                    if cont.is_preferred and (not found_one_pref):
+                        found_one_pref = True
+                    elif cont.is_preferred:
+                        raise ValidationError("More than one preferred contact of type %s. Expected only one." % flav)
                 
+                if not found_one_pref:
+                    # no preferred among the contacts -> error
+                    raise ValidationError(_("At least one preferred contact of type %s expected.") % flav)
+
 
         if email_found == False:
             raise forms.ValidationError("Email contact expected but not found")
 
-        if len(preferred_missing) > 0:
-            raise forms.ValidationError("One preferred contact per flavour expacted. Missing preferred for: " + ','.join(preferred_missing) );
-        
         return result

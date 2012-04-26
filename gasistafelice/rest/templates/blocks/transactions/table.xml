@@ -6,7 +6,7 @@
     <th>{% trans "Date" %}</th>
     <th>{% trans "Account" %}</th>
     <th>{% trans "Kind" %}</th>
-    <th>{% trans "Amount" %}</th>
+    <th>{% trans "Cash amount" %}</th>
     <th>{% trans "Description" %}</th>
 {% endblock %}
 

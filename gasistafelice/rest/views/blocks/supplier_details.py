@@ -13,6 +13,11 @@ from gasistafelice.rest.views.blocks import details
 
 from gasistafelice.lib.shortcuts import render_to_context_response
 
+from gasistafelice.supplier.forms import EditSupplierForm
+
+import logging
+log = logging.getLogger(__name__)
+
 class Block(details.Block):
 
     BLOCK_NAME = "supplier_details"
@@ -36,9 +41,14 @@ class Block(details.Block):
             for i,act in enumerate(user_actions):
                 # Change URL for action EDIT, insert "configure" action
                 if act.name == EDIT:
-                   act.url = reverse('admin:supplier_supplier_change', args=(request.resource.pk,)) 
+#                   act.url = reverse('admin:supplier_supplier_change', args=(request.resource.pk,)) 
                    user_actions.insert(i+1, act_configure)
                    break
                    
         return user_actions
+
+    def _get_edit_form_class(self):
+        log.debug ("Loading my edit form class...")
+        return EditSupplierForm
+
 

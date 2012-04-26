@@ -25,6 +25,8 @@ from gasistafelice.des.models import Siteattr
 from django.utils.encoding import smart_unicode
 from flexi_auth.models import ObjectWithContext
 
+from gasistafelice.supplier.forms import AddSupplierForm
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -72,7 +74,7 @@ class Block(BlockSSDataTables):
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=CREATE, verbose_name=_("Add supplier"), 
-                    url=urlresolvers.reverse('admin:supplier_supplier_add')
+                    #WAS Supplier admin: url=urlresolvers.reverse('admin:supplier_supplier_add')
                 )
             )
 
@@ -106,6 +108,9 @@ class Block(BlockSSDataTables):
 #                ),
 #            ]
         return user_actions
+
+    def _get_add_form_class(self):
+        return AddSupplierForm
 
     def _get_resource_list(self, request):
         # Suppliers objects filtered without PRIVATE

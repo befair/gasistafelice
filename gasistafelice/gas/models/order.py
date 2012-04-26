@@ -20,7 +20,6 @@ from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
-#MODIFICA MATTEO
 from gasistafelice.base import validators
 
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
@@ -140,18 +139,18 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     referrer_person = models.ForeignKey(Person, null=True, blank=True, 
         related_name="order_set", verbose_name=_("order referrer"),
-        #validators=[validators.attr_user_is_set]
+        #KO it passes person pk: validators=[validators.attr_user_is_set]
     )
 
     delivery_referrer_person = models.ForeignKey(Person, 
         null=True, related_name="delivery_for_order_set", blank=True, 
         verbose_name=_("delivery referrer"),
-        #validators=[validators.attr_user_is_set]
+        #KO it passes person pk: validators=[validators.attr_user_is_set]
     )
     withdrawal_referrer_person = models.ForeignKey(Person, 
         null=True, related_name="withdrawal_for_order_set", blank=True, 
         verbose_name=_("withdrawal referrer"),
-        #validators=[validators.attr_user_is_set]
+        #KO it passes person pk: validators=[validators.attr_user_is_set]
     )
 
     group_id = models.PositiveIntegerField(verbose_name=_('Order group'), 
@@ -171,16 +170,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     class Meta:
         verbose_name = _('order issued to supplier')
-        verbose_name = _('orders issued to supplier')
+        verbose_name_plural = _('orders issued to supplier')
         ordering = ('datetime_end', 'datetime_start')
         app_label = 'gas'
         
     def __init__(self, *args, **kw):
         super(GASSupplierOrder, self).__init__(*args, **kw)
 
-    def __unicode__(self):
-
-        # TODO domthu: translation for order state names!
+    @property
+    def state_info(self):
 
         d = {}
 
@@ -241,6 +239,20 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         state = trans_state_d.get(state, state)
         state += " " + date_info
+        return state
+
+    @property
+    def common_name(self):
+        cn = ugettext("Ord. %(order_num)s %(pact)s") % {
+            'order_num' : self.pk,
+            'pact' : self.pact,
+        }
+        return cn
+
+    def __unicode__(self):
+
+        state = self.state_info
+
         ref = self.referrer_person
 
         if ref:
@@ -250,11 +262,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         else:
             ref = ""
 
-        rv = ugettext("Ord. %(order_num)s %(pact)s - %(state)s") % {
-                    'pact' : self.pact,
-                    'state' : state,
-                    'order_num' : self.pk,
-                    'ref' : ref
+        rv = "%(common_name)s - %(state)s" % {
+            'common_name' : self.common_name,
+            'state' : state,
+            'ref' : ref
         }
 
         if self.group_id:
@@ -262,6 +273,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         #if settings.DEBUG:
         #    rv += " [%s]" % self.pk
         return rv
+
 
     @property
     def report_name(self):
@@ -307,6 +319,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     #by = self.get_email(user, issuer)
                     log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
                     
+    def get_absolute_url_order_page_for_user(self, user):
+
+        gasmembers = user.person.gasmembers.filter(gas=self.gas)
+        if gasmembers.count():
+            absolute_url = gasmembers[0].get_absolute_url_page()
+        else:
+            absolute_url = None
+            
+        return absolute_url 
 
 
     def close_if_needed(self, sendemail=False, issuer=None):
@@ -539,6 +560,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def current_state(self):
         return get_state(self)
+
+    @property
+    def localized_current_state(self):
+        s = self.current_state.name
+        return trans_state_d.get(s, s)
 
     @property
     def workflow(self):
@@ -1171,7 +1197,7 @@ WHERE order_id = %s \
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
         display.Resource(name="supplier", verbose_name=_("Supplier")),
-        models.CharField(max_length=32, name="current_state", verbose_name=_("Current state")),
+        models.CharField(max_length=32, name="localized_current_state", verbose_name=_("Current state")),
         datetime_start, datetime_end, order_minimum_amount, 
         delivery, display.Resource(name="referrer_person", verbose_name=_("Referrer")),
         withdrawal, display.Resource(name="withdrawal_referrer_person", verbose_name=_("Withdrawal referrer")),

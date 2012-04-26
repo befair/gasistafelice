@@ -11,6 +11,8 @@ class Block(OpenOrdersBlock):
     BLOCK_DESCRIPTION = _("Closed orders")
     BLOCK_VALID_RESOURCE_TYPES = ["site", "supplier", "gas"] 
 
+    TEMPLATE_RESOURCE_LIST = "blocks/orders.xml"
+
     def _get_resource_list(self, request):
         return request.resource.orders.closed()
 

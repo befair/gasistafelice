@@ -9,6 +9,8 @@ from gasistafelice.consts import CREATE
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.des.models import Siteattr
 
+from gasistafelice.supplier.forms import AddSupplierForm
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -35,14 +37,14 @@ class Block(BlockWithList):
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=CREATE, verbose_name=_("Add supplier"), 
-                    url=urlresolvers.reverse('admin:supplier_supplier_add')
+                    #WAS Supplier admin: url=urlresolvers.reverse('admin:supplier_supplier_add')
                 )
             )
 
         return user_actions
         
     def _get_add_form_class(self):
-        raise NotImplementedError("The add form page in use now is the admin interface page.")
+        return AddSupplierForm
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     

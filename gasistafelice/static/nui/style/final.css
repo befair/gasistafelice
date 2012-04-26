@@ -25,10 +25,10 @@
 	color:#005687;
 	text-indent:5px;
 	vertical-align:middle;
-	border-bottom:1px dotted #ccc;
-	font-weight:bold;
 	font-size:15px;
 }
+/* WAS LF: border-bottom:1px dotted #ccc; font-weight: bold; */
+
 
 .subtitle{
 	position:absolute;
@@ -82,3 +82,11 @@ ul li {list-style-type: none;}
 #history_menu li:hover, #settings_menu li:hover {background-color: lightyellow;}
 #user_urn_gasmember h3, #user_urn_gasmember li {background-color: #99ccff;}
 #user_urn_gasmember li:hover {background-color: #99ffff;}
+
+.row_action {
+    border: 1px dotted #aaa; 
+    background-color: #ddd;
+    width: 40px; 
+    height: 40px;
+    background-size : contain;
+}

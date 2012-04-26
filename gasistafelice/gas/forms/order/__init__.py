@@ -121,11 +121,6 @@ def form_class_factory_for_request(request, base):
                     ),
                 })
 
-        #if(self.fields['referrer_person'].queryset.count() > 1):
-        #else:
-        #    self.fields['referrer_person'].widget = forms.HiddenInput()
-                
-
         attrs.update(Meta=type('Meta', (), {
             'model' : GASSupplierOrder,
             'fields' : fields,

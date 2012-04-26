@@ -7,6 +7,7 @@
 
         "{{gss.id|escapejs}}",
         "{{gss.product|escapejs}}",
+        "{{gss.product.category|truncatetostr:'::'|escapejs}}",
         "{{gss.price|escapejs}}",
         "{% filter escapejs %}{% bool_img gss.availability %}{% endfilter %}",
         "{{gss.field_enabled|escapejs}}",

@@ -31,6 +31,15 @@ class Block(details.Block):
         #REMOVE temporarly un-managed transitions
         new_user_actions = []
         for ua in user_actions:
+
+            confirm_text_d = {
+                'transition/close' : _("Order will be closed. GAS members will not be able to order anymore. Are you sure?"),
+                'transition/cancel' : _("Order will be CANCELED, so gas members orders will be CANCELED. Are you sure?"),
+            }
+            confirm_text = confirm_text_d.get(ua.name)
+            if confirm_text:
+                ua.confirm_text = confirm_text
+
             #print("User action: %s" % ua.name)
             if ua.name not in [
                 'transition/make unpaid',
