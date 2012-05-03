@@ -1085,9 +1085,10 @@ WHERE order_id = %s \
             gasmember_order_set__ordered_amount__gt=0
         ).distinct()
 
-        ordereds = self.ordered_products.order_by('purchaser__person__name')
+        ordereds = self.ordered_products.order_by('purchaser__person__name', 'purchaser__person__surname', 'purchaser__person')
         
         fams, total_calc, subTotals, fam_count = self.__get_pdfrecords_families(ordereds)
+        #PDF PROBLEM print("AAAAAA fams=%s total_calc=%s subTotals=%s" % (fams, total_calc, subTotals))
         context_dict = {
             'order' : self,
             'recProd' : self.__get_pdfrecords_products(orderables_aggregate),
@@ -1120,7 +1121,7 @@ WHERE order_id = %s \
         """Return records of rendered table fields."""
 
         records = []
-        #memorize family, total price and number of products
+        # memorize family, total price and number of products
         subTotals = []
         fam_count = 0
         actualFamily = -1
