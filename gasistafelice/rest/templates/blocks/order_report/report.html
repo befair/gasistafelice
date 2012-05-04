@@ -36,8 +36,8 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
         <h1>{{ order }}</h1>
         <table style="width:96%; ">
             <tr>
-                <td rowspan="2" style="width=20%" ><img alt="{{order.pact.gas}}" src="{{order.pact.gas.icon.url}}" width="100" heigth="100" /></td>
-                <td class="taleft" style="width=30%">
+                <td rowspan="2" style="width:20%" ><img alt="{{order.pact.gas}}" src="{{order.pact.gas.icon.url}}" width="100" heigth="100" /></td>
+                <td class="taleft" style="width:30%">
                 {{order.pact.gas}}<br />
                 {% for drp in order.delivery_referrer_persons %}
                     {{drp}}<br />
@@ -54,18 +54,18 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 {% for ip in order.info_people %}
                     {{ip}}<br />
                 {%  endfor %}
-                <td class="taright" style="width=30%">
+                <td class="taright" style="width:30%">
                 {{order.pact.supplier}}<br />
                 {% for c in order.pact.supplier.contacts %}
                     {{c}}<br />
                 {%  endfor %}
                 {{order.pact.supplier.seat}}</td>
-                <td rowspan="2" style="width=20%"><img alt="{{order.pact.supplier}}" src="{{order.pact.supplier.icon.url}}" width="100" heigth="100" />
+                <td rowspan="2" style="width:20%"><img alt="{{order.pact.supplier}}" src="{{order.pact.supplier.icon.url}}" width="100" heigth="100" />
                 </td>
             <tr>
             </tr>
-                <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ prod_count }}</h2></td>
-                <td style="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
+                <td class="sumQta"><h2>{% trans "OrderedProducts" %} {{ prod_count }}</h2></td>
+                <td class="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
                 <td class="sumPricefield taright">{% trans "Total expected" %}</td>
                 {% if total_calc == total_amount%}
                     <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
@@ -122,8 +122,13 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                         {% if fam.family_id == ActualFamily %}
                             {% if fam.basket_products == 1 %}
                                 <td class="fam" >{{ fam.gasmember }}&nbsp;&euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                            {# KLUDGE FOR pisa BUGGED code! It does not understand different rowspan. It seems that it calculates wrong row heights #}
                             {% else %}
-                                <td class="fam" rowspan="{{ fam.basket_products }}">{{ fam.gasmember }}<br /> &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                                {% if fam.basket_products == 2 %}
+                                    <td class="fam" rowspan="2">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                                {% else %}
+                                    <td class="fam" style="border-bottom:0;" rowspan="3">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% endfor %}

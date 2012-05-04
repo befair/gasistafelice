@@ -32,7 +32,7 @@ jQuery.UIBlockGASStockList = jQuery.UIBlockWithList.extend({
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
-                        var url = aaData[8];
+                        var url = aaData[9];
                         if (url != undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);
