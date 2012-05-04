@@ -1,3 +1,5 @@
+.. _role-gasreferrersupplier:
+
 Il referente fornitore
 ======================
 

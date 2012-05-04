@@ -1,28 +1,13 @@
+.. _role-gasmember:
+
 Il gasista
 ==========
 
 |head2_descr|
 -------------
 
-|head2_terms|
--------------
-
-* Ordine
-* Consegna
-* Paniere
-* Fornitore/Produttore
-* Prezzo ordinato / prezzo consegnato
-
-|head2_start|
--------------
-
-* GAS già inserito
-* Fornitori già inseriti
-* Patto di solidarietà già costituito
-* Ordine già aperto
-
-|head2_homepage|
------------------
+Il gasista è una persona che appartiene ad un GAS. |project_short_name| consente ad una persona di appartenere a più GAS contemporaneamente.
+Lo scopo del gasista è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`.
 
 |head2_actions|
 ---------------
@@ -34,4 +19,27 @@ Il gasista
 * Visualizza la consegna
 * Modifica la scheda gasista
 
+
+|head2_terms|
+-------------
+
+Breve definizione dei termini:
+
+* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al Fornitore con i prodotti ordinati dai gasisti
+* Consegna
+* Paniere: l'insieme dei prodotti ordinati per gli ordini aperti
+* Paniere da consegnare: l'insieme dei prodotti ordinati negli ordini attualmente chiusi e da consegnare
+* Fornitore: soggetto che fornisce un GAS
+* Prezzo ordinato: prezzo di un prodotto al momento dell'ordine
+* Prezzo consegnato: prezzo di un prodotto al momento della consegna
+
+|head2_start|
+-------------
+
+Il gasista non deve pensare a curare i seguenti aspetti che sono di competenza di altri ruoli:
+
+* GAS già inserito
+* Fornitori già inseriti
+* :ref:`Patto di solidarietà <resource-pact>` già costituito
+* :ref:`Ordine <resource-order>` già aperto
 
