@@ -1085,7 +1085,10 @@ WHERE order_id = %s \
             gasmember_order_set__ordered_amount__gt=0
         ).distinct()
 
-        ordereds = self.ordered_products.order_by('purchaser__person__name', 'purchaser__person__surname', 'purchaser__person')
+        ordereds = self.ordered_products.order_by('purchaser__person__name', 
+            'purchaser__person__surname', 'purchaser__person',
+            'ordered_product__gasstock__stock__product__category__name'
+        )
         
         fams, total_calc, subTotals, fam_count = self.__get_pdfrecords_families(ordereds)
         #PDF PROBLEM print("AAAAAA fams=%s total_calc=%s subTotals=%s" % (fams, total_calc, subTotals))
