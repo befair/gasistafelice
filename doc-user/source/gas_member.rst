@@ -6,8 +6,9 @@ Il gasista
 |head2_descr|
 -------------
 
-Il gasista è una persona che appartiene ad un GAS. |project_short_name| consente ad una persona di appartenere a più GAS contemporaneamente.
-Lo scopo del gasista è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`.
+Il |res_gasmember| è una persona che appartiene ad un :ref:`GAS <resource-gas>`. 
+Lo scopo del |res_gasmember| è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`. 
+|project_short_name| consente ad una persona di appartenere a più |res_gas| contemporaneamente.
 
 |head2_actions|
 ---------------
@@ -38,8 +39,8 @@ Breve definizione dei termini:
 
 Il gasista non deve pensare a curare i seguenti aspetti che sono di competenza di altri ruoli:
 
-* GAS già inserito
-* Fornitori già inseriti
+* :ref:`GAS <resource-gas>` già inserito
+* :ref:`Fornitori <resource-supplier>` già inseriti
 * :ref:`Patto di solidarietà <resource-pact>` già costituito
 * :ref:`Ordine <resource-order>` già aperto
 

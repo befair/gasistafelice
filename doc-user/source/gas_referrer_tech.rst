@@ -1,39 +1,20 @@
+.. _role-gasreferrertech:
+
 Il referente informatico del GAS
 ================================
+
+|head2_descr|
+-------------
+
+Il referente informatico del :ref:`GAS <resource-gas>`  è un :ref:`gasista <role-gasmember>` che si occupa dell'amministrazione informatica del sistema, limitatamente agli aspetti relativi al |res_gas| di appartenenza.
+È suo compito impostare il modo in cui i gasisti ordinano i prodotti, la sede, la quota di adesione, il luogo di consegna predefinito e altre caratteristiche del |res_gas|. 
+È sempre lui che assegna i ruoli agli altri gasisti, in modo che essi possano eseguire le azioni di loro competenza.
 
 .. WARNING::
     Il referente informatico del GAS è un utente che ha ampi margini di azione nel software.
     Può infatti eseguire molte delle operazioni eseguibili dal referente informatico del DES.
     Tale possibilità richiede una certa attenzione nell'interazione con la piattaforma.
 
-|head2_descr|
--------------
-
-Il referente informatico del GAS ha il `dominio` del proprio GAS.
-Ciò vuol dire che ha il diritto di modificare tutto ciò che riguarda il suo GAS.
-Come ogni altro ruolo, può essere attribuito a più utenti, nel caso in un GAS ci fosse
-più di un referente informatico.
-
-Oltre al referente informatico del GAS, solo il referente informatico del DES è
-abilitato a gestire in tutto e per tutto ciò che riguarda il GAS.
-
-
-|head2_terms|
--------------
-
-* Configurazione del GAS
-* Contatti del GAS
-
-|head2_start|
--------------
-
-Il referente informatico del GAS trova già inserito nel sistema il proprio GAS.
-
-|head2_homepage|
------------------
-
-La sua pagina iniziale è quella relativa al GAS. Nel pannello "Scheda del GAS" 
-egli può modificare le opzioni del GAS e gestire i ruoli dei gasisti.
 
 |head2_actions|
 ---------------
@@ -86,5 +67,24 @@ TODO
 
 Aggiungere un patto di solidarietà
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+|head2_terms|
+-------------
+
+* Configurazione del GAS
+* Contatti del GAS
+
+|head2_start|
+-------------
+
+Il referente informatico del GAS trova già inserito nel sistema il proprio GAS.
+
+|head2_homepage|
+-----------------
+
+NOTA MATTEO: anche questa sezione dovrebbe essere ELIMINATA come fatto negli altri file?
+
+La sua pagina iniziale è quella relativa al GAS. Nel pannello "Scheda del GAS" 
+egli può modificare le opzioni del GAS e gestire i ruoli dei gasisti.
 
 
