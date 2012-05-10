@@ -6,18 +6,15 @@ L'ordine
 |head2_descr|
 -------------
 
-Per ciascun ordine il nome riporta:
+Un ordine che il:ref:`GAS <resource-gas>`  invia ad un :ref:`fornitore <role-supplier>`: è formato dall'insieme dei prodotti ordinati dai singoli gasisti che hanno preso parte all'ordine, scegliendo tra i prodotti disponibili nel listino del |res_supplier| per quel particolare ordine.
+Un ordine è inoltre caratterizzato da:
 
-* il numero dell'ordine
-* la sigla del GAS
-* il fornitore
-* lo stato
+* il fornitore;
+* la data di apertura e quella di chiusura;
+* un appuntamento di consegna, cioè le modalità con cui il fornitore consegna al |res_gas| la merce ordinata;
+* un appuntamento di ritiro, cioè le modalità di distribuzione della merce ordinata ai Gasisti;
+* un eventuale importo minimo, sotto il quale il |res_supplier| non accetta l'ordine. 
 
-Un ordine pianificato visualizza la data di apertura.
-Un ordine aperto visualizza la data di chiusura e di consegna.
-Un ordine chiuso visualizza la data di consegna.
-
-Per sapere ulteriori dettagli, posizionarsi sopra con il mouse, appariranno i dettagli della risorsa
 
 |head2_terms|
 -------------
@@ -40,9 +37,5 @@ Per sapere ulteriori dettagli, posizionarsi sopra con il mouse, appariranno i de
 * Patto
 * Ordini dei gasisti
 * Referenti
-
-|head2_homepage|
------------------
-
 
 

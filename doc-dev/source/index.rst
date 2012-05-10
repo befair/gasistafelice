@@ -16,6 +16,7 @@ Contents:
    LICENSE
    devel
    upgrades/UPGRADE_TO_0.7
+   directoryStructure/directory_tree
 
 Indices and tables
 ==================
