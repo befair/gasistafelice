@@ -18,11 +18,11 @@ Indice dei contenuti:
     :maxdepth: 2
 
     intro 
-    supplier
     gas_member
     gas_referrer_supplier
     gas_referrer_tech
     gas_referrer_cash
+    supplier
     Doppia partita <economic>
     general
     resource_supplier

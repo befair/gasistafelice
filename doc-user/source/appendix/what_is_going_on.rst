@@ -22,7 +22,7 @@ Cosa funziona
 5. Assegnazione ruolo fornitore nella scheda del fornitore
 
 *NOTA: una modifica in questo punto del software comporterà il cambiamento per tutto il DES.
-Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa a* :ref:`resource_pact`.
+Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa a* :ref:`resource-pact`.
 
 **Per i referenti fornitori**:
 

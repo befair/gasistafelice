@@ -1,107 +1,38 @@
+.. _role-gasreferrercash:
+
 Il referente contabile del GAS
 ==============================
 
 |head2_descr|
 -------------
 
-Il gestore della cassa. Tiene i conti. Sa in qualsiasi momento lo stato economico di un soggetto partecipante alla retina. L'economico deve poter curare la casa e i movimenti del suo GAS.
+Il referente contabile è il responsabile della gestione economica del :ref:`GAS <resource-gas>` e dei  :ref:`gasisti <role-gasmember>`.
+È suo compito registrare il pagamento degli ordini ai :ref:`fornitori <role-supplier>`, ricaricare i conti dei |res_gasmember| a seguito di un versamento e registrare il pagamento delle quote associative dei |res_gasmember|.
 
-Il referente economico può essere più di una figura all'interno di un GAS. Ciascuno a suo turno.
+Può decurtare i conti dei |res_gasmember| dell'importo dovuto per un ordine e registrare la fattura ricevuta.
+Queste ultime due operazioni sono gestibili anche dai :ref:`referenti fornitori <role-gasreferrersupplier>` rispettivamente ai :ref:`patti di solidarietà <resource-pact>` di cui sono referenti.
 
-L'economico deve essere in grado di dire in qualsiasi momento quale sono:
-- lo stato economico di un gasista e correggere il suo conto
-.
-- lo stato economico di un produttore e avere in mano la gestione delle consegne effettuate  ma che risultano non pagate cioè insolute.
-- conoscere il saldo della cassa del GAS
-- differenziare nella cassa del GAS:
-1 - la disponibilità effettiva del GAS: i soldi del GAS detto anche il borsellino 
-2 - l'ammontare dei depositi gasisti
-3 - il totale degli insoluti dovuti ai produttori
+Il referente contabile ha visibilità completa di tutti i conti afferenti al |res_gas|.
 
-L'economico deve avere uno strumento che lui permette di ricostruire la cronologia dei flussi economici. E sempre disponibile un ordinamento temporale del succedersi delle transazione economiche.
+NOTA DI LUCA: IL SEGUITO è DA RIVEDERE (mettere nelle azioni?) - il primo impatto deve essere sintetico.
 
-|head2_terms|
--------------
+Il Referente Contabile gestisce i conti dei gasisti (che vanno a costituire la cassa del gas), le transazioni economiche con i Fornitori e il conto del GAS. Conosce, quindi, in qualsiasi momento lo stato economico di ogni soggetto partecipante alla retina.
 
-I soggetti che compongono il Distretto di Economia Solidale sono
-Gasista
-GAS con la cassa = depositi gasisti + il suo proprio  borsellino
-Produttore
-Anonimo detto anche *NonDES*: uscita(spese di utenza) o entrata(introiti, incassi) dalla rete
+All'interno di un GAS possono essere presenti più referenti economici.
 
-Una transazione economica si verificarsi tra due o più soggetti.
+Il Referente Economico deve:
 
-Si identifica il Distretto di Economia Solidale basandosi sulla movimentazione delle transazione tra soggetti.
+* conoscere lo stato del conto di un gasista e correggere il suo conto;
+* conoscere lo stato economico di un produttore e gestire le consegne effettuate ma che risultano ancora non pagate, cioè insolute.
+* conoscere il saldo della cassa del GAS:
+* differenziare nella cassa del GAS:
 
-Se un gasista ricarica il suo conto. Si verifica un spostamento di monete tra il gasista e la cassa. Il saldo della rete rimane invariata.
-
-Se il GAS paga un produttore. La rete verifica una perdita.
-
-Il pagamento di una fattura o altre servizi esterni verificano un uscita.
+** la disponibilità effettiva del GAS, cioè i soldi del GAS detto anche il borsellino;
+** l'ammontare dei depositi dei gasisti;
+** il totale degli insoluti dovuti ai fornitori.
 
 
-Gestione d'ordine
-+++++++++++++++++
-
-
-.. warning::
-
-   regola: un ordine per un produttore
-
-Nel gestionale un referente produttore ha la possibilità di gestire la decurtazione dei gasisti che hanno partecipato ad uno suo ordine e registrare la fattura emessa dal produttore. Varie operazione del cassiere possono essere affidate al respettivo responsabile di consegna di un ordine.
-
-
-.. warning::
-
-   L'economico non deve sapere niente della consegna. Interessa solo il totale monetario per ogni famiglia consegnata e l'ammontare della fattura.
-
-Il sistema attuale non prevede che l'economico o il referente gestisce la consegna economica al livello del prodotto.
- il sistema si accontenta di movimentare il valore economico di prodotti consegnati per famiglia.
-
-
-Nella gestione ordinaria di un ordine, l'economico deve eseguire 3 operazioni:
-1 la registrazione della fattura
-2 la decurtazione del totale famiglia per produttore: Prezzo ordinato / prezzo consegnato
-L'operazione 2 viene eseguita n volte quante ci sono di famiglie avendo partecipato all'ordine
-3 Il pagamento effettivo del produttore. Questa operazione è indipendente delle 2 prime e si può verificare dopo un tempo non prevedibile.
-
-Il verificarsi dei punti 1 e 2, qualsiasi l'ordine di apparenza, provoca il cambio di stato dell'ordine in automatico. L'ordine passa dallo stato **CHIUSO** ad **CONSEGNATO** (*to pay*). L'ordine, che rimane solo da pagare per essere archiviato, entra in una fase di gestione degli insoluti che è il punto 3.
-
-L'ordine diventa un insoluto che si somma ai ipotetici altri insoluti da pagare al produttore.
-
-Il punto 3 è asincrono. Se il pagamento viene registrato insieme al punto 1 e 2 l' ordine cambio stato ad **ARCHIVIATO**.
-
-Un ordine può essere annullato.  .. seealso:: gas_referrer_supplier.rst
- 
-.. warning::
-
-   Un ordine archiviato non può essere modificato. 
-   Ogni modifica future, correzione gasista o pagamento, deve essere fatta tramite correzione. 
-
-Oltre all'economico di turno, il punto 1 e 2 possono essere effettuate dal referente produttore di quel ordine. 
-
-Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le seguente operazioni:
-
-1 entrata e uscita della propria cassa senza punto di ingresso o di arrivo.
-
-2 correzione sugli soggetti attivi: gasista e produttori
-
-
-|head2_start|
--------------
-
-* Gestione di un ordine
-
-* Ricarica del prepagato per i gasisti
-
-* gestione delle quote annui per i gasisti
-
-* Conto dei soggetti: visualizzazione dello stato, delle transazione e correzione economiche
-
-
-
-|head2_homepage|
------------------
+Il Referente Contabile conosce anche la cronologia dei flussi economici. Nel gas è sempre disponibile un ordinamento temporale del succedersi delle transazioni economiche.
 
 |head2_actions|
 ---------------
@@ -385,4 +316,82 @@ Approfondire
 
 .. seealso:: economic.rst
 
+
+|head2_terms|
+-------------
+
+I soggetti che compongono il Distretto di Economia Solidale sono
+Gasista
+GAS con la cassa = depositi gasisti + il suo proprio  borsellino
+Produttore
+Anonimo detto anche *NonDES*: uscita(spese di utenza) o entrata(introiti, incassi) dalla rete
+
+Una transazione economica si verifica tra due o più soggetti.
+
+Si identifica il Distretto di Economia Solidale basandosi sulla movimentazione delle transazione tra soggetti.
+
+Se un gasista ricarica il suo conto. Si verifica un spostamento di monete tra il gasista e la cassa. Il saldo della rete rimane invariata.
+
+Se il GAS paga un produttore. La rete verifica una perdita.
+
+Il pagamento di una fattura o altre servizi esterni verificano un uscita.
+
+
+Gestione d'ordine
++++++++++++++++++
+
+
+.. warning::
+
+   regola: un ordine per un produttore
+
+Nel gestionale un referente produttore ha la possibilità di gestire la decurtazione dei gasisti che hanno partecipato ad uno suo ordine e registrare la fattura emessa dal produttore. Varie operazione del cassiere possono essere affidate al respettivo responsabile di consegna di un ordine.
+
+
+.. warning::
+
+   L'economico non deve sapere niente della consegna. Interessa solo il totale monetario per ogni famiglia consegnata e l'ammontare della fattura.
+
+Il sistema attuale non prevede che l'economico o il referente gestisce la consegna economica al livello del prodotto.
+ il sistema si accontenta di movimentare il valore economico di prodotti consegnati per famiglia.
+
+
+Nella gestione ordinaria di un ordine, l'economico deve eseguire 3 operazioni:
+1 la registrazione della fattura
+2 la decurtazione del totale famiglia per produttore: Prezzo ordinato / prezzo consegnato
+L'operazione 2 viene eseguita n volte quante ci sono di famiglie avendo partecipato all'ordine
+3 Il pagamento effettivo del produttore. Questa operazione è indipendente delle 2 prime e si può verificare dopo un tempo non prevedibile.
+
+Il verificarsi dei punti 1 e 2, qualsiasi l'ordine di apparenza, provoca il cambio di stato dell'ordine in automatico. L'ordine passa dallo stato **CHIUSO** ad **CONSEGNATO** (*to pay*). L'ordine, che rimane solo da pagare per essere archiviato, entra in una fase di gestione degli insoluti che è il punto 3.
+
+L'ordine diventa un insoluto che si somma ai ipotetici altri insoluti da pagare al produttore.
+
+Il punto 3 è asincrono. Se il pagamento viene registrato insieme al punto 1 e 2 l' ordine cambio stato ad **ARCHIVIATO**.
+
+Un ordine può essere annullato.  .. seealso:: gas_referrer_supplier.rst
+ 
+.. warning::
+
+   Un ordine archiviato non può essere modificato. 
+   Ogni modifica future, correzione gasista o pagamento, deve essere fatta tramite correzione. 
+
+Oltre all'economico di turno, il punto 1 e 2 possono essere effettuate dal referente produttore di quel ordine. 
+
+Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le seguente operazioni:
+
+1 entrata e uscita della propria cassa senza punto di ingresso o di arrivo.
+
+2 correzione sugli soggetti attivi: gasista e produttori
+
+
+|head2_start|
+-------------
+
+* Gestione di un ordine
+
+* Ricarica del prepagato per i gasisti
+
+* gestione delle quote annui per i gasisti
+
+* Conto dei soggetti: visualizzazione dello stato, delle transazione e correzione economiche
 
