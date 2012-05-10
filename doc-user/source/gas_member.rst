@@ -7,7 +7,14 @@ Il gasista
 -------------
 
 Il |res_gasmember| è una persona che appartiene ad un :ref:`GAS <resource-gas>`. 
-Lo scopo del |res_gasmember| è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`. 
+Lo scopo del |res_gasmember| è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`.
+
+Le tipiche attività del |res_gasmember| comprendono:
+
+* ordine dei prodotti;
+* visualizzazione del paniere contenente i prodotti ordinati;
+* conferma i prodotti, se deciso nel modo di operare del |res_gas|.
+  
 |project_short_name| consente ad una persona di appartenere a più |res_gas| contemporaneamente.
 
 |head2_actions|

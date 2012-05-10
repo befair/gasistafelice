@@ -8,7 +8,14 @@ Il referente fornitore
 
 Il referente fornitore è un :ref:`gasista <role-gasmember>` responsabile di un :ref:`patto di solidarietà <resource-pact>` che esprime la relazione tra il :ref:`GAS <resource-gas>` e uno specifico :ref:`fornitore <role-supplier>`.
 Il referente fornitore si occupa di aprire e gestire un ordine per il |res_pds| di cui è referente, in modo che i gasisti possano ordinare i beni offerti dal |res_supplier|. 
-Inoltre può disabilitare alcuni prodotti disponibili nel listino del |res_supplier|, ma che il |res_gas| non intende acquistare. 
+Inoltre può disabilitare alcuni prodotti disponibili nel listino del |res_supplier|, ma che il |res_gas| non intende acquistare.
+
+Le tipiche attività del referente fornitore comprendono:
+
+* visualizzazione del riepilogo dell'ordine;
+* stampa del report dell'ordine sotto forma di file pdf;
+* apertura dell'ordine;
+* gestione del patto di solidarietà tra un |res_gas| ed un |res_supplier|.
 
 |head2_actions|
 ---------------
