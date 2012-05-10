@@ -1083,7 +1083,7 @@ WHERE order_id = %s \
 
         orderables_aggregate = self.orderable_products.filter(
             gasmember_order_set__ordered_amount__gt=0
-        ).distinct()
+        ).distinct().order_by('gasstock__stock__product__category__name')
 
         ordereds = self.ordered_products.order_by('purchaser__person__name', 
             'purchaser__person__surname', 'purchaser__person',
@@ -1236,9 +1236,11 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
     history = HistoricalRecords()
     
     class Meta:
+
+        app_label = 'gas'
         verbose_name = _('gas supplier order product')
         verbose_name_plural = _('gas supplier order products')
-        app_label = 'gas'
+        ordering = ('gasstock__stock__product__category__name', 'gasstock__stock__product__name')
 
     def __unicode__(self):
         rv = ugettext('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
