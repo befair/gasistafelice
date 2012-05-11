@@ -395,6 +395,7 @@ admin.site.register(supplier_models.Certification)
 admin.site.register(supplier_models.ProductPU)
 admin.site.register(supplier_models.ProductMU)
 admin.site.register(supplier_models.UnitsConversion, UnitConvAdmin)
+admin.site.register(supplier_models.SupplierProductCategory)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
