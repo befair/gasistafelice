@@ -15,7 +15,7 @@ Indice dei contenuti:
 .. I nomi delle pagine mappano ROLES_LIST in auth/__init__.py 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     intro 
     gas_member
@@ -30,8 +30,8 @@ Indice dei contenuti:
     resource_pact
     resource_order
     appendix/criteria
-    appendix/migration
     appendix/list
+    appendix/migration
     appendix/what_is_going_on
 
 .. TODO

@@ -221,4 +221,5 @@ rst_epilog = u"""
 .. |head2_options| replace:: Opzioni di configurazione
 .. |head2_relations| replace:: Relazioni con le altre risorse del DES
 .. |TODO| replace:: **DA FARE**
+.. |NOTE| replace:: **NOTA**:
 """

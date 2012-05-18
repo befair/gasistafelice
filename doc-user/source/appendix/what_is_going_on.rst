@@ -1,6 +1,6 @@
 
-Stato dei lavori e segnalazione dei problemi
-============================================
+Appendice D: stato dei lavori e segnalazione dei problemi
+=========================================================
 
 Questa pagina è mantenuta aggiornata per illustrare, alla versione attuale, 
 cosa funziona nel software, e cosa non funziona nella piattaforma 
