@@ -1263,6 +1263,12 @@ class SupplierProductCategory(models.Model):
     supplier = models.ForeignKey(Supplier)
     name = models.CharField(verbose_name=_('name'), max_length=128)
     sorting = models.PositiveIntegerField(blank=True, null=True)
+    
+    #NOTA MODIFICA MATTEO
+    class Meta:
+        verbose_name = _("Supplier Product Category")
+        verbose_name_plural = _("Supplier Product Categories")
+    #FINO A QUI
 
     def __unicode__(self):
         return self.name
