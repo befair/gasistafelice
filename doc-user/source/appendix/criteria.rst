@@ -1,7 +1,7 @@
 .. _criteria:
 
-Aspetti chiave
-==============
+Appendice A: aspetti chiave e criteri
+=====================================
 
 TODO: rileggere e migliorare
 

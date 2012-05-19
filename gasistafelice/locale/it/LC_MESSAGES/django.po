@@ -2757,7 +2757,7 @@ msgstr "Cambia password: %s"
 #: rest/views/blocks/person_gasmembers.py:18
 #, python-format
 msgid "%(name)s's GAS memberships"
-msgstr "%(name)s dei GAS aderiti"
+msgstr "%(name)s nei GAS"
 
 #: rest/views/blocks/persons.py:18
 msgid "People"

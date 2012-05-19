@@ -1,6 +1,6 @@
 
-Migrazione dei GAS su Gasista Felice
-====================================
+Appendice C: migrazione dei GAS su Gasista Felice
+=================================================
 
 In questo documento si definisce una procedura di migrazione dei GAS
 alla piattaforma Gasista Felice. L'obiettivo è ovviamente quello di 

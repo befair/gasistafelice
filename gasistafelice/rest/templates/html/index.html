@@ -2119,7 +2119,6 @@
                         <ul id="history_elements" class="submenu">
                         </ul>
                     </span>
-                    <a id="home_page" href="{{ user.person.get_absolute_url_page }}">{% trans "Home page" %}</a> | 
                     {% comment %}
                     <span id="settings_menu" class="menu_section">
                         <h3>Impostazioni</h3>
@@ -2128,9 +2127,17 @@
                         </ul>
                     </span>
                     {% endcomment %}
+                    <a id="home_page" href="{{ user.person.get_absolute_url_page }}">{% trans "Home page" %}</a>  
+                    <span id="help_menu" class="menu_section">
+                        <h3>Aiuto!</h3>
+                        <ul id="help_elements" class="submenu">
+                            <li><a href="http://readthedocs.org/docs/gasista-felice/en/latest/" target="_blank">Documentazione</a></li>
+                            <li><a href="http://dialogo.desmacerata.it" target="_blank">Chiedi nel FORUM</a></li>
+                        </ul>
+                    </span>
+                    <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
                 </span>
 
-                    <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
                     <div id="app_clock" style="padding:0.2em;"> caricamento in corso...</div>
                 </div>
 

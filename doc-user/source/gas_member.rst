@@ -15,7 +15,8 @@ Le tipiche attività del |res_gasmember| comprendono:
 * visualizzare il paniere contenente i prodotti ordinati;
 * confermare i prodotti, se previsto nel modo di operare del |res_gas|.
   
-|NOTE| |project_short_name| consente ad una persona di appartenere a più |res_gas| contemporaneamente.
+.. NOTE::
+   |project_short_name| consente ad una persona di appartenere a più |res_gas| contemporaneamente.
 
 |head2_actions|
 ---------------

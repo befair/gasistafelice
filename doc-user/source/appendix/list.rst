@@ -1,5 +1,5 @@
-Elenchi
-=======
+Appendice B: elenchi del DES
+============================
 
 .. _list-product-categories:
 
