@@ -99,7 +99,7 @@ Il referente informatico può creare un nuovo |res_pds| nella scheda Patti --> P
     :alt: Patti di solidarietà attivi nel GAS
     :align: center
 
-    Visualizza e permette l'aggiunta dei Patti di solidarietà tra il |res_gas| e un |res_suppier|
+    Visualizza e permette l'aggiunta dei Patti di solidarietà tra il |res_gas| e un |res_supplier|
 
 
 |head2_terms|

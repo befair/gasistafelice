@@ -90,7 +90,7 @@ In questo secondo blocco è possibile anche cambiare la propria password
 
 Breve definizione dei termini:
 
-* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al |ref_supplier| con i prodotti ordinati dai gasisti
+* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al |res_supplier| con i prodotti ordinati dai gasisti
 * Consegna: processo in cui un |res_supplier| consegna fisicamente ad un |res_gas| la merce relativa ad un ordine
 * Paniere: l'insieme dei prodotti ordinati per gli ordini aperti
 * Paniere da consegnare: l'insieme dei prodotti ordinati negli ordini attualmente chiusi e da consegnare
