@@ -28,7 +28,7 @@ Nella pagina iniziale del sito, un utente inserisce il nome utente e la password
 
 È solo dopo aver messo nome utente e password che il sistema sa se l'utente è un "semplice" gasista, un referente fornitore, un fornitore, un referente economico o un referente informatico del GAS.
 
-.. figure:: _static/login.png
+.. figure:: _static/gas_member_auth.png
     :alt: Schermata di autenticazione
     :align: center
 
@@ -75,7 +75,7 @@ Modifica la propria scheda gasista
 
 Il gasista può modificare le informazioni relative al proprio profilo utente: nome, cognome, indirizzo, recapiti.
 
-Nella scheda del gasista troviamo due riquadri (blocchi): VERIFICAscheda del gasista e scheda della persona. Il primo contiene informazioni relative all'appartenenza della persona in un GAS, l'altro le informazioni relative alla persona nel suo complesso.
+Nella scheda del gasista troviamo due riquadri (blocchi): scheda del gasista e scheda della persona. Il primo contiene informazioni relative all'appartenenza della persona in un GAS, l'altro le informazioni relative alla persona nel suo complesso.
 
 In questo secondo blocco è possibile anche cambiare la propria password
 
@@ -90,11 +90,11 @@ In questo secondo blocco è possibile anche cambiare la propria password
 
 Breve definizione dei termini:
 
-* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al Fornitore con i prodotti ordinati dai gasisti
-* Consegna
+* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al |ref_supplier| con i prodotti ordinati dai gasisti
+* Consegna: processo in cui un |res_supplier| consegna fisicamente ad un |res_gas| la merce relativa ad un ordine
 * Paniere: l'insieme dei prodotti ordinati per gli ordini aperti
 * Paniere da consegnare: l'insieme dei prodotti ordinati negli ordini attualmente chiusi e da consegnare
-* Fornitore: soggetto che fornisce un GAS
+* |res_supplier|: soggetto che fornisce un |res_gas|
 * Prezzo ordinato: prezzo di un prodotto al momento dell'ordine
 * Prezzo consegnato: prezzo di un prodotto al momento della consegna
 
