@@ -32,7 +32,8 @@ class Block(BlockSSDataTables):
         5: 'last_login',
         6: 'date_joined',
         7: 'is_active',
-        8: 'is_staff'
+        8: 'is_staff',
+        9: 'person'
     }
 
 #    def _get_user_actions(self, request):
@@ -72,9 +73,9 @@ class Block(BlockSSDataTables):
     def _get_edit_multiple_form_class(self):
         qs = self._get_resource_list(self.request)
         return formset_factory(
-                    form=SingleUserForm,
-                    formset=BaseFormSetWithRequest, 
-                    extra=qs.count()   #0
+            form=SingleUserForm,
+            formset=BaseFormSetWithRequest, 
+            extra=qs.count()   #0
         )
 
     def _get_records(self, request, querySet):

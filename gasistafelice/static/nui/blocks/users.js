@@ -30,6 +30,7 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
                     {"bSearchable":false,"bSortable":true,"sWidth":"17%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"5%"}
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

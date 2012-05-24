@@ -11,5 +11,6 @@
 <th>{% trans "Date joined" %}</th>
 <th>{% trans "Staff" %}</th>
 <th>{% trans "Active" %}</th>
+<th>{% trans "Person" %}</th>
 {% endblock %}
 
