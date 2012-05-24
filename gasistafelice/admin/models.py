@@ -97,6 +97,13 @@ class PlaceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'city','province')
 
 
+class ContactAdmin(admin.ModelAdmin):
+
+    search_fields = ('value',)
+    list_display = ('pk', '__unicode__', 'flavour', 'value')
+    list_editable = ('flavour', 'value') 
+    list_filter = ('flavour',)
+
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
@@ -390,7 +397,7 @@ class LedgerEntryAdmin(admin.ModelAdmin):
 
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
-admin.site.register(base_models.Contact)
+admin.site.register(base_models.Contact, ContactAdmin)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.SupplierConfig, SupplierConfigAdmin)
