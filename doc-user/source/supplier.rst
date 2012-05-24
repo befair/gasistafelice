@@ -1,7 +1,7 @@
 .. _role-supplier:
 
 Il |res_supplier|
-============
+==================
 
 |head2_descr|
 -------------
@@ -55,14 +55,14 @@ Una volta che l'ordine è stato chiuso il |res_supplier| riceve via e-mail dal r
 * una griglia che presenta le prenotazione per famiglia con i relativi sotto totali;
 * una griglia che aggrega le quantità ordinate dei prodotti con i relativi sotto totali.
 
-.. figure:: _static/pdf_order.png
+.. figure:: _static/ord_doc.png
     :alt: Pdf di riepilogo dell'ordine.
     :align: center
     
     Un esempio di documento di riepilogo dell'ordine in formato pdf.
 
 
-.. _products_form::
+.. _products_form:
 
 Aggiunge prodotti / modifica parametri meno usati
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -78,18 +78,11 @@ Per aggiungere un nuovo prodotto, si deve cliccare sul bottone "Aggiungi" nella 
 
 è disponibile anche una sezione a gestione del |res_supplier| per definire le proprie categorie e propri codici prodotto.
 
-.. figure:: _static/pdf_order.png
-    :alt: Pdf di riepilogo dell'ordine.
-    :align: center
-    
-    Un esempio di documento di riepilogo dell'ordine in formato pdf.
-
-
 
 Per modificare questi stessi parametri in un prodotto già inserito è sufficiente cliccare sul prodotto visualizzato nel listino e poi premere "Modifica" nel blocco dei "Dettagli" nella pagina che verrà visualizzata (risorsa prodotto).
 
 Modifica la scheda del |res_supplier|
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Un |res_supplier| può visualizzare e modificare i dati che lo riguardano nella scheda Scheda del Fornitore --> blocco Dettagli. All'interno di questo blocco sono presenti tre bottoni:
 
@@ -139,11 +132,12 @@ Nella scheda Archivio --> blocco Ordini archiviati, infine, il |res_supplier| pu
 |head2_terms|
 -------------
 
-* Fornitore/Produttore
-* Prodotto
-* Confezioni per cartone
-* Quantità minima di prodotto
-* Passo di prodotto
+* |res_supplier|: Soggetto che fornisce un |res_gas| di prodotti
+* |res_gas|: Gruppo di Acquisto Solidale
+* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al |res_supplier| con i prodotti ordinati dai gasisti
+* Prodotto: bene che un |res_supplier| propone ad un |res_gas|, è caratterizzato dal |res_supplier| che lo produce e da una categoria di prodotto del |res_des|
+* Confezione: involucro del prodotto
+* Quantità minima: ordinabile per un prodotto
 
 |head2_start|
 -------------
