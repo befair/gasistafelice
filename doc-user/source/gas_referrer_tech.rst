@@ -22,69 +22,96 @@ Il referente informatico del :ref:`GAS <resource-gas>`  è un :ref:`gasista <rol
 Configurare il GAS
 ^^^^^^^^^^^^^^^^^^
 
-La prima cosa da fare dopo aver inserito il tuo GAS è configurarlo secondo le vostre esigenze.
-Grazie alla configurazione del GAS potrai adeguare il software all'**identità del tuo GAS** preimpostando
-eventuali luogo e giorno predefinito del ritiro dei prodotti, la modalità in cui vengono visualizzati i prodotti,
-e altro.
+Una volta che un nuovo |res_gas| viene inserito, è possibile configurarlo tramite la scheda  di configurazione del |res_gas| secondo le proprie esigenze, in modo da adeguare il software all'**identità del prprio GAS**. 
 
-.. image:: _static/gas_config.png
-    :alt: pannello di configurazione di un GAS
+Un GAS può essere configurato in due modi:
+
+* andando nella pagina del |res_gas|, nella "Scheda del GAS" -->  blocco Dettagli premendo il pulsante Configura;
+* da menù contestuale del |res_gas|
+
+In un |res_gas| è possibile configurare:
+
+* luogo e giorno predefinito del ritiro dei prodotti;
+* modalità di visualizzazione dei prodotti;
+* la possibilità di confermare in mamiera automatica gli ordini dei gasisti;
+* alcuni opzioni di selezione e filtraggio su ordini e consegne.
+
+.. figure:: _static/gas_config.png
+    :alt: Pannello di configurazione di un GAS
     :align: right
 
-Un GAS si può configurare:
+    Pannello di configurazione del |res_gas|
 
-* andando nella pagina del GAS, nella "Scheda del GAS" e selezionando l'azione `Configura` nel blocco dettagli;
-* da menù contestuale del GAS
 
-Le opzioni di configurazione sono:
-
-* TODO
-* TODO
-* TODO
-
-I ruoli che possono aggiungere un fornitore nel DES sono:
-
-* |sym_supplier_referrer|
-* |sym_gas_referrer_tech|
-* |sym_des_admin|
-
-Abilitare i referenti
+Assegna i ruoli
 ^^^^^^^^^^^^^^^^^^^^^
 
-Per ogni GAS sono previsti vari ruoli cui è importante attribuire i referenti. 
-Si possono impostare in maniera centralizzata i ruoli di referente informatico, referente fornitore, o gasista 
+All'interno di ogni |res_gas| i singoli gasisti possono rivestire vari ruoli, e un ruolo può essere attribuito a più di un |res_gasmember|.
 
-Il referente informatico può gestire tutti i ruoli dei gasisti
-andando nella pagina del GAS, nella "Scheda del GAS" e selezionando l'azione `Gestisci ruoli` nel blocco dettagli.
- 
+Il referente informatico ha il compito di gestire l'assegnazione dei ruoli all'interno del proprio |res_gas|. I ruoli che è possibile assegnare ad un |res_gasmember| sono :
 
-Aggiungere un gasista
+* referente informatico;
+* referente fornitore;
+* referente economico;
+* fornitore. 
+
+Il referente informatico può assegnare i ruoli ai gasisti dalla schermata che ottiene nella scheda Scheda del GAS --> blocco Dettagli cliccando sul bottone Gestisci Ruoli. Nella schermata risultante il referente fornitore potrà scegliere:
+
+* quale gasista rivestirà il nuvo ruolo; 
+* il ruolo da assegnare al gasista.
+
+.. figure:: _static/gas_details.png
+    :alt: Dettagli di un GAS
+    :align: right
+
+    Schermata che offre i dettagli del |res_gas| e la possibilità di modificarlo e configurarlo.
+
+
+Abilitare un gasista
 ^^^^^^^^^^^^^^^^^^^^^
 
-TODO
+L'iscrizione di un utente a |project_short_name| è solo il primo passo necessario all'iscrizione ad un |res_gas|. Infatti per poter entrare attivamente in un |res_gas| e cominciare a ordinare, un utente registrato necessita l'abilitazione da parte del referente informatico del |res_gas| a cui è interessato a partecipare.
+
+Il referente informatico può gestire l'abilitazione degli utenti registrati che la richiedono dalla scheda Admin --> blocco Utenti cliccando sul bottone Modifica, selezionado o deselezionando (nel caso voglia disabilitare un |res_gasmember| ) la voce "è attivo" nella riga che corrisponde all'utente.
+
+.. figure:: _static/gas_users.png
+    :alt: Utenti abilitati del GAS
+    :align: center
+
+    Visualizza e permette l'abilitazione degli utenti che fanno parte del |res_gas|
 
 .. include:: actions/add_supplier.rst
 
 Aggiungere un patto di solidarietà
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Nel caso in cui in un |res_gas| non dovessero esservi referenti fornitori, il referente informatico è abilitato ad aprire un |res_pds| a cui in seguito verrà associato un |res_gasmember| con il ruolo di referente fornitore. Il referente informatico è comunque abilitato alla creazione di un |res_pds| anche nel caso in cui dei referenti fornitori fossero già presenti nel |res_gas|.
+
+Il referente informatico può creare un nuovo |res_pds| nella scheda Patti --> Patti di solidarietà premendo il bottone "Aggiungi Patto", che apre una schermata in cui andranno inseriti:
+
+* |res_supplier|
+* data dell'accordo
+* l'importo minimo per l'apertura dell'ordine
+* alcuni dati sulla consegna
+* uno o piu referenti fornitori per il |res_pds|
+
+.. figure:: _static/gas_pacts.png
+    :alt: Patti di solidarietà attivi nel GAS
+    :align: center
+
+    Visualizza e permette l'aggiunta dei Patti di solidarietà tra il |res_gas| e un |res_supplier|
+
+
 |head2_terms|
 -------------
 
-* Configurazione del GAS
-* Contatti del GAS
+* |res_gas|
+* Configurazione del |res_gas|
+* Contatti del |res_gas|
 
 |head2_start|
 -------------
 
-Il referente informatico del GAS trova già inserito nel sistema il proprio GAS.
-
-|head2_homepage|
------------------
-
-NOTA MATTEO: anche questa sezione dovrebbe essere ELIMINATA come fatto negli altri file?
-
-La sua pagina iniziale è quella relativa al GAS. Nel pannello "Scheda del GAS" 
-egli può modificare le opzioni del GAS e gestire i ruoli dei gasisti.
+Il referente informatico del |res_gas| trova già inserito nel sistema il proprio |res_gas|.
 
 

@@ -22,7 +22,7 @@ class Command(BaseCommand):
             for gas in GAS.objects.all():
                 delta_day = gas.config.notice_days_before_order_close
                 next_day = datetime.datetime.now()+datetime.timedelta(days=delta_day)
-                print 'next_day: %s' % next_day
+                # print 'next_day: %s' % next_day
                 weeknumber = datetime.date.today().isocalendar()[1]
                 subject = "[NEWS] %s - %s (%s)" % (gas.id_in_des, gas, weeknumber)
 
@@ -33,19 +33,46 @@ class Command(BaseCommand):
 
                 _msg = []
                 g = gas.pk
-                print gas
+                # print gas
                 for order in gas.orders.open().filter(
                         datetime_end__year = next_day.year, 
                         datetime_end__month = next_day.month, 
                         datetime_end__day = next_day.day
                 ):
                     o = order.pk
-                    print order
-                    _msg.append("%s si chiude l'ordine %s" % (pre_msg, order))
-
-
+                    # print order
+                    _msg.append("* %s si chiude l'ordine %s\n" % (pre_msg, order))
+                    
+                    
+                # print 'next_day: %s' % next_day
+                # subject = "[NEWS] %s - %s (%s)" % (gas.id_in_des, gas, weeknumber)
+                if delta_day == 1:
+                    pre_msg = "Domani "
+                else:
+                   pre_msg = "Fra %d giorni " % delta_day
+                _delivery_msg = []
+                # g = gas.pk
+                # print gas
+                for order in gas.orders.closed().filter(
+                        delivery.date__year = next_day.year, 
+                        delivery.date__month = next_day.month, 
+                        delivery.date__day = next_day.day
+                ):
+                    o = order.pk
+                    # print order
+                    _delivery_msg.append("* %s si consegna l'ordine %s" % (pre_msg, order))
+                body = u""
                 if len(_msg) > 0:
-                    gas.send_email_to_gasmembers(subject, _msg.join("\n"))
+                    body = "Ordini in prossima chiusura\n\n"
+                    body +=  _msg.join("\n")
+                    
+                if len(_delivery_msg) > 0:
+                    body = "\nOrdini in prossima consegna\n\n"
+                    body +=  _delivery_msg.join("\n")
+                    
+                if body:
+                    gas.send_email_to_gasmembers(subject,body)
+
 
         except Exception as e:
             raise CommandError("send_gas_notification %s (%s/%s) last_msg: %s, error=%s" % (delta_day, g, o, _msg, e))
