@@ -208,6 +208,12 @@ class GASMemberAdmin(admin.ModelAdmin):
     gas_with_link.allow_tags = True
     gas_with_link.short_description = "GAS"
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "person":
+            person_qs = base_models.Person.objects.filter(user__isnull=False)
+            kwargs["queryset"] = person_qs
+        return super(GASMemberAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class SupplierAdmin(admin.ModelAdmin):
     # Disabled inlines = [SupplierStockInline, ]
