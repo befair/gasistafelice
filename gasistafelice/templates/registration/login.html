@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+{% block extraheads %}
+<link href="/media/css/base.css" type="text/css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
+{% if messages %}
+<ul class="messagelist">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <h1>Accedi per ordinare nel DES </h1>
 
 <div style="margin: 2em 0.5em;">
