@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from captcha.fields import CaptchaField
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
-from gasistafelice.consts import SUPPLIER_REFERRER
+from gasistafelice.consts import SUPPLIER_REFERRER, GAS_MEMBER
 
 from gasistafelice.gas.models import GAS, GASMember
 from gasistafelice.supplier.models import Supplier

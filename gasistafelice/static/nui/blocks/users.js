@@ -26,8 +26,8 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"20%"},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"17%"},
-                    {"bSearchable":false,"bSortable":true,"sWidth":"17%"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"13%"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"13%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"}
@@ -41,8 +41,21 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
                 },
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     /* Modify Django management form info */
-                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    /* FIXME it is bad to do here, in presentation layer, updates of the application logic !!!*/
                     $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
+                },
+                "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
+                    try {
+                        var url = aaData[10];
+                        if (url != undefined) {
+                            var _name = aaData[9];
+                            res = new jQuery.Resource(url, _name);
+                            $(nRow.cells[9]).html( res.render() );
+                        }
+                    }
+                    catch(e){alert(e.message);
+                    }
+                    return nRow;
                 }
             }); 
 
@@ -52,8 +65,7 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
 
 });
 
-//jQuery.BLOCKS["users"] = new jQuery.UIBlockUserList();
-jQuery.BLOCKS["gas_users"] = new jQuery.UIBlockUserList("gas_users");
-jQuery.BLOCKS["users"] = new jQuery.UIBlockUserList("supplier_users");
+jQuery.BLOCKS.gas_users = new jQuery.UIBlockUserList("gas_users");
+jQuery.BLOCKS.supplier_users = new jQuery.UIBlockUserList("supplier_users");
 
 

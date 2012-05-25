@@ -2,18 +2,20 @@
 {% load basic_tags %}
 
 {% block table_rows %}
-    {% for ss in records %}
+    {% for row in records %}
     [
 
-        "{{ss.id|escapejs}}",
-        "{{ss.username|escapejs}}",
-        "{{ss.first_name|escapejs}}",
-        "{{ss.last_name|escapejs}}",
-        "{{ss.email|escapejs}}",
-        "{{ss.last_login|date:"Y b d H:i"}}",
-        "{{ss.date_joined|date:"Y b d H:i"}}",
-        "{% filter escapejs %}{% bool_img ss.is_staff %}{% endfilter %}",
-        "{{ss.is_active|escapejs}}",
+        "{{row.id|escapejs}}",
+        "{{row.username|escapejs}}",
+        "{{row.first_name|escapejs}}",
+        "{{row.last_name|escapejs}}",
+        "{{row.email|escapejs}}",
+        "{{row.last_login|date:"Y b d H:i"|escapejs}}",
+        "{{row.date_joined|date:"Y b d H:i"|escapejs}}",
+        "{% filter escapejs %}{% bool_img row.is_staff %}{% endfilter %}",
+        "{{row.is_active|escapejs}}",
+        "{{row.person|escapejs}}",
+        {% if row.person_urn %}"{{row.person_urn|escapejs}}"{% else %}null{% endif %},
 
     ]
     {% if not forloop.last %}

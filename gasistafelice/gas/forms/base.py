@@ -8,6 +8,7 @@ from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import GAS_MEMBER
 from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
+from gasistafelice.base.models import Person
 
 from django import forms
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -83,16 +84,23 @@ class SingleUserForm(forms.Form):
 
     #For editing
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    pk = forms.IntegerField(required=False)
+    pk = forms.IntegerField(required=False, widget=forms.TextInput(attrs={
+        'readonly' : True,
+        'disabled' : 'disabled',
+        'class' : 'input_small',
+    }))
     is_active = forms.BooleanField(required=False)
+    person = forms.ModelChoiceField(required=False,
+        queryset=Person.objects.filter(user__isnull=True)
+    )
 
     def __init__(self, request, *args, **kw):
         super(SingleUserForm, self).__init__(*args, **kw)
-        instance = getattr(self, 'instance', None)
-        self.fields['pk'].widget.attrs['readonly'] = True
-        self.fields['pk'].widget.attrs['disabled'] = 'disabled'
-        self.fields['pk'].widget.attrs['class'] = 'input_small'
-        self.__supplier = request.resource
+        #COMMENT LF: we do not need "request" parameter for the following operations
+        # so it is better to put them in form class definition
+        #WAS: self.fields['pk'].widget.attrs['readonly'] = True
+        #WAS: self.fields['pk'].widget.attrs['disabled'] = 'disabled'
+        #WAS: self.fields['pk'].widget.attrs['class'] = 'input_small'
 
     def save(self):
 
