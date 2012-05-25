@@ -7,7 +7,7 @@ from django.db import transaction
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import GAS_MEMBER
-from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
+from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember, GAS
 from gasistafelice.base.models import Person
 
 from django import forms
@@ -16,9 +16,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from ajax_select import make_ajax_field
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from gasistafelice.lib.widgets import DateFormatAwareWidget
+from gasistafelice.lib.widgets import DateFormatAwareWidget, RelatedFieldWidgetCanAdd
 from gasistafelice.base.forms.fields import MultiContactField
-from gasistafelice.gas.models.base import GAS
 
 import logging, datetime
 log = logging.getLogger(__name__)
@@ -83,7 +82,7 @@ class EditGASMemberForm(forms.ModelForm):
 class SingleUserForm(forms.Form):
 
     #For editing
-    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    id = forms.IntegerField(widget=forms.HiddenInput)
     pk = forms.IntegerField(required=False, widget=forms.TextInput(attrs={
         'readonly' : True,
         'disabled' : 'disabled',
@@ -91,7 +90,8 @@ class SingleUserForm(forms.Form):
     }))
     is_active = forms.BooleanField(required=False)
     person = forms.ModelChoiceField(required=False,
-        queryset=Person.objects.filter(user__isnull=True)
+        queryset=Person.objects.filter(user__isnull=True),
+        widget=RelatedFieldWidgetCanAdd(Person)
     )
 
     def __init__(self, request, *args, **kw):
@@ -102,23 +102,41 @@ class SingleUserForm(forms.Form):
         #WAS: self.fields['pk'].widget.attrs['disabled'] = 'disabled'
         #WAS: self.fields['pk'].widget.attrs['class'] = 'input_small'
 
+    def clean(self):
+        is_active = self.cleaned_data.get('is_active')
+        person = self.cleaned_data.get('person')
+        u = User.objects.get(pk=self.cleaned_data['id'])
+        if is_active and not person:
+            try:
+                assert u.person
+            except Person.DoesNotExist as e:
+                raise forms.ValidationError(
+                    _("You have to bind a person to the active user %s") % u
+                )
+        if person and person.user and (person.user != u):
+            raise forms.ValidationError(
+                _("Person %s bound to user %s is already bound to user %s") % (person, u, person.user)
+            )
+        self.cleaned_data['user'] = u
+        return self.cleaned_data
+
     def save(self):
 
         log.debug("Save SingleUserForm")
-        if self.cleaned_data.get('id'):
-            ss = User.objects.get(pk=self.cleaned_data['id'])
-            #log.debug("Save SingleUserForm id_ss(%s)" % (ss.pk))
-            try:
-                ss.is_active = self.cleaned_data.get('is_active')
-                ss.save()
-            except Exception, e:
-                raise
-                log.debug("Save SingleUserForm error(%s)" %  str(e))
-                Exception("Save SingleUserForm error: %s", str(e))
-        else:
-            #do not create users here!
-            #ss = User()
-            log.debug("New SingleUserForm")
+        u = self.cleaned_data['user']
+        p = self.cleaned_data.get('person')
+        try:
+            if p:
+                p.user = u
+                p.save()
+                # Retrieve all GAS_MEMBER ParamRoles and creates GASMember objects
+                for r in p.user.principal_param_role_set.filter(role__role__name__exact=GAS_MEMBER):
+                    GASMember.objects.get_or_create(person=p, gas=r.role.gas)
+            u.is_active = self.cleaned_data.get('is_active', False)
+            u.save()
+        except Exception as e:
+            log.debug("Save SingleUserForm error(%s)" % e)
+            raise 
 
 #class GASSingleUserForm(SingleUserForm):
 
