@@ -97,6 +97,13 @@ class PlaceAdmin(admin.ModelAdmin):
     search_fields = ('name', 'city','province')
 
 
+class ContactAdmin(admin.ModelAdmin):
+
+    search_fields = ('value',)
+    list_display = ('pk', '__unicode__', 'flavour', 'value')
+    list_editable = ('flavour', 'value') 
+    list_filter = ('flavour',)
+
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
@@ -209,6 +216,12 @@ class GASMemberAdmin(admin.ModelAdmin):
         return u'<a href="%s">%s</a>' % (url, obj.gas)
     gas_with_link.allow_tags = True
     gas_with_link.short_description = "GAS"
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "person":
+            person_qs = base_models.Person.objects.filter(user__isnull=False)
+            kwargs["queryset"] = person_qs
+        return super(GASMemberAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class SupplierAdmin(admin.ModelAdmin):
@@ -386,7 +399,7 @@ class LedgerEntryAdmin(admin.ModelAdmin):
 
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
-admin.site.register(base_models.Contact)
+admin.site.register(base_models.Contact, ContactAdmin)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.SupplierConfig, SupplierConfigAdmin)
