@@ -1266,11 +1266,10 @@ class SupplierProductCategory(models.Model):
     name = models.CharField(verbose_name=_('name'), max_length=128)
     sorting = models.PositiveIntegerField(blank=True, null=True)
     
-    #NOTA MODIFICA MATTEO
     class Meta:
-        verbose_name = _("Supplier Product Category")
-        verbose_name_plural = _("Supplier Product Categories")
-    #FINO A QUI
+        verbose_name = _("supplier product category")
+        verbose_name_plural = _("supplier product categories")
+        ordering = ('supplier','sorting')
 
     def __unicode__(self):
         return self.name

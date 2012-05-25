@@ -395,6 +395,11 @@ class LedgerEntryAdmin(admin.ModelAdmin):
     def kind(self, obj):
         return obj.transaction.kind
 
+class SupplierProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'supplier', 'name', 'sorting')
+    list_editable = ('supplier', 'name', 'sorting')
+    list_filter = ('supplier',)
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact, ContactAdmin)
@@ -408,7 +413,7 @@ admin.site.register(supplier_models.Certification)
 admin.site.register(supplier_models.ProductPU)
 admin.site.register(supplier_models.ProductMU)
 admin.site.register(supplier_models.UnitsConversion, UnitConvAdmin)
-admin.site.register(supplier_models.SupplierProductCategory)
+admin.site.register(supplier_models.SupplierProductCategory, SupplierProductCategoryAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)
