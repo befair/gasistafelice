@@ -512,7 +512,7 @@ class GAS(models.Model, PermissionResource):
         try:
             sender = self.preferred_email_contacts[0].value
         except IndexError as e:
-            msg = ug("GAS cannot send email, because no preferred email for GASMember specified")
+            msg = ug("GAS cannot send email, because no preferred email for GAS specified")
             message += '\n' + msg
             sender = settings.DEFAULT_FROM_EMAIL
             message += '\n%s --> %s' % (msg, sender)
