@@ -155,14 +155,16 @@ class GASConfigAdmin(admin.ModelAdmin):
 
     form = GASConfigForm
     save_on_top = True
-    list_display = ('gas', 'default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
+    list_display = ('gas', 'default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day','is_active')
+    #COMMENT MM: added notice_days_before_order_close to the form, now tech referrers can
+    #COMMENT MM: change the days count before which its GAS(es) is (are) notified of an o    #COMMENT MM: rder will close or delivered
     fieldsets = ((_("Configuration"), {
         'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 
             'gasmember_auto_confirm_order', #KO by fero always True until Gasista Felice 2.0: 'auto_populate_products', 
             'default_close_day', 'default_close_time', 'default_delivery_day', 
             'default_delivery_time', 'can_change_delivery_place_on_each_order', 
             'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 
-            'default_withdrawal_place', 'is_active'),
+            'default_withdrawal_place','notice_days_before_order_close','is_active'),
     }),
     )
 
