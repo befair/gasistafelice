@@ -70,11 +70,11 @@ class Command(BaseCommand):
                 body = u""
                 if len(_msg) > 0:
                     body = "Ordini in prossima chiusura\n\n"
-                    body +=  _msg.join("\n")
+                    body +=  "\n".join(_msg)
                     
                 if len(_delivery_msg) > 0:
                     body = "\nOrdini in prossima consegna\n\n"
-                    body +=  _delivery_msg.join("\n")
+                    body +=  "\n".join(_delivery_msg)
                     
                 if body:
                     gas.send_email_to_gasmembers(subject,body)
