@@ -585,6 +585,10 @@ class Person(models.Model, PermissionResource):
         return u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
 
     def clean(self):
+
+        if not self.user and self.gasmembers.count():
+            raise ValidationError(_("A person without user cannot be a GAS member"))
+
         self.name = self.name.strip().lower().capitalize()
         self.surname = self.surname.strip().lower().capitalize()
         self.display_name = self.display_name.strip()
@@ -592,6 +596,7 @@ class Person(models.Model, PermissionResource):
             self.ssn = None
         else:
             self.ssn = self.ssn.strip().upper()
+
 
         return super(Person, self).clean()
     
@@ -860,6 +865,7 @@ class Person(models.Model, PermissionResource):
         The queryset of all incarnations of this person as a GAS member.
         """
         return self.gasmember_set.all()
+
 
 class Contact(models.Model):
     """If is a contact, just a contact email or phone"""
