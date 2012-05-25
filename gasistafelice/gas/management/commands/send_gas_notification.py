@@ -60,9 +60,9 @@ class Command(BaseCommand):
                 # g = gas.pk
                 # print gas
                 for order in gas.orders.closed().filter(
-                        delivery.date__year = next_day.year, 
-                        delivery.date__month = next_day.month, 
-                        delivery.date__day = next_day.day
+                    delivery__date__year = next_day.year, 
+                    delivery__date__month = next_day.month, 
+                    delivery__date__day = next_day.day
                 ):
                     o = order.pk
                     # print order
