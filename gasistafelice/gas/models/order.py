@@ -1244,6 +1244,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         verbose_name_plural = _('gas supplier order products')
         ordering = (
             'gasstock__stock__supplier',
+            'gasstock__stock__supplier_category__sorting', #get suggestion from Orlando see if problems happen
             'gasstock__stock__product__category__name', 
             'gasstock__stock__product__name'
         )
