@@ -528,7 +528,7 @@ class GAS(models.Model, PermissionResource):
                 subject = subject,
                 body = message,
                 from_email = sender,
-                to = addr
+                to = [addr]
             )
 
             email.send()
