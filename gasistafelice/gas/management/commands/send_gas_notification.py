@@ -32,11 +32,6 @@ class Command(BaseCommand):
                 weeknumber = datetime.date.today().isocalendar()[1]
                 subject = "[NEWS] %s - %s (%s)" % (gas.id_in_des, gas, weeknumber)
 
-                if delta_day == 1:
-                    pre_msg = "Domani "
-                else:
-                    pre_msg = "Fra %d giorni " % delta_day
-
                 _msg = []
                 g = gas.pk
                 # print gas
@@ -47,15 +42,11 @@ class Command(BaseCommand):
                 ):
                     o = order.pk
                     # print order
-                    _msg.append("* %s si chiude l'ordine %s\n" % (pre_msg, order))
+                    _msg.append("* %s\n" % order)
                     
                     
                 # print 'next_day: %s' % next_day
                 # subject = "[NEWS] %s - %s (%s)" % (gas.id_in_des, gas, weeknumber)
-                if delta_day == 1:
-                    pre_msg = "Domani "
-                else:
-                   pre_msg = "Fra %d giorni " % delta_day
                 _delivery_msg = []
                 # g = gas.pk
                 # print gas
@@ -66,14 +57,20 @@ class Command(BaseCommand):
                 ):
                     o = order.pk
                     # print order
-                    _delivery_msg.append("* %s si consegna l'ordine %s" % (pre_msg, order))
+                    _delivery_msg.append("* %s" % order)
+
+                if delta_day == 1:
+                    pre_msg = "domani"
+                else:
+                    pre_msg = "fra %d giorni" % delta_day
+
                 body = u""
                 if len(_msg) > 0:
-                    body = "Ordini in prossima chiusura\n\n"
+                    body = "Ordini in chiusura %s:\n\n" % pre_msg
                     body +=  "\n".join(_msg)
                     
                 if len(_delivery_msg) > 0:
-                    body = "\nOrdini in prossima consegna\n\n"
+                    body = "\nOrdini in consegna %s:\n\n" % pre_msg
                     body +=  "\n".join(_delivery_msg)
                     
                 if body:

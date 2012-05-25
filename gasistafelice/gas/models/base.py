@@ -520,7 +520,7 @@ class GAS(models.Model, PermissionResource):
         to = []
 
         for gm in self.gasmembers:
-            to = gm.preferred_email_contacts[0].value
+            to.append(gm.email)
 
         for addr in to + more_to:
 
@@ -833,15 +833,15 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def email(self):
-        return self.person.preferred_email_contacts
+        return self.person.preferred_email_contacts[0].value
 
     @property
     def phone(self):
-        return self.person.preferred_phone_contacts
+        return self.person.preferred_phone_contacts[0].value
 
     @property
     def fax(self):
-        return self.person.preferred_fax_contacts
+        return self.person.preferred_fax_contacts[0].value
 
     @property
     def economic_state(self):
