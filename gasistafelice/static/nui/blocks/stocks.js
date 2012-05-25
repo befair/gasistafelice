@@ -21,9 +21,19 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%","bVisible":true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"50%","bVisible":true},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"20%","bVisible":true},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%","bVisible":true,
+                      "fnRender": function ( oObj ) {
+                            var _category = oObj.aData[ oObj.iDataColumn ];
+                            var _category_list = _category.split('::');
+                            var _display_category = _category_list[_category_list.length-1];
+                            /*if (_category_list.length > 1) {
+                                _display_category += '::' + _category_list[1];
+                            }*/
+                            return _display_category;
+                          }
+                    },
                     {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"20%", "sClass": "tacenter"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%", "sClass": "tacenter"}
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

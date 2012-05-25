@@ -33,35 +33,45 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                     {"bSearchable":true, "sWidth": "4%", "bVisible": true },
                     {"bSearchable":true,"bSortable":true, "sWidth": "16%",
                       "fnRender": function ( oObj ) {
-                                    var url = $(oObj.aData[iQta]).attr('s_url');
-                                    var _name = oObj.aData[ oObj.iDataColumn ];
-                                    res = new jQuery.Resource(url, _name);
-                                    return res.render();
-                                  }
+                            var url = $(oObj.aData[iQta]).attr('s_url');
+                            var _name = oObj.aData[ oObj.iDataColumn ];
+                            res = new jQuery.Resource(url, _name);
+                            return res.render();
+                          }
                     },
                     {"bSortable":true,"bSearchable":true, "sWidth": "25%",
                       "fnRender": function ( oObj ) {
-                                    var url = $(oObj.aData[iQta]).attr('p_url');
-                                    var _name = oObj.aData[ oObj.iDataColumn ];
-                                    res = new jQuery.Resource(url, _name);
-                                    return res.render();
-                                  }
+                            var url = $(oObj.aData[iQta]).attr('p_url');
+                            var _name = oObj.aData[ oObj.iDataColumn ];
+                            res = new jQuery.Resource(url, _name);
+                            return res.render();
+                          }
                     },
-                    {"bSortable":true,"bSearchable":true, "sWidth": "10%" },
+                    {"bSortable":true,"bSearchable":true, "sWidth": "10%", 
+                      "fnRender": function ( oObj ) {
+                            var _category = oObj.aData[ oObj.iDataColumn ];
+                            var _category_list = _category.split('::');
+                            var _display_category = _category_list[_category_list.length-1];
+                            /*if (_category_list.length > 1) {
+                                _display_category += '::' + _category_list[1];
+                            }*/
+                            return _display_category;
+                          }
+                    },
                     {"bSortable":false,"bSearchable":false, "sWidth": "20%"},
                     {"bSortable":true, "sClass": "taright", "sType": "currency","bSearchable":false, "sWidth": "10%"},
                     {"bSortable":false,"bSearchable":false, "sWidth": "15%",
                       "fnRender": function ( oObj ) {
-                                    var step = $(oObj.aData[iQta]).attr('step');
-                                    var min =  $(oObj.aData[iQta]).attr('minimum_amount');
-                                    var price =  parseFloat(oObj.aData[iQta-1].replace(',','.').replace('&#8364;',''));
-                                    var rv = '<span class="hand" onclick="fncOrder($(this),-'+ step +','+ min + ', ' + price + ', \'#total-order\'); return false;"><img src="/static/nui/img/remove.png"></span>'; 
-                                    rv += oObj.aData[iQta];
-                                    rv += '<span class="hand" onclick="fncOrder($(this),+'+ step +','+ min + ', ' + price + ', \'#total-order\'); return false;"><img src="/static/nui/img/add.png"></span>';
-                                    return rv;
-                                  }
+                            var step = $(oObj.aData[iQta]).attr('step');
+                            var min =  $(oObj.aData[iQta]).attr('minimum_amount');
+                            var price =  parseFloat(oObj.aData[iQta-1].replace(',','.').replace('&#8364;',''));
+                            var rv = '<span class="hand" onclick="fncOrder($(this),-'+ step +','+ min + ', ' + price + ', \'#total-order\'); return false;"><img src="/static/nui/img/remove.png"></span>'; 
+                            rv += oObj.aData[iQta];
+                            rv += '<span class="hand" onclick="fncOrder($(this),+'+ step +','+ min + ', ' + price + ', \'#total-order\'); return false;"><img src="/static/nui/img/add.png"></span>';
+                            return rv;
+                          }
                      },
-                    {"bSortable":false, "sType": "currency","bSearchable":false, "sWidth": "10%" },
+                    {"bSortable":false, "sType": "currency","bSearchable":false, "sWidth": "10%" }
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
