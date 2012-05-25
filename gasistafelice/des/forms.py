@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from captcha.fields import CaptchaField
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
-from gasistafelice.consts import SUPPLIER_REFERRER
+from gasistafelice.consts import SUPPLIER_REFERRER, GAS_MEMBER
 
 from gasistafelice.gas.models import GAS, GASMember
 from gasistafelice.supplier.models import Supplier
@@ -59,18 +59,31 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 
     @transaction.commit_on_success
     def save(self):
+        """Start the registration process after a new user completed the registration form.
+
+        Steps:
+        1. create User
+        2. bind User to appropriate role in Supplier and/or GAS
+        3. Send email to GAS_REFERRER_TECH or all GAS_REFERRER_TECHs if the new user is bound to Supplier
+        4. Publish the new user in the Admin tab of GAS and/or Supplier with:
+            a. activation checkbox
+            b. Person selection ora add: a GAS_REFERRER_TECH can choose among people in DES without user bound
+
+        NOTE:
+        Person binding will happen only in 4b. step! User can be bound to an existent Person, or a new one will be created
+        """
 
         # Create base objects
-        place, created = Place.objects.get_or_create(
-            city=self.cleaned_data['city'],
-            address='', name=''
-        )
-
-        contact_email, created = \
-            Contact.objects.get_or_create(flavour="EMAIL", value=self.cleaned_data['email'])
-
-        contact_phone, created = \
-            Contact.objects.get_or_create(flavour="PHONE", value=self.cleaned_data['phone'])
+#        place, created = Place.objects.get_or_create(
+#            city=self.cleaned_data['city'],
+#            address='', name=''
+#        )
+#
+#        contact_email, created = \
+#            Contact.objects.get_or_create(flavour="EMAIL", value=self.cleaned_data['email'])
+#
+#        contact_phone, created = \
+#            Contact.objects.get_or_create(flavour="PHONE", value=self.cleaned_data['phone'])
 
         # Create user
 
@@ -86,23 +99,31 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 
         # Create person
 
-        person = Person(
-            name = self.cleaned_data['name'],
-            surname = self.cleaned_data['surname'],
-            address = place,
-            user = user
-        )
-        person.save()
-        person.contact_set.add( contact_email, contact_phone)
+#        person = Person(
+#            name = self.cleaned_data['name'],
+#            surname = self.cleaned_data['surname'],
+#            address = place,
+#            user = user
+#        )
+#        person.save()
+#        person.contact_set.add( contact_email, contact_phone)
 
         gas = self.cleaned_data.get('gas_choice')
         if gas:
-            gm = GASMember( person=person, gas=gas )
-            gm.save()
 
-            #Send email for GAS_REFERER_TECH
+            # COMMENT fero: following our workflow we can't bind person to GAS now
+            # we can bind User to role GAS Member for this GAS
+            # in the activation phase (4a.) we would perform this step
+            # gm = GASMember( person=person, gas=gas )
+            # gm.save()
+            pr = ParamRole.get_role(GAS_MEMBER, gas=gas)
+            ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
+            ppr.save()
+
+            #Send email for GAS_REFERRER_TECH
             techs = gas.tech_referrers_people
             if techs:
+                #TODO Matteo: put also 'city' and 'phone' form fields in this email
                 body = _("new registration from %(username)s %(usersurname)s with email %(email)s. User active status is %(active)s. Motivation: %(motivation)s...") % {
                     'username' : user.first_name,
                     'usersurname' : user.last_name,
@@ -111,7 +132,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
                     'motivation' : self.cleaned_data['motivation'],
                 }
                 #from notification.models import Notice
-                #INFORMATIC REFERENT
+                #GAS_REFERRER_TECH
                 for tech in techs:
                     #TODO: Notification or send email
                     recipient = tech.user.email
@@ -127,9 +148,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         supplier = self.cleaned_data.get('supplier_choice')
         if supplier:
             pr = ParamRole.get_role(SUPPLIER_REFERRER, supplier=supplier)
-            ppr = PrincipalParamRoleRelation.objects.create(
-                user=user, role=pr
-            )
+            ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
             ppr.save()
 
         
