@@ -72,7 +72,7 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = ('^name','^surname', 'address__city')
     fieldsets = ((None,
             { 'fields' : ('name', 'surname',
-                'display_name', 'user',
+                'display_name',
                 'address', 'avatar', 'website' 
             )
     }),)
