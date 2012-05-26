@@ -52,9 +52,9 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                             var _category = oObj.aData[ oObj.iDataColumn ];
                             var _category_list = _category.split('::');
                             var _display_category = _category_list[_category_list.length-1];
-                            /*if (_category_list.length > 1) {
-                                _display_category += '::' + _category_list[1];
-                            }*/
+                            if (_category_list.length > 1) {
+                                _display_category = _category_list[_category_list.length-2] + '::' + _display_category;
+                            }
                             return _display_category;
                           }
                     },

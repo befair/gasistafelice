@@ -1009,6 +1009,7 @@ class SupplierStock(models.Model, PermissionResource):
     class Meta:
         verbose_name = _('supplier stock')
         verbose_name_plural = _('supplier stocks')
+        ordering = ('supplier_category__sorting', 'product__category')
         #Fixtures do not work: to be checked and then re-enabled TODO
         #unique_together = (('code', 'supplier'),)
 
@@ -1269,7 +1270,7 @@ class SupplierProductCategory(models.Model):
     class Meta:
         verbose_name = _("supplier product category")
         verbose_name_plural = _("supplier product categories")
-        ordering = ('supplier','sorting')
+        ordering = ('supplier', 'sorting')
 
     def __unicode__(self):
         return self.name
