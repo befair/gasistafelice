@@ -62,7 +62,7 @@ class BaseRoleForm(forms.ModelForm):
 
 #--------------------------------------------------------------------------------
 
-class EditPersonForm(forms.ModelForm):
+class BasePersonForm(forms.ModelForm):
 
     address = make_ajax_field(Person, 
         label = _("address"),
@@ -73,7 +73,7 @@ class EditPersonForm(forms.ModelForm):
     contact_set = MultiContactField(n=3,label=_('Contacts'))
 
     def __init__(self, request, *args, **kw):
-        super(EditPersonForm, self).__init__(*args, **kw)
+        super(BasePersonForm, self).__init__(*args, **kw)
 
         model = self._meta.model
         autoselect_fields_check_can_add(self,model,request.user)
@@ -88,16 +88,25 @@ class EditPersonForm(forms.ModelForm):
             elif contact.pk:
                 self.cleaned_data['contact_set'].remove(contact)
 
-        return super(EditPersonForm, self).save(*args, **kw)
+        return super(BasePersonForm, self).save(*args, **kw)
 
     class Meta:
         model = Person
         fields = (
-            'name', 'surname', 'contact_set', 'address', 'user'
+            'name', 'surname','display_name', 'contact_set','avatar','website', 'address', 'user'
         )
         gf_fieldsets = [(None, { 
             'fields' : (
-                ('name', 'surname'),  
+                ('name', 'surname'),
+                'display_name', 
                 'address', 'contact_set',
+                'avatar','website',
                 'user'),  
         })]
+
+class EditPersonForm(BasePersonForm):
+    pass
+
+class AddPersonForm(BasePersonForm):
+    pass
+
