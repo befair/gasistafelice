@@ -25,8 +25,8 @@ class Block(BlockWithList):
     def _get_user_actions(self, request):
 
         user_actions = []
-        ctx = { 'site' : Siteattr.get_site() }
-       #was:  if request.user.has_perm(CREATE, obj=ObjectWithContext(Person, context=ctx)):
+        #was: ctx = { 'site' : Siteattr.get_site() }
+        #was: if request.user.has_perm(CREATE, obj=ObjectWithContext(Person, context=ctx)):
         if request.user.has_perm(CREATE, obj=ObjectWithContext(request.resource
 )):
             user_actions.append( 

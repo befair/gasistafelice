@@ -70,6 +70,12 @@ class BasePersonForm(forms.ModelForm):
         channel='placechannel', 
         help_text=_("Search for place by name, by address, or by city")
     )
+    user = make_ajax_field(Person, 
+        label = _("user"),
+        model_fieldname='user',
+        channel='personchannel', 
+        help_text=_("Choose an existing user or create a new one")
+    )
     contact_set = MultiContactField(n=3,label=_('Contacts'))
 
     def __init__(self, request, *args, **kw):
