@@ -46,7 +46,7 @@ jQuery.UIBlockSupplierReport = jQuery.UIBlockWithList.extend({
                     { "sWidth": "5%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
                     { "sWidth": "5%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
                     { "sWidth": "10%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
-                    { "sWidth": "15%"},
+                    { "sWidth": "15%", "bSortable" : false, "bSearchable" : false},
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),

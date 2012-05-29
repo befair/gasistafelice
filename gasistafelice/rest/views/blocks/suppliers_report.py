@@ -59,6 +59,7 @@ class Block(BlockSSDataTables):
 #        9: 'certifications_list'
 #        10: 'enabled'
 
+#Cannot resolve keyword '' into field. Choices are: agent_set, certifications, config, contact_set, description, flavour, frontman, gas, iban, id, logo, n_employers, name, pact_set, produced_product_set, seat, ssn, stock_set, supplieragent, supplierconfig, supplierproductcategory, vat_number, website
 
 
     def _get_user_actions(self, request):
