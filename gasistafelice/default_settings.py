@@ -322,7 +322,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{ 
         'name' : 'registration',
         'descr': 'Registrazione',
-        'blocks': ['order_invoice', 'curtail']
+        'blocks': ['order_invoice', 'curtail', 'order_insolute']
 #    },{ 
 #        'name' : 'pay',
 #        'descr': 'Pagamento',
