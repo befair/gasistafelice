@@ -1083,7 +1083,7 @@ WHERE order_id = %s \
 
         orderables_aggregate = self.orderable_products.filter(
             gasmember_order_set__ordered_amount__gt=0
-        ).distinct().order_by('gasstock__stock__product__category__name')
+        ).distinct().order_by('gasstock__stock__supplier_category__name')
 
         ordereds = self.ordered_products.order_by('purchaser__person__name', 
             'purchaser__person__surname', 'purchaser__person',
