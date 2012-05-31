@@ -101,20 +101,33 @@ def user_urns(request):
 
         #Person Profile
         person = Person.objects.get(user=request.user)
+        pacts_to_append = []
+        suppliers_to_append = []
 
         for obj in person.gasmembers:
             rv.append( obj.as_dict() )
         for obj in person.gas_list:
             rv.append( obj.as_dict() )
+
         for prr in request.user.principal_param_role_set.all():
 
-            if prr.role.role.name == consts.GAS_REFERRER_SUPPLIER:
+            if prr.role.role.name in [ consts.GAS_REFERRER_CASH, consts.GAS_REFERRER_TECH ]:
+
+                gas = prr.role.params[0].value
+                pacts_to_append = map(lambda pact : pact.as_dict(), gas.pacts)
+                break
+
+            elif prr.role.role.name == consts.GAS_REFERRER_SUPPLIER:
 
                 pact = prr.role.params[0].value
-                rv.append( pact.as_dict() )
+                pacts_to_append.append( pact.as_dict() )
                 supplier = pact.supplier
-                rv.append( supplier.as_dict() )
+                suppliers_to_append.append( supplier.as_dict() )
         
+
+        rv += pacts_to_append
+        rv += suppliers_to_append
+
     return HttpResponse(simplejson.dumps(rv))
     
     

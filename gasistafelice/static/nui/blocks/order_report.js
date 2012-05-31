@@ -29,12 +29,12 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     { "sWidth": "5%"},
                     { "sWidth": "30%"},
                     { "sWidth": "10%", "sType": "currency", "sClass": "taright", "bSearchable" : false},
-                    { "sWidth": "5%", "bSortable" : false, "bSortable" : false, "bSearchable" : false},
+                    { "sWidth": "5%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "10%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
                     { "sWidth": "5%", "bSortable" : false, "bSearchable" : false},
                     { "sWidth": "15%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
                     { "sWidth": "15%", "bSortable" : false, "sClass": "taright", "bSearchable" : false},
-                    { "sWidth": "5%"},
+                    { "sWidth": "5%"}
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -46,7 +46,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
                         var url = aaData[9];
-                        if (url != undefined) {
+                        if (url !== undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[1]).html( res.render() );
@@ -54,13 +54,13 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     }
                     catch(e){alert(e.message);
                     }
-                    return nRow
+                    return nRow;
                 } ,
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 
                     var iTotal = 0;
-                    for ( var i=0 ; i<aaData.length ; i++ )
-                    {
+                    var i=0;
+                    for ( i=0; i<aaData.length; i++ ) {
                         iTotal += parseFloat(aaData[i][iTot].substr(8).replace(',','.'));
                     }
 
@@ -77,5 +77,5 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS["order_report"] = new jQuery.UIBlockOrderReport();
+jQuery.BLOCKS.order_report = new jQuery.UIBlockOrderReport();
 

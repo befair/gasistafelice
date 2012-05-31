@@ -165,6 +165,7 @@ class Supplier(models.Model, PermissionResource):
             rv |= p.gas.tech_referrers
         return rv
 
+    #FUTURE TODO LF: in 1.x we SHOULD evaluate to deprecate "referrers" properties for a resource 
     @property
     def referrers(self):
         """All User linked as platform operators for this resource.
@@ -349,6 +350,7 @@ class Supplier(models.Model, PermissionResource):
         # Who can edit details of a Supplier in a DES ?
         # * DES administrators
         # * referrers for that supplier        
+
         #WAS: * gas supplier_referrers for that supplier
         #NOTE LF: to update supplier info and stocks the user must have at least
         #NOTE LF: SUPPLIER_REFERRER role GAS_REFERRER_SUPPLIER is not enough
@@ -1007,6 +1009,7 @@ class SupplierStock(models.Model, PermissionResource):
     class Meta:
         verbose_name = _('supplier stock')
         verbose_name_plural = _('supplier stocks')
+        ordering = ('supplier_category__sorting', 'product__category')
         #Fixtures do not work: to be checked and then re-enabled TODO
         #unique_together = (('code', 'supplier'),)
 
@@ -1264,11 +1267,10 @@ class SupplierProductCategory(models.Model):
     name = models.CharField(verbose_name=_('name'), max_length=128)
     sorting = models.PositiveIntegerField(blank=True, null=True)
     
-    #NOTA MODIFICA MATTEO
     class Meta:
-        verbose_name = _("Supplier Product Category")
-        verbose_name_plural = _("Supplier Product Categories")
-    #FINO A QUI
+        verbose_name = _("supplier product category")
+        verbose_name_plural = _("supplier product categories")
+        ordering = ('supplier', 'sorting')
 
     def __unicode__(self):
         return self.name

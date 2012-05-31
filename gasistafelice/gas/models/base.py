@@ -211,36 +211,6 @@ class GAS(models.Model, PermissionResource):
         return Person.objects.filter(gasactivist__in=self.activist_set.all())
 
     @property
-    def users(self):
-        
-        usr_ids = set()
-        for member in self.gasmembers:
-
-            # Specifications say that every GASMember MUST be bound
-            # to a User: so raise an Exception if not True
-            if not member.person.user:
-                raise DatabaseInconsistent(
-                    "Member %s is not bound to a valid User" % member
-                )
-            usr_ids.add(member.person.user.pk)
-        return User.objects.filter(pk__in = usr_ids)
-
-    @property
-    def users_all(self):
-        
-        usr_ids = set()
-        for member in self.gasmember_set.order_by('person__surname', 'person__name'):
-
-            # Specifications say that every GASMember MUST be bound
-            # to a User: so raise an Exception if not True
-            if not member.person.user:
-                raise DatabaseInconsistent(
-                    "Member %s is not bound to a valid User" % member
-                )
-            usr_ids.add(member.person.user.pk)
-        return User.objects.filter(pk__in = usr_ids)
-
-    @property
     def persons(self):
         qs = Person.objects.filter(gasmember__in=self.gasmembers) | self.info_people | self.referrers_people
         return qs.distinct()
@@ -542,7 +512,7 @@ class GAS(models.Model, PermissionResource):
         try:
             sender = self.preferred_email_contacts[0].value
         except IndexError as e:
-            msg = ug("GAS cannot send email, because no preferred email for GASMember specified")
+            msg = ug("GAS cannot send email, because no preferred email for GAS specified")
             message += '\n' + msg
             sender = settings.DEFAULT_FROM_EMAIL
             message += '\n%s --> %s' % (msg, sender)
@@ -550,7 +520,7 @@ class GAS(models.Model, PermissionResource):
         to = []
 
         for gm in self.gasmembers:
-            to = gm.preferred_email_contacts[0].value
+            to.append(gm.email)
 
         for addr in to + more_to:
 
@@ -558,7 +528,7 @@ class GAS(models.Model, PermissionResource):
                 subject = subject,
                 body = message,
                 from_email = sender,
-                to = addr
+                to = [addr]
             )
 
             email.send()
@@ -863,15 +833,15 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def email(self):
-        return self.person.preferred_email_contacts
+        return self.person.preferred_email_contacts[0].value
 
     @property
     def phone(self):
-        return self.person.preferred_phone_contacts
+        return self.person.preferred_phone_contacts[0].value
 
     @property
     def fax(self):
-        return self.person.preferred_fax_contacts
+        return self.person.preferred_fax_contacts[0].value
 
     @property
     def economic_state(self):

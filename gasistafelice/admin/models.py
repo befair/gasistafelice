@@ -72,7 +72,7 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = ('^name','^surname', 'address__city')
     fieldsets = ((None,
             { 'fields' : ('name', 'surname',
-                'display_name', 'user',
+                'display_name',
                 'address', 'avatar', 'website' 
             )
     }),)
@@ -96,6 +96,13 @@ class PlaceAdmin(admin.ModelAdmin):
     list_editable = ('city', 'province') 
     search_fields = ('name', 'city','province')
 
+
+class ContactAdmin(admin.ModelAdmin):
+
+    search_fields = ('value',)
+    list_display = ('pk', '__unicode__', 'flavour', 'value')
+    list_editable = ('flavour', 'value') 
+    list_filter = ('flavour',)
 
 class GASAdmin(admin.ModelAdmin):
 
@@ -155,14 +162,14 @@ class GASConfigAdmin(admin.ModelAdmin):
 
     form = GASConfigForm
     save_on_top = True
-    list_display = ('gas', 'default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day', 'is_active')
+    list_display = ('gas', 'default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day','is_active')
     fieldsets = ((_("Configuration"), {
         'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 
             'gasmember_auto_confirm_order', #KO by fero always True until Gasista Felice 2.0: 'auto_populate_products', 
             'default_close_day', 'default_close_time', 'default_delivery_day', 
             'default_delivery_time', 'can_change_delivery_place_on_each_order', 
             'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 
-            'default_withdrawal_place', 'is_active'),
+            'default_withdrawal_place','notice_days_before_order_close','is_active'),
     }),
     )
 
@@ -207,6 +214,12 @@ class GASMemberAdmin(admin.ModelAdmin):
         return u'<a href="%s">%s</a>' % (url, obj.gas)
     gas_with_link.allow_tags = True
     gas_with_link.short_description = "GAS"
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "person":
+            person_qs = base_models.Person.objects.filter(user__isnull=False)
+            kwargs["queryset"] = person_qs
+        return super(GASMemberAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class SupplierAdmin(admin.ModelAdmin):
@@ -382,9 +395,14 @@ class LedgerEntryAdmin(admin.ModelAdmin):
     def kind(self, obj):
         return obj.transaction.kind
 
+class SupplierProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'supplier', 'name', 'sorting')
+    list_editable = ('supplier', 'name', 'sorting')
+    list_filter = ('supplier',)
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
-admin.site.register(base_models.Contact)
+admin.site.register(base_models.Contact, ContactAdmin)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.SupplierConfig, SupplierConfigAdmin)
@@ -395,7 +413,7 @@ admin.site.register(supplier_models.Certification)
 admin.site.register(supplier_models.ProductPU)
 admin.site.register(supplier_models.ProductMU)
 admin.site.register(supplier_models.UnitsConversion, UnitConvAdmin)
-admin.site.register(supplier_models.SupplierProductCategory)
+admin.site.register(supplier_models.SupplierProductCategory, SupplierProductCategoryAdmin)
 
 admin.site.register(gas_models.GASMember, GASMemberAdmin)
 admin.site.register(gas_models.GAS, GASAdmin)

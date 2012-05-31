@@ -159,6 +159,9 @@ class EditStockForm(forms.ModelForm):
             for k,v in self.fields.items():
                  if k.startswith('product_'):
                     self.fields[k].widget.attrs['disabled'] = 'disabled'
+        self.fields['supplier_category'].queryset = self.fields['supplier_category'].queryset.filter(
+            supplier=self._supplier
+        )
 
     def clean(self):
         cleaned_data = super(EditStockForm, self).clean()
@@ -240,6 +243,9 @@ class AddStockForm(EditStockForm):
 #            for k,v in self.fields.items():
 #                 if k.startswith('product_'):
 #                    self.fields[k].widget.attrs['disabled'] = 'disabled'
+        self.fields['supplier_category'].queryset = self.fields['supplier_category'].queryset.filter(
+            supplier=self._supplier
+        )
 
     def clean(self):
 

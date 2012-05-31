@@ -1,3 +1,18 @@
+26.05.2012 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.9.6
+    * Procedura di registrazione: 
+        - feedback all'utente (messaggio in alto a registrazione avvenuta)
+        - l'associazione utente/persona avviene al momento dell'abilitazione
+          nella scheda Admin. Rimossa la possibilità di selezionare un utente
+          in "Aggiungi/Modifica" persona
+    * Segnalazione ai Gasisti via mail include anche gli ordini in consegna
+      secondo le impostazioni del GAS
+    * Menu Aiuto per accesso rapido a:
+        - documentazione
+        - forum
+        - canale YouTube con i primi video!
+
 01.04.2012 Luca Ferroni <luca@befair.it>
 
     * Versione 0.9.1

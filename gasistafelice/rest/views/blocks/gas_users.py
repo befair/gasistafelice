@@ -1,16 +1,8 @@
-from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
-#from django.core import urlresolvers
-
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
-from gasistafelice.consts import EDIT, CONFIRM, EDIT_MULTIPLE, VIEW
-
-#from gasistafelice.gas.forms.base import GASSingleUserForm
-#from django.forms.formsets import formset_factory
-#from gasistafelice.lib.formsets import BaseFormSetWithRequest
 
 from gasistafelice.rest.views.blocks import users 
 
-from flexi_auth.models import ObjectWithContext
+from flexi_auth.models import ParamRole
+from gasistafelice.consts import GAS_MEMBER
 
 #------------------------------------------------------------------------------#
 #                                                                              #
@@ -19,44 +11,14 @@ from flexi_auth.models import ObjectWithContext
 class Block(users.Block):
 
     BLOCK_NAME = "gas_users"
-    BLOCK_DESCRIPTION = _("Users")
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
-    def _get_user_actions(self, request):
-
-        user_actions = []
-
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-            user_actions += [
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"), 
-                    popup_form=False,
-                    method="get",
-                ),
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
-                    popup_form=False,
-                    method="get",
-                ),
-            ]
-
-        return user_actions
-
-#    def _get_edit_multiple_form_class(self):
-#        qs = self._get_resource_list(self.request)
-#        return formset_factory(
-#                    form=GASSingleUserForm,    #SingleUserForm,
-#                    formset=BaseFormSetWithRequest, 
-#                    extra=qs.count()   #0
-#        )
-# 
-
     def _get_resource_list(self, request):
-        # User list even if not abilitate or GASMembers not active
-        return request.resource.users_all
-
-
+        """Rather than adding a 'users' method to the resource,
+        we compute users list here, because users may be not still bound to
+        the correspondent Person. This block is in fact used only for Admin
+        purposes during a specific stage of the registration process.
+        """
+        # User list
+        pr = ParamRole.get_role(GAS_MEMBER, gas=request.resource)
+        return pr.get_users().order_by('last_name', 'first_name')

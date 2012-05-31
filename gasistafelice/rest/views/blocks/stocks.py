@@ -70,7 +70,7 @@ class Block(BlockSSDataTables):
         
     def _get_resource_list(self, request):
         # SupplierStock list
-        return request.resource.stocks.order_by('product__category')
+        return request.resource.stocks
 
     def _get_add_form_class(self):
         return AddStockForm

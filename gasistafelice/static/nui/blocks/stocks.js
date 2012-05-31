@@ -10,7 +10,6 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
         var block_obj = this;
         // Init dataTables
-//                    {"bSearchable":true,"bSortable":true,"sWidth":"40%","bVisible":true},
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 'bLengthChange': true,
@@ -21,9 +20,20 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%","bVisible":true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"50%","bVisible":true},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"20%","bVisible":true},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%","bVisible":true,
+                      "fnRender": function ( oObj ) {
+                            var _category = oObj.aData[ oObj.iDataColumn ];
+                            var _category_list = _category.split('::');
+                            var _display_category = _category_list[_category_list.length-1];
+                            if (_category_list.length > 1) {
+                                _display_category = _category_list[_category_list.length-2] + '::' + _display_category;
+                            }
+                            return _display_category;
+                          },
+                       "bUseRendered" : true
+                    },
                     {"bSearchable":true, "bSortable":true, "sWidth":"20%", "sType":"currency","sClass": "taright" },
-                    {"bSearchable":true,"bSortable":true,"sWidth":"20%", "sClass": "tacenter"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"20%", "sClass": "tacenter"}
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
@@ -35,7 +45,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
                         var url = aaData[5];
-                        if (url != undefined) {
+                        if (url !== undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[1]).html( res.render() );
@@ -47,7 +57,7 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
                 } ,
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     /* Modify Django management form info */
-                    /* FIXME TODO AFTER 6 UGLY !!!*/
+                    /* FIXME should not be here this kind of logic computation */
                     $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
                 }
             }); 
@@ -58,5 +68,5 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS["stocks"] = new jQuery.UIBlockStockList();
+jQuery.BLOCKS.stocks = new jQuery.UIBlockStockList();
 

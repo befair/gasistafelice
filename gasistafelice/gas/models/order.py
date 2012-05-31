@@ -1087,11 +1087,13 @@ WHERE order_id = %s \
 
         ordereds = self.ordered_products.order_by('purchaser__person__name', 
             'purchaser__person__surname', 'purchaser__person',
+            'ordered_product__gasstock__stock__supplier_category__sorting',
             'ordered_product__gasstock__stock__product__category__name'
         )
         
         fams, total_calc, subTotals, fam_count = self.__get_pdfrecords_families(ordereds)
-        #PDF PROBLEM print("AAAAAA fams=%s total_calc=%s subTotals=%s" % (fams, total_calc, subTotals))
+        # if there are PDF PROBLEM try to print...
+        # print("AAAAAA fams=%s total_calc=%s subTotals=%s" % (fams, total_calc, subTotals))
         context_dict = {
             'order' : self,
             'recProd' : self.__get_pdfrecords_products(orderables_aggregate),
@@ -1240,7 +1242,12 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         app_label = 'gas'
         verbose_name = _('gas supplier order product')
         verbose_name_plural = _('gas supplier order products')
-        ordering = ('gasstock__stock__product__category__name', 'gasstock__stock__product__name')
+        ordering = (
+            'gasstock__stock__supplier__name',
+            'gasstock__stock__supplier_category__sorting', #get suggestion from Orlando see if problems happen
+            'gasstock__stock__product__category__name', 
+            'gasstock__stock__product__name'
+        )
 
     def __unicode__(self):
         rv = ugettext('%(gasstock)s of order %(order)s') % { 'gasstock' : self.gasstock, 'order' : self.order}
