@@ -18,15 +18,18 @@ class Block(BlockSSDataTables):
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
-        1: 'pk',
-        2: 'pk',
-        3: 'pk',
-        4: 'pk',
-        5: 'pk',
-        6: 'pk',
-        7: 'pk'
+        1: 'gassupplierorder__order',
+        2: 'gassupplierorder__order__pact',
+        3: 'gassupplierorder__order__pact__supplier__name',
+        4: 'gassupplierorder__order__pact__gas',
+        5: '',
+        6: '',
+        7: ''
     }
 
+#Cannot resolve keyword 'order' into field. Choices are: datetime_end, datetime_start, delivery, delivery_cost, delivery_referrer_person, gasstock_set, gassupplierorder, group_id, historicalgassupplierorder, historicalorderable_product_set, id, invoice_amount, invoice_note, order_minimum_amount, orderable_product_set, pact, referrer_person, root_plan, withdrawal, withdrawal_referrer_person
+
+#Request Method:
 #        1: 'order',
 #        2: 'tot_amount',
 #        3: 'tot_gasmembers',

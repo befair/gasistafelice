@@ -7,12 +7,12 @@
 
         "{{gso.id|escapejs}}",
         "{{gso|escapejs}}",
-        "{{gso.tot_amount|escapejs|floatformat:"-2"}}",
+        "{{gso.tot_amount|floatformat:2}}",
         "{{gso.tot_gasmembers|escapejs}}",
-        "&#8364; {{gso.tot_price|escapejs|floatformat:2}}",
-        "&#8364; {{gso.invoice_amount|escapejs|floatformat:2}}",
-        "&#8364; {{gso.tot_curtail|escapejs|floatformat:2}}",
-        "{{gso.payment|escapejs}}",
+        "&#8364; {{gso.tot_price|floatformat:2}}",
+        "&#8364; {{gso.invoice_amount|floatformat:2}}",
+        "&#8364; {{gso.tot_curtail|floatformat:2}}",
+        "{{gso.payment|floatformat:2}}",
         "{{gso.urn|escapejs}}",
         "{{gso.payment_urn|escapejs}}",
 
