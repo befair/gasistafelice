@@ -732,6 +732,8 @@ class TransationGASForm(BalanceGASForm):
 
 #-------------------------------------------------------------------------------
 
+
+
 class TransationPACTForm(BalanceForm):
 
 #DT     Use this if we have to insert this block in the GAS economic Tab too
@@ -743,11 +745,13 @@ class TransationPACTForm(BalanceForm):
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
+    TARGET_CHOICES = [ 
+        (INCOME,_('Correction in favor to supplier: +Supplier -GAS')),
+        (EXPENSE,_('Correction in favor to GAS: +GAS -Supplier ')),
+        (INVOICE_COLLECTION,_('Orders payment'))
+    ]
     target = forms.ChoiceField(required=True,
-        choices = [ (INCOME,_('Correction in favor to supplier: +Supplier -GAS')),
-                    (EXPENSE,_('Correction in favor to GAS: +GAS -Supplier ')),
-                    (INVOICE_COLLECTION,_('Orders payment'))
-        ],
+        choices = TARGET_CHOICES,
         widget=forms.RadioSelect,
         #help_text = _("select the kind for this operation"),
         label=_("operation kind").capitalize(),
@@ -786,13 +790,20 @@ class TransationPACTForm(BalanceForm):
         if not insolutes:
             # Hide Insolute choice
             _choice = self.fields['target'].choices
-            if len(_choice) > 2:
+            if len(_choice) > 2: #FIXME (related to ##) BAD CHECK NO NEED if we do choices modification for form instance
                 del _choice[-1]
+                #FIXME (id:##) AAAA WARNING WE ARE CHANGING a CLASS ATTRIBUTE (field!)
+                #CHECK if it is possible to do choices update in form instance
+                #rather than in form class. Now we fix with a corresponding bad code
+                #in the "else" branch.
                 self.fields['target'].choices = _choice
                 #Hide order form field
                 del self.fields['orders']
 
         else:
+            #FIXME (related to ##) bad code to FIX weird behaviour described before
+            self.fields['target'].choices = TransationPACTForm.TARGET_CHOICES
+
             choices, stat = get_html_insolutes(insolutes)
             self.fields['orders'].choices = choices
             self.fields['amount'].help_text = stat
