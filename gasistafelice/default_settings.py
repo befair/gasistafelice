@@ -346,7 +346,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance_pact', 'transactions']
+        'blocks' : ['balance_pact', 'insolutes_orders', 'transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
