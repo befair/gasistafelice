@@ -30,20 +30,19 @@ jQuery.UIBlockOrdersStoredList = jQuery.UIBlockWithList.extend({
                 "sAjaxSource": this.get_data_source(),
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
-                    {"bSearchable":false,"bSortable":false,"sWidth":"45%","bVisible": true},
-                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright" },
-                    {"bSearchable":false,"bSortable":false,"sWidth":"5%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"44%","bVisible": true},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"1%", "sType": "currency", "sClass": "taright" },
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
+                    {"bSearchable":true,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass":"taright"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass":"taright"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass":"taright"},
+                    {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass":"taright"}
 
-                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright","sClass":"taright"},
-
-                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright","sClass":"taright"},
-                    {"bSearchable":false,"bSortable":false,"sWidth":"5%", "sType": "currency", "sClass": "taright","sClass":"taright"},
-                    {"bSearchable":false,"bSortable":false,"sWidth":"25%", "sType": "currency", "sClass": "taright","sClass":"taright"}
                 ],
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
                         var url = aaData[iUrn];
-                        if (url != undefined) {
+                        if (url !== undefined) {
                             var _name = aaData[1];
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[1]).html( res.render() );
