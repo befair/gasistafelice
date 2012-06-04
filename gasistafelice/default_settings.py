@@ -452,5 +452,5 @@ AJAX_SELECT_BOOTSTRAP = False
 
 #------------------------------------------------------------------------------
 #The path where the profiling files are stored
-POFILE_LOG_BASE = PROJECT_ROOT + '/profiling_logs'
+PROFILE_LOG_BASE = PROJECT_ROOT + '/profiling_logs'
 

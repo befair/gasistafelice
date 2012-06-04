@@ -29,8 +29,6 @@ This makes it easy to run and compare multiple trials.
         log_file = os.path.join(PROFILE_LOG_BASE, log_file)
 
     def _outer(function):
-        print("____________________________________________________________")
-        print(function)
         def _inner(request,*args, **kwargs):
             # Add a timestamp to the profile output when the callable
             # is actually called.
@@ -44,6 +42,6 @@ This makes it easy to run and compare multiple trials.
             finally:
                 prof.close()
             return ret
-    
+
         return wraps(function)(_inner)
     return _outer
