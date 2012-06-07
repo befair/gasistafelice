@@ -18,6 +18,7 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
 
     rendering_table_post_load_handler: function() {
 
+        var block_obj = this;
         // Init dataTables
         var iTot = 7;
         var oTable = this.block_el.find('.dataTable').dataTable({
@@ -67,6 +68,10 @@ jQuery.UIBlockOrderReport = jQuery.UIBlockWithList.extend({
                     /* Modify the footer row to match what we want */
                     var nCells = $(nRow).find('th');
                     $(nCells[1]).html('&#8364; ' + String(GetRoundedFloat(iTotal)).replace('.',','));
+
+                    /* Modify Django management form info */
+                    /* FIXME should not be here this kind of logic computation */
+                    $('#' + block_obj.block_box_id + '-form-TOTAL_FORMS').val(iEnd-iStart);
                 }
             });
 
