@@ -33,6 +33,8 @@ This makes it easy to run and compare multiple trials.
             # Add a timestamp to the profile output when the callable
             # is actually called.
             (base, ext) = os.path.splitext(log_file)
+            if ext == '':
+                ext = '.prof'    
             base = base + "-" + time.strftime("%Y%m%dT%H%M%S", time.gmtime())
             final_log_file = base + ext
 
