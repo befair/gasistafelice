@@ -27,6 +27,7 @@ from gasistafelice.rest.views.blocks import AbstractBlock
 
 from gasistafelice.consts import CREATE, EDIT_MULTIPLE
 CREATE_PDF = "createpdf"
+VIEW_AS_HTML = "viewhtml"
 SENDME_PDF = "emailmepdf"
 SENDPROD_PDF = "emailprodpdf"
 

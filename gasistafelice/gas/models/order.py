@@ -1075,8 +1075,7 @@ WHERE order_id = %s \
             issued_by=issued_by
         )
 
-    def get_pdf_data(self, requested_by=None):
-        """Return PDF raw content to be rendered somewhere (email, or http)"""
+    def render_as_html(self, requested_by=None):
 
         if not requested_by:
             requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
@@ -1112,6 +1111,12 @@ WHERE order_id = %s \
         template = get_template(REPORT_TEMPLATE)
         context = Context(context_dict)
         html = template.render(context)
+        return html
+
+    def get_pdf_data(self, requested_by=None):
+        """Return PDF raw content to be rendered somewhere (email, or http)"""
+
+        html = self.render_as_html(requested_by=requested_by)
         result = StringIO.StringIO()
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
         pisadoc = pisa.pisaDocument(StringIO.StringIO(html.encode("utf-8", "ignore")), result)
