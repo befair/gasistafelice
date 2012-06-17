@@ -587,6 +587,12 @@ class ProductCategory(models.Model, PermissionResource):
     def icon(self):
         return self.image or super(ProductCategory, self).icon
 
+    def delete(self, *args, **kw):
+        if self.name == settings.DEFAULT_CATEGORY_CATCHALL:
+            raise ValueError(_("Cannot delete default category %s") % settings.DEFAULT_CATEGORY_CATCHALL)
+
+        return super(ProductCategory, self).delete(*args, **kW)
+
     def save(self, *args, **kw):
 
         if self.name == settings.DEFAULT_CATEGORY_CATCHALL:

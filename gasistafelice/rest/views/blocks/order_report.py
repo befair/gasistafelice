@@ -1,7 +1,10 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF, SENDPROD_PDF
+from gasistafelice.rest.views.blocks.base import ( BlockSSDataTables, ResourceBlockAction, 
+    CREATE_PDF, SENDME_PDF, SENDPROD_PDF,
+    VIEW_AS_HTML
+)
 
 from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
@@ -61,6 +64,15 @@ class Block(BlockSSDataTables):
                     popup_form=False,
                 ),
             ]
+
+#            user_actions += [
+#                ResourceBlockAction(
+#                    block_name = self.BLOCK_NAME,
+#                    resource = request.resource,
+#                    name=VIEW_AS_HTML, verbose_name=_("Visualizza come HTML"),
+#                    popup_form=True,
+#                ),
+#            ]
 
         #TODO fero: permission GET_ORDER_DOC
         if request.user == order.referrer_person.user \
@@ -179,6 +191,8 @@ class Block(BlockSSDataTables):
 
         if args == CREATE_PDF:
             rv = self._create_pdf()
+        elif args == VIEW_AS_HTML:
+            rv = self._render_as_html()
         elif args == SENDME_PDF:
             rv = self._send_email_logged()
         elif args == SENDPROD_PDF:
@@ -229,6 +243,11 @@ class Block(BlockSSDataTables):
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv
+
+    def _render_as_html(self):
+
+        html = self.resource.render_as_html(requested_by=self.request.user)
+        return HttpResponse(html)
 
     def fetch_resources(uri, rel):
         path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
