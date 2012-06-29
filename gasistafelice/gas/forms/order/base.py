@@ -212,7 +212,9 @@ class BaseOrderForm(forms.ModelForm):
                 self.__class__.__name__,
                 name, klass, ddt, p
             ))
-            raise
+            # WORKAROUND
+            appointment = klass.objects.filter(date=ddt, place=p)[0]
+            # WAS. SHOULD BE: raise
 
         return appointment
 
