@@ -20,6 +20,7 @@ from gasistafelice.base.models import Person
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
 from gasistafelice.supplier.models import Supplier
 from gasistafelice import consts
+from gasistafelice.profiling import profile
 
 import time, datetime, logging, copy
 log = logging.getLogger(__name__)
@@ -214,7 +215,10 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
     handler = load_block_handler(view_type)
     
     if (args != "options"):
-        response = handler.get_response(request, resource_type, resource_id, args)
+        #WAS: response = handler.get_response(request, resource_type, resource_id, args)
+        get_response = profile(view_type)(handler.get_response)
+        response = get_response(handler,request, resource_type, resource_id, args)
+ 
     else: 
         if (request.method == "GET"):
             response = handler.options_response(request, resource_type, resource_id)

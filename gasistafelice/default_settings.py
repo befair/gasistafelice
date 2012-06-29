@@ -450,4 +450,7 @@ AJAX_SELECT_BOOTSTRAP = False
 #STATIC_URL = '/site_static/'
 #STATIC_ROOT = PROJECT_ROOT + '/site_static/'
 
+#------------------------------------------------------------------------------
+#The path where the profiling files are stored
+PROFILE_LOG_BASE = PROJECT_ROOT + '/profiling_logs'
 
