@@ -30,6 +30,7 @@ CREATE_PDF = "createpdf"
 VIEW_AS_HTML = "viewhtml"
 SENDME_PDF = "emailmepdf"
 SENDPROD_PDF = "emailprodpdf"
+CREATE_HTML = "createhtml"
 
 import logging
 log = logging.getLogger(__name__)

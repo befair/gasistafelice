@@ -2,7 +2,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from gasistafelice.rest.views.blocks.base import ( BlockSSDataTables, ResourceBlockAction, 
-    CREATE_PDF, SENDME_PDF, SENDPROD_PDF,
+    CREATE_PDF, CREATE_HTML, SENDME_PDF, SENDPROD_PDF,
     VIEW_AS_HTML
 )
 
@@ -61,6 +61,15 @@ class Block(BlockSSDataTables):
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
                     name=CREATE_PDF, verbose_name=_("Create PDF"),
+                    popup_form=False,
+                ),
+            ]
+            
+            user_actions += [
+                ResourceBlockAction(
+                    block_name = self.BLOCK_NAME,
+                    resource = request.resource,
+                    name="createhtml", verbose_name=_("Create HTML"),
                     popup_form=False,
                 ),
             ]
@@ -197,6 +206,9 @@ class Block(BlockSSDataTables):
             rv = self._send_email_logged()
         elif args == SENDPROD_PDF:
             rv = self._send_email_supplier()
+        #MOD
+        elif args == CREATE_HTML:
+            rv = self._create_html()
         
 #        #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
 #        if args == self.KW_DATA:
@@ -241,6 +253,18 @@ class Block(BlockSSDataTables):
         else:
             response = HttpResponse(pdf_data, mimetype='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
+            rv = response
+        return rv
+    #MOD
+    def _create_html(self):
+        
+        html_data = self.resource.get_html_data(requested_by=self.request.user)
+
+        if not html_data:
+            rv = self.response_error(_('Report not generated')) 
+        else:
+            response = HttpResponse(html_data, mimetype='text/html')
+            response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".html" 
             rv = response
         return rv
 

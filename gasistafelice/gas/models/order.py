@@ -1111,6 +1111,7 @@ WHERE order_id = %s \
         template = get_template(REPORT_TEMPLATE)
         context = Context(context_dict)
         html = template.render(context)
+        print "html: %s" % (html)
         return html
 
     def get_pdf_data(self, requested_by=None):
@@ -1124,6 +1125,19 @@ WHERE order_id = %s \
             rv = result.getvalue()
         else:
             log.debug('Some problem while generate pdf err: %s' % pisadoc.err)
+            rv = None
+        return rv
+    #MOD
+    def get_html_data(self, requested_by=None):
+        """Return HTML raw content to be rendered somewhere (email, or http)"""
+
+        html = self.render_as_html(requested_by=requested_by)
+        
+        result = StringIO.StringIO(html.encode("utf-8", "ignore"))
+        if html:
+            rv = result 
+        else:
+            print "Some problem while generating html"
             rv = None
         return rv
 

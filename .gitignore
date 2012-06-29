@@ -18,6 +18,6 @@ gasistafelice/fixtures/supplier/import.json
 *import.json
 *.log
 tmp/
-
+profiling_logs/*.prof
 
 

@@ -129,9 +129,11 @@ class SingleUserForm(forms.Form):
             if p:
                 p.user = u
                 p.save()
-                # Retrieve all GAS_MEMBER ParamRoles and creates GASMember objects
-                for r in p.user.principal_param_role_set.filter(role__role__name__exact=GAS_MEMBER):
-                    GASMember.objects.get_or_create(person=p, gas=r.role.gas)
+                # COMMENT matteo: now it is not necessary anymore to create GASMEMBER objects, it was
+                # already done in des/forms.py DESRegistrationForm  
+                # WAS:Retrieve all GAS_MEMBER ParamRoles and creates GASMember objects
+                # WAS:for r in p.user.principal_param_role_set.filter(role__role__name__exact=GAS_MEMBER):
+                # WAS:   GASMember.objects.get_or_create(person=p, gas=r.role.gas)
             u.is_active = self.cleaned_data.get('is_active', False)
             u.save()
         except Exception as e:

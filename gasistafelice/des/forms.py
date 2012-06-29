@@ -61,31 +61,29 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
     def save(self):
         """Start the registration process after a new user completed the registration form.
 
+        WAS: Steps:
+        WAS: 1. create User
+        WAS: 2. bind User to appropriate role in Supplier and/or GAS
+        WAS: 3. Send email to GAS_REFERRER_TECH or all GAS_REFERRER_TECHs if the new user is bound to Supplier
+        WAS: 4. Publish the new user in the Admin tab of GAS and/or Supplier with:
+        WAS: a. activation checkbox
+        WAS: b. Person selection ora add: a GAS_REFERRER_TECH can choose among people in DES without user bound
+
+        WAS: NOTE:
+        WAS: Person binding will happen only in 4b. step! User can be bound to an existent Person, or a new one will be created
+
         Steps:
         1. create User
-        2. bind User to appropriate role in Supplier and/or GAS
-        3. Send email to GAS_REFERRER_TECH or all GAS_REFERRER_TECHs if the new user is bound to Supplier
-        4. Publish the new user in the Admin tab of GAS and/or Supplier with:
+        2. create Place if it does not exist
+        3. create Person and link him to the new User
+        3. bind User to appropriate role in Supplier and/or GAS
+        4. Send email to GAS_REFERRER_TECH or all GAS_REFERRER_TECHs if the new user is bound to Supplier
+        5. Publish the new user in the Admin tab of GAS and/or Supplier with:
             a. activation checkbox
-            b. Person selection ora add: a GAS_REFERRER_TECH can choose among people in DES without user bound
-
-        NOTE:
-        Person binding will happen only in 4b. step! User can be bound to an existent Person, or a new one will be created
         """
 
-        # Create base objects
-#        place, created = Place.objects.get_or_create(
-#            city=self.cleaned_data['city'],
-#            address='', name=''
-#        )
-#
-#        contact_email, created = \
-#            Contact.objects.get_or_create(flavour="EMAIL", value=self.cleaned_data['email'])
-#
-#        contact_phone, created = \
-#            Contact.objects.get_or_create(flavour="PHONE", value=self.cleaned_data['phone'])
 
-        # Create user
+        # 1-Create user
 
         user = User(
             username=self.cleaned_data['username'],
@@ -97,16 +95,30 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         user.is_active=False
         user.save()
 
-        # Create person
+        #2-Create base objects
+        place, created = Place.objects.get_or_create(
+            city=self.cleaned_data['city'],
+            address='', name=''
+        )
 
-#        person = Person(
-#            name = self.cleaned_data['name'],
-#            surname = self.cleaned_data['surname'],
-#            address = place,
-#            user = user
-#        )
-#        person.save()
-#        person.contact_set.add( contact_email, contact_phone)
+        contact_email, created = \
+            Contact.objects.get_or_create(flavour="EMAIL", value=self.cleaned_data['email'])
+
+        contact_phone, created = \
+            Contact.objects.get_or_create(flavour="PHONE", value=self.cleaned_data['phone'])
+        
+        #3-Create person
+        # COMMENT matteo: even if there are already one (or more) persons with the same values (name, 
+        # username, place) it is not a problem, the data will be normalized after.
+
+        person = Person(
+            name = self.cleaned_data['name'],
+            surname = self.cleaned_data['surname'],
+            address = place,
+            user = user
+        )
+        person.save()
+        person.contact_set.add( contact_email, contact_phone)
 
         gas = self.cleaned_data.get('gas_choice')
         if gas:
@@ -114,8 +126,8 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             # COMMENT fero: following our workflow we can't bind person to GAS now
             # we can bind User to role GAS Member for this GAS
             # in the activation phase (4a.) we would perform this step
-            # gm = GASMember( person=person, gas=gas )
-            # gm.save()
+            gm = GASMember( person=person, gas=gas )
+            gm.save()
             pr = ParamRole.get_role(GAS_MEMBER, gas=gas)
             ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
             ppr.save()
