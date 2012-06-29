@@ -15,6 +15,8 @@ from gasistafelice.gas.models import GAS, GASMember
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.base.models import Place, Contact, Person
 
+from registration.models import RegistrationProfile
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -73,28 +75,44 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         WAS: Person binding will happen only in 4b. step! User can be bound to an existent Person, or a new one will be created
 
         Steps:
-        1. create User
+        1. create (inactive) User
         2. create Place if it does not exist
         3. create Person and link him to the new User
         3. bind User to appropriate role in Supplier and/or GAS
-        4. Send email to GAS_REFERRER_TECH or all GAS_REFERRER_TECHs if the new user is bound to Supplier
-        5. Publish the new user in the Admin tab of GAS and/or Supplier with:
+        4. Wait for new registration to be confirmed by user
+        5. Send email to GAS_REFERRER_TECH or all GAS_REFERRER_TECHs if the new user is bound to Supplier
+        6. Publish the new user in the Admin tab of GAS and/or Supplier with:
             a. activation checkbox
         """
 
 
-        # 1-Create user
+#KO fero: send to new user the confirmation email
+#        # 1-Create user
+#
+#        user = User(
+#            username=self.cleaned_data['username'],
+#            first_name=self.cleaned_data['name'],
+#            last_name=self.cleaned_data['surname'],
+#            email=self.cleaned_data['email'],
+#        )
+#        user.set_password(self.cleaned_data['password1'])
+#        user.is_active=False
+#        user.save()
 
-        user = User(
+        # 1-Create inactive user (to be confirmed by email)
+        new_user = RegistrationProfile.objects.create_inactive_user(
             username=self.cleaned_data['username'],
-            first_name=self.cleaned_data['name'],
-            last_name=self.cleaned_data['surname'],
+            password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
+            profile_callback=self.profile_callback
         )
-        user.set_password(self.cleaned_data['password1'])
-        user.is_active=False
-        user.save()
 
+    def profile_callback(self, user):
+
+        user.first_name = self.cleaned_data['name']
+        user.last_name = self.cleaned_data['surname']
+        user.save()
+        
         #2-Create base objects
         place, created = Place.objects.get_or_create(
             city=self.cleaned_data['city'],

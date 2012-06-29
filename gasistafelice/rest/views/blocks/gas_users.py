@@ -4,6 +4,8 @@ from gasistafelice.rest.views.blocks import users
 from flexi_auth.models import ParamRole
 from gasistafelice.consts import GAS_MEMBER
 
+from registration.models import RegistrationProfile
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -21,4 +23,6 @@ class Block(users.Block):
         """
         # User list
         pr = ParamRole.get_role(GAS_MEMBER, gas=request.resource)
-        return pr.get_users().order_by('last_name', 'first_name')
+        users = pr.get_users()
+        users = users.filter(registrationprofile__activation_key=RegistrationProfile.ACTIVATED)
+        return users.order_by('last_name', 'first_name')

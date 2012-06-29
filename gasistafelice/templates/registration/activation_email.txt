@@ -1,0 +1,16 @@
+Carissima/o,
+
+benvenuto in Gasista Felice messo a disposizione su {{ site }},
+
+hai creato un nuovo utente ed è ora necessario che confermi l'indirizzo email
+in modo che possiamo essere sicuri che appartenga proprio a te.
+
+Per confermare hai a disposizione {{ expiration_days }} giorni e puoi farlo cliccando
+sul link
+
+http://{{ site }}{% url registration_activate activation_key=activation_key %}
+
+Una volta confermata la tua mail,
+a seconda delle impostazioni del tuo GAS, 
+potrai ordinare direttamente, oppure dovrai attendere 
+l'abilitazione dal referente informatico del GAS.

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Account confermato{% endblock %}
+{% block content %}
+
+<h1>Registrazione</h1>
+
+<div style="margin: 2em 0.5em;" class="registration">
+
+  {% if account %}
+    <p>Grazie per aver confermato l'accesso, ora devi attendere l'abilitazione da parte del referente informatico del GAS.</p>
+<!-- puoi <a href="http://ordini.desmacerata.it/">accedere ed ordinare</a>.</p> -->
+  {% else %}
+    <p>Ci dispiace, ma qualcosa non ha funzionato. 
+    O il link non è corretto, oppure stai effettuando questa
+    operazione di conferma {{ expiration_days }} giorni dopo la registrazione.</p>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -11,6 +11,9 @@ from django.core import urlresolvers
 from django.http import HttpResponseRedirect, HttpResponse
 from gasistafelice.des.forms import DESRegistrationForm
 
+from registration.models import RegistrationProfile
+import re
+
 @never_cache
 def login(request, *args, **kw):
 
@@ -54,4 +57,46 @@ def registration(request, *args, **kw):
 
     return render_to_response("registration/register.html", context,
                               context_instance=RequestContext(request)
+    )
+
+# Activate user function which update RegistrationProfile activation key, 
+# but doesn't activate the user
+
+SHA1_RE = re.compile('^[a-f0-9]{40}$')
+def activate_user(activation_key):
+
+    model = RegistrationProfile
+
+    if SHA1_RE.search(activation_key):
+        try:
+            profile = model.objects.get(activation_key=activation_key)
+        except model.DoesNotExist:
+            return False
+        if not profile.activation_key_expired():
+            profile.activation_key = model.ACTIVATED
+            profile.save()
+            return profile.user
+    return False
+    
+    
+# Function copied from registration.views app
+# Use custom function to update activation key for a user
+# but does not activate it
+
+def activate(request, activation_key,
+             template_name='registration/activate.html',
+             extra_context=None):
+
+    activation_key = activation_key.lower() # Normalize before trying anything with it.
+    account = activate_user(activation_key)
+
+    if extra_context is None:
+        extra_context = {}
+    context = RequestContext(request)
+    for key, value in extra_context.items():
+        context[key] = callable(value) and value() or value
+    return render_to_response(template_name,
+        { 'account': account,
+          'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
+        context_instance=context
     )

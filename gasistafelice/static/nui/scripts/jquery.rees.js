@@ -593,20 +593,32 @@ jQuery.retrieve_form = function (action_el) {
             form_script = $(d).find('script');
         },
         async : false,
-        dataType : "xml", //xml needed to evaluate script by hand later
+        //dataType : "xml" //xml needed to evaluate script by hand later
     });
 
 	//
 	// Initialize dialog component
 	//
+		//KO: answer is XML to evaluate script by hand later
+		//success : function (responseText, statusText)  { 
+          //  if (responseText.match('class="errorlist"')) {
+          //      jqMessagelist = $(responseText).find('.messagelist');
+          //      jqForm = $(responseText).find('form');
+          //      jqForm.attr('action', action_url);
+          //      jqForm.find('.submit-row').each( function () { $(this).remove();});
+          //      var form_script = $(responseText).find('script');
+          //      $(NEW_NOTE_DIALOG).html(jqForm);
+          //      eval(form_script);
+          //  } 
 	var options = { 
-		success : function (responseText, statusText)  { 
-            if (responseText.match('class="errorlist"')) {
-                jqMessagelist = $(responseText).find('.messagelist');
-                jqForm = $(responseText).find('form');
+		success : function (d)  { 
+            var xml_part = $(d);
+            if (xml_part.find('.errorlist')) {
+                jqMessagelist = xml_part.find('.messagelist');
+                jqForm = xml_part.find('form');
                 jqForm.attr('action', action_url);
                 jqForm.find('.submit-row').each( function () { $(this).remove();});
-                form_script = $(responseText).find('script');
+                var form_script = xml_part.find('script');
                 $(NEW_NOTE_DIALOG).html(jqForm);
                 eval(form_script);
             } 
@@ -628,8 +640,9 @@ jQuery.retrieve_form = function (action_el) {
                 //     var block_name = block_box_el.attr('block_name');
                 //     jQuery.GET_BLOCK_UPDATE_HANDLER(block_name)(block_box_id);
                 // }
-			}			
-		}
+			}
+		},
+        dataType : "xml" //xml needed to evaluate script by hand later
 	}		
 	
 	//

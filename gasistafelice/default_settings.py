@@ -11,6 +11,8 @@ EMAIL_DEBUG = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
 
+ACCOUNT_ACTIVATION_DAYS = 2
+
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()
 

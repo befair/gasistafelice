@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.http import HttpResponse
 from django.db import models #fields types
 from django.db import transaction
+from django.template import RequestContext
 
 # Notes (Comment)
 from django.contrib.comments.models import Comment
@@ -268,7 +269,8 @@ class Block(AbstractBlock):
             'errors': helpers.AdminErrorList(form, []),
         }
 
-        return render_to_context_response(request, "html/admin_form.html", context)
+        template = "html/admin_form.html"
+        return render_to_response(template, context, context_instance=RequestContext(request))
 
     def get_response(self, request, resource_type, resource_id, args):
 
