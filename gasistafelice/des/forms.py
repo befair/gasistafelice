@@ -101,11 +101,25 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             address='', name=''
         )
 
-        contact_email, created = \
-            Contact.objects.get_or_create(flavour="EMAIL", value=self.cleaned_data['email'])
+        try:
+            contact_email, created = \
+                Contact.objects.get_or_create(flavour="EMAIL", value=self.cleaned_data['email'])
+        except Contact.MultipleObjectsReturned as e:
+            contacts = Contact.objects.filter(flavour="EMAIL", value=self.cleaned_data['email'])
+            contact_email = contacts[0]
+            log.warning("Multiple contact found: %s id = %s" % (
+                contact_email, map(lambda x : x.pk, contacts))
+            )
 
-        contact_phone, created = \
-            Contact.objects.get_or_create(flavour="PHONE", value=self.cleaned_data['phone'])
+        try:
+            contact_phone, created = \
+                Contact.objects.get_or_create(flavour="PHONE", value=self.cleaned_data['phone'])
+        except Contact.MultipleObjectsReturned as e:
+            contacts = Contact.objects.filter(flavour="PHONE", value=self.cleaned_data['phone'])
+            contact_phone = contacts[0]
+            log.warning("Multiple contact found: %s id = %s" % (
+                contact_phone, map(lambda x : x.pk, contacts))
+            )
         
         #3-Create person
         # COMMENT matteo: even if there are already one (or more) persons with the same values (name, 
@@ -128,9 +142,9 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             # in the activation phase (4a.) we would perform this step
             gm = GASMember( person=person, gas=gas )
             gm.save()
-            pr = ParamRole.get_role(GAS_MEMBER, gas=gas)
-            ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
-            ppr.save()
+#            pr = ParamRole.get_role(GAS_MEMBER, gas=gas)
+#            ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
+#            ppr.save()
 
             #Send email for GAS_REFERRER_TECH
             techs = gas.tech_referrers_people
