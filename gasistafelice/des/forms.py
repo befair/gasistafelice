@@ -60,7 +60,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         return cleaned_data
 
     @transaction.commit_on_success
-    def save(self):
+    def save(self, send_email=True):
         """Start the registration process after a new user completed the registration form.
 
         WAS: Steps:
@@ -104,7 +104,8 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            profile_callback=self.profile_callback
+            profile_callback=self.profile_callback,
+            send_email=send_email,
         )
 
     def profile_callback(self, user):
@@ -197,7 +198,25 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 
         
 
+class DESStaffRegistrationForm(DESRegistrationForm):
         
+    @transaction.commit_on_success
+    def save(self, send_email=False):
+        """Save and confirm the new user.
 
-        
+        Start the registration process after a new user completed the registration form.
+
+        Crate user like in the superclass 
+        and then enable him
+        """
+
+        super(DESStaffRegistrationForm, self).save(send_email=send_email)
+
+        user = User.objects.get(username=self.cleaned_data['username'])
+        user.is_active = True
+        user.save()
+
+        profile = user.registrationprofile_set.all()[0]
+        profile.activation_key = profile.ACTIVATED
+        profile.save()
 

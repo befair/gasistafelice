@@ -9,7 +9,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect, HttpResponse
-from gasistafelice.des.forms import DESRegistrationForm
+from gasistafelice.des.forms import DESRegistrationForm, DESStaffRegistrationForm
+from gasistafelice.des.models import Siteattr
 
 from registration.models import RegistrationProfile
 import re
@@ -58,6 +59,42 @@ def registration(request, *args, **kw):
     return render_to_response("registration/register.html", context,
                               context_instance=RequestContext(request)
     )
+
+@csrf_protect
+@never_cache
+def staff_registration(request, *args, **kw):
+    """This view is used by staff that wants to register new users
+    without using the email confirmation procedure.
+
+    """
+    des = Siteattr.get_site()
+
+    if request.user in des.admins | des.gas_tech_referrers:
+
+        form_class = DESStaffRegistrationForm
+        if request.method == "POST":
+            form = form_class(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.info(request, "Complimenti o tecnico! Hai registrato un nuovo utente :)")
+                return HttpResponseRedirect(settings.LOGIN_URL)
+        else:
+            form = form_class()
+
+        context = {
+            'registration_form' : form,
+            'VERSION': settings.VERSION,
+            'THEME' : settings.THEME,
+            'MEDIA_URL' : settings.MEDIA_URL,
+            'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
+        }
+
+        return render_to_response("registration/staff_register.html", context,
+                                  context_instance=RequestContext(request)
+        )
+
+    else:
+        return django_auth_login(request, *args, **kw)
 
 # Activate user function which update RegistrationProfile activation key, 
 # but doesn't activate the user

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h1>Registrazione nuovo utente da referente informatico</h1>
+
+
+<div class="help">
+    Caro referente informatico, puoi registrare un nuovo utente nel DES.
+    Questa procedura non prevede la conferma dell'indirizzo email da parte
+    dell'utente.
+
+    L'utente sarà direttamente abilitato.
+</div>
+
+<div style="margin: 2em 0.5em;" class="registration">
+{# Registration form #}
+<form method="post" action="{% url 'des.views.staff_registration' %}">
+{% csrf_token %}
+
+<table>
+ {{ registration_form.as_table }}   
+</table>
+
+<input type="submit" value="Registra il nuovo utente" />
+</form>
+
+</div>
+
+{% endblock %}
+
