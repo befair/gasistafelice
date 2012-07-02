@@ -215,9 +215,11 @@ def view_factory(request, resource_type, resource_id, view_type, args=""):
     handler = load_block_handler(view_type)
     
     if (args != "options"):
-        #WAS: response = handler.get_response(request, resource_type, resource_id, args)
-        get_response = profile(view_type)(handler.get_response)
-        response = get_response(handler,request, resource_type, resource_id, args)
+        if settings.PROFILING:
+            get_response = profile(view_type)(handler.get_response)
+            response = get_response(handler,request, resource_type, resource_id, args)
+        else:
+            response = handler.get_response(request, resource_type, resource_id, args)
  
     else: 
         if (request.method == "GET"):
