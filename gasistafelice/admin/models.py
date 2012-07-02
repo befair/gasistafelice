@@ -17,6 +17,8 @@ from gasistafelice.rest.models import pages as rest_models
 from gasistafelice.users import models as user_models
 from simple_accounting import models as accounting_models
 
+#from registration.models import RegistrationProfile as MyProfile
+
 ########################## Inlines #######################
 
 class PersonContactInline(admin.TabularInline):
@@ -400,6 +402,10 @@ class SupplierProductCategoryAdmin(admin.ModelAdmin):
     list_editable = ('supplier', 'name', 'sorting')
     list_filter = ('supplier',)
 
+class RegistrationProfileAdmin(admin.ModelAdmin):
+
+    search_fields = ('user__first_name', 'user__username', 'user__last_name')
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact, ContactAdmin)
@@ -431,4 +437,6 @@ admin.site.register(auth_models.PrincipalParamRoleRelation, PPRAdmin)
 admin.site.register(auth_models.ParamRole, PRAdmin)
 admin.site.register(user_models.UserProfile, UserProfileAdmin)
 admin.site.register(accounting_models.LedgerEntry, LedgerEntryAdmin)
+
+#admin.site.register(MyProfile, RegistrationProfileAdmin)
 
