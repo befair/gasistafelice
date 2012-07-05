@@ -45,20 +45,24 @@ class BaseGASMemberOrderForm(forms.Form):
             #In this case we can authorize and set in the note the person who act the gasmemberorder
             id = self.cleaned_data.get('id')
             if id:
-                gmo = GASMemberOrder.objects.get(pk=id)
-                if gmo.ordered_amount != self.cleaned_data.get('ordered_amount'): 
-                    #if not self._loggedusr == gmo.order.referrer_person.user:
-                    if not gmo.can_delegate(self._loggedusr):
+                # MATTEO
+                try:
+                    gmo = GASMemberOrder.objects.get(pk=id)
+                    if gmo.ordered_amount != self.cleaned_data.get('ordered_amount'): 
+                        #if not self._loggedusr == gmo.order.referrer_person.user:
+                        if not gmo.can_delegate(self._loggedusr):
 
-                        log.debug(u"---- %s (%s) BASE VALIDATION not enabled for %s" % (
-                            self.__class__.__name__,
-                            self._gmusr, self._loggedusr
-                        ))
-                        raise forms.ValidationError(
-                            _(u"You %(logged)s are not authorized to make an order for %(person)s") % {
-                                'logged' : u"(%s)" % self._loggedusr, 
-                                'person' :self._gmusr
-                        })
+                            log.debug(u"---- %s (%s) BASE VALIDATION not enabled for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                            raise forms.ValidationError(
+                                _(u"You %(logged)s are not authorized to make an order for %(person)s") % {
+                                    'logged' : u"(%s)" % self._loggedusr, 
+                                    'person' :self._gmusr
+                            })
+                except GASMemberOrder.DoesNotExist:
+                    log.debug(u"GAS member order #%d has been canceled" % (id))
         return cleaned_data
 
 
@@ -80,41 +84,46 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
         if self.is_valid():
             id = self.cleaned_data.get('id')
             if id:
-                gmo = GASMemberOrder.objects.get(pk=id)
-                gmo.ordered_price = self.cleaned_data.get('ordered_price')
-                gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
-                gmo.note = self.cleaned_data.get('note')
+                #Matteo
+                try:
+                    gmo = GASMemberOrder.objects.get(pk=id)
+                    gmo.ordered_price = self.cleaned_data.get('ordered_price')
+                    gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+                    gmo.note = self.cleaned_data.get('note')
 
-                if self._gmusr != self._loggedusr:
-                    #if self._loggedusr == gmo.order.referrer_person.user:
-                    if gmo.can_delegate(self._loggedusr):
-                        log.debug(u"---- %s (%s) DELEGATE UPDATE for %s" % (
-                            self.__class__.__name__,
-                            self._gmusr, self._loggedusr
-                        ))
-                        delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
-                        if gmo.note.find(delegate) == -1:
-                            gmo.note = delegate + gmo.note
+                    if self._gmusr != self._loggedusr:
+                        #if self._loggedusr == gmo.order.referrer_person.user:
+                        if gmo.can_delegate(self._loggedusr):
+                            log.debug(u"---- %s (%s) DELEGATE UPDATE for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                            delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
+                            if gmo.note.find(delegate) == -1:
+                                gmo.note = delegate + gmo.note
+                        else:
+                            log.debug(u"---- %s (%s) DELEGATE UPDATE not enabled for %s" % (
+                                self.__class__.__name__,
+                                self._gmusr, self._loggedusr
+                            ))
+                            raise forms.ValidationError(
+                                _(u"You %(logged)s are not authorized to update an order for %(person)s") % {
+                                    'logged' : u"(%s)" % self._loggedusr, 
+                                    'person' :self._gmusr
+                            })
+                            return;
+                    
+                    if gmo.ordered_amount == 0:
+                        log.debug(u"REMOVING GASMemberOrder (%s) from amount widget (+ -)" % gmo.pk)
+                        gmo.delete()
+                        log.debug("REMOVED")
                     else:
-                        log.debug(u"---- %s (%s) DELEGATE UPDATE not enabled for %s" % (
-                            self.__class__.__name__,
-                            self._gmusr, self._loggedusr
-                        ))
-                        raise forms.ValidationError(
-                            _(u"You %(logged)s are not authorized to update an order for %(person)s") % {
-                                'logged' : u"(%s)" % self._loggedusr, 
-                                'person' :self._gmusr
-                        })
-                        return;
+                        log.debug(u"UPDATING GASMemberOrder (%s) " % gmo.pk)
+                        gmo.save()
+                        log.debug("UPDATED")
 
-                if gmo.ordered_amount == 0:
-                    log.debug(u"REMOVING GASMemberOrder (%s) from amount widget (+ -)" % gmo.pk)
-                    gmo.delete()
-                    log.debug("REMOVED")
-                else:
-                    log.debug(u"UPDATING GASMemberOrder (%s) " % gmo.pk)
-                    gmo.save()
-                    log.debug("UPDATED")
+                except GASMemberOrder.DoesNotExist:
+                    log.debug(u"GAS member order #%d has been canceled" % (id))
 
             elif self.cleaned_data.get('ordered_amount'):
                     gsop = GASSupplierOrderProduct.objects.get(pk=self.cleaned_data.get('gsop_id'))
@@ -180,53 +189,57 @@ class BasketGASMemberOrderForm(BaseGASMemberOrderForm):
             enabled = self.cleaned_data.get('enabled')
 
             if id:
-                gmo = GASMemberOrder.objects.get(pk=id)
-    #            if gm_id and gm_id != gmo.purchaser.pk:
-    #                print "Qualcosa non va con: GASmember"
-    #                return ""
-                #On basket do nothing if no change needed
-                if gmo.ordered_amount != self.cleaned_data.get('ordered_amount') or enabled: 
+                #MATTEO
+                try:
+                    gmo = GASMemberOrder.objects.get(pk=id)
+        #            if gm_id and gm_id != gmo.purchaser.pk:
+        #                print "Qualcosa non va con: GASmember"
+        #                return ""
+                    #On basket do nothing if no change needed
+                    if gmo.ordered_amount != self.cleaned_data.get('ordered_amount') or enabled: 
 
-                    if self._gmusr != self._loggedusr:
-                        #if self._loggedusr == gmo.order.referrer_person.user:
-                        if gmo.can_delegate(self._loggedusr):
-                            #delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
-                            delegate = _("[ord by %s] ") % self._loggedusr
-                            if gmo.note.find(delegate) == -1:
-                                gmo.note = delegate + gmo.note
-                            log.debug(u"---- %s (%s) DELEGATE BASKET for %s" % (
-                                self.__class__.__name__,
-                                self._gmusr, self._loggedusr
-                            ))
+                        if self._gmusr != self._loggedusr:
+                            #if self._loggedusr == gmo.order.referrer_person.user:
+                            if gmo.can_delegate(self._loggedusr):
+                                #delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
+                                delegate = _("[ord by %s] ") % self._loggedusr
+                                if gmo.note.find(delegate) == -1:
+                                    gmo.note = delegate + gmo.note
+                                log.debug(u"---- %s (%s) DELEGATE BASKET for %s" % (
+                                    self.__class__.__name__,
+                                    self._gmusr, self._loggedusr
+                                ))
+                            else:
+                                log.debug(u"---- %s (%s) DELEGATE BASKET not enabled for %s" % (
+                                    self.__class__.__name__,
+                                    self._gmusr, self._loggedusr
+                                ))
+                                raise forms.ValidationError(
+                                    _(u"You %(logged)s are not authorized to modify order's basket for %(person)s") % {
+                                        'logged' : u"(%s)" % self._loggedusr, 
+                                        'person' :self._gmusr
+                                })
+                                return;
+                    
+                        gmo.ordered_price = self.cleaned_data.get('ordered_price')
+                        gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
+                        # log.debug("BasketGASMemberOrderForm (%s) enabled = %s" % (gmo.pk,enabled))
+                        if gmo.ordered_amount == 0:
+                            log.debug(u"REMOVING GASMemberOrder (%s) from BASKET using amount widget (+ -)")
+                            gmo.delete()
+                            log.debug(u"REMOVED")
+                        elif enabled:
+                            log.debug(u"REMOVING GASMemberOrder (%s) from BASKET using check enabled")
+                            gmo.delete()
+                            log.debug(u"REMOVED")
                         else:
-                            log.debug(u"---- %s (%s) DELEGATE BASKET not enabled for %s" % (
-                                self.__class__.__name__,
-                                self._gmusr, self._loggedusr
-                            ))
-                            raise forms.ValidationError(
-                                _(u"You %(logged)s are not authorized to modify order's basket for %(person)s") % {
-                                    'logged' : u"(%s)" % self._loggedusr, 
-                                    'person' :self._gmusr
-                            })
-                            return;
-                
-                    gmo.ordered_price = self.cleaned_data.get('ordered_price')
-                    gmo.ordered_amount = self.cleaned_data.get('ordered_amount')
-                    # log.debug("BasketGASMemberOrderForm (%s) enabled = %s" % (gmo.pk,enabled))
-                    if gmo.ordered_amount == 0:
-                        log.debug(u"REMOVING GASMemberOrder (%s) from BASKET using amount widget (+ -)")
-                        gmo.delete()
-                        log.debug(u"REMOVED")
-                    elif enabled:
-                        log.debug(u"REMOVING GASMemberOrder (%s) from BASKET using check enabled")
-                        gmo.delete()
-                        log.debug(u"REMOVED")
-                    else:
-                        log.debug(u"UPDATING GASMemberOrder (%s) from BASKET" % id)
-                        gmo.save()
-                        log.debug(u"UPDATED")
-                #else:
-                #    log.debug(u"NOTHING TODO NOTHING")
+                            log.debug(u"UPDATING GASMemberOrder (%s) from BASKET" % id)
+                            gmo.save()
+                            log.debug(u"UPDATED")
+                    #else:
+                    #    log.debug(u"NOTHING TODO NOTHING")
+                except GASMemberOrder.DoesNotExist:
+                    log.debug(u"GAS member order #%d has been canceled" % (id))
         else:
             log.warning("BasketGASMemberOrderForm.save(): form is not valid. is_valid() SHOULD be called before calling save()")
 
