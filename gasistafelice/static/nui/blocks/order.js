@@ -19,7 +19,8 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
     rendering_table_post_load_handler: function() {
 
         var block_obj = this;
-        var iQta = 6;
+        // MATTEO: WAS: var iQta = 6;
+        var iQta = 4;
         // Init dataTables
                 //'sPaginationType': 'full_numbers', 
                 //"oColVis": {"aiExclude": [ 0 ]},
@@ -47,18 +48,6 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                             return res.render();
                           }
                     },
-                    {"bSortable":true,"bSearchable":true, "sWidth": "10%", 
-                      "fnRender": function ( oObj ) {
-                            var _category = oObj.aData[ oObj.iDataColumn ];
-                            var _category_list = _category.split('::');
-                            var _display_category = _category_list[_category_list.length-1];
-                            if (_category_list.length > 1) {
-                                _display_category = _category_list[_category_list.length-2] + '::' + _display_category;
-                            }
-                            return _display_category;
-                          }
-                    },
-                    {"bSortable":false,"bSearchable":false, "sWidth": "20%"},
                     {"bSortable":true, "sClass": "taright", "sType": "currency","bSearchable":false, "sWidth": "10%"},
                     {"bSortable":false,"bSearchable":false, "sWidth": "15%",
                       "fnRender": function ( oObj ) {
@@ -71,7 +60,19 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
                             return rv;
                           }
                      },
-                    {"bSortable":false, "sType": "currency","bSearchable":false, "sWidth": "10%" }
+                    {"bSortable":false, "sType": "currency","bSearchable":false, "sWidth": "10%" },
+                    {"bSortable":false,"bSearchable":false, "sWidth": "20%"},
+                    {"bSortable":true,"bSearchable":true, "sWidth": "10%", 
+                      "fnRender": function ( oObj ) {
+                            var _category = oObj.aData[ oObj.iDataColumn ];
+                            var _category_list = _category.split('::');
+                            var _display_category = _category_list[_category_list.length-1];
+                            if (_category_list.length > 1) {
+                                _display_category = _category_list[_category_list.length-2] + '::' + _display_category;
+                            }
+                            return _display_category;
+                          }
+                    }
                 ],
                 "oLanguage": {
                     "sLengthMenu": gettext("Display _MENU_ records per page"),
