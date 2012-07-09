@@ -1441,8 +1441,9 @@ class GASMemberOrder(models.Model, PermissionResource):
         return u"Ordered product %(product)s by GAS member %(gm)s" % { 'product' : self.product, 'gm': self.gasmember }
     
     def confirm(self):
+        #log.debug("Confirming the GAS member order #%d" % (self.pk))
         self.is_confirmed = True
-
+    
     @property
     def has_changed(self):
         return self.ordered_product.order_price != self.ordered_price
@@ -1538,7 +1539,7 @@ class GASMemberOrder(models.Model, PermissionResource):
             set_workflow(self, w)
 
         #If the GAS's member do not have to confirm is order auto set the flag
-        if not self.purchaser.gas.config.gasmember_auto_confirm_order:
+        if self.purchaser.gas.config.gasmember_auto_confirm_order:
             self.is_confirmed = True
 
         return super(GASMemberOrder, self).save(*args, **kw)

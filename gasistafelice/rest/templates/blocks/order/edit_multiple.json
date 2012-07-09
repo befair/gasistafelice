@@ -8,11 +8,11 @@
         "{{row.id|escapejs}}",
         "{{row.supplier|escapejs}}",
         "{{row.product|escapejs}}",
-        "{{row.category.name|escapejs}}",
-        "{{row.note|escapejs}}",
         "&#8364; {{row.price|floatformat:"2"}}",
         "{{row.ordered_amount|escapejs}}",
         "&#8364; {{ row.ordered_total|floatformat:"2"}}",
+        "{{row.note|escapejs}}",
+        "{{row.category.name|escapejs}}",
 
     ]
     {% if not forloop.last %}

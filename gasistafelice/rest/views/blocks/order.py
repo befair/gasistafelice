@@ -34,11 +34,11 @@ class Block(BlockSSDataTables):
         0: 'pk',
         1: 'gasstock__stock__supplier__name',
         2: 'gasstock__stock__product__name',
-        3: 'gasstock__stock__product__category__name',
-        4: '',
-        5: 'order_price',
-        6: 'tot_amount',
-        7: 'tot_price',
+        3: 'order_price',
+        4: 'tot_amount',
+        5: 'tot_price',
+        6: '',
+        7: 'gasstock__stock__product__category__name',
     }
 #        3: 'gasstock__stock__product__description',
 
@@ -187,11 +187,11 @@ class Block(BlockSSDataTables):
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gsop_id'], form['ordered_price']),
                'supplier' : el.supplier,
                'product' : el.product,
-               'category' : el.product.category,
-               'note' : form['note'],
                'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
-               'ordered_total' : total
+               'ordered_total' : total,
+               'note' : form['note'],
+               'category' : el.product.category
             })
                #'description' : el.product.description,
             #except KeyError:
