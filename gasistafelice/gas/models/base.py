@@ -1312,16 +1312,46 @@ class GASSupplierStock(models.Model, PermissionResource):
             'price': "%.2f" % round(self.price,2),
         }
         if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
+            has_father = False
             price_per_unit = self.price
-            if self.stock.product.muppu:
-                #DOMTHU: only for test
-                if self.stock.product.pu.symbol == "DAM":
-                    price_per_unit = self.price / 5
-                else:
-                    price_per_unit = self.price / self.stock.product.muppu
-            rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
-                'ppu' : "%.2f" % round(price_per_unit,2),
-                'mu'  : self.stock.product.mu.symbol
+            father_unit = self.stock.product.mu.symbol
+            if self.stock.product.mu.symbol == "DAM":
+                price_per_unit = self.price / 5;
+                father_unit = 'Lt'
+                has_father = True
+            if self.stock.product.mu.symbol == "Ml":
+                price_per_unit = self.price * 1000;
+                father_unit = 'Lt'
+                has_father = True
+            if self.stock.product.mu.symbol == "Cl":
+                price_per_unit = self.price * 100;
+                father_unit = 'Lt'
+                has_father = True
+            if self.stock.product.mu.symbol == "Dl":
+                price_per_unit = self.price * 10;
+                father_unit = 'Lt'
+                has_father = True
+            if self.stock.product.mu.symbol == "Gr":
+                price_per_unit = self.price * 1000;
+                father_unit = 'Kg'
+                has_father = True
+            if self.stock.product.mu.symbol == "Hg":
+                price_per_unit = self.price * 10;
+                father_unit = 'Kg'
+                has_father = True
+            if has_father:
+                rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
+                    'ppu' : "%.2f" % round(price_per_unit,2),
+                    'mu'  : father_unit
+#            if self.stock.product.muppu:
+#                #DOMTHU: only for test
+#                if self.stock.product.pu.symbol == "DAM":
+#                    price_per_unit = self.price / 5
+#                else:
+#                    price_per_unit = self.price / self.stock.product.muppu
+#            rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
+#                'ppu' : "%.2f" % round(price_per_unit,2),
+#                'mu'  : self.stock.product.mu.symbol
             }
         return rv
 
