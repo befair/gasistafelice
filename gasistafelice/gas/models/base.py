@@ -384,7 +384,10 @@ class GAS(models.Model, PermissionResource):
     @property
     def gasmembers(self):
         """All GASMember for this GAS"""
-        return self.gasmember_set.filter(person__user__is_active=True).order_by('person__surname', 'person__name')
+        gm_qs = self.gasmember_set.filter(person__user__is_active=True)
+        #gm_qs = gm_qs.filter(is_active=True)
+        gm_qs = gm_qs.order_by('person__surname', 'person__name')
+        return gm_qs
 
     @property
     def orders(self):
