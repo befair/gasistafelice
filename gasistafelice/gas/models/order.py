@@ -933,7 +933,7 @@ WHERE order_id = %s \
         super(GASSupplierOrder, self).save(*args, **kw)
 
         #KO: 20111212 02:00 prepare reccurent plan for order. 
-        # becasue Do not create gasstock if order state is prepared
+        # because Do not create gasstock if order state is prepared
         if created:
             self.set_default_gasstock_set()
 
@@ -1208,12 +1208,14 @@ WHERE order_id = %s \
         for el in querySet:
             if el.tot_price > 0:
                 records.append({
-                   'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
+                   'product' : el.gasstock,
+                   'rep_price' : el.gasstock.report_price,
                    'price' : el.order_price,
                    'tot_gasmembers' : el.tot_gasmembers,
                    'tot_amount' : el.tot_amount,
                    'tot_price' : el.tot_price,
                 })
+                   #'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
 
         return records
 
@@ -1477,6 +1479,10 @@ class GASMemberOrder(models.Model, PermissionResource):
     @property
     def stock(self):
         return self.ordered_product.stock
+
+    @property
+    def gasstock(self):
+        return self.ordered_product.gasstock
 
     @property
     def supplier(self):

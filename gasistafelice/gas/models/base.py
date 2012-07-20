@@ -1270,6 +1270,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     history = HistoricalRecords()
 
     def __unicode__(self):
+        return u"%s%s" % (self.stock, self.father_price)
         return unicode(self.stock)
 
     def __init__(self, *args, **kw):
@@ -1307,17 +1308,33 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     @property
     def report_price(self):
+        symb = self.stock.product.pu.symbol
+        if self.stock.product.mu and self.stock.product.muppu == 1 and (self.stock.product.mu.symbol == "Kg" or self.stock.product.mu.symbol == "Lt"):
+                symb = self.stock.product.mu.symbol
         rv = u" %(price)s\u20AC/%(symb)s" % {
-            'symb' : self.stock.product.pu.symbol,
+            'symb' : symb,
             'price': "%.2f" % round(self.price,2),
         }
-        if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
+        return rv
+        
+    @property
+    def father_price(self):
+        rv = ""
+        #rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
+        #    'ppu' : "%.2f" % round(price_per_unit,2),
+        #    'mu'  : self.stock.product.mu.symbol
+        #if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
+        if self.stock.product.mu:
             has_father = False
+            relative_weight = True
             price_per_unit = self.price
             father_unit = self.stock.product.mu.symbol
             if self.stock.product.mu.symbol == "DAM":
                 price_per_unit = self.price / 5;
                 father_unit = 'Lt'
+                has_father = True
+                relative_weight = False
+            if self.stock.product.mu.symbol == "Lt" and self.stock.product.muppu != 1:
                 has_father = True
             if self.stock.product.mu.symbol == "Ml":
                 price_per_unit = self.price * 1000;
@@ -1339,20 +1356,15 @@ class GASSupplierStock(models.Model, PermissionResource):
                 price_per_unit = self.price * 10;
                 father_unit = 'Kg'
                 has_father = True
+            if self.stock.product.mu.symbol == "Kg" and self.stock.product.muppu != 1:
+                has_father = True
             if has_father:
+                if self.stock.product.muppu and relative_weight:
+                    price_per_unit = self.price / self.stock.product.muppu
                 rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
                     'ppu' : "%.2f" % round(price_per_unit,2),
                     'mu'  : father_unit
-#            if self.stock.product.muppu:
-#                #DOMTHU: only for test
-#                if self.stock.product.pu.symbol == "DAM":
-#                    price_per_unit = self.price / 5
-#                else:
-#                    price_per_unit = self.price / self.stock.product.muppu
-#            rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
-#                'ppu' : "%.2f" % round(price_per_unit,2),
-#                'mu'  : self.stock.product.mu.symbol
-            }
+                }
         return rv
 
     class Meta:

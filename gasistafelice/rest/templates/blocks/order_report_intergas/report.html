@@ -5,8 +5,8 @@
 {% block customstyle %}
 .head{font-family: Monospace, Arial;}
 .sumQta{width:30%}
-.sumPricefield{width:40%; font-size:14px;font-weight:bolder;}
-.sumPricevalue{width:30%; color: #006400;font-size:18px;font-weight:bold;}
+.sumPricefield{font-size:14px;font-weight:bolder;}
+.sumPricevalue{color: #006400;font-size:18px;font-weight:bold;}
 .empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
 .taright{text-align:right;}
 .taright th{margin-right:17px; padding-right:17px;}
@@ -68,7 +68,6 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 <td style="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
                 <td class="sumPricefield taright">{% trans "Total expected" %}</td>
                 <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
-<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
                 </td>
             </tr>
         </table>
@@ -89,27 +88,25 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
 {%block content%}
 <table class="tbl" border="0" cellpadding="1" cellspacing="1">
 <thead>
-    <th>Prodotto</th>
-    <th>Quantit&agrave;</th>
-    <th>Prezzo totale</th>
+    <th width="5%">N°Fam</th>
+    <th width="65%">Prodotto</th>
+    <th width="10%">Prezzo</th>
+    <th width="7%">Quantit&agrave;</th>
+    <th width="13%">Prezzo totale</th>
 </thead>
 <tbody>
     {% for pd in recProd %}
         <tr>
-        {% if pd.tot_gasmembers > 1 %}
-            <td class="product"> {{ pd.product }} -&nbsp;&nbsp;&euro;&nbsp;{{pd.price|floatformat:"2"}}&nbsp;&nbsp;-->&nbsp;{{pd.tot_gasmembers}}</td>
-        {% else %}
-            <td class="product"> {{ pd.product }} -&nbsp;&nbsp;&euro;&nbsp;{{pd.price|floatformat:"2"}}</td>
-        {% endif %}
+            <td class="qta"> {{ pd.tot_gasmembers }}</td>
+            <td class="product"> {{ pd.product }}</td>
+            <td class="taright qta">{{pd.rep_price}}</td>
             <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
             <td class="taright totprice">&nbsp;&euro;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
         </tr>
     {%  endfor %}
     <tr>
-        <td class="sumPricefield taright" colspan="2" >{% trans "Total cost" %}</td>
-        <td class="sumPricevalue taright">&euro; {{ total_amount|floatformat:"2"}}
-<img alt="beta" src="static/img/icon_beta3.jpg" width="50" heigth="50" />
-        </td>
+        <td class="sumPricefield taright" colspan="4" >{% trans "Total cost" %}</td>
+        <td class="sumPricevalue taright">&euro; {{ total_amount|floatformat:"2"}}</td>
     </tr>
 </tbody>
 </table>

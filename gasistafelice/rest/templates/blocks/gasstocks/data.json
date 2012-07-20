@@ -6,7 +6,7 @@
     [
 
         "{{gss.id|escapejs}}",
-        "{{gss.stock.product|escapejs}}",
+        "{{gss|escapejs}}",
         "{{gss.product.category|truncatetostr:'::'|escapejs}}",
         "{{gss.report_price|escapejs}}",
         "{% filter escapejs %}{% bool_img gss.stock.availability %}{% endfilter %}",
