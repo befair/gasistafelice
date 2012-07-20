@@ -223,9 +223,9 @@ class Block(BlockSSDataTables):
     def _create_pdf(self):
 
         #WAS pdf_data = self.resource.get_pdf_data(requested_by=self.request.user)
-        print "GAS_LIST %s " % self._get_intergas_gas_list()
+        #print "GAS_LIST %s " % self._get_intergas_gas_list()
         order_list = self._get_intergas_orders()
-        print "order_list %s " % order_list
+        #print "order_list %s " % order_list
         pdf_data = None
         #for order in order_list:
         #    pdf_data |= order.get_pdf_data(requested_by=self.request.user)

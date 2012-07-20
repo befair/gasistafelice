@@ -98,7 +98,8 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
                                 self.__class__.__name__,
                                 self._gmusr, self._loggedusr
                             ))
-                            delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
+                            #delegate = _("[ord by %s] ") % gmo.order.referrer_person.report_name
+                            delegate = _("[ord by %s] ") % self._loggedusr
                             if gmo.note.find(delegate) == -1:
                                 gmo.note = delegate + gmo.note
                         else:

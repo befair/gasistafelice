@@ -187,6 +187,7 @@ class Block(BlockSSDataTables):
                'ordered_total' : el.tot_price,
                'field_enabled' : "%s %s" % (form['id'], form['enabled']),
             })
+               #'gasstock' : el.gasstock,
 
         return formset, records, {}
 

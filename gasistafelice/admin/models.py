@@ -409,6 +409,7 @@ class RegistrationProfileAdmin(admin.ModelAdmin):
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact, ContactAdmin)
+#admin.site.register(base_models.MU)
 
 admin.site.register(supplier_models.Supplier, SupplierAdmin)
 admin.site.register(supplier_models.SupplierConfig, SupplierConfigAdmin)

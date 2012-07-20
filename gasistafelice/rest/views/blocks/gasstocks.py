@@ -99,7 +99,7 @@ class Block(BlockSSDataTables):
 
             records.append({
                'id' : "%s %s " % (form['pk'], form['id']),
-               'product' : querySet[i].stock.product,
+               'product' : querySet[i].__unicode__(),
                'category' : querySet[i].stock.product.category,
                'price' : querySet[i].report_price,
                'availability' : querySet[i].stock.amount_available,
@@ -108,6 +108,7 @@ class Block(BlockSSDataTables):
                'tot_gasmembers' : querySet[i].tot_gasmembers,
                'tot_price' : querySet[i].tot_price,
             })
+               #'product' : querySet[i].stock.product,
                #'price' : querySet[i].price,
                #'field_enabled' : [_('not available'),form['enabled']][bool(querySet[i].enabled)],
                #DOMTHU: "&#8364; {{ gss.price|floatformat:2 }}",
