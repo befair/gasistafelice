@@ -186,7 +186,7 @@ class Block(BlockSSDataTables):
             records.append({
                'id' : "%s %s %s %s" % (el.pk, form['id'], form['gsop_id'], form['ordered_price']),
                'supplier' : el.supplier,
-               'product' : el.product,
+               'product' : el.gasstock,
                'price' : el.gasstock.price,
                'ordered_amount' : form['ordered_amount'], #field inizializzato con il minimo amount e che ha l'attributo step
                'ordered_total' : total,
