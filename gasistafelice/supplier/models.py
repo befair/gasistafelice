@@ -638,7 +638,7 @@ class ProductCategory(models.Model, PermissionResource):
         return ProductCategory.objects.filter(pk=self.pk)
 
 class ProductMU(models.Model, PermissionResource):
-    #TODO dominique: rename it to MU and place it in base
+    #TODO: rename it to MU and place it in base
     """Measurement unit for a Product.
 
     A measure unit is recognized as a standard. So it is provided 

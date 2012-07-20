@@ -1364,7 +1364,7 @@ class GASSupplierStock(models.Model, PermissionResource):
             if has_father:
                 if self.stock.product.muppu and relative_weight:
                     price_per_unit = self.price / self.stock.product.muppu
-                rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
+                rv += u" a %(ppu)s\u20AC/%(mu)s" % {
                     'ppu' : "%.2f" % round(price_per_unit,2),
                     'mu'  : father_unit
                 }
