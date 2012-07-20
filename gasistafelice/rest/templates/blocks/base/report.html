@@ -9,11 +9,12 @@
 {%endblock%}
 <style type="text/css">
 {% block style %}
-{% DO NOT CHANGE margin SETTINGS UNLESS YOU KNOW WHAT YOU ARE DOING 
+{% comment %}
+DO NOT CHANGE margin SETTINGS UNLESS YOU KNOW WHAT YOU ARE DOING 
 there are problems with rows width...and margin settings error is
 TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
 * see: http://dialogo.desmacerata.it/domanda/9/creazione-dellordine-pdf-non-funziona-come-fare
-%}
+{% endcomment %}
 @page {
     size: a4 portrait;
     margin: 1cm;
