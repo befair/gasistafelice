@@ -3,10 +3,10 @@
 {% load basic_tags %}
 
 {% block customstyle %}
+.sumQta{ }
 .head{font-family: Monospace, Arial;}
-.sumQta{width:30%}
-.sumPricefield{width:40%; font-size:14px;font-weight:bolder;}
-.sumPricevalue{width:30%; color: #006400;font-size:18px;font-weight:bold;}
+.sumPricefield{ font-size:14px;font-weight:bolder;}
+.sumPricevalue{ color: #006400;font-size:18px;font-weight:bold;}
 .empty{text-align:center; font-size:1.4em; color:red; font-family: Monospace, Arial; }
 .taright{text-align:right;}
 .taright th{margin-right:17px; padding-right:17px;}
@@ -16,22 +16,27 @@
 .Prod{border-bottom: solid 2px #C6D7DE; font-weight: bold; font-size: 14px;}
 .totProd{border: solid 2px #344960; font-size:14px; text-align: right;}
 .alert{color:red;}
-.uprice{width: 15%; color:darkgray; border: solid 1px #C6D7DE;}
-.qta{width: 10%; border: solid 1px #C6D7DE;}
-.totprice{width: 20%; color:#000;border: solid 1px #C6D7DE;}
+.uprice{ color:darkgray; border: solid 1px #C6D7DE;}
+.qta{ border: solid 1px #C6D7DE;}
+
+.totprice{ color:#000;border: solid 1px #C6D7DE;}
 .product{border: solid 1px #C6D7DE;}
-.tab{width: 5%;}
 .fam{text-align:center;vertical-align:middle;border-top:solid 1px #000;border-bottom:solid 1px #000;font-weight:bold;}
 .bd{font-weight:bold;}
-div.code {background-color: #E5EECC; border: 1px dashed #D4D4D4; margin: 0; padding: 5px; width: 100%} /*622px;*/
+
+div.code {background-color: #E5EECC; border: 1px dashed #D4D4D4; margin: 0; padding: 5px; width: 100% } /*622px;*/
 div.example_code p, div.code p, div.code div {font-family: courier new;}
 div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-family: courier new;
- font-size: 110%; padding: 4px; width: 100%} /*612px;*/
+ font-size: 110%; padding: 4px; width: 100% } /*612px;*/
 .note{font-size:1.0em;font-family:courier new; margin:3px 0px 0px 3px;padding:3px 0px 0px 3px; background-color:#FFFFF0;}
+
+{%endblock%}
+{% block customstyle1 %}
 {%endblock%}
 
 
 {%block page_header%}
+
    <div class="head">
         <h1>{{ order }}</h1>
         <table style="width:96%; ">
@@ -92,7 +97,15 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
 {%endblock%}
 
 {%block content%}
+
 <table class="tbl" border="0" cellpadding="1" cellspacing="1">
+<thead>
+<th width="50%">&nbsp;</th>
+<th width="10%">&nbsp;</th>
+<th width="10%" >&nbsp;</th>
+<th width="10%" >&nbsp;</th>
+<th width="20%">&nbsp;</th>
+</thead>
 <tbody>
 {% assign ActualFamily -1 %}
 
@@ -105,16 +118,12 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 {% endif %}
                 </td>
                 {% if row.price_changed %}
-                    <td class="taright alert uprice">&euro;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
+                    <td class="taright alert uprice" >&euro;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
                 {% else %}
-                    <td class="taright uprice">&euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
+                    <td class="taright uprice" >&euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
                 {% endif %}
-                {% if row.amount > 1 %}
-                    <td class="taright qta bd">{{row.amount|floatformat:"-2"}}</td>
-                {% else %}
-                    <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
-                {% endif %}
-                <td class="taright totprice">&euro;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
+                <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
+                <td class="taright totprice" >&euro;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
 
                 {% if ActualFamily == -1 or ActualFamily != row.family_id %}
                     {% set ActualFamily = row.family_id %}
@@ -169,13 +178,14 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
     </tr>
 </tbody>
 </table>
+
 {%endblock%}
 
 {%block page_foot%}
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
         <td class="taleft">{{ user }}: {% now "l d F Y H:i" %}</td>
-        <td class="taright"><pdf:pagenumber></td>
+        <td class="taright"><pdf:pagenumber example="00"> </td>
     </tr>
 </table>
 {%endblock%}

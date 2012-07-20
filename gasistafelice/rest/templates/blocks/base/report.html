@@ -9,16 +9,23 @@
 {%endblock%}
 <style type="text/css">
 {% block style %}
+{% DO NOT CHANGE margin SETTINGS UNLESS YOU KNOW WHAT YOU ARE DOING 
+there are problems with rows width...and margin settings error is
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+* see: http://dialogo.desmacerata.it/domanda/9/creazione-dellordine-pdf-non-funziona-come-fare
+%}
 @page {
-size: {{pagesize}};
-margin: 1.5cm;
-@frame footer {
-     -pdf-frame-content: footerContent;
-     bottom: 0.5%;
-     margin-left: 1cm;
-     margin-right: 1cm;
-     height: 1cm;
-}
+    size: a4 portrait;
+    margin: 1cm;
+
+    @frame footer {
+         -pdf-frame-content: footerContent;
+         bottom: 0.5cm;
+         margin-left: 1cm;
+         margin-right: 1cm;
+         height: 1cm;
+    }
+
 }
 {%endblock%}
 {% block customstyle %}
@@ -26,7 +33,6 @@ margin: 1.5cm;
 </style>
 </head>
 <body>
-<div>
 {%block page_header%}
    <div>
     <h1>Ordine {{ order.id }} - {{ order }}</h1>
@@ -36,10 +42,9 @@ margin: 1.5cm;
 {%endblock%}
 {%block content%}
 {%endblock%}
-</div>
+
 <div id="footerContent">
 {%block page_foot%}
-<pdf:pagenumber>
 {%endblock%}
 </div>
 </body>
