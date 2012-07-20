@@ -1111,7 +1111,7 @@ WHERE order_id = %s \
         template = get_template(REPORT_TEMPLATE)
         context = Context(context_dict)
         html = template.render(context)
-        print "html: %s" % (html)
+        # log.debug("html: %s" % (html))
         return html
 
     def get_pdf_data(self, requested_by=None):
@@ -1137,7 +1137,7 @@ WHERE order_id = %s \
         if html:
             rv = result 
         else:
-            print "Some problem while generating html"
+            # print "Some problem while generating html"
             rv = None
         return rv
 
