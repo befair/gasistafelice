@@ -48,7 +48,7 @@ class Block(BlockSSDataTables):
 
         user_actions = []
 
-        if request.resource.gas.config.gasmember_auto_confirm_order:
+        if not request.resource.gas.config.gasmember_auto_confirm_order:
 
             #TODO seldon: does this work for a GASMember?
             #if request.user.has_perm(EDIT, obj=request.resource):
@@ -187,6 +187,7 @@ class Block(BlockSSDataTables):
             for gmo in self.resource.basket:
                 log.debug(u"Sto confermando un ordine gasista(%s)" % gmo)
                 gmo.confirm()
+                gmo.save()
 
             #IMPORTANT: unset args to compute table results!
             args = self.KW_DATA
