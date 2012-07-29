@@ -434,7 +434,7 @@ class SupplierConfig(models.Model):
 
     products_made_by_set = models.ManyToManyField(Supplier, verbose_name=_("products made by"), help_text=_("Select here producers of products you sell. YOU will be always enabled in this list"))
 
-    receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check this option if you want to receive order via mail when finalized"))
+    receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check this option if you want to let the GAS be able to send order via mail on finalize"))
 
     use_custom_categories = models.BooleanField(verbose_name=_("use custom categories"), default=False, help_text=_("Check this option if you use your own categories"))
 

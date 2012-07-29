@@ -21,6 +21,6 @@ class Command(BaseCommand):
 
         for order in GASSupplierOrder.objects.open():
             #Pass argument for issuer is cron job. The function will send email if necesary
-            order.close_if_needed(True)
+            order.close_if_needed()
             
         return 0

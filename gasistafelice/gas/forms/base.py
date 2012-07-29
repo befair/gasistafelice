@@ -115,7 +115,11 @@ class SingleUserForm(forms.Form):
                 )
         if person and person.user and (person.user != u):
             raise forms.ValidationError(
-                _("Person %s bound to user %s is already bound to user %s") % (person, u, person.user)
+                _("Person %(person)s bound to user %(new_user)s is already bound to user %(user)s") % {
+                    'person' : person, 
+                    'new_user' : u, 
+                    'user' : person.user
+                }
             )
         self.cleaned_data['user'] = u
         return self.cleaned_data

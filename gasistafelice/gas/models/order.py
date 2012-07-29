@@ -330,7 +330,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         return absolute_url 
 
 
-    def close_if_needed(self, sendemail=False, issuer=None):
+    def close_if_needed(self, force_email=False, issuer=None):
         """Check for datetime_end and close order if needed."""
 
         if self.datetime_end:
@@ -346,10 +346,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
                     log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
                     self.do_transition(t, user)
 
-                    if sendemail:
-                        supplier_receive = self.supplier.config.receive_order_via_email_on_finalize                        
-                        #by = self.get_email(user, issuer)
-                        log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
+                    if self.pact.send_email_on_order_close or force_email:
+
+                        cc_people = self.pact.referrers_people 
+                        cc = map(lambda x : x.preferred_email_address, cc_people)
+                        self.send_email_to_supplier([cc], ugettext('Automatic send on close'))
+                        log.debug("Automatic email on order close sent for order %(o)s" % { 'o':self })
+                        
                     
 
     def get_valid_name(self):

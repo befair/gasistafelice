@@ -26,12 +26,13 @@ class BasePactForm(forms.ModelForm):
 
 class GAS_PactForm(BasePactForm):
     """Form for pact management by a GAS resource"""
-    date_signed = forms.DateField(label=_('Date signed'), required=True, 
+    date_signed = forms.DateField(label=_lazy('Date signed'), required=True, 
         help_text=_("date of first meeting GAS - supplier"), 
         widget=admin_widgets.AdminDateWidget, initial=today
     )
 
-    pact_referrer = forms.ModelMultipleChoiceField(label=_("Pact referrer"), 
+    pact_referrer = forms.ModelMultipleChoiceField(
+        label=_lazy("Pact referrer"), 
         queryset=Person.objects.none(), required=False
     )
 
@@ -70,7 +71,8 @@ class GAS_PactForm(BasePactForm):
 
         model = GASSupplierSolidalPact
         fields = ('supplier', 'date_signed', 
-            'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval'
+            'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
+            'send_email_on_order_close'
         )
 
         gf_fieldsets = [(None, { 
@@ -78,7 +80,7 @@ class GAS_PactForm(BasePactForm):
                 'supplier', 'date_signed',  
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
-                'pact_referrer',
+                'pact_referrer', 'send_email_on_order_close'
         )})]
 
 
@@ -164,7 +166,8 @@ class EditPactForm(BasePactForm):
 
         model = GASSupplierSolidalPact
         fields = ('date_signed', 
-            'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval'
+            'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
+            'send_email_on_order_close',
         )
 
         gf_fieldsets = [(None, { 
@@ -172,6 +175,7 @@ class EditPactForm(BasePactForm):
                 'date_signed', 'document',
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
+                'send_email_on_order_close',
                 'pact_referrer',
         )})]
 

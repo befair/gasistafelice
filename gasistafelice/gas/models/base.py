@@ -653,7 +653,11 @@ class GASConfig(models.Model):
     )
 
     # Fields for suspension management:
-    is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms"))
+    is_suspended = models.BooleanField(verbose_name=_("is suspended"),
+        default=False, db_index=True, 
+        help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms")
+    )
+
     suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this gas was suspended
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
@@ -1661,11 +1665,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     send_email_on_order_close = models.BooleanField(default=False, 
         help_text=_("Automatically send email to supplier and gas referrer supplier as soon as an order is closed"),
-        verbose_name=_("Send email on order close")
+        verbose_name=_("send email on order close")
     )
 
     # Fields for suspension management:
-    is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("A pact can be broken or removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface. When a pact is suspended you can specify when it could be resumed"))
+    is_suspended = models.BooleanField(verbose_name=_("is suspended"),
+        default=False, db_index=True, 
+        help_text=_("A pact can be broken or removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface. When a pact is suspended you can specify when it could be resumed")
+    )
     suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this pact was suspended
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
