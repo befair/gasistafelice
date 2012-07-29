@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.validators import RegexValidator, MinLengthValidator
 
 
 from permissions.models import Role
@@ -611,12 +612,12 @@ class GASConfig(models.Model):
         help_text=_("If False, GAS never use concept of withdrawal place that is the default")
     )
     can_change_withdrawal_place_on_each_order = models.BooleanField(
-        verbose_name=_('Can change withdrawal place on each order'), default=False, 
+        verbose_name=_('can change withdrawal place on each order'), default=False, 
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
     can_change_delivery_place_on_each_order = models.BooleanField(
-        verbose_name=_('Can change delivery place on each order'), default=False, 
+        verbose_name=_('can change delivery place on each order'), default=False, 
         help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
@@ -624,30 +625,27 @@ class GASConfig(models.Model):
     # to follow headquarter value if it changes.
     # Provide delivery place and withdrawal place properties to get the right value
     default_withdrawal_place = models.ForeignKey(Place, 
-        verbose_name=_('Default withdrawal place'), 
+        verbose_name=_('default withdrawal place'), 
         blank=True, null=True, related_name="gas_default_withdrawal_set", 
         help_text=_("to specify if different from headquarter")
     )
     default_delivery_place = models.ForeignKey(Place, 
-        verbose_name=_('Default delivery place'), blank=True, null=True, 
+        verbose_name=_('default delivery place'), blank=True, null=True, 
         related_name="gas_default_delivery_set", 
         help_text=_("to specify if different from withdrawal place")
     )
 
     #auto_populate_products always True until Gasista Felice 2.0
     auto_populate_products = models.BooleanField(
-        verbose_name=_('Auto populate products'), default=True, 
+        verbose_name=_('auto populate products'), default=True, 
         help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated")
     )
 
-    is_active = models.BooleanField(
-        verbose_name=_('Is active'), default=True, 
-        help_text=_("This GAS doesn't exist anymore or is banned? (from who?)")
-    )
     use_scheduler = models.BooleanField(default=False, 
-        verbose_name=_("Use scheduler"), 
+        verbose_name=_("use scheduler"), 
         help_text=_("Enable scheduler for automatic and planned operations")
     )
+
     gasmember_auto_confirm_order = models.BooleanField(
         verbose_name=_('GAS members orders are auto confirmed'), 
         default=True, 
@@ -666,6 +664,66 @@ class GASConfig(models.Model):
         help_text=_("How many days before do you want your GAS receive reminder on closing orders?"),
     )
     
+    use_order_planning = models.BooleanField(default=False, 
+        help_text=_("Show order planning section when creating a new order"),
+        verbose_name=_("use order planning")
+    )
+
+    send_email_on_order_close = models.BooleanField(default=False, 
+        help_text=_("Default value for pact option to let the system send an email to supplier and gas referrer supplier as soon as an order is closed"),
+        verbose_name=_("default for pacts: send email on order close")
+    )
+
+    registration_token = models.CharField(max_length=32,
+        default='', blank=True,
+        validators= [ RegexValidator(
+            regex='\w*\d+\w+\d*|\d*\w+\d+\w*',
+            message=_('The token should be at least 5 characters, and must include a cipher'),
+        ), MinLengthValidator(5)],
+        verbose_name=_("Registration token"),
+        help_text=_("If set, this token can be used in the registration phase by a new user to be enabled in the software as soon as he confirms its email. So it IS IMPORTANT, to not make a blind distribution of the token, to choose a token composed of letters and numbers, and to change it each 3 months or occasionally")
+    )
+
+    intergas_connection_set = models.ManyToManyField(GAS,
+        verbose_name=_("possible interGAS orders with"),
+        help_text=_("Choose GAS that could be chosen when an interGAS order is created")
+    )
+
+    NOBODY = 'nobody'
+    GAS = 'gas'
+    INTERGAS = 'intergas'
+    DES = 'des'
+    GAS_SUPPLIERS = 'gas,suppliers'
+    INTERGAS_SUPPLIERS = 'intergas,suppliers'
+    DES_SUPPLIERS = 'des,suppliers'
+    
+    PRIVACY_CHOICES = (
+        (NOBODY, _('Nobody')), 
+        (GAS, _('Only to GAS members')), 
+        (INTERGAS, _('To every possible intergas members')), 
+        (DES, _('To DES members')), 
+        (GAS_SUPPLIERS, _('GAS and suppliers')), 
+        (INTERGAS_SUPPLIERS, _('To every possible intergas members and suppliers')), 
+        (DES_SUPPLIERS, _('DES and suppliers')), 
+    )
+
+    privacy_phone = models.CharField(max_length=24, 
+        verbose_name = _("Show gas members phone number to"),
+        choices = PRIVACY_CHOICES,
+        default = GAS_SUPPLIERS,
+    )
+    privacy_email = models.CharField(max_length=24, 
+        verbose_name=_("Show gas members email address to"),
+        choices = PRIVACY_CHOICES,
+        default = GAS_SUPPLIERS,
+    )
+    privacy_cash = models.CharField(max_length=24, 
+        verbose_name=_("Show gas members cash amount to"),
+        choices = PRIVACY_CHOICES,
+        default = GAS_SUPPLIERS,
+    )
+
+
     #notice_days_after_gmo_update = models.PositiveIntegerField(
     #   null=True, default=1, help_text=_("After how many days do 
     #   you want a gasmember receive updates on his own orders?")
@@ -728,11 +786,29 @@ class GASMember(models.Model, PermissionResource):
     person = models.ForeignKey(Person,verbose_name=_('person'))
     # Resource API
     gas = models.ForeignKey(GAS,verbose_name=_('gas'))
-    id_in_gas = models.CharField(_("Card number"), max_length=10, blank=True, null=True, help_text=_("GAS card number"))
-    available_for_roles = models.ManyToManyField(Role, null=True, blank=True, related_name="gas_member_available_set",verbose_name=_('available for roles'))
-    membership_fee_payed = models.DateField(auto_now=False, verbose_name=_("membership_fee_payed"), auto_now_add=False, null=True, blank=True, help_text=_("When was the last the annual quote payment"))
 
-    user_planned_list = models.BooleanField(default=False,verbose_name=_('use_list'))
+    id_in_gas = models.CharField(verbose_name=_("card number"), 
+        max_length=10, blank=True, null=True, 
+        help_text=_("GAS card number")
+    )
+    available_for_roles = models.ManyToManyField(Role, null=True, 
+        blank=True, related_name="gas_member_available_set",
+        verbose_name=_('available for roles')
+    )
+    membership_fee_payed = models.DateField(auto_now=False, 
+        verbose_name=_("membership_fee_payed"), auto_now_add=False, 
+        null=True, blank=True, help_text=_("When was the last the annual quote payment")
+    )
+
+    use_planned_list = models.BooleanField(default=False,verbose_name=_('use_list'))
+
+    # Fields for suspension management:
+    is_suspended = models.BooleanField(verbose_name=_('is suspended'),
+        default=False, db_index=True, help_text=_("GAS member is not active now")
+    )
+    suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this pact was suspended
+    suspend_reason = models.TextField(blank=True, default='', db_index=False)
+    suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     objects = GASMemberManager()
 
@@ -1582,6 +1658,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     )
 
     document = models.FileField(upload_to=base_utils.get_pact_path, null=True, blank=True, verbose_name=_("association act"))
+
+    send_email_on_order_close = models.BooleanField(default=False, 
+        help_text=_("Automatically send email to supplier and gas referrer supplier as soon as an order is closed"),
+        verbose_name=_("Send email on order close")
+    )
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(default=False, db_index=True, help_text=_("A pact can be broken or removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface. When a pact is suspended you can specify when it could be resumed"))
