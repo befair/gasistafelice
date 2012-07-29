@@ -139,8 +139,8 @@ INSTALLED_APPS = [
     'gasistafelice.des_notification',
     'registration',
     'captcha',
-    #'south',
     'ajax_select',
+    'south',
     #'django.contrib.staticfiles',
 ]
 
