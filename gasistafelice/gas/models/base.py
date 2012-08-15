@@ -1354,7 +1354,7 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     def __unicode__(self):
         return u"%s%s" % (self.stock, self.father_price)
-        return unicode(self.stock)
+        #return unicode(self.stock)
 
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)
@@ -1402,53 +1402,46 @@ class GASSupplierStock(models.Model, PermissionResource):
         
     @property
     def father_price(self):
-        rv = ""
-        #rv += u" --> %(ppu)s\u20AC/%(mu)s" % {
-        #    'ppu' : "%.2f" % round(price_per_unit,2),
-        #    'mu'  : self.stock.product.mu.symbol
-        #if self.stock.product.mu and (self.stock.product.mu.symbol != self.stock.product.pu.symbol):
         if self.stock.product.mu:
-            has_father = False
-            relative_weight = True
-            price_per_unit = self.price
-            father_unit = self.stock.product.mu.symbol
+            #find relative UnitsConversion
+            #TODO 1a) add boolean flag into UnitsConversion table to define father units 
+            #TODO or 1b) add boolean flag into UnitsConversion table to define father units 
             if self.stock.product.mu.symbol == "DAM":
-                price_per_unit = self.price / 5;
-                father_unit = 'Lt'
-                has_father = True
-                relative_weight = False
+                return self.set_father_price(self.price / 5, 'Lt')
             if self.stock.product.mu.symbol == "Lt" and self.stock.product.muppu != 1:
-                has_father = True
+                return self.set_father_price(self.price / self.stock.product.muppu, self.stock.product.mu.symbol)
             if self.stock.product.mu.symbol == "Ml":
-                price_per_unit = self.price * 1000;
-                father_unit = 'Lt'
-                has_father = True
+                return self.set_father_price(self.price * 1000 / self.stock.product.muppu, 'Lt')
             if self.stock.product.mu.symbol == "Cl":
-                price_per_unit = self.price * 100;
-                father_unit = 'Lt'
-                has_father = True
+                return self.set_father_price(self.price * 100 / self.stock.product.muppu, 'Lt')
             if self.stock.product.mu.symbol == "Dl":
-                price_per_unit = self.price * 10;
-                father_unit = 'Lt'
-                has_father = True
+                return self.set_father_price(self.price * 10 / self.stock.product.muppu, 'Lt')
             if self.stock.product.mu.symbol == "Gr":
-                price_per_unit = self.price * 1000;
-                father_unit = 'Kg'
-                has_father = True
+                return self.set_father_price(self.price * 1000 / self.stock.product.muppu, 'Kg')
             if self.stock.product.mu.symbol == "Hg":
-                price_per_unit = self.price * 10;
-                father_unit = 'Kg'
-                has_father = True
+                return self.set_father_price(self.price * 10 / self.stock.product.muppu, 'Kg')
             if self.stock.product.mu.symbol == "Kg" and self.stock.product.muppu != 1:
-                has_father = True
-            if has_father:
-                if self.stock.product.muppu and relative_weight:
-                    price_per_unit = self.price / self.stock.product.muppu
-                rv += u" a %(ppu)s\u20AC/%(mu)s" % {
-                    'ppu' : "%.2f" % round(price_per_unit,2),
-                    'mu'  : father_unit
-                }
-        return rv
+                return self.set_father_price(self.price / self.stock.product.muppu, self.stock.product.mu.symbol)
+        else:
+            #This case should not be possible but the PU list offer the possibility to do it 
+            if self.stock.product.pu.symbol.strip() == "Ml":
+                return self.set_father_price(self.price * 1000 / self.stock.product.muppu, 'Lt')
+            if self.stock.product.pu.symbol.strip() == "Cl":
+                return self.set_father_price(self.price * 100 / self.stock.product.muppu, 'Lt')
+            if self.stock.product.pu.symbol.strip() == "Dl":
+                return self.set_father_price(self.price * 10 / self.stock.product.muppu, 'Lt')
+            if self.stock.product.pu.symbol.strip() == "Gr":
+                return self.set_father_price(self.price * 1000 / self.stock.product.muppu, 'Kg')
+            if self.stock.product.pu.symbol.strip() == "Hg":
+                return self.set_father_price(self.price * 10 / self.stock.product.muppu, 'Kg')
+        return ""
+
+    @classmethod
+    def set_father_price(self, price_per_unit, father_unit):
+        return u" a %(ppu)s\u20AC/%(mu)s" % {
+            'ppu' : "%.2f" % round(price_per_unit,2),
+            'mu'  : father_unit
+        }
 
     class Meta:
         app_label = 'gas'

@@ -840,21 +840,26 @@ class Product(models.Model, PermissionResource):
         ordering = ('name',)
 
     def __unicode__(self):
-
-        rv = u" %(name)s (%(symb)s " % {
-            'symb' : self.pu.symbol,
-            'name': self.name
-        }
-
+        rv = u" %s " % (self.name)
         if self.mu:
-            rv += u" %(mu_sep)s %(muppu)s %(mu)s" % {
+            rv += u"(%(symb)s %(mu_sep)s %(muppu)s%(mu)s" % {
+                'symb' : self.pu.symbol,
                 'mu_sep' : Product.MU_SEPARATOR,
                 'muppu'  : self.muppu,
                 'mu'     : self.mu.symbol,
             }
-
+        else:
+            #In this case and if the user entered muppu we should interpret 
+            #that the muppu is referenced to the mu and not the pu
+            #COMMENT: domthu May be we need to limit this case only for "measure unit"
+            if self.muppu and self.muppu != 1:
+                rv += u"(%(muppu)s %(symb)s" % {
+                    'symb' : self.pu.symbol,
+                    'muppu'  : self.muppu
+                }
+            else:
+                rv += u"(%s" % (self.pu.symbol)
         rv += ")"
-
         return rv
 
     def clean(self):
