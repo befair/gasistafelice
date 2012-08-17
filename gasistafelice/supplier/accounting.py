@@ -111,6 +111,7 @@ class SupplierAccountingProxy(AccountingProxy):
         gas_acc = gas.accounting
         gas_system = gas.accounting.system
 
+        #Correzione a favore del GAS: +GAS -fornitore
         if target == EXPENSE: #+GAS -Supplier
 
             #UGLY: remove me when done and executed one command that regenerate all missing accounts
@@ -121,6 +122,7 @@ class SupplierAccountingProxy(AccountingProxy):
             entry_point = gas_system['/incomes/suppliers/' + supplier.uid]
             target_account = gas_system['/cash']
 
+        #Correzione a favore del fornitore: +fornitore -GAS
         elif  target == INCOME: #+Supplier -GAS
             source_account = gas_system['/cash']
             exit_point = gas_system['/expenses/suppliers/' + supplier.uid]

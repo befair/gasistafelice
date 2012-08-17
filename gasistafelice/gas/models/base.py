@@ -1909,14 +1909,23 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
+        #Limit only entries_pact for this solidal pact
         return self.supplier.accounting.entries_pact(self.gas)
 
     @property
     def balance(self):
         """Accounting sold for this pact"""
-        #acc_tot = self.gas.accounting.system['/expenses/supplier/' + self.supplier.uid].balance
-        #acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
-        acc_tot = self.supplier.accounting.system['/wallet'].balance
+        #add economic payment for orders + PACT_EXTRA for +fornitore -GAS
+        #COMMENT domthu: these two lines of code report same values
+        #acc_tot = self.gas.accounting.system['/expenses/suppliers/' + self.supplier.uid].balance
+        acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
+        #add to acc_tot other economics operations like 
+        # PACT_EXTRA +GAS -fornitore done into method  def extra_operation
+        acc_tot -= self.supplier.accounting.system['/expenses/gas/' + self.gas.uid].balance
+        
+        #COMMENT domthu: this is for the DES's balance
+        #Thay include all GAS'economics entries + OutOfDES operations
+        #acc_tot = self.supplier.accounting.system['/wallet'].balance
         return acc_tot
 
     @property
