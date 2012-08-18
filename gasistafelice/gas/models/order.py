@@ -299,6 +299,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     def open_if_needed(self, sendemail=False, issuer=None):
         """Check datetime_start and open order if needed."""
+        if self.gas.config.is_suspended:
+            log.debug("open_if_needed: GAS(%s) suspended" % (self.gas))
+            return
+            
         if self.datetime_start <= datetime.now():
 
             # Act as superuser
@@ -315,9 +319,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
                 self.do_transition(t, user)
                 
-                if sendemail:
-                    #by = self.get_email(user, issuer)
-                    log.debug("Send email for opening order %s by %s(email sender: %s)" % (self, issuer, by))
+                #TODO Send email will be done with notice_days_before_order_close
                     
     def get_absolute_url_order_page_for_user(self, user):
 
@@ -329,31 +331,51 @@ class GASSupplierOrder(models.Model, PermissionResource):
             
         return absolute_url 
 
-
-    def close_if_needed(self, force_email=False, issuer=None):
-        """Check for datetime_end and close order if needed."""
-
+    def close_if_needed(self, force_email=False, issuer=None, inter_gas=False):
+        """Check for datetime_end and close order if needed. if GAS is running"""
+        if self.gas.config.is_suspended:
+            log.debug("close_if_needed: GAS(%s) suspended" % (self.gas))
+            return
+            
         if self.datetime_end:
             if self.datetime_end <= datetime.now():
 
+                #Control is not yet in closed state due to InterGAS Order generation
+                #Only in the case taht we operate the InterGAS management 1)
+                if self.current_state == STATUS_CLOSED:
+                    log.debug("close_if_needed: GAS(%s) already closed" % (self.gas))
+                    return
+
+                #InterGAS. 
+                cc_other_people = None
+                #COMMENT domthu: we have to possibility to manage it
+                #1) send one unique email with all GAS's reports and the cumulative report attached to the email --> Implemented by domthu (Fero confirm choice?)
+                #2) send x emails as GAS number participants. each email will have the own GAS's report with the cumulative report attached to the email
+                if self.group_id and not inter_gas:
+                    #1) close all relative GAS without sending email
+                    #Collect all cc to be joined to the single sended email
+                    for order in self.get_intergas_orders():
+                        if order == self:
+                            continue
+                        cc_other_people |= order.pact.referrers_people 
+                        #close other relative order
+                        order.close_if_needed(False, None, True)        
+                                        
                 # Act as superuser
                 user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
                 t_name = TRANSITION_CLOSE
                 t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
 
-                log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
                 if t in get_allowed_transitions(self, user):
-                    log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
                     self.do_transition(t, user)
-
-                    if self.pact.send_email_on_order_close or force_email:
-
+                    
+                    #self.gas.config.send_email_on_order_close
+                    if (self.pact.send_email_on_order_close or force_email) and not inter_gas:
                         cc_people = self.pact.referrers_people 
+                        if cc_other_people:
+                            cc_people |= cc_other_people
                         cc = map(lambda x : x.preferred_email_address, cc_people)
                         self.send_email_to_supplier([cc], ugettext('Automatic send on close'))
-                        log.debug("Automatic email on order close sent for order %(o)s" % { 'o':self })
-                        
-                    
 
     def get_valid_name(self):
         from django.template.defaultfilters import slugify
@@ -487,10 +509,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 #            return
 
         gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
-        if gasstocks and gasstocks.count() > 0:
-            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set count: %s " % gasstocks.count())
-        else:
-            log.debug("Opening OOOOORDERRRRRR set_default_gasstock_set ?????? %s " % gasstocks)
         for s in gasstocks:
             #maybe works the more intuitive...self.orderable_product_set.add( ???
             GASSupplierOrderProduct.objects.create(order=self, 
@@ -518,14 +536,13 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # We can retrieve GASSupplierOrderProduct bound to this order with
         # self.orderable_products but it is useful to use get_or_create
-        log.debug("GSOP add (%s) price(%s)" % (s, s.price))
         gsop, created = GASSupplierOrderProduct.objects.get_or_create(order=self, gasstock=s, order_price=s.price, initial_price=s.price)
         if created:
-            log.debug('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
+            #log.debug('No GSOP found in order(%s) state(%s)' % (self.pk, self.current_state))
             gsop.order_price = s.price
             gsop.save()
         else:
-            log.debug('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
+            #log.debug('GSOP already present in order(%s) state(%s)' % (self.pk, self.current_state))
             if gsop.delivered_price != s.price:
                 gsop.delivered_price = s.price
                 gsop.save()
@@ -539,12 +556,12 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         try:
             gsop = self.orderable_products.get(gasstock=s)
-            log.debug('product %s found in order %s' % (s.stock, self.order))
+            #log.debug('product %s found in order %s' % (s.stock, self.order))
         except GASSupplierOrderProduct.DoesNotExist:
             log.debug('No product found in order(%s) state(%s)' % (self.pk, self.current_state))
 
         else:
-            log.debug('product found in order(%s) state(%s)' % (self.pk, self.current_state))
+            #log.debug('product found in order(%s) state(%s)' % (self.pk, self.current_state))
             #Delete all GASMemberOrders done
             lst = gsop.gasmember_order_set.all()
             total = 0
@@ -554,7 +571,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 log.debug('Deleting gas member %s email %s: Unit price(%s) ordered quantity(%s) total price(%s) for product %s' % (gmo.purchaser, gmo.purchaser.email, gmo.ordered_price, gmo.ordered_amount, gmo.ordered_price, gmo.product, ))
                 signals.gmo_product_erased.send(sender=gmo)
                 gmo.delete()
-            log.debug('Deleted gas members orders (%s) for total of %s euro' % (count, total))
+            #log.debug('Deleted gas members orders (%s) for total of %s euro' % (count, total))
             gsop.delete()
 
 
@@ -622,16 +639,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def ordered_gasmembers(self):
         from django.db.models import Count, Sum
-        #Cannot resolve keyword 'order' into field. Choices are: id, is_confirmed, note, ordered_amount, ordered_price, ordered_product, purchaser, withdrawn_amount
-        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
-#        return self.ordered_products.values('ordered_product__order', 'purchaser').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
-        #GASMemberOrder.objects.raw("SELECT ... from <GASMemberOrder_table_name> where ...")
-        #self.line_items.extra(select=("lineprice": "orderline__price*orderline__qty")).aggregate(Sum('lineprice'))
-
-        #return self.ordered_products.annotate('purchaser', tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
-
-        #return self.ordered_products.extra(select = {'sum_amount': 'SUM(ordered_amount * ordered_price)'}, ).values('ordered_product__order', 'purchaser', 'sum_amount').annotate( tot_product = Count('ordered_product'), sum_qta = Sum('ordered_amount'), sum_price = Sum('ordered_price') ).order_by('purchaser').filter( is_confirmed = True)
-
         #Do not use string formatting on raw queries!
         return GASMember.objects.raw("\
 SELECT tmp.id AS id,  \
@@ -647,57 +654,10 @@ ON gmo2.ordered_product_id = gsop2.id \
 WHERE gsop2.order_id = %s ) \
 ", [self.pk, self.pk])
 
-#SELECT tmp2.* , bp.surname, bp.name from (  \
-#SELECT tmp.id AS id, tmp.person_id AS pb_id,  \
-#) as tmp2 inner join base_person as bp on bp.id = tmp2.pb_id \
-#order by tmp2.id desc, bp.surname, bp.name \
-
-        #<RawQuerySet: 'SELECT * from GASMemberOrder'>
-
     @property
     def ordered_gasmembers_sql(self):
         from django.db import connection, transaction
         cursor = connection.cursor()
-        #Using psycopg2:
-        #import psycopg2.extras
-        #cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        #Using Mysqldb:
-        #import MySQLdb.cursors
-        #cursor = connection.cursor(MySQLdb.DictCursor)
-        #cursor.execute() will then return a dictionary like object. 
-
-#TODO: Verify
-#mysql    : SELECT a,b,c,d,e                 FROM table GROUP BY a
-#postgres : SELECT DISTINCT ON (a) a,b,c,d,e FROM table ORDER BY a,b,c
-        # Data retrieval operation - no commit required
-        # p.name || ' ' || p.surname --> POSTGRES
-
-#TODO: Verify
-#mysql    : CAST(-125.823123123 AS DECIMAL(30, 2)) AS account_amounted
-#postgres : to_char(-125.8, '9999.99') AS account_amounted
-
-#        cursor.execute("SELECT \
-#tmp.order_id AS order_id\
-#, tmp.purchaser_id AS purchaser_id \
-#, tmp.sum_amount AS sum_amount \
-#, tmp.sum_price AS sum_price \
-#, tmp.tot_product AS tot_product \
-#, tmp.sum_qta AS sum_qta \
-#, (SELECT p.surname FROM gas_gasmember as gm INNER JOIN base_person AS p ON gm.person_id = p.id WHERE gm.id = tmp.purchaser_id ) AS gasmember \
-#, CAST(0 AS DECIMAL(30, 2)) AS account_amounted \
-#FROM (SELECT gmo.purchaser_id AS purchaser_id \
-#, gsop.order_id AS order_id \
-#, SUM(gmo.ordered_amount * gsop.order_price) AS sum_amount \
-#, SUM(gmo.ordered_price) AS sum_price \
-#, COUNT(gmo.ordered_product_id) AS tot_product \
-#, SUM(gmo.ordered_amount) AS sum_qta \
-#FROM gas_gasmemberorder AS gmo \
-#INNER JOIN gas_gassupplierorderproduct AS gsop \
-#ON gmo.ordered_product_id = gsop.id \
-#WHERE order_id = %s \
-#GROUP BY gmo.purchaser_id, gsop.order_id \
-#) AS tmp", [self.pk])
-
         cursor.execute("SELECT id AS purchaser_id,  \
 ( SELECT SUM(gmo.ordered_price*gmo.ordered_amount) FROM \
 gas_gasmemberorder AS gmo \
@@ -705,28 +665,13 @@ INNER JOIN gas_gassupplierorderproduct AS gsop \
 ON gmo.ordered_product_id = gsop.id \
 WHERE order_id = %s \
 ) AS sum_amount", [self.pk])
-
-
-
         #TODO: Add new field account_amounted
         #Field are retrieve from the Accounting system
-
-
-
-        #row = cursor.fetchall()
-        #>>> cursor.fetchall()    ((5L, None), (6L, None))
-        #write custom SQL queries wich would return dicts instead of tuples
-        #row = dictfetchall(cursor)  --> Update Django??? Not Available
-        #row = cursor.dictfetchall() 
-        #>>> dictfetchall(cursor) [{'parent_id': None, 'id': 5L}, {'parent_id': None, 'id': 6L}]
         desc = cursor.description 
         row = [
             dict(zip([col[0] for col in desc], row))
             for row in cursor.fetchall()
         ]
-#{'purchaser': 7L, 'sum_amount': Decimal('98.040000'), 'porder': 10L, 'sum_qta': Decimal('5.00'), 'tot_product': 5L, 'sum_price': Decimal('98.0400')}
-#{'purchaser': 11L, 'sum_amount': Decimal('54.840000'), 'porder': 10L, 'sum_qta': Decimal('2.00'), 'tot_product': 2L, 'sum_price': Decimal('54.8400')}
-
         return row
 
     @property
@@ -793,13 +738,9 @@ WHERE order_id = %s \
     @property
     def tot_amount(self):
         tot = 0
-        #for gmo in self.ordered_products:
-        #    tot += gmo.tot_amount
         if self.ordered_products:
             from django.db.models import Count, Sum
             qry = self.ordered_products.values('purchaser').annotate(sum_qta = Sum('ordered_amount')).order_by('purchaser').filter( is_confirmed = True)
-            #tot = self.ordered_products.annotate('purchaser').count()
-            #tot = len(self.ordered_products.annotate('purchaser'))
             for agg_gmo in qry:
                 tot += agg_gmo.sum_qta
         return tot
@@ -807,13 +748,9 @@ WHERE order_id = %s \
     @property
     def tot_gasmembers(self):
         tot = 0
-        #for gmo in self.ordered_products:
-        #    tot += gmo.tot_amount
         if self.ordered_products:
             from django.db.models import Count, Sum
             qry = self.ordered_products.values('purchaser').annotate(sum_qta = Sum('ordered_amount')).order_by('purchaser').filter( is_confirmed = True)
-            #tot = self.ordered_products.annotate('purchaser').count()
-            #tot = len(self.ordered_products.annotate('purchaser'))
             tot = qry.count()
         return tot
 
@@ -832,7 +769,6 @@ WHERE order_id = %s \
 
     @property
     def payment_urn(self):
-        #mvt_urn = 'order/%s' % self.pk
         mvt_urn = self.urn
         return mvt_urn
 
@@ -840,21 +776,17 @@ WHERE order_id = %s \
 
         # 1/3 control invoice receipt
         if not self.invoice_amount:
-            #log.debug("KAPPAO invoice_amount %s " % self.pk)
             return
         
         # 2/3 control members curtails
         accounted_amounts = self.gas.accounting.accounted_amount_by_gas_member(self)
         
-        log.debug("Order accounted_amounts(%s) %s " % (len(accounted_amounts), accounted_amounts))
         if not len(accounted_amounts):
             return
 
         purchasers = self.purchasers
         c_purch = purchasers.count()
         l_accounted = len(accounted_amounts)
-
-        log.debug("Order purchasers(%s) %s " % (c_purch, purchasers))
 
         if c_purch > l_accounted:
             # LF: leave this check here, is faster than the next "fine tune check"
@@ -876,21 +808,15 @@ WHERE order_id = %s \
         tx = self.gas.accounting.get_supplier_order_transaction(self)
         if tx:
             #change state to STATUS_ARCHIVED
-            log.debug("GOTO STATUS_ARCHIVED %s " % self.pk)
             t_name = TRANSITION_ARCHIVE
         else:
             #change state to STATUS_UNPAID
-            log.debug("GOTO STATUS_UNPAID %s " % self.pk)
             t_name = TRANSITION_UNPAID
 
         # Act as superuser
         user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-        log.debug("doing trans: %s ,  current_state = %s" % (t_name, self.current_state))
         t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
-
-        log.debug("transitions %s. datetime_end is %s" % (get_allowed_transitions(self, user), self.datetime_end))
         if t in get_allowed_transitions(self, user):
-            log.debug("Do %s transition. datetime_end is %s" % (t, self.datetime_end))
             self.do_transition(t, user)
 
 
@@ -898,9 +824,6 @@ WHERE order_id = %s \
     def insolutes(self):
         orders = GASSupplierOrder.objects.closed().filter(pact=self.pact) | \
             GASSupplierOrder.objects.unpaid().filter(pact=self.pact)
-#        orders = None
-#        orders |= GASSupplierOrder.objects.closed().filter(pact=self.pact)
-#        orders |= GASSupplierOrder.objects.unpaid().filter(pact=self.pact)
         return orders
 
     def clean(self):
@@ -1044,7 +967,7 @@ WHERE order_id = %s \
             'ord' : self
         }
 
-        message = u"In allegato l'ordine del GAS %(gas)s." % { 'gas': self.gas }
+        message = u"In allegato l'ordine del GAS %(gas)s. " % { 'gas': self.gas }
         message += more_info
         #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
 
@@ -1066,17 +989,53 @@ WHERE order_id = %s \
                 'application/pdf'
             )
 
+        #InterGAS, generate cumulative orders
+        if self.group_id:
+            log.debug("InterGAS report (%s)" % self.group_id)
+            #Only in case we use InterGAs management 1)
+            #Retrieve all others relative orders
+            for order in self.get_intergas_orders():
+                #Avoid send two time the actual order
+                if order == self:
+                    continue
+                    
+                other_pdf_data = order.get_pdf_data(requested_by=issued_by)
+                if not other_pdf_data:
+                    email.body += ugettext('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
+                    email.body += ugettext('For InterGAS => %s') % order
+                else:
+                    email.attach(
+                        u"%s.pdf" % order.get_valid_name(),
+                        other_pdf_data,
+                        'application/pdf'
+                    )
+            
+            #The cumulative order
+            intergas_pdf_data = self.get_intergas_pdf_data(requested_by=issued_by)
+            if not intergas_pdf_data:
+                email.body += ugettext('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
+            else:
+                email.attach(
+                    u"%s.pdf" % self.get_valid_name(),
+                    intergas_pdf_data,
+                    'application/pdf'
+                )
+
         email.send()
 
         return 
 
     def send_email_to_supplier(self, cc=[], more_info='', issued_by=None):
         supplier_email = self.supplier.preferred_email_address
-        return self.send_email(
-            [supplier_email],
-            cc=cc, more_info=more_info,
-            issued_by=issued_by
-        )
+        #Control if GAS and PACT are abilitate to send email       
+        if self.pact.is_suspended:
+            log.debug("Unauthorized email for suspended producer %(o)s" % { 'o':self.pact })
+        else:
+            return self.send_email(
+                [supplier_email],
+                cc=cc, more_info=more_info,
+                issued_by=issued_by
+            )
 
     def render_as_html(self, requested_by=None):
 
@@ -1114,7 +1073,6 @@ WHERE order_id = %s \
         template = get_template(REPORT_TEMPLATE)
         context = Context(context_dict)
         html = template.render(context)
-        # log.debug("html: %s" % (html))
         return html
 
     def get_pdf_data(self, requested_by=None):
@@ -1218,17 +1176,14 @@ WHERE order_id = %s \
                    'tot_amount' : el.tot_amount,
                    'tot_price' : el.tot_price,
                 })
-                   #'product' : el.product.name.encode('utf-8', "ignore"), #.replace(u'\u2019', '\'').decode('latin-1'),
-
         return records
 
     #-----------------------------------------------#
-    #INTERGAS
+    #InterGAS
     def get_intergas_orders(self):
         if self.group_id:
             return GASSupplierOrder.objects.filter(group_id=self.group_id)
         return GASSupplierOrder.objects.none()
-
 
     def get_intergas_pdf_data(self, requested_by=None):
         """Return PDF raw content to be rendered somewhere (email, or http)"""
@@ -1236,7 +1191,7 @@ WHERE order_id = %s \
         if not requested_by:
             requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
         
-        print "order_list: %s" % self.get_intergas_orders()
+        #print "order_list: %s" % self.get_intergas_orders()
         orderables_aggregate = GASSupplierOrderProduct.objects.none()
         for order in self.get_intergas_orders():
             orderables_aggregate = orderables_aggregate | order.orderable_products.filter(
@@ -1259,7 +1214,6 @@ WHERE order_id = %s \
             'have_note' : bool(self.allnotes.count() > 0),
             'user' : requested_by,
         }
-#Cannot resolve keyword 'gasstock_set' into field. Choices are: enabled, gassupplierorder, historicalorderable_product_set, id, minimum_amount, orderable_product_set, pact, step, stock
         REPORT_TEMPLATE = "blocks/order_report_intergas/report.html"
 
         template = get_template(REPORT_TEMPLATE)
@@ -1271,7 +1225,7 @@ WHERE order_id = %s \
         if not pisadoc.err:
             rv = result.getvalue()
         else:
-            log.debug('Some problem while generate pdf err: %s' % pisadoc.err)
+            log.debug('Some problem while generate intergas pdf err: %s' % pisadoc.err)
             rv = None
         return rv
 

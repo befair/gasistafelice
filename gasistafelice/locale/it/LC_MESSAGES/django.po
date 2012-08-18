@@ -1767,7 +1767,7 @@ msgstr ""
 
 #: gas/models/order.py:353
 msgid "Automatic send on close"
-msgstr ""
+msgstr "Chiuso da solo: Email inviato in automatico dal gestionale GASISTA FELICE..."
 
 #: gas/models/order.py:578
 msgid ""
