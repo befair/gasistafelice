@@ -17,7 +17,8 @@ class SupplierAccountingProxy(AccountingProxy):
     here, you can add whatever logic is needed to augment that generic API,
     tailoring it to the specific needs of the ``Supplier``' model.
     """
-    
+    PACT_EXTRA = 'PACT_EXTRA'
+        
     def confirm_invoice_payment(self, invoice):
         """
         Confirm that an invoice issued by this supplier has been actually payed.
@@ -71,25 +72,34 @@ class SupplierAccountingProxy(AccountingProxy):
 
         supplier = self.subject.instance
         gas_system = gas.accounting.system
-        accounts = self.system.accounts.filter(name="wallet")
 
-#        accounts = self.system.accounts.filter(name="wallet") | \
-#            self.system.accounts.filter(parent__name='gas', name=gas.uid) | \
-#            gas_system.accounts.filter(parent__name='suppliers', name=supplier.uid)
+        #This is the DES transactions
+        #accounts = self.system.accounts.filter(name="wallet")
+        #PACT economics operations
+        accounts = self.system.accounts.filter(parent__name='gas', name=gas.uid) | \
+            gas_system.accounts.filter(parent__name='suppliers', name=supplier.uid)
 
-#            self.system.accounts.filter(parent__name='incomes/gas', name=gas.uid) | \
-#            self.system.accounts.filter(parent__name='expenses/gas', name=gas.uid) | \
-#            gas_system.accounts.filter(parent__name='incomes/suppliers', name=supplier.uid) | \
-#            gas_system.accounts.filter(parent__name='expenses/suppliers', name=supplier.uid)
 
-#            self.system.accounts.filter(name='/incomes/gas/' + gas.uid) | \
-#            self.system.accounts.filter(name='/expenses/gas/' + gas.uid) | \
-#            gas_system.accounts.filter(name='/incomes/suppliers/' + supplier.uid) | \
-#            gas_system.accounts.filter(name='/expenses/suppliers/' + supplier.uid)
+        #COMMENT domthu: ?? they are entry or exit point -> transaction not account??
+        #accounts = self.system.accounts.filter(name='/expenses/gas/' + gas.uid) 
+        #accounts = self.system.accounts.filter(parent__name='incomes/gas', name=gas.uid) 
+        #accounts = self.system.accounts.filter(parent__name='gas', name=gas.uid) 
+        # supplier.system --> 'expenses/gas/' + gas.uid
+        # supplier.system --> 'incomes/gas/' + gas.uid
+        # gas.system --> 'expenses/suppliers/' + supplier.uid
+        # gas.system --> 'incomes/suppliers/' + supplier.uid
+        #accounts = gas_system.accounts.filter(parent__name='suppliers', name=supplier.uid)
 
-#            self.system.accounts.filter(parent__name="suppliers", name__in=s_account)
+        #TODO: retrieve transition for and return LedgerEntry 
+        #transactions = self.subject.issued_transactions_set.get_by_reference([person])
+        #transactions = transactions.filter(
+        #    kind=GasAccountingProxy.MEMBERSHIP_FEE
+        #)
+        #return self.system['/wallet'].ledger_entries.filter(transaction__in=transactions)
 
         return LedgerEntry.objects.filter(account__in=accounts).order_by('-id', '-transaction__date')
+        
+        
 
     def extra_operation(self, gas, pact, amount, target, causal, date):
         """
@@ -111,6 +121,7 @@ class SupplierAccountingProxy(AccountingProxy):
         gas_acc = gas.accounting
         gas_system = gas.accounting.system
 
+        #Correzione a favore del GAS: +GAS -fornitore
         if target == EXPENSE: #+GAS -Supplier
 
             #UGLY: remove me when done and executed one command that regenerate all missing accounts
@@ -121,6 +132,7 @@ class SupplierAccountingProxy(AccountingProxy):
             entry_point = gas_system['/incomes/suppliers/' + supplier.uid]
             target_account = gas_system['/cash']
 
+        #Correzione a favore del fornitore: +fornitore -GAS
         elif  target == INCOME: #+Supplier -GAS
             source_account = gas_system['/cash']
             exit_point = gas_system['/expenses/suppliers/' + supplier.uid]
@@ -136,7 +148,7 @@ class SupplierAccountingProxy(AccountingProxy):
             'causal': causal
         }
         issuer = self.subject
-        kind = 'PACT_EXTRA'
+        kind = SupplierAccountingProxy.PACT_EXTRA
         if not date:
             date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)

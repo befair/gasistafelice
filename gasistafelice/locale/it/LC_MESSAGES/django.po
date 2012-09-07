@@ -833,7 +833,7 @@ msgstr "Regolare la data dell'operazione se necessario"
 #: gas/forms/cash.py:539 gas/forms/cash.py:708 gas/forms/cash.py:869
 #: gas/forms/cash.py:1018
 msgid "Cannot retrieve economic data: "
-msgstr "Non puoi recuperare i dati economici"
+msgstr "Non puoi recuperare i dati economici: "
 
 #: gas/forms/cash.py:552
 msgid "You are not a cash_referrer, you cannot manage insolute order cash!"
@@ -1767,7 +1767,7 @@ msgstr ""
 
 #: gas/models/order.py:353
 msgid "Automatic send on close"
-msgstr ""
+msgstr "Chiuso da solo: Email inviato in automatico dal gestionale GASISTA FELICE..."
 
 #: gas/models/order.py:578
 msgid ""

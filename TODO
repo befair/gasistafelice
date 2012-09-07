@@ -33,7 +33,9 @@ In carico a Dominique:
   - Verificare visualizzazione transazioni
   - Eliminare uno dei due gas accounting.accounted_amount_by_gasmember 
     (preferibilmente il primo) dopo aver verificato che funziona
-
+  - Father unit and Packaging product
+  - Implement at closing event the flag to send or not the report (GAS and PACT)
+  - Menu con superfish
 
 In carico a fero:
 
