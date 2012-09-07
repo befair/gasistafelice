@@ -331,49 +331,65 @@ class GASSupplierOrder(models.Model, PermissionResource):
             
         return absolute_url 
 
-    def close_if_needed(self, force_email=False, issuer=None, inter_gas=False):
+    def close(self, force_email=False, issuer=None):
+        """Close an order."""
+
+        # COMMENT fero: I don't understand the followind check...
+        # COMMENT fero: IMHO this should raise ClosingOrderAlreadyClosedException
+
+        # Control is not yet in closed state due to InterGAS Order generation
+        # Only in the case taht we operate the InterGAS management 1)
+        if self.current_state == STATUS_CLOSED:
+            log.debug("close_if_needed: GAS(%s) already closed" % (self.gas))
+            return
+
+        # Act as superuser
+        user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+        t_name = TRANSITION_CLOSE
+        t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+        if t in get_allowed_transitions(self, user):
+            self.do_transition(t, user)
+            return True
+        else:
+            return False
+                    
+    def close_if_needed(self, force_email=False, issuer=None):
         """Check for datetime_end and close order if needed. if GAS is running"""
         if self.gas.config.is_suspended:
             log.debug("close_if_needed: GAS(%s) suspended" % (self.gas))
+            #TODO: raise ClosingOrderWhileGASSuspendedException
             return
             
         if self.datetime_end:
             if self.datetime_end <= datetime.now():
 
-                #Control is not yet in closed state due to InterGAS Order generation
-                #Only in the case taht we operate the InterGAS management 1)
-                if self.current_state == STATUS_CLOSED:
-                    log.debug("close_if_needed: GAS(%s) already closed" % (self.gas))
-                    return
-
                 #InterGAS. 
-                cc_other_people = None
-                #COMMENT domthu: we have to possibility to manage it
-                #1) send one unique email with all GAS's reports and the cumulative report attached to the email --> Implemented by domthu (Fero confirm choice?)
-                #2) send x emails as GAS number participants. each email will have the own GAS's report with the cumulative report attached to the email
-                if self.group_id and not inter_gas:
-                    #1) close all relative GAS without sending email
-                    #Collect all cc to be joined to the single sended email
-                    for order in self.get_intergas_orders():
-                        if order == self:
-                            continue
-                        cc_other_people |= order.pact.referrers_people 
-                        #close other relative order
-                        order.close_if_needed(False, None, True)        
-                                        
-                # Act as superuser
-                user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-                t_name = TRANSITION_CLOSE
-                t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+                cc_intergas_people = Person.objects.none()
 
-                if t in get_allowed_transitions(self, user):
-                    self.do_transition(t, user)
-                    
-                    #self.gas.config.send_email_on_order_close
-                    if (self.pact.send_email_on_order_close or force_email) and not inter_gas:
-                        cc_people = self.pact.referrers_people 
-                        if cc_other_people:
-                            cc_people |= cc_other_people
+                #COMMENT domthu: we have to possibility to manage it
+                # 1) send one unique email with all GAS's reports and the cumulative report 
+                #    attached to the email [CONFIRMED CHOICE domthu+fero]
+                # 2) send x emails as GAS number participants. each email will have the own GAS's 
+                #    report with the cumulative report attached to the email
+
+                if self.is_intergas:
+
+                    # Close all related InterGAS orders without sending email
+                    # Collect all cc to be joined to the single sended email
+                    for order in self.get_related_intergas_orders():
+                        cc_intergas_people |= order.pact.referrers_people 
+                        order.close(False, None)        
+                                        
+                is_closed = self.close(force_email, issuer)
+
+                if is_closed and \
+                    (self.pact.send_email_on_order_close or force_email):
+
+                        # NOTE domthu: self.pact.send_email_on_order_close default is
+                        # specified in self.gas.config.send_email_on_order_close
+
+                        cc_people = self.pact.referrers_people | cc_intergas_people
                         cc = map(lambda x : x.preferred_email_address, cc_people)
                         self.send_email_to_supplier([cc], ugettext('Automatic send on close'))
 
@@ -989,15 +1005,13 @@ WHERE order_id = %s \
                 'application/pdf'
             )
 
-        #InterGAS, generate cumulative orders
-        if self.group_id:
+        # InterGAS, generate cumulative orders
+        if self.is_intergas:
+
             log.debug("InterGAS report (%s)" % self.group_id)
-            #Only in case we use InterGAs management 1)
-            #Retrieve all others relative orders
-            for order in self.get_intergas_orders():
-                #Avoid send two time the actual order
-                if order == self:
-                    continue
+            # Only in case we use InterGAs management 1)
+            # Retrieve all others relative orders
+            for order in self.get_related_intergas_orders():
                     
                 other_pdf_data = order.get_pdf_data(requested_by=issued_by)
                 if not other_pdf_data:
@@ -1010,7 +1024,7 @@ WHERE order_id = %s \
                         'application/pdf'
                     )
             
-            #The cumulative order
+            # The cumulative order
             intergas_pdf_data = self.get_intergas_pdf_data(requested_by=issued_by)
             if not intergas_pdf_data:
                 email.body += ugettext('We had some errors in report generation. Please contact %s') % settings.SUPPORT_EMAIL
@@ -1179,9 +1193,17 @@ WHERE order_id = %s \
         return records
 
     #-----------------------------------------------#
-    #InterGAS
+    # InterGAS
+
+    @property
+    def is_intergas(self):
+        return bool(self.group_id)
+
+    def get_related_intergas_orders(self):
+        return self.get_intergas_orders().exclude(pk=self.pk)
+
     def get_intergas_orders(self):
-        if self.group_id:
+        if self.is_intergas:
             return GASSupplierOrder.objects.filter(group_id=self.group_id)
         return GASSupplierOrder.objects.none()
 

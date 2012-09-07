@@ -72,6 +72,7 @@ class SupplierAccountingProxy(AccountingProxy):
 
         supplier = self.subject.instance
         gas_system = gas.accounting.system
+
         #This is the DES transactions
         #accounts = self.system.accounts.filter(name="wallet")
         #PACT economics operations
