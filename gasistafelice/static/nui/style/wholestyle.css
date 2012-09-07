@@ -442,3 +442,28 @@ ul.errorlist { max-width : 400px; }
   padding: 2px 5px 3px;
   text-align: left;
 }
+
+#loading-msg {
+    background-image: url("/static/nui/img/ajax_is_loading.gif");
+    background-repeat: no-repeat;
+    background-position: 10% 50%;
+    margin:auto; 
+    text-align:center;
+    font-size: large;
+    padding:4em 7em;
+    background-color: white;
+    position:absolute;
+    z-index : 10000;
+    border : 2px solid grey;
+}
+
+#loading-container {
+    z-index : 1000;
+    background-color: grey;
+    opacity: 0.8;
+    position:absolute;
+    width:200%;
+    height:200%;
+    overflow-x:hidden;
+    overflow-y:hidden;
+}

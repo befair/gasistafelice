@@ -775,3 +775,34 @@ jQuery.Clock = Class.extend({
     }
 });
         
+
+var FADE_LEVEL = 0.60;
+var FADE_TIME_MS = 1500;
+
+jQuery.app_stop_loading = function(el) {
+    if (el === undefined) {
+        el = $('#loading-container');
+    }
+    el.hide();
+};
+jQuery.app_stop_loading_action = function(el) {
+    //jQuery.labsglobals.action_is_loading = false;
+    jQuery.app_stop_loading(el);
+};
+
+jQuery.app_is_loading = function (el) {
+    if (el === undefined) {
+        el = $('#loading-container');
+    }
+    var h = $(window).height();
+    var w = $(window).width();
+    el.css('top', -100 + parseInt($(window).scrollTop(), 10));
+    el.css('left', -100 + parseInt($(window).scrollLeft(),10));
+    var lh = $('#loading-msg').css('height');
+    var lw = $('#loading-msg').css('width');
+    $('#loading-msg').css('top', parseInt(h,10)/2-parseInt(lh,10)/2);
+    $('#loading-msg').css('left', parseInt(w,10)/2-parseInt(lw,10)/2);
+    el.show();
+    $('#loading-msg').fadeTo(FADE_TIME_MS, FADE_LEVEL, jQuery.toggleFade);
+};
+

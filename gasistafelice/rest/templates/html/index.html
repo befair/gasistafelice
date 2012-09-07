@@ -2075,6 +2075,19 @@
             
             init_global_form_controlls_events()
 
+            //Trap POSTS: opaque all when loading
+            $("#loading-container").ajaxSend(function(evt, request, settings){
+                if (settings.type.toUpperCase() == "POST") {
+                    jQuery.app_is_loading($(this));
+                }
+            });
+            $("#loading-container").ajaxComplete(function(evt, request, settings){
+                //labsglobals.action_is_loading not used now
+                if (!jQuery.labsglobals.action_is_loading) {
+                    jQuery.app_stop_loading($(this));
+                }
+            });
+
         });
         
     </script>
@@ -2085,6 +2098,13 @@
 
 <!--<body onunload="jsPlumb.unload();">-->
 <body>
+    <div id="loading-container" style="display:none;">
+        <div id="loading-msg">
+            Un attimo che carico...
+            {# TODO fortune <p><i></i></p> #}
+        </div>
+    </div>
+    
     <div id="container">
 
             <div id="header-content">
