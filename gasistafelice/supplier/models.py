@@ -756,6 +756,16 @@ class ProductPU(models.Model, PermissionResource):
 #------------------------------------------------------------------------------
 
 class UnitsConversion(models.Model):
+    """TODO: 
+    Conversion between product units and measure units.
+
+    TOCHANGE: 
+    - src = ProductPU. ProductPU should include also grams, kilo, liters, etc.
+    TOADD:
+    - is_parent_conversion boolean as suggested by Dominique: there will be 
+    ONE AND ONLY ONE is_parent_conversion == True for each different ProductPU.
+    This flag states that this is the conversion to be called when display report
+    """
 
     src = models.ForeignKey(ProductMU, verbose_name=_("source"), related_name="src_conversion_set")
     dst = models.ForeignKey(ProductMU, verbose_name=_("destination"), related_name="dst_conversion_set")
@@ -805,6 +815,9 @@ class Product(models.Model, PermissionResource):
     # * `instance.mu` = `instance.pu`
     # thus avoiding NULL values for `mu` itself
     # See `ProductMU` doc for more details
+    # TODO: mu cannot be NULL
+    # TODO: if instance.mu == instance.pu --> muppu == 1
+    # TODO: user interaction. User choose PU --> autocomplete muppu and mu
     mu = models.ForeignKey(ProductMU, null=True, verbose_name=_("measure unit"), blank=True)
 
     # Product unit: how is sell this product:

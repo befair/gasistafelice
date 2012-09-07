@@ -1402,7 +1402,13 @@ class GASSupplierStock(models.Model, PermissionResource):
         
     @property
     def father_price(self):
+        """Parent price is the price in respect to parent unit.
+
+        This is useful to say how much it cost at liter or at kilo.
+        """
+
         if self.stock.product.mu:
+
             #find relative UnitsConversion
             #TODO 1a) add boolean flag into UnitsConversion table to define father units 
             #TODO or 1b) add boolean flag into UnitsConversion table to define father units 
