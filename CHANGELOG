@@ -1,3 +1,12 @@
+30.07.2012 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.9.7
+    * VARIAZIONE STRUTTURA DB ! Aggiunti campi per:
+        - sospensione gasista, patto, gas
+        - invio automatico email alla chiusura
+        - utilizzo ordini pianificati
+    * implementazione invio automatico email alla chiusura
+       
 26.05.2012 Luca Ferroni <luca@befair.it>
 
     * Versione 0.9.6

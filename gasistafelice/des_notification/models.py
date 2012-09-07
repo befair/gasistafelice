@@ -158,7 +158,6 @@ def notify_order_state_update(sender, **kwargs):
 
 #-------------------------------------------------------------------------------
 
-
 gas_signals.order_state_update.connect(notify_order_state_update)
 gas_signals.gmo_price_update.connect(notify_gmo_price_update)
 gas_signals.gmo_product_erased.connect(notify_gmo_product_erased)
@@ -211,3 +210,4 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     )
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
+

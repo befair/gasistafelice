@@ -1,3 +1,14 @@
+TOOO:
+
+* "eliminazione" (disabilitazione) GASMember:
+    - Integrare South 
+    - Aggiungere campo is_active nel GASMember
+    - Gestione del campo in un form/azione come "Elimina gasista"
+    - Gestire "aggiungi gasista"
+    - Gestire il filtro gasisti attivi o no, nelle query e/o nei manager
+* disabilitazione ordini pianificati per chi non li vuole
+* primo rilascio InterGAS
+
 
 TODO:
 
@@ -27,20 +38,11 @@ In carico a Dominique:
 In carico a fero:
 
 * Riabilitare le notifiche
-* Link al forum in alto
 * Elimina prodotto
 
 * Perfezionare le notifiche
-* Invio email su chiusura ordine
-* Primo rilascio InterGAS
 * Popup su operazioni economiche
 * Presentazione del saldo
-* "eliminazione" (disabilitazione) GASMember:
-    - Integrare South 
-    - Aggiungere campo is_active nel GASMember
-    - Gestione del campo in un form/azione come "Elimina gasista"
-    - Gestire "aggiungi gasista"
-    - Gestire il filtro gasisti attivi o no, nelle query e/o nei manager
 
 * Annulla ordine
 * No modifica prodotti per ordini archiviati

@@ -16,6 +16,7 @@ Qualche linea guida sulla scrittura del codice
 * La documentazione tecnica è in inglese (notare come queste linee guida non la rispettino. Adeguarle pls :))
 * Stile `duck typing <http://en.wikipedia.org/wiki/Duck_typing>`__ riassunto da `Alex Martelli <http://en.wikipedia.org/wiki/Alex_Martelli>`__: `In other words, don't check whether it IS-a duck: check whether it QUACKS-like-a duck, WALKS-like-a duck, etc, etc, depending on exactly what subset of duck-like behaviour you need to play your language-games with.`
 * I ticket sono in italiano, le risposte date tramite i commit in inglese. Opzionalmente si può aggiungere di seguito alla versione inglese anche quella in italiano
+* I parametri delle definizioni e chiamate a funzioni sono separati da ", " <virgola> e <spazio> e la valorizzazione '=' di ciascun parametro è senza spazio
 
 Import
 ------
@@ -108,7 +109,20 @@ Convenzioni
 * Le parti di codice pushate ma che hanno bisogno di revisione includono la stringa `TODO: NEEDS REVIEW`
 * Il codice segue le linee guida del PEP-08
 * L'indentazione delle righe spezzate è sempre di 4 spazi
-* Le parti di codice che si commentano e si vogliono lasciare come promemoria si commentano con `#WAS`, se è una prova che non era andata a buon fine mettere `KO:`
+* Le parti di codice che si commentano e si vogliono lasciare come promemoria si commentano con `#WAS`, se è una prova che non era andata a buon fine mettere `#KO:`
+* Si va a capo dentro le parentesi "(" e non prima. Ad esempio:
+
+    log.debug("msg %s" % ( <a capo senza nessun simbolo>
+        stringa <a capo intentando come la riga di parentesi aperta> 
+    )
+  
+
+Commit di GIT
+^^^^^^^^^^^^^
+
+* FIX
+* LESSON
+* 
 
 ATTENZIONE A
 -------------

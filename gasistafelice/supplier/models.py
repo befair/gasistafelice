@@ -600,10 +600,6 @@ class ProductCategory(models.Model, PermissionResource):
 
         super(ProductCategory, self).save(*args, **kw)
 
-    @property
-    def icon(self):
-        return self.image or super(ProductCategory, self).icon
-
     #-------------- Authorization API ---------------#
     
     # Table-level CREATE permission    
