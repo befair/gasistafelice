@@ -103,6 +103,16 @@ class Block(BlockSSDataTables):
             #    order.ordered_products.filter(purchaser=gasmember), 
             #    gasmember.sum_amount, gasmember.accounted_amount)
             #)
+        #WAS: return gasmembers
+        #WAS: return gasmembers.order_by('person__surname', 'person__name')
+        #WAS: 'set' object has no attribute 'order_by'
+        #return sorted(gasmembers)
+        #WAS: return gasmembers.sort(key=lambda x: x.person__surname, reverse=True)
+        #WAS: 'set' object has no attribute 'sort'
+        #return sorted(gasmembers, key=lambda x: x.person__surname, reverse=True)
+        #'GASMember_Deferred_gas_id_id_in_gas_is_suspended4a' object has no attribute 'person__surname'
+        #return sorted(gasmembers, key=lambda x: x, reverse=True)
+        #return sorted(gasmembers, key=lambda x: x)
         return gasmembers
 
         #q_sql = request.resource.ordered_gasmembers_sql
