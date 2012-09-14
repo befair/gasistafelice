@@ -295,6 +295,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)
+        if self.is_active():
+            log.debug("Order %d OPENED by transition=%s: settings default gasstock set" % (
+                self.pk, transition.name
+            ))
+            self.set_default_gasstock_set()
         signals.order_state_update.send(sender=self, transition=transition)
 
     def open_if_needed(self, sendemail=False, issuer=None):
@@ -312,10 +317,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
             if t in get_allowed_transitions(self, user):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
-
-                #20111212 02:00 prepare reccurent plan for order
-                #FIXME: not done when using manual opening. Do it using worflow change state handler
-                #WAS: self.set_default_gasstock_set()
 
                 self.do_transition(t, user)
                 
@@ -339,7 +340,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # Control is not yet in closed state due to InterGAS Order generation
         # Only in the case taht we operate the InterGAS management 1)
-        if self.current_state == STATUS_CLOSED:
+        if self.is_closed():
             log.debug("close_if_needed: GAS(%s) already closed" % (self.gas))
             return
 
@@ -875,9 +876,9 @@ WHERE order_id = %s \
         super(GASSupplierOrder, self).save(*args, **kw)
 
         #KO: 20111212 02:00 prepare reccurent plan for order. 
-        # because Do not create gasstock if order state is prepared
-        if created:
-            self.set_default_gasstock_set()
+        #KO:  because Do not create gasstock if order state is prepared
+        #KO: if created:
+        #KO:     self.set_default_gasstock_set()
 
     #-------------- Authorization API ---------------#
     
