@@ -12,13 +12,14 @@ jQuery.UIBlockRecharge = jQuery.UIBlockWithList.extend({
 
         // Init dataTables
 //                'bPaginate': false,
+//                "aaSorting": [[1,'asc'], [0,'asc']],
         var iTot = 2;
         var block_obj = this;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers',
                 'bLengthChange': true,
                 "iDisplayLength": 50,
-                "aaSorting": [[1,'asc'], [0,'asc']],
+                "aaSorting": [[2,'asc']],
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),

@@ -1753,6 +1753,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         supplier_system = self.supplier.accounting.system
         supplier_system.add_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
 
+    #Creating Solidal pact: generate list of product. enable products according to gas configuration
     def setup_data(self):
         for st in self.supplier.stocks:
             #see GASSupplierStock.enabled comment
@@ -1767,6 +1768,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             )
 
     def save(self, *args, **kw):
+    
+        #Each time the solidal pact is saved we override the default pact boolean field
         if self.gas.config.auto_populate_products:
             self.auto_populate_products = True
 
