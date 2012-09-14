@@ -11,7 +11,7 @@ from simple_accounting.utils import (register_transaction,
 )
 
 from gasistafelice.base.models import Person
-from gasistafelice.consts import INCOME, EXPENSE
+from gasistafelice.consts import INCOME, EXPENSE, GAS_EXTRA
 import datetime
 
 import logging
@@ -374,7 +374,7 @@ class GasAccountingProxy(AccountingProxy):
         #WAS exceptions must be old-style classes or derived from BaseException, not unicode
 
         issuer = self.subject
-        kind = 'GAS_EXTRA'
+        kind = GAS_EXTRA
         if not date:
             date = datetime.datetime.now()  #_date.today
 #        transaction = register_simple_transaction(source_account, target_account, amount, description, issuer, date=date, kind=kind)

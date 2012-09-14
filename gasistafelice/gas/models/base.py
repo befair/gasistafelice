@@ -1930,7 +1930,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         acc_tot -= self.supplier.accounting.system['/expenses/gas/' + self.gas.uid].balance
         
         #COMMENT domthu: this is for the DES's balance
-        #Thay include all GAS'economics entries + OutOfDES operations
+        #They include all GAS'economics entries + OutOfDES operations
         #acc_tot = self.supplier.accounting.system['/wallet'].balance
         return acc_tot
 

@@ -17,7 +17,6 @@ class SupplierAccountingProxy(AccountingProxy):
     here, you can add whatever logic is needed to augment that generic API,
     tailoring it to the specific needs of the ``Supplier``' model.
     """
-    PACT_EXTRA = 'PACT_EXTRA'
         
     def confirm_invoice_payment(self, invoice):
         """
@@ -148,7 +147,7 @@ class SupplierAccountingProxy(AccountingProxy):
             'causal': causal
         }
         issuer = self.subject
-        kind = SupplierAccountingProxy.PACT_EXTRA
+        kind = PACT_EXTRA
         if not date:
             date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
