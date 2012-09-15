@@ -23,8 +23,25 @@ class Block(BlockWithList):
     TEMPLATE_RESOURCE_LIST = "blocks/open_orders.xml"
 
     def _get_add_form_class(self):
+        """Dynamic generation of order add form basing on GASConfig.
+
+        For choosing base class keep in consideration GASConfig options
+        """
+
+        t = self.resource.resource_type
+        if t in ["site", "supplier"]:
+            base_class = order_forms.AddOrderForm
+        elif t in ["gas", "pact"]:
+            gas = self.resource.gas
+            if gas.config.use_order_planning:
+                base_class = order_forms.AddPlannedOrderForm
+            else:
+                base_class = order_forms.AddOrderForm
+        else:
+            raise ValueError("Invalid block %s for a %s" % (self.BLOCK_NAME, t))
+
         return order_forms.form_class_factory_for_request(
-            self.request, base=order_forms.AddPlannedOrderForm
+            self.request, base=base_class
         )
 
     def _get_resource_list(self, request):
@@ -42,7 +59,7 @@ class Block(BlockWithList):
             obj=ObjectWithContext(GASSupplierOrder, context=ctx)
         ):
         
-            if self.resource.resource_type in ["gas", "supplier", "pact", "stock"]:
+            if self.resource.resource_type in ["gas", "supplier", "pact"]:
                 user_actions += [
                     ResourceBlockAction( 
                         block_name = self.BLOCK_NAME,
