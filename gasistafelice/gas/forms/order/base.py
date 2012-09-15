@@ -1,7 +1,7 @@
 
 from django import forms
 from django.db import transaction
-from django.utils.translation import ugettext as ug, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
@@ -100,7 +100,7 @@ class BaseOrderForm(forms.ModelForm):
         if not referrers.count():
             #KO: not rendered the form and the relative warning
             #NOTE fero: it shouldn't arrive here...no matter for me if it is and HARD exception
-            #raise PermissionDenied(ug("You cannot open an order without referrers"))
+            #raise PermissionDenied(ugettext("You cannot open an order without referrers"))
             log.warning("BaseOrderForm.__init__(): trying to create a new order without referrers!")
 
         if self.fields.get('referrer_person'):
@@ -140,11 +140,11 @@ class BaseOrderForm(forms.ModelForm):
         # Only do something if both fields are valid so far.
         if dt_start and dt_end:
             if dt_start >= dt_end:
-                 raise forms.ValidationError(ug(u"Start date can't be later or equal than end date"))
+                 raise forms.ValidationError(ugettext(u"Start date can't be later or equal than end date"))
 
         if dt_end and dt_delivery:
             if dt_end > dt_delivery:
-                 raise forms.ValidationError(ug("End date can't be later than delivery date"))
+                 raise forms.ValidationError(ugettext("End date can't be later than delivery date"))
 
         # Set cleaned data additional keys:
         # pact: needed if we are in EditOrderForm
@@ -317,9 +317,9 @@ class AddOrderForm(BaseOrderForm):
 
         if not self._pacts.count():
             log.error("Cannot add an order on a resource with no pacts")
-            self._messages['error'].append(ug("No pacts selectable for you. Please contact staff"))
+            self._messages['error'].append(ugettext("No pacts selectable for you. Please contact staff"))
         else:
-            self._messages['info'].append(ug("Please select the pact you want to make an order for"))
+            self._messages['info'].append(ugettext("Please select the pact you want to make an order for"))
 
 
     def set_initial_referrer(self):
@@ -332,7 +332,7 @@ class AddOrderForm(BaseOrderForm):
         elif ref_field.queryset.count() > 0:
             ref_field.initial = ref_field.queryset[0]
         else:
-            self._messages['error'].append(ug("No referrers selectable for you. Please add tech referrer to add pact referrers for your GAS"))
+            self._messages['error'].append(ugettext("No referrers selectable for you. Please add tech referrer to add pact referrers for your GAS"))
 
     def set_initial_datetime_end(self, gas, dt, d_c):
 
