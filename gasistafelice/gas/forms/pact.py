@@ -20,35 +20,66 @@ def today():
 
 
 class BasePactForm(forms.ModelForm):
-        pass
+    """Foundation form for pact management."""
 
-#-------------------------------------------------------------------------------
-
-class GAS_PactForm(BasePactForm):
-    """Form for pact management by a GAS resource"""
     date_signed = forms.DateField(label=_lazy('Date signed'), required=True, 
         help_text=_("date of first meeting GAS - supplier"), 
         widget=admin_widgets.AdminDateWidget, initial=today
     )
 
-    pact_referrer = forms.ModelMultipleChoiceField(
-        label=_lazy("Pact referrer"), 
+#-------------------------------------------------------------------------------
+
+class GASBasePactForm(BasePactForm):
+    """Base form for pact management with GAS set.
+
+    This cover cases:
+
+    * Add by a GAS resource
+    * Edit a Pact
+
+    """
+
+    pact_referrers = forms.ModelMultipleChoiceField(
+        label=_lazy("Pact referrers"), 
         queryset=Person.objects.none(), required=False
     )
 
     def __init__(self, request, *args, **kw):
-        super(GAS_PactForm, self).__init__(*args, **kw)
-        self._gas = request.resource.gas
-        self.fields['pact_referrer'].queryset = self._gas.persons
-        log.debug("Availables gas people to be set as referrers: %s" % self._gas.persons)
+        """Set queryset for available pact referrers."""
+
+        super(GASBasePactForm, self).__init__(*args, **kw)
+        # COMMENT LF: The following "if" is just to be very precise. 
+        # COMMENT LF: In fact self._gas assumes same value
+        if kw.get('instance'):
+            self._gas = kw['instance'].gas
+        else:
+            self._gas = request.resource.gas
+
+        available_ref_people = self._gas.persons.filter(user__isnull=False)
+        self.fields['pact_referrers'].queryset = available_ref_people        
+        log.debug("GAS %s: available pact referrers: %s" % (self._gas, available_ref_people))
+
+#-------------------------------------------------------------------------------
+
+class GASAddPactForm(GASBasePactForm):
+    """Form for ADDing a pact by a GAS resource"""
+
+    def __init__(self, request, *args, **kw):
+        """Set available suppliers for this GAS"""
+
+        super(GASAddPactForm, self).__init__(request, *args, **kw)
         des = self._gas.des
-        self.fields['supplier'].queryset = des.suppliers.exclude(pk__in=[obj.pk for obj in self._gas.suppliers])
+        self.fields['supplier'].queryset = des.suppliers.exclude(
+            pk__in=[obj.pk for obj in self._gas.suppliers]
+        )
 
     def clean(self):
-        cleaned_data = super(GAS_PactForm, self).clean()
+        cleaned_data = super(GASAddPactForm, self).clean()
 
         try:
-            GASSupplierSolidalPact.objects.get(gas=self._gas, supplier=cleaned_data['supplier'])
+            GASSupplierSolidalPact.objects.get(
+                gas=self._gas, supplier=cleaned_data['supplier']
+            )
         except GASSupplierSolidalPact.DoesNotExist:
             #ok
             pass
@@ -59,10 +90,12 @@ class GAS_PactForm(BasePactForm):
 
     def save(self):
         self.instance.gas = self._gas
-        super(GAS_PactForm, self).save()
+        super(GASAddPactForm, self).save()
 
-        people = self.cleaned_data.get('pact_referrer', [])
+        people = self.cleaned_data.get('pact_referrers', [])
         log.debug("Selected referrers: %s" % people)
+        # Set new referrers
+        #TODO: refactoring needed in model (referrers_add Pact method or something better...)
         pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
         for p in people:
             PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=p.user)
@@ -70,17 +103,17 @@ class GAS_PactForm(BasePactForm):
     class Meta:
 
         model = GASSupplierSolidalPact
-        fields = ('supplier', 'date_signed', 
+        fields = ('supplier', 'date_signed', 'document', 
             'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
             'send_email_on_order_close'
         )
 
         gf_fieldsets = [(None, { 
             'fields' : (
-                'supplier', 'date_signed',  
+                'supplier', 'document', 'date_signed',  
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
-                'pact_referrer', 'send_email_on_order_close'
+                'pact_referrers', 'send_email_on_order_close'
         )})]
 
 
@@ -89,8 +122,6 @@ class GAS_PactForm(BasePactForm):
 class Supplier_PactForm(BasePactForm):
     """Form for pact management by a Supplier resource"""
     
-    document = forms.FileField(label=_("Document"), required=False, help_text=_("Document signed by GAS and Supplier"))  
-        
     def __init__(self, request, *args, **kw):
 
         super(Supplier_PactForm, self).__init__(*args, **kw)
@@ -101,7 +132,9 @@ class Supplier_PactForm(BasePactForm):
     def clean(self):
         cleaned_data = super(Supplier_PactForm, self).clean()
         try:
-            GASSupplierSolidalPact.objects.get(gas=cleaned_data['gas'], supplier=self.__supplier)
+            GASSupplierSolidalPact.objects.get(
+                gas=cleaned_data['gas'], supplier=self.__supplier
+            )
         except GASSupplierSolidalPact.DoesNotExist:
             #ok
             pass
@@ -117,55 +150,55 @@ class Supplier_PactForm(BasePactForm):
     class Meta:
 
         model = GASSupplierSolidalPact
-        fields = ('gas', 'date_signed', 'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval')
+        fields = ('gas', 'date_signed', 'document', 
+            'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
+            'send_email_on_order_close'
+        )
 
+        # WARNING: no pact_referrers allowed here because we don't know the GAS
         gf_fieldsets = [(None, { 
             'fields' : [
                 'gas', 'date_signed', 'document',
                 ('order_minimum_amount', 'order_delivery_cost'),
-                'order_deliver_interval',        
+                'order_deliver_interval', 'send_email_on_order_close'
         ]})]
     
 #-------------------------------------------------------------------------------
 
-class EditPactForm(BasePactForm):
+class EditPactForm(GASBasePactForm):
     """Form for pact editing.
 
-    Support one GAS_REFERRER_SUPPLIER for each pact"""
-
-    document = forms.FileField(label=_("Document"), required=False, help_text=_("Document signed by GAS and Supplier"))
-    pact_referrer = forms.ModelMultipleChoiceField(queryset=Person.objects.none(), required=False)
+    Inherit from GASPactForm because it has always "the gas" set.
+    Furthermore there is no choice of suppliers because also supplier is set. 
+    """
 
     def __init__(self, request, *args, **kw):
-        self.__param_role = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=kw['instance'])
-        if self.__param_role.get_users():
-            kw['initial'] = kw.get('initial', {}).update({
-                'pact_referrer' : self.__param_role.get_users()[0].person
-            })
-        super(EditPactForm, self).__init__(*args, **kw)
-        self._gas = request.resource.gas
-        self.fields['pact_referrer'].queryset = self._gas.persons
+        """Set initial value for already set pact referrers."""
+
+        super(EditPactForm, self).__init__(request, *args, **kw)
+        self.fields['pact_referrers'].initial = self.instance.referrers_people
 
     def save(self):
+
         super(EditPactForm, self).save()
         
-        people = self.cleaned_data.get('pact_referrer', [])
+        people = self.cleaned_data.get('pact_referrers', [])
         log.debug("Selected referrers: %s" % people)
         pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self.instance)
-        referrers_users = []
-        for p in people:
-            p, created = PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=p.user)
-            referrers_users.append(p.user)
+        referrers_users = [p.user for p in people]
 
         for u in pr.get_users():
             if u not in referrers_users:
-                PrincipalParamRoleRelation.objects.delete(role=pr, user=u)
+                PrincipalParamRoleRelation.objects.filter(role=pr, user=u).delete()
+
+        for u in referrers_users:
+            p, created = PrincipalParamRoleRelation.objects.get_or_create(role=pr, user=u)
 
 
     class Meta:
 
         model = GASSupplierSolidalPact
-        fields = ('date_signed', 
+        fields = ('date_signed', 'document',
             'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
             'send_email_on_order_close',
         )
@@ -176,6 +209,6 @@ class EditPactForm(BasePactForm):
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
                 'send_email_on_order_close',
-                'pact_referrer',
+                'pact_referrers',
         )})]
 

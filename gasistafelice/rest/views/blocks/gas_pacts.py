@@ -6,7 +6,7 @@ from flexi_auth.models import ObjectWithContext
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
 from gasistafelice.gas.models.base import GASSupplierSolidalPact
-from gasistafelice.gas.forms.pact import GAS_PactForm
+from gasistafelice.gas.forms.pact import GASAddPactForm
 
 from gasistafelice.rest.views.blocks import pacts
 
@@ -37,4 +37,4 @@ class Block(pacts.Block):
         
     def _get_add_form_class(self):
 
-        return GAS_PactForm
+        return GASAddPactForm

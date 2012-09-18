@@ -24,7 +24,7 @@ from gasistafelice.base import validators
 
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display
-from gasistafelice.lib import ClassProperty
+from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.lib.djangolib import queryset_from_iterable
 from gasistafelice.supplier.models import Supplier
 from gasistafelice.gas.models.base import GASMember, GASSupplierSolidalPact, GASSupplierStock
@@ -295,6 +295,11 @@ class GASSupplierOrder(models.Model, PermissionResource):
         
     def do_transition(self, transition, user):
         super(GASSupplierOrder, self).do_transition(transition, user)
+        if self.is_active():
+            log.debug("Order %d OPENED by transition=%s: settings default gasstock set" % (
+                self.pk, transition.name
+            ))
+            self.set_default_gasstock_set()
         signals.order_state_update.send(sender=self, transition=transition)
 
     def open_if_needed(self, sendemail=False, issuer=None):
@@ -312,10 +317,6 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
             if t in get_allowed_transitions(self, user):
                 log.debug("Do %s transition. datetime_start is %s" % (t, self.datetime_start))
-
-                #20111212 02:00 prepare reccurent plan for order
-                #FIXME: not done when using manual opening. Do it using worflow change state handler
-                #WAS: self.set_default_gasstock_set()
 
                 self.do_transition(t, user)
                 
@@ -339,7 +340,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
         # Control is not yet in closed state due to InterGAS Order generation
         # Only in the case taht we operate the InterGAS management 1)
-        if self.current_state == STATUS_CLOSED:
+        if self.is_closed():
             log.debug("close_if_needed: GAS(%s) already closed" % (self.gas))
             return
 
@@ -480,9 +481,10 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if not order_refs:
             order_refs = self.pact.gas.referrers
         
-        # FIXME: 'NoneType' object has no attribute 'user'. 
+        # FIXED: 'NoneType' object has no attribute 'user'. 
+        # COMMENT: validator `attr_user_is_set` for `referrer_*` fields.
         # COMMENT: Cannot be real for any kind of referrer. But model permits this.
-        # TO FIX: write validator `attr_user_is_set` for `referrer_*` fields (in base/validators.py).
+
         # QUESTION: are we sure that this is a FIXME? In this case, would it be simpler
         # to perform this check as you have done here, and let users specify
         # a person as an order referrer even if it is not a user in the system ?
@@ -875,9 +877,9 @@ WHERE order_id = %s \
         super(GASSupplierOrder, self).save(*args, **kw)
 
         #KO: 20111212 02:00 prepare reccurent plan for order. 
-        # because Do not create gasstock if order state is prepared
-        if created:
-            self.set_default_gasstock_set()
+        #KO:  because Do not create gasstock if order state is prepared
+        #KO: if created:
+        #KO:     self.set_default_gasstock_set()
 
     #-------------- Authorization API ---------------#
     
@@ -970,6 +972,8 @@ WHERE order_id = %s \
         if not isinstance(to, list):
             to = [to]
 
+        log.debug('SENDING EMAIL: self=%s to=%s, cc=%s' % (self, to, cc))
+
         try:
             log.debug('self.gas.preferred_email_contacts %s ' % self.gas.preferred_email_contacts)
             sender = self.gas.preferred_email_contacts[0].value
@@ -987,6 +991,8 @@ WHERE order_id = %s \
         message += more_info
         #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
 
+        to = unordered_uniq(to)
+        cc = unordered_uniq(cc)
         email = EmailMessage(
             subject = subject,
             body = message,

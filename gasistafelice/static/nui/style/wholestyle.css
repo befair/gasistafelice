@@ -458,7 +458,7 @@ ul.errorlist { max-width : 400px; }
 }
 
 #loading-container {
-    z-index : 1000;
+    z-index : 100000;
     background-color: grey;
     opacity: 0.8;
     position:absolute;

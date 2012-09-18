@@ -1,5 +1,5 @@
 {% extends "blocks/base/data.json" %}
-{% load basic_tags %}
+{% load basic_tags accounting_tags %}
 
 {% block table_rows %}
     {% for entry in records %}
@@ -7,9 +7,9 @@
 
         "{{entry.pk|escapejs}}",
         "{{entry.date|date:"D d M Y H:i"}}",
-        "{% filter escapejs %}{% Human_readable_account entry.account %}{% endfilter %}",
-        "{% filter escapejs %}{% Human_readable_kind entry.transaction.kind %}{% endfilter %}",
-        "<h3>{{entry.amount|floatformat:"2"}}</h3>",
+        "{% filter escapejs %}{% human_readable_account entry.account %}{% endfilter %}",
+        "{% filter escapejs %}{% human_readable_kind entry.transaction.kind %}{% endfilter %}",
+        "<h3>{% filter floatformat:"2" %}{% signed_ledger_entry_amount entry %}{% endfilter %}</h3>",
         "{{entry.transaction.description|escapejs}}",
     ]
     {% if not forloop.last %}

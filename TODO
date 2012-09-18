@@ -1,4 +1,7 @@
-TOOO:
+
+
+
+TODO:
 
 * "eliminazione" (disabilitazione) GASMember:
     - Integrare South 
@@ -6,16 +9,11 @@ TOOO:
     - Gestione del campo in un form/azione come "Elimina gasista"
     - Gestire "aggiungi gasista"
     - Gestire il filtro gasisti attivi o no, nelle query e/o nei manager
-* disabilitazione ordini pianificati per chi non li vuole
 * primo rilascio InterGAS
-
-
-TODO:
-
+* gestione dei gasisti
 * MATTEO: sostituire /order_invoice/order_registration (nome blocco, nome file)
 * MATTEO: sostituire /Transation/Transaction (nome form)
 * DOMINIQUE: sostituire /balance_*/nomerisorsa_balance (nome blocco, nome file)
-* MATTEO: validator attr_user_is_set. 
 
 * FERO: nascondere nella form di modifica ordine l'opzione "referente" se singolo referente per un patto.
   AAA NECESSARIO FARE UN SELECT A CASCATA: seleziono patto --> seleziono referente.
@@ -23,6 +21,12 @@ TODO:
 NOTA: sembra che i dati attuali siano prezzi senza IVA, almeno Gironelli....
 
 * VERIFICARE: elimina PrincipalParamRole su eliminazione di un oggetto (Fornitore, oppure Patto, o GAS)
+
+TODO 0.9.8
+--------
+
+* disabilitazione ordini pianificati per chi non li vuole
+* MATTEO: validator attr_user_is_set. 
 
 TODO 0.9.4
 --------

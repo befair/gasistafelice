@@ -406,7 +406,7 @@ INIT_OPTIONS = {
     'su_name'   : "Referente informatico",
     'su_surname': "del DES-MC",
     'su_email'  : "",
-    'su_passwd' : "admin",
+    'su_PASSWORD' : "admin", 
 }
 
 MAINTENANCE_MODE = False

@@ -37,7 +37,7 @@ class Command(BaseCommand):
             su.first_name=settings.INIT_OPTIONS['su_name']
             su.last_name=settings.INIT_OPTIONS['su_surname']
             su.email=settings.INIT_OPTIONS['su_email']
-            su.set_password(settings.INIT_OPTIONS['su_passwd'])
+            su.set_password(settings.INIT_OPTIONS['su_PASSWORD'])
             su.save()
 
         p, created = Person.objects.get_or_create(user=su)

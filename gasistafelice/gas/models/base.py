@@ -1656,11 +1656,15 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         verbose_name=_('auto populate products')
     )
 
-    orders_can_be_grouped = models.BooleanField(verbose_name=_('Can be InterGAS'), default=False, 
+    orders_can_be_grouped = models.BooleanField(verbose_name=_('can be InterGAS'), 
+        default=False, 
         help_text=_("If true, this supplier can aggregate orders from several GAS")
     )
 
-    document = models.FileField(upload_to=base_utils.get_pact_path, null=True, blank=True, verbose_name=_("association act"))
+    document = models.FileField(upload_to=base_utils.get_pact_path, 
+        null=True, blank=True, verbose_name=_("document"), 
+        help_text=_("Document signed by GAS and Supplier")
+    )
 
     send_email_on_order_close = models.BooleanField(default=False, 
         help_text=_("Automatically send email to supplier and gas referrer supplier as soon as an order is closed"),
@@ -1933,7 +1937,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         acc_tot -= self.supplier.accounting.system['/expenses/gas/' + self.gas.uid].balance
         
         #COMMENT domthu: this is for the DES's balance
-        #Thay include all GAS'economics entries + OutOfDES operations
+        #They include all GAS'economics entries + OutOfDES operations
         #acc_tot = self.supplier.accounting.system['/wallet'].balance
         return acc_tot
 

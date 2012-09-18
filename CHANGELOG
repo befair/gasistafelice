@@ -1,3 +1,13 @@
+14.09.2012 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.9.8
+    * Fix visualizzazione transazioni patti
+    * Fix associazione prodotti ad apertura ordine (non preparazione)
+    * Bloccata l'interazione utente sulle POST con un popup
+    * Configurazione GAS: abilita o disabilita la pianificazione degli ordini
+    * Fix modifica patto se viene rimosso un referente fornitore
+    * Security FIX non visualizzata la password admin nel template di debug quando avviene un errore
+
 30.07.2012 Luca Ferroni <luca@befair.it>
 
     * Versione 0.9.7

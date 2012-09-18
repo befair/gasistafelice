@@ -8,6 +8,7 @@ from notification import models as notification
         
 from gasistafelice.gas.models import GAS
 from gasistafelice.gas import signals as gas_signals
+from gasistafelice.lib import unordered_uniq
 
 import logging
 
@@ -141,9 +142,10 @@ def notify_order_state_update(sender, **kwargs):
 
     recipients = []
     if transition.destination.name.lower() in ["open", "closed"]:
-        recipients = order.referrers
+        recipients = [order.referrer_person.user]
     elif transition.destination.name.lower() in ["sent", "paid"]:
-        recipients = order.referrers | order.supplier.referrers
+        recipients = list(order.supplier.referrers) + [order.referrer_person.user]
+        recipients = unordered_uniq(recipients)
 
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))

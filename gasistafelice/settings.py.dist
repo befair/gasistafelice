@@ -21,7 +21,7 @@ from default_settings import *
 #    'su_name'   : "Referente informatico",
 #    'su_surname': "del DES-MC",
 #    'su_email'  : "",
-#    'su_passwd' : "admin",
+#    'su_PASSWORD' : "admin",
 #}
 #
 ## --- WARNING: changing following parameters implies fixtures adaptation --
