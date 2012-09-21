@@ -117,7 +117,8 @@ def get_notes_for( resources ):
 
         ctype = ContentType.objects.get_for_model(r.__class__)
         comments = all_comments.filter(content_type=ctype, object_pk=r.pk)
-        notes_d[r] = comments
+        if comments.count():
+            notes_d[r] = comments
 
     notes = NoteList(notes_d.items(), all_comments.count())
     #notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))

@@ -32,7 +32,7 @@ class Block(BlockWithList):
             pass
         else:
             if request.user.has_perm(CREATE, 
-                obj=ObjectWithContext(GASMember, context={ 'gas' : gas})):
+                obj=ObjectWithContext(GASMember, context={'gas' : gas})):
 
                 user_actions.append( 
                     ResourceBlockAction( 
