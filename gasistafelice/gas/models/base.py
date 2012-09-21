@@ -35,7 +35,7 @@ from gasistafelice.gas.accounting import GasAccountingProxy
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
-from gasistafelice.gas.managers import GASMemberManager
+from gasistafelice.gas.managers import GASMemberManager, IncludeSuspendedGASMemberManager
 from gasistafelice.des.models import DES
 
 from gasistafelice.exceptions import NoSenseException, DatabaseInconsistent
@@ -817,6 +817,7 @@ class GASMember(models.Model, PermissionResource):
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     objects = GASMemberManager()
+    all_objects = IncludeSuspendedGASMemberManager()
 
     history = HistoricalRecords()
 
@@ -968,9 +969,18 @@ class GASMember(models.Model, PermissionResource):
 
     def setup_roles(self):
         # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
+        if not self.is_suspended:
+            self.add_gmrole(self)
+
+    def add_gmrole(self):
         role = ParamRole.get_role(GAS_MEMBER, gas=self.gas)
         user = self.person.user
         role.add_principal(user)
+
+    def remove_gmrole(self):
+        role = ParamRole.get_role(GAS_MEMBER, gas=self.gas)
+        user = self.person.user
+        PrincipalParamRoleRelation.objects.get(user=user, role=role).delete()
 
     def clean(self):
         # Clean method is for validation. Validation errors are meant to be
@@ -989,7 +999,24 @@ class GASMember(models.Model, PermissionResource):
             raise AttributeError('GAS Members must be registered users')
         if not self.id_in_gas:
             self.id_in_gas = None
+
+        # Check for role update
+        activate_gmrole = False
+        remove_gmrole = False
+
+        if self.pk:
+            old_gm = GASMember.objects.get(pk=self.pk)
+            if self.is_suspended and not old_gm.is_suspended:
+                remove_gmrole = True
+            if old_gm.is_suspended and not self.is_suspended:
+                activate_gmrole = True
+            
         super(GASMember, self).save(*args, **kw)
+
+        if activate_gmrole:
+            self.add_gmrole()
+        elif remove_gmrole:
+            self.remove_gmrole()
 
     def setup_accounting(self):
         """ GASMember contributes to GAS and Person accounting hierarchies.

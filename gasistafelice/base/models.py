@@ -1284,7 +1284,7 @@ def validate(sender, instance, **kwargs):
 def setup_data(sender, instance, created, **kwargs):
     """
     Setup proper data after a model instance is saved to the DB for the first time.
-    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
+    This function just calls the `setup_data()` instance method of the sender model class (if defined);
     actual role-creation/setup logic is encapsulated there.
     """
     if created: # Automatic data-setup should happen only at instance-creation time 

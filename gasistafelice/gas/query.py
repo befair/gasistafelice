@@ -4,6 +4,10 @@ from datetime import date
 from django.contrib.contenttypes.models import ContentType  
 from workflows.models import StateObjectRelation
 
+class GASMemberQuerySet(QuerySet):
+    # TODO: refactor here some GASMemberManager objects
+    pass
+
 class OrderQuerySet(QuerySet):
     
     def get_by_state(self, name):

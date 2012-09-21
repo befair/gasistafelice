@@ -1,13 +1,25 @@
 from django.db import models
+from django.db.models.query import QuerySet
 
 from gasistafelice.consts import *
 from flexi_auth.models import ParamRole
-from gasistafelice.gas.query import AppointmentQuerySet, OrderQuerySet
+from gasistafelice.gas.query import AppointmentQuerySet, OrderQuerySet, GASMemberQuerySet
 
 class GASMemberManager(models.Manager):
     """
     A custom manager class for the `GASMember` model.
-    """
+    """ 
+    def get_query_set(self):
+        """Specific queryset object for GASMember management.
+
+        Default behaviour is to hide 
+        - suspended GASMembers 
+        - inactive Users
+        """
+        queryset_object = GASMemberQuerySet(self.model)
+        queryset_object = queryset_object.exclude(is_suspended=True)
+        queryset_object = queryset_object.exclude(person__user__is_active=False)
+        return queryset_object
 
     def gas_referrers(self, gas=None):
         """
@@ -129,6 +141,12 @@ class GASMemberManager(models.Manager):
         else:
             people = [order.referrer_person]
         return self.model.objects.filter(person__in=people)
+
+class IncludeSuspendedGASMemberManager(models.Manager):
+    """Manager to retrieve ordinary behaviour"""
+
+    def get_query_set(self):
+        return QuerySet(self.model)
 
 #-------------------------------------------------------------------------------
 
