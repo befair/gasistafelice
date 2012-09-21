@@ -387,7 +387,9 @@ class GAS(models.Model, PermissionResource):
         """All GASMember for this GAS"""
         gm_qs = self.gasmember_set.filter(person__user__is_active=True)
         #gm_qs = gm_qs.filter(is_active=True)
-        gm_qs = gm_qs.order_by('person__surname', 'person__name')
+
+        #WAS: default ordering follows diplay name
+        #WAS: gm_qs = gm_qs.order_by('person__surname', 'person__name')
         return gm_qs
 
     @property
@@ -840,7 +842,7 @@ class GASMember(models.Model, PermissionResource):
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
-        ordering = ('gas__name',)
+        ordering = ('gas__name', 'person__display_name')
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
