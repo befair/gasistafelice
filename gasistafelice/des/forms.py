@@ -4,6 +4,8 @@ from registration.forms import RegistrationFormUniqueEmail
 from django import forms
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.contrib.comments.models import Comment
+from django.contrib.sites.models import Site as DjangoSite
 from django.utils.translation import ugettext_lazy as _
 
 from captcha.fields import CaptchaField
@@ -22,12 +24,21 @@ log = logging.getLogger(__name__)
 
 class DESRegistrationForm(RegistrationFormUniqueEmail):
 
+    REGISTRATION_TOKEN_PREFIX = "registration-token:"
+
     gas_choice = forms.ModelChoiceField(
         label="Sei del gas...",
         queryset = GAS.objects.all(),
         required=False,
         help_text=_("after your registration you have to wait for account activation by a GAS tech referrer")
     )
+
+    # If the registration token is specified -> a special Comment is added to GASMember 
+    gas_registration_token = forms.CharField(required=False,
+        label="Parola segreta del GAS per l'abilitazione automatica",
+        help_text="ogni GAS può definire una parola segreta per l'abilitazione. Se conosci questa parola vuol dire che sei entrato in contatto con il GAS. Perciò dopo che avrai verificato il tuo indirizzo email, potrai subito ordinare, senza attendere l'abilitazione del referente informatico"
+    )
+
     supplier_choice = forms.ModelChoiceField(
         label="Sei il fornitore...",
         queryset = Supplier.objects.all(),
@@ -35,19 +46,24 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         help_text=_("if you are not in this list, or you are the first user for this supplier, please contact a GAS tech referrer that could activate your account.")
     )
 
-    name = forms.CharField( label="Nome")
-    surname = forms.CharField( label="Cognome")
-    city = forms.CharField(label="Città")
+    name = forms.CharField(label="Nome*")
+    surname = forms.CharField( label="Cognome*")
+    city = forms.CharField(label="Città*")
     phone = forms.CharField(
-        label="Numero di telefono",
+        label="Numero di telefono*",
         required=True,
         help_text="È importante poter contattare chi si registra via telefono"
     )
     motivation = forms.CharField(label='Motivazione', required=False, widget=forms.Textarea,
         help_text="Alcune righe per conoscerti e/o sapere come ai conosciuto il GAS")
     recaptcha = CaptchaField(label="Inserisci le lettere che leggi " + 
-        "per farci capire che non sei un programma automatico"
+        "per farci capire che non sei un programma automatico*"
     )
+
+    def __init__(self, *args, **kw):
+        super(DESRegistrationForm, self).__init__(*args, **kw)
+        for field_name in ['username', 'password1', 'password2', 'email']:
+            self.fields[field_name].label = self.fields[field_name].label.capitalize() + "*"
 
     def clean(self):
         cleaned_data = super(DESRegistrationForm, self).clean()
@@ -161,10 +177,18 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             # in the activation phase (4a.) we would perform this step
             gm = GASMember( person=person, gas=gas )
             gm.save()
-#            pr = ParamRole.get_role(GAS_MEMBER, gas=gas)
-#            ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
-#            ppr.save()
+            #WAS: pr = ParamRole.get_role(GAS_MEMBER, gas=gas)
+            #WAS: ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
+            #WAS: ppr.save()
 
+            given_token = self.cleaned_data.get('gas_registration_token')
+            if given_token:
+                token_comment_text = "%s%s" % (DESRegistrationForm.REGISTRATION_TOKEN_PREFIX, given_token)
+                Comment.objects.create(
+                            site = DjangoSite.objects.all()[0],
+                            content_object=gm, 
+                            comment=token_comment_text
+                )
             #Send email for GAS_REFERRER_TECH
             techs = gas.tech_referrers_people
             if techs:
