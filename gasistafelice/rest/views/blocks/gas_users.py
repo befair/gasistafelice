@@ -21,7 +21,7 @@ class Block(users.Block):
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
 
     COLUMN_INDEX_NAME_MAP = users.Block.COLUMN_INDEX_NAME_MAP
-    COLUMN_INDEX_NAME_MAP[9] = 'gm_is_active'
+    COLUMN_INDEX_NAME_MAP[9] = 'person__gasmember__is_suspended'
 
     def _get_resource_list(self, request):
         """Retrieve all users who are GAS Members and have confirmed their emails.
