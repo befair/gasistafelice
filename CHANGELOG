@@ -1,3 +1,12 @@
+22.09.2012 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.9.9
+    * Gestione gasisti: abilitazione/disabilitazione gasisti
+    * Token per la registrazione: attivazione automatica se corrisponde a
+      quello specificato dal GAS
+    * Note: limitate le note visualizzate per ogni utente a quelle per lui
+      interessanti
+
 14.09.2012 Luca Ferroni <luca@befair.it>
 
     * Versione 0.9.8
