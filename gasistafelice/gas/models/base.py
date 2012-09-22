@@ -16,7 +16,7 @@ from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
-from flexi_auth.models import ParamRole, Param
+from flexi_auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from flexi_auth.exceptions import WrongPermissionCheck
 
 from simple_accounting.models import economic_subject, Account, AccountingDescriptor, LedgerEntry, account_type
@@ -970,7 +970,7 @@ class GASMember(models.Model, PermissionResource):
     def setup_roles(self):
         # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
         if not self.is_suspended:
-            self.add_gmrole(self)
+            self.add_gmrole()
 
     def add_gmrole(self):
         role = ParamRole.get_role(GAS_MEMBER, gas=self.gas)
@@ -1005,7 +1005,8 @@ class GASMember(models.Model, PermissionResource):
         remove_gmrole = False
 
         if self.pk:
-            old_gm = GASMember.objects.get(pk=self.pk)
+            # Search among all_objects! (even suspended)
+            old_gm = GASMember.all_objects.get(pk=self.pk)
             if self.is_suspended and not old_gm.is_suspended:
                 remove_gmrole = True
             if old_gm.is_suspended and not self.is_suspended:
