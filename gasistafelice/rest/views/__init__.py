@@ -448,6 +448,7 @@ def list_comments(request):
             if resource.resource_type == "gas":
                 resources += resource.orders.open()
                 resources += resource.orders.closed()
+                resources += resource.pacts
 
     rnotes = get_notes_for(resources)
     
