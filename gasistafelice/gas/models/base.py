@@ -1772,6 +1772,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         |                       +--- <UID supplier #1>  [E]
         |                       | ..
         |                       +--- <UID supplier #n>  [E]
+        +----------- incomes [P,I]+
+        |               +--- suppliers [P, E] +
+        |                       +--- <UID supplier #1>  [E]
+        |                       | ..
+        |                       +--- <UID supplier #n>  [E]
 
         # SUPPLIER-side
         . ROOT (/)
@@ -1780,12 +1785,26 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
                                 +--- <UID gas #1>  [P, I]
                                 | ..
                                 +--- <UID gas #n>  [P, I]
+        +----------- expenses [P,E]+
+                        +--- gas [P, I] +
+                                +--- <UID gas #1>  [P, I]
+                                | ..
+                                +--- <UID gas #n>  [P, I]
         """
 
+#xsys = gas_acc.get_account(self.system, '/expenses', 'gas', account_type.expense)
+#xsys = gas_acc.get_account(self.system, '/expenses/gas', gas.uid, account_type.expense)
+#xsys = gas_acc.get_account(gas_system, '/incomes', 'suppliers', account_type.income)
+#xsys = gas_acc.get_account(gas_system, '/incomes/suppliers', supplier.uid, 
+        
         gas_system = self.gas.accounting.system
         gas_system.add_account(parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense)
+        gas_system.add_account(parent_path='/incomes/suppliers', name=self.supplier.uid, kind=account_type.income)
+
         supplier_system = self.supplier.accounting.system
         supplier_system.add_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
+        #supplier_system.add_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense)
+#Account con questo Parent e Name esiste gi\xe
 
     #Creating Solidal pact: generate list of product. enable products according to gas configuration
     def setup_data(self):
@@ -1963,6 +1982,10 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         #acc_tot = self.gas.accounting.system['/expenses/suppliers/' + self.supplier.uid].balance
         acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
         #add to acc_tot other economics operations like 
+        
+        #UGLY: remove when sqlquery 
+        self.supplier.accounting.missing_accounts(self.gas)
+        
         # PACT_EXTRA +GAS -fornitore done into method  def extra_operation
         acc_tot -= self.supplier.accounting.system['/expenses/gas/' + self.gas.uid].balance
         
