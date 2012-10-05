@@ -1,6 +1,8 @@
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.contrib.auth.views import login as django_auth_login
-from django.core.exceptions import PermissionDenied
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.comments.models import Comment
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.shortcuts import render_to_response
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
@@ -9,11 +11,15 @@ from django.conf import settings
 from django.contrib import messages
 from django.core import urlresolvers
 from django.http import HttpResponseRedirect, HttpResponse
-from gasistafelice.des.forms import DESRegistrationForm, DESStaffRegistrationForm
-from gasistafelice.des.models import Siteattr
+from django.db import transaction
+from des.forms import DESRegistrationForm, DESStaffRegistrationForm
+from des.models import Siteattr
+from gas.models import GASMember
 
 from registration.models import RegistrationProfile
-import re
+import re, logging
+
+log = logging.getLogger("gasistafelice")
 
 @never_cache
 def login(request, *args, **kw):
@@ -100,7 +106,13 @@ def staff_registration(request, *args, **kw):
 # but doesn't activate the user
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
+
+@transaction.commit_on_success
 def activate_user(activation_key):
+    """Make the user ready to be activated by GAS referrer tech, OR
+    already active if he is a GASMember, his GAS specified a registration token,
+    he has specified the registration token in the registration form
+    """
 
     model = RegistrationProfile
 
@@ -112,9 +124,57 @@ def activate_user(activation_key):
         if not profile.activation_key_expired():
             profile.activation_key = model.ACTIVATED
             profile.save()
+
+            # Activate user if:
+            # * he is a GASMember
+            # * his GAS has defined a registration_token
+            # * he has specified the registration token in the registration form
+            # (find it in a special note to be deleted)
+            try:
+                # At this time the user belongs at most to one GAS
+                # IMPORTANT: you must use the GASMember.all_objects manager
+                # because GASMember user is not active now
+                gm = GASMember.all_objects.get(person=profile.user.person)
+            except ObjectDoesNotExist as e:
+                # Do not worry if user is not a GASMember
+                pass
+            else:
+                if check_registration_token_for_gasmember(gm):
+                    profile.user.is_active = True
+                    profile.user.save()
             return profile.user
     return False
     
+def check_registration_token_for_gasmember(gm):
+    """Check if registration token matches (case insensitive match)"""
+
+    rv = False
+
+    # Check if GAS has specified a registration_token
+    gas_config_token = gm.gas.config.registration_token
+    if gas_config_token:
+        try:
+            # Get token_comment
+            ctype = ContentType.objects.get_for_model(gm.__class__)
+            token_comment = Comment.objects.get(content_type=ctype, object_pk=gm.pk)
+        except ObjectDoesNotExist as e:
+            # Do not worry if there is no note that begin with "registration-token:"
+            pass
+        except MultipleObjectsReturned as e:
+            log.warning("Multiple notes with registration-token: on GASMember %s. Suspected attack" % gm)
+            pass
+        else:
+
+            if token_comment.comment.startswith('registration-token:'):
+                token = token_comment.comment[len('registration-token:'):]
+
+                # Compare token case insensitive
+                if token.lower() == gas_config_token.lower():
+                    rv = True
+
+                # Finally delete the comment
+                token_comment.delete()
+    return rv 
     
 # Function copied from registration.views app
 # Use custom function to update activation key for a user

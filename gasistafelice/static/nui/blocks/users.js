@@ -29,7 +29,6 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
                     {"bSearchable":false,"bSortable":true,"sWidth":"13%"},
                     {"bSearchable":false,"bSortable":true,"sWidth":"13%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"5%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%"}
                 ],
                 "oLanguage": {
@@ -46,11 +45,11 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
                 },
                 "fnRowCallback": function(nRow, aaData, iDisplayIndex, iDisplayIndexFull) {
                     try {
-                        var url = aaData[10];
-                        if (url != undefined) {
-                            var _name = aaData[9];
+                        var url = aaData[8][1];
+                        if (url !== undefined) {
+                            var _name = aaData[8][0];
                             res = new jQuery.Resource(url, _name);
-                            $(nRow.cells[9]).html( res.render() );
+                            $(nRow.cells[8]).html( res.render() );
                         }
                     }
                     catch(e){alert(e.message);
@@ -65,7 +64,6 @@ jQuery.UIBlockUserList = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS.gas_users = new jQuery.UIBlockUserList("gas_users");
 jQuery.BLOCKS.supplier_users = new jQuery.UIBlockUserList("supplier_users");
 
 

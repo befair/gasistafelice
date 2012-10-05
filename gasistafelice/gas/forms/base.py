@@ -144,10 +144,40 @@ class SingleUserForm(forms.Form):
             log.debug("Save SingleUserForm error(%s)" % e)
             raise 
 
-#class GASSingleUserForm(SingleUserForm):
+class GASSingleUserForm(SingleUserForm):
 
-#    def __init__(self, request, *args, **kw):
-#        super(GASSingleUserForm, self).__init__(*args, **kw)
+    gm_is_active = forms.BooleanField(required=False)
+    initial_gm_is_active = forms.BooleanField(required=False, widget=forms.HiddenInput())
+
+    def __init__(self, request, *args, **kw):
+        self._gas = request.resource
+        super(GASSingleUserForm, self).__init__(request, *args, **kw)
+
+    def clean(self):
+        cleaned_data = super(GASSingleUserForm, self).clean()
+        person = self.cleaned_data.get('person')
+        gm_is_active = self.cleaned_data.get('gm_is_active', False)
+        #KO: person field seems not used? 
+        #KO: if gm_is_active and not person:
+        #KO:    raise forms.ValidationError(_("cannot activate a GASMember not bound to a person")) 
+        self.cleaned_data['gm_is_active'] = gm_is_active
+        return cleaned_data
+
+    def save(self):
+        super(GASSingleUserForm, self).save()
+        # if exception not raised
+        u = self.cleaned_data['user']
+        gm_is_active = self.cleaned_data['gm_is_active'] #was filled in clean if not present
+        initial_gm_is_active = self.cleaned_data.get('initial_gm_is_active', False)
+        
+        # check if different from initial_gm_is_active
+        if initial_gm_is_active != gm_is_active:
+            # IMPORTANT! Search in all GASMembers!
+            gm = GASMember.all_objects.get(gas=self._gas, person=u.person)   
+            gm.is_suspended = not gm_is_active
+            gm.save()
+        
+        
 
 #class SupplierSingleUserForm(SingleUserForm):
 

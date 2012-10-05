@@ -442,12 +442,18 @@ def list_comments(request):
 
     resources = []
     for prr in request.user.principal_param_role_set.all():
-        resources += [ r.value.as_dict() for r in prr.role.params ]
+        for param_role in prr.role.params:
+            resource = param_role.value
+            resources.append(resource)
+            if resource.resource_type == "gas":
+                resources += resource.orders.open()
+                resources += resource.orders.closed()
+                resources += resource.pacts
 
-    #TODO: REENABLE ?
-    #rnotes = get_notes_for(resources)
+    rnotes = get_notes_for(resources)
     
-    rnotes = get_all_notes()
+    #KO: show all notes to all users
+    #KO: rnotes = get_all_notes()
     context = {
         'notes': rnotes
     }

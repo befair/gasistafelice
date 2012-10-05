@@ -7,13 +7,18 @@
 
 <div style="margin: 2em 0.5em;" class="registration">
 
-  {% if account %}
-    <p>Grazie per aver confermato l'accesso, ora devi attendere l'abilitazione da parte del referente informatico del GAS.</p>
-<!-- puoi <a href="http://ordini.desmacerata.it/">accedere ed ordinare</a>.</p> -->
+  {% if account.is_active %}
+    <p>Grazie per aver confermato l'accesso. Il tuo utente è già attivo e puoi <a href="http://ordini.desmacerata.it/">accedere ed ordinare</a> nel DES!</p>
+
   {% else %}
-    <p>Ci dispiace, ma qualcosa non ha funzionato. 
-    O il link non è corretto, oppure stai effettuando questa
-    operazione di conferma {{ expiration_days }} giorni dopo la registrazione.</p>
+      {% if account %}
+        <p>Grazie per aver confermato l'accesso, ora devi attendere l'abilitazione da parte del referente informatico del GAS.</p>
+        
+      {% else %}
+        <p>Ci dispiace, ma qualcosa non ha funzionato. 
+        O il link non è corretto, oppure stai effettuando questa
+        operazione di conferma {{ expiration_days }} giorni dopo la registrazione.</p>
+      {% endif %}
   {% endif %}
 
 </div>

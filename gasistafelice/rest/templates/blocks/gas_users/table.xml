@@ -1,1 +1,7 @@
 {% extends "blocks/users/table.xml" %}
+{% load i18n %}
+
+{% block headers %}
+{{ block.super }}
+<th>{% trans "Active in GAS" %}</th>
+{% endblock %}

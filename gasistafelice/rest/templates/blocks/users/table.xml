@@ -9,8 +9,7 @@
 <th>{% trans "Email" %}</th>
 <th>{% trans "Last login" %}</th>
 <th>{% trans "Date joined" %}</th>
-<th>{% trans "Staff" %}</th>
-<th>{% trans "Active" %}</th>
+<th>{% trans "User can login" %}</th>
 <th>{% trans "Person" %}</th>
 {% endblock %}
 

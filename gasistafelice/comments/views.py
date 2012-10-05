@@ -16,6 +16,7 @@
 
 from django.contrib.comments.views.moderation import *
 from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 
 from django.contrib.auth.models import User
 
@@ -103,16 +104,24 @@ def get_all_notes( ignore_resources = None):
 
 
 def get_notes_for( resources ):
-    all_comments = Comment.objects.filter(is_removed=False).select_related().all()
-    notes_d = { }
-    for comment in all_comments:
-        obj = comment.content_object
-        if obj != None:
-            if obj in resources:
-                                notes_d[obj] = notes_d.get(obj, []) + [comment]
+    """Get comments related to some generic resources.
+
+    Return a list suitable for rendering in the notes block"""
+
+    # Step 1: prepare all Comment QuerySets
+    all_comments = Comment.objects.filter(is_removed=False).all()
+
+    notes_d = {}
+    for r in resources:
+        # Step 2: for each resource prepare dict to be rendered
+
+        ctype = ContentType.objects.get_for_model(r.__class__)
+        comments = all_comments.filter(content_type=ctype, object_pk=r.pk)
+        if comments.count():
+            notes_d[r] = comments
 
     notes = NoteList(notes_d.items(), all_comments.count())
-    notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))
+    #notes.sort(cmp=lambda x,y: cmp(x[0],y[0]))
 
     return notes
 

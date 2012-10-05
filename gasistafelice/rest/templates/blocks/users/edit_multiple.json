@@ -12,10 +12,8 @@
         "{{row.email|escapejs}}",
         "{{row.last_login|date:"Y b d H:i"|escapejs}}",
         "{{row.date_joined|date:"Y b d H:i"|escapejs}}",
-        "{% filter escapejs %}{% bool_img row.is_staff %}{% endfilter %}",
         "{{row.is_active|escapejs}}",
-        "{{row.person|escapejs}}",
-        {% if row.person_urn %}"{{row.person_urn|escapejs}}"{% else %}null{% endif %},
+        [ "{{row.person|escapejs}}", {% if row.person_urn %}"{{row.person_urn|escapejs}}"{% else %}null{% endif %} ]
 
     ]
     {% if not forloop.last %}

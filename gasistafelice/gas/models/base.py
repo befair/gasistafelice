@@ -16,7 +16,7 @@ from workflows.utils import get_workflow
 from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
-from flexi_auth.models import ParamRole, Param
+from flexi_auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from flexi_auth.exceptions import WrongPermissionCheck
 
 from simple_accounting.models import economic_subject, Account, AccountingDescriptor, LedgerEntry, account_type
@@ -35,7 +35,7 @@ from gasistafelice.gas.accounting import GasAccountingProxy
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
 from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
-from gasistafelice.gas.managers import GASMemberManager
+from gasistafelice.gas.managers import GASMemberManager, IncludeSuspendedGASMemberManager
 from gasistafelice.des.models import DES
 
 from gasistafelice.exceptions import NoSenseException, DatabaseInconsistent
@@ -387,7 +387,9 @@ class GAS(models.Model, PermissionResource):
         """All GASMember for this GAS"""
         gm_qs = self.gasmember_set.filter(person__user__is_active=True)
         #gm_qs = gm_qs.filter(is_active=True)
-        gm_qs = gm_qs.order_by('person__surname', 'person__name')
+
+        #WAS: default ordering follows diplay name
+        #WAS: gm_qs = gm_qs.order_by('person__surname', 'person__name')
         return gm_qs
 
     @property
@@ -815,6 +817,7 @@ class GASMember(models.Model, PermissionResource):
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
     objects = GASMemberManager()
+    all_objects = IncludeSuspendedGASMemberManager()
 
     history = HistoricalRecords()
 
@@ -840,7 +843,7 @@ class GASMember(models.Model, PermissionResource):
         verbose_name_plural = _('GAS members')
         app_label = 'gas'
         unique_together = (('gas', 'id_in_gas'), ('person', 'gas'))
-        ordering = ('gas__name',)
+        ordering = ('gas__name', 'person__display_name')
 
     def __unicode__(self):
         #rv = _('%(person)s in GAS "%(gas)s"') % {'person' : self.person, 'gas': self.gas}
@@ -966,9 +969,18 @@ class GASMember(models.Model, PermissionResource):
 
     def setup_roles(self):
         # Automatically add the new GASMember to the `GAS_MEMBER` Role for its GAS
+        if not self.is_suspended:
+            self.add_gmrole()
+
+    def add_gmrole(self):
         role = ParamRole.get_role(GAS_MEMBER, gas=self.gas)
         user = self.person.user
         role.add_principal(user)
+
+    def remove_gmrole(self):
+        role = ParamRole.get_role(GAS_MEMBER, gas=self.gas)
+        user = self.person.user
+        PrincipalParamRoleRelation.objects.get(user=user, role=role).delete()
 
     def clean(self):
         # Clean method is for validation. Validation errors are meant to be
@@ -987,7 +999,25 @@ class GASMember(models.Model, PermissionResource):
             raise AttributeError('GAS Members must be registered users')
         if not self.id_in_gas:
             self.id_in_gas = None
+
+        # Check for role update
+        activate_gmrole = False
+        remove_gmrole = False
+
+        if self.pk:
+            # Search among all_objects! (even suspended)
+            old_gm = GASMember.all_objects.get(pk=self.pk)
+            if self.is_suspended and not old_gm.is_suspended:
+                remove_gmrole = True
+            if old_gm.is_suspended and not self.is_suspended:
+                activate_gmrole = True
+            
         super(GASMember, self).save(*args, **kw)
+
+        if activate_gmrole:
+            self.add_gmrole()
+        elif remove_gmrole:
+            self.remove_gmrole()
 
     def setup_accounting(self):
         """ GASMember contributes to GAS and Person accounting hierarchies.

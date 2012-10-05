@@ -552,9 +552,9 @@ class Person(models.Model, PermissionResource):
     It can be a User or not.
     """
 
-    name = models.CharField(max_length=128,verbose_name=_('Name'))
-    surname = models.CharField(max_length=128,verbose_name=_('Surname'))
-    display_name = models.CharField(max_length=128, blank=True,verbose_name=_('Display name'))
+    name = models.CharField(max_length=128,verbose_name=_('name'))
+    surname = models.CharField(max_length=128,verbose_name=_('surname'))
+    display_name = models.CharField(max_length=128, blank=True, verbose_name=_('display name'))
     # Leave here ssn, but do not display it
     ssn = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'),verbose_name=_('Social Security Number'))
     contact_set = models.ManyToManyField('Contact', null=True, blank=True,verbose_name=_('contacts'))
@@ -563,7 +563,7 @@ class Person(models.Model, PermissionResource):
         help_text=_("bind to a user if you want to give this person an access to the platform")
     )
     address = models.ForeignKey('Place', null=True, blank=True,verbose_name=_('main address'))
-    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('Avatar'))
+    avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('avatar'))
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
@@ -572,12 +572,21 @@ class Person(models.Model, PermissionResource):
     class Meta:
         verbose_name = _("person")
         verbose_name_plural = _("people")
-        ordering = ('name',)
+        ordering = ('display_name',)
 
     def __unicode__(self):
-        rv = self.display_name or u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
-        if self.city:
-            rv += u" (%s)" % self.city
+
+        rv = self.display_name 
+
+        if not rv:
+            # If display name is not provided --> save display name
+            rv = u'%(name)s %(surname)s' % {'name' : self.name, 'surname': self.surname}
+            self.display_name = rv
+            self.save()
+
+        # Removed city visualization following Orlando's and Dominique's agreements
+        # WAS: if self.city:
+        # WAS:     rv += u" (%s)" % self.city
         return rv
 
     @property
@@ -866,6 +875,10 @@ class Person(models.Model, PermissionResource):
         """
         return self.gasmember_set.all()
 
+    def save(self, *args, **kw):
+        if not self.display_name:
+            self.display_name = u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
+        super(Person, self).save(*args, **kw)
 
 class Contact(models.Model):
     """If is a contact, just a contact email or phone"""
@@ -1271,7 +1284,7 @@ def validate(sender, instance, **kwargs):
 def setup_data(sender, instance, created, **kwargs):
     """
     Setup proper data after a model instance is saved to the DB for the first time.
-    This function just calls the `setup_roles()` instance method of the sender model class (if defined);
+    This function just calls the `setup_data()` instance method of the sender model class (if defined);
     actual role-creation/setup logic is encapsulated there.
     """
     if created: # Automatic data-setup should happen only at instance-creation time 

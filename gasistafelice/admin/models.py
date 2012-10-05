@@ -193,7 +193,7 @@ class GASMemberAdmin(admin.ModelAdmin):
             { 'fields' : ('gas', 'person')
     }),
     ("Extra", {
-        'fields' : ('available_for_roles',),
+        'fields' : ('available_for_roles', 'is_suspended', 'suspend_reason'),
         'classes': ('collapse',)
     }),
     )

@@ -34,8 +34,7 @@ class Block(BlockSSDataTables):
         5: 'last_login',
         6: 'date_joined',
         7: 'is_active',
-        8: 'is_staff',
-        9: 'person'
+        8: 'person'
     }
 
     def _get_user_actions(self, request):
@@ -131,7 +130,6 @@ class Block(BlockSSDataTables):
                 'email' : el.email,
                 'last_login' : el.last_login,
                 'date_joined' : el.date_joined,
-                'is_staff' : el.is_staff,
                 'is_active' : form['is_active'],
                 'person' : person,
                 'person_urn': person_urn,
