@@ -795,9 +795,10 @@ class Person(models.Model, PermissionResource):
         """
 
         self.subject.init_accounting_system()
-        system = self.accounting.system
         # create a generic asset-type account (a sort of "virtual wallet")
-        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
+        #system = self.accounting.system
+        #system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
+        self.accounting.create_account(parent_path='/', name='wallet', kind=account_type.asset)
 
     #----------------- Authorization API ------------------------#
 

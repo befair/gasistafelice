@@ -188,6 +188,29 @@ class PersonAccountingProxy(AccountingProxy):
 #        |                +--- recharges [I]
 #        |                +--- TODO: member (correction or other)
 
+    def create_account(self, parent_path, name, kind, is_placeholder=None):
+        if parent_path == '/':
+          path = parent_path + name
+        else:
+          path = parent_path + '/' + name
+        try:
+            account = self.system[path]
+        except:
+            #if not exist create it
+            if is_placeholder:
+                self.system.add_account(parent_path=parent_path, name=name, kind=kind, is_placeholder=is_placeholder)
+            else:
+                self.system.add_account(parent_path=parent_path, name=name, kind=kind)
+            account = self.system[path]
+        if not account:
+            raise MalformedTransaction(ugettext("Unknow create account: %(system)s %(path)s %(name)s %(kind)s %(is_placeholder)s") % {
+                'system': self.system,
+                'path': path,
+                'name': name,
+                'kind': kind,
+                'is_placeholder': is_placeholder
+            })
+
     #UGLY: remove me when done and executed one command that regenerate all missing accounts
     def missing_accounts(self, gas):
         gas_acc = gas.accounting

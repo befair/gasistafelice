@@ -358,6 +358,29 @@ class GasAccountingProxy(AccountingProxy):
 #        +----------- incomes [P,I]+
 #        |                +--- TODO: OutOfDES
 
+    def create_account(self, parent_path, name, kind, is_placeholder=None):
+        if parent_path == '/':
+          path = parent_path + name
+        else:
+          path = parent_path + '/' + name
+        try:
+            account = self.system[path]
+        except:
+            #if not exist create it
+            if is_placeholder:
+                self.system.add_account(parent_path=parent_path, name=name, kind=kind, is_placeholder=is_placeholder)
+            else:
+                self.system.add_account(parent_path=parent_path, name=name, kind=kind)
+            account = self.system[path]
+        if not account:
+            raise MalformedTransaction(ugettext("Unknow create account: %(system)s %(path)s %(name)s %(kind)s %(is_placeholder)s") % {
+                'system': self.system,
+                'path': path,
+                'name': name,
+                'kind': kind,
+                'is_placeholder': is_placeholder
+            })
+    
     def get_account(self, system, parent_path, name, kind):
         path = parent_path + '/' + name
         try:

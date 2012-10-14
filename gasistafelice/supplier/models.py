@@ -111,12 +111,14 @@ class Supplier(models.Model, PermissionResource):
         """
 
         self.subject.init_accounting_system()
-        system = self.accounting.system
+#        system = self.accounting.system
+#        # a generic asset-type account (a sort of "virtual wallet")
+#        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
+#        # a placeholder for organizing transactions representing GAS payments
+#        system.add_account(parent_path='/incomes', name='gas', kind=account_type.income, is_placeholder=True)
 
-        # a generic asset-type account (a sort of "virtual wallet")
-        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
-        # a placeholder for organizing transactions representing GAS payments
-        system.add_account(parent_path='/incomes', name='gas', kind=account_type.income, is_placeholder=True)
+        self.accounting.create_account(parent_path='/', name='wallet', kind=account_type.asset)
+        self.accounting.create_account(parent_path='/incomes', name='gas', kind=account_type.income, is_placeholder=True)
 
     @property
     def uid(self):
