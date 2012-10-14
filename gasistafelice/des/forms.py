@@ -131,10 +131,17 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         user.save()
         
         #2-Create base objects
-        place, created = Place.objects.get_or_create(
-            city=self.cleaned_data['city'],
-            address='', name=''
-        )
+        try:
+            place, created = Place.objects.get_or_create(
+                city=self.cleaned_data['city'],
+                address='', name=''
+            )
+        except Place.MultipleObjectsReturned as e:
+            places = Place.objects.filter(city=self.cleaned_data['city'], address='', name='')
+            place = places[0]
+            log.warning("Multiple places found: %s id = %s" % (
+                place, map(lambda x : x.pk, places))
+            )
 
         try:
             contact_email, created = \
