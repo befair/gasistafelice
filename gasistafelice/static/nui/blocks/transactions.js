@@ -31,7 +31,7 @@ jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
                 'sPaginationType': 'full_numbers',
                 'bLengthChange': true,
                 "iDisplayLength": 50,
-                "aaSorting": [[1,'desc']],
+                "aaSorting": [[2,'desc']],
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),

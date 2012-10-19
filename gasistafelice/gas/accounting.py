@@ -120,6 +120,11 @@ class GasAccountingProxy(AccountingProxy):
         #computed_amount, existing_txs = self.get_amount_by_gas_member(member, order)
         #log.debug("ACCOUNTING %(computed_amount)s %(existing_txs)s" % {'computed_amount': computed_amount, 'existing_txs': existing_txs})
 
+        if date == None:
+          if order.delivery:
+              if order.delivery.date:
+                  date = order.delivery.date
+
         gas = self.subject.instance
         if member.gas != gas:
             raise MalformedTransaction(ugettext("A GAS can withdraw only from its members' accounts"))

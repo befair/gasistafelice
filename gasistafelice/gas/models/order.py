@@ -243,9 +243,14 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     @property
     def common_name(self):
-        cn = ugettext("Ord. %(order_num)s %(pact)s") % {
+        date_delivery = ''
+        if self.delivery:
+            if self.delivery.date:
+                date_delivery = ugettext(" del %(date_delivery)s") % { 'date_delivery': medium_date(self.delivery.date) }
+        cn = ugettext("Ord. %(order_num)s %(pact)s %(date)s") % {
             'order_num' : self.pk,
             'pact' : self.pact,
+            'date' : date_delivery,
         }
         return cn
 

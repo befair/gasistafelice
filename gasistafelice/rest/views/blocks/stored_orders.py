@@ -23,8 +23,7 @@ class Block(BlockSSDataTables):
         3: 'gassupplierorder__order__pact__supplier__name',
         4: 'gassupplierorder__order__pact__gas',
         5: '',
-        6: '',
-        7: ''
+        6: ''
     }
 
 #KO: Cannot resolve keyword 'order' into field. Choices are: datetime_end, datetime_start, delivery, delivery_cost, delivery_referrer_person, gasstock_set, gassupplierorder, group_id, historicalgassupplierorder, historicalorderable_product_

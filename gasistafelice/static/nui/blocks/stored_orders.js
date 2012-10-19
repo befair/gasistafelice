@@ -21,8 +21,13 @@ jQuery.UIBlockOrdersStoredList = jQuery.UIBlockWithList.extend({
 //        6: 'tot_curtail',
 //        7: 'Payment'
 
+//    <th>{% trans "Amount" %}</th>
+//        "{{gso.tot_amount|escapejs|floatformat:2}}",
+//                    {"bSearchable":true,"bSortable":true,"sWidth":"1%", "sType": "currency", "sClass": "taright" },
+//        var iUrn = 8;
+
 //TODO Payment urn
-        var iUrn = 8;
+        var iUrn = 7;
         var oTable = this.block_el.find('.dataTable').dataTable({
                 'sPaginationType': 'full_numbers', 
                 "bServerSide": true,
@@ -31,7 +36,6 @@ jQuery.UIBlockOrdersStoredList = jQuery.UIBlockWithList.extend({
                 "aoColumns": [
                     {"bSearchable":true,"bSortable":true,"sWidth":"5%","bVisible": true},
                     {"bSearchable":true,"bSortable":true,"sWidth":"44%","bVisible": true},
-                    {"bSearchable":true,"bSortable":true,"sWidth":"1%", "sType": "currency", "sClass": "taright" },
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%"},
                     {"bSearchable":true,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass":"taright"},
                     {"bSearchable":false,"bSortable":true,"sWidth":"10%", "sType": "currency", "sClass":"taright"},
