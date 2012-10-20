@@ -24,10 +24,17 @@ class BaseRoleForm(forms.ModelForm):
         pk = kw['data'].get("%s-id" % kw['prefix'])
         if pk:
             kw['instance'] = PrincipalParamRoleRelation.objects.get(pk=pk)
-        
+
         super(BaseRoleForm, self).__init__(*args, **kw)
 
-        self.fields['role'].queryset = request.resource.roles
+        if self['id'].value() and self['role'].value() != '':
+            self.fields['role'].queryset = request.resource.roles.filter(pk=self['role'].value())
+        else:
+            self.fields['role'].queryset = request.resource.roles
+
+#        if self['id'].value() and self['person'].value() != '':
+#            self.fields['person'].queryset = self.fields['person'].queryset.filter(pk=self['person'].value())
+
         if not self['id'].value():
             self.fields['delete'].widget=forms.HiddenInput()
 
@@ -40,15 +47,22 @@ class BaseRoleForm(forms.ModelForm):
 
             self.instance.delete()
         else:
-            self.instance.user = self.cleaned_data['person'].user
 
-            self.instance.user.is_active = True
-            # HACK TODO AFTER 4th nov.
-            if self.cleaned_data['role'].role.name == GAS_REFERRER_TECH:
-                self.instance.user.is_staff = True
-            self.instance.user.save()
+            if self.cleaned_data.get('id') == '' \
+                and self.cleaned_data['person'] != '' \
+                and self.cleaned_data['role'] != '':
 
-            super(BaseRoleForm, self).save()
+                self.instance.user = self.cleaned_data['person'].user
+
+                #COMMENT domthu: No
+                self.instance.user.is_active = True
+
+                # HACK TODO AFTER 4th nov.
+                if self.cleaned_data['role'].role.name == GAS_REFERRER_TECH:
+                    self.instance.user.is_staff = True
+                self.instance.user.save()
+
+                super(BaseRoleForm, self).save()
 
     class Meta:
 

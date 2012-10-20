@@ -28,11 +28,19 @@ class GASRoleForm(BaseRoleForm):
 
         super(GASRoleForm, self).__init__(request, *args, **kw)
         self._gas = request.resource.gas
-        self.fields['person'].queryset = \
-            self._gas.persons.filter(user__isnull=False)
 
-        # GAS Members roles are to be excluded from this management
-        self.fields['role'].queryset = self.fields['role'].queryset.exclude(role__name=GAS_MEMBER)
+        if self['id'].value() and self['role'].value() != '':
+            self.fields['role'].queryset = request.resource.roles.filter(pk=self['role'].value())
+        #Bug when we confirm page (POST) setting Role but not person --> error message appear but person is all DES?
+        else:
+            # GAS Members roles are to be excluded from this management
+            self.fields['role'].queryset = self.fields['role'].queryset.exclude(role__name=GAS_MEMBER)
+
+        if self['id'].value() and self['person'].value() != '':
+            self.fields['person'].queryset = self.fields['person'].queryset.filter(pk=self['person'].value())
+        else:
+            self.fields['person'].queryset = self._gas.persons.filter(user__isnull=False)
+
 
 #--------------------GAS member-----------------------------------------------------------
 
