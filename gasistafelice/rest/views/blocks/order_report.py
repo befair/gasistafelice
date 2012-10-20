@@ -84,8 +84,9 @@ class Block(BlockSSDataTables):
 #            ]
 
         #TODO fero: permission GET_ORDER_DOC
+        #or request.user in order.gas.supplier_referrers \
         if request.user == order.referrer_person.user \
-            or request.user in order.gas.supplier_referrers \
+            or request.user in order.pact.referrers \
             or request.user in order.supplier.referrers \
             or request.user.is_superuser:
 
@@ -108,9 +109,9 @@ class Block(BlockSSDataTables):
                         )
                     ]
 
-
-
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)) \
+            and (order.is_closed() or order.is_unpaid()) \
+            and request.user in order.pact.referrers:
             user_actions += [
                 ResourceBlockAction(
                     block_name = self.BLOCK_NAME,

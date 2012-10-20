@@ -112,7 +112,7 @@ class GASAddPactForm(GASBasePactForm):
             'fields' : (
                 'supplier', 'document', 'date_signed',  
                 ('order_minimum_amount', 'order_delivery_cost'),
-                'order_deliver_interval',        
+                'order_deliver_interval',
                 'pact_referrers', 'send_email_on_order_close'
         )})]
 
@@ -160,7 +160,8 @@ class Supplier_PactForm(BasePactForm):
             'fields' : [
                 'gas', 'date_signed', 'document',
                 ('order_minimum_amount', 'order_delivery_cost'),
-                'order_deliver_interval', 'send_email_on_order_close'
+                'order_deliver_interval',
+                'send_email_on_order_close'
         ]})]
     
 #-------------------------------------------------------------------------------

@@ -58,7 +58,8 @@ class Block(BlockSSDataTables):
         order = self.resource.order
 
         if request.user.has_perm(CASH, obj=ObjectWithContext(order.gas)) or \
-            request.user == order.referrer_person.user:
+            request.user == order.referrer_person.user or \
+            request.user in order.pact.referrers:
 
             if order.is_closed() or order.is_unpaid():
 
