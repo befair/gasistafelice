@@ -110,7 +110,7 @@ class Block(BlockSSDataTables):
         #WAS: return gasmembers.sort(key=lambda x: x.person__surname, reverse=True)
         #WAS: 'set' object has no attribute 'sort'
         #return sorted(gasmembers, key=lambda x: x.person__surname, reverse=True)
-        #'GASMember_Deferred_gas_id_id_in_gas_is_suspended4a' object has no attribute 'person__surname'
+        #'GASMember_Deferred_gas_id_id_in_gas_is_suspended' object has no attribute 'person__surname'
         #return sorted(gasmembers, key=lambda x: x, reverse=True)
         #return sorted(gasmembers, key=lambda x: x)
         return gasmembers

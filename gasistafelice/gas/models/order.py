@@ -305,12 +305,25 @@ class GASSupplierOrder(models.Model, PermissionResource):
                 self.pk, transition.name
             ))
             self.set_default_gasstock_set()
+        #if self.is_closed():
+        #Archive? Cancel
         signals.order_state_update.send(sender=self, transition=transition)
 
     def open_if_needed(self, sendemail=False, issuer=None):
         """Check datetime_start and open order if needed."""
         if self.gas.config.is_suspended:
             log.debug("open_if_needed: GAS(%s) suspended" % (self.gas))
+            #Archive? Cancel? (Allowed transition)
+            # Act as superuser
+            user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
+            t_name = TRANSITION_CANCEL
+            t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+
+            if t in get_allowed_transitions(self, user):
+                log.debug("Do %s transition. GAS is suspended when opening orded %s" % (t, order))
+
+                self.do_transition(t, user)
+
             return
             
         if self.datetime_start <= datetime.now():
@@ -337,6 +350,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             
         return absolute_url 
 
+    #COMMENT domthu: This method is not call from manual workflow state 
     def close(self, force_email=False, issuer=None):
         """Close an order."""
 
@@ -344,22 +358,37 @@ class GASSupplierOrder(models.Model, PermissionResource):
         # COMMENT fero: IMHO this should raise ClosingOrderAlreadyClosedException
 
         # Control is not yet in closed state due to InterGAS Order generation
-        # Only in the case taht we operate the InterGAS management 1)
+        # Only in the case that we operate the InterGAS management 1)
         if self.is_closed():
-            log.debug("close_if_needed: GAS(%s) already closed" % (self.gas))
-            return
+            log.debug("close: GAS(%s) already closed" % (self.gas))
+            return False
 
         # Act as superuser
         user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
-        t_name = TRANSITION_CLOSE
-        t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
+        ret = True
+        if self.ordered_products:
+            t_name = TRANSITION_CLOSE
+        else:
+            log.debug("self.ordered_products(%s) [%s/%s/%s]" % (self.ordered_products, self.datetime_start.date(), datetime.now().date() , (self.datetime_start.date() == datetime.now().date())))
+            # If Order is empty but the opening date is today is for creating fake order
+            # so we leave it in close state instead of cancel it. 
+            if self.datetime_start.date() == datetime.now().date():
+                # Fake order is to create new order registration without 
+                t_name = TRANSITION_CLOSE
+            # If Order is empty we cancel it 
+            else:
+                self.invoice_note += ugettext("Cancelled on close (no order): %s" % (self.state_info))
+                self.save()
+                t_name = TRANSITION_CANCEL
+                ret = False
 
+        t = Transition.objects.get(name__iexact=t_name, workflow=self.workflow)
         if t in get_allowed_transitions(self, user):
             self.do_transition(t, user)
-            return True
+            return ret
         else:
             return False
-                    
+
     def close_if_needed(self, force_email=False, issuer=None):
         """Check for datetime_end and close order if needed. if GAS is running"""
         if self.gas.config.is_suspended:
