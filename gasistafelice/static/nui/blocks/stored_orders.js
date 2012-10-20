@@ -51,6 +51,10 @@ jQuery.UIBlockOrdersStoredList = jQuery.UIBlockWithList.extend({
                             res = new jQuery.Resource(url, _name);
                             $(nRow.cells[1]).html( res.render() );
                         }
+                        var iscanceled = aaData[iUrn + 2];
+                        if ((iscanceled !== undefined) && (iscanceled == 'True')) {
+                            nRow.className = 'canceled';
+                        }
                     }
                     catch(e){alert(e.message);
                     }

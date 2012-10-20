@@ -203,3 +203,4 @@
 .alert{color:red!important; background-color:#EAF5E2!important;}
 .dataTable tr td{vertical-align:middle;}
 th.taright{text-align:left;}
+.canceled{background-color: #FFFFDD; color:red;}
