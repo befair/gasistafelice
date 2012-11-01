@@ -2045,3 +2045,35 @@ class Withdrawal(Appointment, PermissionResource):
         return user in allowed_users
             
     #---------------------------------------------------#
+
+class GASMemberOrderPlaned(models.Model):
+    """An order automaticaly issued by a GASMember when opening a order for a GAS to a Supplier.
+
+    """
+
+    #Gas member
+    purchaser = models.ForeignKey(GASMember, related_name="gasmember_planed_set", null=False, blank=False,verbose_name=_('purchaser'))
+    #product that will be automatically added to a opening order
+    gasstock = models.ForeignKey(GASSupplierStock, related_name="product_planed_set",verbose_name=_('gas stock'))
+    # how many Product units (number of click) will be ordered by the GAS member
+    planed_amount = PrettyDecimalField(null=False, blank=False, verbose_name = _('order amount'),
+                        max_digits=6, decimal_places=2
+    )
+    # planed order is deactivated
+    is_suspended = models.BooleanField(verbose_name=_('is suspended'),
+        default=False, db_index=True, help_text=_("GAS member order planed is not active now")
+    )
+
+    class Meta:
+        app_label = 'gas'
+        verbose_name = _('planed order')
+        verbose_name_plural = _('planed orders')
+    
+    def __unicode__(self):
+        return u"%(gasmember)s for %(pact)s: planed %(quantity)s of %(product)s" % {
+                    'gasmember':self.purchaser, 
+                    'pact':self.gasstock.pact, 
+                    'quantity': self.planed_amount, 
+                    'product' : self.gasstock,
+        }
+
