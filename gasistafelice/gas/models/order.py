@@ -563,10 +563,22 @@ class GASSupplierOrder(models.Model, PermissionResource):
         gasstocks = GASSupplierStock.objects.filter(pact=self.pact, enabled=True)
         for s in gasstocks:
             #maybe works the more intuitive...self.orderable_product_set.add( ???
-            GASSupplierOrderProduct.objects.create(order=self, 
+            screated = GASSupplierOrderProduct.objects.create(order=self, 
                 gasstock=s, initial_price=s.price, order_price=s.price, 
                 delivered_price=s.price
             )
+            
+            #Add  GASMemberOrderPlaned base on this gasstock. Gasstock is yet defining pact and associated gas's members
+            planedorders = GASMemberOrderPlaned.objects.filter(gasstock=s, is_suspended=False)
+            for o in planedorders:
+                GASMemberOrder.objects.create(
+                    purchaser=o.purchaser, 
+                    ordered_product=screated, 
+                    ordered_amount=o.planed_amount, 
+                    ordered_price=s.price, 
+                    note="[PLANED]"
+                )
+            #is_confirmed done in save
 
     #--------------------------------------------------------------------------------
 
