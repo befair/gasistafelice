@@ -571,14 +571,15 @@ class GASSupplierOrder(models.Model, PermissionResource):
             #Add  GASMemberOrderPlaned base on this gasstock. Gasstock is yet defining pact and associated gas's members
             planedorders = GASMemberOrderPlaned.objects.filter(gasstock=s, is_suspended=False)
             for o in planedorders:
-                GASMemberOrder.objects.create(
-                    purchaser=o.purchaser, 
-                    ordered_product=screated, 
-                    ordered_amount=o.planed_amount, 
-                    ordered_price=s.price, 
-                    note="[PLANED]"
-                )
-            #is_confirmed done in save
+                if not o.purchaser.is_suspended:
+                    GASMemberOrder.objects.create(
+                        purchaser=o.purchaser, 
+                        ordered_product=screated, 
+                        ordered_amount=o.planed_amount, 
+                        ordered_price=s.price, 
+                        note="[PLANED]"
+                    )
+                    #is_confirmed done in save
 
     #--------------------------------------------------------------------------------
 
