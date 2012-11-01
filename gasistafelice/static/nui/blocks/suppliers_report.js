@@ -31,8 +31,9 @@ jQuery.UIBlockSupplierReport = jQuery.UIBlockWithList.extend({
 //        8: 'balance',
 //        9: 'certifications_list'
 
+//'sPaginationType': 'full_numbers', 
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'sPaginationType': 'full_numbers', 
+                'bPaginate': false,
                 "bServerSide": true,
                 "bStateSave": true,
                 "sAjaxSource": this.get_data_source(),

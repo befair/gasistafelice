@@ -47,19 +47,17 @@ class Block(BlockSSDataTables):
         3: 'city',
         4: 'mail',
         5: 'phone',
-        6: '',
-        7: '',
-        8: '',
-        9: ''
+        6: 'description',
+        7: 'frontman__name',
+        8: 'frontman__name',
+        9: 'frontman__name'
     }
-
+#Choices are: agent_set, certifications, config, contact_set, description, flavour, frontman, gas, historicalpact_set, historicalproduced_product_set, historicalstock_set, historicalsupplieragent, iban, id, logo, n_employers, name, pact_set, produced_product_set, seat, ssn, stock_set, supplieragent, supplierconfig, supplierproductcategory, vat_number, website
 #        6: 'tot_stocks',
 #        7: 'tot_pacts',
 #        8: 'balance',
 #        9: 'certifications_list'
 #        10: 'enabled'
-
-
 
     def _get_user_actions(self, request):
   

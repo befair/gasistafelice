@@ -10,8 +10,9 @@ jQuery.UIBlockStockList = jQuery.UIBlockWithList.extend({
 
         var block_obj = this;
         // Init dataTables
+        //'sPaginationType': 'full_numbers',
         var oTable = this.block_el.find('.dataTable').dataTable({
-                'sPaginationType': 'full_numbers', 
+                'bPaginate': false,
                 'bLengthChange': true,
                 "iDisplayLength": 50,
                 "bServerSide": true,
