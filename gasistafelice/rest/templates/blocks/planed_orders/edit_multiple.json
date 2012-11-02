@@ -1,0 +1,21 @@
+{% extends "blocks/base/edit_multiple.json" %}
+{% load basic_tags %}
+
+{% block table_rows %}
+    {% for ss in records %}
+    [
+
+        "{{ss.id|escapejs}}",
+        "{{ss.supplier|escapejs}}",
+        "{{ss.product|escapejs}}",
+        "{{ss.ordered_amount|escapejs}}",
+        "{{ss.availability|escapejs}}",
+
+    ]
+    {% if not forloop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+
+{% endblock %}
+

@@ -292,6 +292,10 @@ RESOURCE_PAGE_BLOCKS = {
         'name' : 'accounting',
         'descr' : 'Conto',
         'blocks' : ['balance_gm', 'transactions']
+    },{
+        'name' : 'planed',
+        'descr' : 'Preferiti',
+        'blocks' : ['planed_orders']
     }],
     'supplier' : [{
         'name' : 'products',

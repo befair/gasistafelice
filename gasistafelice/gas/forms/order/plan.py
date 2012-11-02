@@ -9,7 +9,11 @@ from workflows.utils import set_initial_state
 
 from gasistafelice.gas.forms.order.base import AddOrderForm
 from gasistafelice.lib.widgets import DateFormatAwareWidget
-from gasistafelice.gas.models.order import GASSupplierOrder, Delivery
+from gasistafelice.gas.models.order import GASSupplierOrder, Delivery, GASMemberOrderPlaned
+
+from gasistafelice.lib.fields.forms import CurrencyField
+from django.forms.formsets import formset_factory
+from gasistafelice.lib.formsets import BaseFormSetWithRequest
 
 from datetime import timedelta, datetime, date
 import copy, logging
@@ -259,3 +263,160 @@ class AddPlannedOrderForm(AddOrderForm):
             ]
         })]
 
+
+#--------------------GASMember programmed orders-----------------------------------------------------------
+
+class SinglePlanedOrderForm(forms.Form):
+
+    #For editing
+    id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    pk = forms.IntegerField(required=False)
+    planed = forms.CharField(required=True, 
+        widget=forms.TextInput(attrs={'size':'85'}), 
+        max_length=200
+    )
+    price = CurrencyField()
+    is_suspended = forms.BooleanField(required=False)
+
+    def __init__(self, request, *args, **kw):
+        super(SinglePlanedOrderForm, self).__init__(*args, **kw)
+        instance = getattr(self, 'instance', None)
+        self.fields['pk'].widget.attrs['readonly'] = True
+        self.fields['pk'].widget.attrs['disabled'] = 'disabled'
+        self.fields['pk'].widget.attrs['class'] = 'input_small'
+        self.fields['price'].widget.attrs['class'] = 'input_short taright'
+        self.__gasmember = request.resource
+
+    def save(self):
+
+        log.debug("Save SinglePlanedOrderForm")
+        if self.cleaned_data.get('id'):
+            ss = GASMemberOrderPlaned.objects.get(pk=self.cleaned_data['id'])
+            prd = ss.planed
+            log.debug("Save SinglePlanedOrderForm id_ss(%s) id_prd(%s)" % (ss.pk, prd.pk))
+            try:
+                prd.name = self.cleaned_data['planed']
+                prd.save()
+            except Exception, e:
+                raise
+                log.debug("Save SinglePlanedOrderForm error(%s)" %  str(e))
+                Exception("Save SinglePlanedOrderForm error: %s", str(e))
+        else:
+            log.debug("New SinglePlanedOrderForm")
+
+SingleGASMemberPlanedOrderForm = formset_factory(
+    form=SinglePlanedOrderForm, 
+    formset=BaseFormSetWithRequest, 
+    extra=5,
+)
+
+class EditPlanedOrderForm(forms.ModelForm):
+    """Edit form for mixed-in Stock and GASMemberOrderPlaned attributes.
+
+    """
+
+    planed_amount = forms.IntegerField(required=True, initial=20, label=_("VAT percent"))
+    is_suspended = forms.BooleanField(required=False, label=_("Availability"))
+   
+    def __init__(self, request, *args, **kw):
+        super(EditPlanedOrderForm, self).__init__(*args, **kw)
+        self._gasmember = request.resource.gasmember
+        self._gasstock = request.resource.planed
+        self.fields['planed_amount'].initial = int(self._gasstock.planed_amount)
+        self.fields['is_suspended'].initial = bool(request.resource.is_suspended)
+
+        # If Supplier is not the Producer ==>
+        # can't change planed info!
+        if self._gasmember != self._gasstock.producer:
+            for k,v in self.fields.items():
+                 if k.startswith('planed_'):
+                    self.fields[k].widget.attrs['disabled'] = 'disabled'
+
+    def clean(self):
+        cleaned_data = super(EditPlanedOrderForm, self).clean()
+        cleaned_data['supplier'] = self._gasmember
+        cleaned_data['is_suspended'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('is_suspended')]
+        cleaned_data['planed_amount'] = Decimal(cleaned_data['planed_amount'])
+
+        # Update planed with new info
+        for k,v in cleaned_data.items():
+             if k.startswith('planed_'):
+                setattr(self._gasstock, k[len('planed_'):], v)
+
+        cleaned_data['planed'] = self._gasstock
+        log.debug(self.errors)
+
+        return cleaned_data
+
+    def save(self):
+        log.debug("Saving updated planed: %s" % self.instance.__dict__)
+        log.debug("cleaned data = %s" % self.cleaned_data)
+        planed = self.cleaned_data['planed']
+        planed.save()
+        self.instance.planed = planed
+        self.instance.planed_amount = self.cleaned_data['planed_amount']
+        self.instance.save()
+        
+    class Meta:
+        model = GASMemberOrderPlaned
+        exclude = ('supplier', 'planed_amount', 'planed')
+        
+        gf_fieldsets = (
+            (None, {
+                'fields': (
+                    'planed_name',
+                    'planed_description',
+                    ('price', 'planed_amount'),
+                )
+             }),
+             (_("Distribution info"), {
+                'fields' : (
+                    ('units_minimum_amount', 'units_per_box'),
+                    ('detail_minimum_amount', 'detail_step'), 
+                    'is_suspended',
+                )
+             }),
+             (_("Supplier info"), {
+                'fields' : (
+                    ('code', 'supplier_category'),
+                )
+             })
+            )
+class AddPlanedOrderForm(EditPlanedOrderForm):
+    """Add new planed and stock"""
+
+    def __init__(self, request, *args, **kw):
+
+        super(EditPlanedOrderForm, self).__init__(*args, **kw)
+        self._gasmember = request.resource.gasmember
+        self._gasstock = Product()
+        self.fields['planed_name'].widget.attrs['class'] = 'input_medium'
+        self.fields['planed_description'].widget.attrs['class'] = 'input_long'
+        self.fields['planed_amount'].initial = 21
+        self.fields['is_suspended'].initial = True
+
+        self.fields['supplier_category'].queryset = self.fields['supplier_category'].queryset.filter(
+            supplier=self._gasmember
+        )
+
+    def clean(self):
+
+        cleaned_data = super(EditPlanedOrderForm, self).clean()
+        cleaned_data['supplier'] = self._gasmember
+        cleaned_data['planed_amount'] = [0,ALWAYS_AVAILABLE][self.cleaned_data.get('is_suspended')]
+        cleaned_data['planed_amount'] = Decimal(cleaned_data['planed_amount'])/100
+
+        cleaned_data['planed'] = self._gasstock
+        log.debug(self.errors)
+
+        return cleaned_data
+
+    def save(self):
+        log.debug("Saving new planed order:")
+        log.debug("cleaned data = %s" % self.cleaned_data)
+        planed = self.cleaned_data['planed']
+        planed.purchaser = self._gasmember
+        planed.gasstock = self.__gasstock
+        planed.planed_amount = self.cleaned_data['planed_amount']
+        planed.is_suspended = self._gasmember.is_suspended
+        planed.save()

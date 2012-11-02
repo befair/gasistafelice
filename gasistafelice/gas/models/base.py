@@ -1136,10 +1136,18 @@ class GASMember(models.Model, PermissionResource):
 
     @property
     def basket(self):
+        #COMMENT domthu: verify if it is from gasistafelice.gas.models.order import GASMemberOrder
         from gasistafelice.gas.models import GASMemberOrder
         #TODO FIXME AFTER 6: there should be no entry with ordered_amount = 0 in GASMemberOrder table
         return self.gasmember_order_set.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
 
+    @property
+    def planedstocks(self):
+        from gasistafelice.gas.models.order import GASMemberOrderPlaned
+        return self.gasmember_planed_set.filter(purchaser=self)
+        #return GASMemberOrderPlaned.objects.filter(puchaser=self)
+        #SOUTH "Table 'gasdb69.gas_gasmemberorderplaned' doesn't exist"
+        
     @property
     def basket_to_be_delivered(self):
         """GAS member's products ordered of closed orders"""
