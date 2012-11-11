@@ -19,9 +19,9 @@ class Block(BlockSSDataTables):
 
     BLOCK_NAME = "stocks"
     BLOCK_DESCRIPTION = _("Stocks")
-    BLOCK_VALID_RESOURCE_TYPES = ["supplier"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["supplier"]
 
-    COLUMN_INDEX_NAME_MAP = { 
+    COLUMN_INDEX_NAME_MAP = {
         0: 'pk',
         1: 'product__name',
         2: 'product__category__name',
@@ -41,33 +41,34 @@ class Block(BlockSSDataTables):
 
         user_actions = []
 
-        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
+        if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource))  or \
+            request.user in self.resource.supplier_referrers:
             user_actions += [
-                ResourceBlockAction( 
+                ResourceBlockAction(
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=VIEW, verbose_name=_("Show"), 
+                    name=VIEW, verbose_name=_("Show"),
                     popup_form=False,
                     method="get",
                 ),
-                ResourceBlockAction( 
+                ResourceBlockAction(
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=EDIT_MULTIPLE, verbose_name=_("Edit"), 
+                    name=EDIT_MULTIPLE, verbose_name=_("Edit"),
                     popup_form=False,
                     method="get",
                 ),
-                ResourceBlockAction( 
+                ResourceBlockAction(
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name=CREATE, verbose_name=_("Add"), 
+                    name=CREATE, verbose_name=_("Add"),
                     popup_form=True,
                     method="get",
                 ),
             ]
 
         return user_actions
-        
+
     def _get_resource_list(self, request):
         # SupplierStock list
         return request.resource.stocks
@@ -82,7 +83,7 @@ class Block(BlockSSDataTables):
 
         data = {}
         i = 0
-        
+
         for i,el in enumerate(querySet):
             key_prefix = 'form-%d' % i
             data.update({
@@ -129,4 +130,3 @@ class Block(BlockSSDataTables):
 
     def _get_edit_multiple_form_class(self):
         return SingleSupplierStockFormSet
-
