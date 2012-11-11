@@ -11,13 +11,13 @@ Install development version - 2nd february 2012
 
   * Django >= 1.3.1
 
-  Create locale for your sytem 
+  Create locale for your sytem
   * sudo locale-gen it_IT.UTF-8
 
   We suggest you to make a local deploy in virtualenv, not a big virtual machine!
   but a virtual python environment in order to keep your system clean.
 
-  Search for virtualenvwrapper 
+  Search for virtualenvwrapper
 
 1. Clone project GASISTA FELICE from GitHub repository
 
@@ -27,6 +27,8 @@ Install development version - 2nd february 2012
 
   * git submodule update --init
   * pip install -r requirements.txt
+  * cd submodules/django-simple_accounting && python setup.py install
+  * cd submodules/django-flexi_auth && python setup.py install
 
 3. Set your local settings
 
@@ -39,11 +41,11 @@ Install development version - 2nd february 2012
   DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gasdb',           
-        'USER': 'utente',         
-        'PASSWORD': 'xxxx',      
-        'HOST': '',             
-        'PORT': '',            
+        'NAME': 'gasdb',
+        'USER': 'utente',
+        'PASSWORD': 'xxxx',
+        'HOST': '',
+        'PORT': '',
     }
   }
 
@@ -73,14 +75,14 @@ Install development version - 2nd february 2012
 
   * gasistafelice/gasistafelice$ python manage.py runserver
 
-  From your preferred browser (GF works with Firefox but you can try others...) 
+  From your preferred browser (GF works with Firefox but you can try others...)
   use the follwing links reguardless of your customization:
 
   http://localhost:8000/
 
   you could use also the admin interface to do some tests...:
 
-  http://localhost:8000/admin/  --> Admin interface for Django 
+  http://localhost:8000/admin/  --> Admin interface for Django
 
 
 Use PostgreSQL database
@@ -156,7 +158,7 @@ Validating models...
 5/7 Sincronizzare database
 create your empty database first
 (gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables but SAY NO when asked to create the super user (!)
-(gasdev)/gasistafelice/gasistafelice$ python manage.py init_superuser --> Create DES base object and the super user following settings.py 
+(gasdev)/gasistafelice/gasistafelice$ python manage.py init_superuser --> Create DES base object and the super user following settings.py
 Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
 
 6/7 (optional) Load some data for testing
@@ -165,9 +167,6 @@ Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_da
 7/7 Running
 (gasdev)/gasistafelice/gasistafelice$ python manage.py runserver
 From your preferred browser use the follwing links reguardless of your customizzation:
-http://127.0.0.1:8000/admin/  --> Admin interface for Django 
+http://127.0.0.1:8000/admin/  --> Admin interface for Django
 http://127.0.0.1:8000/gas-admin/   --> Advancded Django admin interface
 http://127.0.0.1:8000/gasistafelice/rest/   --> SANET interface customization for Gassista use
-
-
-
