@@ -999,6 +999,11 @@ WHERE order_id = %s \
         allowed_users = self.referrers | self.gas.tech_referrers | self.pact.referrers   
         return user in allowed_users 
     
+    def can_cash(self, user, context):
+        
+        enabled_users = [self.referrer_person.user] + self.pact.referrers
+        return user in enabled_users
+
     #-----------------------------------------------#
 
     def send_email(self, to, cc=[], more_info='', issued_by=None):
