@@ -39,7 +39,7 @@ class BaseRoleForm(forms.ModelForm):
             self.fields['delete'].widget=forms.HiddenInput()
 
     def save(self):
-
+        print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         if self.cleaned_data.get('delete'):
             # HACK TODO AFTER 4th nov.
             if not self.instance.user.is_superuser:
@@ -48,7 +48,7 @@ class BaseRoleForm(forms.ModelForm):
             self.instance.delete()
         else:
 
-            if self.cleaned_data.get('id') == '' \
+            if (self.cleaned_data.get('id') is None or self.cleaned_data.get('id') == '') \
                 and self.cleaned_data['person'] != '' \
                 and self.cleaned_data['role'] != '':
 
@@ -69,19 +69,19 @@ class BaseRoleForm(forms.ModelForm):
         model = PrincipalParamRoleRelation
         fields = ('role',)
 
-        gf_fieldsets = [(None, { 
+        gf_fieldsets = [(None, {
             'fields' : (
-                'role', 'person',  
+                'role', 'person',
         )})]
 
 #--------------------------------------------------------------------------------
 
 class BasePersonForm(forms.ModelForm):
 
-    address = make_ajax_field(Person, 
+    address = make_ajax_field(Person,
         label = _("address"),
         model_fieldname='address',
-        channel='placechannel', 
+        channel='placechannel',
         help_text=_("Search for place by name, by address, or by city")
     )
     contact_set = MultiContactField(n=3,label=_('Contacts'))
@@ -110,12 +110,12 @@ class BasePersonForm(forms.ModelForm):
             'name', 'surname','display_name', 'contact_set',
             'avatar','website', 'address'
         )
-        gf_fieldsets = [(None, { 
+        gf_fieldsets = [(None, {
             'fields' : (
                 ('name', 'surname'),
-                'display_name', 
+                'display_name',
                 'address', 'contact_set',
-                'avatar','website'),  
+                'avatar','website'),
         })]
 
 class EditPersonForm(BasePersonForm):
@@ -123,4 +123,3 @@ class EditPersonForm(BasePersonForm):
 
 class AddPersonForm(BasePersonForm):
     pass
-
