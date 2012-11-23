@@ -22,6 +22,8 @@ from registration.models import RegistrationProfile
 import logging
 log = logging.getLogger(__name__)
 
+from gasistafelice.des.models import Siteattr
+
 class DESRegistrationForm(RegistrationFormUniqueEmail):
 
     REGISTRATION_TOKEN_PREFIX = "registration-token:"
@@ -116,10 +118,12 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 #        user.save()
 
         # 1-Create inactive user (to be confirmed by email)
+        des = Siteattr.get_site()
         new_user = RegistrationProfile.objects.create_inactive_user(
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
+            site=des,
             send_email=send_email,
         )
         self.profile_callback(new_user)
