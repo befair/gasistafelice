@@ -14,7 +14,7 @@ pysqlite>=1.0.1
 -e git+https://github.com/seldon/django-flexi-auth.git#egg=django-flexi-auth
 #file:../gasistafelice/submodules/django-notification
 django-notification #FS
-django-registration
+django-registration >0.8
 django-simple-captcha
 PIL
 django-ajax-selects

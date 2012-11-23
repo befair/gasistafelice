@@ -33,7 +33,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
         help_text=_("after your registration you have to wait for account activation by a GAS tech referrer")
     )
 
-    # If the registration token is specified -> a special Comment is added to GASMember 
+    # If the registration token is specified -> a special Comment is added to GASMember
     gas_registration_token = forms.CharField(required=False,
         label="Parola segreta del GAS per l'abilitazione automatica",
         help_text="ogni GAS può definire una parola segreta per l'abilitazione. Se conosci questa parola vuol dire che sei entrato in contatto con il GAS. Perciò dopo che avrai verificato il tuo indirizzo email, potrai subito ordinare, senza attendere l'abilitazione del referente informatico"
@@ -56,7 +56,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
     )
     motivation = forms.CharField(label='Motivazione', required=False, widget=forms.Textarea,
         help_text="Alcune righe per conoscerti e/o sapere come ai conosciuto il GAS")
-    recaptcha = CaptchaField(label="Inserisci le lettere che leggi " + 
+    recaptcha = CaptchaField(label="Inserisci le lettere che leggi " +
         "per farci capire che non sei un programma automatico*"
     )
 
@@ -67,7 +67,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 
     def clean(self):
         cleaned_data = super(DESRegistrationForm, self).clean()
-        if not ( 
+        if not (
             self.cleaned_data.get('gas_choice') or
             self.cleaned_data.get('supplier_choice')
         ):
@@ -120,16 +120,16 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             username=self.cleaned_data['username'],
             password=self.cleaned_data['password1'],
             email=self.cleaned_data['email'],
-            profile_callback=self.profile_callback,
             send_email=send_email,
         )
+        self.profile_callback(new_user)
 
     def profile_callback(self, user):
 
         user.first_name = self.cleaned_data['name']
         user.last_name = self.cleaned_data['surname']
         user.save()
-        
+
         #2-Create base objects
         try:
             place, created = Place.objects.get_or_create(
@@ -162,9 +162,9 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             log.warning("Multiple contact found: %s id = %s" % (
                 contact_phone, map(lambda x : x.pk, contacts))
             )
-        
+
         #3-Create person
-        # COMMENT matteo: even if there are already one (or more) persons with the same values (name, 
+        # COMMENT matteo: even if there are already one (or more) persons with the same values (name,
         # username, place) it is not a problem, the data will be normalized after.
 
         person = Person(
@@ -193,7 +193,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
                 token_comment_text = "%s%s" % (DESRegistrationForm.REGISTRATION_TOKEN_PREFIX, given_token)
                 Comment.objects.create(
                             site = DjangoSite.objects.all()[0],
-                            content_object=gm, 
+                            content_object=gm,
                             comment=token_comment_text
                 )
             #Send email for GAS_REFERRER_TECH
@@ -227,17 +227,17 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
             ppr = PrincipalParamRoleRelation.objects.create(user=user, role=pr)
             ppr.save()
 
-        
+
 
 class DESStaffRegistrationForm(DESRegistrationForm):
-        
+
     @transaction.commit_on_success
     def save(self, send_email=False):
         """Save and confirm the new user.
 
         Start the registration process after a new user completed the registration form.
 
-        Crate user like in the superclass 
+        Crate user like in the superclass
         and then enable him
         """
 
@@ -250,4 +250,3 @@ class DESStaffRegistrationForm(DESRegistrationForm):
         profile = user.registrationprofile_set.all()[0]
         profile.activation_key = profile.ACTIVATED
         profile.save()
-
