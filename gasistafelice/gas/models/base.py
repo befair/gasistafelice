@@ -349,6 +349,10 @@ class GAS(models.Model, PermissionResource):
         |                +--- recharges [I]
         |                +--- fees [I]
         |                +--- TODO: OutOfDES
+        |                +--- suppliers [P, E] +
+        |                        +--- <UID supplier #1>  [E]
+        |                        | ..
+        |                        +--- <UID supplier #n>  [E]
         """
 
         self.subject.init_accounting_system()
@@ -377,6 +381,9 @@ class GAS(models.Model, PermissionResource):
         self.accounting.create_account(parent_path='/incomes', name='recharges', kind=account_type.income)
         # membership fees
         self.accounting.create_account(parent_path='/incomes', name='fees', kind=account_type.income)
+        # a placeholder for organizing transactions representing income from suppliers
+        #UGLY (fixme with batch) this was not present in atabase for yet existing resource
+        self.accounting.create_account(parent_path='/incomes', name='suppliers', kind=account_type.income, is_placeholder=True)
 
     #-- Resource API --#
 
@@ -1819,6 +1826,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 #        gas_system.add_account(parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense)
 #        gas_system.add_account(parent_path='/incomes/suppliers', name=self.supplier.uid, kind=account_type.income)
         self.gas.accounting.create_account(parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense)
+        #UGLY (fixme with batch) because during creating GAS incomes/suppliers placeholder was not created
+        self.gas.accounting.create_account(parent_path='/incomes', name='suppliers', kind=account_type.income, is_placeholder=True)
         self.gas.accounting.create_account(parent_path='/incomes/suppliers', name=self.supplier.uid, kind=account_type.income)
 
 #        supplier_system = self.supplier.accounting.system
@@ -1826,12 +1835,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 #        #Account con questo Parent e Name esiste gi\xe
 #        supplier_system.add_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense)
         self.supplier.accounting.create_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
-        #UGLY  fixme with batch because during creating SUPPLIER expenses/gas placeholder was not created
-        try:
-            self.supplier.accounting.create_account(parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True)
-        except:
-            #Already exist
-            log.debug("PACT setup_accounting Already exist: /expenses/gas for pact %s " % self)
+        #UGLY (fixme with batch) because during creating SUPPLIER expenses/gas placeholder was not created
+        self.supplier.accounting.create_account(parent_path='/expenses', name='gas', kind=account_type.expense)
         self.supplier.accounting.create_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense)
 
     #Creating Solidal pact: generate list of product. enable products according to gas configuration

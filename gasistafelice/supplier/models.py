@@ -107,7 +107,7 @@ class Supplier(models.Model, PermissionResource):
         |                        +--- <UID gas #n>  [P, I]
         |                +--- TODO: Other (Bonus? Subvention? Investment?)
         +----------- expenses [P,E]+
-        |                +--- TODO: Other (Correction?, Donation?, )
+        |                +--- TODO: Other (Correction?, Donation?, ) from subject? (gas)
         |                +--- gas [P, I] +
         |                        +--- <UID gas #1>  [P, I]
         |                        | ..
@@ -123,6 +123,7 @@ class Supplier(models.Model, PermissionResource):
 
         self.accounting.create_account(parent_path='/', name='wallet', kind=account_type.asset)
         self.accounting.create_account(parent_path='/incomes', name='gas', kind=account_type.income, is_placeholder=True)
+        #UGLY (fixme with batch) not present in already existing ressources (fixture or after created before this release 0.9)
         self.accounting.create_account(parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True)
 
     @property
