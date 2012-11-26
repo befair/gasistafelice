@@ -1826,6 +1826,12 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 #        #Account con questo Parent e Name esiste gi\xe
 #        supplier_system.add_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense)
         self.supplier.accounting.create_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
+        #UGLY  fixme with batch because during creating SUPPLIER expenses/gas placeholder was not created
+        try:
+            self.supplier.accounting.create_account(parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True)
+        except:
+            #Already exist
+            log.debug("PACT setup_accounting Already exist: /expenses/gas for pact %s " % self)
         self.supplier.accounting.create_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense)
 
     #Creating Solidal pact: generate list of product. enable products according to gas configuration
