@@ -3,6 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from notification import models as notification
         
@@ -160,11 +161,13 @@ def notify_order_state_update(sender, **kwargs):
 
 #-------------------------------------------------------------------------------
 
-gas_signals.order_state_update.connect(notify_order_state_update)
-gas_signals.gmo_price_update.connect(notify_gmo_price_update)
-gas_signals.gmo_product_erased.connect(notify_gmo_product_erased)
-gas_signals.gasstock_product_enabled.connect(notify_gasstock_product_enabled)
-gas_signals.gasstock_product_disabled.connect(notify_gasstock_product_disabled)
+if settings.ENABLE_NOTICES:
+
+    gas_signals.order_state_update.connect(notify_order_state_update)
+    gas_signals.gmo_price_update.connect(notify_gmo_price_update)
+    gas_signals.gmo_product_erased.connect(notify_gmo_product_erased)
+    gas_signals.gasstock_product_enabled.connect(notify_gasstock_product_enabled)
+    gas_signals.gasstock_product_disabled.connect(notify_gasstock_product_disabled)
 
 def create_notice_types(app, created_models, verbosity, **kwargs):
     """Define notice types and default 'spam_sensitivity'.

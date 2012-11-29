@@ -10,7 +10,8 @@ FORM_DEBUG = False
 EMAIL_DEBUG = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
-PROFILING=False
+ENABLE_PROFILING=False
+ENABLE_NOTICES=False
 
 ACCOUNT_ACTIVATION_DAYS = 2
 
@@ -162,8 +163,8 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
 )
 
-LOG_FILE = os.path.join(PROJECT_ROOT, 'gf.log')
-LOG_FILE_DEBUG = os.path.join(PROJECT_ROOT, 'gf_debug.log')
+LOG_FILE = os.path.join(PROJECT_ROOT, 'log', 'gf.log')
+LOG_FILE_DEBUG = os.path.join(PROJECT_ROOT, 'log', 'gf_debug.log')
 
 LOGGING = {
     'version': 1,
