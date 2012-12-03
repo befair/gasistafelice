@@ -6,6 +6,10 @@ from gasistafelice.consts import *
 from flexi_auth.models import ParamRole
 from gasistafelice.gas.query import AppointmentQuerySet, OrderQuerySet, GASMemberQuerySet
 
+import logging
+
+log = logging.getLogger(__name__)
+
 class GASMemberManager(models.Manager):
     """
     A custom manager class for the `GASMember` model.
@@ -220,16 +224,11 @@ class OrderManager(models.Manager):
         # Max value should be obtained from an integer external to table rows.
         # Then perform atomic operation on get and increment an integer used as reference.
 
-        _group_id = 1
         _maxs = self.all().aggregate(Max('group_id'))
         log.warning("TODO Matteo: DANGER for concurrent requests!")
         log.debug("get_group_id %s " % _maxs)
-        if _maxs:
-            # get the maximum attribute from the first record and add 1 to it
-            _group_id = _maxs['group_id__max']
-            if _group_id:
-                _group_id += 1
-            else:
-                _group_id = 1
-        return _group_id
+
+        # get the maximum attribute from the first record and add 1 to it
+        _group_id = _maxs.get('group_id__max') or 0 
+        return _group_id + 1
 

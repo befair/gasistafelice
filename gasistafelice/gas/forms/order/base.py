@@ -256,7 +256,7 @@ class AddOrderForm(BaseOrderForm):
     )
     email_gas = forms.BooleanField(label=_('Send email to the LIST of the GAS?'), required=False)
 
-#WAS: INTERGAS 0
+    #WAS: INTERGAS 0
 
     def __init__(self, request, *args, **kw):
 
@@ -267,15 +267,14 @@ class AddOrderForm(BaseOrderForm):
 
         pacts = self._pacts
 
-        if pacts.count() > 0:
+        if pacts.count():
 
             one_pact = pacts[0]
             self.fields['pact'].queryset = pacts
             self.fields['pact'].initial = one_pact
 
-#WAS: INTERGAS 1
+            #WAS: INTERGAS 1
 
-            #MODIFICA MATTEO
             if self.fields.get('referrer_person'):
                 self.set_initial_referrer()
 

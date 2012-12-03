@@ -1224,17 +1224,25 @@ WHERE order_id = %s \
             )
         return qs
         
-    def clone(self):
-        """Useful for planning orders."""
+    def clone(self, reuse_delivery=False, reuse_withdrawal=False):
+        """Clone an order. Keeping pact, while binding empty Delivery and Withdrawal.
+
+        Useful for planning orders.
+        """
         #WAS: GetNewOrder
 
         new_obj = copy.copy(self)
+        if not reuse_withdrawal:
+            new_obj.withdrawal = None
+        if not reuse_delivery:
+            new_obj.delivery = None
+
         new_obj.pk = None
         set_initial_state(new_obj)
 
         return new_obj
 
-    def plan(self, n_items, n_frequency):
+    def plan(self, n_items, frequency):
         """Plan the present order. Subtle optimization if InterGAS.
 
         Create n_items GASSupplierOrder with stable `frequecy`.
@@ -1243,7 +1251,8 @@ WHERE order_id = %s \
         so after the "root" GASSupplierOrder is created
         """
 
-#WAS: INTERGAS 2
+        #WAS: INTERGAS 2
+        log.debug("Planning %s for items=%s, frequency=%s" % (self, n_items, frequency))
 
         #Planning new orders
         for num in range(1, n_items+1):  #to iterate between 1 to _repeat_items
@@ -1254,7 +1263,7 @@ WHERE order_id = %s \
             # planning
             plan_obj.root_plan = self 
 
-            r_q = self.n_frequency*num
+            r_q = frequency*num
             if self.delivery and self.delivery.date:
                 r_dd = self.delivery.date
             else:
@@ -1269,20 +1278,21 @@ WHERE order_id = %s \
             if r_dd:
                 r_dd += timedelta(days=r_q)
 
-            if self.delivery:
-                try:
-                    delivery, created = Delivery.objects.get_or_create(
-                        date=r_dd,
-                        place=self.delivery.place
-                    )
-                except Delivery.MultipleObjectsReturned as e:
-                    log.error("Delivery.objects.get_or_create(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
-                        r_dd, self.delivery.place
-                    ))
-                    raise
-                    
-                else:
-                    plan_obj.delivery = delivery
+            #Delivery appointment is None for a cloned order
+
+            try:
+                delivery, created = Delivery.objects.get_or_create(
+                    date=r_dd,
+                    place=self.delivery.place
+                )
+            except Delivery.MultipleObjectsReturned as e:
+                log.error("Delivery.objects.get_or_create(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
+                    r_dd, self.delivery.place
+                ))
+                raise
+                
+            else:
+                plan_obj.delivery = delivery
 
 #WAS: INTERGAS 4
 
@@ -1304,13 +1314,18 @@ WHERE order_id = %s \
 #WAS: INTERGAS 5
             # Slight InterGAS optimization
             # Clone planned objects for related intergas order planning
+            log.debug("InterGAS planned order creation optimization")
             if self.is_intergas:
 
                 for related_intergas_order in self.get_complementary_intergas_orders():
                     intergas_plan_obj = related_intergas_order.clone()
                     intergas_plan_obj.datetime_start = plan_obj.datetime_start
                     intergas_plan_obj.datetime_end = plan_obj.datetime_end
-                    intergas_plan_obj.delivery.date = plan_obj.delivery.date
+                    intergas_plan_obj.delivery, created = Delivery.objects.get_or_create(
+                        date=plan_obj.delivery.date,
+                        place=plan_obj.delivery.place
+                    )
+                    print("XXX A")
                     try:
                         intergas_plan_obj.save()
                         log.debug("Related InterGAS planned order: %s " % intergas_plan_obj)
@@ -1320,6 +1335,7 @@ WHERE order_id = %s \
                             intergas_plan_obj.datetime_end, intergas_plan_obj.delivery.date
                         ))
                         raise
+            log.debug("CIAO XXX InterGAS planned order creation optimization")
 
 
     
@@ -1327,7 +1343,7 @@ WHERE order_id = %s \
 
         # Delete - Clean all previous planification
         planned_orders = self.get_planned_orders()
-        log.debug("repeat previous_planned_orders: %s" % planned_orders)
+        log.debug("delete planned_orders: %s" % planned_orders)
         for order in planned_orders:
 
             #delete only prepared orders
@@ -1996,9 +2012,6 @@ class Withdrawal(Appointment, PermissionResource):
         help_text=_("where the order will be withdrawn by GAS members")
     )
 
-    #TODO FIXME AFTER 6th of september: 
-    # * date should be Date field
-    # * start_time and end_time (with no defaults) must be managed in forms
     date = models.DateTimeField(
         help_text=_("when the order will be withdrawn by GAS members")
     )

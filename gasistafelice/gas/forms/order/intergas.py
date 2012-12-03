@@ -1,4 +1,6 @@
 
+from django.db import transaction
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
 
 from gasistafelice.gas.forms.order.plan import AddPlannedOrderForm
@@ -6,16 +8,22 @@ from gasistafelice.gas.forms.order.base import AddOrderForm
 
 from gasistafelice.gas.models import GAS, GASSupplierOrder
 
+import logging
+
+log = logging.getLogger(__name__)
 
 #--------------------------------------------------------------------------------
 
 class AddInterGASOrderForm(AddOrderForm):
-    """Form to manage InterGAS orders."""
+    """Form to manage InterGAS orders.
+
+    This works only for context resources GAS and Pact
+    """
 
     #WAS: INTERGAS 0
-    intergas = forms.BooleanField(label=_('Is this order InterGAS?'), required=False)
+    intergas = forms.BooleanField(label=_('Is this an InterGAS order?'), required=False)
     intergas_grd = forms.ModelMultipleChoiceField(
-        label=_('gas'), choices=GAS.objects.none(), 
+        label=_('InterGAS order with'), queryset=GAS.objects.none(), 
         required=False, 
         widget=forms.CheckboxSelectMultiple
     )
@@ -25,14 +33,20 @@ class AddInterGASOrderForm(AddOrderForm):
 
         super(AddInterGASOrderForm, self).__init__(*args, **kw)
 
-        if pacts.count() == 1:
-            #log.debug("AddOrderForm only one pact %s" % pacts)
-            gas_qs = pacts[0].supplier.gas_list
-        else:
-            gas_qs = GAS.objects.all()
+        pacts_count = self._pacts.count()
+        self._gas = self._pacts[0].gas
 
-        gas_choices = gas_qs #WAS: gas_qs.values_list('pk','name')
-        self.fields['intergas_grd'].choices = gas_choices
+        # Check needed because exception will be shown just by the end of the execution
+        # of the __init__
+        if pacts_count:
+        
+            intergas_gas_qs = self._gas.config.intergas_connection_set.all()
+            if pacts_count == 1:
+
+                #log.debug("AddOrderForm only one pact %s" % pacts)
+                intergas_gas_qs = intergas_gas_qs & self._pacts[0].supplier.gas_list
+
+        self.fields['intergas_grd'].queryset = intergas_gas_qs
 
     def clean(self):
         """InterGAS clean() checks for selected GAS and set _involved_extra_pacts attributes."""
@@ -41,17 +55,17 @@ class AddInterGASOrderForm(AddOrderForm):
 
         cleaned_data = super(AddInterGASOrderForm, self).clean()
         self._involved_extra_pacts = set()
-
         self._intergas_requested = cleaned_data.get('intergas')
         _involved_gas_list = cleaned_data.get('intergas_grd',[]) 
+        supplier = cleaned_data['pact'].supplier
 
         for gas in _involved_gas_list:
-            if gas != self.instance.gas:
+            if gas != self._gas:
                 log.debug("AddOrderForm intergas finding another PACT for GAS %s..." % gas)
 
                 #retrieve the existing pact for this gas for this supplier. If exist.
-                #TODO: Matteo form tainted -> we should raise specific exception
-                extra_pact = gas.pacts.get(supplier=self.instance.supplier)
+                #TODO: Matteo: if not exists -> POST forged -> we should raise specific exception
+                extra_pact = gas.pacts.get(supplier=supplier)
                 log.debug("Pact %s found." % extra_pact)
                 self._involved_extra_pacts.add(extra_pact)
             
@@ -59,6 +73,7 @@ class AddInterGASOrderForm(AddOrderForm):
             log.debug("Not valid InterGAS order: at least 2 GAS needed")
             raise form.ValidationError("Not valid InterGAS order: at least 2 GAS needed")
 
+        return cleaned_data
 
     def create_order_for_another_pact(self, other_pact):
         """This relates to InterGAS."""
@@ -70,14 +85,15 @@ class AddInterGASOrderForm(AddOrderForm):
 
         # retrieve the first referrer_person
         refs = other_pact.referrers_people
-        if refs.count():
+        if len(refs):
+            log.debug("refs %s found for pact %s" % (refs, other_pact))
             new_obj.referrer_person = refs[0]
             new_obj.delivery_referrer_person = new_obj.referrer_person
             new_obj.withdrawal_referrer_person = new_obj.referrer_person
         else:
             #FIXME: 'NoneType' object has no attribute 'user'. Cannot be real. But model permitted
             #Cannot create the order.
-            log.debug("WARNING: no referrers for pact %s" % pact)
+            log.warning("no referrers for pact %s" % other_pact)
 
         #Delivery set to default delivery Place if gas is configured accordingly
         if obj.delivery:
@@ -117,7 +133,7 @@ class AddInterGASOrderForm(AddOrderForm):
         class Meta(AddOrderForm.Meta):
 
             #WAS: INTERGAS 6
-            gf_fieldsets = AddOrderForm.gf_fieldsets
+            gf_fieldsets = AddOrderForm.Meta.gf_fieldsets
             gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
 
 
@@ -133,5 +149,5 @@ class AddInterGASPlannedOrderForm(AddInterGASOrderForm, AddPlannedOrderForm):
 
     class Meta(AddPlannedOrderForm.Meta):
 
-        gf_fieldsets = AddPlannedOrderForm.gf_fieldsets
+        gf_fieldsets = AddPlannedOrderForm.Meta.gf_fieldsets
         gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))

@@ -58,6 +58,7 @@ from gasistafelice.lib.widgets import SplitDateTimeFormatAwareWidget
 
 from gasistafelice.gas.forms.order.base import AddOrderForm, EditOrderForm
 from gasistafelice.gas.forms.order.plan import AddPlannedOrderForm
+from gasistafelice.gas.forms.order.intergas import AddInterGASOrderForm, AddInterGASPlannedOrderForm
 
 from gasistafelice.gas.models import GASSupplierOrder
 import copy

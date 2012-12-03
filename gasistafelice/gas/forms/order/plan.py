@@ -95,6 +95,7 @@ class AddPlannedOrderForm(AddOrderForm):
 
             start_date = cleaned_data['datetime_start'].date()
             min_repeat_until_date = start_date + timedelta(days=_repeat_frequency)
+        
             if _repeat_until_date < min_repeat_until_date:
                 raise forms.ValidationError(ug("To plan an order you must set an end planning date later than start date + frequency"))
 
@@ -108,8 +109,12 @@ class AddPlannedOrderForm(AddOrderForm):
             how_many_days = (_repeat_until_date - start_date).days
             _repeat_items = how_many_days // _repeat_frequency
 
-            log.debug("repeat tmp date: %s days: %s" % (start_date, how_many_days))
-            log.debug("repeat parameters: %s, items: %s" % (_repeat_frequency, _repeat_items))
+            log.debug("plan info: start_date=%s days=%s, repeat_until_date=%s" % (
+                `start_date`, how_many_days, `_repeat_until_date`
+            ))
+            log.debug("plan info2: frequency=%s, items=%s, min_repeat_until_date=%s" % (
+                _repeat_frequency, _repeat_items, `min_repeat_until_date`
+            ))
 
             # Verify params request is consistent
             if not _repeat_frequency or not _repeat_items or _repeat_items < 1:
@@ -136,6 +141,8 @@ class AddPlannedOrderForm(AddOrderForm):
 
     @transaction.commit_on_success
     def save(self):
+
+        log.debug("Entering save order %s" % self.__class__)
 
         super(AddPlannedOrderForm, self).save()
 

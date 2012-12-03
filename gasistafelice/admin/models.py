@@ -172,7 +172,8 @@ class GASConfigAdmin(admin.ModelAdmin):
             'default_delivery_time', 'can_change_delivery_place_on_each_order', 
             'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 
             'default_withdrawal_place','notice_days_before_order_close',
-            'use_order_planning', 'send_email_on_order_close', 'registration_token',
+            'use_order_planning', 'intergas_connection_set',
+            'send_email_on_order_close', 'registration_token',
             'is_suspended'
         ),
     }),

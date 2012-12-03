@@ -34,9 +34,15 @@ class Block(BlockWithList):
         elif t in ["gas", "pact"]:
             gas = self.resource.gas
             if gas.config.use_order_planning:
-                base_class = order_forms.AddPlannedOrderForm
+                if gas.config.intergas_connection_set.all():
+                    base_class = order_forms.AddInterGASPlannedOrderForm
+                else:
+                    base_class = order_forms.AddPlannedOrderForm
             else:
-                base_class = order_forms.AddOrderForm
+                if gas.config.intergas_connection_set.all():
+                    base_class = order_forms.AddInterGASOrderForm
+                else:
+                    base_class = order_forms.AddOrderForm
         else:
             raise ValueError("Invalid block %s for a %s" % (self.BLOCK_NAME, t))
 
