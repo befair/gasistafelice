@@ -5,14 +5,12 @@ from django.utils.translation import ugettext as ug, ugettext_lazy as _
 from django.db import transaction
 from django.contrib.admin import widgets as admin_widgets
 
-from workflows.utils import set_initial_state
-
 from gasistafelice.gas.forms.order.base import AddOrderForm
 from gasistafelice.lib.widgets import DateFormatAwareWidget
 from gasistafelice.gas.models.order import GASSupplierOrder, Delivery
 
 from datetime import timedelta, datetime, date
-import copy, logging
+import logging
 log = logging.getLogger(__name__)
 
 
@@ -126,96 +124,13 @@ class AddPlannedOrderForm(AddOrderForm):
 
         return cleaned_data
 
-    def clone_base_order(self):
-        """WAS GetNewOrder. This relates to planning.
-        
-        ....there will be another for InterGAS.
-        """
-
-        new_obj = copy.copy(self.instance)
-        new_obj.pk = None
-        set_initial_state(new_obj)
-
-        return new_obj
-
     def create_repeated_orders(self):
-        """Create other instances of GASSupplierOrder.
+        return self.instance.plan(self._repeat_items, self._repeat_frequency)
 
-        If `repeat_order` field is True:
-
-            1. delete previous repeated orders with the same root
-            2. create many GASSupplierOrder with frequecy `repeat_frequency`
-               until `repeat_until_date`
-
-        This method must be invoked AFTER self.instance has been set,
-        so after the "root" GASSupplierOrder is created
-            
-        """
-
-#WAS: INTERGAS 2
-
-        #Planning new orders
-        for num in range(1, self._repeat_items+1):  #to iterate between 1 to _repeat_items
-
-            #program order
-            x_obj = self.clone_base_order()
-
-            # planning
-            x_obj.root_plan = self.instance 
-
-            r_q = self._repeat_frequency*num
-            if self.instance.delivery and self.instance.delivery.date:
-                r_dd = self.instance.delivery.date
-            else:
-                r_dd = None
-
-            #TODO: withdrawal appointment
-
-            # Set date for open, close and delivery order
-            x_obj.datetime_start += timedelta(days=r_q)
-            if x_obj.datetime_end:
-                x_obj.datetime_end += timedelta(days=r_q)
-            if r_dd:
-                r_dd += timedelta(days=r_q)
-
-            if self.instance.delivery:
-                try:
-                    delivery, created = Delivery.objects.get_or_create(
-                        date=r_dd,
-                        place=self.instance.delivery.place
-                    )
-                except Delivery.MultipleObjectsReturned as e:
-                    log.error("Delivery.objects.get_or_create(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
-                        r_dd, self.instance.delivery.place
-                    ))
-                    raise
-                    
-                else:
-                    x_obj.delivery = delivery
-
-#WAS: INTERGAS 4
-
-            #create order
-            #COMMENT domthu: Don't understand why .save() not return true?
-            #WAS: if x_obj.save():
-            #COMMENT fero: save() doesn't return True nor False.
-            #COMMENT fero: it returns None. Django doc rules
-
-            try:
-                x_obj.save()
-            except Exception as e:
-                log.debug("repeat NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (
-                    num, r_q, x_obj.datetime_start, 
-                    x_obj.datetime_end, x_obj.delivery.date
-                ))
-                raise
-
-            else:
-                if not x_obj.pk:
-                    raise ProgrammingError("save cannot finish with instance.pk == None")
-
-                #WAS: unneeded code: if here, x_obj has been created. "if x_obj.pk"
-                log.debug("repeat created order: %s " % (x_obj))
+    def delete_planned_orders(self):
+        
+        #LESSON LF: Left here just to simplify the understanding of the code evolution    
+        self.instance.delete_planneds()
 
 #WAS: INTERGAS 5
 
@@ -225,7 +140,7 @@ class AddPlannedOrderForm(AddOrderForm):
         super(AddPlannedOrderForm, self).save()
 
         if self.instance and self.is_planning_order:
-            self.instance.delete_planned_orders()
+            self.delete_planned_orders()
             self.create_repeated_orders()
 
     class Meta(AddOrderForm.Meta):

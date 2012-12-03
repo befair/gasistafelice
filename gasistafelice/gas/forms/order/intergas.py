@@ -53,7 +53,7 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
         cleaned_data = super(AddInterGASPlannedOrderForm, self).clean()
         self._involved_extra_pacts = set()
 
-        self.is_intergas = cleaned_data.get('intergas')
+        self._intergas_requested = cleaned_data.get('intergas')
         _involved_gas_list = cleaned_data.get('intergas_grd',[]) 
 
         for gas in _involved_gas_list:
@@ -66,7 +66,7 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
                 log.debug("Pact %s found." % extra_pact)
                 self._involved_extra_pacts.add(extra_pact)
             
-        if self.is_intergas and not self._involved_extra_pacts:
+        if self._intergas_requested and not self._involved_extra_pacts:
             log.debug("Not valid InterGAS order: at least 2 GAS needed")
             raise form.ValidationError("Not valid InterGAS order: at least 2 GAS needed")
 
@@ -101,6 +101,16 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
 
         return new_obj
 
+    @transaction.commit_on_success
+    def save(self):
+
+#WAS: INTERGAS 4 (rewritten. Set correctly group_id in base order to not repeat in planned orders)
+
+        if self._intergas_requested:
+            self.instance.group_id = GASSupplierOrder.objects.get_new_intergas_group_id()
+
+        super(AddInterGASPlannedOrderForm, self).save()
+            
 #LF: not needed because get_planned_orders is factorized out in model
 #LF: not needed   def delete_order(self):
 #
@@ -116,35 +126,18 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
 #LF: not needed                intergas_order.delete()
 
 
-#BREAK!
+        for extra_pact in self._involved_extra_pacts:
+            other_intergas_order = self.create_order_for_another_pact(extra_pact)
+            try:
+                other_intergas_order.save()
+                log.debug("created another intergas order: %s " % other_order)
+                _intergas_orders.add(other_order)
+            except Exception as e:
+                log.debug("repeat another NOT created: pact %s, start %s , end %s , delivery %s" % (
+                    other_order.pact, other_order.datetime_start, other_order.datetime_end, 
+                    other_order.delivery.date
+                ))
 
-                if _intergas_pacts:
-                    _intergas_number = get_group_id()
-                    #Set instance as InterGAS
-                    self.instance.group_id = _intergas_number
-                else:
-                    log.debug("Not valid InterGAS order: at least 2 GAS needed")
-
-
-            _intergas_orders = set()
-            if _intergas_pacts and _intergas_number:
-                log.debug("AddOrderForm interGAS OPEN for other GAS")
-                #Repeat this order for the overs GAS
-                for other_pact in _intergas_pacts:
-                    other_order = GetNewOrder(self.instance, other_pact)
-                    try:
-                        other_order.save()
-                        log.debug("repeat created another order: %s " % (other_order))
-                        _intergas_orders.add(other_order)
-                    except Exception as e:
-                        log.debug("repeat another NOT created: pact %s, start %s , end %s , delivery %s" % (
-                            other_order.pact, other_order.datetime_start, other_order.datetime_end, 
-                            other_order.delivery.date
-                        ))
-#WAS: INTERGAS 4
-#                    #get new interGAS number if needed
-#                    if _intergas_orders:
-#                        x_obj.group_id = get_group_id()
 #WAS: INTERGAS 5
 #                        #InterGAS
 #                        if _intergas_orders:

@@ -56,7 +56,7 @@ import logging
 log = logging.getLogger(__name__)
 
 #from django.utils.encoding import force_unicode
-import logging
+import copy, logging
 log = logging.getLogger(__name__)
 
 #-------------------------------------------------------------------------------
@@ -1224,7 +1224,102 @@ WHERE order_id = %s \
             )
         return qs
         
+    def clone(self):
+        """Useful for planning orders."""
+        #WAS: GetNewOrder
+
+        new_obj = copy.copy(self.instance)
+        new_obj.pk = None
+        set_initial_state(new_obj)
+
+        return new_obj
+
+    def plan(self, n_items, n_frequency):
+        """Plan the present order. Subtle optimization if InterGAS.
+
+        Create n_items GASSupplierOrder with stable `frequecy`.
+
+        This method must be invoked AFTER self is created,
+        so after the "root" GASSupplierOrder is created
+        """
+
+#WAS: INTERGAS 2
+
+        #Planning new orders
+        for num in range(1, n_items+1):  #to iterate between 1 to _repeat_items
+
+            #plan order
+            plan_obj = self.clone()
+
+            # planning
+            plan_obj.root_plan = self 
+
+            r_q = self.n_frequency*num
+            if self.delivery and self.delivery.date:
+                r_dd = self.delivery.date
+            else:
+                r_dd = None
+
+            #TODO: withdrawal appointment
+
+            # Set date for open, close and delivery order
+            plan_obj.datetime_start += timedelta(days=r_q)
+            if plan_obj.datetime_end:
+                plan_obj.datetime_end += timedelta(days=r_q)
+            if r_dd:
+                r_dd += timedelta(days=r_q)
+
+            if self.delivery:
+                try:
+                    delivery, created = Delivery.objects.get_or_create(
+                        date=r_dd,
+                        place=self.delivery.place
+                    )
+                except Delivery.MultipleObjectsReturned as e:
+                    log.error("Delivery.objects.get_or_create(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
+                        r_dd, self.delivery.place
+                    ))
+                    raise
+                    
+                else:
+                    plan_obj.delivery = delivery
+
+#WAS: INTERGAS 4
+
+            #create order
+            #COMMENT domthu: Don't understand why .save() not return true?
+            #WAS: if plan_obj.save():
+            #COMMENT fero: save() doesn't return True nor False.
+            #COMMENT fero: it returns None. Django doc rules
+
+            try:
+                plan_obj.save()
+            except Exception as e:
+                log.debug("repeat NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (
+                    num, r_q, plan_obj.datetime_start, 
+                    plan_obj.datetime_end, plan_obj.delivery.date
+                ))
+                raise
+
+
     
+    def delete_planneds(self):
+
+        # Delete - Clean all previous planification
+        planned_orders = self.get_planned_orders()
+        log.debug("repeat previous_planned_orders: %s" % planned_orders)
+        for order in planned_orders:
+
+            #delete only prepared orders
+            #WARNING LF! domthu: code is not aligned with comment above. Which one is right? is_active or not?
+            if order.is_prepared or order.is_active:
+
+#WAS: INTERGAS 3: not needed
+
+                log.debug("AddOrderForm repeat delete previous_planned_orders: %s" % (order))
+                order.delete()
+
+
     def get_intergas_pdf_data(self, requested_by=None):
         """Return PDF raw content to be rendered somewhere (email, or http)"""
 
