@@ -62,9 +62,9 @@ class AddPlannedOrderForm(AddOrderForm):
 
         cleaned_data = super(AddPlannedOrderForm, self).clean()
 
-        self.is_repeated = cleaned_data['repeat_order']
+        self.is_planning_order = cleaned_data['repeat_order']
 
-        if self.is_repeated:
+        if self.is_planning_order:
 
             _repeat_frequency = cleaned_data['repeat_frequency']
             _repeat_items = None
@@ -115,7 +115,7 @@ class AddPlannedOrderForm(AddOrderForm):
 
             # Verify params request is consistent
             if not _repeat_frequency or not _repeat_items or _repeat_items < 1:
-                log.debug("CREATE REPEATED ORDERS: repeat some parameter wrong" + 
+                log.debug("CREATE PLANNED ORDERS: repeat some parameter wrong" + 
                     "_repeat_frequency=%s, _repeat_items=%s" % (
                     _repeat_frequency, _repeat_items  
                 ))
@@ -138,24 +138,6 @@ class AddPlannedOrderForm(AddOrderForm):
 
         return new_obj
 
-    def delete_previous_planned_orders(self):
-
-        # Delete - Clean all previous planification
-        previous_planned_orders = GASSupplierOrder.objects.filter(
-            pact=self.instance.pact,
-            datetime_start__gt = self.instance.datetime_start
-        )
-        log.debug("repeat previous_planned_orders: %s" % (previous_planned_orders))
-        for order in previous_planned_orders:
-
-            #delete only prepared orders
-            if order.is_prepared or order.is_active:
-
-#WAS: INTERGAS 3
-
-                log.debug("AddOrderForm repeat delete previous_planned_orders: %s" % (order))
-                order.delete()
-
     def create_repeated_orders(self):
         """Create other instances of GASSupplierOrder.
 
@@ -171,8 +153,6 @@ class AddPlannedOrderForm(AddOrderForm):
         """
 
 #WAS: INTERGAS 2
-
-        self.delete_previous_planned_orders()
 
         #Planning new orders
         for num in range(1, self._repeat_items+1):  #to iterate between 1 to _repeat_items
@@ -218,7 +198,7 @@ class AddPlannedOrderForm(AddOrderForm):
             #create order
             #COMMENT domthu: Don't understand why .save() not return true?
             #WAS: if x_obj.save():
-            #COMMENT fero: save() doesn't ever return True nor False.
+            #COMMENT fero: save() doesn't return True nor False.
             #COMMENT fero: it returns None. Django doc rules
 
             try:
@@ -244,7 +224,8 @@ class AddPlannedOrderForm(AddOrderForm):
 
         super(AddPlannedOrderForm, self).save()
 
-        if self.instance and self.is_repeated:
+        if self.instance and self.is_planning_order:
+            self.instance.delete_planned_orders()
             self.create_repeated_orders()
 
     class Meta(AddOrderForm.Meta):

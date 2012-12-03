@@ -378,7 +378,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
                     # Close all related InterGAS orders without sending email
                     # Collect all cc to be joined to the single sended email
-                    for order in self.get_related_intergas_orders():
+                    for order in self.get_complementary_intergas_orders():
                         cc_intergas_people |= order.pact.referrers_people 
                         order.close(False, None)        
                                         
@@ -1017,7 +1017,7 @@ WHERE order_id = %s \
             log.debug("InterGAS report (%s)" % self.group_id)
             # Only in case we use InterGAs management 1)
             # Retrieve all others relative orders
-            for order in self.get_related_intergas_orders():
+            for order in self.get_complementary_intergas_orders():
                     
                 other_pdf_data = order.get_pdf_data(requested_by=issued_by)
                 if not other_pdf_data:
@@ -1205,14 +1205,26 @@ WHERE order_id = %s \
     def is_intergas(self):
         return bool(self.group_id)
 
-    def get_related_intergas_orders(self):
+    def get_complementary_intergas_orders(self):
         return self.get_intergas_orders().exclude(pk=self.pk)
 
     def get_intergas_orders(self):
         if self.is_intergas:
             return GASSupplierOrder.objects.filter(group_id=self.group_id)
-        return GASSupplierOrder.objects.none()
+        #TODO: to be optimized
+        return GASSupplierOrder.objects.filter(pk=self.pk)
 
+    def get_planned_orders(self):
+        """Return planned orders"""
+        qs = GASSupplierOrder.objects.none()
+        for order in self.get_intergas_orders():
+            qs |= GASSupplierOrder.objects.filter(
+                pact=order.pact,
+                datetime_start__gt = order.datetime_start
+            )
+        return qs
+        
+    
     def get_intergas_pdf_data(self, requested_by=None):
         """Return PDF raw content to be rendered somewhere (email, or http)"""
 
