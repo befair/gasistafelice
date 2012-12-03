@@ -9,7 +9,8 @@ from gasistafelice.gas.models import GAS, GASSupplierOrder
 
 #--------------------------------------------------------------------------------
 
-class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
+class AddInterGASOrderForm(AddOrderForm):
+    """Form to manage InterGAS orders."""
 
     #WAS: INTERGAS 0
     intergas = forms.BooleanField(label=_('Is this order InterGAS?'), required=False)
@@ -22,7 +23,7 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
     #WAS: INTERGAS 1
     def __init__(self, *args, **kw):
 
-        super(AddInterGASPlannedOrderForm, self).__init__(*args, **kw)
+        super(AddInterGASOrderForm, self).__init__(*args, **kw)
 
         if pacts.count() == 1:
             #log.debug("AddOrderForm only one pact %s" % pacts)
@@ -36,9 +37,9 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
     def clean(self):
         """InterGAS clean() checks for selected GAS and set _involved_extra_pacts attributes."""
 
-#WAS: INTERGAS 2 (rewritten. It can be factorized along with ordinary GASSupplierOrder clean)
+        #WAS: INTERGAS 2 (rewritten. It can be factorized along with ordinary GASSupplierOrder clean)
 
-        cleaned_data = super(AddInterGASPlannedOrderForm, self).clean()
+        cleaned_data = super(AddInterGASOrderForm, self).clean()
         self._involved_extra_pacts = set()
 
         self._intergas_requested = cleaned_data.get('intergas')
@@ -92,7 +93,7 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
     @transaction.commit_on_success
     def save(self):
 
-#WAS: INTERGAS 4 (rewritten. Set correctly group_id in base order to not repeat in planned orders)
+        #WAS: INTERGAS 4 (rewritten. Set correctly group_id in base order to not repeat in planned orders)
 
         if self._intergas_requested:
             self.instance.group_id = GASSupplierOrder.objects.get_new_intergas_group_id()
@@ -111,27 +112,26 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
                     ))
                     raise
 
-        super(AddInterGASPlannedOrderForm, self).save()
+        super(AddInterGASOrderForm, self).save()
             
-#LF: not needed because get_planned_orders is factorized out in model
-#LF: not needed   def delete_order(self):
-#
-#LF: not needed        order = self.instance
-#LF: not needed        #WAS: INTERGAS 3
-#LF: not needed        #if InterGAS delete relative group_id others orders.
-#LF: not needed        if order.group_id:
-#LF: not needed            # COMMENT: do it in Models with def delete(self, *args, **kw)?
-#LF: not needed            # LF: Yes
-#LF: not needed            planned_intergas_orders = order.get_intergas_planned_orders()
-#LF: not needed            for intergas_order in planned_intergas_orders:
-#LF: not needed                log.debug("AddOrderForm delete cascade intergas_previous_planned_orders: %s" % intergas_order)
-#LF: not needed                intergas_order.delete()
-
-
-        class Meta(AddPlannedOrderForm.Meta):
+        class Meta(AddOrderForm.Meta):
 
             #WAS: INTERGAS 6
-            gf_fieldsets = AddPlannedOrderForm.gf_fieldsets
+            gf_fieldsets = AddOrderForm.gf_fieldsets
             gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
 
 
+class AddInterGASPlannedOrderForm(AddInterGASOrderForm, AddPlannedOrderForm):
+    """Form to manage InterGAS and order planning at the same time."""
+
+    
+    @transaction.commit_on_success
+    def save(self):
+
+        AddInterGASOrderForm.save(self)
+        AddPlannedOrderForm.save(self)
+
+    class Meta(AddPlannedOrderForm.Meta):
+
+        gf_fieldsets = AddPlannedOrderForm.gf_fieldsets
+        gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
