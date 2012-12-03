@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.query import QuerySet
+from django.db.models import Max
 
 from gasistafelice.consts import *
 from flexi_auth.models import ParamRole
@@ -209,4 +210,26 @@ class OrderManager(models.Manager):
     def canceled(self):
         return self.get_query_set().canceled()
   
+
+    def get_new_intergas_group_id(self):
+        """Retrieve next available intergas group id."""
+
+        #WARNING LF: this is not safe for concurrent requests
+        #TODO Matteo: group_id should be implemented like SEQUENCE type in PostgreSQL
+        # (see PostgreSQL doc) or similar behaviour emulation function. 
+        # Max value should be obtained from an integer external to table rows.
+        # Then perform atomic operation on get and increment an integer used as reference.
+
+        _group_id = 1
+        _maxs = self.all().aggregate(Max('group_id'))
+        log.warning("TODO Matteo: DANGER for concurrent requests!")
+        log.debug("get_group_id %s " % _maxs)
+        if _maxs:
+            # get the maximum attribute from the first record and add 1 to it
+            _group_id = _maxs['group_id__max']
+            if _group_id:
+                _group_id += 1
+            else:
+                _group_id = 1
+        return _group_id
 

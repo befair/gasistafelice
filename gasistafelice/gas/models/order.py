@@ -1211,7 +1211,7 @@ WHERE order_id = %s \
     def get_intergas_orders(self):
         if self.is_intergas:
             return GASSupplierOrder.objects.filter(group_id=self.group_id)
-        #TODO: to be optimized
+        #FUTURE TODO: to be verified if it does not hits the QuerySet cache and to be optimized
         return GASSupplierOrder.objects.filter(pk=self.pk)
 
     def get_planned_orders(self):
@@ -1228,7 +1228,7 @@ WHERE order_id = %s \
         """Useful for planning orders."""
         #WAS: GetNewOrder
 
-        new_obj = copy.copy(self.instance)
+        new_obj = copy.copy(self)
         new_obj.pk = None
         set_initial_state(new_obj)
 
@@ -1295,11 +1295,31 @@ WHERE order_id = %s \
             try:
                 plan_obj.save()
             except Exception as e:
-                log.debug("repeat NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (
+                log.debug("plan NOT created: item %s, r_q %s, start %s , end %s , delivery %s" % (
                     num, r_q, plan_obj.datetime_start, 
                     plan_obj.datetime_end, plan_obj.delivery.date
                 ))
                 raise
+
+#WAS: INTERGAS 5
+            # Slight InterGAS optimization
+            # Clone planned objects for related intergas order planning
+            if self.is_intergas:
+
+                for related_intergas_order in self.get_complementary_intergas_orders():
+                    intergas_plan_obj = related_intergas_order.clone()
+                    intergas_plan_obj.datetime_start = plan_obj.datetime_start
+                    intergas_plan_obj.datetime_end = plan_obj.datetime_end
+                    intergas_plan_obj.delivery.date = plan_obj.delivery.date
+                    try:
+                        intergas_plan_obj.save()
+                        log.debug("Related InterGAS planned order: %s " % intergas_plan_obj)
+                    except Exception,e:
+                        log.error("Related InterGAS planned order NOT created: pact %s, start %s , end %s , delivery %s" % (
+                            intergas_plan_obj.pact, intergas_plan_obj.datetime_start, 
+                            intergas_plan_obj.datetime_end, intergas_plan_obj.delivery.date
+                        ))
+                        raise
 
 
     

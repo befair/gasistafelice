@@ -1,23 +1,11 @@
 
-from django.db.models import Max
+from django import forms
 
-from gasistafelice.gas.forms.order.plan import PlannedAddOrderForm
+from gasistafelice.gas.forms.order.plan import AddPlannedOrderForm
+from gasistafelice.gas.forms.order.base import AddOrderForm
 
+from gasistafelice.gas.models import GAS, GASSupplierOrder
 
-def get_group_id():
-    #WARNING LF: this is not safe for concurrent requests
-
-    _group_id = 1
-    _maxs = GASSupplierOrder.objects.all().aggregate(Max('group_id'))
-    log.debug("get_group_id %s " % _maxs)
-    if _maxs:
-        # get the maximum attribute from the first record and add 1 to it
-        _group_id = _maxs['group_id__max']
-        if _group_id:
-            _group_id += 1
-        else:
-            _group_id = 1
-    return _group_id
 
 #--------------------------------------------------------------------------------
 
@@ -74,7 +62,7 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
     def create_order_for_another_pact(self, other_pact):
         """This relates to InterGAS."""
 
-        new_obj = self.clone_base_order()
+        new_obj = self.instance.clone()
         new_obj.pact = other_pact
 
         obj = self.instance
@@ -109,6 +97,20 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
         if self._intergas_requested:
             self.instance.group_id = GASSupplierOrder.objects.get_new_intergas_group_id()
 
+            # Create complementary InterGAS orders
+
+            for extra_pact in self._involved_extra_pacts:
+                other_intergas_order = self.create_order_for_another_pact(extra_pact)
+                try:
+                    other_intergas_order.save()
+                    log.debug("created another intergas order: %s " % other_intergas_order)
+                except Exception as e:
+                    log.debug("repeat another NOT created: pact %s, start %s , end %s , delivery %s" % (
+                        other_intergas_order.pact, other_intergas_order.datetime_start, other_intergas_order.datetime_end, 
+                        other_intergas_order.delivery.date
+                    ))
+                    raise
+
         super(AddInterGASPlannedOrderForm, self).save()
             
 #LF: not needed because get_planned_orders is factorized out in model
@@ -125,36 +127,6 @@ class AddInterGASPlannedOrderForm(AddPlannedOrderForm):
 #LF: not needed                log.debug("AddOrderForm delete cascade intergas_previous_planned_orders: %s" % intergas_order)
 #LF: not needed                intergas_order.delete()
 
-
-        for extra_pact in self._involved_extra_pacts:
-            other_intergas_order = self.create_order_for_another_pact(extra_pact)
-            try:
-                other_intergas_order.save()
-                log.debug("created another intergas order: %s " % other_order)
-                _intergas_orders.add(other_order)
-            except Exception as e:
-                log.debug("repeat another NOT created: pact %s, start %s , end %s , delivery %s" % (
-                    other_order.pact, other_order.datetime_start, other_order.datetime_end, 
-                    other_order.delivery.date
-                ))
-
-#WAS: INTERGAS 5
-#                        #InterGAS
-#                        if _intergas_orders:
-#                            for other_order in _intergas_orders:
-#                                try:
-#                                    other_order.datetime_start = x_obj.datetime_start
-#                                    other_order.datetime_end = x_obj.datetime_end
-#                                    other_order.delivery.date = x_obj.delivery.date
-#                                    x_other_obj = GetNewOrder(other_order, None)
-#                                    if x_other_obj:
-#                                        #COMMENT domthu: Don't understand why .save() not return true?
-#                                        if x_other_obj.save():
-#                                            log.debug("another repeat created order: %s " % (x_other_obj))
-#                                        else:
-#                                            log.debug("another repeat NOT created: pact %s, start %s , end %s , delivery %s" % (x_other_obj.pact, x_other_obj.datetime_start, x_other_obj.datetime_end, x_other_obj.delivery.date))
-#                                except Exception,e:
-#                                    log.debug("another repeat NOT created order ERROR: %s " % (e))
 
         class Meta(AddPlannedOrderForm.Meta):
 
