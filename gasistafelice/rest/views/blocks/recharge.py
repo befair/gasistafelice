@@ -115,7 +115,7 @@ class Block(BlockSSDataTables):
         for i,item in enumerate(querySet):
 
             form = formset[map_info[item.pk]['formset_index']]
-            print "item.balanceitem.balanceitem.balanceitem.balance %s" % ("%.2f" % round(item.balance, 2)).replace('.','€')
+            log.debug("item.balanceitem.balanceitem.balanceitem.balance %s" % ("%.2f" % round(item.balance, 2))).replace('.','€')
             records.append({
                'id' : item.pk,
                'gasmember' : item,
