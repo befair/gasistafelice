@@ -789,15 +789,25 @@ class Person(models.Model, PermissionResource):
 		. ROOT (/)
 		|----------- wallet [A]
 		+----------- incomes [P,I]	+
-		|				+--- TODO: Other (Private order, correction, Deposit)
+		|				+--- other (private order, correction, deposit)
 		+----------- expenses [P,E]	+
-						+--- TODO: Other (Correction, Donation, )
+						+--- other (correction, donation, )
         """
 
         self.subject.init_accounting_system()
-        system = self.accounting.system
         # create a generic asset-type account (a sort of "virtual wallet")
-        system.add_account(parent_path='/', name='wallet', kind=account_type.asset)
+        system = self.accounting.system
+        system.get_or_create_account(
+            parent_path='/', name='wallet', kind=account_type.asset
+        )
+
+        # Expenses and incomes of other kind...
+        system.get_or_create_account(
+            parent_path='/expenses', name='other', kind=account_type.expense
+        )
+        system.get_or_create_account(
+            parent_path='/incomes', name='other', kind=account_type.income
+        )
 
     #----------------- Authorization API ------------------------#
 
@@ -1076,36 +1086,43 @@ class WorkflowDefinition(object):
         except ImproperlyConfigured, e:
             raise ImproperlyConfigured(_("Workflow specifications are not consistent.\n %s") % e)
             
-        self.workflow = Workflow.objects.create(name=self.workflow_name)
-        ## create States objects
-        self.states = {} # dictionary containing State objects for our Workflow
-        for (key, name) in self.state_list:
-            self.states[key] = State.objects.create(name=name, workflow=self.workflow)
-        ## create Transition objects
-        self.transitions = {} # dictionary containing Transition objects for the current Workflow
-        for (key, transition_name, destination_name) in self.transition_list:
-            dest_state = self.states[destination_name]
-            self.transitions[key] = Transition.objects.create(name=transition_name, workflow=self.workflow, destination=dest_state)
-        ## associate Transitions to States
-        for (state_name, transition_name) in self.state_transition_map:
-            log.debug("Workflow %(w)s, adding state=%(s)s transition=%(t)s" % {
-                'w' : self.workflow_name,
-                's' : state_name, 
-                't' : transition_name,
-            })
-            state = self.states[state_name]
-            transition = self.transitions[transition_name]
-            state.transitions.add(transition)
-        ## set the initial State for the Workflow
-        state = self.states[self.initial_state_name]
-        self.workflow.initial_state = state
-        self.workflow.save()
-        ## define default Transitions for States in a Workflow,
-        ## so we can suggest to end-users what the next "logical" State could be
-        for (state_name, transition_name) in self.default_transitions:
-            state = self.states[state_name]
-            transition = self.transitions[transition_name]
-            self.workflow.default_transition_set.add(DefaultTransition(state=state, transition=transition))
+        try:
+            # Check for already existent workflow. Operation `register_workflow` is idempotent...
+            Workflow.objects.get(name=self.workflow_name)
+
+        except Workflow.DoesNotExist:
+            # Initialize workflow
+
+            self.workflow = Workflow.objects.create(name=self.workflow_name)
+            ## create States objects
+            self.states = {} # dictionary containing State objects for our Workflow
+            for (key, name) in self.state_list:
+                self.states[key] = State.objects.create(name=name, workflow=self.workflow)
+            ## create Transition objects
+            self.transitions = {} # dictionary containing Transition objects for the current Workflow
+            for (key, transition_name, destination_name) in self.transition_list:
+                dest_state = self.states[destination_name]
+                self.transitions[key] = Transition.objects.create(name=transition_name, workflow=self.workflow, destination=dest_state)
+            ## associate Transitions to States
+            for (state_name, transition_name) in self.state_transition_map:
+                log.debug("Workflow %(w)s, adding state=%(s)s transition=%(t)s" % {
+                    'w' : self.workflow_name,
+                    's' : state_name, 
+                    't' : transition_name,
+                })
+                state = self.states[state_name]
+                transition = self.transitions[transition_name]
+                state.transitions.add(transition)
+            ## set the initial State for the Workflow
+            state = self.states[self.initial_state_name]
+            self.workflow.initial_state = state
+            self.workflow.save()
+            ## define default Transitions for States in a Workflow,
+            ## so we can suggest to end-users what the next "logical" State could be
+            for (state_name, transition_name) in self.default_transitions:
+                state = self.states[state_name]
+                transition = self.transitions[transition_name]
+                self.workflow.default_transition_set.add(DefaultTransition(state=state, transition=transition))
     
     def check_workflow_specs(self):
         """Check the provided workflow specifications for internal consistency.

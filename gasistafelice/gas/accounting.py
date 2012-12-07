@@ -352,13 +352,13 @@ class GasAccountingProxy(AccountingProxy):
         non_des_system = non_des.system
         if target == INCOME:
             source_account = non_des_system['/wallet']
-            exit_point = self.get_account(non_des_system, '/expenses', 'OutOfDES', account_type.expense)
-            entry_point = self.get_account(self.system, '/incomes', 'OutOfDES', account_type.income)
+            exit_point, created = non_des_system.get_or_create_account('/expenses', 'OutOfDES', account_type.expense)
+            entry_point = self.system['/incomes/OutOfDES']
             target_account = self.system['/cash']   #WAS gas.accounting.system['/cash']
         elif  target == EXPENSE:
             source_account = self.system['/cash']
-            exit_point = self.get_account(self.system, '/expenses', 'OutOfDES', account_type.expense)
-            entry_point = self.get_account(non_des_system, '/incomes', 'OutOfDES', account_type.income)
+            exit_point = self.system['/expenses/OutOfDES']
+            entry_point, created = non_des_system.get_or_create_account('/incomes', 'OutOfDES', account_type.income)
             target_account = non_des_system['/wallet']
         else:
             #WAS raise MalformedTransaction(ugettext("Payment target %s not identified" % target))
@@ -389,7 +389,7 @@ class GasAccountingProxy(AccountingProxy):
         path = parent_path + '/' + name
         try:
             account = system[path]
-        except:
+        except Exception as e: #should be KeyError, but maybe is an AttributeError due to previous implementation
 #WAS        if not account: but raise exception "Account matching query does not exist."
             #if not exist create it
             system.add_account(parent_path=parent_path, name=name, kind=kind)

@@ -62,7 +62,7 @@ class GASMemberOrderTest(TestCase):
             a pact can be created between GAS 2 and Supplier 2 for some TestCase
 
         Use runing $ python manage.py test gas.GASMemberOrderTest'''
-    fixtures = ['test.json']
+    #fixtures = ['test.json']
 
     def setUp(self):
         self.now = date.today()
