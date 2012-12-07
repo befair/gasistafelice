@@ -124,9 +124,6 @@ class PersonAccountingProxy(AccountingProxy):
         gas_system = gas.accounting.system
         kind = GASMEMBER_GAS
 
-        #UGLY: remove me when done and executed one command that regenerate all missing accounts
-        self.missing_accounts(gas)
-
         if target == INCOME: #Correction for gasmember: +gasmember -GAS
             source_account = gas_system['/cash']
             exit_point = gas_system['/expenses/member']
@@ -167,34 +164,4 @@ class PersonAccountingProxy(AccountingProxy):
         if not date:
             date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
-
-#		. gasmember ROOT (/)
-#		|----------- wallet [A]
-#		+----------- incomes [P,I]	+
-#		|				+--- TODO: Other (Private order, correction, Deposit)
-#		+----------- expenses [P,E]	+  UNUSED because we use the gas_system[/incomes/recharges]
-#						+--- TODO: Other (Correction, Donation, )
-
-#        . GAS ROOT (/)
-#        |----------- cash [A]
-#        +----------- members [P,A]+
-#        |                +--- <UID member #1>  [A]
-#        |                | ..
-#        |                +--- <UID member #n>  [A]
-#        +----------- expenses [P,E]+
-#        |                +--- TODO: member (correction or other)
-#        |                +--- TODO: gas (correction or other)
-#        +----------- incomes [P,I]+
-#        |                +--- recharges [I]
-#        |                +--- TODO: member (correction or other)
-
-    #UGLY: remove me when done and executed one command that regenerate all missing accounts
-    def missing_accounts(self, gas):
-        gas_acc = gas.accounting
-        gas_system = gas.accounting.system
-        xsys = gas_acc.get_account(gas_system, '/expenses', 'member', account_type.expense)
-        xsys = gas_acc.get_account(gas_system, '/expenses', 'gas', account_type.expense)
-        xsys = gas_acc.get_account(gas_system, '/incomes', 'member', account_type.income)
-        xsys = gas_acc.get_account(self.system, '/expenses', 'other', account_type.expense)
-        xsys = gas_acc.get_account(self.system, '/incomes', 'other', account_type.income)
 

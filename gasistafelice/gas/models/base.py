@@ -19,7 +19,10 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from simple_accounting.models import economic_subject, Account, AccountingDescriptor, LedgerEntry, account_type
+from simple_accounting.models import (economic_subject, Account, 
+    AccountingDescriptor, LedgerEntry, account_type,
+    AccountSystem
+)
 
 from gasistafelice.lib import ClassProperty
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
@@ -339,8 +342,8 @@ class GAS(models.Model, PermissionResource):
         |                | ..
         |                +--- <UID member #n>  [A]
         +----------- expenses [P,E]+
-        |                +--- TODO: OutOfDES
-        |                +--- TODO: member (correction or other)
+        |                +--- OutOfDES
+        |                +--- member (correction or other)
         |                +--- suppliers [P, E] +
         |                        +--- <UID supplier #1>  [E]
         |                        | ..
@@ -348,25 +351,48 @@ class GAS(models.Model, PermissionResource):
         +----------- incomes [P,I]+
         |                +--- recharges [I]
         |                +--- fees [I]
-        |                +--- TODO: OutOfDES
+        |                +--- OutOfDES
         """
 
-        self.subject.init_accounting_system()
-        system = self.accounting.system
+        try:
+            system = self.accounting.system
+        except AttributeError as e:
+            self.subject.init_accounting_system()
+            system = self.accounting.system
+
         # GAS's cash
-        system.add_account(parent_path='/', name='cash', kind=account_type.asset)
+        system.get_or_create_account(
+            parent_path='/', name='cash', kind=account_type.asset
+        )
         # root for GAS members' accounts
-        system.add_account(parent_path='/', name='members', kind=account_type.asset, is_placeholder=True)
+        system.get_or_create_account(
+            parent_path='/', name='members', kind=account_type.asset, is_placeholder=True
+        )
         # a placeholder for organizing transactions representing payments to suppliers
-        system.add_account(parent_path='/expenses', name='suppliers', kind=account_type.expense, is_placeholder=True)
+        system.get_or_create_account(
+            parent_path='/expenses', name='suppliers', kind=account_type.expense, is_placeholder=True
+        )
         #For each GASSuplierSolidalPact we expects to create the relative
         #parent_path='/expenses/suppliers/', name=''
 
         # recharges made by GAS members to their own account
-        system.add_account(parent_path='/incomes', name='recharges', kind=account_type.income)
+        system.get_or_create_account(
+            parent_path='/incomes', name='recharges', kind=account_type.income
+        )
         # membership fees
-        system.add_account(parent_path='/incomes', name='fees', kind=account_type.income)
+        system.get_or_create_account(
+            parent_path='/incomes', name='fees', kind=account_type.income
+        )
 
+        # incomes from out of DES
+        system.get_or_create_account('/incomes', 'OutOfDES', account_type.income)
+
+        # expenses to out of DES
+        system.get_or_create_account('/expenses', 'OutOfDES', account_type.expense)
+
+        system.get_or_create_account('/expenses', 'member', account_type.expense)
+        system.get_or_create_account('/expenses', 'gas', account_type.expense)
+        system.get_or_create_account('/incomes', 'member', account_type.income)
 
     #-- Resource API --#
 
@@ -482,13 +508,13 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def balance(self):
-        """Accounting sold for this gas"""
+        """Cash balance available for GAS"""
         acc_tot = self.accounting.system['/cash'].balance
         return acc_tot
 
     @property
     def balance_gasmembers(self):
-        """Accounting sold for all gasmembers"""
+        """Cash balance available for GASMembers of the GAS"""
         #return self.accounting.system['/members'].balance
         acc_tot = 0
         for gm in self.gasmembers:
@@ -497,7 +523,7 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def balance_suppliers(self):
-        """Accounting sold for all supplier"""
+        """Cash balance available for Suppliers related with the GAS"""
         acc_tot = 0
         for pact in self.pacts:
             acc_tot += self.accounting.system['/expenses/suppliers/' + pact.supplier.uid].balance
@@ -505,7 +531,9 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def liquidity(self):
-        """Accounting sold for all members of this gas"""
+        """Accounting sold for all members of this gas.
+
+        LF QUESTION which is the difference beetween liquidity and balance_gasmembers?"""
         acc_tot = 0
         for gm in self.gasmembers:
             acc_tot = gm.balance
@@ -1051,17 +1079,28 @@ class GASMember(models.Model, PermissionResource):
         try:
             person_system['/expenses/gas']
         except Account.DoesNotExist:
-            person_system.add_account(parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True)
+            person_system.get_or_create_account(
+                parent_path='/expenses', name='gas', kind=account_type.expense, is_placeholder=True
+            )
 
         # base account for expenses related to this GAS membership
-        person_system.add_account(parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense, is_placeholder=True)
+        person_system.get_or_create_account(
+            parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense, 
+            is_placeholder=True
+        )
         # recharges
-        person_system.add_account(parent_path='/expenses/gas/' + self.gas.uid, name='recharges', kind=account_type.expense)
+        person_system.get_or_create_account(
+            parent_path='/expenses/gas/' + self.gas.uid, name='recharges', kind=account_type.expense
+        )
         # membership fees
-        person_system.add_account(parent_path='/expenses/gas/' + self.gas.uid, name='fees', kind=account_type.expense)
+        person_system.get_or_create_account(
+            parent_path='/expenses/gas/' + self.gas.uid, name='fees', kind=account_type.expense
+        )
 
         ## GAS-side
-        gas_system.add_account(parent_path='/members', name=self.person.uid, kind=account_type.asset)
+        gas_system.get_or_create_account(
+            parent_path='/members', name=self.person.uid, kind=account_type.asset
+        )
 
     @property
     def des(self):
@@ -1772,20 +1811,37 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         |                       +--- <UID supplier #1>  [E]
         |                       | ..
         |                       +--- <UID supplier #n>  [E]
+        +----------- incomes [P,I]+
+                        +--- suppliers [P, I] +
+                                +--- <UID supplier #1>  [P, I]
+                                | ..
+                                +--- <UID supplier #n>  [P, I]
 
         # SUPPLIER-side
         . ROOT (/)
         +----------- incomes [P,I]+
-                        +--- gas [P, I] +
-                                +--- <UID gas #1>  [P, I]
+        |               +--- gas [P, I] +
+        |                       +--- <UID gas #1>  [P, I]
+        |                       | ..
+        |                       +--- <UID gas #n>  [P, I]
+        +----------- expenses [P,E]+
+                        +--- gas [P, E] +
+                                +--- <UID gas #1>  [E]
                                 | ..
-                                +--- <UID gas #n>  [P, I]
+                                +--- <UID gas #n>  [E]
         """
 
         gas_system = self.gas.accounting.system
-        gas_system.add_account(parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense)
+        gas_system.get_or_create_account(
+            parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense
+        )
+        gas_system.get_or_create_account(
+            parent_path='/expenses/suppliers', name=self.supplier.uid, kind=account_type.expense
+        )
         supplier_system = self.supplier.accounting.system
-        supplier_system.add_account(parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income)
+        supplier_system.get_or_create_account(
+            parent_path='/incomes/gas', name=self.gas.uid, kind=account_type.income
+        )
 
     def setup_data(self):
         for st in self.supplier.stocks:

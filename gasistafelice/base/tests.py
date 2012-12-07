@@ -12,14 +12,6 @@ class PersonSaveTest(TestCase):
         p = Person.objects.create(name='john', surname='smith')
         self.assertEqual(p.name, 'John')
         self.assertEqual(p.surname, 'Smith')
-    def testUuidAutoset(self):
-        '''Verify an empty UUID is autoset to None on save'''
-        p = Person.objects.create(name='john', surname='smith', uuid='')
-        self.assertEqual(p.uuid, None)
-    def testUuidHonored(self):
-        '''Verify UUID is honored if specified'''
-        p = Person.objects.create(name='john', surname='smith', uuid='1')
-        self.assertEqual(p.uuid, '1')
         
         
 class PlaceSaveTest(TestCase):
@@ -29,14 +21,11 @@ class PlaceSaveTest(TestCase):
         p = Place.objects.create(name="foo", city='senigallia', province='an')
         self.assertEqual(p.city, 'Senigallia')
         self.assertEqual(p.province, 'AN')
-    def testNameAutoset(self):
-        '''Verify a missing name is correctly autoset on save'''
-        p = Place.objects.create(city='senigallia', province='an', address='via Garibaldi, 1')
-        self.assertEqual(p.name, 'via Garibaldi, 1')
     def testNameHonored(self):
         '''Verify name is honored if specified'''
-        p = Place.objects.create(name='Rotonda a mare', city='senigallia', province='ancona')
+        p = Place.objects.create(name='Rotonda a mare', city='senigallia', province='an')
         self.assertEqual(p.name, 'Rotonda a mare')
+        self.assertEqual(p.province, 'AN')
         
 
 class GetCtypeFromModelLabelTest(TestCase):

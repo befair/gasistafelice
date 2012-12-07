@@ -422,7 +422,10 @@ class DES(Site, PermissionResource):
         It permit to count money transfert between (entering or escaping) the DES and the market
         """
         try:
-            nondes = Person.objects.get(name__exact=NONDES_NAME,surname__exact=NONDES_SURNAME)
+            nondes = Person.objects.get(
+                name__exact=NONDES_NAME,
+                surname__exact=NONDES_SURNAME
+            )
         except Person.DoesNotExist:
             #Create accounting system for a NonDES in the DES accounting system
 
