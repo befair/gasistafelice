@@ -4,7 +4,7 @@ They rely on base models and Supplier-related ones to get Product and Stock info
 
 Definition: `Vocabolario - GAS <http://www.jagom.org/trac/REESGas/wiki/BozzaVocabolario#GAS>`__ (ITA only)
 """
- 
+
 from gasistafelice.gas.models.base import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact, GASConfig, GASActivist
 from gasistafelice.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct, GASMemberOrder, Delivery, Withdrawal
 
@@ -29,9 +29,11 @@ def setup_order_workflow(sender, instance, created, **kwargs):
 
         if not instance.workflow:
             # Set default workflow
-            log.debug("Setting default workflow for %s" % instance)
+            #Kappao call current_state.name before creation!
+            #log.debug("Setting default workflow for %s" % instance)
             w = instance.gas.config.default_workflow_gassupplier_order
             set_workflow(instance, w)
+            #log.debug("Setted default workflow for %s" % instance)
 
         instance.open_if_needed()
 
@@ -43,8 +45,8 @@ post_save.connect(setup_order_workflow, sender=GASSupplierOrder)
 def setup_non_subject_accounting(sender, instance, created, **kwargs):
     if created:
         # call the ``.setup_accounting()`` method on the sender model, if defined
-        if getattr(instance, 'setup_accounting', None):     
+        if getattr(instance, 'setup_accounting', None):
             instance.setup_accounting()
-        
+
 post_save.connect(setup_non_subject_accounting, sender=GASMember)
 post_save.connect(setup_non_subject_accounting, sender=GASSupplierSolidalPact)

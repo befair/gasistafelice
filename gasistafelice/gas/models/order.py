@@ -244,9 +244,9 @@ class GASSupplierOrder(models.Model, PermissionResource):
     @property
     def common_name(self):
         date_delivery = ''
-        if self.delivery:
-            state = self.current_state.name
-            if self.delivery.date and state != STATUS_PREPARED and state != STATUS_OPEN and state != STATUS_CLOSED:
+        if self.delivery and self.delivery.date:
+            if (self.is_prepared == False and self.is_active == False and self.is_closed == False
+):
                 date_delivery = ugettext(" del %(date_delivery)s") % { 'date_delivery': medium_date(self.delivery.date) }
         cn = ugettext("Ord. %(order_num)s %(pact)s %(date)s") % {
             'order_num' : self.pk,
@@ -461,39 +461,38 @@ class GASSupplierOrder(models.Model, PermissionResource):
         Return `True` if the GAS supplier order is prepared; `False` otherwise.
         """
         #return self in GASSupplierOrder.objects.prepared()
-        return self.current_state.name == STATUS_PREPARED
+        return self.current_state and self.current_state.name == STATUS_PREPARED
 
     def is_active(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'active'; `False` otherwise.
         """
         #return self in GASSupplierOrder.objects.open()
-        return self.current_state.name == STATUS_OPEN
+        return self.current_state and self.current_state.name == STATUS_OPEN
 
     def is_archived(self):
         """
         Return `True` if the GAS supplier order is to be considered as 'archived'; `False` otherwise.
         """
-        return self.current_state.name == STATUS_ARCHIVED
+        return self.current_state and self.current_state.name == STATUS_ARCHIVED
 
     def is_closed(self):
         """
         Return `True` if the GAS supplier order is closed; `False` otherwise.
         """
-        return self.current_state.name == STATUS_CLOSED
+        return self.current_state and self.current_state.name == STATUS_CLOSED
 
     def is_unpaid(self):
         """
         Return `True` if the GAS supplier order is closed but producer is not payed; `False` otherwise.
         """
-        return self.current_state.name == STATUS_UNPAID
+        return self.current_state and self.current_state.name == STATUS_UNPAID
 
     def is_canceled(self):
         """
         Return `True` if the GAS supplier order is canceled; `False` otherwise.
         """
-        return self.current_state.name == STATUS_CANCELED
-
+        return self.current_state and self.current_state.name == STATUS_CANCELED
 
     #-------------------------------------------------------------------------------#
 
