@@ -34,12 +34,12 @@ class Block(BlockWithList):
         elif t in ["gas", "pact"]:
             gas = self.resource.gas
             if gas.config.use_order_planning:
-                if gas.config.intergas_connection_set.all():
+                if gas.config.intergas_connection_set.count():
                     base_class = order_forms.AddInterGASPlannedOrderForm
                 else:
                     base_class = order_forms.AddPlannedOrderForm
             else:
-                if gas.config.intergas_connection_set.all():
+                if gas.config.intergas_connection_set.count():
                     base_class = order_forms.AddInterGASOrderForm
                 else:
                     base_class = order_forms.AddOrderForm
