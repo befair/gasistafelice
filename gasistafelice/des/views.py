@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.db import transaction
 from des.forms import DESRegistrationForm, DESStaffRegistrationForm
 from des.models import Siteattr
-from gas.models import GASMember
+from gas.models import GASMember, GAS
 
 from registration.models import RegistrationProfile
 import re, logging
@@ -29,7 +29,8 @@ def login(request, *args, **kw):
         'THEME' : settings.THEME,
         'MEDIA_URL' : settings.MEDIA_URL,
         'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
-        'MAINTENANCE_MODE' : settings.MAINTENANCE_MODE
+        'MAINTENANCE_MODE' : settings.MAINTENANCE_MODE,
+        'gas_list' : GAS.objects.all(),
     }
     if settings.MAINTENANCE_MODE: 
         if request.method == "POST" and \
