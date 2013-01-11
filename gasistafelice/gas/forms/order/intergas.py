@@ -130,11 +130,11 @@ class AddInterGASOrderForm(AddOrderForm):
 
         super(AddInterGASOrderForm, self).save()
             
-        class Meta(AddOrderForm.Meta):
+    class Meta(AddOrderForm.Meta):
 
-            #WAS: INTERGAS 6
-            gf_fieldsets = AddOrderForm.Meta.gf_fieldsets
-            gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
+        #WAS: INTERGAS 6
+        gf_fieldsets = AddOrderForm.Meta.gf_fieldsets
+        gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
 
 
 class AddInterGASPlannedOrderForm(AddInterGASOrderForm, AddPlannedOrderForm):
