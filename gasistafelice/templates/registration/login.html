@@ -1,8 +1,19 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load gas_base %}
 
 {% block extraheads %}
 <link href="/media/css/base.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+    .box { border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em; }
+    .traditional-list { margin-left: 2em; padding:0.2em;}
+    ol.traditional-list { list-style-type:upper-roman; }
+    ul.traditional-list { list-style-type:circle; }
+    li.traditional-list.true { list-style-image : url("/media/img/admin/icon-yes.gif"); }
+    li.traditional-list.false { list-style-image : url("/media/img/admin/icon-no.gif"); }
+    .done { text-decoration : line-through; }
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -14,129 +25,70 @@
 </ul>
 {% endif %}
 
-<h1>Accedi per ordinare nel DES </h1>
-
-<div style="margin: 2em 0.5em;">
-{% if form.errors %}
-{{ form.non_field_errors }}
-<p>Tieni presente che potresti non accedere perché ancora non hai alcun ruolo nel DES.<br />
-Fatti assegnare un ruolo dal referente informatico di un GAS con cui sei in contatto.
-A presto allora!</p>
-{% endif %}
-
-<form method="post" action="{% url 'des.views.login' %}">
-{% csrf_token %}
+<h1>Gasista Felice - HappyGAS :)</h1>
+<div style="clear:both;"> </div>
 <table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
+    <tr><td>
+
+        <div style="margin: 2em 0.5em;">
+        {% if form.errors %}
+        {{ form.non_field_errors }}
+        <p>Tieni presente che potresti non accedere perché ancora non hai alcun ruolo nel DES.<br />
+        Fatti assegnare un ruolo dal referente informatico di un GAS con cui sei in contatto.
+        A presto allora!</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'des.views.login' %}">
+        {% csrf_token %}
+        <table>
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+        </table>
+
+        <input type="submit" value="login" />
+        <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+        </div>
+    </td><td>
+        <div class="box">
+            <h1><center>
+                <p>Se non hai accesso</p>
+                <p><a href="{% url 'des.views.registration' %}">Registrati ora</a></p>
+            </center></h1>
+            <div style="clear:both"> </div>
+        </div>
+    </td></tr>
 </table>
 
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-</div>
+<div>
+<h1 style="margin-top: 1em; padding:0.2em;">
+    Installazione a disposizione di
+</h1>
 
-<h2>Fai parte del DES, ma non hai ancora accesso alla piattaforma? 
-<a href="{% url 'des.views.registration' %}">Registrati ora</a>
-</h2>
+<div style="clear:both;">
 
-<style type="text/css">
-.traditional-list { margin-left: 2em; padding:0.2em;}
-ol.traditional-list { list-style-type:upper-roman; }
-ul.traditional-list { list-style-type:circle; }
-li.traditional-list.true { list-style-image : url("/media/img/admin/icon-yes.gif"); }
-li.traditional-list.false { list-style-image : url("/media/img/admin/icon-no.gif"); }
-.done { text-decoration : line-through; }
-</style>
-
-<div style="border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em;">
-<h1 style="margin-top: 1em; padding:0.2em;">Ultime novità</h1>
-<ul class="traditional-list">
-    <li class="traditional-list true">Sistemati i problemi segnalati dalle prove GAS Montefano, Recanati e San Severino</li>
-    <li class="traditional-list true">Pianificazione degli ordini</li>
-    <li class="traditional-list true">Migliorata l'abilitazione di nuovi utenti</li>
-</ul>
-</div>
-
-<div style="border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em;">
-<h1 style="margin-top: 1em; padding:0.2em;">Stato della migrazione del DES</h1>
-<ul class="traditional-list">
-<li class="traditional-list true">Importazione dati del DES</li>
-<li class="traditional-list false">Verifica e messa a punto dei dati (in progress man mano che si attivano i GAS...)</li>
-<li class="traditional-list false">GAS Montefano</li>
-<li class="traditional-list true">GASsosa - Recanati</li>
-<li class="traditional-list false">GAS dei Castelli - San Severino</li>
-<li class="traditional-list false">GAS Tolentino</li>
-<li class="traditional-list false">GASdotto - Matelica</li>
-<li class="traditional-list false">GAS GAIA - Civitanova Marche</li>
-<li class="traditional-list false">GAS MC - Macerata</li>
-<li class="traditional-list false">GAS di Montagna - Camerino</li>
-<li class="traditional-list true">GASsero - CASTELRAIMONDO</li>
-</ul>
-</div>
-
-<div style="margin-top: 1em; border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em; width: 100%; font-size:1.2em;">
-
-<h1 style="margin-top: 1em; padding:0.2em;">Futuri sviluppi per cui il sistema è predisposto</h1>
-<ul class="traditional-list">
-    <li class="traditional-list">Listino gasista per preordinare prodotti (preparazione automatica paniere)</li>
-    <li class="traditional-list">Personalizzazione report per i fornitori (per categorie personalizzate, modelli personalizzati, ...)</li>
-    <li class="traditional-list">Import di massa listino prodotti</li>
-    <li class="traditional-list">Procedura di completamento cartone</li>
-    <li class="traditional-list">Report e statistiche generalizzati</li>
-    <li class="traditional-list"><a href="http://www.jagom.org/trac/reesgas/query?status=new&status=reopened&milestone=Futuro&group=status&order=priority">E altro...</a></li>
-</ul>
-</div>
+<table border="1" style="color:grey;">
+{% for g in gas_list %}
+    {% if forloop.first %}
+        <tr>
+    {% endif %}
+        <td>{% render_gas g %}</td>
+    {% if forloop.counter|divisibleby:"4" %}
+        </tr><tr>
+    {% endif %}
+    {% if forloop.last %}
+        </tr>
+    {% endif %}
+{% endfor %}
+</table>
 
 
-<h1 style="margin-top: 1em; padding:0.2em;">Lavori in corso...</h1>
-<ul class="traditional-list">
-<li class="traditional-list"><b>Referente fornitore</b></li>
-<ol class="traditional-list">
-    <li class="traditional-list done">Report dell'ordine</li>
-    <li class="traditional-list done">Avanzamento di stato per l'ordine</li>
-</ol>
-<li class="traditional-list"><b>Fornitore</b></li>
-<ol class="traditional-list">
-    <li class="traditional-list done">Gestione del listino (modificare, aggiungere prodotti...)</li>
-    <li class="traditional-list done">Visualizzazione degli ordini</li>
-</ol>
-<li class="traditional-list"><b>Referente contabile</b></li>
-<ol class="traditional-list">
-    <li class="traditional-list done">Gestione delle consegne</li>
-    <li class="traditional-list done">Ricarica gasista</li>
-    <li class="traditional-list done">Pagamento della quota annuale del GAS</li>
-    <li class="traditional-list done">Gestione degli insoluti</li>
-    <li class="traditional-list done">Visualizzazione delle transazioni (in fase di test)</li>
-    <li class="traditional-list done">Visualizzazione del saldo</li>
-    <li class="traditional-list done">Operazioni economiche generiche (correzioni, fatture di utenza, spese varie)</li>
-</ol>
-<li class="traditional-list"><b>Tutti</b></li>
-<ol class="traditional-list">
-    <li class="traditional-list done">Registrazione dei nuovi utenti gasisti e fornitori (in fase di test)</li>
-    <li class="traditional-list done">Cambio password</li>
-    <li class="traditional-list done">Modifica anagrafica persona</li>
-    <li class="traditional-list">Rifiniture in modifica anagrafiche fornitore, gasista</li>
-    <li class="traditional-list"><b>test inserimento lettere accentate e caratteri speciali in tutti i punti del software</b></li>
-    <li class="traditional-list">Test delle notifiche</li>
-    <li class="traditional-list" style="color:black;">Miglioramento pagina iniziale (questa)</li>
-    <li class="traditional-list done"><i>Assistenza alla migrazione</i></li>
-</ol>
-<li class="traditional-list"><b>Ordini InterGAS</b></li>
-<ol class="traditional-list">
-    <li class="traditional-list">Aprire un ordine cui partecipano più GAS</li>
-    <li class="traditional-list">Gestione dell'avanzamento</li>
-    <li class="traditional-list">Report InterGAS per il produttore</li>
-    <li class="traditional-list">Griglia di visualizzazione dati con operazioni</li>
-</ol>
-</ul>
-
-<h3 style="padding:1.3em 0; text-align:center;">Per avere maggiori dettagli sulle attività di sviluppo, consulta <a target="_blank" href="http://www.jagom.org/trac/reesgas/report/1">la pagina dei ticket</a> (ci sono anche cose vecchie, ad uso e consumo degli sviluppatori)</h3>
+<h2>e altri amici che vorranno iscriversi al DES {{ des }}</h2>
 
 {% endblock %}

@@ -533,7 +533,7 @@ class GAS(models.Model, PermissionResource):
     def liquidity(self):
         """Accounting sold for all members of this gas.
 
-        LF QUESTION which is the difference beetween liquidity and balance_gasmembers?"""
+        """
         acc_tot = 0
         for gm in self.gasmembers:
             acc_tot = gm.balance
