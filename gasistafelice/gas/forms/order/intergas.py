@@ -8,7 +8,7 @@ from gasistafelice.gas.forms.order.base import AddOrderForm
 
 from gasistafelice.gas.models import GAS, GASSupplierOrder
 
-import logging
+import logging, copy
 
 log = logging.getLogger(__name__)
 
@@ -149,5 +149,5 @@ class AddInterGASPlannedOrderForm(AddInterGASOrderForm, AddPlannedOrderForm):
 
     class Meta(AddPlannedOrderForm.Meta):
 
-        gf_fieldsets = AddPlannedOrderForm.Meta.gf_fieldsets
+        gf_fieldsets = copy.deepcopy(AddPlannedOrderForm.Meta.gf_fieldsets)
         gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))

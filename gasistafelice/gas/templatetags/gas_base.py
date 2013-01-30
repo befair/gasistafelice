@@ -7,4 +7,7 @@ register = template.Library()
 
 @register.simple_tag
 def render_gas(gas):
-    return u"%s - %s (%s ordini = %s euro)" % (gas, gas.city, gas.orders.count(), gas.liquidity)
+    return u"%s - %s (%s ordini = %s euro)" % (
+        gas, gas.city, 
+        gas.orders.count(), gas.balance_suppliers
+    )

@@ -523,10 +523,11 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def balance_suppliers(self):
-        """Cash balance available for Suppliers related with the GAS"""
+        """How much money has been given to suppliers by this GAS."""
         acc_tot = 0
         for pact in self.pacts:
-            acc_tot += self.accounting.system['/expenses/suppliers/' + pact.supplier.uid].balance
+            acc_path = '/expenses/suppliers/' + pact.supplier.uid
+            acc_tot += self.accounting.system[acc_path].balance
         return acc_tot
 
     @property
@@ -536,7 +537,7 @@ class GAS(models.Model, PermissionResource):
         """
         acc_tot = 0
         for gm in self.gasmembers:
-            acc_tot = gm.balance
+            acc_tot += gm.balance
         return acc_tot
 
     def send_email_to_gasmembers(self, subject, message, more_to=[]):
@@ -720,6 +721,7 @@ class GASConfig(models.Model):
 
     intergas_connection_set = models.ManyToManyField(GAS,
         verbose_name=_("possible interGAS orders with"),
+        blank=True, null=True,
         help_text=_("Choose GAS that could be chosen when an interGAS order is created")
     )
 
