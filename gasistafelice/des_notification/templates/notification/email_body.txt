@@ -1,0 +1,5 @@
+{% load i18n %}{% blocktrans %}Notifica da {{ current_site }}:
+
+{{ message }}
+
+{% endblocktrans %}

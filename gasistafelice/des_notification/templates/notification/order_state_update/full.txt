@@ -1,3 +1,6 @@
 
-L' <a href="{{ order.get_absolute_url_page }}">{{order|lower}}</a> è stato {{ action }}.
+{{order}}
+
+Azione: {{ action }}
+URL: {{protocol}}://{{site.domain}}{{ order.get_absolute_url_page }}
 
