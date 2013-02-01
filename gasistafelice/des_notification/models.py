@@ -10,6 +10,8 @@ from gasistafelice.gas.models import GAS
 from gasistafelice.gas import signals as gas_signals
 from gasistafelice.lib import unordered_uniq
 
+from gasistafelice.des.models import Siteattr
+
 import logging
 
 log = logging.getLogger(__name__)
@@ -136,6 +138,8 @@ def notify_order_state_update(sender, **kwargs):
         'order' : order,
         'action' : transition.name,
         'state' : transition.destination.name,
+        'site' : Siteattr.get_site(),
+        'protocol' : 'http',
     }
 
     #--- Transition name ---#
