@@ -289,11 +289,28 @@ class GASMemberManagerTest(TestCase):
     Tests for the `GASMemberManager` manager class
     """
 
+
     def setUp(self):
         today = date.today()
         now = datetime.now()        
         midnight = time(hour=0)
-        
+
+        from gasistafelice.gas.workflow_data import workflow_dict
+        import workflows
+        #manually initialasing workflows, this is done after syncdb:
+        # post_syncdb.connect(init_workflows, sender=workflows.models)
+        for name, w in workflow_dict.items():
+            w.register_workflow()
+            print "Workflow %s was successfully registered." % name
+
+  
+        #initialasing superuser
+        from gasistafelice.des.management.commands import init_superuser
+
+        cmd = init_superuser.Command()
+        cmd.handle()
+       
+ 
         self.place_1 = Place.objects.create(name="fooGAS headquarter")
         self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
         self.place_2 = Place.objects.create(name="barGAS headquarter")
@@ -330,8 +347,8 @@ class GASMemberManagerTest(TestCase):
         self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier)
         self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier)
         
-        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=today)
-        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, date_start=today)
+        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, datetime_start=today)
+        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, datetime_start=today)
         
         self.place = Place.objects.create(name="foo", city='senigallia', province='AN')
         
