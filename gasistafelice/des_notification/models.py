@@ -182,38 +182,56 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     This in turn is saved as a default `NoticeSetting` that could be (eventually)
     changed by User in notification preferences panel.
     """
-    
-    # Mail notifications
-    notification.create_notice_type(
-        "gasmember_notification", _("Notification Received"), 
-        _("you have received a notification"), default=2,
-    )
 
-    notification.create_notice_type(
-        "gas_notification", _("Notification Received"), 
-        _("this GAS has received a notification"), default=2
-    )
+    # Mail notifications
+    # WAS: notification.create_notice_type(
+    notification.NoticeType(
+        label="gasmember_notification", 
+        display=_("Notification Received"), 
+        description=_("you have received a notification"), 
+        default=2
+    ).save()
+
+    # WAS: notification.create_notice_type(
+    notification.NoticeType(
+        label="gas_notification",
+        display=_("Notification Received"), 
+        description=_("this GAS has received a notification"),
+        default=2
+    ).save()
+
+    # WAS: notification.create_notice_type(
+    notification.NoticeType(
+        label="gas_newsletter",
+        display=_("Newsletter Received"), 
+        description=_("this GAS has received the newsletter"), 
+        default=2
+    ).save()
     
-    notification.create_notice_type(
-        "gas_newsletter", _("Newsletter Received"), 
-        _("this GAS has received the newsletter"), default=2
-    )
-    
-    notification.create_notice_type(
-        "order_state_update", _("Order state updated"), 
-        _("an order has been updated"), default=2
-    )
+    # WAS: notification.create_notice_type(
+    notification.NoticeType(
+        label="order_state_update", 
+        display=_("Order state updated"), 
+        description=_("an order has been updated"), 
+        default=2
+    ).save()
     
     # Web notifications
-    notification.create_notice_type(
-        "ordered_product_update", _("Ordered product update"), 
-        _("an ordered product has changed"), default=3
-    )
+    # WAS: notification.create_notice_type(
+    notification.NoticeType(
+        label="ordered_product_update", 
+        display=_("Ordered product update"), 
+        description=_("an ordered product has changed"), 
+        default=3
+    ).save()
     
-    notification.create_notice_type(
-        "gasstock_update", _("Product update for GAS"), 
-        _("a product has been updated for GAS"), default=3
-    )
+    # WAS: notification.create_notice_type(
+    notification.NoticeType(
+        label="gasstock_update", 
+        display=_("Product update for GAS"), 
+        description=_("a product has been updated for GAS"), 
+        default=3
+    ).save()
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
 
