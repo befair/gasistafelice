@@ -43,7 +43,7 @@ state_list = (
           ('not_withdrawn', "Not withdrawn"), # GASMemberOrder hasn't been withdrawn in due time by the GASMember who issued it
           #COMMENT: is it useful to know what has been delivered but not withdrawn
           #charged COMMENT: is it useful to make an automatic state update when order is charged by economist?
-          ('canceled', "Canceled"), # GASMemberOrder has been canceled
+          ('canceled', STATUS_CANCELED), # GASMemberOrder has been canceled
           #(exception_raised,"Exception raised")
           )
      
@@ -57,7 +57,7 @@ transition_list = (
                 ('make_ready', "Make ready", 'ready'), # flag a GASMemberOrder as 'available for withdrawal' 
                 ('set_withdrawn', "Set withdrawn", 'withdrawn'), # flag a GASMemberOrder as 'withdrawn by the GASMember who issued it'
                 ('set_not_withdrawn', "Set not withdrawn", 'not_withdrawn'), # flag a GASMemberOrder as 'not withdrawn by the GASMember who issued it'
-                ('cancel', "Cancel", 'canceled'), # cancel a GASMemberOrder
+                ('cancel', TRANSITION_CANCEL, 'canceled'), # cancel a GASMemberOrder
                    )
    
 ## Transitions-to-States map
@@ -98,14 +98,14 @@ name="SupplierOrderDefault"
 ## States in which a SupplierOrder can be
 state_list = (
           # (key, state name),
-           ('open', "Open"), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
-           ('closed', "Closed"), # SupplierOrder is closed; GasMemberOrders are disabled 
+           ('open', STATUS_OPEN), # SupplierOrder is open; Gas members are allowed to issue GASMemberOrders
+           ('closed', STATUS_CLOSED), # SupplierOrder is closed; GasMemberOrders are disabled 
            ('on_completion', "On completion"), # SupplierOrder was closed, but some constraints were not satisfied, so a completion procedure was started 
            ('finalized', "Finalized"), # SupplierOrder was finalized (no more chances left for reopening)
            ('sent', "Sent"), # SupplierOrder was sent to the Supplier
            ('delivered', "Delivered"), # SupplierOrder was delivered to the GAS
-           ('archived', "Archived"), # SupplierOrder was delivered to and processed by the GAS
-           ('canceled', "Canceled"),# SupplierOrder was canceled
+           ('archived', STATUS_ARCHIVED), # SupplierOrder was delivered to and processed by the GAS
+           ('canceled', STATUS_CANCELED),# SupplierOrder was canceled
            #(exception_raised,"Exception raised")
 )
 
@@ -114,15 +114,15 @@ state_list = (
  
 transition_list = ( 
                  # (key, transition name, destination state), 
-                 ('close', "Close", 'closed'), # close the SupplierOrder
+                 ('close', TRANSITION_CLOSE, 'closed'), # close the SupplierOrder
                  ('reopen', "Reopen", 'open'), # re-open the SupplierOrder
                  ('start_completion', "Start completion", 'on_completion'), # start the completion procedure for the SupplierOrder
                  ('end_completion', "End completion", 'closed'), # end the completion procedure for the SupplierOrder
                  ('finalize', "Finalize", 'finalized'), # finalize the SupplierOrder
                  ('send', "Send", 'sent'), # send the SupplierOrder to the Supplier
                  ('set_delivered', "Set delivered", 'delivered'), # mark the SupplierOrder as "delivered"
-                 ('archive', "Archive", 'archived'), # mark the SupplierOrder as "archived" (do not display anymore)
-                 ('cancel', "Cancel", 'canceled'), # cancel the SupplierOrder                                     
+                 ('archive', TRANSITION_ARCHIVE, 'archived'), # mark the SupplierOrder as "archived" (do not display anymore)
+                 ('cancel', TRANSITION_CANCEL, 'canceled'), # cancel the SupplierOrder                                     
 )
  
 ## Transitions-to-States map
@@ -177,12 +177,12 @@ state_list = (
  
 transition_list = ( 
     # (key, transition name, destination state), 
-    ('open', _("Open"), 'open'), # close the SupplierOrder
-    ('close', _("Close"), 'closed'), # close the SupplierOrder
-    ('close_and_send', _("Close and send email"), 'closed'), # close the SupplierOrder
-    ('archive', _("Archive"), 'archived'), # make the SupplierOrder disappear from ordinary operations
-    ('make_unpaid', "MAKE UNPAID", 'unpaid'), # cancel the SupplierOrder 
-    ('cancel', _("Cancel"), 'canceled'), # cancel the SupplierOrder 
+    ('open', TRANSITION_OPEN, 'open'), # close the SupplierOrder
+    ('close', TRANSITION_CLOSE, 'closed'), # close the SupplierOrder
+    ('close_and_send', TRANSITION_CLOSE_EMAIL, 'closed'), # close the SupplierOrder
+    ('archive', TRANSITION_ARCHIVE, 'archived'), # make the SupplierOrder disappear from ordinary operations
+    ('make_unpaid', TRANSITION_UNPAID, 'unpaid'), # cancel the SupplierOrder 
+    ('cancel', TRANSITION_CANCEL, 'canceled'), # cancel the SupplierOrder 
 )
  
 ## Transitions-to-States map
