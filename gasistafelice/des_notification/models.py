@@ -127,6 +127,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
         pass
 
 #-------------------------------------------------------------------------------
+from gasistafelice import gf_exceptions as exceptions
 
 def notify_order_state_update(sender, **kwargs):
 
@@ -145,11 +146,16 @@ def notify_order_state_update(sender, **kwargs):
     #--- Transition name ---#
 
     recipients = []
-    if transition.destination.name.lower() in ["open", "closed"]:
-        recipients = [order.referrer_person.user]
-    elif transition.destination.name.lower() in ["sent", "paid"]:
-        recipients = list(order.supplier.referrers) + [order.referrer_person.user]
-        recipients = unordered_uniq(recipients)
+
+    try:
+        if transition.destination.name.lower() in ["open", "closed"]:
+            recipients = [order.referrer_person.user]
+        elif transition.destination.name.lower() in ["sent", "paid"]:
+            recipients = list(order.supplier.referrers) + [order.referrer_person.user]
+            recipients = unordered_uniq(recipients)
+    except AttributeError as e:
+        #TODO Matteo: complete exception handling here
+        raise exceptions.ReferrerIsNoneException()
 
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))

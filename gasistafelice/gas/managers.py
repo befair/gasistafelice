@@ -54,7 +54,14 @@ class GASMemberManager(models.Manager):
         If a `gas` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_TECH, gas)
+        #WAS: get_param_roles get only one non-keyword argument
+        #WAS: p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_TECH, gas)
+        #NOTE: cannot pass `None` in a keyword argument to `ParamRole.objects.get_param_roles` 
+        if gas:
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_TECH, gas=gas)
+        else:
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_TECH)
+ 
         # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
