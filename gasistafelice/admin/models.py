@@ -375,6 +375,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 class PPRAdmin(admin.ModelAdmin):
 
     list_filter = ('role__role', 'role',)
+    search_fields = ('user__first_name', 'user__username', 'user__last_name','role__role__name',)
 
 class PRAdmin(admin.ModelAdmin):
 

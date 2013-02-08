@@ -5,7 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerEr
 from django.contrib.auth.decorators import login_required
 from django.utils import simplejson
 
-from notification.models import Notice
+#Matteo: to restore when django_notification will be updated
+#from notification.models import Notice
 from flexi_auth.models import ROLES_DICT, ParamRole
 
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
@@ -465,7 +466,8 @@ def list_comments(request):
 def list_notifications(request):
 
     context = {
-        'notifications': Notice.objects.notices_for(request.user, on_site=True)
+        #Matteo: to restore when django_notification will be updated
+        'notifications': []#Notice.objects.notices_for(request.user, on_site=True)
     }
     return render_to_xml_response("notifications_result.xml", context)
 

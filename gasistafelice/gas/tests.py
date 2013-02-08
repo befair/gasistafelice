@@ -1,15 +1,18 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.management.commands import dumpdata
 
 from permissions.models import Role
 
 from gasistafelice.base.models import Person, Place
 
+from gasistafelice.des.management.commands import init_superuser
+
 from gasistafelice.gas.models import GAS, GASMember, GASSupplierStock, GASSupplierSolidalPact,\
 GASMemberOrder, GASSupplierOrder, GASSupplierOrderProduct, Delivery, Withdrawal
 from gasistafelice.gas.managers import GASMemberManager
 
-from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory
+from gasistafelice.supplier.models import Supplier, SupplierStock, Product, ProductCategory, ProductPU
 
 from gasistafelice.consts import * 
 from flexi_auth.models import ParamRole, Param
@@ -19,14 +22,17 @@ from datetime import time, date, datetime
 
 class GASSupplierStockTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierStock'''
-    
+
+    fixtures=['des_test_data.json']
+
     def setUp(self):
         self.place_1 = Place.objects.create(name="fooGAS headquarter")
         self.gas = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
         self.supplier = Supplier.objects.create(name='Acme inc.', vat_number='123')
         self.pact = GASSupplierSolidalPact.objects.create(gas=self.gas, supplier=self.supplier)
         self.category = ProductCategory.objects.create(name='food')
-        self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier)
+        self.productPU = ProductPU.objects.create(name='unit',symbol='u',description='produt unit')
+        self.product = Product.objects.create(name='carrots', category=self.category, producer=self.supplier, pu=self.productPU)
         self.stock = SupplierStock.objects.create(supplier=self.supplier, product=self.product, price=100)
         
     def testSupplier(self):
@@ -62,7 +68,9 @@ class GASMemberOrderTest(TestCase):
             a pact can be created between GAS 2 and Supplier 2 for some TestCase
 
         Use runing $ python manage.py test gas.GASMemberOrderTest'''
-    #fixtures = ['test.json']
+
+    #TODO: insert appropriate fixtures here
+    fixtures = ['','','','','','','','','','','','',]
 
     def setUp(self):
         self.now = date.today()
@@ -289,11 +297,28 @@ class GASMemberManagerTest(TestCase):
     Tests for the `GASMemberManager` manager class
     """
 
+
+    fixtures = ['des_test_data.json']
     def setUp(self):
         today = date.today()
         now = datetime.now()        
         midnight = time(hour=0)
-        
+
+        from gasistafelice.gas.workflow_data import workflow_dict
+        import workflows
+        #manually initialasing workflows, this is done after syncdb:
+        # post_syncdb.connect(init_workflows, sender=workflows.models)
+        for name, w in workflow_dict.items():
+            w.register_workflow()
+            print "Workflow %s was successfully registered." % name
+
+  
+        #initialasing superuser
+
+        cmd = init_superuser.Command()
+        cmd.handle()
+       
+ 
         self.place_1 = Place.objects.create(name="fooGAS headquarter")
         self.gas_1 = GAS.objects.create(name='fooGAS', id_in_des='1', headquarter=self.place_1)
         self.place_2 = Place.objects.create(name="barGAS headquarter")
@@ -329,16 +354,30 @@ class GASMemberManagerTest(TestCase):
         
         self.pact_1 = GASSupplierSolidalPact.objects.create(gas=self.gas_1, supplier=self.supplier)
         self.pact_2 = GASSupplierSolidalPact.objects.create(gas=self.gas_2, supplier=self.supplier)
-        
-        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, date_start=today)
-        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, date_start=today)
+
+        #need to add a (eligible) referrer for the pact
+        pr1 = ParamRole.get_role('GAS_REFERRER_SUPPLIER', pact=self.pact_1)
+
+        pr1.add_principal(self.user_1)
+        pr1.add_principal(self.user_2)
+
+
+        self.order_1 = GASSupplierOrder.objects.create(pact=self.pact_1, datetime_start=today, referrer_person=self.person_1)
+        self.order_2 = GASSupplierOrder.objects.create(pact=self.pact_2, datetime_start=today, referrer_person=self.person_2)
         
         self.place = Place.objects.create(name="foo", city='senigallia', province='AN')
         
         self.delivery = Delivery.objects.create(place=self.place, date=today)
         
         self.withdrawal = Withdrawal.objects.create(place=self.place, date=today, start_time=now, end_time=midnight)
-    
+
+        #code useful to dump test data
+        #file_open = open("test_data_for_des", "w")
+ 
+        #cmd = dumpdata.Command()
+        #file_open.write(cmd.handle())
+        #file_open.close()
+
     def testShallowCopyOk(self):
         """It should be possible to make a shallow copy of a manager instance"""
         # see https://docs.djangoproject.com/en/1.3/topics/db/managers/#implementation-concerns
@@ -386,7 +425,9 @@ class GASMemberManagerTest(TestCase):
         self.p_role_1.add_principal(self.user_1)
         self.p_role_1.add_principal(self.user_3)
         self.p_role_2.add_principal(self.user_2)
-        
+
+        #print("\nset_1: %s\nset_2: %s" % (set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3))))
+ 
         self.assertEqual(set(GASMember.objects.tech_referrers()), set((self.member_1, self.member_2, self.member_3)))
     
     def testSupplierAgentsOK(self):
