@@ -987,14 +987,14 @@ class GASMember(models.Model, PermissionResource):
     def total_basket(self):
         tot = 0
         for gmord in self.basket:
-            tot += gmord.tot_price
+            tot += gmord.price_expected
         return tot
 
     @property
     def total_basket_to_be_delivered(self):
         tot = 0
         for gmord in self.basket_to_be_delivered:
-            tot += gmord.tot_price
+            tot += gmord.price_expected
         return tot
 
     def setup_roles(self):
@@ -1376,7 +1376,7 @@ class GASMember(models.Model, PermissionResource):
                 actualProduttore = rowOrder
                 description = unicode(el.order)
                 producer = el.supplier
-            tot_prod += el.tot_price
+            tot_prod += el.price_expected
 
             records.append({
                'order' : rowOrder,
@@ -1387,7 +1387,7 @@ class GASMember(models.Model, PermissionResource):
                'price_ordered' : el.ordered_price,
                'price_delivered' : el.ordered_product.order_price,
                'price_changed' : el.has_changed,
-               'tot_price' : el.tot_price,
+               'tot_price' : el.price_expected,
                'tot_prod' : tot_prod,
                'order_confirmed' : el.is_confirmed,
                'note' : el.note,

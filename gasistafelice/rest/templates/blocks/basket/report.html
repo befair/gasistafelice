@@ -79,7 +79,7 @@
                     <td class="taright uprice">&euro; {{row.price_delivered|floatformat:"2"}}</td>
                 {% endif %}
                 <td class="taright qta">{{row.amount}}</td>
-                <td class="taright totprice">&euro; {{row.tot_price|floatformat:"2"}}</td>
+                <td class="taright totprice">&euro; {{row.price_expected|floatformat:"2"}}</td>
                 <td class="product">{{row.product|truncatewords:"200"}}
                 {% if row.note %}
                     <div class="note">{{row.note|truncatewords:"69"}}</div>

@@ -10,7 +10,7 @@
         "{{el.product|escapejs}}",
         "&#8364; {{el.ordered_price|floatformat:"2"}}",
         "{{ el.ordered_amount|escapejs|floatformat:"2"}}",
-        "&#8364; {{ el.tot_price|escapejs|floatformat:"2"}}",
+        "&#8364; {{ el.price_expected|escapejs|floatformat:"2"}}",
         "{{el.order.urn|escapejs}}",
         "{{el.supplier.urn|escapejs}}",
         "{{el.ordered_product.gasstock.stock.urn|escapejs}}",

@@ -127,7 +127,7 @@ class Block(BlockSSDataTables):
 
             map_info[el.pk] = {
                 'formset_index' : i,
-                'ordered_total' : el.tot_price, # This is the total computed NOW (with ordered_product.price)
+                'ordered_total' : el.price_expected, # This is the total computed NOW (with ordered_product.price)
             }
 
         data['form-TOTAL_FORMS'] = c

@@ -750,7 +750,7 @@ WHERE order_id = %s \
     def tot_price(self):
         tot = 0
         for gmo in self.ordered_products:
-            tot += gmo.tot_price
+            tot += gmo.price_expected
         return tot
 
     @property
@@ -1155,9 +1155,9 @@ WHERE order_id = %s \
                 description = smart_unicode(el.purchaser.person)
             product = smart_unicode(el.product)
 
-            tot_fam += el.tot_price
+            tot_fam += el.price_expected
             nProducts += 1
-            tot_Ord += el.tot_price
+            tot_Ord += el.price_expected
 
             records.append({
                'product' : product,
@@ -1165,7 +1165,7 @@ WHERE order_id = %s \
                'price_delivered' : el.ordered_product.order_price,
                'price_changed' : el.has_changed,
                'amount' : el.ordered_amount,
-               'tot_price' : el.tot_price,
+               'tot_price' : el.price_expected,
                'family_id' : rowFam,
                'note' : el.note,
             })
@@ -1540,7 +1540,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         gmo_list = self.gasmember_order_set.all()
         tot = 0 
         for gmo in gmo_list:
-            tot += gmo.tot_price
+            tot += gmo.price_expected
         return tot 
 
     @property
@@ -1682,7 +1682,7 @@ class GASMemberOrder(models.Model, PermissionResource):
         return self.ordered_product.order_price != self.ordered_price
 
     @property
-    def tot_price(self):
+    def price_expected(self):
         """Total expected to pay fot this order.
 
         The price is computed using order_price which is 
