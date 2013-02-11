@@ -34,7 +34,10 @@ class GASMemberManager(models.Manager):
         If a `gas` argument is provided, the result set is filtered accordingly.      
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER, gas)
+        if(gas):
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER, gas=gas)
+        else:
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER)
         # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
@@ -81,7 +84,10 @@ class GASMemberManager(models.Manager):
         If a `gas` argument is provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_CASH, gas)
+        if(gas):
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_CASH, gas=gas)
+        else:
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_CASH)
         # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
@@ -100,7 +106,16 @@ class GASMemberManager(models.Manager):
         If a `gas` and/or a 'supplier' arguments are provided, the result set is filtered accordingly.
         """
         # TODO: UNITTEST needed !
-        p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_SUPPLIER, gas, supplier)
+        if(gas):
+            if(supplier):
+                p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_SUPPLIER, gas=gas, supplier=supplier)
+            else:
+                p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_SUPPLIER, gas=gas)
+        elif(supplier):
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_SUPPLIER, supplier=supplier)
+        else:
+            p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_SUPPLIER)
+        
         # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets
