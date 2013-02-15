@@ -378,7 +378,7 @@ class GASSupplierOrderProductTest(TestCase):
         product = GASSupplierOrderProduct.objects.create(order=self.order_1, gasstock=self.gas_stock_1, initial_price="0.35", order_price="0.35")
         self.assertEqual(product.gas, self.gas_1)
 
-class GASSupplierOrderTest(TestClient):
+class GASSupplierOrderTest(TestCase):
     '''Tests GASSupplierOrder methods'''
 
     fixtures = ['a_test_auth.json','b_test_des.json',
