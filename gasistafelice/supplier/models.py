@@ -23,7 +23,7 @@ from flexi_auth.exceptions import WrongPermissionCheck
 
 from simple_accounting.models import economic_subject, AccountingDescriptor, LedgerEntry, account_type
 
-from gasistafelice.exceptions import NoSenseException
+from gasistafelice.gf_exceptions import NoSenseException
 from gasistafelice.lib import ClassProperty, unordered_uniq
 from gasistafelice.lib.fields.models import CurrencyField, PrettyDecimalField
 from gasistafelice.lib.fields import display

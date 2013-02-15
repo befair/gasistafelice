@@ -41,7 +41,7 @@ from gasistafelice.supplier.models import Supplier, SupplierStock, Product, Prod
 from gasistafelice.gas.managers import GASMemberManager, IncludeSuspendedGASMemberManager
 from gasistafelice.des.models import DES
 
-from gasistafelice.exceptions import NoSenseException, DatabaseInconsistent
+from gasistafelice.gf_exceptions import NoSenseException, DatabaseInconsistent
 
 from decimal import Decimal
 import datetime

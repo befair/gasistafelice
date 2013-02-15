@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrderProduct
-from gasistafelice.exceptions import DatabaseInconsistent
+from gasistafelice.gf_exceptions import DatabaseInconsistent
 
 import logging
 log = logging.getLogger(__name__)
