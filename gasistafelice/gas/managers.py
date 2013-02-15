@@ -88,6 +88,7 @@ class GASMemberManager(models.Manager):
             p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_CASH, gas=gas)
         else:
             p_roles = ParamRole.objects.get_param_roles(GAS_REFERRER_CASH)
+
         # initialize the return QuerySet to an EmptyQuerySet
         qs = self.model.objects.none()
         # costruct the result set by joining partial QuerySets

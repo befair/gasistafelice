@@ -1689,8 +1689,6 @@ class GASMemberOrder(models.Model, PermissionResource):
         the last snapshot of the price for a product in an order.
         """
 
-        #TODO Matteo: s/tot_price/price_expected
-
         #QUESTION: have we to use self.ordered_price instead of self.ordered_product.order_price?
         #ANSWER: NO. ordered_price is a copy of the price of the ordered_product when gasmember ordered it.
         
