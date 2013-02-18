@@ -17,6 +17,12 @@ urlpatterns = patterns('',
 	(r'^$'       , 'base.views.index'  ),
 	(r'^%s$'     % settings.URL_PREFIX , 'base.views.index'  ),
 
+    #New user interface
+	(r'^%sgas/' % settings.URL_PREFIX, include('gas.urls')),
+	#(r'^%ssupplier/' % settings.URL_PREFIX, include('supplier.urls')),
+	#(r'^%sorder/' % settings.URL_PREFIX, include('gas.order_urls')),
+    
+    #End new user interface
 	(r'^%srest/' % settings.URL_PREFIX, include('rest.urls')),
 
 	(r'^%saccounts/login/$' % settings.URL_PREFIX, 'des.views.login'),
