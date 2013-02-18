@@ -130,11 +130,22 @@ class GAS(models.Model, PermissionResource):
         return self.name
 
     def clean(self):
-        self.name = self.name.strip()
-        self.id_in_des = self.id_in_des.strip()
-        self.note = self.note.strip()
+        try:
+            self.name = self.name.strip()
+        except TypeError as e:
+            raise ValidationError(ug("Name must be set"))
+        try:
+            self.id_in_des = self.id_in_des.strip()
+        except TypeError as e:
+            raise ValidationError(ug("GAS code must be set"))
+        try:
+            self.note = self.note.strip()
+        except TypeError as e:
+            pass
 
-        if self.headquarter is None:
+        try:
+            assert self.headquarter
+        except Place.DoesNotExist as e:
             raise ValidationError(ug("Default headquarter place must be set"))
 
         return super(GAS, self).clean()
