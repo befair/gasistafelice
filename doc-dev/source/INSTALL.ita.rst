@@ -83,6 +83,10 @@ Istruzioni per installare Gasista Felice (9 marzo 2012)
 	
 	(gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb --noinput
 
+    e poi applicare le migrazioni con:
+
+	(gasdev)/gasistafelice/gasistafelice$ python manage.py migrate
+
 2.	Creare l'utente amministratore di gasistafelice:
 
 	(gasdev)/gasistafelice/gasistafelice$ python manage.py init_superuser

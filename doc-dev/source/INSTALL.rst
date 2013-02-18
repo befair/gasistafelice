@@ -62,6 +62,7 @@ Install development version - 2nd february 2012
 4. Initialize data:
 
   * python manage.py syncdb --noinput
+  * python manage.py migrate
   * python manage.py init_superuser
 
 
