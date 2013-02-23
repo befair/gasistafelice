@@ -138,7 +138,7 @@ class AddInterGASOrderForm(AddOrderForm):
     class Meta(AddOrderForm.Meta):
 
         #WAS: INTERGAS 6
-        gf_fieldsets = AddOrderForm.Meta.gf_fieldsets
+        gf_fieldsets = copy.deepcopy(AddOrderForm.Meta.gf_fieldsets)
         gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
 
 
