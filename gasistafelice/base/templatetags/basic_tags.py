@@ -10,6 +10,11 @@ import datetime, os.path
 
 from django.utils.translation import ugettext as _
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 register = template.Library()
 
 @register.simple_tag
@@ -44,6 +49,14 @@ def bool_img_not(value):
 @stringfilter
 def truncatetostr(value, sep):
     return value[:value.find(sep)]
+
+@register.simple_tag
+def render_base64_enecoded_pickled_notice(value):
+    decoded_message = pickle.loads(value.message.decode("base64"))
+    message = ""
+    for el in decoded_message.values():
+        message = message + " " + str(el)
+    return message
 
 #--------------------------------------------------------------------------------
 
