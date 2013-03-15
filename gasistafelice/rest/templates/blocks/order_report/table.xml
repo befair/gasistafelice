@@ -5,7 +5,7 @@
     <th>{% trans "Id" %}</th>
     <th>{% trans "Product" %}</th>
     <th>{% trans "Price" %}</th>
-    <th title='{% trans "Price changed" %}'>&euro;&lt;&gt;</th>
+    <th title='{% trans "Price changed" %}'>&#8364;&lt;&gt;</th>
     <th title='{% trans "TOT GAS members" %}'>{% trans "GASMember" %}</th>
     <th title='{% trans "Num of un confirmed gasmember orders" %}'>{% trans "n° UnC" %}</th>
     <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
