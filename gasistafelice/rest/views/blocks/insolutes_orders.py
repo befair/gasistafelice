@@ -5,7 +5,7 @@ from gasistafelice.rest.views.blocks.open_orders import Block as OpenOrdersBlock
 #                                                                              #
 #------------------------------------------------------------------------------#
 
-EURO_HTML = '&euro;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
+EURO_HTML = '&#8364;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class Block(OpenOrdersBlock):
 

@@ -355,7 +355,7 @@ EcoGASMemberFeeFormSet = formset_factory(
 
 #-------------------------------------------------------------------------------
 
-EURO_HTML = '&euro;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
+EURO_HTML = '&#8364;'  # &amp;euro; &#8364; &euro;  &#128;  &#x80;
 EURO_LABEL = 'Eur.'  # € &amp;euro; &#8364; &euro;  &#128;  &#x80;
 
 class InvoiceOrderForm(forms.Form):

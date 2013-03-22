@@ -10,7 +10,7 @@
     <th title='{% trans "Phone" %}'>{% trans "Phone" %}</th>
     <th title='{% trans "TOT products" %}'>{% trans "Total products" %}</th>
     <th title='{% trans "TOT pacts" %}'>{% trans "Total Pacts" %}</th>
-    <th title='{% trans "TOT account" %}'>&euro;</th>
+    <th title='{% trans "TOT account" %}'>&#8364;</th>
     <th title='{% trans "List of certifications" %}'>{% trans "Certification" %}</th>
 {% endblock %}
 

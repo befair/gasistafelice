@@ -67,7 +67,7 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 <td style="sumQta"><h2>{% trans "OrderedProducts" %} {{ prod_count }}</h2></td>
                 <td style="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
                 <td class="sumPricefield taright">{% trans "Total expected" %}</td>
-                <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
+                <td class="sumPricevalue taright">&#8364; {{total_amount|floatformat:"2"}}
                 </td>
             </tr>
         </table>
@@ -101,12 +101,12 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
             <td class="product"> {{ pd.product }}</td>
             <td class="taright qta">{{pd.rep_price}}</td>
             <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
-            <td class="taright totprice">&nbsp;&euro;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
+            <td class="taright totprice">&nbsp;&#8364;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
         </tr>
     {%  endfor %}
     <tr>
         <td class="sumPricefield taright" colspan="4" >{% trans "Total cost" %}</td>
-        <td class="sumPricevalue taright">&euro; {{ total_amount|floatformat:"2"}}</td>
+        <td class="sumPricevalue taright">&#8364; {{ total_amount|floatformat:"2"}}</td>
     </tr>
 </tbody>
 </table>
