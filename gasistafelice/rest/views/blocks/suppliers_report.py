@@ -200,7 +200,7 @@ class Block(BlockSSDataTables):
 
 #            <td class="taright qta">{{row.tot_stocks|floatformat:"-2"}}</td>
 #            <td class="taright qta">{{row.tot_pacts|floatformat:"-2"}}</td>
-#            <td class="taright totprice">&nbsp;&euro;&nbsp;{{row.balance|floatformat:"2"}}</td>
+#            <td class="taright totprice">&nbsp;&#8364;&nbsp;{{row.balance|floatformat:"2"}}</td>
 #            <td>{{row.certs|escapejs}}</td>
 
         return records, nSup -3 , nProducts, pact_count
@@ -238,7 +238,7 @@ class Block(BlockSSDataTables):
         context = Context(context_dict)
         html = template.render(context)
         result = StringIO.StringIO()
-        #DOMTHU: <th title='TOT account'>&euro;</th>
+        #DOMTHU: <th title='TOT account'>&#8364;</th>
         #pdf = pisa.pisaDocument(StringIO.StringIO(html), result) 
         pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8", "ignore")), result ) #, link_callback = fetch_resources )

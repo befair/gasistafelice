@@ -3,7 +3,7 @@
 <div class="content">
 <ul>
 	{% for notification in notifications %} 
-	<li>{{ notification }}</li>
+	<li>{% render_base64_enecoded_pickled_notice notification %}</li>
     {% endfor %}
 </ul>
 </div>

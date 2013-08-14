@@ -55,7 +55,7 @@
                 {% if ActualProduttore != -1 %}
                     <tr>
                         <td colspan='3'></td>
-                        <td class="totProd">&euro; {{Last_tot_prod|floatformat:"2"}}</td>
+                        <td class="totProd">&#8364; {{Last_tot_prod|floatformat:"2"}}</td>
                         <td></td>
                     </tr>
                 {% endif %}
@@ -74,12 +74,12 @@
             {% endif %}
                 <td class="tab"></td>
                 {% if row.price_changed %}
-                    <td class="taright alert uprice">&euro; {{row.price_ordered|floatformat:"2"}} --> {{row.price_delivered|floatformat:"2"}}</td>
+                    <td class="taright alert uprice">&#8364; {{row.price_ordered|floatformat:"2"}} --> {{row.price_delivered|floatformat:"2"}}</td>
                 {% else %}
-                    <td class="taright uprice">&euro; {{row.price_delivered|floatformat:"2"}}</td>
+                    <td class="taright uprice">&#8364; {{row.price_delivered|floatformat:"2"}}</td>
                 {% endif %}
                 <td class="taright qta">{{row.amount}}</td>
-                <td class="taright totprice">&euro; {{row.price_expected|floatformat:"2"}}</td>
+                <td class="taright totprice">&#8364; {{row.price_expected|floatformat:"2"}}</td>
                 <td class="product">{{row.product|truncatewords:"200"}}
                 {% if row.note %}
                     <div class="note">{{row.note|truncatewords:"69"}}</div>
@@ -91,7 +91,7 @@
             {% if ActualProduttore != -1 and forloop.last %}
                 <tr>
                     <td colspan='3'></td>
-                    <td class="totProd">&euro; {{row.tot_prod|floatformat:"2"}}</td>
+                    <td class="totProd">&#8364; {{row.tot_prod|floatformat:"2"}}</td>
                     <td>
                     </td>
                 </tr>

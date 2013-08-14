@@ -7,7 +7,7 @@
     <th>{% trans "Supplier" %}</th>
     <th>{% trans "Product" %}</th>
     <th>{% trans "Price" %}</th>
-    <th title='{% trans "Price changed" %}'>&euro;&lt;&gt;</th>
+    <th title='{% trans "Price changed" %}'>&#8364;&lt;&gt;</th>
     <th title='{% trans "Ordered amount" %}'>{% trans "Amount" %}</th>
     <th title='{% trans "Ordered total" %}'>{% trans "Total" %}</th>
     <th title='{% trans "Delete" %}'>Del</th>

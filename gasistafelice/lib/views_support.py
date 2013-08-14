@@ -9,6 +9,10 @@ from django.utils import simplejson
 import os
 from django.conf import settings
 
+import logging, traceback
+
+log = logging.getLogger(__name__) 
+
 #TODO: Fero def prepare_datatables_list
 def prepare_datatables_queryset(request, querySet, columnIndexNameMap, *args):
     """

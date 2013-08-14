@@ -83,9 +83,9 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 <td class="sumQta"><h2>{% trans "Families" %} {{ fam_count }}</h2></td>
                 <td class="sumPricefield taright">{% trans "Total expected" %}</td>
                 {% if total_calc == total_amount%}
-                    <td class="sumPricevalue taright">&euro; {{total_amount|floatformat:"2"}}
+                    <td class="sumPricevalue taright">&#8364; {{total_amount|floatformat:"2"}}
                 {% else %}
-                    <td class="sumPricevalue taright alert">&euro; {{total_amount|floatformat:"2"}}   /  calc:{{total_calc|floatformat:"2"}}
+                    <td class="sumPricevalue taright alert">&#8364; {{total_amount|floatformat:"2"}}   /  calc:{{total_calc|floatformat:"2"}}
                 {% endif %}
                 </td>
             </tr>
@@ -126,25 +126,25 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                 {% endif %}
                 </td>
                 {% if row.price_changed %}
-                    <td class="taright alert uprice" >&euro;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
+                    <td class="taright alert uprice" >&#8364;&nbsp;{{row.price_ordered|floatformat:"2"}} --> &#8364;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
                 {% else %}
-                    <td class="taright uprice" >&euro;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
+                    <td class="taright uprice" >&#8364;&nbsp;{{row.price_delivered|floatformat:"2"}}</td>
                 {% endif %}
                 <td class="taright qta">{{row.amount|floatformat:"-2"}}</td>
-                <td class="taright totprice" >&euro;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
+                <td class="taright totprice" >&#8364;&nbsp;{{row.tot_price|floatformat:"2"}}</td>
 
                 {% if ActualFamily == -1 or ActualFamily != row.family_id %}
                     {% set ActualFamily = row.family_id %}
                     {% for fam in subFam %}
                         {% if fam.family_id == ActualFamily %}
                             {% if fam.basket_products == 1 %}
-                                <td class="fam" >{{ fam.gasmember }}&nbsp;&euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                                <td class="fam" >{{ fam.gasmember }}&nbsp;&#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
                             {# KLUDGE FOR pisa BUGGED code! It does not understand different rowspan. It seems that it calculates wrong row heights #}
                             {% else %}
                                 {% if fam.basket_products == 2 %}
-                                    <td class="fam" rowspan="2">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                                    <td class="fam" rowspan="2">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
                                 {% else %}
-                                    <td class="fam" style="border-bottom:0;" rowspan="3">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &euro;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
+                                    <td class="fam" style="border-bottom:0;" rowspan="3">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
@@ -175,12 +175,12 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
             <td class="product"> {{ pd.product }}</td>
             <td class="taright qta">{{pd.rep_price}}</td>
             <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
-            <td class="taright totprice">&nbsp;&euro;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
+            <td class="taright totprice">&nbsp;&#8364;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
         </tr>
     {%  endfor %}
     <tr>
         <td class="sumPricefield taright" colspan="4" >{% trans "Total cost" %}</td>
-        <td class="sumPricevalue taright">&euro; {{ total_amount|floatformat:"2"}}</td>
+        <td class="sumPricevalue taright">&#8364; {{ total_amount|floatformat:"2"}}</td>
     </tr>
 </tbody>
 </table>

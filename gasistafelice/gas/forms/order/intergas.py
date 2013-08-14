@@ -6,7 +6,7 @@ from django import forms
 from gasistafelice.gas.forms.order.plan import AddPlannedOrderForm
 from gasistafelice.gas.forms.order.base import AddOrderForm
 
-from gasistafelice.gas.models import GAS, GASSupplierOrder
+from gasistafelice.gas.models import GAS, GASSupplierOrder, GASSupplierSolidalPact
 
 import logging, copy
 
@@ -65,13 +65,18 @@ class AddInterGASOrderForm(AddOrderForm):
 
                 #retrieve the existing pact for this gas for this supplier. If exist.
                 #TODO: Matteo: if not exists -> POST forged -> we should raise specific exception
-                extra_pact = gas.pacts.get(supplier=supplier)
-                log.debug("Pact %s found." % extra_pact)
-                self._involved_extra_pacts.add(extra_pact)
+                extra_pact = None
+                try:
+                    extra_pact = gas.pacts.get(supplier=supplier)
+                    log.debug("Pact %s found." % extra_pact)
+                    self._involved_extra_pacts.add(extra_pact)
+                except GASSupplierSolidalPact.DoesNotExist as e:
+                    self._messages['error'].append(ugettext("Please select a gas which has a pact with the same supplier of the pact this order refers to"))
+                    #raise forms.ValidationError("Not valid InterGAS order: each GAS involved has to have a pact with the same supplier of the pact this order refers to")
             
         if self._intergas_requested and not self._involved_extra_pacts:
             log.debug("Not valid InterGAS order: at least 2 GAS needed")
-            raise form.ValidationError("Not valid InterGAS order: at least 2 GAS needed")
+            raise forms.ValidationError("Not valid InterGAS order: at least 2 GAS needed")
 
         return cleaned_data
 
@@ -133,7 +138,7 @@ class AddInterGASOrderForm(AddOrderForm):
     class Meta(AddOrderForm.Meta):
 
         #WAS: INTERGAS 6
-        gf_fieldsets = AddOrderForm.Meta.gf_fieldsets
+        gf_fieldsets = copy.deepcopy(AddOrderForm.Meta.gf_fieldsets)
         gf_fieldsets[0][1]['fields'].append(('intergas', 'intergas_grd'))
 
 
