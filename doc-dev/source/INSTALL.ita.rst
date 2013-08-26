@@ -38,24 +38,6 @@ Istruzioni per installare Gasista Felice (9 marzo 2012)
 	(gasdev)$ cd gasistafelice
 	(gasdev)/gasistafelice$ pip install -r requirements.txt
 	
-	-nota: 
-	
-	 prima di procedere con l'installazione dei requisiti, assicurarsi che 
-	 il proprio sistema soddisfi i requisiti necessari all'installazione dei 	 requisiti di gasista felice.
-	 
-		-In un sistema di derivazione debian, assiurarsi di avere instal		lati i seguenti pacchetti:
-
-		- python-dev (PYTHON)
-		- libpq-dev (PostgreSQL)
-		- libsqlite3-dev (SQLite)
-
-		-In un sistema windows, scaricare ed installare:
-		
-		- python (versione 2.6.5)
-		- postgresql
-		- sqlite
-
-
 
 4/7 Configurare Gasista Felice:
 
