@@ -25,6 +25,8 @@ Per ripristinare il database si dovrà:
 
 5. eseguire i comandi:
 
+    NOTA: è necessaria un'installazione di django perchè il comando ./wipe_postgres_db.sh funzioni. Se si utilizza un virtualenviroment, caricarlo con il comando workon <nome_virtualenv> 
+
     - export GF_HOME=<cartella di installazione di GF>
 
     - cd $GF_HOME/extra
@@ -36,4 +38,12 @@ Per ripristinare il database si dovrà:
 6. ripristinare il DB:
 
     psql -U postgres <nuovo_nome_db> <  backup_gf.dump
+
+    oppure:
+    
+    psql -d <nuovo_nome_db> -U <nomte_utente>
+
+        <nome_utente>=# \i backup_gf.dump
+
+    (ci saranno diversi warning, possono essere ignorati)
  

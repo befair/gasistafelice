@@ -45,4 +45,4 @@ pg_dump -U $db_user $db_name  > $TAR_DIR/backup_gf.dump
 savelog $DIR/backup_gf.tar.gz
 
 #tar file
-tar -cvf $DIR/backup_gf.tar.gz $TAR_DIR 
+tar cvzf $DIR/backup_gf.tgz $TAR_DIR 
