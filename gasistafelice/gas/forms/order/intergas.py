@@ -71,8 +71,9 @@ class AddInterGASOrderForm(AddOrderForm):
                     log.debug("Pact %s found." % extra_pact)
                     self._involved_extra_pacts.add(extra_pact)
                 except GASSupplierSolidalPact.DoesNotExist as e:
-                    self._messages['error'].append(ugettext("Please select a gas which has a pact with the same supplier of the pact this order refers to"))
-                    #raise forms.ValidationError("Not valid InterGAS order: each GAS involved has to have a pact with the same supplier of the pact this order refers to")
+                    #WAS: self._messages['error'].append(ugettext("Please select a gas which has a pact with the same supplier of the pact this order refers to"))
+                    log.debug("Not valid InterGAS order: one or more GAS involeved do not have pacts with the same supplier")
+                    raise forms.ValidationError("Not valid InterGAS order: one or more GAS involeved do not have pacts with the same supplier")
             
         if self._intergas_requested and not self._involved_extra_pacts:
             log.debug("Not valid InterGAS order: at least 2 GAS needed")
