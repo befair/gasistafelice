@@ -134,6 +134,7 @@ def notify_order_state_update(sender, **kwargs):
     order = sender
     transition = kwargs['transition']
 
+    #MATTEO: added on_site to extra content
     extra_content = {
         'gas' : order.gas,
         'order' : order,
@@ -141,6 +142,7 @@ def notify_order_state_update(sender, **kwargs):
         'state' : transition.destination.name,
         'site' : Siteattr.get_site(),
         'protocol' : 'http',
+        'on_site' : True,
     }
 
     #--- Transition name ---#
@@ -160,9 +162,9 @@ def notify_order_state_update(sender, **kwargs):
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))
     try:
-        #FIXME
+        #FIXME MATTEO
         notification.send(recipients, "order_state_update", 
-            extra_content, on_site=True
+            extra_content#, on_site=True
         )
     except Exception as e:
         log.error("Send msg notify_order_state_update: %s (%s)" % (e.message, type(e)))
