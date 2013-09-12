@@ -1,4 +1,4 @@
-"""Models related to Order management (including state machine)."""
+Models related to Order management (including state machine)."""
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -969,10 +969,8 @@ WHERE order_id = %s \
 
     def send_email(self, to, cc=[], more_info='', issued_by=None):
 
-        #MATTEO: testing if mail is sent by setting "to" to Matteo's e-mail
-        #if not isinstance(to, list):
-        #    to = [to]
-        to = "kingletti88@gmail.com"
+        if not isinstance(to, list):
+            to = [to]
 
         log.debug('SENDING EMAIL: self=%s to=%s, cc=%s' % (self, to, cc))
 

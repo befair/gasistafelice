@@ -39,7 +39,7 @@ def notify_gmo_product_erased(sender, **kwargs):
 
     try:
         notification.send(recipients, "ordered_product_update", 
-            extra_content, on_site=True
+            extra_content
         )
     except Exception as e:
         log.error("Send msg notify_gmo_product_erased: %s (%s)" % (e.message, type(e)))
@@ -66,7 +66,7 @@ def notify_gmo_price_update(sender, **kwargs):
 
     try:
         notification.send(recipients, "ordered_product_update", 
-            extra_content, on_site=True
+            extra_content
         )
     except Exception as e:
         log.error("Send msg notify_gmo_price_update: %s (%s)" % (e.message, type(e)))
@@ -94,7 +94,7 @@ def notify_gasstock_product_enabled(sender, **kwargs):
 
     try:
         notification.send(recipients, "gasstock_update", 
-            extra_content, on_site=True
+            extra_content
         )
     except Exception as e:
         log.error("Send msg notify_gasstock_product_enabled: %s (%s)" % (e.message, type(e)))
@@ -119,7 +119,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
 
     try:
         notification.send(recipients, "gasstock_update", 
-            extra_content, on_site=True
+            extra_content
         )
     except Exception as e:
         log.error("Send msg notify_gasstock_product_disabled: %s (%s)" % (e.message, type(e)))
@@ -134,7 +134,6 @@ def notify_order_state_update(sender, **kwargs):
     order = sender
     transition = kwargs['transition']
 
-    #MATTEO: added on_site to extra content
     extra_content = {
         'gas' : order.gas,
         'order' : order,
@@ -142,7 +141,6 @@ def notify_order_state_update(sender, **kwargs):
         'state' : transition.destination.name,
         'site' : Siteattr.get_site(),
         'protocol' : 'http',
-        'on_site' : True,
     }
 
     #--- Transition name ---#
@@ -162,9 +160,8 @@ def notify_order_state_update(sender, **kwargs):
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))
     try:
-        #FIXME MATTEO
         notification.send(recipients, "order_state_update", 
-            extra_content#, on_site=True
+            extra_content
         )
     except Exception as e:
         log.error("Send msg notify_order_state_update: %s (%s)" % (e.message, type(e)))
