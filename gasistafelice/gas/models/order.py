@@ -1,4 +1,4 @@
-Models related to Order management (including state machine)."""
+"""Models related to Order management (including state machine)."""
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
