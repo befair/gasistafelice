@@ -30,23 +30,20 @@ Punto 2:
 
 # ./manage.py shell
 
->>> def update_balance_current(ledger_entry): 
->>>    lg_entries_previous = ledger_entry.account.ledger_entries.order_by('entry_id')
->>>    # Redo all increments as a security mesaure to avoid
->>>    # tampering of last balance, but ... do we really need this 
->>>    # security measure? Is it ok to redo basing on amount because balance
->>>    # is an inherited attribute
->>>    for entry in lg_entries_previous:
->>>        if entry.entry_id <= ledger_entry.entry_id:
->>>            ledger_entry.balance_current = (ledger_entry.balance_current or 0) + entry.amount
->>>     ledger_entry.save()
->>>
->>> from simple_accounting.models import LedgerEntry, Account
->>> for ac in Account.objects.all():
->>>     for lg in ac.ledger_entries.order_by('entry_id'):
->>>         update_balance_current(lg)
->>>         print("%(entry_id)s %(amount)s %(balance_current)s" % lg.__dict__)
->>>
+
+ from simple_accounting.models import LedgerEntry, Account
+ for ac in Account.objects.all():
+     for ledger_entry in ac.ledger_entries.order_by('entry_id'):
+        lg_entries_previous = ledger_entry.account.ledger_entries.filter(entry_id__lte=ledger_entry.entry_id).order_by('entry_id')
+        # Redo all increments as a security mesaure to avoid
+        # tampering of last balance, but ... do we really need this 
+        # security measure? Is it ok to redo basing on amount because balance
+        # is an inherited attribute
+        for entry in lg_entries_previous:
+            ledger_entry.balance_current = (ledger_entry.balance_current or 0) + entry.amount
+            super(LedgerEntry, ledger_entry).save()
+            #print("%(entry_id)s %(amount)s %(balance_current)s" % ledger_entry.__dict__)
+
 
 
 buon divertimento!
