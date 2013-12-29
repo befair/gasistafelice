@@ -6,12 +6,14 @@ Questo file contiene istruzione su come preparare l'ambiente di lavoro nel
 caso in cui ci si avvicini per la prima volta agli strumenti necessari 
 all'installazione di Gasista Felice.
 
+NOTA: se non altrimenti specificato, tutti i comandi in questa guida vanno eeseguiti come utenti con permessi di amministratore.
+
 
 ***** Python
 
 1. Installare python eseguendo:
 
-	$ sudo apt-get install python python-dev
+	$ apt-get install python python-dev
 
 
 ********** SQLITE
@@ -22,7 +24,7 @@ gestione di una base di dati (comprese tabelle, query, form, report).
 
 1. Installare SQLITE:
 
-$ sudo apt-get install sqlite3 python-sqlite libsqlite3-dev
+$ apt-get install sqlite3 python-sqlite libsqlite3-dev
 
 
 ********** POSTGRESQL
@@ -32,15 +34,14 @@ adapter per Python.
 	
 1.	Installare i seguenti pacchetti:
 	
-	$ sudo apt-get install postgresql python-psycopg2
-	$ sudo apt-get install postgresql-client subversion pgadmin3 pgadmin3-data libpq-dev
+	$ apt-get install postgresql python-psycopg2 libpq-dev postgresql-client
 
 2.	Creazione di un utente e di un DB associato all'utente creato:
 
 	2.1	prima di procedere, controllare di avere il permesso per autenticarsi
 		controllando nel file di configurazione di postgresql:
 		
-		$ sudo gedit /etc/postgresql/versione/main/pg_hba.conf
+		$ gedit /etc/postgresql/versione/main/pg_hba.conf
 		
 		("versione" indica la versione di postgresql, tipicamente un valore
 		del tipo 8.4 )
@@ -51,14 +52,23 @@ adapter per Python.
 
 		 local   all         all                           		   
 		 
-		 sia un valore che permetta l'autenitcazione con password, ad esempio 
-		 TRUST (vedere manuale postgresql), ed eventualmente modificare tale 
-		 valore.
-		
+		sia un valore che permetta l'autenticazione senza password, ad esempio 
+		TRUST (vedere manuale postgresql), ed eventualmente modificare tale 
+		valore.
+
+        Alternativamente, è possibile specificare l'autenticazione dell'utente postgres 
+        come peer (quindi permettere solo all'utente di sistema postgres di accedere come 
+        utente postgres), e considerare sicura (trust) l'autenticazione dall'utente che 
+        andremo a creare da parte di qualsiasi utente di sistema. Quindi ad esempio:
+
+		# TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
+
+		 local   all         postgres                          peer 		   
+		 local   all         nome_utente                       trust 		   
 		
 	2.2	quindi:
-		$ sudo -u postgres createuser -D -A -P nome_utente 
-		$ sudo -u postgres createdb -O nome_utente nome_DB
+		$ createuser -D -P -U postgres nome_utente
+		$ createdb -U postgres -O nome_utente -E 'utf8' -T 'template0' nome_DB
 	
 3.	Log-in al database creato e associato all'utente:
 
@@ -78,23 +88,29 @@ pip).
  
 1.	Installare pip:
  
-	$ sudo apt-get install python-setuptools python-dev build-essential
-	$ sudo easy_install -U pip
+	$ sudo apt-get install python-pip
+	###### $ sudo apt-get install python-setuptools python-dev build-essential
+	###### $ sudo easy_install -U pip
 	$ pip --version --> verificare l'installazione
 
 2.1	Installare virtualenv e virtualencwrapper:
 
-	$ sudo pip install -U virtualenv --> installare virtualenv
-	$ virtualenv --version--> verificare l'installazione
+	######### $ sudo pip install -U virtualenv --> installare virtualenv
+	######### $ virtualenv --version--> verificare l'installazione
 	
-	$ sudo pip install virtualenvwrapper --> installare virtualenvwrapper
+	######### $ sudo pip install virtualenvwrapper --> installare virtualenvwrapper
+	$ apt-get install virtualenvwrapper --> installare virtualenvwrapper
 
-2.2 Aggiungere le seguenti linee al proprio shell startup file (es. ~/.bashrc):
+2.2 Inizializzare l'ambiente per virtualenvwrapper:
 
-	-export WORKON_HOME=$HOME/.virtualenvs
-	-export PROJECT_HOME=$HOME/Development_folder --> sostituire con la cartella
-	che si vuole
-	-source /usr/local/bin/virtualenvwrapper.sh --> script 
+    NOTA: percorso_cartella indica il persorso alla cartella dove i virtualenvironment verranno installati
+
+    -mkdir -p percorso_cartella/envs
+	-source /etc/bash_completion.d/virtualenvwrapper --> script 
+
+    In seguito aggiungere la seguenti linea al proprio shell startup file (es. ~/.bashrc):
+
+    -export WORKON_HOME=percorso_cartella/envs
 
 
 ***** Installare GIT
