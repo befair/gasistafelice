@@ -10,8 +10,9 @@ Prima di seguire questa guida è necessario avere un file di backup, per convenz
 Per ulteriori informazioni su come è costruito il file si veda lo script `extra/backup_db.sh`
 
 L'archivio backup_gf.tar.gz contiene due file:
-- un file (META) con il riferimento alla versione del software al momento dell'ultimo backup valido del database;
-- un file (backup_gf.dump) contenente l'ultimo backup valido del database di GF.
+
+* un file (META) con il riferimento alla versione del software al momento dell'ultimo backup valido del database;
+* un file (backup_gf.dump) contenente l'ultimo backup valido del database di GF.
  
 Per ripristinare il database si dovrà:
 
@@ -33,17 +34,19 @@ Per ripristinare il database si dovrà:
 
     - ./wipe_postgres_db.sh
 
-    per creare un nuovo database su cui installare il backup
+  per creare un nuovo database su cui installare il backup
 
 6. ripristinare il DB:
 
     psql -U postgres <nuovo_nome_db> <  backup_gf.dump
 
-    oppure:
+  oppure, entrare nella shell di postgres:
     
     psql -d <nuovo_nome_db> -U <nomte_utente>
 
-        <nome_utente>=# \i backup_gf.dump
+  quindi eseguire il comando:
+
+    \i backup_gf.dump
 
     (ci saranno diversi warning, possono essere ignorati)
  

@@ -1,6 +1,15 @@
 #!/bin/bash
 
-DIR=/var/backups
+if test -z "$DIR"
+then
+  DIR=/var/backups
+  if [ ! -d "$DIR" ]; then
+     echo "ERROR: DIR is not set and $DIR does not exist. Exiting"
+     exit 1
+  fi
+  echo "Warning: DIR is not set, assuming $DIR"
+fi
+
 TAR_DIR=$DIR/backup_gf
 META=$TAR_DIR/META
 HASH=`git log --format=format:"%H" | head -1`
