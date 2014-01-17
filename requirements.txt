@@ -15,8 +15,8 @@ pysqlite>=1.0.1
 #file:../gasistafelice/submodules/django-notification
 #django-notification #FS
 -e git+https://github.com/feroda/django-notification.git#egg=django-notification
-django-registration
+django-registration==0.7
 django-simple-captcha
 PIL
-django-ajax-selects
+django-ajax-selects==1.2.4
 django-extensions #FS
