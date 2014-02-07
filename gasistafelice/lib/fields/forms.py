@@ -28,13 +28,7 @@ class PrettyDecimalField(DecimalField):
             raise ValidationError(self.error_messages['invalid'])
         return value
 
-class CurrencyField(DecimalField):
-    """CurrencyField that accept ',' and '.' as decimal separator"""
-
-    def __init__(self, *args, **kw):
-        kw['min_value'] = 0
-        kw['decimal_places'] = 4
-        super(CurrencyField, self).__init__(*args, **kw)
+class TolerantDecimalField(DecimalField):
 
     def clean(self, value):
 
@@ -45,6 +39,13 @@ class CurrencyField(DecimalField):
             if comma_pos > dot_pos:
                 value = value[:comma_pos] + '.' + value[comma_pos+1:]
 
-        return super(CurrencyField, self).clean(value)
+        return super(TolerantDecimalField, self).clean(value)
 
+class CurrencyField(TolerantDecimalField):
+    """CurrencyField that accept ',' and '.' as decimal separator"""
+
+    def __init__(self, *args, **kw):
+        kw['min_value'] = 0
+        kw['decimal_places'] = 4
+        super(CurrencyField, self).__init__(*args, **kw)
 

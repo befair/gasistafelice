@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 
 from gasistafelice.gas.models import GASMemberOrder, GASSupplierOrderProduct
 from gasistafelice.gf_exceptions import DatabaseInconsistent
+from gasistafelice.lib.fields.forms import TolerantDecimalField
 
 import logging
 log = logging.getLogger(__name__)
@@ -17,7 +18,7 @@ class BaseGASMemberOrderForm(forms.Form):
 
     id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     gsop_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
-    ordered_amount = forms.DecimalField(required=False, initial=0)
+    ordered_amount = TolerantDecimalField(required=False, initial=0)
     ordered_price = forms.DecimalField(required=False, widget=forms.HiddenInput)
 
     #KO fero: no log here. This code is executed at import time

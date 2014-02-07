@@ -7,7 +7,7 @@ from django.db import transaction
 
 from flexi_auth.models import ParamRole
 from gasistafelice.lib.widgets import RelatedFieldWidgetCanAdd
-from gasistafelice.lib.fields.forms import CurrencyField
+from gasistafelice.lib.fields.forms import CurrencyField, TolerantDecimalField
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 
 from gasistafelice.base.const import ALWAYS_AVAILABLE
@@ -132,13 +132,29 @@ class EditStockForm(forms.ModelForm):
     product_mu = forms.ModelChoiceField(ProductMU.objects.all(), required=False,
         label=_("Units")
     )
-    product_muppu = forms.DecimalField(label=_('of'), initial=1,
+    product_muppu = TolerantDecimalField(label=_('of'), initial=1,
         min_value = Decimal('0.01'), max_value = Decimal('10000')
     )
 
     product_category = forms.ModelChoiceField(ProductCategory.objects.all(), 
             label=ProductCategory._meta.verbose_name)
     
+    # increment step (in Product units) for amounts exceeding minimum; 
+    # useful when a Product ships in packages containing multiple units.
+    units_per_box = TolerantDecimalField(label=_("units per box").capitalize(), 
+    )
+
+    ## constraints posed by the Supplier on orders issued by *every* GASMember
+    ## they act as default when creating a GASSupplierSolidalPact
+    # minimum amount of Product units a GASMember can order 
+    detail_minimum_amount = TolerantDecimalField(
+                        label = _('detail minimum amount').capitalize(),
+    )
+
+    # increment step (in Product units) for amounts exceeding minimum; 
+    # useful when a Product has a fixed step of increment
+    detail_step = TolerantDecimalField(label=_("detail step").capitalize())
+
     def __init__(self, request, *args, **kw):
         super(EditStockForm, self).__init__(*args, **kw)
         self._supplier = request.resource.supplier
