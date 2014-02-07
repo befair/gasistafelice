@@ -25,6 +25,7 @@ urlpatterns = patterns('rest.views',
     (r'^$',                'resource_page'),
     (r'^related_notes/$',  'related_notes'),
 
+    #TEST (r'^gas_details/manage_roles', 'manage_roles'), # done
 
     # Suspend a resource (POST)
     #(r'^action/suspend',            suspend_resource),

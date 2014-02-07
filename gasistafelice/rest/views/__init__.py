@@ -31,6 +31,20 @@ log = logging.getLogger(__name__)
 #                                                                              #
 #------------------------------------------------------------------------------#
 
+#--- TEST view ---
+#from gasistafelice.lib.formsets import BaseFormSetWithRequest
+#from gasistafelice.gas.forms.base import GASRoleForm
+#from django.forms.formsets import formset_factory
+#def manage_roles(request, resource_type, resource_id):
+#
+#    formset_class = formset_factory(
+#        form=GASRoleForm, 
+#        formset=BaseFormSetWithRequest, 
+#        extra=5
+#    )
+#    formset = formset_class(request, {})
+#    return HttpResponse("ciao")
+
 @login_required
 def index(request):
     """ main entrance page """
