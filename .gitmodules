@@ -4,7 +4,7 @@
 	ignore = dirty
 [submodule "submodules/django-flexi-auth"]
 	path = submodules/django-flexi-auth
-	url = git://github.com/seldon/django-flexi-auth.git
+	url = git://github.com/feroda/django-flexi-auth.git
 	ignore = dirty
 [submodule "submodules/django-notification"]
 	path = submodules/django-notification

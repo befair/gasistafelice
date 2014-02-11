@@ -11,7 +11,7 @@ pysqlite>=1.0.1
 #file:../gasistafelice/submodules/django-simple-accounting
 #file:../gasistafelice/submodules/django-flexi-auth
 -e git+https://github.com/feroda/django-simple-accounting.git#egg=django-simple-accounting
--e git+https://github.com/seldon/django-flexi-auth.git#egg=django-flexi-auth
+-e git+https://github.com/feroda/django-flexi-auth.git#egg=django-flexi-auth
 #file:../gasistafelice/submodules/django-notification
 #django-notification #FS
 -e git+https://github.com/feroda/django-notification.git#egg=django-notification

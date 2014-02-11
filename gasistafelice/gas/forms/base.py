@@ -33,6 +33,7 @@ class GASRoleForm(BaseRoleForm):
 
         # GAS Members roles are to be excluded from this management
         self.fields['role'].queryset = self.fields['role'].queryset.exclude(role__name=GAS_MEMBER)
+        #print("AAAA", self.fields)
 
 #--------------------GAS member-----------------------------------------------------------
 
