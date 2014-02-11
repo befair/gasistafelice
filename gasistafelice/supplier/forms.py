@@ -13,6 +13,7 @@ from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from gasistafelice.base.const import ALWAYS_AVAILABLE
 from gasistafelice.base.forms import BaseRoleForm
 from gasistafelice.consts import SUPPLIER_REFERRER
+from gasistafelice.base.models import Person
 from gasistafelice.supplier.models import SupplierStock, Product, \
     ProductPU, ProductMU, ProductCategory, \
     UnitsConversion, Supplier
@@ -21,12 +22,22 @@ from ajax_select import make_ajax_field
 from ajax_select.fields import autoselect_fields_check_can_add
 
 from gasistafelice.base.forms.fields import MultiContactField
+from gasistafelice.base.forms import BaseRoleForm
 
 
 from decimal import Decimal
 import logging
 log = logging.getLogger(__name__)
 
+
+class SupplierRoleForm(BaseRoleForm):
+
+    def __init__(self, request, *args, **kw):
+
+        super(SupplierRoleForm, self).__init__(request, *args, **kw)
+        self._supplier = request.resource.supplier
+        self.fields['person'].queryset = \
+            Person.objects.filter(user__isnull=False)
 
 #--------------------Supplier Stock-----------------------------------------------------------
 

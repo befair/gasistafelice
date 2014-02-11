@@ -2009,8 +2009,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         "Pact involves also roles related to Suppliers"""
 
         roles = super(GASSupplierSolidalPact, self).roles
-        for supplier in self.suppliers:
-            roles |= supplier.roles
+        #for supplier in self.suppliers:
+        #    roles |= supplier.roles
         return roles
 
     #--------------------------#

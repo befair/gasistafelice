@@ -13,7 +13,7 @@ from gasistafelice.rest.views.blocks import details
 
 from gasistafelice.lib.shortcuts import render_to_context_response
 
-from gasistafelice.supplier.forms import EditSupplierForm
+from gasistafelice.supplier.forms import EditSupplierForm, SupplierRoleForm
 
 import logging
 log = logging.getLogger(__name__)
@@ -22,6 +22,7 @@ class Block(details.Block):
 
     BLOCK_NAME = "supplier_details"
     BLOCK_VALID_RESOURCE_TYPES = ["supplier"]
+    FORMCLASS_MANAGE_ROLES = SupplierRoleForm
 
     def _get_user_actions(self, request):
         """Who can edit Supplier informations, has also the ability to configure it."""

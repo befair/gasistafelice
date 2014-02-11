@@ -13,7 +13,8 @@ from gasistafelice.rest.views.blocks import details
 
 from gasistafelice.lib.shortcuts import render_to_context_response
 
-from gasistafelice.gas.forms.base import EditGASForm
+from gasistafelice.gas.forms.base import EditGASForm, GASRoleForm
+
 
 import logging
 log = logging.getLogger(__name__)
@@ -22,6 +23,7 @@ class Block(details.Block):
 
     BLOCK_NAME = "gas_details"
     BLOCK_VALID_RESOURCE_TYPES = ["gas"]
+    FORMCLASS_MANAGE_ROLES = GASRoleForm
 
     def get_description(self):
         return _("Details about %(name)s") % {
@@ -55,61 +57,4 @@ class Block(details.Block):
                    break
                    
         return user_actions
-
-    def manage_roles(self, request):
-        """This method is needed to filter out GAS_MEMBER roles"""
-
-        formset_class = self._get_roles_formset_class()
-
-        if request.method == 'POST':
-            return super(Block, self).manage_roles(request)
-
-        else:
-
-            data = {}
-            roles = self.resource.roles
-
-            # HACK HERE
-            # Exclude GAS_MEMBER role which is managed by "Add gasmember" action
-            roles = roles.exclude(role__name=GAS_MEMBER)
-
-            # Roles already assigned to resource
-            pprrs = PrincipalParamRoleRelation.objects.filter(role__in=roles)
-
-            i = 0
-            for i,pprr in enumerate(pprrs):
-
-                key_prefix = 'form-%d' % i
-                data.update({
-                   '%s-id' % key_prefix : pprr.pk,
-                   '%s-person' % key_prefix : pprr.user.person.pk,
-                   '%s-role' % key_prefix : pprr.role.pk,
-                })
-
-            data['form-TOTAL_FORMS'] = i + formset_class.extra
-            data['form-INITIAL_FORMS'] = i
-            data['form-MAX_NUM_FORMS'] = 0
-
-            formset = formset_class(request, data)
-
-        context = {
-            "data" : {},
-            "formset": formset,
-            'opts' : PrincipalParamRoleRelation._meta,
-            'is_popup': False,
-            'save_as' : False,
-            'save_on_top': False,
-            #'errors': helpers.AdminErrorList(form, []),
-            #'media': mark_safe(adminForm.media),
-            'form_url' : request.build_absolute_uri(),
-            'add'  : False,
-            'change' : True,
-            'has_add_permission': False,
-            'has_delete_permission': True,
-            'has_change_permission': True,
-            'show_delete' : True,
-
-        }
-
-        return render_to_context_response(request, "html/formsets.html", context)
 

@@ -38,8 +38,8 @@ from gasistafelice.base.workflows_utils import get_allowed_transitions, do_trans
 
 from gasistafelice.consts import EDIT, VIEW_CONFIDENTIAL
 
-# Roles form: dynamic use in manage_roles
-from gasistafelice.gas.forms.base import GASRoleForm
+# Needed for HACK: see below
+from gasistafelice.consts import GAS_MEMBER
 
 #from users.models import can_write_to_resource
 
@@ -58,6 +58,7 @@ DETAILS_DEFAULT_OPTIONS = {
 class Block(AbstractBlock):
 
     BLOCK_NAME = "details"
+    FORMCLASS_MANAGE_ROLES = None
 
     def __init__(self):
         super(Block, self).__init__()
@@ -150,11 +151,9 @@ class Block(AbstractBlock):
 
     def _get_roles_formset_class(self):
 
-        form_name = "%sRoleForm" % self.resource.__class__.__name__
-        form_class = globals().get(form_name)
-        if form_class:
+        if self.FORMCLASS_MANAGE_ROLES:
             rv = formset_factory(
-                form=form_class, 
+                form=self.FORMCLASS_MANAGE_ROLES, 
                 formset=BaseFormSetWithRequest, 
                 extra=5
             )
@@ -182,6 +181,12 @@ class Block(AbstractBlock):
 
             data = {}
             roles = self.resource.roles
+
+            # HACK HERE
+            # Exclude GAS_MEMBER role which is managed by "Add gasmember" action
+            # ...it could be excluded everytime, even if resource_type is not "gas"...
+            if self.resource.resource_type == "gas":
+                roles = roles.exclude(role__name=GAS_MEMBER)
 
             # Roles already assigned to resource
             pprrs = PrincipalParamRoleRelation.objects.filter(role__in=roles)
