@@ -90,11 +90,10 @@ class Block(details.Block):
             data['form-INITIAL_FORMS'] = i
             data['form-MAX_NUM_FORMS'] = 0
 
-            formset = formset_class(request, {})
+            formset = formset_class(request, data)
 
         context = {
-            #data is delivered directly to the template
-            "data" : data,
+            "data" : {},
             "formset": formset,
             'opts' : PrincipalParamRoleRelation._meta,
             'is_popup': False,
