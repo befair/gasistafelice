@@ -608,7 +608,8 @@ jQuery.retrieve_form = function (action_el) {
                 jqForm.find('.submit-row').each( function () { $(this).remove();});
                 form_script = $(responseText).find('script');
                 $(NEW_NOTE_DIALOG).html(jqForm);
-                eval(form_script);
+                //-- LF: it should be needed only if there are <script> tags outside <form>
+                //eval(form_script);
             } 
             else {
                 //
@@ -642,7 +643,8 @@ jQuery.retrieve_form = function (action_el) {
 	$(NEW_NOTE_DIALOG).empty();
 	$(NEW_NOTE_DIALOG).append(jqMessagelist);
 	$(NEW_NOTE_DIALOG).append(jqForm);
-    eval(form_script);
+    //-- LF: it should be needed only if there are <script> tags outside <form>
+    //eval(form_script);
 	
 	var buttons = new Object();
 	buttons[gettext('Confirm')] = function() {
