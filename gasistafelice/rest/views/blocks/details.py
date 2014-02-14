@@ -88,19 +88,27 @@ class Block(AbstractBlock):
 
         if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
 
-            klass_name = self.resource.__class__.__name__
-            url = None
-            
-            user_actions.append(
+            # Duck-typing
+            # Invoke an unneeded method just to check if an exception happen
+            try:
+                self._get_edit_form_class()
+            except NotImplementedError as e:
+                # If edit_form_class is not implemented, log the event
+                log.debug(str(e))
+            else:
+                klass_name = self.resource.__class__.__name__
+                url = None
+                
+                user_actions.append(
 
-                ResourceBlockAction( 
-                    block_name = self.BLOCK_NAME,
-                    resource = request.resource,
-                    name=EDIT, verbose_name=_("Edit"), 
-                    popup_form=True,
-                    url=url
+                    ResourceBlockAction( 
+                        block_name = self.BLOCK_NAME,
+                        resource = request.resource,
+                        name=EDIT, verbose_name=_("Edit"), 
+                        popup_form=True,
+                        url=url
+                    )
                 )
-            )
 
             if self._get_roles_formset_class():
 
