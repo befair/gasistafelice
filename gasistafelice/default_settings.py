@@ -158,6 +158,8 @@ INSTALLED_APPS = [
     'captcha',
     'ajax_select',
     'south',
+    'rest_framework',
+    'real_rest',
     #'django.contrib.staticfiles',
 ]
 
