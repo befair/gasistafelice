@@ -159,6 +159,8 @@ INSTALLED_APPS = [
     'ajax_select',
     'south',
     'gdxp',
+    'rest_framework',
+    'real_rest',
     #'django.contrib.staticfiles',
 ]
 
