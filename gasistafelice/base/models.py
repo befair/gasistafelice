@@ -643,6 +643,7 @@ class Person(models.Model, PermissionResource):
         to each of them corresponds a membership of this person in a GAS.        
         """
         return self.gasmember_set.all()
+
     
     @property
     def gas_list(self):
@@ -878,13 +879,6 @@ class Person(models.Model, PermissionResource):
     def full_name(self):
         return self.name + self.surname
     
-    @property
-    def gasmembers(self):
-        """
-        The queryset of all incarnations of this person as a GAS member.
-        """
-        return self.gasmember_set.all()
-
     def save(self, *args, **kw):
         if not self.display_name:
             self.display_name = u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
