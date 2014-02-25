@@ -68,7 +68,7 @@ Install development version - 2nd february 2012
 
 5. (Optional) Load some data for testing
 
-  * gasistafelice/gasistafelice$ python manage.py loaddata test_data.json
+  * gasistafelice/gasistafelice$ python manage.py loaddata fixtures/auth/test_data.json
 
 6. Running
 
