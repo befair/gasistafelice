@@ -20,3 +20,6 @@ django-simple-captcha
 PIL
 django-ajax-selects==1.2.4
 django-extensions #FS
+SOAPpy==0.12.5
+reportlab==2.7
+gunicorn
