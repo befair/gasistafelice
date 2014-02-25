@@ -33,7 +33,7 @@ class GASRoleForm(BaseRoleForm):
 
         # GAS Members roles are to be excluded from this management
         self.fields['role'].queryset = self.fields['role'].queryset.exclude(role__name=GAS_MEMBER)
-        #print("AAAA", self.fields)
+        # DEBUG: decomment to see how much SLOW it is! print("AAAA", self.fields)
 
 #--------------------GAS member-----------------------------------------------------------
 
@@ -97,6 +97,7 @@ class SingleUserForm(forms.Form):
 
     def __init__(self, request, *args, **kw):
         super(SingleUserForm, self).__init__(*args, **kw)
+
         #COMMENT LF: we do not need "request" parameter for the following operations
         # so it is better to put them in form class definition
         #WAS: self.fields['pk'].widget.attrs['readonly'] = True
@@ -205,8 +206,11 @@ class BaseGASForm(forms.ModelForm):
     def __init__(self, request, *args, **kw):
         super(BaseGASForm, self).__init__(*args, **kw)
 
-        model = self._meta.model
-        autoselect_fields_check_can_add(self,model,request.user)
+        #KO #209: can_add MUST be evaluated in form_class, not in form instance
+        #KO #209: see: https://github.com/crucialfelix/django-ajax-selects/pull/29
+        #KO #209: and: https://github.com/crucialfelix/django-ajax-selects/blob/master/ajax_select/admin.py#L11
+        #KO #209: model = self._meta.model
+        #KO #209: autoselect_fields_check_can_add(self,model,request.user)
 
         #TODO: fero to refactory and move in GF Form baseclass...
         self._messages = {

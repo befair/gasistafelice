@@ -7,7 +7,7 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
-from gasistafelice.supplier.forms import SupplierForm
+from gasistafelice.supplier.forms import SupplierForm, AddSupplierForm
 from gasistafelice.lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 
@@ -24,8 +24,7 @@ from gasistafelice.des.models import Siteattr
 
 from django.utils.encoding import smart_unicode
 from flexi_auth.models import ObjectWithContext
-
-from gasistafelice.supplier.forms import AddSupplierForm
+from ajax_select.fields import autoselect_fields_check_can_add
 
 import logging
 log = logging.getLogger(__name__)
@@ -110,7 +109,9 @@ class Block(BlockSSDataTables):
         return user_actions
 
     def _get_add_form_class(self):
-        return AddSupplierForm
+        form_class = AddSupplierForm
+        autoselect_fields_check_can_add(form_class, Supplier, self.request.user)
+        return form_class
 
     def _get_resource_list(self, request):
         # Suppliers objects filtered without PRIVATE

@@ -4,7 +4,6 @@ from django.db import transaction
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 from ajax_select import make_ajax_field
-from ajax_select.fields import autoselect_fields_check_can_add
 
 from gasistafelice.base.forms.fields import MultiContactField
 from gasistafelice.lib.widgets import (
@@ -74,9 +73,6 @@ class BasePersonForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kw):
         super(BasePersonForm, self).__init__(*args, **kw)
-
-        model = self._meta.model
-        autoselect_fields_check_can_add(self,model,request.user)
 
     @transaction.commit_on_success
     def save(self, *args, **kw):

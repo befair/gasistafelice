@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 from flexi_auth.models import PrincipalParamRoleRelation, ObjectWithContext
+from ajax_select.fields import autoselect_fields_check_can_add
 
 from gasistafelice.consts import EDIT, GAS_MEMBER
 
@@ -14,6 +15,7 @@ from gasistafelice.rest.views.blocks import details
 from gasistafelice.lib.shortcuts import render_to_context_response
 
 from gasistafelice.gas.forms.base import EditGASForm, GASRoleForm
+from gasistafelice.gas.models import GAS
 
 
 import logging
@@ -31,8 +33,9 @@ class Block(details.Block):
         }
 
     def _get_edit_form_class(self):
-        log.debug ("Loading my edit form class...")
-        return EditGASForm
+        form_class = EditGASForm
+        autoselect_fields_check_can_add(form_class, GAS, self.request.user)
+        return form_class
 
     def _get_user_actions(self, request):
         """Who can edit GAS informations, has also the ability to configure it."""

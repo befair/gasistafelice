@@ -2,6 +2,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from flexi_auth.models import ObjectWithContext
+from ajax_select.fields import autoselect_fields_check_can_add
 
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
@@ -44,7 +45,9 @@ class Block(BlockWithList):
         return user_actions
         
     def _get_add_form_class(self):
-        return AddSupplierForm
+        form_class = AddSupplierForm
+        autoselect_fields_check_can_add(form_class, Supplier, self.request.user)
+        return form_class
 
     #------------------------------------------------------------------------------#    
     #                                                                              #     

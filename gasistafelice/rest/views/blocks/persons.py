@@ -2,6 +2,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
 from flexi_auth.models import ObjectWithContext
+from ajax_select.fields import autoselect_fields_check_can_add
 
 from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from gasistafelice.consts import CREATE
@@ -40,6 +41,7 @@ class Block(BlockWithList):
         return user_actions
         
     def _get_add_form_class(self):
-        return AddPersonForm
-        #WAS: raise NotImplementedError("The add form page in use now is the admin interface page.")
+        form_class = AddPersonForm
+        autoselect_fields_check_can_add(form_class, Person, self.request.user)
+        return form_class
 
