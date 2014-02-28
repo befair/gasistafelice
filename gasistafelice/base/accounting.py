@@ -45,7 +45,7 @@ class PersonAccountingProxy(AccountingProxy):
         person = self.subject.instance
         if amount < 0:
             raise MalformedTransaction(ugettext("Amount of a recharge must be non-negative"))
-        elif not person.is_member(gas):
+        elif not person.has_been_member(gas):
             raise MalformedTransaction(ugettext("A person can't make an account recharge for a GAS that (s)he is not member of"))
         else:
             source_account = self.system['/wallet']
@@ -117,7 +117,7 @@ class PersonAccountingProxy(AccountingProxy):
             raise MalformedTransaction(ugettext("Payment amounts must be non-negative"))
 
         person = self.subject.instance
-        if not person.is_member(gas):
+        if not person.has_been_member(gas):
             raise MalformedTransaction(ugettext("A person can't pay membership fees to a GAS that (s)he is not member of"))
 
         gas_acc = gas.accounting

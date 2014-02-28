@@ -864,9 +864,23 @@ class Person(models.Model, PermissionResource):
         address,
     )
     
+    def has_been_member(self, gas):
+        """
+        Return ``True`` if this person is bound to the GAS ``gas``
+        (GASMember exist whether it is suspended or not), 
+        ``False`` otherwise. 
+        
+        If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
+        """
+        from gasistafelice.gas.models import GAS, GASMember
+        if not isinstance(gas, GAS):
+            raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
+        return bool(GASMember.all_objects.filter(gas=gas, person=self).count())
+    
     def is_member(self, gas):
         """
-        Return ``True`` if this person is member of GAS ``gas``, ``False`` otherwise. 
+        Return ``True`` if this person is an active (not suspended) member 
+        of GAS ``gas``, ``False`` otherwise. 
         
         If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
         """
