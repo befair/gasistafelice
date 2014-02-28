@@ -421,12 +421,18 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def gasmembers(self):
-        """All GASMember for this GAS"""
+        """All GASMember not suspended for this GAS"""
         gm_qs = self.gasmember_set.filter(person__user__is_active=True)
         #gm_qs = gm_qs.filter(is_active=True)
 
         #WAS: default ordering follows diplay name
         #WAS: gm_qs = gm_qs.order_by('person__surname', 'person__name')
+        return gm_qs
+
+    @property
+    def all_gasmembers(self):
+        """All GASMember (included suspended) for this GAS"""
+        gm_qs = GASMember.all_objects.filter(gas=self)
         return gm_qs
 
     @property
@@ -528,7 +534,7 @@ class GAS(models.Model, PermissionResource):
         """Cash balance available for GASMembers of the GAS"""
         #return self.accounting.system['/members'].balance
         acc_tot = 0
-        for gm in self.gasmembers:
+        for gm in self.all_gasmembers:
             acc_tot += self.accounting.system['/members/' + gm.person.uid].balance
         return acc_tot
 
@@ -547,7 +553,7 @@ class GAS(models.Model, PermissionResource):
 
         """
         acc_tot = 0
-        for gm in self.gasmembers:
+        for gm in self.all_gasmembers:
             acc_tot += gm.balance
         return acc_tot
 

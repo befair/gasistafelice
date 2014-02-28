@@ -272,12 +272,12 @@ def resource_page(request, resource_type, resource_id):
                     if section['name'] != 'admin':
                         final_page_config.append(section)
 
-        elif resource_type == GASMember.resource_type:
-            if resource.is_suspended:
-                final_page_config = []
-                for section in page_config:
-                    if section['name'] not in ['orders','basket']:
-                        final_page_config.append(section)
+    if resource_type == GASMember.resource_type:
+        if resource.is_suspended:
+            final_page_config = []
+            for section in page_config:
+                if section['name'] not in ['orders','basket']:
+                    final_page_config.append(section)
 
     return create_page_settings_from_config(final_page_config, resource, resource.ancestors)
 
