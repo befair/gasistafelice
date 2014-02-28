@@ -24,13 +24,14 @@ from django.http import HttpResponse
 from django.conf import settings
 
 from gasistafelice.globals import type_model_d
+from gasistafelice.gas.models import GASMember
 
 def get_resource_by_path(resource_type, resource_id):
     # Valid path is: .../<resource_type>/<resource_id>/...others params...
 
     model = type_model_d[resource_type]
     try:
-        if resource_type == "gasmember":
+        if resource_type == GASMember.resource_type:
             resource = model.all_objects.get(pk=resource_id)
         else:
             resource = model.objects.get(pk=resource_id)
