@@ -7,6 +7,9 @@ from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 
 from django.db.models.signals import post_save, post_delete
 
+import logging
+log = logging.getLogger(__name__)
+
 class UserProfile(models.Model):
 
     user = models.OneToOneField(User, unique=True)
@@ -18,9 +21,7 @@ class UserProfile(models.Model):
 
     def save(self, *args, **kw):
         p = UserProfile.objects.get(pk=self.pk)
-        print "BBB", p, "----", p.default_role
         super(UserProfile, self).save(*args, **kw)
-        print "CCC", self, "----", self.default_role
 
 #-----------------------------------------------------------------------------#
 # SIGNALS                                                                     #
@@ -37,9 +38,14 @@ def set_default_role(u, ppr):
     except UserProfile.DoesNotExist as e:
         profile = UserProfile(user=u)
 
-    if profile.default_role != ppr.role:
-        log.debug("Updating default role: %s -> %s" % (profile.default_role, ppr.role))
-        profile.default_role = ppr.role
+    if ppr is None:
+        role = None
+    else:
+        role = ppr.role
+
+    if profile.default_role != role:
+        log.debug("Updating default role: %s -> %s" % (profile.default_role, role))
+        profile.default_role = role
         profile.save()
 
 

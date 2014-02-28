@@ -9,7 +9,7 @@ Install development version - 2nd february 2012
   for Debian/Ubuntu --> apt-get install postgresql git-core
   other requirements are installed via pip install. Such as...
 
-  * Django >= 1.3.1
+  * Django < 1.4
 
   Create locale for your sytem 
   * sudo locale-gen it_IT.UTF-8
@@ -26,7 +26,11 @@ Install development version - 2nd february 2012
 2. Install package requirements and submodules
 
   * git submodule update --init
-  * pip install -r requirements.txt
+  * pip install -r requirements/prod.txt
+
+  If you are setupping a development installation issue also:
+
+  * pip install -r requirements/dev.txt
 
 3. Set your local settings
 
