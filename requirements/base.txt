@@ -5,7 +5,8 @@ django-workflows>=1.0
 South>=0.7.3
 Sphinx>=0.6.6
 pisa>=3.0.32
-xhtml2pdf
+#xhtml2pdf
+-e git+https://github.com/chrisglass/xhtml2pdf#egg=xhtml2pdf
 pysqlite>=1.0.1
 -e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
 #file:../gasistafelice/submodules/django-simple-accounting
@@ -17,9 +18,9 @@ pysqlite>=1.0.1
 -e git+https://github.com/feroda/django-notification.git#egg=django-notification
 django-registration==0.7
 django-simple-captcha
-PIL
+#PIL
+pillow
 django-ajax-selects==1.2.4
 django-extensions #FS
 SOAPpy==0.12.5
 reportlab<3.0
-gunicorn
