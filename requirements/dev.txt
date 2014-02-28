@@ -1,0 +1,4 @@
+-r base.txt
+ipython
+django-debug-toolbar
+#django-rosetta==0.6.2
