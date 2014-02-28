@@ -256,7 +256,7 @@ def resource_page(request, resource_type, resource_id):
     page_config = get_resource_page_content_config(resource.resource_type)
     final_page_config = page_config
     
-    if 1: #not request.user.is_superuser:
+    if not request.user.is_superuser:
 
         if resource_type == GAS.resource_type:
             if request.user not in resource.tech_referrers:

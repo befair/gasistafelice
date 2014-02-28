@@ -128,7 +128,7 @@ class SingleUserForm(forms.Form):
 
     def save(self):
 
-        log.debug("Save SingleUserForm")
+        #log.debug("Save SingleUserForm")
         u = self.cleaned_data['user']
         p = self.cleaned_data.get('person')
         try:
@@ -165,6 +165,7 @@ class GASSingleUserForm(SingleUserForm):
         self.cleaned_data['gm_is_active'] = gm_is_active
         return cleaned_data
 
+    @transaction.commit_on_success
     def save(self):
         super(GASSingleUserForm, self).save()
         # if exception not raised
@@ -178,8 +179,7 @@ class GASSingleUserForm(SingleUserForm):
             gm = GASMember.all_objects.get(gas=self._gas, person=u.person)   
             gm.is_suspended = not gm_is_active
             gm.save()
-        
-        
+
 
 #class SupplierSingleUserForm(SingleUserForm):
 

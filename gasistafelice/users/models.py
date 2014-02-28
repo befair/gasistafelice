@@ -16,21 +16,32 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return _("Profile for %(user)s") % { 'user' : self.user }
 
+    def save(self, *args, **kw):
+        p = UserProfile.objects.get(pk=self.pk)
+        print "BBB", p, "----", p.default_role
+        super(UserProfile, self).save(*args, **kw)
+        print "CCC", self, "----", self.default_role
+
 #-----------------------------------------------------------------------------#
 # SIGNALS                                                                     #
 #-----------------------------------------------------------------------------#
 
 def set_default_role(u, ppr):
+    """
+    Setting default role for user.
+    This consequently updates the user default home page...
+    """
+
     try:
-        profile = u.get_profile()
-        default_role = profile.default_role
-    except UserProfile.DoesNotExist:
-        up = UserProfile(user=u, default_role=ppr.role)
-        up.save()
-    else:
-        if default_role is None:
-            up = UserProfile(user=u, default_role=ppr.role)
-            up.save()
+        profile = UserProfile.objects.get(user=u)
+    except UserProfile.DoesNotExist as e:
+        profile = UserProfile(user=u)
+
+    if profile.default_role != ppr.role:
+        log.debug("Updating default role: %s -> %s" % (profile.default_role, ppr.role))
+        profile.default_role = ppr.role
+        profile.save()
+
 
 def set_default_role_if_deleted(u, deleted_ppr):
     """Check if role set is the one that was just deleted."""
