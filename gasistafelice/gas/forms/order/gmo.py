@@ -34,6 +34,13 @@ class BaseGASMemberOrderForm(forms.Form):
     def clean(self):
         cleaned_data = super(BaseGASMemberOrderForm, self).clean()
 
+        if self._gm.is_suspended:
+            raise forms.ValidationError(
+                _(u"%(person)s is not authorized to make an order in gas %(gas)s") % {
+                    'person' : self._gm.person,
+                    'gas' : self._gm.gas
+            })
+
         #COMMENT LF: specifications say that every GASMember MUST
         #COMMENT LF: be bound to a User: so raise an Exception if not True
         if not self._gmusr:
@@ -60,7 +67,7 @@ class BaseGASMemberOrderForm(forms.Form):
                             raise forms.ValidationError(
                                 _(u"You %(logged)s are not authorized to make an order for %(person)s") % {
                                     'logged' : u"(%s)" % self._loggedusr, 
-                                    'person' :self._gmusr
+                                    'person' :self._gm.person
                             })
                 except GASMemberOrder.DoesNotExist:
                     log.debug(u"GAS member order #%d has been canceled" % (id))

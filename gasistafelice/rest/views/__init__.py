@@ -282,7 +282,7 @@ def create_page_settings_from_config(page_config, resource, parent=None):
 
         blocks = []
         for block_type in section['blocks']:
-            a = create_block_signature(block_type, resource.resource_type, resource.pk)
+            a = create_block_signature_from_resource(block_type, resource)
             blocks.append(a)
             
         section['blocks_signature'] = blocks

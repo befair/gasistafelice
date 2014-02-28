@@ -16,7 +16,7 @@
 # along with GASISTA FELICE. If not, see <http://www.gnu.org/licenses/>.
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 from lib.middleware import AppMiddleware
 from django.http import HttpResponse
@@ -29,7 +29,15 @@ def get_resource_by_path(resource_type, resource_id):
     # Valid path is: .../<resource_type>/<resource_id>/...others params...
 
     model = type_model_d[resource_type]
-    return get_object_or_404(model, pk=resource_id)
+    try:
+        if resource_type == "gasmember":
+            resource = model.all_objects.get(pk=resource_id)
+        else:
+            resource = model.objects.get(pk=resource_id)
+    except model.DoesNotExist as e:
+        raise Http404
+
+    return resource
         
 class ResourceMiddleware(AppMiddleware):
 
