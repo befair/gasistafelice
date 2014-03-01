@@ -12,6 +12,12 @@
     li.traditional-list.true { list-style-image : url("/media/img/admin/icon-yes.gif"); }
     li.traditional-list.false { list-style-image : url("/media/img/admin/icon-no.gif"); }
     .done { text-decoration : line-through; }
+
+    td {
+        color:green; 
+        line-height: 1.5em; 
+        font-size: 14px;
+    }
 </style>
 
 {% endblock %}
@@ -73,18 +79,15 @@
 
 <div style="clear:both;">
 
-<table border="1" style="color:grey;">
+<table border="1">
+    <tr>
+        <th>GAS</th>
+        <th>Città</th>
+        <th>Ordini</th>
+        <th>Flusso economico solidale</th>
+    </tr>
 {% for g in gas_list %}
-    {% if forloop.first %}
-        <tr>
-    {% endif %}
-        <td>{% render_gas g %}</td>
-    {% if forloop.counter|divisibleby:"4" %}
-        </tr><tr>
-    {% endif %}
-    {% if forloop.last %}
-        </tr>
-    {% endif %}
+    {% render_gas_as_tr g %}
 {% endfor %}
 </table>
 

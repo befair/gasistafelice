@@ -43,6 +43,11 @@ def set_default_role(u, ppr):
     else:
         role = ppr.role
 
+    if ppr is None:
+        role = None
+    else:
+        role = ppr.role
+
     if profile.default_role != role:
         log.debug("Updating default role: %s -> %s" % (profile.default_role, role))
         profile.default_role = role
