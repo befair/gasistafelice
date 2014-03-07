@@ -1,3 +1,15 @@
+07.03.2014 Luca Ferroni <luca@befair.it>
+
+    * Versione 0.10
+    * Ordini InterGAS
+    * Velocizzazione del calcolo dei saldi economici
+    * Gestione appartenenza GAS <-> MultiGAS
+    * Migliorate le notifiche mail ai gasisti e ai referenti fornitore
+    * Chiusura ed invio automatico del report PDF al fornitore e referente
+      fornitore (se configurato nel GAS e nel patto)
+    * FIX #228, #229 nella creazione del report PDF
+    * Resa coerente la configurazione dei ruoli (anche se ancora da migliorare)
+
 22.09.2012 Luca Ferroni <luca@befair.it>
 
     * Versione 0.9.9
