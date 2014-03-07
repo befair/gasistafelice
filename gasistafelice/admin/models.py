@@ -68,9 +68,9 @@ class PersonAdmin(admin.ModelAdmin):
     inlines = [PersonContactInline, ]
     save_on_top = True
 
-    list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
+    list_display = ('__unicode__', 'name', 'surname', 'city', 'user_with_link')
     list_editable = ('name', 'surname')
-    list_display_links = ('__unicode__', 'display_name')
+    list_display_links = ('__unicode__',)
     search_fields = ('^name','^surname', 'address__city')
     fieldsets = ((None,
             { 'fields' : ('name', 'surname',
@@ -78,6 +78,12 @@ class PersonAdmin(admin.ModelAdmin):
                 'address', 'avatar', 'website'
             )
     }),)
+
+    def user_with_link(self, obj):
+        user = obj.user
+        return u'<a target="_blank" href="%s">%s</a>' % (user.get_absolute_url(), user)
+    user_with_link.allow_tags = True
+    user_with_link.short_description = _("user")
 
 class PlaceAdmin(admin.ModelAdmin):
 
