@@ -21,8 +21,16 @@ import re, logging
 
 log = logging.getLogger("gasistafelice")
 
+def cmp_orders(a, b):
+    return [-1, 1][
+        int(a.orders.archived().count() < b.orders.archived().count())
+    ]
+
 @never_cache
 def login(request, *args, **kw):
+
+    gas_list = list(GAS.objects.all())
+    gas_list.sort(cmp_orders)
 
     kw['extra_context'] = {
         'VERSION': settings.VERSION,
@@ -30,9 +38,9 @@ def login(request, *args, **kw):
         'MEDIA_URL' : settings.MEDIA_URL,
         'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
         'MAINTENANCE_MODE' : settings.MAINTENANCE_MODE,
-        'gas_list' : GAS.objects.all(),
+        'gas_list' : gas_list,
     }
-    if settings.MAINTENANCE_MODE: 
+    if settings.MAINTENANCE_MODE:
         if request.method == "POST" and \
             request.POST.get('username') != settings.INIT_OPTIONS['su_username']:
             return HttpResponse(_("Maintenance in progress, please retry later..."))
@@ -103,7 +111,7 @@ def staff_registration(request, *args, **kw):
     else:
         return django_auth_login(request, *args, **kw)
 
-# Activate user function which update RegistrationProfile activation key, 
+# Activate user function which update RegistrationProfile activation key,
 # but doesn't activate the user
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
@@ -145,7 +153,7 @@ def activate_user(activation_key):
                     profile.user.save()
             return profile.user
     return False
-    
+
 def check_registration_token_for_gasmember(gm):
     """Check if registration token matches (case insensitive match)"""
 
@@ -175,8 +183,8 @@ def check_registration_token_for_gasmember(gm):
 
                 # Finally delete the comment
                 token_comment.delete()
-    return rv 
-    
+    return rv
+
 # Function copied from registration.views app
 # Use custom function to update activation key for a user
 # but does not activate it
