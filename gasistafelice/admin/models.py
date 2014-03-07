@@ -47,7 +47,7 @@ class SupplierStockInline(admin.TabularInline):
     model = supplier_models.SupplierStock
     exclude = ('delivery_notes',)
     extra = 1
-    
+
 class GASSupplierOrderProductInline(admin.TabularInline):
     model = gas_models.GASSupplierOrderProduct
     extra = 10
@@ -67,24 +67,24 @@ class PersonAdmin(admin.ModelAdmin):
 
     inlines = [PersonContactInline, ]
     save_on_top = True
-    
+
     list_display = ('__unicode__', 'name', 'surname', 'city', 'display_name')
-    list_editable = ('name', 'surname') 
+    list_editable = ('name', 'surname')
     list_display_links = ('__unicode__', 'display_name')
     search_fields = ('^name','^surname', 'address__city')
     fieldsets = ((None,
             { 'fields' : ('name', 'surname',
                 'display_name',
-                'address', 'avatar', 'website' 
+                'address', 'avatar', 'website'
             )
     }),)
 
 class PlaceAdmin(admin.ModelAdmin):
 
-    save_on_top = True 
+    save_on_top = True
     fieldsets = ((None,
-            { 'fields' : ('name', 
-                'description', 'address', 
+            { 'fields' : ('name',
+                'description', 'address',
                 'zipcode', 'city', 'province'
             )
     }),
@@ -95,7 +95,7 @@ class PlaceAdmin(admin.ModelAdmin):
     )
 
     list_display = ('__unicode__', 'name', 'city', 'province')
-    list_editable = ('city', 'province') 
+    list_editable = ('city', 'province')
     search_fields = ('name', 'city','province')
 
 
@@ -103,18 +103,18 @@ class ContactAdmin(admin.ModelAdmin):
 
     search_fields = ('value',)
     list_display = ('pk', '__unicode__', 'flavour', 'value')
-    list_editable = ('flavour', 'value') 
+    list_editable = ('flavour', 'value')
     list_filter = ('flavour',)
 
 class GASAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    list_display = ('__unicode__', 'id_in_des', 
+    list_display = ('__unicode__', 'id_in_des',
         'city', 'website_with_link', 'economic_state'
     )
     fieldsets = ((_('Identity'),
             { 'fields' : ('name', 'id_in_des', 'birthday',
-                'headquarter', 'contact_set', 'logo', 
+                'headquarter', 'contact_set', 'logo',
                 'description', 'association_act', 'intent_act'
               )
     }),
@@ -145,14 +145,14 @@ class GASAdmin(admin.ModelAdmin):
 
 class GASConfigForm(forms.ModelForm):
 
-    default_withdrawal_place = make_ajax_field(gas_models.GASConfig, 
+    default_withdrawal_place = make_ajax_field(gas_models.GASConfig,
         model_fieldname='default_withdrawal_place',
-        channel='placechannel', 
+        channel='placechannel',
         #help_text="Search for place by name"
     )
-    default_delivery_place = make_ajax_field(gas_models.GASConfig, 
+    default_delivery_place = make_ajax_field(gas_models.GASConfig,
         model_fieldname='default_delivery_place',
-        channel='placechannel', 
+        channel='placechannel',
         #help_text="Search for place by name"
     )
     class Meta:
@@ -166,11 +166,11 @@ class GASConfigAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('gas', 'default_close_day', 'order_show_only_next_delivery', 'order_show_only_one_at_a_time', 'default_delivery_day','is_suspended')
     fieldsets = ((_("Configuration"), {
-        'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time', 
-            'gasmember_auto_confirm_order', #KO by fero always True until Gasista Felice 2.0: 'auto_populate_products', 
-            'default_close_day', 'default_close_time', 'default_delivery_day', 
-            'default_delivery_time', 'can_change_delivery_place_on_each_order', 
-            'default_delivery_place', 'can_change_withdrawal_place_on_each_order', 
+        'fields' : ('order_show_only_next_delivery', 'order_show_only_one_at_a_time',
+            'gasmember_auto_confirm_order', #KO by fero always True until Gasista Felice 2.0: 'auto_populate_products',
+            'default_close_day', 'default_close_time', 'default_delivery_day',
+            'default_delivery_time', 'can_change_delivery_place_on_each_order',
+            'default_delivery_place', 'can_change_withdrawal_place_on_each_order',
             'default_withdrawal_place','notice_days_before_order_close',
             'use_order_planning', 'intergas_connection_set',
             'send_email_on_order_close', 'registration_token',
@@ -188,7 +188,7 @@ class GASConfigAdmin(admin.ModelAdmin):
 class GASMemberAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    
+
     list_display = ('__unicode__', 'gas_with_link')
     fieldsets = ((None,
             { 'fields' : ('gas', 'person')
@@ -203,13 +203,13 @@ class GASMemberAdmin(admin.ModelAdmin):
     list_filter = ('gas', )
 
     actions = ['say_hello']
-    
+
     class Media:
         css = {
-            "all": ("css/addchangestyles.css",)
+            "all": ("css/adminchangestyles.css",)
         }
         js = ("js/addchangecode.js",)
-        
+
     def say_hello(self, request, queryset):
         for obj in queryset.all():
             messages.info(request, ugettext("Hello %s") % obj)
@@ -232,21 +232,21 @@ class SupplierAdmin(admin.ModelAdmin):
     # Disabled inlines = [SupplierStockInline, ]
 
     save_on_top = True
-    
+
     fieldsets = (
         (None, {
             'fields': ('name', 'frontman', 'seat', 'website', 'logo')
         }),
         ('Details', {
             'fields': ('flavour', 'vat_number','certifications',)
-        }),        
+        }),
         )
 
     list_display = ('name', '__unicode__', 'flavour', 'website_with_link',)
     list_display_links = ('name',)
     list_filter = ('flavour',)
     search_fields = ['name']
-    
+
     def website_with_link(self, obj):
         url = obj.website
         return u'<a target="_blank" href="%s">%s</a>' % (url, url)
@@ -265,7 +265,7 @@ class SupplierConfigAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    
+
     fieldsets = (
         (None, {
             'fields': ('name', 'producer', 'description','category','mu')
@@ -280,7 +280,7 @@ class ProductAdmin(admin.ModelAdmin):
 class SupplierStockAdmin(admin.ModelAdmin):
 
     save_on_top = True
-    
+
     fieldsets = (
         (None, {
             'fields': ('product', 'price', 'amount_available',)
@@ -296,7 +296,7 @@ class SupplierStockAdmin(admin.ModelAdmin):
     list_display_links = ('supplier',)
     list_filter = ('supplier',)
     search_fields = ['product', 'supplier__name',]
-    
+
     # FIXME: try to make it more generic !
     def units_minimum_amount_pretty(self, obj):
         return obj.units_minimum_amount or '--'
@@ -317,9 +317,9 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
     fieldsets = ((None,
             { 'fields' : (
                 'pact',
-                ('datetime_start', 'datetime_end'),   
-                'delivery',  
-                'withdrawal',              
+                ('datetime_start', 'datetime_end'),
+                'delivery',
+                'withdrawal',
               )
             }),
     )
@@ -341,7 +341,7 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
         return super(GASSupplierOrderAdmin, self).queryset(request)
 
     #inlines = [GASSupplierOrderProductInline, ]
-    
+
 class GASSupplierOrderProductAdmin(admin.ModelAdmin):
     pass
 
@@ -353,25 +353,25 @@ class GASMemberOrderAdmin(admin.ModelAdmin):
             'ordered_product',
             'ordered_price',
             'ordered_amount',
-            'withdrawn_amount',          
-              )  
+            'withdrawn_amount',
+              )
             }),
     )
-  
-    
+
+
 class DeliveryAdmin(admin.ModelAdmin):
     pass
 
 class WithdrawalAdmin(admin.ModelAdmin):
     pass
-    
+
 class UserProfileAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         #TODO placeholder domthu: limit choices to ParamRole bound to user with PrincipalParamRoleRelation
         #see up GASSupplierOrderAdmin class
         pass
-    
+
 class PPRAdmin(admin.ModelAdmin):
 
     list_filter = ('role__role', 'role',)
@@ -383,15 +383,15 @@ class PRAdmin(admin.ModelAdmin):
 
 class UnitConvAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'src', 'dst', 'amount')
-    list_editable = ('src', 'dst', 'amount')    
+    list_editable = ('src', 'dst', 'amount')
 
 class GASSupplierStockAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'pact', 'enabled')
     list_filter = ('pact', 'enabled')
 
 class PactAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 
-        'gas', 'supplier', 'date_signed', 
+    list_display = ('__unicode__',
+        'gas', 'supplier', 'date_signed',
         'auto_populate_products'
     )
     list_filter = ('gas', 'supplier')
