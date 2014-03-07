@@ -137,16 +137,7 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
                     {% set ActualFamily = row.family_id %}
                     {% for fam in subFam %}
                         {% if fam.family_id == ActualFamily %}
-                            {% if fam.basket_products == 1 %}
-                                <td class="fam" >{{ fam.gasmember }}&nbsp;&#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
-                            {# KLUDGE FOR pisa BUGGED code! It does not understand different rowspan. It seems that it calculates wrong row heights #}
-                            {% else %}
-                                {% if fam.basket_products == 2 %}
-                                    <td class="fam" rowspan="2">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
-                                {% else %}
-                                    <td class="fam" style="border-bottom:0;" rowspan="3">{{ fam.gasmember }}<br /> {{ fam.basket_products }} {% trans "prod" %}. &#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
-                                {% endif %}
-                            {% endif %}
+                            <td class="fam" rowspan="{{fam.basket_products}}">{{ fam.gasmember }}&nbsp;&#8364;&nbsp;{{ fam.basket_price|floatformat:"2" }}</td>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
