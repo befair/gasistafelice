@@ -4,6 +4,7 @@ from django.contrib import admin, messages
 from django.contrib.admin.util import unquote
 from django.core import urlresolvers
 from django import forms
+from django.db.models import Q
 
 from ajax_select import make_ajax_field
 from ajax_select.fields import autoselect_fields_check_can_add
@@ -16,6 +17,7 @@ from flexi_auth import models as auth_models
 from gasistafelice.rest.models import pages as rest_models
 from gasistafelice.users import models as user_models
 from simple_accounting import models as accounting_models
+from gas.models.base import GAS
 
 #from registration.models import RegistrationProfile as MyProfile
 
@@ -163,6 +165,12 @@ class GASConfigForm(forms.ModelForm):
     )
     class Meta:
         model = gas_models.GASConfig
+
+    def __init__(self, *args, **kwargs):
+	super(GASConfigForm, self).__init__(*args, **kwargs)
+	if 'instance' in kwargs:
+	    gas = kwargs.get('instance').gas.pk
+	    self.fields['intergas_connection_set'].queryset = GAS.objects.filter(~Q(pk=gas))
 
 #--------
 
