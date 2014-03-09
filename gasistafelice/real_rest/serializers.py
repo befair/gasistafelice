@@ -3,7 +3,7 @@ from rest_framework import serializers
 from base.models import Person, Contact
 from gas.models.base import GAS, GASMember, GASSupplierStock
 from gas.models.order import GASSupplierOrder, GASMemberOrder
-from supplier.models import Product, SupplierStock
+from supplier.models import Product, SupplierStock, Supplier
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,19 +46,28 @@ class GASMemberPkListingField(serializers.RelatedField):
     def to_native(self, value):
         return value.pk
 
+class SupplierSerializer(serializers.ModelSerializer):
+
+    contact_set = ContactSerializer(many=True)
+    certifications = serializers.RelatedField(many=True)
+    seat = serializers.RelatedField()
+
+    class Meta:
+        model = Supplier
+
 class PersonSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
     gas_list = GASSerializer(many=True)
     gasmembers = GASMemberPkListingField(many=True)
-    #suppliers = SupplierSerializer(many=True)
+    suppliers = SupplierSerializer(many=True)
 
     class Meta:
         model = Person
         fields = (
             'id', 'name', 'surname', 'display_name', 
             'ssn', 'avatar', 'website', 'contact_set',
-            'user', 'gasmembers', 'gas_list'
+            'user', 'gasmembers', 'gas_list', 'suppliers'
         )
 
 #---------------------------------------------------------------------------------

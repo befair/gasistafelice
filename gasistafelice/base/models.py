@@ -705,7 +705,7 @@ class Person(models.Model, PermissionResource):
             qs = qs | gas.suppliers
         
         # add the suppliers for which this person is an agent
-        referred_set = set([sr.supplier for sr  in self.supplieragent_set])
+        referred_set = set([sr.supplier for sr  in self.supplieragent_set.all()])
         qs = qs | Supplier.objects.filter(pk__in=[obj.pk for obj in referred_set])
         
         return qs
