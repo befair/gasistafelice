@@ -30,6 +30,8 @@ class GASReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
 class GASMemberReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
+    #TODO: controllo sui permessi
+
     model = GASMember
     serializer_class = my_serializers.GASMemberSerializer
 
