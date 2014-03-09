@@ -9,7 +9,7 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIV
 import serializers as my_serializers
 
 from base.models import Person, Contact
-from gas.models import GAS
+from gas.models import GAS, GASMember
 
 #--------------------------------------------------------------------------------
 # REST API
@@ -28,4 +28,8 @@ class GASReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     model = GAS
     serializer_class = my_serializers.GASSerializer
 
+class GASMemberReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
+
+    model = GASMember
+    serializer_class = my_serializers.GASMemberSerializer
 

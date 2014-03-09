@@ -8,5 +8,6 @@ urlpatterns = patterns('',
 
     (r'^v1/person/$', rest_views.PersonCreateReadView.as_view()),
     (r'^v1/person/(?P<pk>\d+)/$', rest_views.PersonReadUpdateDeleteView.as_view()),
+    (r'^v1/gasmember/(?P<pk>\d+)/$', rest_views.GASMemberReadUpdateDeleteView.as_view()),
     (r'^v1/gas/(?P<pk>\d+)/$', rest_views.GASReadUpdateDeleteView.as_view()),
 )
