@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from base.models import Person, Contact
 from gas.models.base import GAS, GASMember, GASSupplierStock
-from gas.models.order import GASSupplierOrder
+from gas.models.order import GASSupplierOrder, GASMemberOrder
 from supplier.models import Product, SupplierStock
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -17,8 +17,8 @@ class GASSupplierStockSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
 
-    gasstock_set = GASSupplierStockSerializer(many=True)
-    stocks = SupplierStockSerializer(many=True)
+    #gasstock_set = GASSupplierStockSerializer(many=True)
+    #stocks = SupplierStockSerializer(many=True)
     #products = ProductSerializer(many=True)
 
     class Meta:
@@ -30,21 +30,28 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ('flavour', 'value', 'is_preferred')
 
-class GASSerialiser(serializers.ModelSerializer):
+class GASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
-    orders = OrderSerializer(many=True)
+    open_orders = OrderSerializer(many=True)
 
     class Meta:
         model = GAS
-        fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'orders')
+        fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'open_orders')
         
-class GASMemberSerialiser(serializers.ModelSerializer):
+class GASMemberOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GASMemberOrder
+
+class GASMemberSerializer(serializers.ModelSerializer):
 
     economic_state = serializers.CharField()
     balance = serializers.FloatField()
     total_basket = serializers.FloatField()
     total_basket_to_be_delivered = serializers.FloatField()
+    basket = GASMemberOrderSerializer(many=True)
+    basket_to_be_delivered = GASMemberOrderSerializer(many=True)
 
     class Meta:
         model = GASMember
@@ -52,15 +59,15 @@ class GASMemberSerialiser(serializers.ModelSerializer):
             'id', 'gas', 'person', 'membership_fee_payed',  
             'is_suspended', 'suspend_datetime', 'suspend_auto_resume',
             'balance', 'total_basket', 'total_basket_to_be_delivered',
-            'economic_state'
+            'economic_state', 'basket', 'basket_to_be_delivered'
         )
         
 class PersonSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
-    gas_list = GASSerialiser(many=True)
-    #suppliers = SupplierSerialiser(many=True)
-    gasmembers = GASMemberSerialiser(many=True)
+    gas_list = GASSerializer(many=True)
+    #suppliers = SupplierSerializer(many=True)
+    gasmembers = GASMemberSerializer(many=True)
 
     class Meta:
         model = Person
