@@ -437,9 +437,20 @@ class GAS(models.Model, PermissionResource):
 
     @property
     def orders(self):
+        """
+        Return orders bound to resource
+        """
+
         from gasistafelice.gas.models.order import GASSupplierOrder
-        """Return orders bound to resource"""
         return GASSupplierOrder.objects.filter(pact__in=self.pacts)
+
+    @property
+    def open_orders(self):
+        """
+        Return open orders bound to resource. 
+        NOTE: this has been added for simple real_rest.ModelSerializers
+        """
+        return self.orders.open()
 
     @property
     def order(self):

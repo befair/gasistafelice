@@ -26,6 +26,6 @@ class PersonReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 class GASReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     model = GAS
-    serializer_class = my_serializers.GASSerialiser
+    serializer_class = my_serializers.GASSerializer
 
 
