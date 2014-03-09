@@ -8,18 +8,20 @@ from supplier.models import Product, SupplierStock
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+
 class SupplierStockSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
     class Meta:
         model = SupplierStock
+
 class GASSupplierStockSerializer(serializers.ModelSerializer):
     class Meta:
         model = GASSupplierStock
 
 class OrderSerializer(serializers.ModelSerializer):
 
-    #gasstock_set = GASSupplierStockSerializer(many=True)
-    #stocks = SupplierStockSerializer(many=True)
-    #products = ProductSerializer(many=True)
+    gasstock_set = GASSupplierStockSerializer(many=True)
+    stocks = SupplierStockSerializer(many=True)
 
     class Meta:
         model = GASSupplierOrder
@@ -39,10 +41,43 @@ class GASSerializer(serializers.ModelSerializer):
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'open_orders')
         
+class GASMemberPkListingField(serializers.RelatedField):
+
+    def to_native(self, value):
+        return value.pk
+
+class PersonSerializer(serializers.ModelSerializer):
+
+    contact_set = ContactSerializer(many=True)
+    gas_list = GASSerializer(many=True)
+    gasmembers = GASMemberPkListingField(many=True)
+    #suppliers = SupplierSerializer(many=True)
+
+    class Meta:
+        model = Person
+        fields = (
+            'id', 'name', 'surname', 'display_name', 
+            'ssn', 'avatar', 'website', 'contact_set',
+            'user', 'gasmembers', 'gas_list'
+        )
+
+#---------------------------------------------------------------------------------
+# GAS Member serializers. 
+# Should be used carefully in views because they holds sensitive informations
+
 class GASMemberOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GASMemberOrder
+
+class CashInfoSerializer(serializers.CharField):
+    """
+    Cash are sensible info
+    """
+
+    def __init__(self, *args, **kw):
+
+        return super(CashInfoSerializer, self).__init__(*args, **kw)
 
 class GASMemberSerializer(serializers.ModelSerializer):
 
@@ -62,19 +97,3 @@ class GASMemberSerializer(serializers.ModelSerializer):
             'economic_state', 'basket', 'basket_to_be_delivered'
         )
         
-class PersonSerializer(serializers.ModelSerializer):
-
-    contact_set = ContactSerializer(many=True)
-    gas_list = GASSerializer(many=True)
-    #suppliers = SupplierSerializer(many=True)
-    gasmembers = GASMemberSerializer(many=True)
-
-    class Meta:
-        model = Person
-        fields = (
-            'id', 'name', 'surname', 'display_name', 
-            'ssn', 'avatar', 'website', 'contact_set',
-            'user', 'gasmembers', 'gas_list',  
-        )
-
-
