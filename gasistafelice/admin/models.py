@@ -163,14 +163,15 @@ class GASConfigForm(forms.ModelForm):
         channel='placechannel',
         #help_text="Search for place by name"
     )
+
     class Meta:
         model = gas_models.GASConfig
 
     def __init__(self, *args, **kwargs):
-	super(GASConfigForm, self).__init__(*args, **kwargs)
-	if 'instance' in kwargs:
-	    gas = kwargs.get('instance').gas.pk
-	    self.fields['intergas_connection_set'].queryset = GAS.objects.filter(~Q(pk=gas))
+        super(GASConfigForm, self).__init__(*args, **kwargs)
+        if kwargs.has_key('instance'):
+            gas = kwargs['instance'].gas
+            self.fields['intergas_connection_set'].queryset = GAS.objects.exclude(pk=gas.pk)
 
 #--------
 
