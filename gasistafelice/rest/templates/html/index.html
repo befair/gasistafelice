@@ -1567,8 +1567,27 @@
                         // Start with hidden resource panel
                         //show_resource_panel();
 
+                        {% if logged_user.is_superuser %}
+                        $('#user_name').html('<select id="user_to_simulate">' + 
+                            {% for a_user in all_users %}
+                                '<option value="{{ a_user.pk }}">{{a_user.username}} - {{a_user.person.display_name}}</option>' +
+                            {% endfor %}
+                            '</select>'
+                        );
+                        $('#user_name option[value={{ user.pk }}]').attr('selected','selected');
+                        $('#user_name select').change(function() {
+                            var url = jQuery.pre + 'simulate_user/' + $(this).attr('value') + '/';
+
+                            $.get(url,
+                                function (response_data) {
+                                    window.location.reload();
+                                }
+                            );
+                        });
+                        {% else %}
                         $('#user_name').text(jQuery.labsglobals['user']);
 
+                        {% endif %}
                         init_user_urns_list();
 
 

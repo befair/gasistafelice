@@ -3,6 +3,7 @@ from django.conf import settings
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.utils import simplejson
 
 #Matteo: to restore when django_notification will be updated
@@ -48,13 +49,20 @@ log = logging.getLogger(__name__)
 @login_required
 def index(request):
     """ main entrance page """
+    if request.logged_user.is_superuser:
+        all_users = User.objects.all().select_related().order_by('username')
+    else:
+        all_users = []
+
     ctx = {
         'VERSION': settings.VERSION,
         'INSTALLED_APPS': settings.INSTALLED_APPS,
         'LOGOUT_URL' : settings.LOGOUT_URL,
         'THEME' : settings.THEME,
         'MEDIA_URL' : settings.MEDIA_URL,
-        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
+        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
+        'logged_user' : request.logged_user,
+        'all_users' : all_users,
     }
     log.debug("before render_to_ctx")
     return render_to_context_response(request, "html/index.html", ctx)
@@ -77,6 +85,7 @@ def site_settings(request):
     
     ctx = {
         'user'                 : request.user.username,
+        'user_id'              : request.user.pk,
         'base_usercontainer_id': base_usercontainer_id,
         'url_prefix'           : settings.URL_PREFIX,
         'type'                 : 'site',

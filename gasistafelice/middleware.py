@@ -21,6 +21,7 @@ from django.http import Http404
 from lib.middleware import AppMiddleware
 from django.http import HttpResponse
 
+from django.contrib.auth.models import User, AnonymousUser
 from django.conf import settings
 
 from gasistafelice.globals import type_model_d
@@ -75,3 +76,23 @@ class ResourceMiddleware(AppMiddleware):
                 
         return 
 
+
+class UpdateRequestUserMiddleware(object):
+
+    def process_request(self, request):
+
+        """
+        If there is a logged user in the request (i.e: request.user is set),
+        update request.user with the User specified in 
+        'user_to_simulate' session key
+        if the original user has permission to do that
+        """
+        request.logged_user = request.user
+
+        if request.user and not \
+            isinstance(request.user, AnonymousUser):
+
+            if request.session.get('user_to_simulate'):
+                request.user = User.objects.get(pk=request.session['user_to_simulate'])
+
+        return 

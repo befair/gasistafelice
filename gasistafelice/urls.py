@@ -15,7 +15,8 @@ js_info_dict = {
 urlpatterns = patterns('',
 
 	(r'^$'       , 'base.views.index'  ),
-	(r'^%s$'     % settings.URL_PREFIX , 'base.views.index'  ),
+	(r'^%s$' % settings.URL_PREFIX , 'base.views.index'  ),
+	(r'^%ssimulate_user/(?P<user_pk>\d+)/$' % settings.URL_PREFIX , 'base.views.simulate_user'  ),
 
     #New user interface
 	(r'^%sgas/' % settings.URL_PREFIX, include('gas.urls')),
