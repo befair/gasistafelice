@@ -66,6 +66,9 @@ class GasAccountingProxy(AccountingProxy):
             transaction.add_references(refs)
 
     def withdraw_from_member_account_update(self, member, updated_amount, refs, date=None):
+        """
+        WARNING: if you use this method you lose history of updates
+        """
 
         tx = Transaction.objects.get_by_reference(refs).get(kind=GasAccountingProxy.GAS_WITHDRAWAL)
         if tx:
@@ -104,7 +107,7 @@ class GasAccountingProxy(AccountingProxy):
                 'gas': gas.id_in_des, 'order': order
             }))
 
-    def withdraw_from_member_account(self, member, new_amount, refs, order, date=None):
+    def withdraw_from_member_account(self, member, new_amount, refs, order, date=None, comment=""):
         """
         Withdraw a given amount ``new_amount`` of money from the account of a member
         of this GAS and bestow it to the GAS's cash.
@@ -128,7 +131,7 @@ class GasAccountingProxy(AccountingProxy):
         #'gas': gas.id_in_des,
         #WAS: description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
         #NOTE LF: person is a repetition of gasmember person bound
-        description = order.common_name
+        description = u"%s (%s)" % (order.common_name, comment)
         issuer = self.subject
         log.debug("registering transaction: issuer=%s descr=%s source=%s target=%s" % (
             issuer, description, source_account, target_account
