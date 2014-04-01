@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     (r'^v1/person/(?P<pk>\d+)/$', rest_views.PersonReadUpdateDeleteView.as_view()),
     (r'^v1/gasmember/(?P<pk>\d+)/$', rest_views.GASMemberReadUpdateDeleteView.as_view()),
     (r'^v1/gas/(?P<pk>\d+)/$', rest_views.GASReadUpdateDeleteView.as_view()),
+    (r'^v1/supplier/(?P<pk>\d+)/$', rest_views.SupplierReadUpdateDeleteView.as_view()),
 )
