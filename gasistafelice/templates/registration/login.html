@@ -3,7 +3,7 @@
 {% load gas_base %}
 
 {% block extraheads %}
-<link href="/media/css/base.css" type="text/css" rel="stylesheet">
+<link href="/media/css/base.css" type="text/css" rel="stylesheet" />
 <style type="text/css">
     .box { border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em; }
     .traditional-list { margin-left: 2em; padding:0.2em;}
@@ -57,16 +57,18 @@
         </tr>
         </table>
 
-        <input type="submit" value="login" />
-        <input type="hidden" name="next" value="{{ next }}" />
+        <fieldset style="text-align:center; border:0px">
+            <input type="submit" value="login" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </fieldset>
         </form>
         </div>
     </td><td>
         <div class="box">
-            <h1><center>
+            <h1 style="margin:auto; text-align:center">
                 <p>Se non hai accesso</p>
                 <p><a href="{% url 'des.views.registration' %}">Registrati ora</a></p>
-            </center></h1>
+            </h1>
             <div style="clear:both"> </div>
         </div>
     </td></tr>
@@ -79,13 +81,13 @@
 
 <div style="clear:both;">
 
-<table border="1">
-    <tr>
+<table style="border:1px solid lightgrey">
+    <thead>
         <th>GAS</th>
         <th>Città</th>
         <th>Ordini</th>
         <th>Flusso economico solidale</th>
-    </tr>
+    </thead>
 {% for g in gas_list %}
     {% render_gas_as_tr g %}
 {% endfor %}
