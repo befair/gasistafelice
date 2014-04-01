@@ -118,7 +118,7 @@ class EcoGASMemberForm(forms.Form):
             # is the difference between this and the previous one
             comment=u""
             if original_amounted is not None:
-                comment = _("[MOD] old_amount=%(old)s -> new_amount=%(new)s") % {
+                comment = _("[MOD] old_amount=%(old).2f -> new_amount=%(new).2f") % {
                     'old' : original_amounted, 'new' : amounted
                 }
                 amounted -= original_amounted
@@ -129,9 +129,10 @@ class EcoGASMemberForm(forms.Form):
                 #KO 14-04-01:     )
 
             #KO 14-04-01: else:
-            gm.gas.accounting.withdraw_from_member_account(
-                gm, amounted, refs, self.__order, comment=comment
-            )
+            if amounted:
+                gm.gas.accounting.withdraw_from_member_account(
+                    gm, amounted, refs, self.__order, comment=comment
+                )
 
 #            # Only for test Control if yet exist some transaction for this refs.
 #            computed_amount, existing_txs = gm.gas.accounting.get_amount_by_gas_member(gm, self.__order)

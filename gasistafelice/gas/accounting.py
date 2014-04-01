@@ -131,7 +131,9 @@ class GasAccountingProxy(AccountingProxy):
         #'gas': gas.id_in_des,
         #WAS: description = "%(person)s %(order)s" % {'person': member.person.report_name, 'order': order.report_name}
         #NOTE LF: person is a repetition of gasmember person bound
-        description = u"%s (%s)" % (order.common_name, comment)
+        description = order.common_name
+        if comment:
+            description = u"%s (%s)" % (description, comment)
         issuer = self.subject
         log.debug("registering transaction: issuer=%s descr=%s source=%s target=%s" % (
             issuer, description, source_account, target_account
