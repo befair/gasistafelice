@@ -2,10 +2,12 @@ from rest_framework import serializers
 
 from base.models import Person, Contact
 from gas.models.base import GAS, GASMember, GASSupplierStock
-from gas.models.order import GASSupplierOrder, GASMemberOrder
+from gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASSupplierOrderProduct
 from supplier.models import Product, SupplierStock, Supplier
 
 class ProductSerializer(serializers.ModelSerializer):
+    mu = serializers.CharField()
+    pu = serializers.CharField()
     class Meta:
         model = Product
 
@@ -14,14 +16,32 @@ class SupplierStockSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupplierStock
 
+class GASSupplierOrderProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GASSupplierOrderProduct
+
 class GASSupplierStockSerializer(serializers.ModelSerializer):
     class Meta:
         model = GASSupplierStock
+
+class DeliverySerializer(serializers.ModelSerializer):
+    place = serializers.CharField()
+
+    class Meta:
+        model = Delivery
+
+class GASMemberPkListingField(serializers.RelatedField):
+
+    def to_native(self, value):
+        return value.pk
 
 class OrderSerializer(serializers.ModelSerializer):
 
     gasstock_set = GASSupplierStockSerializer(many=True)
     stocks = SupplierStockSerializer(many=True)
+    delivery = DeliverySerializer()
+    supplier = GASMemberPkListingField()
 
     class Meta:
         model = GASSupplierOrder
@@ -41,11 +61,6 @@ class GASSerializer(serializers.ModelSerializer):
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'open_orders')
         
-class GASMemberPkListingField(serializers.RelatedField):
-
-    def to_native(self, value):
-        return value.pk
-
 class SupplierSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
@@ -75,6 +90,8 @@ class PersonSerializer(serializers.ModelSerializer):
 # Should be used carefully in views because they holds sensitive informations
 
 class GASMemberOrderSerializer(serializers.ModelSerializer):
+
+    ordered_product = GASSupplierOrderProductSerializer()
 
     class Meta:
         model = GASMemberOrder
