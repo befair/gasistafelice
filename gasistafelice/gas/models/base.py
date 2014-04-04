@@ -2030,18 +2030,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def balance(self):
         """Accounting sold for this pact"""
-        #add economic payment for orders + PACT_EXTRA for +fornitore -GAS
-        #COMMENT domthu: these two lines of code report same values
-        #acc_tot = self.gas.accounting.system['/expenses/suppliers/' + self.supplier.uid].balance
-        acc_tot = self.supplier.accounting.system['/incomes/gas/' + self.gas.uid].balance
-        #add to acc_tot other economics operations like 
-        # PACT_EXTRA +GAS -fornitore done into method  def extra_operation
-        acc_tot -= self.supplier.accounting.system['/expenses/gas/' + self.gas.uid].balance
-        
-        #COMMENT domthu: this is for the DES's balance
-        #They include all GAS'economics entries + OutOfDES operations
-        #acc_tot = self.supplier.accounting.system['/wallet'].balance
-        return acc_tot
+
+        return self.supplier.accounting.get_pact_balance(self)
 
     @property
     def insolutes(self):

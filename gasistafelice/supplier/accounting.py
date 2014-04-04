@@ -152,6 +152,24 @@ class SupplierAccountingProxy(AccountingProxy):
             date = datetime.now()  #_date.today
         transaction = register_transaction(source_account, exit_point, entry_point, target_account, amount, description, issuer, date, kind)
 
+    def get_pact_balance(self, pact):
+
+        #UGLY: remove me when done and executed one command that regenerate all missing accounts
+        self.missing_accounts(pact.gas)
+
+        #add economic payment for orders + PACT_EXTRA for +fornitore -GAS
+        #COMMENT domthu: these two lines of code report same values
+        #acc_tot = self.gas.accounting.system['/expenses/suppliers/' + self.supplier.uid].balance
+        acc_tot = self.system['/incomes/gas/' + pact.gas.uid].balance
+        #add to acc_tot other economics operations like 
+        # PACT_EXTRA +GAS -fornitore done into method  def extra_operation
+        acc_tot -= self.system['/expenses/gas/' + pact.gas.uid].balance
+        
+        #COMMENT domthu: this is for the DES's balance
+        #They include all GAS'economics entries + OutOfDES operations
+        #acc_tot = self.supplier.accounting.system['/wallet'].balance
+        return acc_tot
+
     #UGLY: remove me when done and executed one command that regenerate all missing accounts
     def missing_accounts(self, gas):
         supplier = self.subject.instance
