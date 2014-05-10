@@ -73,7 +73,7 @@ class EcoGASMemberForm(forms.Form):
             log.error("EcoGASMemberForm: cannot retrieve gasmember with id " + str(cleaned_data['gm_id']))
             raise forms.ValidationError(ugettext("Cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
 
-        amounted = cleaned_data.get('amounted')
+        amounted = cleaned_data.get('amounted') or 0
         enabled = cleaned_data.get('applied')
 
         if enabled:
@@ -99,48 +99,38 @@ class EcoGASMemberForm(forms.Form):
             )
             raise PermissionDenied(ugettext("order is not in the right state!"))
 
-        gm = self.cleaned_data['gasmember']
-
         #Do economic work
+        gm = self.cleaned_data['gasmember']
         amounted = self.cleaned_data.get('amounted')
         enabled = self.cleaned_data.get('applied')
+        #log.debug("ModSave....modify.....ModSave ModifyEcoGASMemberForm enabled(%s) amount(%s) for %s" % (enabled, amounted, gm))
 
-        if enabled and amounted is not None:
-            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (gm, amounted))
-            # This kind of amount is ever POSITIVE!
-            amounted = abs(amounted)
-
+        if enabled and amounted == 0:
+            #log.debug("Save ModEcoGASMemberForm enabled(%s) for %s (amount=%s) at zero" % (enabled, gm, amounted))
+            comment=u"Nessuna consegna"
             refs = [gm, self.__order]
+            gm.gas.accounting.withdraw_from_member_account(
+                gm, amounted, refs, self.__order, comment=comment
+            )
+            #Update State if possible
+            self.__order.control_economic_state()
 
+        if enabled and amounted > 0:
+            amounted = abs(amounted)
+            refs = [gm, self.__order]
             original_amounted = self.cleaned_data['original_amounted']
-
-            # If this is an update -> the amount of the NEW transaction 
-            # is the difference between this and the previous one
+            # this is an update and the difference between this and the previous one
             comment=u""
             if original_amounted is not None:
-                comment = _("[MOD] old_amount=%(old).2f -> new_amount=%(new).2f") % {
+                comment = _("[MOD] prima=%(old).2f -> dopo=%(new).2f") % {
                     'old' : original_amounted, 'new' : amounted
                 }
                 amounted -= original_amounted
-                #KO 14-04-01: # A ledger entry already exists
-                #KO 14-04-01: if original_amounted != amounted:
-                #KO 14-04-01:     gm.gas.accounting.withdraw_from_member_account_update(
-                #KO 14-04-01:         gm, amounted, refs
-                #KO 14-04-01:     )
 
-            #KO 14-04-01: else:
             if amounted:
                 gm.gas.accounting.withdraw_from_member_account(
                     gm, amounted, refs, self.__order, comment=comment
                 )
-
-#            # Only for test Control if yet exist some transaction for this refs.
-#            computed_amount, existing_txs = gm.gas.accounting.get_amount_by_gas_member(gm, self.__order)
-#            log.debug("BEFORE %(original_amounted)s %(computed_amount)s %(existing_txs)s" % {
-#                    'computed_amount': computed_amount, 
-#                    'existing_txs': existing_txs,
-#                    'original_amounted': original_amounted
-#            })
 
             #Update State if possible
             self.__order.control_economic_state()
@@ -154,7 +144,7 @@ class NewEcoGASMemberForm(forms.Form):
     """
 
     gasmember = forms.ModelChoiceField(
-        queryset=GASMember.objects.none(), 
+        queryset=GASMember.objects.none(),
         required=False
     )
     amounted = CurrencyField(required=False, initial=0, max_digits=8, decimal_places=2)
@@ -201,14 +191,14 @@ class NewEcoGASMemberForm(forms.Form):
 
         #Do economic work
         gm = self.cleaned_data['gasmember']
-        amounted = self.cleaned_data.get('amounted') or 0
+        amounted = self.cleaned_data.get('amounted') or -1
         enabled = self.cleaned_data.get('applied')
+        #log.debug("NewSave....new.....NewSave ModifyEcoGASMemberForm enabled(%s) amount(%s) for %s" % (enabled, amounted, gm))
 
-        if amounted > 0 and enabled:
+        if amounted >= 0 and enabled:
 
-            log.debug("Save NewEcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
             amounted = abs(amounted)
-            self.create_fake_purchaser(gm, amounted, 
+            self.create_fake_purchaser(gm, amounted,
                 note=ugettext("added by: %s") % self.__loggedusr
             )
             refs = [gm, self.__order]
@@ -219,7 +209,7 @@ class NewEcoGASMemberForm(forms.Form):
 
 class EcoGASMemberRechargeForm(forms.Form):
     """Return form class for row level operation on cash ordered data
-    use in Recharge 
+    use in Recharge
     Movement between GASMember.account --> GAS.GASMember.account
     """
 
@@ -242,11 +232,11 @@ class EcoGASMemberRechargeForm(forms.Form):
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError:
             log.debug(u"EcoGASMemberRechargeForm: cannot retrieve GASMember identifier. FORM ATTACK!")
-            raise 
+            raise
         except GASMember.DoesNotExist:
             log.debug(u"EcoGASMemberRechargeForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
             raise
-           
+
         return cleaned_data
 
     @transaction.commit_on_success
@@ -260,7 +250,7 @@ class EcoGASMemberRechargeForm(forms.Form):
 
         #Control logged user
         #if self.__loggedusr not in self.__order.cash_referrers: KO if superuser
-        if not self.__loggedusr.has_perm(CASH, 
+        if not self.__loggedusr.has_perm(CASH,
             obj=ObjectWithContext(self.__gas)
         ):
 
@@ -324,11 +314,11 @@ class EcoGASMemberFeeForm(forms.Form):
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError:
             log.debug(u"EcoGASMemberFeeForm: cannot retrieve GASMember identifier. FORM ATTACK!")
-            raise 
+            raise
         except GASMember.DoesNotExist:
             log.debug(u"EcoGASMemberFeeForm: cannot retrieve GASMember instance. Identifier (%s)." % cleaned_data['gm_id'])
             raise
-           
+
         return cleaned_data
 
     @transaction.commit_on_success
@@ -401,7 +391,7 @@ class InvoiceOrderForm(forms.Form):
 
         self.__loggedusr = request.user
         self.__gas = self.__order.gas
-        
+
     def clean(self):
 
         cleaned_data = super(InvoiceOrderForm, self).clean()
@@ -483,7 +473,7 @@ class InsoluteOrderForm(forms.Form):
     amount = CurrencyField(label=_('Payment'), required=True, max_digits=8, decimal_places=2)
 
     causal = forms.CharField(label=_('Causal'), required=True, widget=forms.TextInput,
-        help_text = _('Some indication about the payment: by bank or cash, bank number transaction...'), 
+        help_text = _('Some indication about the payment: by bank or cash, bank number transaction...'),
         error_messages={'required': _('You must declare the causal of this payment')}
     )
 
@@ -625,8 +615,8 @@ class BalanceGASForm(BalanceForm):
     wallet_suppliers = CurrencyField(label=_('Solidal cash flow'), required=False, max_digits=8, decimal_places=2)
 
 #    orders_grd = forms.MultipleChoiceField(
-#        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(), 
-#        required=False, 
+#        label=_('Insolutes'), choices=GASSupplierOrder.objects.none(),
+#        required=False,
 #        widget=forms.CheckboxSelectMultiple
 #    )
 #
@@ -670,7 +660,7 @@ class TransationGASForm(BalanceGASForm):
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
-    target = forms.ChoiceField(required=True, 
+    target = forms.ChoiceField(required=True,
         choices = [
             (INCOME,_('Income: Event, Donate, Sponsor, Fund... +GAS')),
             (EXPENSE,_('Expense: Expenditure, Invoice, Bank, Administration, Event, Rent... -GAS'))
@@ -748,13 +738,13 @@ class TransationPACTForm(BalanceForm):
 #DT     Use this if we have to insert this block in the GAS economic Tab too
 #LF    pact = forms.ModelChoiceField(label=_('pact'), queryset=GASSupplierSolidalPact.objects.none(), required=False, error_messages={'required': _('You must select one pact (or create it in your GAS details if empty)')})
 
-    amount = CurrencyField(label=_('cash amount').capitalize(), 
+    amount = CurrencyField(label=_('cash amount').capitalize(),
         required=True, max_digits=8, decimal_places=2,
         help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
     )
 
-    TARGET_CHOICES = [ 
+    TARGET_CHOICES = [
         (INCOME,_('Correction in favor to supplier: +Supplier -GAS')),
         (EXPENSE,_('Correction in favor to GAS: +GAS -Supplier ')),
         (INVOICE_COLLECTION,_('Orders payment'))
@@ -838,7 +828,7 @@ class TransationPACTForm(BalanceForm):
 #                        , 'eco'  : "%.2f" % round(ins.tot_curtail, 2)
 #                        , 'state'  : ins.current_state.name
 #                        , 'order'  : str(ins.pk) + " - " + short_date(ins.datetime_end)
-#                        } 
+#                        }
 #                    _choice.append((ins.pk, stat.replace('(euro)s',EURO_LABEL)))
 #            self.fields['orders'].choices = _choice
 #
@@ -971,7 +961,7 @@ class TransationGMForm(BalanceForm):
 #DT     Use this if we have to insert this block in the GAS economic Tab too
 #LF    person = forms.ModelChoiceField(queryset=Person.objects.none(), required=False, label=_("Person"))
 
-    amount = CurrencyField(label=_('cash amount').capitalize(), 
+    amount = CurrencyField(label=_('cash amount').capitalize(),
         required=True, max_digits=8, decimal_places=2,
         help_text = _('Insert the amount of money (no sign)'),
         error_messages = {'required': _('You must insert an postive or negative amount for the operation')}
@@ -1050,4 +1040,3 @@ class TransationGMForm(BalanceForm):
                 self.cleaned_data['economic_causal'],
                 add_time(self.cleaned_data['economic_date']),
         )
-
