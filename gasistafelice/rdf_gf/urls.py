@@ -1,5 +1,4 @@
 from django.conf.urls.defaults import *
-#from django.conf import settings
 try:
     from django.conf.urls import url
 except ImportError as e:
