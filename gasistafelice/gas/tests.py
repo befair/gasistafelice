@@ -124,6 +124,46 @@ class TestWithClient(TestCase):
             )
         return response
 
+class GASDumpTest(TestCase):
+    '''Just to see if dump works '''
+
+    fixtures = ['a_9001_auth.json','b_9001_des.json',
+                'c_9001_sites.json','d_9001_users.json',
+                'e_9001_workflows.json','f_9001_base.json',
+                'g_9001_supplier.json','h_9001_gas.json',
+                'i_9001_simpleaccounting.json'
+    ]
+
+    def setUp(self):
+	self.person = Person.objects.get(pk=12)
+
+    def testPerson(self):
+
+	self.assertEqual(self.person.surname,"Fornitore_gas01")
+
+        
+class CreatePersonWithViewTest(TestWithClient):
+    ''' Check if person is created '''
+
+    def setUp(self):
+	super(CreatePersonWithViewTest, self).setUp()
+
+    def _do_POST_add_person(self, ajax=False, **kwargs):
+
+        response = self._POST(
+            #reverse('', args=(,)),
+	    '/gasistafelice/rest/site/1/persons/create',
+            ajax,
+            **kwargs
+        )    
+        return response
+
+    def test_create_person(self):
+	self._login()
+
+	r = self._do_POST_add_person(
+
+
 class GASSupplierStockTest(TestCase):
     '''Test behaviour of managed attributes of GASSupplierStock'''
 
@@ -159,30 +199,31 @@ class GASSupplierStockTest(TestCase):
 class GASMemberOrderTest(TestCase):
     '''Test behaviour of managed attributes of GASMemberOrder'''
 
-
-    fixtures = ['a_test_auth.json','b_test_des.json',
-                'c_test_sites_site.json','d_test_users_userprofile.json',
-                'e_test_workflows.json','f_test_base.json',
-                'g_test_supplier.json','h_test_gas.json',
-                'i_test_simpleaccounting.json'
+    fixtures = ['a_9001_auth.json','b_9001_des.json',
+                'c_9001_sites.json','d_9001_users.json',
+                'e_9001_workflows.json','f_9001_base.json',
+                'g_9001_supplier.json','h_9001_gas.json',
+                'i_9001_simpleaccounting.json'
     ]
 
     def setUp(self):
         self.now = date.today()
         self.pact = GASSupplierSolidalPact.objects.get(pk=1)
         self.gas = self.pact.gas
-        self.member = self.gas.gasmembers[:1].get()
+	#MATTEO check why :1 ?
+        #WAS: self.member = self.gas.gasmembers[:1].get()
+        self.member = self.gas.gasmembers[0]
         self.order = GASSupplierOrder.objects.get(pk=1)
         self.orderable_product = self.order.orderable_products[0]
 
     def testDeliveredPrice(self):
-        '''Verify if actual delivered is computed correctly by auto populate 
+        '''Check if actual delivered is computed correctly by auto populate 
 
         in form we use el.gasstock.price'''
         self.assertIsNotNone(not self.orderable_product.delivered_price)
 
     def testActualPrice(self):
-        '''Verify if actual price is computed correctly
+        '''Check if actual price is computed correctly
 
         Don't be confused:
         orderable_product.initial_price: the price of the Product at the time the GASSupplierOrder was created
@@ -190,6 +231,8 @@ class GASMemberOrderTest(TestCase):
         orderable_product.delivered_price: the actual price of the Product (as resulting from the invoice)'''
         self.orderable_product.order_price = 115
         self.orderable_product.save()
+        gmo = GASMemberOrder.objects.get(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+	#MATTEO this shouldn't work 
         gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
         self.assertEqual(gmo.price_expected, 115)
 
@@ -198,7 +241,7 @@ class GASMemberOrderTest(TestCase):
         self.orderable_product.order_price = 115
         self.orderable_product.delivery_price = 100
         self.orderable_product.save()
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)[0]
         self.assertEqual(gmo.price_expected, 115)
         self.assertEqual(gmo.ordered_product.delivery_price, 100)
 
@@ -206,32 +249,32 @@ class GASMemberOrderTest(TestCase):
         '''Verify if total price is computed correctly'''
         self.orderable_product.order_price = 100
         self.orderable_product.save()
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)[0]
         self.assertEqual(gmo.price_expected, 2 * gmo.ordered_price)
         self.assertEqual(gmo.price_expected, 2 * gmo.ordered_product.order_price)
 
     def testOrder(self):
         '''Verify if SupplierOrder is computed correctly'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)[0]
         self.assertEqual(gmo.order, self.order)
         
     def testGAS(self):
         '''Verify if GAS is computed correctly'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)[0]
         self.assertEqual(gmo.gas, self.gas)
 
     def testDuplicateEntryRaiseError(self):
         '''Verify that entry are unique for together purchaser and order_product
         '''
         from django.db import connection
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)[0]
         gmo.save()
         gmos = GASMemberOrder.objects.filter(purchaser=self.member, ordered_product=self.orderable_product)
         self.assertEqual(gmos.count(), 1)
         error_ocurred = False
         try: 
             #should raise an exception IntegrityError: (1062, "Duplicate entry '1-1' for key 'ordered_product_id'")
-            gmo2 = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)
+            gmo2 = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=2)[0]
             gmo2.save()
         except IntegrityError as e:
             error_ocurred = True
@@ -242,7 +285,7 @@ class GASMemberOrderTest(TestCase):
 
     def testIsConfirmed(self):
         '''Verify if gmo confirmation depend of GAS configuration'''
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)[0]
         gmo.save()
         gmos = GASMemberOrder.objects.filter(purchaser=self.member, ordered_product=self.orderable_product)
         self.assertEqual(gmos.count(), 1)
@@ -254,7 +297,7 @@ class GASMemberOrderTest(TestCase):
         self.gas.config.gasmember_auto_confirm_order = False;
         self.gas.config.save()
         self.gas.save()
-        gmo = GASMemberOrder.objects.create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)
+        gmo = GASMemberOrder.objects.get_or_create(purchaser=self.member, ordered_price= self.orderable_product.order_price, ordered_product=self.orderable_product, ordered_amount=1)[0]
         gmo.save()
         self.assertEqual(GAS.objects.get(pk=gmo.purchaser.gas.pk).config.gasmember_auto_confirm_order, self.gas.config.gasmember_auto_confirm_order)
         self.assertFalse(gmo.is_confirmed)
@@ -381,11 +424,17 @@ class GASSupplierOrderProductTest(TestCase):
 class GASSupplierOrderTest(TestCase):
     '''Tests GASSupplierOrder methods'''
 
-    fixtures = ['a_test_auth.json','b_test_des.json',
-                'c_test_sites_site.json','d_test_users_userprofile.json',
-                'e_test_workflows.json','f_test_base.json',
-                'g_test_supplier.json','h_test_gas.json',
-                'i_test_simpleaccounting.json'
+    #fixtures = ['a_test_auth.json','b_test_des.json',
+    #            'c_test_sites_site.json','d_test_users_userprofile.json',
+    #            'e_test_workflows.json','f_test_base.json',
+    #            'g_test_supplier.json','h_test_gas.json',
+    #            'i_test_simpleaccounting.json'
+    #]
+    fixtures = ['a_9001_auth.json','b_9001_des.json',
+                'c_9001_sites.json','d_9001_users.json',
+                'e_9001_workflows.json','f_9001_base.json',
+                'g_9001_supplier.json','h_9001_gas.json',
+                'i_9001_simpleaccounting.json'
     ]
 
     def setUp(self):
@@ -428,11 +477,17 @@ class GASSupplierOrderTest(TestCase):
 class IntergasTest(TestCase):
     """ Test for orders shared between several (more than one) GAS """
 
-    fixtures = ['a_test_auth.json','b_test_des.json',
-                'c_test_sites_site.json','d_test_users_userprofile.json',
-                'e_test_workflows.json','f_test_base.json',
-                'g_test_supplier.json','h_test_gas.json',
-                'i_test_simpleaccounting.json'
+    #fixtures = ['a_test_auth.json','b_test_des.json',
+    #            'c_test_sites_site.json','d_test_users_userprofile.json',
+    #            'e_test_workflows.json','f_test_base.json',
+    #            'g_test_supplier.json','h_test_gas.json',
+    #            'i_test_simpleaccounting.json'
+    #]
+    fixtures = ['a_9001_auth.json','b_9001_des.json',
+                'c_9001_sites.json','d_9001_users.json',
+                'e_9001_workflows.json','f_9001_base.json',
+                'g_9001_supplier.json','h_9001_gas.json',
+                'i_9001_simpleaccounting.json'
     ]
 
     def setUp(self):

@@ -64,7 +64,6 @@ class SupplierStockRDF(SupplierStock):
         return ['element',
                  'gf',
                 ['rdf:datatype','\"&xsd;decimal\"'],
-                ['catalog','1'],
                 str(self.price)
         ]
 
@@ -73,7 +72,6 @@ class SupplierStockRDF(SupplierStock):
         return ['element',
                  'gf',
                 ['rdf:datatype','\"&xsd;boolean\"'],
-                ['catalog',''],
                 self.availability
         ]
     def code_rdf(self):
@@ -132,13 +130,13 @@ class SupplierStockRDF(SupplierStock):
                 self.delivery_notes
         ]
         
-    def deleted_rdf(self):
+    #def deleted_rdf(self):
 
-        return ['element',
-                 'gf',
-                ['rdf:datatype','\"&xsd;boolean\"'],
-                self.deleted
-        ]
+    #    return ['element',
+    #             'gf',
+    #            ['rdf:datatype','\"&xsd;boolean\"'],
+    #            self.deleted
+    #    ]
 
 class SupplierRDF(Supplier):
 
