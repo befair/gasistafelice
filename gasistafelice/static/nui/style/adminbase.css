@@ -84,7 +84,15 @@ dd {
 
 form {
     margin: 0;
-    padding: 0;
+    padding: 1;
+
+  background-color: #FFF;
+  margin-top: 1.8em;
+  padding: 5px;
+  border-radius: 14px 14px 4px 4px;
+  box-shadow:1px 1px 10px rgba(0,0,0,0.9),
+   inset 1px 1px 10px 2px rgba(0,0,0,0.2);
+   
 }
 
 fieldset {

@@ -161,13 +161,15 @@ div.code div { background-color: #FFFFFF; border: 1px dashed #D4D4D4; font-famil
 </thead>
 <tbody>
     {% for pd in recProd %}
-        <tr>
-            <td class="qta"> {{ pd.tot_gasmembers }}</td>
-            <td class="product"> {{ pd.product }}</td>
-            <td class="taright qta">{{pd.rep_price}}</td>
-            <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
-            <td class="taright totprice">&nbsp;&#8364;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
-        </tr>
+    <tr>
+-            <td class="qta"> {{ pd.tot_gasmembers }}</td>
+-            <td class="product"> {{ pd.product }}</td>
+-            <td class="taright qta">{{pd.rep_price}}</td>
+-            <td class="taright qta">{{pd.tot_amount|floatformat:"-2"}}</td>
+-            <td class="taright totprice">&nbsp;&#8364;&nbsp;{{pd.tot_price|floatformat:"2"}}</td>
+-   </tr>
+
+
     {%  endfor %}
     <tr>
         <td class="sumPricefield taright" colspan="4" >{% trans "Total cost" %}</td>

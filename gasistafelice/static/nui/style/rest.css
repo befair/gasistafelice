@@ -110,7 +110,11 @@ li:tree_element div.content {
 	list-style-type: none;
 }
 
+/* == Campo nota (textarea) Registrazione Ordine ==== */
+#id_note {
+	border:1px dotted #00f;
 
+} 
 
 
 
@@ -361,6 +365,7 @@ TSTATE_UU=40
 	margin: 5px;
 	border-collapse: separate;
 	border: 2px solid black;
+        border-radius: 7px 7px 4px 4px;
 }
 
 #moroptpanel {
@@ -435,5 +440,5 @@ TSTATE_UU=40
     border: 1px solid orange;
 }
 
-.dbg{background-color: #F5DEB3 /* #D3D3D3 orange*/;}
+.dbg{background-color: #FFF /* #D3D3D3 orange*/;}
 

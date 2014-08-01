@@ -2114,6 +2114,13 @@
 
 </head>
 
+
+
+        <!-- ===================== -->
+        <!--    Start of Content   -->
+        <!-- ===================== -->
+
+
 <!--<body onunload="jsPlumb.unload();">-->
 <body>
     <div id="loading-container" style="display:none;">
@@ -2124,14 +2131,20 @@
     </div>
     
     <div id="container">
-
+     
+     
             <div id="header-content">
-
+           <span class ="logo_testuale"> {% trans 'Welcome,' %} in Gasista Felice</span> ;-)
+            <span id="user_name" class="user"></span>
+            <div id="app_clock" style="padding:0.2em;"> caricamento in corso...</div>
+                     
+            
                 <div class="right" align="right">
                 <span id='user_data_placeholder'>
 
-                    {% trans 'Welcome,' %}
-                    <span id="user_name" class="user"></span>! 
+                    
+                    
+                     
                     <span id="user_data">
                         <span id="user_urn_gasmember" class="menu_section" style="display:none">
                             <h3>Ordinare</h3>
@@ -2176,12 +2189,16 @@
                     </span>
                     <a id="user_logout" href="{{ LOGOUT_URL }}">{% trans "Logout" %} </a>
                 </span>
-
-                    <div id="app_clock" style="padding:0.2em;"> caricamento in corso...</div>
+                
                 </div>
+                   
 
+                 <!-- Barra icona e risorsa sotto scritta di benvenuto {gasmember,person,gas} -->
                 <h2 id="page_resource_type"> caricamento in corso... </h2>
-                <h2 id="page_resource"> </h2>
+                <h2 id="page_resource"> 
+                </h2> 
+               
+                
                 <div class="clear"></div>
                 <div id="navbar" history="" >
                     <ul id="navbar_elements">
@@ -2411,14 +2428,27 @@
             <ul id="body_content">
                 <div id="user_notifications" style="display:none;"> </div>
             </ul>
-
+     
             <div id="body-bottom">&nbsp;</div>
         </div>
-
+     
     </div>
 
     <div id="footer">
-        <span id="app_title">GASISTA FELICE</span> v. <span id="app_version">{{ VERSION }}</span> {#  - Copyright &copy; 2011 - <a href="http://www.reesmarche.org">REES Marche</a> #}
+       <img SRC="/static/img/GNU.png" border=0 VSPACE=1  HSPACE=0 ALT="GNU"></img>
+       <img src="/static/img/logo_cliente_small.png" align=" bottom "></img>
+       <img SRC="/static/img/GNU01.png" border=0 VSPACE=1  HSPACE=0 ALT="GNU"></img> 
+
+        
+        <p>Version <span id="app_version">{{ VERSION }}</p>
+        <p style="center">Gasista Felice è software libero ed ognuno è libero di ridistribuirlo, secondo le condizioni della &nbsp;<a href="http://http://www.gnu.org/licenses/agpl-3.0.html">Licenza GNU AGPL 3</a></p>
+<p>Sconsigliamo e non Supportiamo IE <= 7; Visualizzabile da IE >= 9; Incoraggiamo l'uso di Browser Open Source ;-) </p>
+        <p>{#  - Copyright &copy; 2011 - <a href="http://www.reesmarche.org">REES Marche</a> #}</p></span>
+        <p style="padding-top:15px">
+<a href="http://validator.w3.org/check?uri=referer" target="_blank"><img src="http://web.resmarche.it/images/29.gif" alt="validateXHTML" /></a>
+<a href="http://www.gnu.org/licenses/agpl-3.0.html" target="_blank"><img src="/static/img/licenze_logo.png" alt="GNU Affero General Public License 3.0" /></a>
+<a href="http://jigsaw.w3.org/css-validator/check?uri=referer" target="_blank"><img src="http://web.resmarche.it/images/28.gif" alt="validateCSS" /></a>
+</p>
     </div>
 
 

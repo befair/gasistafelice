@@ -45,7 +45,7 @@ td input[type="text"] {max-width: 95%;}
 .input_medium{width:160px; color: green;}
 .input_long{width:100%; color: #545453;}
 .amount{width:35px; color: yellow-orange;}
-span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;font-size: 12px; line-height: 20px;}
+span.helptext, .helptext {color: blue;font-weight: bold;font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;font-size: 12px; line-height: 20px;}
 .button, input[type="submit"], input[type="button"], .submit-row input {cursor: pointer;}
 .input_payment{font-size: 16px; color:blue;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right; width:80px;}
 .dataTables_length{width: 95%;}
@@ -55,34 +55,141 @@ td input[type="text"].balance {font-size: 20px;font-weight: bold;font-family:mon
 .negative, td input[type="text"].negative {color: red;}
 ul li {list-style-type: none;}
 #header{height:auto;}
-.menu_section {display : inline-block;}
-.menu_section h3 {padding : 0 0.5em;
+
+/* Scritta di welcome in Gasista Felice prima della la app clock 
+................................................................*/
+.logo_testuale {
+  font-size:18pt;
+  font-weight: bold; 
+  color: #FFF;	
+  text-shadow:
+	
+	        /* ombre "solide" per creare l'effetto 3D */
+	        0 1px 0 #78AF00,
+	        0 2px 0 #8ABF17,
+	        0 3px 0 #9ECF33,
+	        0 4px 0 #B3DF53,
+	        0 5px 0 #C9EF77,
+	        0 6px 0 #D7EFA4,
+	
+	        /* ombre "vere" per creare l'effetto ombra vero e proprio */
+	        0 6px 1px rgba(0,0,0,.1),
+	        0 0 5px rgba(0,0,0,.1),
+	        0 1px 3px rgba(0,0,0,.3),
+	        0 3px 5px rgba(0,0,0,.2),
+	        0 5px 10px rgba(0,0,0,.25),
+	        0 10px 10px rgba(0,0,0,.2),
+	        0 20px 20px rgba(0,0,0,.15);
+	}
+
+/******* Menu_section in header content configurazione generale
+............................................................... *******/
+
+.menu_section {display : inline-block;} 
+/*Was table-cell sostituito con inline-block più supportato  */
+
+.menu_section h3 {
+    padding : 15px 0.5em;
     /*color : white;*/
+    text-align:center;
     background-color: #AFD909; 
-    border : 1px solid grey; }
-.menu_section ul {background-color: transparent;}
-.menu_section li {margin: 0px;
+    border : 1px solid #fff; 
+    border-radius: 15px 15px 2px 2px;
+    width:75px;
+    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+    inset -15px -5px 10px -2px rgba(0,0,0,0.2);
+
+
+}
+
+.menu_section ul {
+background-color: transparent;
+display : none;
+}
+
+.menu_section li {
+    margin: 0px;
     padding:  5px 10px 5px 10px;
     list-style-type: none;
     background-color: #AFD909;
-    border: 1px solid grey;
-    text-align:left; }
-.menu_section ul {display : none; }
+    border : 1px solid gray;
+    text-align:center;
+    border-radius: 5px;
+    width:68px;
+    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+    inset -15px -5px 10px -2px rgba(0,0,0,0.2);
+}
+
 .menu_section ul li {float: none; }
-.menu_section:hover ul {display: block; 
+.menu_section:hover ul {
+    display: block; 
     position: absolute;
     font-size: 8pt; 
     /*padding-top: 5px;*/
     /*color:red;*/ 
-    z-index:99; }
+    z-index:99; 
+    }
 .menu_section li:hover {background-color: #DCEECD;}
 .submenu {max-height : 300px; overflow-y : auto;}
-#history_menu h3, #history_menu li,
-#settings_menu h3, #settings_menu li {background-color: yellow;}
-#help_menu h3, #help_menu li {background-color: orange;}
-#history_menu li:hover, #settings_menu li:hover {background-color: lightyellow;}
-#user_urn_gasmember h3, #user_urn_gasmember li {background-color: #99ccff;}
+
+
+/* Bottoni del menu section (Ordinare,Gas, Cronologia, Aiuto, Pagina Utente ed Esci) 
+[quelli non specificati (Gas,Patti,Fornitori) ereditano i valori generali del menu_section]...*/
+
+/* bottone "Aiuto" (video e forum) 
+...................................*/
+#help_menu h3, #help_menu li {
+background-color: orange;
+}
+
+#help_menu li:hover {background-color: #FFF;}
+
+/* bottone "Cronologia" 
+...........................*/
+#history_menu h3, #history_menu li,#settings_menu h3, #settings_menu li {
+background-color: yellow;
+}
+
+#history_menu li:hover, #settings_menu li:hover {
+background-color: lightyellow;
+}
+
+/* bottone "Ordinare" 
+.......................*/
+#user_urn_gasmember h3, #user_urn_gasmember li {
+background-color: #99ccff;
+}
 #user_urn_gasmember li:hover {background-color: #99ffff;}
+
+/* bottone "Pagina utente" ed "Esci" */
+
+#home_page  {
+    
+    margin: 0px;
+    padding:  15px 15px 15px 15px;
+    background-color: #DCEECD;
+    border : 1px solid #fff;
+    text-align:center;
+    font-size: 11pt;
+    border-radius: 15px 15px 2px 2px;
+    width:68px;
+    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+    inset -15px -5px 10px -2px rgba(0,0,0,0.2);
+}
+
+#user_logout  {
+    
+    margin-right: 30px;
+    padding:  15px 15px 15px 15px;
+    background-color: #DCEECD;
+    border : 1px solid #fff;
+    text-align:center;
+    font-size: 11pt;
+    border-radius: 15px 15px 2px 2px;
+    width:68px;
+    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+    inset -15px -5px 10px -2px rgba(0,0,0,0.2);
+}
 
 .row_action {
     border: 1px dotted #aaa; 

@@ -1,5 +1,5 @@
 <div class='block_header' style="padding: 5px">
-<a class="resource inline {{ resource.resource_type}}" href="#rest/{{resource.resource_type}}/{{resource.id}}" sanet_urn="{{resource.resource_type}}/{{resource.pk}}">{{resource}}</a>
+<a class="resource inline {{ resource.resource_type}}" href="#rest/{{resource.resource_type}}/{{resource.id}}" sanet_urn="{{resource.resource_type}}/{{resource.pk}}">{{resource}} </a>
 </div>
 <ul style="padding: 5px">  
 

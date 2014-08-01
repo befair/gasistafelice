@@ -5,7 +5,7 @@
 {% block extraheads %}
 <link href="/media/css/base.css" type="text/css" rel="stylesheet" />
 <style type="text/css">
-    .box { border: 1px solid red; background-color: lightyellow; color: black; padding:0.5em; }
+    .box { border: 1px solid lightgrey; background-color: white; color: black; padding:0.5em; }
     .traditional-list { margin-left: 2em; padding:0.2em;}
     ol.traditional-list { list-style-type:upper-roman; }
     ul.traditional-list { list-style-type:circle; }
@@ -14,10 +14,23 @@
     .done { text-decoration : line-through; }
 
     td {
-        color:green; 
-        line-height: 1.5em; 
-        font-size: 14px;
+        color:blue; 
+        line-height: 2.0em; 
+        font-size: 16px;
+        text-align:center;
     }
+    
+    h1 { color:gray; 
+        line-height: 2.5em; 
+        font-size: 20px; 
+        text-align:center;
+       }
+    
+    h2 { color:lightblue; 
+        line-height: 1.5em; 
+        font-size: 16px; 
+        text-align:left;
+       }
 </style>
 
 {% endblock %}
@@ -31,7 +44,8 @@
 </ul>
 {% endif %}
 
-<h1>Gasista Felice - HappyGAS :)</h1>
+<span><img src="/static/img/logo_cliente.png" ></span>
+<!--was <h1> Gasista Felice - HappyGAS :)</h1> -->
 <div style="clear:both;"> </div>
 <table>
     <tr><td>
@@ -76,17 +90,17 @@
 
 <div>
 <h1 style="margin-top: 1em; padding:0.2em;">
-    Installazione a disposizione di
+    Installazione a disposizione di:
 </h1>
 
 <div style="clear:both;">
 
-<table style="border:1px solid lightgrey">
+<table style="border:2px solid lightgrey">
     <thead>
-        <th>GAS</th>
-        <th>Città</th>
-        <th>Ordini</th>
-        <th>Flusso economico solidale</th>
+        <th style="text-align:center;font-size: 18px; ">GAS</th>
+        <th style="text-align:right;font-size: 18px;" >Città</th>
+        <th style="text-align:right;font-size: 18px;">Ordini</th>
+        <th style="text-align:right;font-size: 18px;">Flusso economico solidale</th>
     </thead>
 {% for g in gas_list %}
     {% render_gas_as_tr g %}
@@ -94,7 +108,7 @@
 </table>
 
 
-<h2>e altri amici che vorranno iscriversi al DES {{ des }}</h2>
+<h1>e di tutti i G.A.S. che vorranno iscriversi al DES {{ des }}</h1>
 
 <h2>Le novità principali della 0.10</h2>
 

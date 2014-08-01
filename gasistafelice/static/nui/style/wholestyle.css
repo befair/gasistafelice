@@ -71,7 +71,7 @@ q:before, q:after {
 
 body {
 	font-family: verdana, arial, helvetica;
-	font-size : 12px;
+	font-size : 16px;
 	
 	/*padding: 0 0 2px 0;*/
 
@@ -90,8 +90,8 @@ h4 { font-weight: bold; color: #002200 }
  */
 
 input, textarea, select { 
-	font-size : 12px;
-	border : 2px groove green;
+	font-size : 14px;
+	border : 2px groove transparent;
 } 
 
 
@@ -133,29 +133,45 @@ select{
 
 
 
-.title 	 {background: none; color: #000000; font-size: 13px; font-weight: bold; }
+.title 	 {
+	background: none; 
+	color: #000000;
+        font-size: 13px; 
+        font-weight: bold; 
+   }
 
 
 #header {
+	
 	height: 50px;
-	
-	background: #FFF; url('/static/logo_labs.jpg') left top no-repeat;
-	background: #FFF; url('/static/logo_cliente.jpg') right top no-repeat;
-	
-	
 	border-bottom: 1px solid #aaaaaa;
 	margin: 0 auto 0 auto;
+        background: #FFF; 
+        /*Was background: #FFF; url('/static/logo_labs.jpg') left top no-repeat;
+	      background: #FFF; url('/static/logo_cliente.jpg') right top no-repeat;  */
 }
 
 #header-content {
-	padding : 0 0 5px 5px;
-	margin-right : 2em;
-	color:#005E31;
+	width:95%;
+	padding : 15px 15px 15px 15px;
+	margin-top : 4px;
+	
+	margin-left : 8px;
+	background-color:#eeefff;
+        border: 2px solid #fff;
+        border-radius: 15px;
+        box-shadow: 1px -1px 10px rgba(0,0,0,0.9),
+        inset 5px 5px 10px 2px rgba(0,0,0,0.2);
+        
+        /* Logo befair: Software Open Source in alto a destra  */
+        background: url('/static/img/logo_labs.png') right top no-repeat;
 }
 
 #navbar a:link, #navbar a:visited, #header a:link, #header a:visited { 
-	color: #5b80b2; 
+	color: #00F; 
 	text-decoration:none; 
+        padding:12px;
+        font-size : 14px;
 }
 
 /*
@@ -164,25 +180,59 @@ select{
 }
 */
 
+#body {
+	overflow : hidden;
+	/*border-left: 1px solid #aaa;*/
+}
+
+
+#body_content {
+        width:94%;
+        border-top: 1px solid #aaa;
+	color: #000;
+	background-color : #fff;
+	padding : 15px 15px 15px 15px;
+	margin-top : 4px;
+	
+	margin-left : 14px;
+	font-size: 90%;
+	text-align: left;
+	clear : both;
+	border: 2px solid #fff;
+        border-radius: 1px;
+        box-shadow: 1px -1px 10px rgba(0,0,0,0.9),
+        inset 5px 5px 10px 2px rgba(0,0,0,0.2);
+}
+
+
 
 #footer {
-	border-top: 1px solid #aaa;
-	color: #999;
-	background-color : white;
-	padding: 0.2em;
+	width:95%;
+        color: #000;
+	padding : 15px 15px 15px 15px;
+	margin-top : 4px;
+	
+	margin-left : 8px;
+	margin-bottom:10px;
+        background-color:#fff;
 	font-size: 90%;
 	text-align: center;
 	clear : both;
-	position:fixed;
-	bottom:0px;
-	width:100%;
+	/*Was  position:fixed; */
+	/*Was  bottom:1px;*/
+	
+        border: 2px solid #fff;
+        border-radius: 15px;
+        box-shadow: 1px -1px 10px rgba(0,0,0,0.9),
+        inset 5px 5px 10px 2px rgba(0,0,0,0.2);
+
 }
 
 
 .panel {
 	margin: 0 0.2em;
 	/*margin: 10px;*/
-    heigth : 100%;
+        heigth : 100%;
 	min-width  : 220px;
 	max-width  : 300px;
 }
@@ -216,19 +266,11 @@ border:0px;
 }
 
 
-#body {
-	overflow : hidden;
-	/*border-left: 1px solid #aaa;*/
-}
-
-
-#body_content {
-}
 
 
 
 .block { 
-	background: white;
+	background: transparent;
 	
 	list-style-type:none;
 	
@@ -237,14 +279,14 @@ border:0px;
 	/*margin : 0px 0px 0px 0px;*/
 	margin: 10px;
 	
-	border-right : 1px solid #DDDDDD;
-	border-left : 1px solid #DDDDDD;
-	border-bottom : 1px solid #DDDDDD;
+	border-right : 1px solid transparent;
+	border-left : 1px solid transparent;
+	border-bottom : 1px solid transparent;
 	border-collapse : collapse;
 	min-width : 200px;
 }
 .block_header {
-	background-color : #afd909;
+	background-color : #eeeeee;
 	border-bottom : 1px solid #bbb;
 	padding-top:5px;
 	height : 21px;
@@ -362,7 +404,8 @@ border:0px;
 	 background-color : #E0E0E0; 
 }
 
-/* TARGETS */
+/* TARGETS
+............... */
 
 .target.UP {
 	list-style-image : url('/static/theme/img/resources/target_UP.png');
@@ -405,11 +448,24 @@ border:0px;
 }
 
 #main_content { margin-top : 1em; }
+
+
+
+/*Barra di Pollicino
+.......................*/
+
+
 #navbar {
-  background-color: #F2FBF2;
-  border: 1px dashed lightgray;
+  
+   
+  background-color: #FFF;
+  border: 1px  lightgray;
   margin-top: 0.2em;
-  padding: 2px;
+  padding: 5px;
+  border-radius: 14px 14px 4px 4px;
+  box-shadow: 1px -1px 10px rgba(0,0,0,0.9),
+   inset 5px 5px 10px 2px rgba(0,0,0,0.2);
+   
 }
 
 td input[type="text"] { max-width:70%; }
@@ -435,7 +491,7 @@ ul.errorlist { max-width : 400px; }
 
 .module h2, .module caption, .inline-group h2 {
   background: url(images/ui-bg_flat_75_eff7e9_40x100.png) repeat-x scroll left top #7CA0C7;
-  color :#004400;
+  color :blue;
   font-size: 11px;
   font-weight: bold;
   margin: 0;
