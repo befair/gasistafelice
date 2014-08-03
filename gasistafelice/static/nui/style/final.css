@@ -49,7 +49,8 @@ span.helptext, .helptext {color: blue;font-weight: bold;font-family: "Lucida Gra
 .button, input[type="submit"], input[type="button"], .submit-row input {cursor: pointer;}
 .input_payment{font-size: 16px; color:blue;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right; width:80px;}
 .dataTables_length{width: 95%;}
-td input[type="text"].balance {font-size: 20px;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right; width:100px; color:blue}
+td input[type="text"].balance {font-size: 20px;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: center; width:150px;/*WAS text-align: right; width:100px e non permettevano una corretta visualizzazione*/ color:blue}
+
 .positive, td input[type="text"].positive {color: green;}
 .stalled, td input[type="text"].stalled {color: #FF8C00;}
 .negative, td input[type="text"].negative {color: red;}
@@ -95,8 +96,8 @@ ul li {list-style-type: none;}
     background-color: #AFD909; 
     border : 1px solid #fff; 
     border-radius: 15px 15px 2px 2px;
-    width:75px;
-    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+    width:120px;
+    box-shadow: 0px -1px 0px 2px rgba(0,0,0,0.5),
     inset -15px -5px 10px -2px rgba(0,0,0,0.2);
 
 
@@ -113,11 +114,12 @@ display : none;
     list-style-type: none;
     background-color: #AFD909;
     border : 1px solid gray;
-    text-align:center;
+    text-align:left;
     border-radius: 5px;
-    width:68px;
-    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+    width:115px;
+    box-shadow: 0px -1px 0px 2px rgba(0,0,0,0.5),
     inset -15px -5px 10px -2px rgba(0,0,0,0.2);
+
 }
 
 .menu_section ul li {float: none; }
@@ -187,8 +189,9 @@ background-color: #99ccff;
     font-size: 11pt;
     border-radius: 15px 15px 2px 2px;
     width:68px;
-    box-shadow: 1px -1px 1px 2px rgba(0,0,0,0.5),
+   box-shadow: 0px -1px 0px 2px rgba(0,0,0,0.5),
     inset -15px -5px 10px -2px rgba(0,0,0,0.2);
+
 }
 
 .row_action {
@@ -198,3 +201,4 @@ background-color: #99ccff;
     height: 40px;
     background-size : contain;
 }
+
