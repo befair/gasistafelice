@@ -30,13 +30,15 @@ NS = {
 #list of possible object models to export
 TAGS = [
     'suppliers',
+    'stocks',
     'products'
 ]
 
 #list of possible additional sub elements an tags 
 ATTRIBUTES = {
     'suppliers' : ['SUPPLIER'],
-    'products' : ['PRODUCT','gf:catalog','CATALOG'],
+    'products' : ['PRODUCT'],
+    'stocks' : ['STOCK','gf:catalog','CATALOG'],
 }
 
 def prettify( root):

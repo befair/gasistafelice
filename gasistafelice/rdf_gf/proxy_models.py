@@ -6,7 +6,7 @@
 # In the case where the attribute is a resource, it will be represented 
 # as an internal resource of a rdf/xml. 
 
-from gasistafelice.supplier.models import SupplierStock, Supplier
+from gasistafelice.supplier.models import SupplierStock, Supplier, Product
 
 
 class SupplierStockRDF(SupplierStock):
@@ -272,5 +272,98 @@ class SupplierRDF(Supplier):
                  'gf', 
                 ['rdf:datatype','\"&xsd;string\"'], 
                 self.description
+        ]
+
+class ProductRDF(Product):
+
+    class Meta:
+    
+        proxy = True
+        
+    def code_rdf(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;string\"'],
+                self.code
+        ]
+
+    def producer_rdf(self):
+
+        return ['resource',
+                'gf',
+                ['rdf:resource',self.producer]
+                
+        ]
+
+    def category_rdf(self):
+
+        return ['element',
+                'gf',
+                ['rdf:datatype','\"&xsd;string\"'],
+                
+                self.category.name if self.category is not None else ""
+
+        ]
+
+    def mu_rdf(self):
+
+        return ['element',
+                'gf',
+                ['rdf:datatype','\"&xsd;string\"'],
+                
+                self.mu.name if self.mu is not None else ""
+
+        ]
+
+    def pu_rdf(self):
+
+        return ['element',
+                'gf',
+                ['rdf:datatype','\"&xsd;string\"'],
+                
+                self.pu.name if self.pu is not None else ""
+
+        ]
+
+    def muppu_rdf(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;decimal\"'],
+                str(self.muppu)
+        ]
+
+
+    def muppu_is_variable_rdf(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;boolean\"'],
+                self.muppu_is_variable
+        ]
+
+    def vat_percent_rdf(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;decimal\"'],
+                str(self.vat_percent)
+        ]
+
+    def name_rdf(self):
+
+        return ['element',
+                 'gf', 
+                ['rdf:datatype','\"&xsd;integer\"'],
+                str(self.name)
+        ]
+
+    def descriptio_rdf(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;integer\"'],
+                str(self.description)
         ]
 

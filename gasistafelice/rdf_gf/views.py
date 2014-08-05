@@ -25,13 +25,17 @@ def show_catalog_from_product(request, stock_id):
 
     sup = set()
     suppliers = []
+    stocks = []
     products = []
     i = 1
 
     for stock in catalog:
         sup.add(stock.supplier)
         sup.add(stock.producer)
-        products.append([stock, i])
+        sup.add(stock.product.producer)
+        stocks.append([stock, i])
+        products.append([stock.product, i])
+
         i += 1
 
     i = 1
@@ -41,8 +45,9 @@ def show_catalog_from_product(request, stock_id):
         
     rdfxml = utils.build_rdfxml(request.get_full_path(),
         None, 
-        products=products, 
-        suppliers=suppliers
+        stocks=stocks, 
+        suppliers=suppliers,
+        products=products
     )
 
     return XMLHttpResponse(rdfxml)
