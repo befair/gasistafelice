@@ -404,6 +404,30 @@ class GASSupplierStockAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'pact', 'enabled')
     list_filter = ('pact', 'enabled')
 
+    actions = ['disable_selected','enable_selected']
+
+    def disable_selected(self, request, queryset):
+        """
+        Set enabled to False for the selected supplier stocks
+        """
+
+        for obj in queryset:
+            obj.enabled = False
+            obj.save()
+
+    disable_selected.short_description = _("Disable selected supplier stocks")
+
+    def enable_selected(self, request, queryset):
+        """
+        Set enabled to True for the selected supplier stocks
+        """
+
+        for obj in queryset:
+            obj.enabled = True
+            obj.save()
+
+    disable_selected.short_description = _("Enable selected supplier stocks")
+
 class PactAdmin(admin.ModelAdmin):
     list_display = ('__unicode__',
         'gas', 'supplier', 'date_signed',
