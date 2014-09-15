@@ -240,12 +240,16 @@ table {
 }
 
 td, th {
-    font-size: 11px;
-    line-height: 13px;
-    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    line-height: 15px;
+    border-bottom: 2px solid #eee;
     vertical-align: top;
-    padding: 5px;
+    padding: 8px;
     font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+    background: #fff;
+    box-shadow: 0px 0px 1px rgba(0,0,0,0.1),
+    inset 0px 0px 0px 0px rgba(0,0,0,0.1);
+
 }
 
 th {
