@@ -250,23 +250,33 @@ RESOURCE_PAGE_BLOCKS = {
     'site' : [{
         'name' : 'people',
         'descr' : 'Partecipanti',
-        'blocks' : ['gas_list', 'suppliers_report', 'persons']  #, 'suppliers'
+        'blocks' : ['gas_list', 'suppliers', 'persons' ]  #, sostituito suppliers_report con 'suppliers'
     },{
         'name' : 'order',
         'descr' : 'Ordini',
         'blocks' : ['open_orders', 'des_pacts']
     },{
         'name' : 'info',
-        'descr' : 'Scheda del DES',
-        'blocks' : ['details', 'categories']
+        'descr' : 'Info DES',
+        'blocks' : ['details']
     },{
         'name' : 'accounting',
-        'descr' : 'Conto',
-        'blocks' : ['balance', 'transactions']
+        'descr' : 'Saldo',
+        'blocks' : ['balance']
+    }
+#    ,{
+#        'name' : 'archive',
+#        'descr' : 'Archivio',
+#        'blocks' : ['stored_orders']   # scheda soppressa: troppo tempo per caricare
+#    }
+    ,{
+        'name' : 'transazioni',
+        'descr' : 'Transazioni',
+        'blocks' : ['transactions']      # Introdotta nuova scheda "Transazioni" per allegerire quella Conto
     },{
-        'name' : 'archive',
-        'descr' : 'Archivio',
-        'blocks' : ['stored_orders']
+        'name' : 'prodotti',
+        'descr' : 'Prodotti',
+        'blocks' : ['categories']        # Introdotta nuova scheda "Prodotti" per le categorie prodotto
     }],
     'gas' : [{
         'name' : 'orders',
@@ -278,7 +288,7 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks': ['gas_pacts', 'categories'], 
     },{
         'name' : 'info',
-        'descr' : 'Scheda del GAS',
+        'descr' : 'Info G.A.S.',
         'blocks' : ['gas_details', 'gasmembers'],
     },{
         'name' : 'admin',
@@ -286,8 +296,12 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks' : ['gas_users'],   # 'users' Referrer and roles
     },{
         'name' : 'accounting',
-        'descr' : 'Conto',
-        'blocks' : ['balance_gas', 'insolutes_orders', 'transactions', 'recharge', 'fee']
+        'descr' : 'Pagamenti e Saldo',
+        'blocks' : ['balance_gas', 'insolutes_orders', 'transactions']
+    },{
+        'name' : 'ricariche',
+        'descr' : 'Ricariche',
+        'blocks' : ['recharge', 'fee'] #Introdotta nuova scheda "Ricariche" per alleggerire quella Conto
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
