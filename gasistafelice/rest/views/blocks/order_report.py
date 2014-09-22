@@ -11,6 +11,7 @@ from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
 
 from gasistafelice.supplier.models import Supplier
+from gasistafelice.base.models import Person
 from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
 from django.forms.formsets import formset_factory
 
@@ -230,16 +231,17 @@ class Block(BlockSSDataTables):
 
     def _send_email_logged(self):
         try:
-            to = self.request.user.email
+            to = Person.objects.get(user=self.request.user).preferred_email_address
             self.resource.send_email([to],None, 'Order Email me', self.request.user)
             return self.response_success()
         except Exception, e: 
+            raise
             #exceptions must be old-style classes or derived from BaseException, not HttpResponse
             raise self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e.message))
 
     def _send_email_supplier(self):
         try:
-            cc = self.request.user.email
+            cc = Person.objects.get(user=self.request.user).preferred_email_address
             self.resource.send_email_to_supplier([cc], 'Order Email prod', self.request.user)
             return self.response_success()
         except Exception, e:

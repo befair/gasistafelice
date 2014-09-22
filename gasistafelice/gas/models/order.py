@@ -992,7 +992,7 @@ WHERE order_id = %s \
         #WAS: send_mail(subject, message, sender, recipients, fail_silently=False)
 
         to = unordered_uniq(to)
-        cc = unordered_uniq(cc)
+        cc = unordered_uniq(cc or [])
         email = EmailMessage(
             subject = subject,
             body = message,
