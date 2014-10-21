@@ -115,7 +115,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'gasistafelice.middleware.ResourceMiddleware',
@@ -389,7 +389,8 @@ RESOURCE_PAGE_BLOCKS = {
 
 
 LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
-LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
+#LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
+LOGIN_REDIRECT_URL = "/%snewui/" % URL_PREFIX
 LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
@@ -408,8 +409,7 @@ locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #locale.setlocale(locale.LC_ALL, 'it_IT.1252')
 #locale.setlocale(locale.LC_ALL, 'it_IT')   #by default is .ISO8859-1
 #locale.setlocale(locale.LC_ALL, ('it_IT', 'ISO-8859-1'))
-#locale.setlocale(locale.LC_ALL, ('it_IT', '1252'))
-
+#locale.setlocale(locale.LC_ALL, ('it_IT', '
 # From: http://en.wikipedia.org/wiki/Postal_code
 # A postal code (known in various countries as a post code, postcode, or ZIP code)
 # is a series of letters and/or digits appended to a postal address for the purpose of sorting mail.

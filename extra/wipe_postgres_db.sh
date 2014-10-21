@@ -33,7 +33,7 @@ if [ "x$choice" == "xy" ]; then
     cat << EOF | python $GF_HOME/manage.py dbshell --database=super --settings=$DJANGO_SETTINGS_MODULE
 \\c postgres
 DROP DATABASE $db_name;
-create role $db_user  login password $db_pass;
+create role $db_user  login password '$db_pass';
 create database $db_name owner $db_user encoding 'utf8' template template0;
 grant all privileges on database $db_name to $db_user;
 EOF

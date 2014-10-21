@@ -38,6 +38,7 @@ class GASMemberPkListingField(serializers.RelatedField):
 
 class OrderSerializer(serializers.ModelSerializer):
 
+    orderable_product_set = GASSupplierOrderProductSerializer(many=True)
     gasstock_set = GASSupplierStockSerializer(many=True)
     stocks = SupplierStockSerializer(many=True)
     delivery = DeliverySerializer()

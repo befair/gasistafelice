@@ -1,0 +1,31 @@
+"""Local settings template distribution file. Adapt it to your needs."""
+
+from default_settings import *
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': 'gasistafelice',                      # Or path to database file if using sqlite3.
+        'USER': 'gasistafelice',                      # Not used with sqlite3.
+        'PASSWORD': 'gasistafelice',                  # Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+INIT_OPTIONS = {
+    'domain' : "ordini.desmacerata.it",
+    'sitename' : "DES Macerata",
+    'sitedescription' : "Gestione degli ordini per il Distretto di Economia Solidale della Provincia di Macerata (DES-MC)",
+    'su_username' : "admin",
+    'su_name'   : "Referente informatico",
+    'su_surname': "del DES-MC",
+    'su_email'  : "",
+    'su_PASSWORD' : "admin",
+}
+#
+## --- WARNING: changing following parameters implies fixtures adaptation --
+## Default category for all uncategorized products
+#DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
+## Superuser username
+#

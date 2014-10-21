@@ -16,6 +16,8 @@ urlpatterns = patterns('',
 
 	(r'^$'       , 'base.views.index'  ),
 	(r'^%s$' % settings.URL_PREFIX , 'base.views.index'  ),
+	(r'^%snewui/$' % settings.URL_PREFIX , 'base.views.newria_index'  ),
+#	(r'^%s/newui/(?P<user_pk>\d+)/(?P<gasmember_pk>\d+)/$' % settings.URL_PREFIX , 'base.views.newria_index'  ),
 	(r'^%ssimulate_user/(?P<user_pk>\d+)/$' % settings.URL_PREFIX , 'base.views.simulate_user'  ),
 
     #New user interface

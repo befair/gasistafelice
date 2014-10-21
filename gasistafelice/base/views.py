@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -7,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from gasistafelice.rest.models.pages import HomePage
 from gasistafelice.users.models import UserProfile
 
+from gasistafelice.gas.models.base import GASMember
 #---------------------------------------------------------------------#
 #                                                                     #
 #---------------------------------------------------------------------#
@@ -15,17 +17,37 @@ from gasistafelice.users.models import UserProfile
 def index(request):
 
     if request.user.is_superuser:
-        return redirect("rest.views.index")
+	return redirect("rest.views.index")
 
-#LF: no role selection anymore. 
-#WAS:    try: 
-#WAS:        role = request.session["app_settings"]["active_role"]
-#WAS:    except KeyError:
     role = request.user.get_profile().default_role
     request.session["app_settings"]["active_role"] = role
     request.session.modified = True
 
     url = HomePage.get_user_home(request.user, role)
+    return HttpResponseRedirect(url)
+  
+#LF: no role selection anymore. 
+#WAS:    try: 
+#WAS:        role = request.session["app_settings"]["active_role"]
+#WAS:    except KeyError:
+  
+
+@login_required
+def newria_index(request):
+
+    person = request.user.person
+    #url = reverse('api-v1-person', args=(person.pk,))
+    #url += "?format=json"
+    #return HttpResponseRedirect(url)
+
+    #gasmember = GASMember.objects.get(person=person.pk)
+    url = "http://localhost/newUI/#/%s/" % person.pk
+  
+#LF: no role selection anymore. 
+#WAS:    try: 
+#WAS:        role = request.session["app_settings"]["active_role"]
+#WAS:    except KeyError:
+  
     return HttpResponseRedirect(url)
 
 @login_required

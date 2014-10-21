@@ -15,7 +15,7 @@
         "&#8364; {{ row.ordered_total|floatformat:2}}",
         "{{ row.field_enabled|escapejs }}",
         "{% filter escapejs %}{% bool_img row.order_confirmed %}{% endfilter %}",
-        "{{row.order_urn|escapejs}}",
+        "{{row.order_urn|escapejs}}"
 
     ]
     {% if not forloop.last %}
