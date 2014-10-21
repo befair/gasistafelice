@@ -1,0 +1,177 @@
+<div class="tab-pane" id="conto">
+              <div class="row">
+                  <div class="col-md-8 col-lg-6">
+                      <div class="scheda_title">Saldo</div>
+                     <div class="well prof">
+                        <div class="col-sm-12" style="padding-left:0px">
+                            <form name="myForm" novalidate ng-controller="formController">
+                            <table class="table conto">  
+                            <tbody>
+                                <tr>
+                                    <p>Username:</p>
+                <input type="text" name="username1" ng-model="username1"
+                required />
+                <input type="submit" ng-disabled="myForm.username1.$pristine || myForm.username1.$dirty && myForm.username1.$invalid">         
+                                     
+                                    <td style="border:0px">
+                                       Saldo: 
+                                    </td>
+                                    <td style="border:0px">
+                                        <span class="saldo">232.11&#8364;</span>
+                                    </td>
+                                </tr>   
+                                 <tr>
+                                    <td>
+                                        Ammontare dell'operazione:
+                                    </td>
+                                    <td>
+                                        <input type="text" name="somma" ng-model="somma" class="form-control" placeholder="euro" ng-pattern="/^[0-9]$/" required />
+                                        <span class="infoconto">Inserire la somma di denaro (senza segno)</span>
+                                        <div class="custom-error" ng-show="myForm.somma.$dirty &&               myForm.somma.$invalid">Attenzione:
+<span ng-show="myForm.somma.$error.required">Inserire l'ammontare dell'operazione</span>
+<span ng-show="myForm.somma.$error.pattern">Somma non valida</span>
+
+
+                </div>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td>
+                                        Tipo di operazione:
+                                    </td>
+                                    <td>     <span class="button_conto">
+                                          <input type = "radio"
+                                                 name = "radSize"
+                                                 id = "sizeSmall"
+                                                 value = "small"
+                                                 checked = "checked" />
+                                          Correzione a favore del gasista: +gasista -GAS<br />
+
+                                          <input type = "radio"
+                                                 name = "radSize"
+                                                 id = "sizeMed"
+                                                 value = "medium" />
+                                          Correzione a favore del GAS: +GAS -gasista<br />
+
+                                          <input type = "radio"
+                                                 name = "radSize"
+                                                 id = "sizeLarge"
+                                                 value = "large" />
+                                          Detrazione dal gasista: -gasista<br />
+                                        <input type = "radio"
+                                                 name = "radSize"
+                                                 id = "sizeSmall"
+                                                 value = "small"
+                                                 checked = "checked" />
+                                          Aggiunta al gasista: +gasista<br />
+
+                                          <input type = "radio"
+                                                 name = "radSize"
+                                                 id = "sizeMed"
+                                                 value = "medium" />
+                                          Restituzione a favore del gasista: vuoto a rendere +gasista -GAS
+                                        </span> 
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td>
+                                        Causale:
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Inserire ragione movimento">
+                                        <span class="infoconto">Ragione di questo movimento</span>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td>
+                                        Data:
+                                    </td>
+                                    <td><input type="text" id="datepicker">
+                                       <span class="infoconto"><br> Regolare la data dell'operazione se necessario</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            </form>
+                            
+                            <!--
+                                <h2>Saldo: <span class="saldo">{{gasmember.balance}}</span></h2>
+                                <p>Ammontare operazione <input type="" class="form-control" id="ammontare" placeholder="Inserire ammontare">                                   </p>
+                                <p>Tipo operazione <select class="form-control" name="category">
+                                                                      <option>select</option>
+                                                                      <option>1</option>
+                                                                      <option>2</option>
+                                                                      <option>3</option>
+                                                                  </select></p>
+                                <p>Causale <input type="" class="form-control" id="ammontare" placeholder="Inserire causale"></p>
+                                <p>
+                                   <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+                                    <input class="span2" size="16" type="text" value="12-02-2012" readonly="">
+                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                  </div>
+                                
+                                </p>
+                                
+                                <hr>
+                                        
+                            <!--<div class="col-xs-12 col-sm-4 text-center">
+                                <figure>
+                                    <img src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png"                                                               alt="" class="img-circle img-responsive">
+                                </figure>
+                            </div>-->
+                        </div>            
+                    </div>
+                </div>
+                                <div class="col-md-6">
+                              <div class="scheda_title">Transazioni economiche</div>
+                              <table class="table balance">
+                                  <thead>  
+                                    <tr>  
+                                      <th>
+                                          Id
+                                      </th>
+                                      <th>
+                                          Data
+                                      </th>
+                                      <th>
+                                          Conto
+                                      </th>
+                                      <th>
+                                          Tipo
+                                      </th>
+                                      <th>
+                                          Importo
+                                      </th>
+                                      <th>
+                                          Descrizione
+                                      </th>
+                                    </tr>   
+                                  </thead> 
+                                  <tbody id="gasbody" class="repeated-item">  
+                                    <tr>
+                                      <td data-title="image" class="tdprod">                                                   
+                                          132
+                                      </td>
+                                      <td data-title="image" class="tdprod">                                                   
+                                          21/07/2014 18:30   
+                                      </td>
+                                         <td data-title="image" class="tdprod">                                                   
+                                          Orlando Marchetti
+                                      </td>
+                                      <td data-title="image" class="tdprod">                                                   
+                                          Decurtazione
+                                      </td>
+                                      <td data-title="image" class="tdprod">                                                   
+                                         -70
+                                      </td>
+                                      <td data-title="image" class="tdprod">                                                   
+                                          ordine 38 GMC - Alchemia
+                                      </td>
+                                    </tr>
+                                  </tbody>  
+                              </table>
+                                  </div>
+
+                </div>
+
+            </div>

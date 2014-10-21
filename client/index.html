@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html ng-app="ngGasistaFelice">
+  <head>
+    <title>GasistaFelice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/datepicker.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">  
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+    <link href="css/ngDialog.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="css/ngDialog-theme-default.css">
+      <link rel="stylesheet" href="css/ngDialog-theme-flat.css">
+      <link rel="stylesheet" href="css/ngDialog-custom.css">
+    <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">
+      
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+      
+
+
+
+
+    <!--
+    ******************
+    Credits go to: http://opensourcehacker.com/2012/01/09/zoom-on-orientation-change-fix-for-mobile-browsers-mobilizing-websites-with-responsive-design-and-html5-part-8/
+    ******************
+
+
+    Don't break scale on iPad rotate.
+    By default iPad re-zooms the page when the device orientation changes.
+    The heuristics here do not work always; our page got zoomed in
+    though it should be max zoomed out.
+    This snippet fixes the situation so that you can still zoom in, but when
+    the device is rotated the scale is restored.
+
+    -->
+      
+ 
+
+    <script type="text/javascript">
+      (function(doc) {
+
+          var addEvent = 'addEventListener',
+              type = 'gesturestart',
+              qsa = 'querySelectorAll',
+              scales = [1, 1],
+              meta = qsa in doc ? doc[qsa]('meta[name=viewport]') : [];
+
+          function fix() {
+              meta.content = 'width=device-width,minimum-scale=' + scales[0] + ',maximum-scale=' + scales[1];
+              doc.removeEventListener(type, fix, true);
+          }
+
+          if ((meta = meta[meta.length - 1]) && addEvent in doc) {
+              fix();
+              scales = [.25, 1.6];
+              doc[addEvent](type, fix, true);
+          }
+
+      }(document));
+    </script>
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+
+  </head>
+  <body>
+  <div id="wrap">
+     
+      <nav class="userbar" role="navigation">
+          <div class="logo">
+            <img src="img/befair.png" alt="..." class="imglogo">
+          </div>
+          
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navhead">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="brandname">GASISTAFELICE</div>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          
+                    <div class="navbar-left">
+                            <ul ng-controller="gas_controller" class="optionlist nav navbar-nav">
+                                    <li ng-repeat="gasname in gasnames" 
+                                        ng-class="{ 'active': $index == selectedIndex }"
+                                        ng-click="itemClicked($index)">    
+                                        <a href="#/{{peID}}/" ng-click="getID(gasname.id);">
+                                            {{gasname.name}}
+                                        </a>
+                                        <div class="gaslabel">232.11&#8364;</div> <!--{{gasname.balance}}-->
+                                    </li>
+                            </ul>
+                            <ul class="optionlist nav navbar-nav" ng-controller="menu_controller">
+                              <li markable>
+                                      <a href="#/{{peID}}/">
+                                       <i class="fa fa-book"></i>Ordinare
+                                      </a>
+                              </li>
+
+                             <li markable>
+                              <a href="#/{{peID}}/paniere">
+                               <i class="fa fa-shopping-cart"></i>Paniere
+                             </a> 
+                             </li>
+                              <li markable>
+                              <a href="#/{{peID}}/conto">
+                                <i class="fa fa-user"></i>Conto                       
+                                </a>
+                              </li>     
+                            </ul>
+                           
+                </div>
+         <div class="navbar-right">
+             <a class="navpic" href="#/{{peID}}/scheda"><img src="img/user_pic.png" alt="..." class="imgpic"></a>
+             <a class="titlenav" href="#/{{peID}}/scheda">Ciao Dominique</a>
+        </div>    
+          
+        </div><!-- /.navbar-collapse -->
+      </nav>
+      <div class="cont-gas"> <!-- Container -->
+         <!-- 1° row -->
+                                
+                  <div class="first_block"><!-- 1° col-md-8 -->
+                      <div class="tab-content tab-gas">
+                            
+                            <!-- angular templating -->
+                            <!-- this is where content will be injected -->
+                          
+                            <div ng-view>
+                            </div>
+                        
+                        
+                        
+                      
+                        
+                      </div>
+
+                  </div><!-- /1° col-md-8 -->
+
+                  <!-- 2° COL -->
+                  <!--<div class="second_block">
+                       <div class="slide">
+                            <a id="hideblock" data-toggle="collapse" href="#collapseOne" href="#">
+                              <i class="fa fa-chevron-right fa-2x"></i>
+                            </a>
+                      </div> 
+                  </div>      
+                  <!-- /2° COL -->    
+
+
+                  <!--3° col-->
+                  <!--<div class="third_block">
+                          <div id="collapseOne" class="collapse in">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc condimentum mauris ligula, dapibus varius odio vehicula vel. Sed quis nunc eget dolor ultricies suscipit. Nulla aliquet interdum lorem, malesuada posuere est egestas sit amet. Curabitur consequat risus sed tempus lobortis. Nulla magna tellus, ornare id accumsan quis, tristique nec orci. Mauris lobortis lorem id tortor tempus, et vestibulum nulla convallis. Aenean elementum tri
+                          </div><!-- /3° col-->
+                  </div> 
+
+       <!-- 1° row -->
+      </div> <!-- /Container -->
+
+
+    </div><!-- /Wrap -->
+    
+
+    <div id="footer">
+        <div class="container">
+          <p class="text-muted">GASISTA FELICE V.1.0</p>
+        </div>
+    </div> 
+
+
+        <script src="js/jquery-1.11.1.min.js"></script>
+        <script src="js/jquery-ui-1.10.4.min.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/modernizr.js"></script>
+        <script src="js/jquery.simplePagination.js"></script>
+        <script src="js/smartpaginator.js"></script>
+        <script src="js/local.js"></script>
+        <script src="js/angular.min.js"></script>
+        <!--<script src="js/angularjs13.js"></script>-->
+        <script src="js/angular-route.js"></script>
+        <script src="app/app.js"></script>
+        <script src="js/ngDialog.min.js"></script>
+        <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+        <script src="js/bootstrap-datepicker.js"></script>   
+        
+        <script src="app/conto/contoController.js"></script>
+        <script src="app/ordinare/orderController.js"></script>
+        <script src="app/paniere/paniereController.js"></script>
+        <script src="app/scheda/schedaController.js"></script>
+    
+
+</body>
+</html>

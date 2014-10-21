@@ -1,0 +1,85 @@
+  <div class="tab-pane" id="scheda">
+          <script type="text/ng-template" id="popupTemplate">
+                <div class="ngdialog-message">
+                    <ul>
+                        <li>Saldo attuale: 232.11&#8364; <!--{{balance}}--></li>
+                        <li>Paniere: 80.20&#8364; <!--{{tb}}--></li>
+                        <li>Paniere da consegnare: 32.00&#8364;<!--{{tbtbd}}--></li>
+                        <li>Saldo dopo consegna prodotti: 119.91&#8364;<!--{{balance - (tb+tbtbd)}}--></li>
+                    </ul>
+                </div>
+            </script>
+              <div class="row">  
+                              <div class="col-md-8 col-lg-6">
+                                  <div class="scheda_title">Chi e' {{scheda.display_name}}</div>
+                                 <div class="well prof">
+                                    <div class="col-sm-12">
+                                        <div class="col-xs-12 col-sm-8">
+                                            <h2>{{scheda.name}} {{scheda.surname}}</h2>
+                                            <p><strong>Nickname: </strong> {{scheda.display_name}}  </p>
+                                            <p><strong>Saldo attuale: </strong>
+                                                <span class="saldo">+232.11&#8364;</span>
+                                                <br /> <strong>Saldo dopo consegna prodotti: </strong><span class="saldo"><!--{{balance - (tb+tbtbd)-->142.50&#8364;</span>
+                                                
+                                            </p>
+                                            <span ng-click="clickToOpen();"> <a href="" class="btn btn-default btn-info btn-xs">Info</a>
+
+</span>
+                                            <hr>
+                                            <p>
+                                                
+                                                <i class="glyphicon glyphicon-envelope"></i> <a href="mailto:{{email.value}}">{{email.value}}</a>
+                                                <br />
+                                                <i class="glyphicon glyphicon-phone"></i> {{phone.value}} 
+                                                <br />
+                                                
+                                        </div>             
+                                        <div class="col-xs-12 col-sm-4 text-center">
+                                            <figure>
+                                                <img src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png"                                                               alt="" class="img-circle img-responsive">
+                                            </figure>
+                                        </div>
+                                    </div>            
+                                </div>
+                            </div>
+                              
+                          
+                            <!--<div class="ord-ord-title">GAS a cui {{scheda.display_name}} appartiene</div>-->
+                              <div class="col-md-6">
+                              <div class="scheda_title">GAS a cui {{scheda.display_name}} appartiene</div>
+                                  {{gasl.name}}
+                              <div class="" ng-repeat="gas in scheda.gas_list">
+                                <a href="#" class="no_style">
+                                    <!--<table class="table orders_list">
+                                        <tr>
+                                            <td class="img_gas_list"><i class="large glyphicon glyphicon-home"></i></img></td>
+                                            <td> {{gasl.name}}</td>
+                                        </tr>
+                                    </table>-->
+                                    <!--<div class="gas_list_profile col-xs-12 col-sm-4">
+                                        <i class="large glyphicon glyphicon-home"></i></img> <p>NOME GAS DI PROVA{{gasl.name}}</p>
+                                    </div>-->
+                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" style="margin-top:-10px">
+                                        <div class="offer offer-success">
+                                            <div class="shape">
+                                                <div class="shape-text">
+                                                    <i class="glyphicon glyphicon-home"></i>								
+                                                </div>
+                                            </div>
+                                            <div class="offer-content">
+                                                <h3 class="lead">
+                                                    {{gas.name}} 
+                                                </h3>						
+                                                <p>
+                                                    {{gas.des}}
+                                                </p>
+                                            </div>
+                                        </div>
+		                              </div>
+                                  </a>
+                              </div>
+                                  </div>
+                            </div>
+                              </div>
+                            
+                        </div>

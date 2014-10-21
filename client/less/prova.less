@@ -1,0 +1,14 @@
+@import '../../less/bootstrap.less';
+@import '../../less/responsive-utilities.less'; /* Load Responsive media queries  */
+@import 'variables.less'; /* Your site specific LESS variables - these override BS defaults  */
+@import 'elements.less';
+
+.article {
+  .make-row();        // Mixin provided by Bootstrap
+  .main-section {
+    .make-md-column(10); // Mixin provided by Bootstrap
+  }
+  .aside {
+    .make-md-column(2); // Mixin provided by Bootstrap
+  }
+}

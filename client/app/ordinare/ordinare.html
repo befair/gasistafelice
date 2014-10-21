@@ -1,0 +1,143 @@
+<div class="tab-pane active" id="ordinare"><!--ORDINARE-->
+    
+
+                          <div class="cashresume">
+                                Saldo attuale: <span class="balance">232.11&#8364;{{balance}}</span><br />
+                                Saldo dopo consegna prodotti: <span class="balance">{{balance-(tb+tbtbd)+142.50}}0&#8364;</span><br />
+                          </div>
+                          <div class="ord-ord-title">Elenco ordini</div>
+                            <div class="row">
+                              <div class="cont_orders_list" ng-repeat="order in openorders.open_orders| filter: order">
+                                <div ng-click="getsupplyID(order.supplier);" class="no_style">
+                                <table class="table orders_list">
+                                    
+                                       <tbody ng-hide="ordiniloaded">
+					<tr>
+					<td colspan="8">
+				  	<p style="text-align:center" ng-hide="dataLoaded">Caricando gli ordini <i class="fa fa-spinner fa-spin"></i></p>  
+                                  	</td>
+					</tr>
+                                           </tbody>
+                                    
+                                    
+                                <tbody ng-show="ordiniloaded">
+                                  <tr>
+                                    <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" src="img/user_pic.png"></img></td>
+                                    <td class="menu_links">{{order.supplier}} </td> <!--  {{order.supplier}} -->
+                                  </tr>
+                                  <tr>
+                                    <td class="menu_links"><b>Si chiude il:</b> {{order.datetime_end}}</td> <!--{{order.datetime_end}} -->
+                                  </tr>
+                                  <tr>
+                                    <td class="menu_links"><b>Si consegna il:</b>{{order.delivery.date}}</td> <!-- {{order.delivery.date}}-->
+                                  </tr>
+                                  </tbody>
+                                </table>
+				</div>
+                              </div>
+                            </div>
+                            <div class="ord-el-title">Prodotti ordine La Terra e il Cielo</div>
+                              <div class="searchbar">
+                                  <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
+                                  <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>       
+                              </div> 
+                                <form ng-controller="FrmController" method="POST" action="/gasistafelice/rest/gasmember/573/order/edit_multiple">
+                                    <button ng-click="addtoCart();" class="def-btn" type="submit"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
+                                
+
+                              <div class="orderlist">
+                               
+                              <table class="table gas">  
+                                  <thead>  
+                                    <tr>  
+                                      <th scope="col" ng-click="orderByField='image'; reverseSort = !reverseSort">Immagine
+                                        
+                                          <span ng-show="orderByField == 'image'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                      </th>
+                                      <th scope="col" ng-click="orderByField='category'; reverseSort = !reverseSort">Categoria
+                                        
+                                        <span ng-show="orderByField == 'category'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                        
+                                        </th> 
+                                      <th scope="col" ng-click="orderByField='name'; reverseSort = !reverseSort">Prodotto
+                                          
+                                        <span ng-show="orderByField == 'name'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                        
+                                        </th>  
+                                      <th scope="col" ng-click="orderByField='price'; reverseSort = !reverseSort">Prezzo
+                                        
+                                          <span ng-show="orderByField == 'price'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                        
+                                        </th>
+                                      <th scope="col">Quantit&#224;</th> 
+                                      <th scope="col">Totale</th>
+                                      <th scope="col">Nota
+                                        </th>                     
+                                    </tr>   
+                                  </thead> 
+                        <tbody ng-hide="dataLoaded">
+					<tr>
+					<td colspan="8">
+				  	<p style="text-align:center" ng-hide="dataLoaded">Caricando i prodotti <i class="fa fa-spinner fa-spin"></i></p>  
+                                  	</td>
+					</tr>
+                                  <tbody id="gasbody" class="repeated-item" ng-show="dataLoaded">  
+                                    <tr ng-repeat="product in products |  filter: searchQuery | orderBy:orderByField:reverseSort">  
+                                        <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
+                                        <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{product.id}}"/>
+                                        <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{product.price}}"/>
+
+                                      <td data-title="image" class="tdprod">                                                   
+                                          <img src="img/Kitchen-Bread-icon.png" class="imgprod" alt="" />
+                                      </td>
+                                      <td data-title="category" class="tdprod">
+                                        <div class="category">
+                                          <i class="fa fa-minus-circle"></i> 
+                                        </div>
+                                      </td>   
+                                      <td data-title="product_name" class="tdprod">{{product.name}}                                        
+                                        </td>  
+                                      <td data-title="product_price" class="tdprod" ng-model="productprice">{{product.price | limitTo: 4 | currency:"€"}}</td>     
+                                      <td data-title="add_cart" class="tdprod" style="width:10%;">
+                                        <div class="input-group">
+                                            <span class="opcart_left menu_links" ng-click="decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
+                                          <input type="text" class="form-control" value="{{product.quantity}}" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
+                                          <span class="opcart_right menu_links" ng-click="increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
+                                        </div> 
+                                      </td>  
+                                      <td data-title="total" class="tdprod" >{{product.total_price | currency:"€"}}</td>
+                                      <td data-title="note" class="tdprod">
+                                      <input type="text" class="form-control notetext" placeholder="Note" name="form-{{$index}}-note" id="note" ng-model="note">
+                                      </td>
+                                    </tr>  
+                                  </tbody>  
+                              </table>
+                              <table class="table total">
+                                <tr>
+                                    <td>
+                                        Totale previsto:
+                                    </td>  
+                                    <td class="tableprice">
+                                        <b>€ {{getTotal()}}</b>
+                                    </td>    
+                                </tr>    
+                              </table>
+                            </div>
+                            <input type="hidden" id="form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="{{prodnumber}}"/>
+                            <input type="hidden" id="form-TOTAL_FORM_COUNT" name="form-TOTAL_FORM_COUNT" value="{{prodnumber}}" />
+                            <input type="hidden" id="form-INITIAL_FORMS" name="form-INITIAL_FORMS" value="0"/>
+                            <input type="hidden" id="form-MAX_NUM_FORMS" name="form-MAX_NUM_FORMS" value="0"/>
+</form>
+                        </div>

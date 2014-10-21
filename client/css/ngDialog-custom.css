@@ -1,0 +1,198 @@
+
+.desc {
+	font-size: 16px;
+	font-weight: 300;
+	line-height: 22px;
+	margin: 15px auto;
+	max-width: 365px;
+}
+
+.desc a {
+	color: #fff;
+}
+
+.desc a:hover {
+	text-decoration: none;
+}
+
+.buttons a {
+	display: inline-block;
+	border: 2px solid #fff;
+	width: 125px;
+	font-size: 14px;
+	font-family: 'Montserrat', 'Helvetica', Arial, sans-serif;
+	font-weight: 700;
+	line-height: 21px;
+	padding: 8px 0;
+	text-decoration: none;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	vertical-align: top;
+	margin: 0 10px;
+	-webkit-transition: all .3s ease-in;
+}
+
+.buttons {
+	margin: 30px auto;
+}
+
+.buttons a.demo {
+	background: transparent;
+	color: #fff;
+}
+
+.buttons a.demo:hover {
+	background: #fff;
+	color: #86aa9c;
+}
+
+.buttons a.docs {
+	color: #86aa9c;
+	background: #fff;
+}
+
+.buttons a.docs:hover {
+	color: #fff;
+	background: transparent;
+}
+
+.github-link {
+	display: block;
+	position: absolute;
+	top: 3em;
+	right: -6.5em;
+	padding: 1em;
+	width: 20em;
+	text-align: center;
+	background-color: #00465c;
+	text-transform: uppercase;
+	font-size: .7em;
+	color: white;
+	letter-spacing: 1px;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	-webkit-transform-origin: 50% 50%;
+	-ms-transform-origin: 50% 50%;
+	transform-origin: 50% 50%;
+}
+
+.ngdialog.ngdialog-theme-custom {
+	padding-top: 20px;
+	padding-bottom: 0px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-overlay {
+	background: rgba(255,255,255,.5);
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-content {
+	background: rgba(255,255,255,.9);
+	padding: 1.8em 2em;
+	width: 440px;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-message h2 {
+	font-size: 26px;
+	font-family: 'Montserrat', 'Helvetica', Arial, sans-serif;
+	line-height: 30px;
+	margin-bottom: 20px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-message {
+	font-size: 16px;
+	font-family: 'Source Sans Pro';
+	line-height: 22px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-message ul {
+	padding: 0 0 5px 35px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-button.ngdialog-button-primary {
+	background: #27ae60;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+
+.action-btn {
+	display: inline-block;
+	color: #fff;
+	background: #00465c;
+	border: 2px solid transparent;
+	font-family: 'Montserrat', 'Helvetica', Arial, sans-serif;
+	font-size: 12px;
+	padding: 0px 20px;
+	text-transform: uppercase;
+	text-decoration: none;
+	margin-right: 5px;
+}
+
+.action-btn:hover {
+	background: transparent;
+	border-color: #00465c;
+	color: #00465c;
+}
+
+.action-btn.read {
+	background: #e74c3c;
+}
+
+.action-btn.read:hover {
+	background: transparent;
+	border-color: #e74c3c;
+	color: #e74c3c;
+}
+
+.mt {
+	margin-top: 15px;
+}
+
+code {
+	font-size: 14px;
+}
+
+.ngdialog.ngdialog-theme-custom {
+	padding-top: 20px;
+	padding-bottom: 0px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-overlay {
+	background: rgba(255,255,255,.5);
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-content {
+	background: rgba(255,255,255,.9);
+	padding: 1.8em 2em;
+	width: 200px;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-message h2 {
+	font-size: 26px;
+	font-family: 'Montserrat', 'Helvetica', Arial, sans-serif;
+	line-height: 30px;
+	margin-bottom: 20px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-message {
+	font-size: 16px;
+	font-family: 'Source Sans Pro';
+	line-height: 22px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-message ul {
+	padding: 0 0 5px 0px;
+}
+
+.ngdialog.ngdialog-theme-custom .ngdialog-button.ngdialog-button-primary {
+	background: #27ae60;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}

@@ -1,0 +1,15 @@
+[
+    {
+	"id": 573,
+	"gas": 10,
+	"person": 83,
+	"membership_fee_payed": null,
+	"is_suspended": false,
+	"suspend_datetime": null,
+	"suspend_auto_resume": null,
+	"balance": "535.1290",
+	"total_basket": 0,
+	"total_basket_to_be_delivered": "435.952000",
+	"economic_state": "535.1290 - (0 + 435.952000) = 99.177000"
+    }
+]

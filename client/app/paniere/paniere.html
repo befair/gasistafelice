@@ -1,0 +1,147 @@
+<script>
+$("#checkAll").click(function(){
+    $('input:checkbox').not(this).prop('checked', this.checked);
+});
+</script>
+
+<div class="tab-pane" id="paniere"><!-- PANIERE -->
+                          <div class="ord-ord-title">Il tuo paniere</div>
+                            <div class="imgpdf">
+                              <!--<button type="button" class="btn btn-danger btn-sm">Crea PDF</button>
+                              <button type="button" class="btn btn-danger btn-sm">Invia PDF al Gasista</button>
+                              <button type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>-->
+                                
+                            </div>
+    <form ng-controller="FrmPaniereController" method="POST" action="{{ path }}">
+                                <button ng-click="addtoCart();" class="def-btn" type="submit"><span class="glyphicon glyphicon-shopping-cart"></span>                                       Aggiorna paniere</button>
+                            <table class="table gas">   
+                                  <thead>  
+                                    <tr>  
+                                      <th>ID</th>
+                                      <th>Ordine</th>  
+                                      <th>Fornitore</th>  
+                                      <th>Prodotto</th>
+                                      <th>Prezzo (€)</th>  
+                                      <th>Quantita'</th>  
+                                      <th>Totale</th>  
+			                          <th style="text-align:center">Cancella
+                                          <br />
+                                          <!--<input type="checkbox" id="checkAll" ng-model="master">-->
+                                          <input type="checkbox" id="checkAll" ng-model="master" ng-click="elimina();">
+                                          <span class="delete" id="checkAll">
+                                             Seleziona tutto
+                                          </span>
+                                      </th>   
+                                    </tr>  
+                                  </thead>
+				  <tbody ng-hide="dataLoaded">
+					<tr>
+					<td colspan="8">
+				  	<p style="text-align:center" ng-hide="dataLoaded">Caricando il paniere <i class="fa fa-spinner fa-spin"></i></p>  
+                                  	</td>
+					</tr>
+					<tbody ng-show="dataLoaded">  
+                                    <tr ng-repeat="item in basket |  filter: searchQuery">
+                                        
+                                    <p ng-bind-html="myHTML"></p>
+ 
+                                     <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
+                                     <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{item.id}}"/>
+                                     <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{item.price}}"/>
+                                      <input type="hidden"  name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount" value="{{item.amount}}"/>
+                                      <input type="hidden" name="form-{{$index}}-gm_id" id="form-{{$index}}-gm_id" value="{{item.gm}}"/>
+
+                                      <td data-title="image" class="tdprod">{{item.id}}</td>  
+                                      <td data-title="image" class="tdprod">{{item.order}}</td>  
+                                      <td data-title="image" class="tdprod">{{item.supplier}}</td>  
+                                      <td data-title="image" class="tdprod">
+                                          {{item.product}}
+                                      </td>  
+                                      <td data-title="image" class="tdprice">
+                                          {{item.price|currency:"€"}}
+                                      </td> 
+                                            <td data-title="add_cart" class="tdprod" style="width:10%;">
+                                        <div class="input-group">
+                                            <span class="opcart_left" ng-click="decrement(item);"><span class="glyphicon glyphicon-minus"></span></span>
+                                          <input type="text" class="form-control" value="{{item.amount}}" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
+                                          <span class="opcart_right" ng-click="increment(item);"><span class="glyphicon glyphicon-plus"></span></span>
+                                        </div> 
+                                      </td> 
+                                      <td class="tdprice">
+                                          {{item.total|currency:"€"}}
+                                      </td>
+                                        <td class="tdprice">
+                                            <!--<a ng-click="delete($index)"><i class="fa fa-times red"></i></a> -->
+                                            <fieldset>
+						<input type="checkbox" name="delete" ng-checked="master">
+                                               
+					    </fieldset>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                            </table>
+        
+        <input type="hidden" id="form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="{{prodnumber}}"/>
+                            <input type="hidden" id="form-TOTAL_FORM_COUNT" name="form-TOTAL_FORM_COUNT" value="{{prodnumber}}" />
+                            <input type="hidden" id="form-INITIAL_FORMS" name="form-INITIAL_FORMS" value="0"/>
+                            <input type="hidden" id="form-MAX_NUM_FORMS" name="form-MAX_NUM_FORMS" value="0"/>
+                                </form>
+                         
+                          <div class="ord-ord-title">Panieri da consegnare</div>
+                                <div class="searchbar">
+                                  <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
+                                  <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>       
+                              </div> 
+                            <table class="table gas">   
+                                  <thead>  
+                                    <tr>  
+                                      <th scope="col" ng-click="orderByField='order_id'; reverseSort = !reverseSort">Ordine
+                                          <span ng-show="orderByField == 'order_id'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                        
+                                        </th>  
+                                      <th scope="col" ng-click="orderByField='supplier'; reverseSort = !reverseSort">Fornitore
+                                          <span ng-show="orderByField == 'supplier'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                        </th>  
+                                      <th scope="col" ng-click="orderByField='product'; reverseSort = !reverseSort">Prodotto
+                                          <span ng-show="orderByField == 'product'" class="listorder">
+                                            <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
+                                            <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+                                        </span>
+                                        </th>  
+                                      <th scope="col">Prezzo
+                                          
+                                        </th>
+                                      <th scope="col">Quantita'
+                                         
+                                        </th>  
+                                      <th scope="col">Totale
+                                         
+                                        </th>     
+                                    </tr>  
+                                  </thead>  
+                                  <tbody >  
+                                    <tr ng-repeat="product in btbd |  filter: searchQuery|  orderBy:orderByField:reverseSort">  
+                                      <td data-title="image" class="tdprod">{{product.order_id}}</td>  
+                                      <td data-title="image" class="tdprod">{{product.supplier}}</td>  
+                                      <td data-title="image" class="tdprod">{{product.product}}</td>  
+                                      <td data-title="image" class="tdprod">
+                                          {{product.price|currency:"€"}}
+                                      </td>  
+                                      <td data-title="image" class="tdprod">
+                                          {{product.amount}}
+                                      </td> 
+                                      <td data-title="image" class="tdprod">
+                                          {{product.total|currency:"€"}}
+                                      </td> 
+                                    </tr>  
+                                  </tbody>
+                            </table>
+                        </div>
+
+

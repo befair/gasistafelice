@@ -1,0 +1,219 @@
+/* Gasista LESS File */
+ 
+/* ===================================================================
+Import Bootstrap LESS and Site Specific LESS
+=================================================================== */
+ 
+@import '../../less/bootstrap.less';
+@import '../../less/responsive-utilities.less'; /* Load Responsive media queries  */
+@import 'variables.less'; /* Your site specific LESS variables - these override BS defaults  */
+@import 'elements.less';
+
+
+@foot-height:	36px; //Footer Height
+@foot-font:		11px;
+@foot-padding:	15px;
+@back-color: #ECECEC;
+@font-tab: 		20px;
+
+//Creazione struttura pagina
+
+#wrap {
+  .userbar{
+  	//aggiungere stile navbar
+  	.navbar;
+  	.navbar-default;
+  	
+  }
+
+  .navhead{
+  	//aggiungere stile navbar-header
+  	
+  	.collapsebar{
+
+  		//aggiungere stile collapse navbar-collapse
+  	}
+  }
+
+  .cont-gas{ //CONTAINER
+
+  	.make-row();
+  	.first_block{	//FIRST BLOCK
+  		.make-md-column(9);
+  	}
+  	.second_block{	//SECOND BLOCK
+  		.make-md-column(1);
+  	}
+  	.third_block{	//THIRD BLOCK
+  		.make-md-column(2);
+  	}
+  }
+
+  .footer{
+  		//aggiungere stile FOOTER
+  }
+}
+
+#wrap{
+	min-height:100%;
+	height:auto;
+	margin:0 auto -@foot-height;
+	padding: 0 0 (@foot-height + 6);
+	background-color: @back-color;
+	//.bw-gradient(#EEE, 255, 230);
+	.container{
+		padding: 10px 15px 0;
+	}
+}
+
+#footer{
+	height: @foot-height;
+	background-color: #75db1b;
+	text-align: center;
+	font-family: Verdana;
+	font-size:@foot-font;
+	width:100%;
+	.bordered(#EEE, #E5E5E5, #DDD, #E5E5E5);	
+	
+	.container{
+		padding-left: @foot-padding;
+		padding-right: @foot-padding;
+		padding-top: 5px;
+		min-width: 100%;
+		color:red;
+	}
+}
+
+.container .text-muted{
+		margin: 5px 0;
+}
+
+.userbar{
+	border-radius:0px;
+  	border-right:0;
+}
+
+@tab-border: 1px solid #ddd;
+@tab-padding: 5px;
+
+.tab-gas{
+ border-left: @tab-border;
+ border-bottom: @tab-border;
+ border-top-left-radius: 0px;
+ padding: @tab-padding @tab-padding 0 @tab-padding;
+ background-color: white;
+ min-height: 100%;
+}
+
+/*****************/
+/* TABLE STYLING */
+
+
+
+.gas{
+	thead { 
+		display:block;
+	}
+	tbody{ 
+	background-color: red;
+	display:block; 
+	overflow:auto; 
+	height:auto; //Previously 400px
+	padding-bottom:0px;
+		tr:hover{
+			background-color:#ECECEC;
+		}
+	}
+	//DA RIVEDERE, FUNZIONA MA NON E' CORRETTO
+	.table > thead > tr > th,
+	.table > tbody > tr > th,
+	.table > tfoot > tr > th,
+	.table > thead > tr > td,
+	.table > tbody > tr > td,
+	.table > tfoot > tr > td {
+	  padding: 8px;
+	  padding-top:15px;
+	 }
+}
+
+.table{
+	background-color: green;
+}
+
+th { height:50px; width:115px;}
+td { height:50px; width:115px;}
+
+
+
+@table-size: 700px;
+
+//Media query about screen width and table width
+
+@media (max-width: 750px) {
+	
+	#home, .tab-gas{
+		width: @table-size px!important;
+		overflow-x:scroll;
+	}
+
+	table{
+    	width: @table-size!important;
+
+    	tbody,thead{
+    		min-width:@table-size!important;
+    	}
+    }
+}
+
+.order{
+	thead { 
+		display:block;
+	}
+	tbody{
+		display:block;
+	}
+}
+/*********************/
+/* END TABLE STYLING */
+
+
+.fa{
+	margin-right: 5px;
+}
+
+.nav-tabs{
+	font-size: @font-tab;
+}
+
+.maxwidth{
+	min-width:100%;
+}
+
+.first_block{
+	margin-bottom:5px;
+	min-height:100%;
+	margin-right:0px;
+}
+
+.cont-gas{
+    height: 100%;
+    margin-left:0px;
+    min-width: 100%;
+    min-height:100%;
+}
+
+.second_block{
+	padding: 0 0 0 0;
+	margin-left: 0;
+	margin-right: 0;
+	//margin-top: 50%; //Controllo sull'altezza della pagina
+	//margin-bottom: 50%;
+	min-height:100%;
+}
+html,body{
+    height:100%;
+    margin:0;
+    min-width:100%;
+    width:100%;
+}
+

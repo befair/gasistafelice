@@ -1,0 +1,1254 @@
+/* Gasista LESS File */
+ 
+/* ===================================================================
+Import Bootstrap LESS and Site Specific LESS
+=================================================================== */
+ 
+@import '../../less/bootstrap.less';
+@import '../../less/responsive-utilities.less'; /* Load Responsive media queries  */
+@import 'variables.less'; /* Your site specific LESS variables - these override BS defaults  */
+@import 'elements.less';
+
+
+@foot-height:	36px; //Footer Height
+@foot-font:		11px;
+@foot-padding:	15px;
+@back-color: #ECECEC;
+@foot-color: #AFD909;
+@label-color: #428BCA;
+@gas-color: #B3C921;
+@text-label-color: white;
+@font-tab: 		20px;
+@table-size: 700px;
+@tab-border: 1px solid #ddd;
+@tab-padding: 5px;
+@string: 0 3px 9px rgba(0, 0, 0, 0.25);
+@deletecolor: red;
+
+a.menu_links { cursor: pointer; }
+.menu_links { cursor: pointer;}
+
+//---------------------------//
+//CREAZIONE STRUTTURA SITO //
+//---------------------------//
+
+  .userbar{
+  	//aggiungere stile navbar
+  	.navbar;
+  	.navbar-default;
+  }
+
+  .navhead{
+  	.navbar-header;
+  }
+  .titlenav{
+  	.navbar-brand;
+  }
+  .collapsebar{
+	  	.collapse;
+	  	.navbar-collapse;
+  }
+
+  .cont-gas{ //CONTAINER
+  	.container;
+  	.make-row();
+
+  	.first_block{	//FIRST BLOCK
+  		.make-md-column(9);
+  		min-width:100%;
+  	}
+  	.second_block{	//SECOND BLOCK
+  		.make-md-column(1);
+  		padding-left:3px;
+  		display:none;
+  	}
+  	.third_block{	//THIRD BLOCK
+  		.make-md-column(2);
+  		display:none;
+  		//togliendo il padding-left il blocco rimarrà allineato con gli altri
+  	}
+  }
+  	
+//GRID-LAYOUT ORDINI TAB according to  -- display layout -- 
+
+    //DESKTOP
+
+  	@media (min-width:750px)
+  	{
+	  	.cont_orders_list{
+	  		.make-md-column(3);
+	  		//background-color: red;
+	  		float:left; display:block;
+	  		padding-right:10px;
+	  	}
+	}
+
+    //SMARTPHONE - TABLET
+
+	@media (max-width:750px){
+		.cont_orders_list{
+		.make-sm-column(2);
+		//width:auto!important;
+		//background-color: green;
+		float:left; display:block;
+		padding:0px;
+		margin-left:20px;
+		//.border-radius(4px,1px,#C7C7C7);
+		}
+	}
+
+    //SMALL SMARTPHONE
+
+	@media (max-width:400px){
+		.cont_orders_list{
+		.make-xs-column(10);
+		//width:auto!important;
+		//background-color: green;
+		float:left; display:block;
+		padding:0px;
+		margin-left:20px;
+
+		//.border-radius(4px,1px,#C7C7C7);
+
+		}
+	}
+    
+    //LARGE DESKTOP
+	@media (min-width:1031px){
+		.cont_orders_list{
+		.make-sm-column(3);
+		//width:auto!important;
+		//background-color: green;
+		float:left; display:block;
+		padding:0px;
+		margin-left:20px;
+
+		//.border-radius(4px,1px,#C7C7C7);
+
+		}
+	}
+/////////////////////////////////////////////////////
+
+
+.delete{
+	font-size: 10px;
+	text-align:center;
+}
+
+
+
+//STRUTTURA PAGINA
+
+	@media (min-width:992px)
+  	{
+	  	.first_block{	//FIRST BLOCK
+	  		//.make-md-column(9);
+	  	}
+	  	.second_block{	//SECOND BLOCK
+	  		//.make-md-column(1);
+	  		width:2%!important;
+	  	}
+	  	.third_block{	//THIRD BLOCK
+	  		//.make-md-column(2);
+	  		width:23%!important;
+	  	}
+	}
+
+  .footer{
+  		//aggiungere stile FOOTER
+  }
+
+.first_block_max{
+	min-width:98%;
+}
+
+.pic_orders_list{
+	height:50px;
+	width:50px;
+}
+
+//FINE-creazione struttura pagina//
+
+
+//BUTTON STRUCTURE //
+////////////////////
+
+.def-btn {
+	display: inline-block;
+	color: #fff;
+	background: #278300;
+	border: 2px solid transparent;
+	font-family: 'Helvetica', Arial, sans-serif;
+	padding: 0px 5px;
+	text-decoration: none;
+	margin-right: 5px;
+    font-size:15px;
+    margin-bottom: 10px;
+}
+
+.def-btn:hover {
+	background: transparent;
+	border-color: #278300;
+	color: #278300;
+}
+
+
+//NAVBAR
+
+
+//La variabile utilizzata per il grid-collapse è @grid-float-breakpoint!!! si trova in variable.less
+
+
+
+.navpic{
+	.titlenav;
+	padding-right:0px;
+	height:@navbar-height;
+}
+
+.navhead{
+	//background-color: red;
+	height:@navbar-height + 14;
+	padding-top:8px;
+}
+
+.navbar-menu{
+	.nav;
+	.navbar-nav;
+	//padding-bottom:10px!important;
+	//height:@navbar-height;
+}
+
+.navbar-left{
+    text-align:center;
+}
+
+
+.logo{
+	float:right;
+	height: @navbar-height + 14;
+	padding-top:5px;
+}
+
+.imglogo{
+	.img-responsive;
+	.img-rounded;
+	width:60px;
+	height:50px;
+}
+
+.imgpic{
+	width:50px;
+	height:50px;
+	margin-top:-15px;
+    .img-circle;
+}
+
+.divider-vertical {
+height:@navbar-height + 14;
+margin: 0 9px;
+border-left: 1px solid #F2F2F2;
+border-right: 1px solid #FFF;
+}
+
+.brandname{
+    margin-top:10px;
+    margin-right:10px;
+    margin-left:5px;
+}
+
+.navbar-right{
+    margin-top:5px;
+}
+
+.gaslist{
+    .nav;
+    .navbar-nav;
+    float:left!important;
+    height:100%!important;
+}
+
+.optionlist{
+    .nav;
+    .navbar-nav;
+    float:left!important;
+}
+
+.optionlist >li >a{
+    padding-bottom:27px;
+}
+
+
+.tr1{
+    padding-right:5px;
+    
+}
+
+
+.gaslabel{
+    position: absolute;
+    width:100%;
+    color: @gas-color;
+    //background-color: @gas-color;
+   // border-bottom: 1px solid;
+    //border-left: 1px solid;
+    //border-right: 1px solid;
+    //margin-right:5px;
+    
+    
+}
+//WRAP
+
+#wrap{
+	min-height:100%;
+	height:auto;
+	margin:0 auto -@foot-height;
+	padding: 0 0 (@foot-height + 6);
+	background-color: @back-color;
+	.container{
+		//padding: 10px 15px 0;
+	}
+}
+
+//FOOTER
+
+#footer{
+	height: @foot-height;
+	background-color: #AFD909;
+	text-align: center;
+	font-family: Verdana;
+	font-size:@foot-font;
+	width:100%;
+	.bordered(#EEE, #E5E5E5, #DDD, #E5E5E5);	
+	
+	.container{
+		padding-left: @foot-padding;
+		padding-right: @foot-padding;
+		padding-top: 5px;
+		min-width: 100%;
+		color:red;
+	}
+}
+
+.container .text-muted{
+		margin: 5px 0;
+}
+
+.userbar{
+	border-radius:0px;
+  	border-right:0;
+  	box-shadow:0px 2px 2px #9D9D9D;
+    margin-bottom:30px;
+}
+
+.slide{
+	text-align:center;
+}
+
+.cont_orders_list{
+	padding-right: 5px;
+	margin-bottom:10px;
+}
+
+.orders_list{
+	td{
+		height:auto;
+	}
+	margin-bottom: 5px;
+	.img_orders_list{
+		text-align: center;
+	}
+
+	box-shadow:0px 2px 2px #9D9D9D;
+}
+
+
+
+.border-radius (@radius,@thick,@color) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+  border: @thick solid @color;
+}
+
+.top-border-radius (@radius,@thick,@color) {
+  -moz-border-top-right-radius: @radius;
+  -webkit-border-top-left-radius: @radius;
+  border-top-left-radius: @radius;
+  border-top-right-radius: @radius;
+  border: @thick solid @color;
+}
+
+.bottom-border-radius (@radius,@thick,@color) {
+-moz-border-bottom-right-radius: @radius;
+  -webkit-border-bottom-left-radius: @radius;
+  border-bottom-left-radius: @radius;
+  border-bottom-right-radius: @radius;
+  border: @thick solid @color;
+}
+
+.left-border-radius (@radius,@thick,@color) {
+  -moz-border-top-left-radius: @radius;
+  -webkit-border-bottom-left-radius: @radius;
+  border-top-left-radius: @radius;
+  border-bottom-left-radius: @radius;
+  border-top-right-radius:0px;
+  border-bottom-right-radius:0px;
+  border: @thick solid @color;
+}
+
+.right-border-radius (@radius,@thick,@color) {
+  -moz-border-top-right-radius: @radius;
+  -webkit-border-bottom-right-radius: @radius;
+  border-top-right-radius: @radius;
+  border-bottom-right-radius: @radius;
+  border-top-left-radius:0px;
+  border-bottom-left-radius:0px;
+  border: @thick solid @color;
+}
+
+.searchbar{
+	.input-group;
+	margin-bottom:5px;
+	width:200px;
+	float:right;
+}
+
+.font-searchbar{
+	.input-group-addon;
+	.left-border-radius(4px,1px,#428BCA);
+	background-color: #428BCA;
+	color:white;
+}
+
+.searchbar-text{
+	.form-control;
+	.right-border-radius(4px,1px,#C7C7C7);
+}
+
+.table{
+	text-align:left;
+}
+
+//---------------------------------------//
+//pag. ORDINARE - struttura e componenti //
+//---------------------------------------//
+
+.addtoCart{
+    position:fixed;
+    z-index: 100;
+    margin-left: 0px;
+    margin-right: 90%;
+}
+
+.total{
+    margin-top:-15px!important;
+    text-align:right;
+    font-size:25px;
+}
+
+.tableprice{
+    color: green;
+    width:10%;
+    
+    font-style: bold;
+}
+
+.listorder{
+    margin-right:0px;
+    float:right;
+}
+
+thead{
+ cursor: pointer;  
+}
+
+.cashresume{
+ text-align:right;
+ margin-right: 0px;
+    font-size: 16px;
+}
+
+.balance{
+    color: green;
+    font-style: bold;
+}
+
+.totresume{
+    text-align: right;
+    background-color: blue;
+}
+
+.totresume, .tottitle{
+    display:inline;
+    float:right;
+}
+
+.tottitle{
+    background-color: red;
+}
+#feedback { 
+  height: 104px; 
+  width: 104px; 
+  position: fixed; 
+  top: 40%; 
+  z-index: 999;
+  left:98%;
+  transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg); 
+  -moz-transform: rotate(-90deg); 
+  -o-transform: rotate(-90deg); 
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+#feedback a { 
+  display: block; 
+  background: #f01; 
+  padding: 1px 16px;
+  color: #fff; 
+  font-family: Arial, sans-serif; 
+  font-size: 17px; 
+  font-weight: bold; 
+  text-decoration: none; 
+  border-bottom: solid 1px #333;
+  border-left: solid 1px #333;
+  border-right: solid 1px #fff;
+  
+}
+
+#feedback a:hover { 
+  background: #06c; 
+}
+
+.nofound{
+	text-align: center;
+}
+
+//PAGINATION//
+
+#page_navigation{
+	text-align:center;
+}
+
+.pagination{
+	margin-top:0px;
+}
+
+.orderlist{
+margin-top:10px;
+}
+
+.ord-ord-title{
+	.pan-ord-title;
+	border-radius:0px;
+	background-color:@label-color;
+	color: @text-label-color;
+}
+
+.ord-el-title{
+	.pan-cons-title;
+	background-color:@label-color;
+	border-radius:0px;
+	margin-top:20px;
+    margin-bottom:30px;
+	color: @text-label-color;
+}
+
+.category{
+	color:#EB2127;
+	font-size:22px;
+}
+
+.cont-gas{
+    height: 100%;
+    margin-left:0px;
+    min-width: 100%;
+    min-height:100%;
+    margin-right:0px;
+}
+
+.tab-gas{
+ border-left: @tab-border;
+ border-bottom: @tab-border;
+ border-top-left-radius: 1px;
+ padding: @tab-padding @tab-padding 0 @tab-padding;
+ background-color: white;
+ min-height: 100%;
+ .box-shadow(@string);
+ padding-top:15px;
+}
+
+
+.opcart_left{
+	.input-group-addon;
+	font-size:12px;
+	width:30px;
+	padding:0 0 0 0;
+	margin-right:0px;
+	margin-left:0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+	border-right:0px;
+}
+
+.opcart_right{
+	.input-group-addon;
+	font-size:12px;
+	width:30px;
+	padding:0 0 0 0;
+	margin-right:0px;
+	margin-left:0px;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+	border-left:0px;
+}
+
+.searchord{
+	.form-control;
+	width:150px;
+	float:right;
+	margin-top:5px;
+	margin-bottom:5px;
+	font-size:12px;
+	height:30px;
+}
+
+.imgprod{
+    height: 50px;
+    width: 50px;
+}
+
+.tdprod{
+    vertical-align: middle!important;
+}
+
+/*****************/
+/* TABLE STYLING */
+
+/*Tabella con slider sx/dx e up/down*/
+
+//RESPONSIVE TABLE
+
+
+.button_conto{
+    font-size:12px;
+}
+
+.infoconto{
+        font-size: 12px;
+        color: green;
+}
+
+.balance{
+    font-size:14px!important;
+    td
+    {
+        font-color:  black!important; 
+    }   
+}
+
+ @media (max-width: 750px) {
+  
+	  // make each table separate from other ones
+
+     
+      .balance{
+      table, thead, tbody, th, td, tr { 
+				display: block; 
+				width:100%;
+                font-size:12px!important;
+			}
+			thead tr { 
+				position: absolute;
+				top: -9999px;
+				left: -9999px;
+			}
+			tbody tr{
+				margin-bottom:5px;
+			}
+			td{ 
+				/* Behave  like a "row" */
+				//border: none!important;
+				//border-bottom: 1px solid #eee!important; 
+				position: relative;
+                width:100%;
+                //margin-left:45%;
+				padding-left: 40%!important; 
+                border-right: 1px solid #eee!important;
+			}
+			tbody{
+				tr:hover:nth-child(even){
+					background-color:white!important;
+				}
+				tr:hover:nth-child(odd){
+					background-color:transparent!important;
+				}
+				tr:nth-child(even){
+				    td:nth-of-type(1):before { content: "ID"; color:@gas-color}
+                    td:nth-of-type(2):before { content: "Data"; color:@gas-color}
+                    td:nth-of-type(3):before { content: "Conto"; color:@gas-color}
+                    td:nth-of-type(4):before { content: "Tipo"; color:@gas-color}
+                    td:nth-of-type(5):before { content: "Importo"; color:@gas-color}
+                    td:nth-of-type(6):before { content: "Descrizione"; color:@gas-color}
+                    //td:nth-of-type(8):before { content: "Delete"; color:@gas-color}
+				}
+                tr:nth-child(odd){
+                    td:nth-of-type(1):before { content: "ID"; color:@label-color}
+                    td:nth-of-type(2):before { content: "Data"; color:@label-color}
+                    td:nth-of-type(3):before { content: "Conto"; color:@label-color}
+                    td:nth-of-type(4):before { content: "Tipo"; color:@label-color}
+                    td:nth-of-type(5):before { content: "Importo"; color:@label-color}
+                    td:nth-of-type(6):before { content: "Descrizione"; color:@label-color}
+                }
+			}
+
+			td:before{ 
+				/* Now like a table header */
+				position: absolute;
+				/* Top/left values mimic padding */
+				top: 6px;
+				left: 6px;
+				width: 40%; 
+				//margin-left: 0px!mportant; 
+				white-space: nowrap;
+			}      
+      }
+     
+	  .gas{
+	  		table, thead, tbody, th, td, tr { 
+				display: block; 
+				width:100%;
+				
+                font-size:15px!important;
+			}
+			thead tr { 
+				position: absolute;
+				top: -9999px;
+				left: -9999px;
+			}
+			tbody tr{
+				margin-bottom:5px;
+			}
+			td { 
+				/* Behave  like a "row" */
+				//border: none!important;
+				//border-bottom: 1px solid #eee!important; 
+				position: relative;
+                width:100%;
+                //margin-left:45%;
+				padding-left: 40%!important; 
+                border-right: 1px solid #eee!important;
+			}
+			tbody{
+				tr:hover:nth-child(even){
+					background-color:white!important;
+				}
+				tr:hover:nth-child(odd){
+					background-color:transparent!important;
+				}
+				tr:nth-child(even){
+				    td:nth-of-type(1):before { content: "Product image"; color:@gas-color}
+                    td:nth-of-type(2):before { content: "Product category"; color:@gas-color}
+                    td:nth-of-type(3):before { content: "Product"; color:@gas-color}
+                    td:nth-of-type(4):before { content: "Quantity"; color:@gas-color}
+                    td:nth-of-type(5):before { content: "Price"; color:@gas-color}
+                    td:nth-of-type(6):before { content: "Total"; color:@gas-color}
+                    td:nth-of-type(7):before { content: "Note"; color:@gas-color}
+                    //td:nth-of-type(8):before { content: "Delete"; color:@gas-color}
+				}
+                tr:nth-child(odd){
+                    td:nth-of-type(1):before { content: "Product image"; color:@label-color}
+                    td:nth-of-type(2):before { content: "Product category"; color:@label-color}
+                    td:nth-of-type(3):before { content: "Product"; color:@label-color}
+                    td:nth-of-type(4):before { content: "Quantity"; color:@label-color}
+                    td:nth-of-type(5):before { content: "Price"; color:@label-color}
+                    td:nth-of-type(6):before { content: "Total"; color:@label-color}
+                    td:nth-of-type(7):before { content: "Note"; color:@label-color}
+                }
+			}
+
+			td:before{ 
+				/* Now like a table header */
+				position: absolute;
+				/* Top/left values mimic padding */
+				top: 6px;
+				left: 6px;
+				width: 40%; 
+				//margin-left: 0px!mportant; 
+				white-space: nowrap;
+			}
+          
+            .form-control{
+                width:40px!important;
+            }
+          
+            .notetext{
+                width:200px!important;
+            }
+          
+            .tdprice{
+                text-align: left!important;
+            }
+          
+	  }
+     
+     .conto{
+         
+         .saldo{
+            font-size:18px!important;
+         }
+         
+        table, thead, tbody, th, td, tr { 
+				display: block; 
+				width:100%;
+				border:none;
+                font-size: 20px!important;
+			}
+			thead tr { 
+				position: absolute;
+				top: -9999px;
+				left: -9999px;
+
+				//accessibility problem solved by not displaying "display:none
+			}
+			tbody tr{
+				margin-bottom:5px;
+			}
+			td { 
+				/* Behave  like a "row" */
+				//border: none!important;
+                border-bottom: 1px solid #eee!important; 
+				border-top: 0px!important;
+                position: relative;
+                width:100%;
+            
+				//padding-left: 40%!important; 
+			}
+         
+            td:nth-child(odd){
+                border-bottom:0px!important;
+                font-weight: bold;
+            }
+            td:nth-child(even){
+                
+            }
+			tbody{
+				tr:hover:nth-child(even){
+					background-color:white!important;
+				}
+				tr:hover:nth-child(odd){
+					background-color:transparent!important;
+				}
+                td{
+                    font-size: 12px!important;
+                }
+			}
+
+			td:before{ 
+				/* Now like a table header */
+				position: absolute;
+				/* Top/left values mimic padding */
+				top: 6px;
+				left: 6px;
+				width: 40%; 
+				//margin-left: 0px!mportant; 
+				white-space: nowrap;
+			}
+          
+            .form-control{
+                width:200px!important;
+            }
+          
+            .tdprice{
+                text-align: left!important;
+            }   
+     }
+     
+     .infoconto{
+        font-size: 12px;
+        color: green;
+     }
+}
+
+
+
+.gas{
+	clear:left;
+	.border-radius(4px,1px,#C7C7C7);
+    
+    border-spacing: 0; 
+	tbody{ 
+	height:auto; //Previously 400px
+	padding-bottom:0px;
+		tr:hover{
+			background-color:@foot-color;
+		}
+		tr:nth-child(odd){
+			background-color:@back-color;
+		}
+		tr:hover:nth-child(even){
+			background-color:@foot-color;
+		}
+		tr:hover:nth-child(odd){
+			background-color:@foot-color;
+		}
+	}
+
+
+	//DA RIVEDERE, FUNZIONA MA NON E' CORRETTO
+	.table > thead > tr > th,
+	.table > tbody > tr > th,
+	.table > tfoot > tr > th,
+	.table > thead > tr > td,
+	.table > tbody > tr > td,
+	.table > tfoot > tr > td {
+	  padding: 8px;
+	  padding-top:15px;
+	  //vertical-align:middle;
+	 }
+}
+
+/*th { height:50px; width:115px;}
+td { height:50px; width:115px;}*/
+
+//Media query about screen width and table width
+//PER ORA COMMENTATO, RIMETTERE A 750 PER LO SLIDE ORIZZONTALE!!!
+
+/*@media (max-width: 750px) {
+	
+	#home, .tab-gas{
+		width: @table-size px!important;
+		overflow-x:scroll;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	table{
+    	//width: @table-size!important;
+
+    	tbody,thead{
+    		//min-width:@table-size!important;
+    	}
+    }
+}*/
+/////////////////////////////////////////////////////////////////
+
+.box-shadow (@string) {
+	-webkit-box-shadow: @string;
+	-moz-box-shadow:    @string;
+	box-shadow:         @string;
+}
+
+.order{
+	.border-radius(4px,1px,#C7C7C7);
+	//display:block;
+	*border-collapse: collapse; /* IE7 and lower */
+    border-spacing: 0;
+    width:auto!important;
+    tbody{
+    	tr:hover{
+			background-color:#AFD909;
+		}
+		tr:nth-child(odd){
+			background-color:#ECECEC;
+		}
+		tr:hover:nth-child(even){
+			background-color:#AFD909;
+		}
+		tr:hover:nth-child(odd){
+			background-color:#AFD909;
+		}
+	}
+
+	.radio-td{
+		//padding:5 0 0 0;
+	}
+	text-align:center;
+	th { height:auto; width:auto;}
+	td { height:auto; width:auto;}
+	margin-bottom:5px;
+}
+
+.info-td{
+	.info{
+		.glyphicon;
+		.glyphicon-info-sign;
+		color:#428BCA;
+	}
+}
+
+/*********************/
+/* END TABLE STYLING */
+
+//-----------------------------------//
+//pag. PANIERE struttura e componenti//
+//-----------------------------------//
+
+.tdprice{
+    text-align: center;
+}
+
+.red{
+    color: @deletecolor;
+}
+
+.imgpdf{
+	margin-bottom:5px;
+}
+
+.paniere-ord,.paniere-cons{
+	border-top:1px solid black; //#ECECEC;
+	padding-top:10px;
+	margin-top:5px;
+}
+
+.pan-ord-title, .pan-cons-title{
+	//font-size:15px;
+	color: black;
+	background-color: @foot-color;
+	padding-left: 10px;
+	padding-right: 10px;
+	//width:100%;
+	margin-bottom:10px;
+    margin-left:-5px;
+    margin-right:-5px;
+    margin-top:10px;
+	//.top-border-radius(9px,1px,#C7C7C7);
+	//font-weight: bold;
+
+}
+
+.panc-cons-title{
+	margin-top:20px;
+}
+
+.fa{
+	margin-right: 5px;
+}
+
+.nav-tabs{
+	font-size: @font-tab;
+}
+
+.maxwidth{
+	min-width:98%;
+}
+
+.first_block{
+	margin-bottom:5px;
+	min-height:100%;
+	margin-right:0px;
+}
+
+//--------------------//
+//pag. SCHEDA GASISTA //
+//--------------------//
+
+.userpic-font{
+	.glyphicon;
+	.glyphicon-user;
+	font-size:180px;
+	text-shadow: 5px 5px 5px grey;
+}
+
+.userpic{
+	.box-shadow(@string);
+	height:100px;
+	width:100px;
+	margin-bottom:10px;
+	position:relative;
+	float:right;
+	display:inline;
+	background-color: red;
+}
+
+.scheda{
+	.table;
+	tr,td{
+		height:inherit!important;
+	}
+}
+
+.img_gas_list{
+}
+
+.large{
+    font-size:30px;
+    color: green;
+}
+
+.imgprofile{
+    height:175px;
+    width:175px;
+}
+
+.gas_list_profile{
+    //background-color: red;
+    text-align:center;
+}
+
+
+.shape{    
+    border-style: solid; border-width: 0 40px 40px 0; float:right; height: 0px; width: 0px;
+    -webkit-transform: rotate(360deg);  
+    -moz-transform: rotate(360deg);  
+    -o-transform: rotate(360deg);  
+    transform: rotate(360deg); 
+}
+.shape-text{
+    color:#fff; font-size:12px; font-weight:bold; position:relative; right:-22px; top:-3px; white-space: nowrap;
+	-ms-transform:rotate(30deg); /* IE 9 */
+	-o-transform: rotate(360deg);  /* Opera 10.5 */
+	-webkit-transform:rotate(46deg); /* Safari and Chrome */
+	transform:rotate(46deg);
+}
+.offer{
+	background:#fff; border:1px solid #ddd; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); margin: 15px 0; overflow:hidden;
+}
+.shape {
+	border-color: rgba(255,255,255,0) #d9534f rgba(255,255,255,0) rgba(255,255,255,0);
+}
+.offer-radius{
+	border-radius:7px;
+}
+.offer-danger {	border-color: #d9534f; }
+.offer-danger .shape{
+	border-color: transparent #d9534f transparent transparent;
+}
+.offer-success {	border-color: #5cb85c; }
+.offer-success .shape{
+	border-color: transparent #5cb85c transparent transparent;
+}
+.offer-default {	border-color: #999999; }
+.offer-default .shape{
+	border-color: transparent #999999 transparent transparent;
+}
+.offer-primary {	border-color: #428bca; }
+.offer-primary .shape{
+	border-color: transparent #428bca transparent transparent;
+}
+.offer-info {	border-color: #5bc0de; }
+.offer-info .shape{
+	border-color: transparent #5bc0de transparent transparent;
+}
+.offer-warning {	border-color: #f0ad4e; }
+.offer-warning .shape{
+	border-color: transparent #f0ad4e transparent transparent;
+}
+
+.offer-content{
+	padding:0 20px 10px;
+}
+@media (min-width: 487px) {
+  .container {
+    max-width: 750px;
+  }
+  .col-sm-6 {
+    width: 50%;
+  }
+}
+@media (min-width: 900px) {
+  .container {
+    max-width: 970px;
+  }
+  .col-md-4 {
+    width: 33.33333333333333%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1170px;
+  }
+  .col-lg-3 {
+    width: 25%;
+  }
+  }
+
+
+.profile 
+{
+    min-height: 355px;
+    display: inline-block;
+    margin-left:5px;
+    }
+figcaption.ratings
+{
+    margin-top:20px;
+    }
+figcaption.ratings a
+{
+    color:#f1c40f;
+    font-size:11px;
+    }
+figcaption.ratings a:hover
+{
+    color:#f39c12;
+    text-decoration:none;
+    }
+.divider 
+{
+    border-top:1px solid rgba(0,0,0,0.1);
+    }
+.emphasis 
+{
+    border-top: 4px solid transparent;
+    }
+.emphasis:hover 
+{
+    border-top: 4px solid #1abc9c;
+    }
+.emphasis h2
+{
+    margin-bottom:0;
+    }
+span.tags 
+{
+    background: #1abc9c;
+    border-radius: 0px;
+    color: #f5f5f5;
+    font-weight: bold;
+    padding: 2px 4px;
+    }
+
+.prof{
+    .offer;
+    border-radius:0px!important;
+}
+
+
+.saldo{
+    color:green;
+    font-weight: 200;
+}
+
+
+.scheda_title{
+    .ord-ord-title;
+    margin-left:0px!important;
+    margin-right:0px!important;
+}
+
+
+//-------------------//
+// ng-view animation //
+//-------------------//
+
+
+//-------------------//
+// HTML/BODY settings//
+//-------------------//
+
+
+html,body{
+    height:100%;
+    margin:0;
+    min-width:100%;
+    width:100%;
+    //font-family: 'Oswald', 'sans-serif';
+    font-family: 'Source Sans Pro', 'Helvetica', Arial, sans-serif;
+    font-size:20px;
+}
+
+input{
+    text-align: center;
+}

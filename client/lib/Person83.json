@@ -1,0 +1,4096 @@
+{
+	"id": 83,
+	"name": "Dominique",
+	"surname": "Thual",
+	"display_name": "Dominique Thual",
+	"ssn": "12345678982",
+	"avatar": "",
+	"website": "",
+	"contact_set": [
+		{
+			"flavour": "EMAIL",
+			"value": "dom_thual@yahoo.fr",
+			"is_preferred": true
+		},
+		{
+			"flavour": "PHONE",
+			"value": "3479304260",
+			"is_preferred": false
+		}
+	],
+	"user": 2,
+	"gasmembers": [
+		573
+	],
+	"gas_list": [
+		{
+			"id": 10,
+			"name": "GASsero",
+			"id_in_des": "CAS",
+			"logo": "",
+			"des": "DES Macerata",
+			"open_orders": [
+				{
+					"gasstock_set": [
+						{
+							"id": 10066,
+							"pact": 185,
+							"stock": 3556,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 10063,
+							"pact": 185,
+							"stock": 3555,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 9280,
+							"pact": 185,
+							"stock": 3242,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7734,
+							"pact": 185,
+							"stock": 1436,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7733,
+							"pact": 185,
+							"stock": 1816,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7732,
+							"pact": 185,
+							"stock": 1849,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7731,
+							"pact": 185,
+							"stock": 1848,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7730,
+							"pact": 185,
+							"stock": 1852,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7727,
+							"pact": 185,
+							"stock": 1851,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7726,
+							"pact": 185,
+							"stock": 1850,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7725,
+							"pact": 185,
+							"stock": 1847,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7724,
+							"pact": 185,
+							"stock": 1846,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7721,
+							"pact": 185,
+							"stock": 1838,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7720,
+							"pact": 185,
+							"stock": 1837,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7719,
+							"pact": 185,
+							"stock": 1836,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7718,
+							"pact": 185,
+							"stock": 1835,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7717,
+							"pact": 185,
+							"stock": 1834,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7716,
+							"pact": 185,
+							"stock": 1833,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7715,
+							"pact": 185,
+							"stock": 1832,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7714,
+							"pact": 185,
+							"stock": 1831,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7713,
+							"pact": 185,
+							"stock": 1828,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7712,
+							"pact": 185,
+							"stock": 1827,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7711,
+							"pact": 185,
+							"stock": 1826,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7710,
+							"pact": 185,
+							"stock": 1825,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7709,
+							"pact": 185,
+							"stock": 1824,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7708,
+							"pact": 185,
+							"stock": 1823,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7707,
+							"pact": 185,
+							"stock": 1822,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7706,
+							"pact": 185,
+							"stock": 1821,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7703,
+							"pact": 185,
+							"stock": 1818,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7702,
+							"pact": 185,
+							"stock": 1817,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7699,
+							"pact": 185,
+							"stock": 1857,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7698,
+							"pact": 185,
+							"stock": 1856,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7697,
+							"pact": 185,
+							"stock": 1855,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7696,
+							"pact": 185,
+							"stock": 1815,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7695,
+							"pact": 185,
+							"stock": 1814,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7694,
+							"pact": 185,
+							"stock": 1813,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7693,
+							"pact": 185,
+							"stock": 1812,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7692,
+							"pact": 185,
+							"stock": 1811,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7691,
+							"pact": 185,
+							"stock": 1810,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7690,
+							"pact": 185,
+							"stock": 1809,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7689,
+							"pact": 185,
+							"stock": 1808,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7688,
+							"pact": 185,
+							"stock": 1451,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7687,
+							"pact": 185,
+							"stock": 1450,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7686,
+							"pact": 185,
+							"stock": 1449,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7685,
+							"pact": 185,
+							"stock": 1448,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7684,
+							"pact": 185,
+							"stock": 1447,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7683,
+							"pact": 185,
+							"stock": 1445,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7682,
+							"pact": 185,
+							"stock": 1441,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7681,
+							"pact": 185,
+							"stock": 1440,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7680,
+							"pact": 185,
+							"stock": 1439,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7679,
+							"pact": 185,
+							"stock": 1438,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7678,
+							"pact": 185,
+							"stock": 1437,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7677,
+							"pact": 185,
+							"stock": 1845,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7683,
+							"pact": 185,
+							"stock": 1445,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7706,
+							"pact": 185,
+							"stock": 1821,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7679,
+							"pact": 185,
+							"stock": 1438,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7692,
+							"pact": 185,
+							"stock": 1811,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7734,
+							"pact": 185,
+							"stock": 1436,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7690,
+							"pact": 185,
+							"stock": 1809,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7680,
+							"pact": 185,
+							"stock": 1439,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7686,
+							"pact": 185,
+							"stock": 1449,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7707,
+							"pact": 185,
+							"stock": 1822,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7682,
+							"pact": 185,
+							"stock": 1441,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7681,
+							"pact": 185,
+							"stock": 1440,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7687,
+							"pact": 185,
+							"stock": 1450,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7691,
+							"pact": 185,
+							"stock": 1810,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7693,
+							"pact": 185,
+							"stock": 1812,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7694,
+							"pact": 185,
+							"stock": 1813,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7731,
+							"pact": 185,
+							"stock": 1848,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7696,
+							"pact": 185,
+							"stock": 1815,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7733,
+							"pact": 185,
+							"stock": 1816,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7702,
+							"pact": 185,
+							"stock": 1817,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7730,
+							"pact": 185,
+							"stock": 1852,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7703,
+							"pact": 185,
+							"stock": 1818,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7708,
+							"pact": 185,
+							"stock": 1823,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7709,
+							"pact": 185,
+							"stock": 1824,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7685,
+							"pact": 185,
+							"stock": 1448,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7684,
+							"pact": 185,
+							"stock": 1447,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7711,
+							"pact": 185,
+							"stock": 1826,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7689,
+							"pact": 185,
+							"stock": 1808,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7712,
+							"pact": 185,
+							"stock": 1827,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7713,
+							"pact": 185,
+							"stock": 1828,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7714,
+							"pact": 185,
+							"stock": 1831,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7715,
+							"pact": 185,
+							"stock": 1832,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7716,
+							"pact": 185,
+							"stock": 1833,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7717,
+							"pact": 185,
+							"stock": 1834,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7719,
+							"pact": 185,
+							"stock": 1836,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7718,
+							"pact": 185,
+							"stock": 1835,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7720,
+							"pact": 185,
+							"stock": 1837,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7721,
+							"pact": 185,
+							"stock": 1838,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7678,
+							"pact": 185,
+							"stock": 1437,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7677,
+							"pact": 185,
+							"stock": 1845,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7724,
+							"pact": 185,
+							"stock": 1846,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7725,
+							"pact": 185,
+							"stock": 1847,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7726,
+							"pact": 185,
+							"stock": 1850,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7732,
+							"pact": 185,
+							"stock": 1849,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7727,
+							"pact": 185,
+							"stock": 1851,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7695,
+							"pact": 185,
+							"stock": 1814,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7697,
+							"pact": 185,
+							"stock": 1855,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7698,
+							"pact": 185,
+							"stock": 1856,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7699,
+							"pact": 185,
+							"stock": 1857,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7688,
+							"pact": 185,
+							"stock": 1451,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 7710,
+							"pact": 185,
+							"stock": 1825,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 9280,
+							"pact": 185,
+							"stock": 3242,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 10063,
+							"pact": 185,
+							"stock": 3555,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 10066,
+							"pact": 185,
+							"stock": 3556,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						}
+					],
+					"stocks": [
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1824,
+								"code": null,
+								"producer": 62,
+								"category": 44,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pizza rossa 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1824,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "4.3700",
+							"code": "B4",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1448,
+								"code": null,
+								"producer": 62,
+								"category": 44,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Foglie di farro (02 kg)",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1448,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.8300",
+							"code": "C2",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1447,
+								"code": null,
+								"producer": 62,
+								"category": 44,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Foglie di grano (02 kg)",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1447,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.8300",
+							"code": "C1",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1823,
+								"code": null,
+								"producer": 62,
+								"category": 44,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pizza alle verdure (pomodori origano) 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1823,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "4.4700",
+							"code": "B3",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1822,
+								"code": null,
+								"producer": 62,
+								"category": 44,
+								"muppu": "0.25",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Spianata di farro e olive 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1822,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.2100",
+							"code": "B2",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1821,
+								"code": null,
+								"producer": 62,
+								"category": 44,
+								"muppu": "0.25",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Spianata di farro al rosmarino 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1821,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.2100",
+							"code": "B1",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1848,
+								"code": null,
+								"producer": 62,
+								"category": 45,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Biscotti di farro e cocco 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1848,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.3100",
+							"code": "D24",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1852,
+								"code": null,
+								"producer": 62,
+								"category": 45,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Paste campagnole 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1852,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.4000",
+							"code": "D28",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1851,
+								"code": null,
+								"producer": 62,
+								"category": 45,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Frollini di kamut 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1851,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.3100",
+							"code": "D27",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1849,
+								"code": null,
+								"producer": 62,
+								"category": 45,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Biscotti di kamut e uvetta 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1849,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.3100",
+							"code": "D25",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1850,
+								"code": null,
+								"producer": 62,
+								"category": 45,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Frollini di farro 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1850,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.3100",
+							"code": "D26",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1847,
+								"code": null,
+								"producer": 62,
+								"category": 45,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Cantucci di farro 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1847,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.3100",
+							"code": "D23",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 3556,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Panettone di kamut con margarina e gocce di cioccolato",
+								"description": "",
+								"deleted": false
+							},
+							"id": 3556,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "7.0000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1826,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.40",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Cornetti di kamut vaschetta da 5 (vuoti) 04 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1826,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "4.8000",
+							"code": "D2",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1827,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.40",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Cornetti kamut vaschetta da 5 (albicocca) 04 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1827,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "4.8000",
+							"code": "D3",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1828,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.08",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Fagottini di kamut (cioccolato) 008 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1828,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.0900",
+							"code": "D4",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1831,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.07",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Lunette di kamut (mirtilli) 007kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1831,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "0.8900",
+							"code": "D5",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1832,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.30",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Pagnotta dolce 03 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1832,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.1200",
+							"code": "D6",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1833,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.45",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Crostata di farro senza uova (albicocca) 0450 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1833,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.1300",
+							"code": "D8",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1834,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.45",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Crostata di farro senza uova(frutti bosco)0450kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1834,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.1300",
+							"code": "D9",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1835,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.40",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Ciambellone farro (gocce di cioccolato) 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1835,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.2800",
+							"code": "D11",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1836,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.40",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Ciambellone di farro (frutta secca) 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1836,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.2800",
+							"code": "D12",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1837,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.07",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Muffin (gocce di cioccolato) 007 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1837,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.0000",
+							"code": "D15",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1838,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.07",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Muffin (frutta secca) 007 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1838,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.0000",
+							"code": "D16",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1846,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.20",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Gnocchetti allanice 02 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1846,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.3100",
+							"code": "D22",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1845,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Torta di mele con kamut 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1845,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "6.6000",
+							"code": "D21",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1825,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.10",
+								"muppu_is_variable": false,
+								"vat_percent": "0.10",
+								"name": "Maritozzi di kamut 01 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1825,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.2000",
+							"code": "D1",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 3555,
+								"code": null,
+								"producer": 62,
+								"category": 58,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Panettone  tradizionale di grano con burro uvetta e canditi ",
+								"description": " panettone è di 7 euro. Noi facciamo due tipi di panettoni a Natale: uno tradizionale di grano con burro,uvetta e canditi ",
+								"deleted": false
+							},
+							"id": 3555,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "7.0000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1436,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pagnotta casereccia 1 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1436,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.5400",
+							"code": "A2",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1437,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane  tipo toscano 1kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1437,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.5000",
+							"code": "A1",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Grammo",
+								"pu": "Pezzo",
+								"id": 3242,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "500.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Pane farro e noci",
+								"description": "Pane farro con noci, uvetta e fichi secchi per la colazione e spuntini",
+								"deleted": false
+							},
+							"id": 3242,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.3000",
+							"code": "A12",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1449,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane integrale ai semi di zucca 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1449,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.1800",
+							"code": "A8",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1809,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di farro alle olive 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1809,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.0000",
+							"code": "A14",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1441,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pagnotta integrale 1 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1441,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.5400",
+							"code": "A5",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1451,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di farro ai semi 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1451,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.5000",
+							"code": "A11",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1814,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane all'orzo 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1814,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.1500",
+							"code": "A19",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1440,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane integrale 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1440,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.9500",
+							"code": "A6",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1808,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di farro alluvetta 1 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1808,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.8800",
+							"code": "A13",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1810,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di kamut 1 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1810,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "6.5000",
+							"code": "A15",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1811,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di kamut 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1811,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.3000",
+							"code": "A16",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1812,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di segale 1 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1812,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.8000",
+							"code": "A17",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1813,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di segale 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1813,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.0000",
+							"code": "A18",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1445,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane casereccio 500gr",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1445,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.9500",
+							"code": "A3",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Pezzo",
+								"id": 1815,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "2.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Panepuglia (100 grano duro) 2 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1815,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "9.4000",
+							"code": "A21",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1856,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane grattugiato (farro) 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1856,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.5000",
+							"code": "F2",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1855,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane grattugiato (grano) 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1855,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.2500",
+							"code": "F1",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1857,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane grattugiato (kamut) 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1857,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "3.5000",
+							"code": "F3",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1439,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane integrale ai semi 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1439,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.1100",
+							"code": "A7",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1816,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Panericco 5 cereali antichi 1 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1816,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "6.0000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1817,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.25",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane azzimo al farro 025 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1817,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.4700",
+							"code": "A23",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1818,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.25",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane azzimo al kamut 025 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1818,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "1.4700",
+							"code": "A24",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1450,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane di farro 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1450,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.1800",
+							"code": "A9",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Confezione",
+								"id": 1438,
+								"code": null,
+								"producer": 62,
+								"category": 47,
+								"muppu": "0.50",
+								"muppu_is_variable": false,
+								"vat_percent": "0.04",
+								"name": "Pane casereccio ai semi 05 kg",
+								"description": "",
+								"deleted": false
+							},
+							"id": 1438,
+							"supplier": 62,
+							"supplier_category": null,
+							"image": "",
+							"price": "2.1100",
+							"code": "A4",
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						}
+					],
+					"delivery": {
+						"place": "Sede gassero - Via leopardi snc, 62022 Castelraimondo (MC)",
+						"id": 1140,
+						"date": "2014-03-10T06:30:00"
+					},
+					"supplier": 62,
+					"id": 4013,
+					"pact": 185,
+					"datetime_start": "2014-03-02T19:30:00",
+					"datetime_end": "2014-03-08T20:00:00",
+					"order_minimum_amount": null,
+					"withdrawal": null,
+					"delivery_cost": null,
+					"referrer_person": 158,
+					"delivery_referrer_person": null,
+					"withdrawal_referrer_person": null,
+					"group_id": null,
+					"invoice_amount": null,
+					"invoice_note": "",
+					"root_plan": 4006
+				},
+				{
+					"gasstock_set": [
+						{
+							"id": 9791,
+							"pact": 213,
+							"stock": 3390,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9789,
+							"pact": 213,
+							"stock": 3389,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9748,
+							"pact": 213,
+							"stock": 7,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9746,
+							"pact": 213,
+							"stock": 9,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9748,
+							"pact": 213,
+							"stock": 7,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9746,
+							"pact": 213,
+							"stock": 9,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9791,
+							"pact": 213,
+							"stock": 3390,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						},
+						{
+							"id": 9789,
+							"pact": 213,
+							"stock": 3389,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "0.50"
+						}
+					],
+					"stocks": [
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Fila",
+								"id": 9,
+								"code": null,
+								"producer": 5,
+								"category": 47,
+								"muppu": "1.15",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Pane semintegrale",
+								"description": "",
+								"deleted": false
+							},
+							"id": 9,
+							"supplier": 5,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.0000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "0.50",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Fila",
+								"id": 7,
+								"code": null,
+								"producer": 5,
+								"category": 47,
+								"muppu": "1.15",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Pane bianco",
+								"description": "",
+								"deleted": false
+							},
+							"id": 7,
+							"supplier": 5,
+							"supplier_category": null,
+							"image": "",
+							"price": "5.0000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "0.50",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Fila",
+								"id": 3390,
+								"code": null,
+								"producer": 5,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Pane integrale farina canapa (pic%)",
+								"description": "",
+								"deleted": false
+							},
+							"id": 3390,
+							"supplier": 5,
+							"supplier_category": null,
+							"image": "",
+							"price": "6.0000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "0.50",
+							"delivery_notes": "",
+							"deleted": false
+						},
+						{
+							"product": {
+								"mu": "Kilo",
+								"pu": "Forma",
+								"id": 3389,
+								"code": null,
+								"producer": 5,
+								"category": 47,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Pane in casetta (morbido)",
+								"description": "",
+								"deleted": false
+							},
+							"id": 3389,
+							"supplier": 5,
+							"supplier_category": null,
+							"image": "",
+							"price": "4.3500",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "0.50",
+							"delivery_notes": "",
+							"deleted": false
+						}
+					],
+					"delivery": {
+						"place": "Sede gassero - Via leopardi snc, 62022 Castelraimondo (MC)",
+						"id": 1153,
+						"date": "2014-03-13T19:00:00"
+					},
+					"supplier": 5,
+					"id": 4033,
+					"pact": 213,
+					"datetime_start": "2014-03-06T20:00:00",
+					"datetime_end": "2014-03-11T22:45:00",
+					"order_minimum_amount": null,
+					"withdrawal": null,
+					"delivery_cost": null,
+					"referrer_person": 83,
+					"delivery_referrer_person": null,
+					"withdrawal_referrer_person": null,
+					"group_id": null,
+					"invoice_amount": null,
+					"invoice_note": "",
+					"root_plan": 4026
+				},
+				{
+					"gasstock_set": [
+						{
+							"id": 9588,
+							"pact": 192,
+							"stock": 3338,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						},
+						{
+							"id": 9588,
+							"pact": 192,
+							"stock": 3338,
+							"enabled": true,
+							"minimum_amount": "1.00",
+							"step": "1.00"
+						}
+					],
+					"stocks": [
+						{
+							"product": {
+								"mu": null,
+								"pu": "Pezzo",
+								"id": 3338,
+								"code": null,
+								"producer": 73,
+								"category": 51,
+								"muppu": "1.00",
+								"muppu_is_variable": false,
+								"vat_percent": "0.21",
+								"name": "Uova",
+								"description": "",
+								"deleted": false
+							},
+							"id": 3338,
+							"supplier": 73,
+							"supplier_category": null,
+							"image": "",
+							"price": "0.4000",
+							"code": null,
+							"amount_available": 1000000000,
+							"units_minimum_amount": 1,
+							"units_per_box": "1.00",
+							"detail_minimum_amount": "1.00",
+							"detail_step": "1.00",
+							"delivery_notes": "",
+							"deleted": false
+						}
+					],
+					"delivery": {
+						"place": "Sede gassero - Via leopardi snc, 62022 Castelraimondo (MC)",
+						"id": 1153,
+						"date": "2014-03-13T19:00:00"
+					},
+					"supplier": 73,
+					"id": 4072,
+					"pact": 192,
+					"datetime_start": "2014-03-07T09:40:00",
+					"datetime_end": "2014-03-11T23:45:00",
+					"order_minimum_amount": null,
+					"withdrawal": null,
+					"delivery_cost": null,
+					"referrer_person": 673,
+					"delivery_referrer_person": null,
+					"withdrawal_referrer_person": null,
+					"group_id": null,
+					"invoice_amount": null,
+					"invoice_note": "",
+					"root_plan": 4069
+				}
+			]
+		}
+	],
+	"suppliers": [
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "dom.thual@gmail.com",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3281919094",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Sede gianni caldarola - Loc. campochiesa, 6, 62024 Matelica (MC)",
+			"id": 18,
+			"name": "Acquaterra",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 19,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3456143113",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "aesa2010@libero.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da IMC"
+			],
+			"seat": "Sede aesa - Via casalucciola, 62024 Camerino (MC)",
+			"id": 117,
+			"name": "Aesa mele Camerino",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 846,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "info@agriturismomoretti.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3357256975 - 3347011151",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 24 principale - Macerata",
+			"id": 24,
+			"name": "Agriturismo Moretti",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 25,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "info@aziendaangeli.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "737518149",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3388491064-3398990556",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da ICEA"
+			],
+			"seat": "Produttore 2 principale - Localita capriglia, Pieve torina (MC)",
+			"id": 2,
+			"name": "Angeli",
+			"vat_number": " 873330435",
+			"ssn": null,
+			"website": "",
+			"frontman": 3,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "mirco.bisonni@gmail.com",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3487409167",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Privato"
+			],
+			"seat": "Produttore 5 principale - Matelica",
+			"id": 5,
+			"name": "Bisonni Mirco",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 6,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "0572 950725",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "byness@byness.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "0572 950577",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 70 principale - Via ricci 2 011, Monsummano (PT)",
+			"id": 70,
+			"name": "Byness",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.byness.it",
+			"frontman": 71,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3476885083",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "capriotti.cla@tiscali.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Sede capriotti - Monteprandone (AP)",
+			"id": 120,
+			"name": "CAPRIOTTI Claudio (vino e distillati)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 898,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "731208397",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "giuliatrionfi@hotmail.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato"
+			],
+			"seat": "Produttore 35 principale - Jesi (AN)",
+			"id": 35,
+			"name": "Caseificio Piandelmedico",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.caseificiopiandelmedico.it",
+			"frontman": 36,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "info@caseificiosantarita.com",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "0536 95.01.93",
+					"is_preferred": false
+				},
+				{
+					"flavour": "FAX",
+					"value": "0536 95.10.07",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da ICEA"
+			],
+			"seat": "Produttore 45 principale - Via pompeano 22901 fraz pompeano, 41028 Serramazzoni (MO)",
+			"id": 45,
+			"name": "Caseificio Santa Rita",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.caseificiosantarita.com",
+			"frontman": 46,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "pelagalli.claudio@virgilio.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3494953512",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da IMC"
+			],
+			"seat": "Produttore 32 principale - San severino marche (MC)",
+			"id": 32,
+			"name": "Ciambotti-Mariani (olio)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 33,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3473668345",
+					"is_preferred": false
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "info@collestefano.com",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 7 principale - 62022 Castelraimondo (MC)",
+			"id": 7,
+			"name": "Collestefano",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.collestefano.com/",
+			"frontman": 8,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "robertolicalzi@legallinefelici.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3338092387",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 80 principale - Via muscatello 13, 95126 Catania (CT)",
+			"id": 80,
+			"name": "Consorzio Siciliano le Galline Felici (Agrumi)",
+			"vat_number": " 4539170870",
+			"ssn": null,
+			"website": "http://www.legallinefelici.it/",
+			"frontman": 81,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "antonio.gassner@virgilio.it",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3313382025",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "irene.gassner@virgilio.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 8 principale - Localita cupolo, 62035 Fiastra (MC)",
+			"id": 8,
+			"name": "Contessa",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 9,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3385278351",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "0733635189",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "dario.pediconi@unicam.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Cooperativa alto musone - Contrada chigiano, 31, San severino marche (MC)",
+			"id": 106,
+			"name": "Cooperativa Alto Musone",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 763,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "nerti@libero.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3472900868",
+					"is_preferred": false
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato"
+			],
+			"seat": "Produttore 9 principale - Via roma 196, 75028 Tursi (MT)",
+			"id": 9,
+			"name": "Daloisio Agrumi",
+			"vat_number": " 1047110778",
+			"ssn": null,
+			"website": "",
+			"frontman": 10,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "dom_thual@yahoo.fr",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "palossi.dalu@alice.it",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "francescoscagnetti@libero.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Privato"
+			],
+			"seat": "Produttore 73 principale - Camerino",
+			"id": 73,
+			"name": "Don Abbondio",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 74,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "fattoriasanmartino@alice.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3392926727",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da IMC"
+			],
+			"seat": "Sede bordo - Contrada molino, Monte san martino (MC)",
+			"id": 20,
+			"name": "Fattoria San Martino",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 713,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "federica.vasconcelli@gmail.com",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Privato"
+			],
+			"seat": "Prod vasconcelli - Serapetrona (MC)",
+			"id": 115,
+			"name": "Federica Vasconcelli",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 844,
+			"flavour": "FREELANCE",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "FAX",
+					"value": "0722/71113",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "giovanni.larghetti@certello.com",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "0722/71113",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da IMC"
+			],
+			"seat": "Produttore 62 principale - Via scarniglia 177, 61020 Frontino (PU)",
+			"id": 62,
+			"name": "Forno Il Certello  di Larghetti G",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 63,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "apicolturailgirasole@alice.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 3 principale - Via f nuzi, 62024 Matelica (MC)",
+			"id": 3,
+			"name": "Il Girasole (miele)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 4,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "ittingrosso@ittingrossosrl.191.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "733818158",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "733777182",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 81 principale - Via pier capponi 1, 62012 Civitanova marche (MC)",
+			"id": 81,
+			"name": "Ittingrosso",
+			"vat_number": " 1336220437",
+			"ssn": null,
+			"website": "",
+			"frontman": 699,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "a_ball@teletu.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "733634560",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da Suolo e Salute"
+			],
+			"seat": "Produttore 29 principale - Via pieve n17, 62027 San severino marche (MC)",
+			"id": 29,
+			"name": "La Collina Incantata (olio)",
+			"vat_number": " 1662830437",
+			"ssn": null,
+			"website": "",
+			"frontman": 30,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "bettag1965@yahoo.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "339 2315472",
+					"is_preferred": false
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Privato"
+			],
+			"seat": "Produttore 12 principale - Via ugo betti8, 62022 Castelraimondo (MC)",
+			"id": 12,
+			"name": "La Saponeria",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://web.resmarche.it/risorse/org.php?id=443&id_topic=8",
+			"frontman": 13,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "FAX",
+					"value": "733561563",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "fattoria@cooperativasocialelatalea.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3929932807",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato"
+			],
+			"seat": "Produttore 68 principale - Santa maria in selva 70, 62010 Treia (MC)",
+			"id": 68,
+			"name": "La Talea (Verdure)",
+			"vat_number": " 1435480437",
+			"ssn": null,
+			"website": "http://www.cooperativasocialelatalea.it/",
+			"frontman": 69,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "info@laterraeilcielo.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "731981907",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "731981906",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato"
+			],
+			"seat": "Produttore 15 principale - Fraz piticchio zona pip 229h, 60011 Arcevia (AN)",
+			"id": 15,
+			"name": "La Terra e il Cielo  Soc Cooperativa Agricola",
+			"vat_number": " 673870424",
+			"ssn": null,
+			"website": "http://www.pastadifarro.it/",
+			"frontman": 16,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3334327147",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "0737640326",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "palossi.dalu@alice.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Allevamento gagliole - Via g. d'annunzio, 9, 62022 Castelraimondo (MC)",
+			"id": 99,
+			"name": "Luca Palossi",
+			"vat_number": "012",
+			"ssn": null,
+			"website": "http://www.webalice.it/palossi.dalu",
+			"frontman": 729,
+			"flavour": "FREELANCE",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "mondosolidale@mondosolidale.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "71742045",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Produttore 13 principale - Via massimo dantona 22, 60033 Chiaravalle (AN)",
+			"id": 13,
+			"name": "Mondo Solidale",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.mondosolidale.it/",
+			"frontman": 14,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3386601143",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "info@basibiopizza.com",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da Suolo e Salute"
+			],
+			"seat": "Laboratorio basi pizza - Loc servola, 62032 Camerino (MC)",
+			"id": 109,
+			"name": "Pizza Le Basi",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.basibiopizza.com/",
+			"frontman": 795,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "FAX",
+					"value": "73273493",
+					"is_preferred": true
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "dom_thual@monamiweb.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3478602203",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Produttore 69 principale - Frazione campodiegoli, 60044 Fabriano (AN)",
+			"id": 69,
+			"name": "Porfiri Gabriele (pesce fiume)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 70,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "339-1431722",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "barbarapassiflora@hotmail.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "346-2178761",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "For sede roberto & barbara - Serrapetrona (MC)",
+			"id": 112,
+			"name": "Roberto & Barbara",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 841,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "339 1096129",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "apicolturailgirasole@alice.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 34 principale - 62022 Castelraimondo (MC)",
+			"id": 34,
+			"name": "Rossetti Giovanni (Panificio)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 35,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "info@agricolasanmichele.org",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 85 principale - Corridonia (MC)",
+			"id": 85,
+			"name": "San Michele Arcangelo",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 407,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "g.caldarola@email.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3281919094",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"In conversione"
+			],
+			"seat": "Sede gianni caldarola - Loc. campochiesa, 6, 62024 Matelica (MC)",
+			"id": 104,
+			"name": "Sarvatico di Gianni Caldarola",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 19,
+			"flavour": "FREELANCE",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "fattoriebiologiche@libero.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "0734 632619",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3357326904",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da IMC"
+			],
+			"seat": "Produttore 82 principale - Via passo di colle 15, Grottazolina (MC)",
+			"id": 82,
+			"name": "Scibe Doriano",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.fattoriebiologiche.it/",
+			"frontman": 404,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "3289385469",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "gabonica@virgilio.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Convenzionale"
+			],
+			"seat": "Produttore 71 principale - Fiuminata (MC)",
+			"id": 71,
+			"name": "Sergio Federici (Verdure e Piante Aromatiche)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 72,
+			"flavour": "COOPERATING",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "serradimezzo@libero.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3925012379",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "731703274",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Certificato da IMC"
+			],
+			"seat": "Produttore 1 principale - Via buozzi n 20 3925012379, 60030 Castelbellino (AN)",
+			"id": 1,
+			"name": "Serra di Mezzo (Arachidi)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 2,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "73185259",
+					"is_preferred": false
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "arturovalentini@libero.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato"
+			],
+			"seat": "Produttore 17 principale - Via certine 20 (sera san quirico), 60048 Domo (AN)",
+			"id": 17,
+			"name": "Società Agricola Vito Celeste",
+			"vat_number": null,
+			"ssn": null,
+			"website": "http://www.provincia.ancona.it/filieracorta/Engine/RAServePG.php/P/270610160300/M/253210160303/T/Societa-Agricola-Vito-Celeste",
+			"frontman": 18,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "spuriomario@alice.it",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3394026950",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Prod spurio mario - Località bracano,  vocabolo acquaviva, Matelica (MC)",
+			"id": 102,
+			"name": "Spurio Mario (mele)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 752,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "PHONE",
+					"value": "712810690",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "info@teanatura.com",
+					"is_preferred": true
+				},
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Produttore 14 principale - Via delle palombare 55a, 60127 Ancona (AN)",
+			"id": 14,
+			"name": "Tea Natura",
+			"vat_number": " 1427100423",
+			"ssn": null,
+			"website": "http://www.teanatura.com/",
+			"frontman": 15,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "EMAIL",
+					"value": "federico.bovetti@gmail.com",
+					"is_preferred": true
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3284257485",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato::Auto Certificazione"
+			],
+			"seat": "Sede prod terre distillate - Località seano, 62022 Castelraimondo (MC)",
+			"id": 98,
+			"name": "Terre Distillate (miele)",
+			"vat_number": null,
+			"ssn": null,
+			"website": "",
+			"frontman": 670,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		},
+		{
+			"contact_set": [
+				{
+					"flavour": "FAX",
+					"value": "",
+					"is_preferred": false
+				},
+				{
+					"flavour": "PHONE",
+					"value": "3355421058",
+					"is_preferred": false
+				},
+				{
+					"flavour": "EMAIL",
+					"value": "info@verdenaturale.it",
+					"is_preferred": true
+				}
+			],
+			"certifications": [
+				"Certificato"
+			],
+			"seat": "Produttore 16 principale - Via ripa 3, 60013 Corinaldo (AN)",
+			"id": 16,
+			"name": "Verde Naturale",
+			"vat_number": " 1479710426",
+			"ssn": null,
+			"website": "http://www.verdenaturale.it/",
+			"frontman": 17,
+			"flavour": "COMPANY",
+			"n_employers": null,
+			"logo": "",
+			"iban": "",
+			"description": "",
+			"agent_set": []
+		}
+	]
+}
