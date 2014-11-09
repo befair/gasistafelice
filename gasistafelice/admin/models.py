@@ -426,6 +426,12 @@ class RegistrationProfileAdmin(admin.ModelAdmin):
 
     search_fields = ('user__first_name', 'user__username', 'user__last_name')
 
+#class StateObjectRelationAdmin(admin.ModelAdmin):
+#
+#        search_fields = ('content_id',)
+#
+#admin.site.register(StateObjectRelation, StateObjectRelationAdmin)
+
 admin.site.register(base_models.Person, PersonAdmin)
 admin.site.register(base_models.Place, PlaceAdmin)
 admin.site.register(base_models.Contact, ContactAdmin)
