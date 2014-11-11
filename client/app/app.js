@@ -1,15 +1,42 @@
 var GasistaFelice = angular.module('ngGasistaFelice', [
     'ui.bootstrap',
     'ngRoute',
-    'ngDialog'
-]).run(function($rootScope, $routeParams) {
-    $rootScope.gasID = "10"; //default value
+    'ngDialog',
+    'ngLocale'
+]).run(function($rootScope, $routeParams, $location,$http) {
+    $rootScope.gasID = ""; //default value
     $rootScope.first = true;
-    $rootScope.gasmemberID = "573";
-    $rootScope.personID = $routeParams.pe;
+    counter = 1;
+    $rootScope.gasmemberID = "";
+    $rootScope.peID = $location.path().substring(1,3); //$routeParams.pe;
+    $http.get('/gasistafelice/api/v1/person/'+$rootScope.peID+'/?format=json').success(function(data){ 
+        $.each(data.gas_list, function(index,element)
+        {
+           $rootScope.gasID = element.id;    
+        });
+    });
 });
 
-
+GasistaFelice.directive('validPrice',function(){
+				return{
+					require: "ngModel",
+					link: function(scope, elm, attrs, ctrl){
+						
+						var regex=/^\d{2,4}(\.\d{1,2})?$/;
+						ctrl.$parsers.unshift(function(viewValue){
+							var floatValue = parseFloat(viewValue);
+							if( floatValue >= 50 && floatValue <=5000 && regex.test(viewValue)){
+								ctrl.$setValidity('validPrice',true);
+								//return viewValue;
+							}
+                            else{
+							    ctrl.$setValidity('validPrice',false);
+                            }
+							return viewValue;
+						});
+					}
+				};
+			});
 
 GasistaFelice.factory(
             "transformRequestAsFormPost",
@@ -70,44 +97,45 @@ GasistaFelice.factory(
 GasistaFelice.config(['$routeProvider',function($routeProvider) {
 		$routeProvider
     
-            // route for the home page
+            // route for home page
         .when('/:pe/', {
 				templateUrl : 'app/ordinare/ordinare.html',
-				controller  : 'orderController'
+				controller  : 'orderController',
+                resolve     : orderController.resolve
 			})
 
-			// route for the paniere page
+			// route for paniere page
 			.when('/:pe/paniere', {
 				templateUrl : 'app/paniere/paniere.html',
-				controller  : 'paniereController'
+				controller  : 'paniereController',
+                 resolve     : paniereController.resolve
 			})
 
-			// route for the scheda page
+			// route for scheda page
             .when('/:pe/scheda', {
 				templateUrl : 'app/scheda/scheda.html',
-				controller  : 'schedaController'
+				controller  : 'schedaController',
+                resolve     : schedaController.resolve
 			})
     
-            // route for the conto page
+            // route for conto page
             .when('/:pe/conto', {
 				templateUrl : 'app/conto/conto.html',
-				controller  : 'contoController'
+				controller  : 'contoController',
+                resolve     : contoController.resolve
 			})
             .otherwise({
-                    redirectTo: '/'
+                    redirectTo: '/:pe/'
                 });
 	}]);
 
 function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 	$scope.pe = {};
-    $rootScope.peID = $routeParams.pe;
-    $window.location.href = '#/'+$rootScope.peID+'/ordinare';
-    console.log("CIAOCIAO!");
 }
 
 
+function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsingNumbers){
 
-function gas_controller($scope, $http, $routeParams,$rootScope, $location){
     $scope.gasnames = [];
     $scope.selectedIndex = 0;
     
@@ -117,59 +145,119 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location){
     
     $scope.getID = function(gasname){
         $rootScope.gasID = gasname;
-        console.log("Questo è il routeparams! " + $routeParams.pe);
-        $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(data) {
-            $.each(data.gas_list, function(index, element){
-            $.each(data.gasmembers, function(index2,element2){
-                 $http.get('/gasistafelice/api/v1/gasmember/'+element2+'/?format=json').success(function(data){ 
-                    console.log("CIAOCIAO!");
-                 });
-                });
-            });
-        });
     }
-    
-    var peID = $location.path().substring(1,3);
-    
-    //la get viene fatta in base all'utente - rootScope.personID dopo il login
-    $http.get('/gasistafelice/api/v1/person/'+peID+'/?format=json').success(function(data) {
+        
+    $http.get('/gasistafelice/api/v1/person/'+$rootScope.peID+'/?format=json').success(function(data) {
+
         $scope.gasmembers = [];
         $scope.balance = [];
+        $scope.person_name = data.name;
         
         $.each(data.gasmembers, function (index,element){
             $scope.gasmembers.push({id:element});
         });
         
         i = 0;
-        
+        indice = 0;
+        prova = 0;
         $.each(data.gas_list, function(index, element){
+            indice = indice + 1;
             $.each(data.gasmembers, function(index2,element2){
-                 $http.get('/gasistafelice/api/v1/gasmember/'+element2+'/?format=json').success(function(data){ 
+                prova = prova + 1;
+                if (indice == prova)
+                {
+                    $http.get('/gasistafelice/api/v1/gasmember/'+element2+'/?format=json').success(function(data){ 
                      $scope.balance.push({balance: data.balance});
-                     console.log("Ecco il balance preso dal json " + data.balance);
-                     console.log($scope.balance);
-                      $scope.gasnames.push({
-                        id: element.id,
-                        name: element.name,
-                        balance: parseFloat(data.balance,10)
+                     $scope.gasnames.push({
+                            id: element.id,
+                            name: element.name,
+                            balance: parsingNumbers.parsing(data.balance,2)
+                        });
                     });
-                 });
+                    
+                    prova = 0;
+                    indice = indice + 1;
+                }
             });
-            
+        });    
             i = i + 1;
         });
-    });
 }
 
-/*function controllerScheda($scope, $http, $routeParams,$rootScope, $location){
-        $http.get('/gasistafelice/api/v1/person/'+peID+'/?format=json').success(function(data) {
-                $scope.name = data.name;
-        });
-}*/
 
 function menu_controller($scope,$http, $routeParams, $rootScope){
     $scope.gmID = $rootScope.gasmemberID;
 }
 
+GasistaFelice.config(function($httpProvider) {
+
+    // Use x-www-form-urlencoded Content-Type
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+
+    // Override $http service's default transformRequest
+    $httpProvider.defaults.transformRequest = [function(data)
+    {      
+         var param = function(obj) {
+            var query = '';
+            var name, value, fullSubName, subValue, innerObj, i, split, counter;
+
+                for (name in obj) {
+                value = obj[name];
+
+                    if (value instanceof Array) {
+                        for (var i = 0; i < value.length; ++i) {
+                        counter = i;
+                        subValue = value[i];
+                        fullSubName = name + '-' + i + '-';
+                        innerObj = {};
+                        innerObj[fullSubName] = subValue;
+                        query += param(innerObj) + '&';
+                        }
+                    } else if (value instanceof Object) {
+                        for (var subName in value) {
+                            subValue = value[subName];
+                            
+                            if (subName == "TOTAL_FORMS" || subName=="INITIAL_FORMS" || subName=="MAX_NUM_FORMS")
+                            {    
+                                 fullSubName = "form-" + subName;
+                            }
+                            else{
+                                fullSubName = name + subName;
+                            }
+                            
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
+                        }
+                    } else if (value !== undefined && value !== null) {
+                    query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+                    }
+                }
+            return query.length ? query.substr(0, query.length - 1) : query;
+            }
+        return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+    }];
+
+}); 
+
+ 
+GasistaFelice.service('gettingValues', function () {
+    this.pull = function(){
+    }
+});
+
+GasistaFelice.service('parsingNumbers', function() {
+    this.parsing = function(number,d) {
+        if (d >= 0)
+        {
+            return parseFloat(number).toFixed(d);
+        }
+        else
+        {
+            return parseFloat(number,10);
+        }
+        
+    };
+});
 
 

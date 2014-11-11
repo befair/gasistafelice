@@ -6429,6 +6429,11 @@ a.menu_links {
   font-size: 10px;
   text-align: center;
 }
+.error {
+  font-size: 12px;
+  color: red;
+  margin-top: 5px;
+}
 @media (min-width: 992px) {
   .second_block {
     width: 2%!important;

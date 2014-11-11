@@ -1,23 +1,25 @@
-<div class="tab-pane" id="conto">
+<div class="tab-pane" 
+     id="conto">
               <div class="row">
-                  <div class="col-md-8 col-lg-6">
-                      <div class="scheda_title">Saldo</div>
-                     <div class="well prof">
-                        <div class="col-sm-12" style="padding-left:0px">
-                            <form name="myForm" novalidate ng-controller="formController">
+                  <div class="col-md-8 
+                              col-lg-6">
+                    <div class="scheda_title">Saldo</div>
+                     <div class="well 
+                                 prof">
+                        <div class="col-sm-12" 
+                             style="padding-left:0px" 
+                             ng-controller="formController">
+                            <form name="myForm" novalidate>
                             <table class="table conto">  
                             <tbody>
                                 <tr>
-                                    <p>Username:</p>
-                <input type="text" name="username1" ng-model="username1"
-                required />
-                <input type="submit" ng-disabled="myForm.username1.$pristine || myForm.username1.$dirty && myForm.username1.$invalid">         
+                                
                                      
                                     <td style="border:0px">
                                        Saldo: 
                                     </td>
                                     <td style="border:0px">
-                                        <span class="saldo">232.11&#8364;</span>
+                                        <span class="saldo">{{balance}}&#8364;</span>
                                     </td>
                                 </tr>   
                                  <tr>
@@ -25,50 +27,75 @@
                                         Ammontare dell'operazione:
                                     </td>
                                     <td>
-                                        <input type="text" name="somma" ng-model="somma" class="form-control" placeholder="euro" ng-pattern="/^[0-9]$/" required />
-                                        <span class="infoconto">Inserire la somma di denaro (senza segno)</span>
-                                        <div class="custom-error" ng-show="myForm.somma.$dirty &&               myForm.somma.$invalid">Attenzione:
-<span ng-show="myForm.somma.$error.required">Inserire l'ammontare dell'operazione</span>
-<span ng-show="myForm.somma.$error.pattern">Somma non valida</span>
-
-
-                </div>
+                                        <input type="text" 
+                                               name="amount" 
+                                               ng-model="somma" 
+                                               class="form-control" 
+                                               placeholder="euro" 
+                                               required />
+                                        <!--ng-pattern="/^\d{1,9}(\.\d{1,2})?$/"-->
+                                               
+                                        
+                                        <span class="infoconto" 
+                                              ng-hide="myForm.somma.$dirty && 
+                                                       myForm.somma.$invalid">
+                                            Inserire la somma di denaro (senza segno)
+                                        </span>
+                                        <div class="error" 
+                                             ng-show="myForm.somma.$dirty &&  
+                                                      myForm.somma.$invalid">
+                                            Attenzione:
+                                            <span ng-show="myForm.somma.$error.required" 
+                                                  class="error">
+                                                Inserire l'ammontare dell'operazione
+                                            </span>
+                                            <span ng-show="myForm.somma.$error.pattern" 
+                                                  class="error">
+                                                Somma non valida
+                                            </span>
+                                        </div>
                                     </td>
-                                </tr>
+                                 </tr>
                                  <tr>
                                     <td>
                                         Tipo di operazione:
                                     </td>
-                                    <td>     <span class="button_conto">
+                                    <td> 
+                                        <span class="button_conto">
                                           <input type = "radio"
-                                                 name = "radSize"
+                                                 ng-model="target"
+                                                 name = "target"
                                                  id = "sizeSmall"
-                                                 value = "small"
+                                                 value = "INCOME"
                                                  checked = "checked" />
                                           Correzione a favore del gasista: +gasista -GAS<br />
 
                                           <input type = "radio"
-                                                 name = "radSize"
+                                                 name = "target"
+                                                 ng-model="target"
                                                  id = "sizeMed"
-                                                 value = "medium" />
+                                                 value = "EXPENSE" />
                                           Correzione a favore del GAS: +GAS -gasista<br />
 
                                           <input type = "radio"
-                                                 name = "radSize"
+                                                 name = "target"
+                                                 ng-model="target"
                                                  id = "sizeLarge"
-                                                 value = "large" />
+                                                 value = "ASSET" />
                                           Detrazione dal gasista: -gasista<br />
                                         <input type = "radio"
-                                                 name = "radSize"
+                                                 name = "target"
+                                                 ng-model="target"
                                                  id = "sizeSmall"
-                                                 value = "small"
-                                                 checked = "checked" />
+                                                 value = "LIABILITY"
+                                                 />
                                           Aggiunta al gasista: +gasista<br />
 
                                           <input type = "radio"
-                                                 name = "radSize"
+                                                 name = "target"
+                                                 ng-model="target"
                                                  id = "sizeMed"
-                                                 value = "medium" />
+                                                 value = "EQUITY" />
                                           Restituzione a favore del gasista: vuoto a rendere +gasista -GAS
                                         </span> 
                                     </td>
@@ -78,20 +105,72 @@
                                         Causale:
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" placeholder="Inserire ragione movimento">
-                                        <span class="infoconto">Ragione di questo movimento</span>
+                                        <input type="text" 
+                                               name="causal" 
+                                               ng-model="causale" 
+                                               class="form-control" 
+                                               placeholder="Inserire ragione movimento"  
+                                               required /> 
+                                        
+                                        <span class="infoconto" 
+                                              ng-hide="myForm.causale.$dirty 
+                                                        && myForm.causale.$invalid">
+                                                Ragione di questo movimento
+                                        </span>
+                                        <div class="error" 
+                                             ng-show="myForm.causale.$dirty && 
+                                                      myForm.causale.$invalid">
+                                            Attenzione:
+                                            <span ng-show="myForm.causale.$error.required" 
+                                                  class="error">
+                                                Inserire la causale
+                                            </span>
+
+                                        </div>
                                     </td>
                                 </tr>
                                  <tr>
                                     <td>
                                         Data:
                                     </td>
-                                    <td><input type="text" id="datepicker">
-                                       <span class="infoconto"><br> Regolare la data dell'operazione se necessario</span>
+                                    <td>
+                                        <input type="text" 
+                                               name="date" 
+                                               id="datepicker" 
+                                               ng-model="data_causale" 
+                                               
+                                               required /> 
+                                        <!-- ng-pattern="/^((\d{4})-(\d{2})-(\d{2})|(\d{2})\/(\d{2})\/(\d{4}))$/" -->
+                                        
+                                       <span class="infoconto">
+                                           <br /> 
+                                                Regolare la data dell'operazione se necessario
+                                        </span>
+                                        
+                                        <div class="error" ng-show="myForm.data_causale.$dirty 
+                                                                    && myForm.data_causale.$invalid">
+                                            Attenzione:
+                                            <span ng-show="myForm.data_causale.$invalid" 
+                                                  class="error">
+                                                Inserire la data
+                                            </span>
+
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
                             </table>
+                                <input type="submit" 
+                                       value="Effettua transazione" 
+                                       ng-click="transaction();" 
+                                       ng-disabled="myForm.somma.$pristine || 
+                                                    myForm.somma.$dirty && 
+                                                    myForm.somma.$invalid || 
+                                                    myForm.causale.$pristine || 
+                                                    myForm.causale.$dirty && 
+                                                    myForm.causale.$invalid || 
+                                                    myForm.data_causale.$invalid
+                                                                  ">
                             </form>
                             
                             <!--
@@ -148,7 +227,8 @@
                                     </tr>   
                                   </thead> 
                                   <tbody id="gasbody" class="repeated-item">  
-                                    <tr>
+                                      <tr><td colspan="8" style="text-align:center">TODO</td></tr>
+                                    <!--<tr>
                                       <td data-title="image" class="tdprod">                                                   
                                           132
                                       </td>
@@ -167,7 +247,7 @@
                                       <td data-title="image" class="tdprod">                                                   
                                           ordine 38 GMC - Alchemia
                                       </td>
-                                    </tr>
+                                    </tr>-->
                                   </tbody>  
                               </table>
                                   </div>

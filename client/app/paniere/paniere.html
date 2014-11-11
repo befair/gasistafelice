@@ -5,14 +5,26 @@ $("#checkAll").click(function(){
 </script>
 
 <div class="tab-pane" id="paniere"><!-- PANIERE -->
+    
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">I'm a modal!</h3>
+        </div>
+        <div class="modal-body">
+            <ul>
+               
+            </ul>
+           
+        </div>
+        <div class="modal-footer">
+            
+        </div>
+    </script>
                           <div class="ord-ord-title">Il tuo paniere</div>
                             <div class="imgpdf">
-                              <!--<button type="button" class="btn btn-danger btn-sm">Crea PDF</button>
-                              <button type="button" class="btn btn-danger btn-sm">Invia PDF al Gasista</button>
-                              <button type="button" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>-->
                                 
                             </div>
-    <form ng-controller="FrmPaniereController" method="POST" action="{{ path }}">
+    <form ng-controller="FrmPaniereController">
                                 <button ng-click="addtoCart();" class="def-btn" type="submit"><span class="glyphicon glyphicon-shopping-cart"></span>                                       Aggiorna paniere</button>
                             <table class="table gas">   
                                   <thead>  
@@ -26,11 +38,10 @@ $("#checkAll").click(function(){
                                       <th>Totale</th>  
 			                          <th style="text-align:center">Cancella
                                           <br />
-                                          <!--<input type="checkbox" id="checkAll" ng-model="master">-->
-                                          <input type="checkbox" id="checkAll" ng-model="master" ng-click="elimina();">
-                                          <span class="delete" id="checkAll">
+                                          <!--<input type="checkbox" id="checkAll" ng-model="master" ng-click="elimina();">-->
+                                          <!--<span class="delete" id="checkAll">
                                              Seleziona tutto
-                                          </span>
+                                          </span>-->
                                       </th>   
                                     </tr>  
                                   </thead>
@@ -40,6 +51,14 @@ $("#checkAll").click(function(){
 				  	<p style="text-align:center" ng-hide="dataLoaded">Caricando il paniere <i class="fa fa-spinner fa-spin"></i></p>  
                                   	</td>
 					</tr>
+                      </tbody>
+                    <tbody ng-hide="basket_empty">
+					<tr>
+					<td colspan="8">
+				  	<p style="text-align:center">Il paniere è vuoto </p>
+                                  	</td>
+					</tr>
+                                           </tbody>
 					<tbody ng-show="dataLoaded">  
                                     <tr ng-repeat="item in basket |  filter: searchQuery">
                                         
@@ -62,25 +81,38 @@ $("#checkAll").click(function(){
                                       </td> 
                                             <td data-title="add_cart" class="tdprod" style="width:10%;">
                                         <div class="input-group">
-                                            <span class="opcart_left" ng-click="decrement(item);"><span class="glyphicon glyphicon-minus"></span></span>
-                                          <input type="text" class="form-control" value="{{item.amount}}" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
-                                          <span class="opcart_right" ng-click="increment(item);"><span class="glyphicon glyphicon-plus"></span></span>
+                                            <span class="opcart_left" ng-click="decrement(item,$index);"><span class="glyphicon glyphicon-minus"></span></span>
+                                          <input type="text" class="form-control" ng-change="change(item,$index);" ng-model="item.amount" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
+                                          <span class="opcart_right" ng-click="increment(item,$index);"><span class="glyphicon glyphicon-plus"></span></span>
                                         </div> 
                                       </td> 
                                       <td class="tdprice">
                                           {{item.total|currency:"€"}}
                                       </td>
                                         <td class="tdprice">
-                                            <!--<a ng-click="delete($index)"><i class="fa fa-times red"></i></a> -->
+                                            <!--<a ng-click="delete($index)" style="cursor:pointer"><i class="fa fa-times red"></i></a>-->
                                             <fieldset>
-						<input type="checkbox" name="delete" ng-checked="master">
+						<!--<input type="checkbox" name="delete" ng-checked="master">-->
+                                            <input name="checkbox_{{$index}}" id="checkbox_{{$index}}"
+                                                    ng-click="toggleSelection($index)"
+                                                    type="checkbox">
                                                
-					    </fieldset>
+                                            </fieldset>
                                       </td>
                                     </tr>
                                   </tbody>
                             </table>
         
+                              <table class="table total">
+                                <tr>
+                                    <td>
+                                        Totale previsto:
+                                    </td>  
+                                    <td class="tableprice">
+                                        <b>€ {{getTotal()}}</b>
+                                    </td>    
+                                </tr>    
+                              </table>
         <input type="hidden" id="form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="{{prodnumber}}"/>
                             <input type="hidden" id="form-TOTAL_FORM_COUNT" name="form-TOTAL_FORM_COUNT" value="{{prodnumber}}" />
                             <input type="hidden" id="form-INITIAL_FORMS" name="form-INITIAL_FORMS" value="0"/>
@@ -140,6 +172,7 @@ $("#checkAll").click(function(){
                                           {{product.total|currency:"€"}}
                                       </td> 
                                     </tr>  
+                                      <tr><td colspan="8" style="text-align:center">TODO</td></tr>
                                   </tbody>
                             </table>
                         </div>

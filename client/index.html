@@ -3,22 +3,22 @@
   <head>
     <title>GasistaFelice</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <!-- Bootstrap -->
     <link href="css/datepicker.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">  
     <link href="css/font-awesome.css" rel="stylesheet">
     <link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
     <link href="css/ngDialog.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="css/ngDialog-theme-default.css">
-      <link rel="stylesheet" href="css/ngDialog-theme-flat.css">
-      <link rel="stylesheet" href="css/ngDialog-custom.css">
+    <link rel="stylesheet" href="css/ngDialog-theme-default.css">
+    <link rel="stylesheet" href="css/ngDialog-theme-flat.css">
+    <link rel="stylesheet" href="css/ngDialog-custom.css">
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">
-      
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
       
 
 
@@ -94,17 +94,17 @@
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse" ng-controller="gas_controller" id="bs-example-navbar-collapse-1">
           
                     <div class="navbar-left">
-                            <ul ng-controller="gas_controller" class="optionlist nav navbar-nav">
+                            <ul class="optionlist nav navbar-nav">
                                     <li ng-repeat="gasname in gasnames" 
                                         ng-class="{ 'active': $index == selectedIndex }"
                                         ng-click="itemClicked($index)">    
                                         <a href="#/{{peID}}/" ng-click="getID(gasname.id);">
                                             {{gasname.name}}
                                         </a>
-                                        <div class="gaslabel">232.11&#8364;</div> <!--{{gasname.balance}}-->
+                                        <div class="gaslabel">{{gasname.balance}}&#8364;</div> <!--{{gasname.balance}}-->
                                     </li>
                             </ul>
                             <ul class="optionlist nav navbar-nav" ng-controller="menu_controller">
@@ -129,7 +129,7 @@
                 </div>
          <div class="navbar-right">
              <a class="navpic" href="#/{{peID}}/scheda"><img src="img/user_pic.png" alt="..." class="imgpic"></a>
-             <a class="titlenav" href="#/{{peID}}/scheda">Ciao Dominique</a>
+             <a class="titlenav" href="#/{{peID}}/scheda">Ciao {{person_name}}</a>
         </div>    
           
         </div><!-- /.navbar-collapse -->
@@ -195,13 +195,12 @@
         <script src="js/smartpaginator.js"></script>
         <script src="js/local.js"></script>
         <script src="js/angular.min.js"></script>
-        <!--<script src="js/angularjs13.js"></script>-->
         <script src="js/angular-route.js"></script>
         <script src="app/app.js"></script>
         <script src="js/ngDialog.min.js"></script>
         <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
-        <script src="js/bootstrap-datepicker.js"></script>   
-        
+        <script src="js/bootstrap-datepicker.js"></script>  
+        <script src="js/angular-locale_it-it.js"></script>        
         <script src="app/conto/contoController.js"></script>
         <script src="app/ordinare/orderController.js"></script>
         <script src="app/paniere/paniereController.js"></script>

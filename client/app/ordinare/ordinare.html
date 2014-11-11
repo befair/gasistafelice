@@ -1,9 +1,9 @@
 <div class="tab-pane active" id="ordinare"><!--ORDINARE-->
-    
-
+        
                           <div class="cashresume">
-                                Saldo attuale: <span class="balance">232.11&#8364;{{balance}}</span><br />
-                                Saldo dopo consegna prodotti: <span class="balance">{{balance-(tb+tbtbd)+142.50}}0&#8364;</span><br />
+                                Saldo attuale: <span class="balance">&#8364; {{balance}}</span><br />
+                                Saldo dopo consegna prodotti: <span class="balance">&#8364; {{resume}}</span><br />
+
                           </div>
                           <div class="ord-ord-title">Elenco ordini</div>
                             <div class="row">
@@ -23,26 +23,26 @@
                                 <tbody ng-show="ordiniloaded">
                                   <tr>
                                     <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" src="img/user_pic.png"></img></td>
-                                    <td class="menu_links">{{order.supplier}} </td> <!--  {{order.supplier}} -->
+                                    <td class="menu_links">{{supplier[$index].name}}</td> <!--  {{order.supplier}} -->
                                   </tr>
                                   <tr>
-                                    <td class="menu_links"><b>Si chiude il:</b> {{order.datetime_end}}</td> <!--{{order.datetime_end}} -->
+                                    <td class="menu_links"><b>Si chiude il:</b> {{order.datetime_end|date:'medium'}}</td> <!--{{order.datetime_end}} -->
                                   </tr>
                                   <tr>
-                                    <td class="menu_links"><b>Si consegna il:</b>{{order.delivery.date}}</td> <!-- {{order.delivery.date}}-->
+                                    <td class="menu_links"><b>Si consegna il:</b>{{order.delivery.date|date:'medium'}}</td> <!-- {{order.delivery.date}}-->
                                   </tr>
                                   </tbody>
                                 </table>
 				</div>
                               </div>
                             </div>
-                            <div class="ord-el-title">Prodotti ordine La Terra e il Cielo</div>
+                            <div class="ord-el-title">Prodotti #</div>
                               <div class="searchbar">
                                   <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
                                   <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>       
                               </div> 
-                                <form ng-controller="FrmController" method="POST" action="/gasistafelice/rest/gasmember/573/order/edit_multiple">
-                                    <button ng-click="addtoCart();" class="def-btn" type="submit"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
+                                <form name="myForm">
+                                    <button class="def-btn" type="submit" ng-click="submitData()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
                                 
 
                               <div class="orderlist">
@@ -112,14 +112,14 @@
                                       <td data-title="product_price" class="tdprod" ng-model="productprice">{{product.price | limitTo: 4 | currency:"€"}}</td>     
                                       <td data-title="add_cart" class="tdprod" style="width:10%;">
                                         <div class="input-group">
-                                            <span class="opcart_left menu_links" ng-click="decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
-                                          <input type="text" class="form-control" value="{{product.quantity}}" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
-                                          <span class="opcart_right menu_links" ng-click="increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
+                                            <span class="opcart_left menu_links" ng-click="decrement(product,$index);"><span class="glyphicon glyphicon-minus"></span></span>
+                                          <input type="text" class="form-control" ng-change="change(product,$index)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+$/" required/>
+                                          <span class="opcart_right menu_links" ng-click="increment(product,$index);"><span class="glyphicon glyphicon-plus"></span></span>
                                         </div> 
                                       </td>  
                                       <td data-title="total" class="tdprod" >{{product.total_price | currency:"€"}}</td>
                                       <td data-title="note" class="tdprod">
-                                      <input type="text" class="form-control notetext" placeholder="Note" name="form-{{$index}}-note" id="note" ng-model="note">
+                                      <input type="text" class="form-control notetext" placeholder="Note" name="form-{{$index}}-note" id="note" ng-model="product.note">{{product.note}}
                                       </td>
                                     </tr>  
                                   </tbody>  

@@ -2,10 +2,10 @@
           <script type="text/ng-template" id="popupTemplate">
                 <div class="ngdialog-message">
                     <ul>
-                        <li>Saldo attuale: 232.11&#8364; <!--{{balance}}--></li>
-                        <li>Paniere: 80.20&#8364; <!--{{tb}}--></li>
-                        <li>Paniere da consegnare: 32.00&#8364;<!--{{tbtbd}}--></li>
-                        <li>Saldo dopo consegna prodotti: 119.91&#8364;<!--{{balance - (tb+tbtbd)}}--></li>
+                        <li>Saldo attuale: {{balance}}&#8364; </li>
+                        <li>Paniere: {{tb}} &#8364;</li>
+                        <li>Paniere da consegnare: {{tbtbd}}&#8364;</li>
+                        <li>Saldo dopo consegna prodotti: {{resume}}&#8364;</li>
                     </ul>
                 </div>
             </script>
@@ -18,8 +18,8 @@
                                             <h2>{{scheda.name}} {{scheda.surname}}</h2>
                                             <p><strong>Nickname: </strong> {{scheda.display_name}}  </p>
                                             <p><strong>Saldo attuale: </strong>
-                                                <span class="saldo">+232.11&#8364;</span>
-                                                <br /> <strong>Saldo dopo consegna prodotti: </strong><span class="saldo"><!--{{balance - (tb+tbtbd)-->142.50&#8364;</span>
+                                                <span class="saldo">{{balance}}&#8364;</span>
+                                                <br /> <strong>Saldo dopo consegna prodotti: </strong><span class="saldo">{{resume}}&#8364;</span>
                                                 
                                             </p>
                                             <span ng-click="clickToOpen();"> <a href="" class="btn btn-default btn-info btn-xs">Info</a>
@@ -49,7 +49,7 @@
                               <div class="scheda_title">GAS a cui {{scheda.display_name}} appartiene</div>
                                   {{gasl.name}}
                               <div class="" ng-repeat="gas in scheda.gas_list">
-                                <a href="#" class="no_style">
+                                <a href="" class="no_style">
                                     <!--<table class="table orders_list">
                                         <tr>
                                             <td class="img_gas_list"><i class="large glyphicon glyphicon-home"></i></img></td>
