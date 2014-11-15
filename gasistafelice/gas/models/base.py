@@ -85,7 +85,7 @@ class GAS(models.Model, PermissionResource):
     # Orders email contact is the mailing-list where we can send notification about orders
     orders_email_contact = models.ForeignKey(Contact, limit_choices_to = { 'flavour' : const.EMAIL }, null=True, blank=True, related_name="gas_use_for_orders_set")
 
-    website = models.URLField(verify_exists=True, null=True, blank=True,verbose_name=_('web site'))
+    website = models.URLField(null=True, blank=True,verbose_name=_('web site'))
 
     #Persons who are active in GAS and can give info about it
     activist_set = models.ManyToManyField(Person, through="GASActivist", null=True, blank=True,verbose_name=_('GAS activists'))

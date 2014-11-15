@@ -564,7 +564,7 @@ class Person(models.Model, PermissionResource):
     )
     address = models.ForeignKey('Place', null=True, blank=True,verbose_name=_('main address'))
     avatar = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True, verbose_name=_('avatar'))
-    website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
+    website = models.URLField(blank=True, verbose_name=_("web site"))
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
     history = HistoricalRecords()
