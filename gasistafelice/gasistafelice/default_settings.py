@@ -1,4 +1,13 @@
-# Django settings for gasistafelice project.
+"""
+Django settings for gasistafelice project.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/1.7/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/1.7/ref/settings/
+"""
+
 
 import os, locale
 import consts
@@ -14,7 +23,7 @@ PROFILING=False
 
 ACCOUNT_ACTIVATION_DAYS = 2
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()
 
 ADMINS = (
@@ -22,6 +31,7 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+ALLOWED_HOSTS = []
 
 DATABASES = {
     'default': {
@@ -63,6 +73,7 @@ AUTHENTICATION_BACKENDS = (
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = 'Europe/Rome'
+USE_TZ = True
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -113,11 +124,13 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'gasistafelice.middleware.ResourceMiddleware',
     'gasistafelice.middleware.UpdateRequestUserMiddleware',
 #    'django.middleware.transaction.TransactionMiddleware',
@@ -151,6 +164,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.comments',
+    'django.contrib.staticfiles',
     'gasistafelice.localejs',
     'gasistafelice.des_notification',
     'notification',
