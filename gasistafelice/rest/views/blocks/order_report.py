@@ -1,18 +1,18 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import ( BlockSSDataTables, ResourceBlockAction, 
+from rest.views.blocks.base import ( BlockSSDataTables, ResourceBlockAction, 
     CREATE_PDF, CREATE_HTML, SENDME_PDF, SENDPROD_PDF,
     VIEW_AS_HTML
 )
 
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.base.models import Person
-from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
+from app_supplier.models import Supplier
+from app_base.models import Person
+from app_gas.forms.order.gsop import GASSupplierOrderProductForm
 from django.forms.formsets import formset_factory
 
 import cgi, os
@@ -215,7 +215,7 @@ class Block(BlockSSDataTables):
         
 #        #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
 #        if args == self.KW_DATA:
-#            from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
+#            from lib.views_support import prepare_datatables_queryset, render_datatables
 #            
 #            querySet = self._get_resource_list(request) 
 #            #columnIndexNameMap is required for correct sorting behavior

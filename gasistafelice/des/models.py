@@ -20,10 +20,10 @@ from django.contrib.comments.models import Comment
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from gasistafelice.lib import ClassProperty
-from gasistafelice.base.models import PermissionResource, Person
-from gasistafelice.base.utils import get_resource_icon_path
-from gasistafelice.consts import DES_ADMIN, NONDES_NAME, NONDES_SURNAME
+from lib import ClassProperty
+from app_base.models import PermissionResource, Person
+from app_base.utils import get_resource_icon_path
+from consts import DES_ADMIN, NONDES_NAME, NONDES_SURNAME
 from flexi_auth.models import ParamRole
 from flexi_auth.utils import register_parametric_role
 
@@ -237,33 +237,33 @@ class DES(Site, PermissionResource):
 
     @property
     def tot_gas(self):
-        from gasistafelice.gas.models import GAS
+        from app_gas.models import GAS
         return GAS.objects.count()
 
     @property
     def tot_gasmembers(self):
-        from gasistafelice.gas.models import GASMember
+        from app_gas.models import GASMember
         return GASMember.objects.count()
 
     @property
     def tot_suppliers(self):
-        from gasistafelice.supplier.models import Supplier
+        from app_supplier.models import Supplier
         return Supplier.objects.count()
 
     @property
     def tot_orders(self):
-        from gasistafelice.gas.models import GASSupplierOrder
+        from app_gas.models import GASSupplierOrder
         return GASSupplierOrder.objects.count()
 
     @property
     def tot_pacts(self):
-        from gasistafelice.gas.models import GASSupplierSolidalPact
+        from app_gas.models import GASSupplierSolidalPact
         return GASSupplierSolidalPact.objects.count()
 
     @property
     def tot_money(self):
         # TODO improve performace: update-on-signal?
-        from gasistafelice.gas.models import GASMemberOrder
+        from app_gas.models import GASMemberOrder
         rv = 0
         for gmo in GASMemberOrder.objects.all():
             rv += gmo.ordered_price
@@ -294,31 +294,31 @@ class DES(Site, PermissionResource):
 
     @property
     def gasmembers(self):
-        from gasistafelice.gas.models.base import GASMember
+        from app_gas.models.base import GASMember
         tmp = self.gas_list
         return GASMember.objects.filter(gas__in=tmp)
 
     @property
     def categories(self):
-        from gasistafelice.supplier.models import ProductCategory
+        from app_supplier.models import ProductCategory
         # All categories
         return ProductCategory.objects.all()
 
     @property
     def pacts(self):
         """Return pacts bound to all GAS in DES"""
-        from gasistafelice.gas.models.base import GASSupplierSolidalPact
+        from app_gas.models.base import GASSupplierSolidalPact
         tmp = self.gas_list
         return GASSupplierSolidalPact.objects.filter(gas__in=tmp).order_by('gas', 'supplier')
 
     @property
     def suppliers(self):
-        from gasistafelice.supplier.models import Supplier
+        from app_supplier.models import Supplier
         return Supplier.objects.all()
 
     @property
     def orders(self):
-        from gasistafelice.gas.models.order import GASSupplierOrder
+        from app_gas.models.order import GASSupplierOrder
         tmp = self.pacts
         return GASSupplierOrder.objects.filter(pact__in=tmp)
 
@@ -329,32 +329,32 @@ class DES(Site, PermissionResource):
 
     @property
     def products(self):
-        from gasistafelice.supplier.models import Product
+        from app_supplier.models import Product
         return Product.objects.all()
 
     @property
     def stocks(self):
-        from gasistafelice.supplier.models import SupplierStock
+        from app_supplier.models import SupplierStock
         return SupplierStock.objects.all()
 
     @property
     def gasstocks(self):
-        from gasistafelice.gas.models.order import GASSupplierStock
+        from app_gas.models.order import GASSupplierStock
         return GASSupplierStock.objects.all()
 
     @property
     def orderable_products(self):
-        from gasistafelice.gas.models.order import GASSupplierOrderProduct
+        from app_gas.models.order import GASSupplierOrderProduct
         return GASSupplierOrderProduct.objects.all()
 
     @property
     def ordered_products(self):
-        from gasistafelice.gas.models.order import GASMemberOrder
+        from app_gas.models.order import GASMemberOrder
         return GASMemberOrder.objects.all()
 
     @property
     def basket(self):
-        from gasistafelice.gas.models.order import GASMemberOrder
+        from app_gas.models.order import GASMemberOrder
         return GASMemberOrder.objects.filter(order__in=self.orders.open())
     
     #-------------- Authorization API ---------------#

@@ -1,5 +1,5 @@
 
-from gasistafelice.admin.models import *
+from admin.models import *
 
 class GASAdmin_Place(PlaceAdmin):
 

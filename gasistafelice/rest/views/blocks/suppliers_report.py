@@ -2,14 +2,14 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 from django.core.urlresolvers import reverse
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.supplier.forms import SupplierForm, AddSupplierForm
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from app_supplier.models import Supplier
+from app_supplier.forms import SupplierForm, AddSupplierForm
+from lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
@@ -21,7 +21,7 @@ import xhtml2pdf.pisa as pisa
 import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
-from gasistafelice.des.models import Siteattr
+from des.models import Siteattr
 
 from django.utils.encoding import smart_unicode
 from flexi_auth.models import ObjectWithContext

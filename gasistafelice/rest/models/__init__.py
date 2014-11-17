@@ -1,4 +1,4 @@
 
 # Retrocompatibility
-from gasistafelice.rest.models.blocks import *
+from rest.models.blocks import *
 

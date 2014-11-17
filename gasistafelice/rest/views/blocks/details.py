@@ -26,20 +26,20 @@ from workflows.models import Transition
 
 from flexi_auth.models import PrincipalParamRoleRelation, ObjectWithContext
 
-from gasistafelice.lib.fields import display
+from lib.fields import display
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
-from gasistafelice.base.models import Resource
-from gasistafelice.des.models import Site
-from gasistafelice.rest.views.blocks import AbstractBlock
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
-from gasistafelice.base.workflows_utils import get_allowed_transitions, do_transition
+from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from lib.formsets import BaseFormSetWithRequest
+from app_base.models import Resource
+from des.models import Site
+from rest.views.blocks import AbstractBlock
+from rest.views.blocks.base import ResourceBlockAction
+from app_base.workflows_utils import get_allowed_transitions, do_transition
 
-from gasistafelice.consts import EDIT, VIEW_CONFIDENTIAL
+from consts import EDIT, VIEW_CONFIDENTIAL
 
 # Needed for HACK: see below
-from gasistafelice.consts import GAS_MEMBER
+from consts import GAS_MEMBER
 
 #from users.models import can_write_to_resource
 

@@ -1,15 +1,15 @@
 from django.contrib.auth.models import User
 
-from gasistafelice.rest.views.blocks import users 
+from rest.views.blocks import users 
 
 from flexi_auth.models import ParamRole
-from gasistafelice.consts import GAS_MEMBER
+from consts import GAS_MEMBER
 
 from registration.models import RegistrationProfile
 
-from gasistafelice.gas.forms.base import GASSingleUserForm
+from app_gas.forms.base import GASSingleUserForm
 from django.forms.formsets import formset_factory
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from lib.formsets import BaseFormSetWithRequest
 
 #------------------------------------------------------------------------------#
 #                                                                              #

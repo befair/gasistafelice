@@ -7,8 +7,8 @@ from django.utils import simplejson
 
 from django.contrib.auth.models import User
 
-from gasistafelice.globals import type_model_d
-from gasistafelice.rest.models import BlockConfiguration
+from globals import type_model_d
+from rest.models import BlockConfiguration
 
 import logging
 

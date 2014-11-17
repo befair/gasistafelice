@@ -5,10 +5,10 @@ from django.http import HttpResponse
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
-from gasistafelice.consts import CREATE, EDIT
-from gasistafelice.gas.forms import order as order_forms
-from gasistafelice.gas.models import GASSupplierOrder
+from rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from consts import CREATE, EDIT
+from app_gas.forms import order as order_forms
+from app_gas.models import GASSupplierOrder
 
 #------------------------------------------------------------------------------#
 #                                                                              #

@@ -1,17 +1,17 @@
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
-from gasistafelice.consts import EDIT, CONFIRM, EDIT_MULTIPLE, VIEW
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
+from consts import EDIT, CONFIRM, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
-from gasistafelice.gas.forms.base import SingleUserForm
+from app_gas.forms.base import SingleUserForm
 from django.forms.formsets import formset_factory
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from lib.formsets import BaseFormSetWithRequest
 
 from flexi_auth.models import ObjectWithContext
-from gasistafelice.base.models import Person
+from app_base.models import Person
 
 #------------------------------------------------------------------------------#
 #                                                                              #

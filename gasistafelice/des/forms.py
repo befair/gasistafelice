@@ -11,11 +11,11 @@ from django.utils.translation import ugettext_lazy as _
 from captcha.fields import CaptchaField
 
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
-from gasistafelice.consts import SUPPLIER_REFERRER, GAS_MEMBER
+from consts import SUPPLIER_REFERRER, GAS_MEMBER
 
-from gasistafelice.gas.models import GAS, GASMember
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.base.models import Place, Contact, Person
+from app_gas.models import GAS, GASMember
+from app_supplier.models import Supplier
+from app_base.models import Place, Contact, Person
 
 from registration.models import RegistrationProfile
 

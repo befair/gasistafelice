@@ -1,16 +1,16 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF, SENDPROD_PDF
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF, SENDPROD_PDF
 
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
-from gasistafelice.gas.models.base import GAS
-from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
+from app_supplier.models import Supplier
+from app_gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
+from app_gas.models.base import GAS
+from app_gas.forms.order.gsop import GASSupplierOrderProductInterGAS
 from django.forms.formsets import formset_factory
 
 import cgi, os

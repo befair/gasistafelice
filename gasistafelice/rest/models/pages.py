@@ -7,9 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 from flexi_auth.models import ParamRole
-from gasistafelice.consts import GAS_MEMBER
-from gasistafelice.des.models import Siteattr
-from gasistafelice.gas.models import GASMember
+from consts import GAS_MEMBER
+from des.models import Siteattr
+from app_gas.models import GASMember
 from django.core.urlresolvers import reverse
 
 class Page(models.Model):

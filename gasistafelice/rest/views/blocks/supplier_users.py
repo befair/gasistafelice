@@ -1,8 +1,8 @@
 
-from gasistafelice.rest.views.blocks import users 
+from rest.views.blocks import users 
 
 from flexi_auth.models import ParamRole
-from gasistafelice.consts import SUPPLIER_REFERRER
+from consts import SUPPLIER_REFERRER
 
 from registration.models import RegistrationProfile
 

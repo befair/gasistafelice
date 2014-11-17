@@ -2,11 +2,11 @@
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
-from gasistafelice.rest.views.blocks import details
-from gasistafelice.gas.forms import order as order_forms
+from rest.views.blocks import details
+from app_gas.forms import order as order_forms
 
-from gasistafelice.consts import INCOME, EXPENSE
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
+from consts import INCOME, EXPENSE
+from rest.views.blocks.base import ResourceBlockAction
 
 import logging
 log = logging.getLogger(__name__)

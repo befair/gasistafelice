@@ -3,12 +3,12 @@ from django.core import urlresolvers
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
+from .base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
-from gasistafelice.lib.http import HttpResponse
+from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from lib.http import HttpResponse
 
-from gasistafelice.gas.models import GASMember
+from app_gas.models import GASMember
 
 from django.http import HttpResponse
 from django.template.loader import get_template

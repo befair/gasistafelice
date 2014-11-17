@@ -7,15 +7,15 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from flexi_auth.models import PrincipalParamRoleRelation, ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from gasistafelice.consts import EDIT, GAS_MEMBER
+from consts import EDIT, GAS_MEMBER
 
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
-from gasistafelice.rest.views.blocks import details
+from rest.views.blocks.base import ResourceBlockAction
+from rest.views.blocks import details
 
-from gasistafelice.lib.shortcuts import render_to_context_response
+from lib.shortcuts import render_to_context_response
 
-from gasistafelice.gas.forms.base import EditGASForm, GASRoleForm
-from gasistafelice.gas.models import GAS
+from app_gas.forms.base import EditGASForm, GASRoleForm
+from app_gas.models import GAS
 
 
 import logging

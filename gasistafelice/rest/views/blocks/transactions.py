@@ -4,9 +4,9 @@ from django.http import HttpResponse, HttpResponseServerError
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_CSV
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
-from gasistafelice.base.templatetags.accounting_tags import human_readable_account_csv,human_readable_kind, signed_ledger_entry_amount
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_CSV
+from consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
+from gf.base.templatetags.accounting_tags import human_readable_account_csv,human_readable_kind, signed_ledger_entry_amount
 
 from django.template.loader import render_to_string
 
@@ -18,9 +18,9 @@ import cStringIO as StringIO
 #from simple_accounting.models import AccountingProxy
 #from simple_accounting.utils import register_transaction, register_simple_transaction
 
-#from gasistafelice.base.accounting import PersonAccountingProxy
+#from app_base.accounting import PersonAccountingProxy
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
 #------------------------------------------------------------------------------#
 #                                                                              #

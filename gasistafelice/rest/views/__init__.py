@@ -10,19 +10,19 @@ from django.utils import simplejson
 #from notification.models import Notice
 from flexi_auth.models import ROLES_DICT, ParamRole
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
+from rest.utils import load_block_handler, load_symbols_from_dir
 
-from gasistafelice.des.models import Siteattr
+from des.models import Siteattr
 
-from gasistafelice.comments.views import get_all_notes, get_notes_for
+from comments.views import get_all_notes, get_notes_for
 
-from gasistafelice.base.models import Person
-from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
-from gasistafelice.supplier.models import Supplier
-from gasistafelice import consts
-from gasistafelice.profiling import profile
+from app_base.models import Person
+from app_gas.models import GAS, GASMember, GASSupplierSolidalPact
+from app_supplier.models import Supplier
+import consts
+from profiling import profile
 
 import time, datetime, logging, copy
 log = logging.getLogger(__name__)
@@ -33,8 +33,8 @@ log = logging.getLogger(__name__)
 #------------------------------------------------------------------------------#
 
 #--- TEST view ---
-#from gasistafelice.lib.formsets import BaseFormSetWithRequest
-#from gasistafelice.gas.forms.base import GASRoleForm
+#from lib.formsets import BaseFormSetWithRequest
+#from app_gas.forms.base import GASRoleForm
 #from django.forms.formsets import formset_factory
 #def manage_roles(request, resource_type, resource_id):
 #

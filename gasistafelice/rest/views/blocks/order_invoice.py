@@ -6,14 +6,14 @@ from django.db import transaction
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
-from gasistafelice.rest.views.blocks import details
-from gasistafelice.gas.forms import cash as order_cash_forms
+from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from rest.views.blocks import details
+from app_gas.forms import cash as order_cash_forms
 
-from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE, INCOME
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
-from gasistafelice.rest.views.blocks import AbstractBlock
-from gasistafelice.gas.forms.cash import InvoiceOrderForm
+from consts import CASH, VIEW, EDIT_MULTIPLE, INCOME
+from rest.views.blocks.base import ResourceBlockAction
+from rest.views.blocks import AbstractBlock
+from app_gas.forms.cash import InvoiceOrderForm
 
 from django.conf import settings
 

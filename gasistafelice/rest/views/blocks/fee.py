@@ -1,12 +1,12 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.gas.models import GASMember
-from gasistafelice.gas.forms.cash import EcoGASMemberFeeFormSet
+from app_gas.models import GASMember
+from app_gas.forms.cash import EcoGASMemberFeeFormSet
 
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -14,7 +14,7 @@ from django.template import Context
 import cgi, os
 from django.conf import settings
 
-from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE
+from consts import CASH, VIEW, EDIT_MULTIPLE
 from flexi_auth.models import ObjectWithContext
 
 import logging

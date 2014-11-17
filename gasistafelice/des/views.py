@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.db import transaction
 from des.forms import DESRegistrationForm, DESStaffRegistrationForm
 from des.models import Siteattr
-from gas.models import GASMember, GAS
+from app_gas.models import GASMember, GAS
 
 from registration.models import RegistrationProfile
 import re, logging

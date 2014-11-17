@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 
 from notification import models as notification
         
-from gasistafelice.gas.models import GAS
-from gasistafelice.gas import signals as gas_signals
-from gasistafelice.lib import unordered_uniq
+from app_gas.models import GAS
+from app_gas import signals as gas_signals
+from lib import unordered_uniq
 
-from gasistafelice.des.models import Siteattr
+from des.models import Siteattr
 
 import logging
 
@@ -127,7 +127,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
         pass
 
 #-------------------------------------------------------------------------------
-from gasistafelice import gf_exceptions as exceptions
+import gf_exceptions as exceptions
 
 def notify_order_state_update(sender, **kwargs):
 

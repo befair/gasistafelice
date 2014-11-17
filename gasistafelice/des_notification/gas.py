@@ -2,8 +2,8 @@
 from django.contrib.auth.models import User
 import notification
 
-from gasistafelice.gas.models import GASSupplierSolidalPact, GASMember
-from gasistafelice.des_notification.models import FakeRecipient
+from app_gas.models import GASSupplierSolidalPact, GASMember
+from des_notification.models import FakeRecipient
 
 import datetime
 

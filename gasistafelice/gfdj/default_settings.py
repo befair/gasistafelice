@@ -149,9 +149,9 @@ INSTALLED_APPS = [
     'history',
     'flexi_auth',
     'simple_accounting',
-    'base',
-    'supplier',
-    'gas',
+    'app_base',
+    'app_supplier',
+    'app_gas',
     #'admin',
     #'gas_admin',
     'rest',
@@ -171,9 +171,7 @@ INSTALLED_APPS = [
     'registration',
     'captcha',
     'ajax_select',
-    'south',
     'gdxp',
-    #'django.contrib.staticfiles',
 ]
 
 #INSTALLED_APPS.insert(0, 'django_extensions')

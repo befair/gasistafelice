@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 import copy, time
 from socket import gethostname
 
-from gasistafelice.lib.shortcuts import render_to_response
+from lib.shortcuts import render_to_response
 
 #---------------------------------------------------------------------#
 #                                                                     #

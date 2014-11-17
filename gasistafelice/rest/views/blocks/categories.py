@@ -1,4 +1,4 @@
-from gasistafelice.rest.views.blocks.base import BlockWithList
+from rest.views.blocks.base import BlockWithList
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 #------------------------------------------------------------------------------#

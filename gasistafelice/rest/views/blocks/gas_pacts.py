@@ -3,12 +3,12 @@ from django.core import urlresolvers
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
-from gasistafelice.consts import CREATE
-from gasistafelice.gas.models.base import GASSupplierSolidalPact
-from gasistafelice.gas.forms.pact import GASAddPactForm
+from rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from consts import CREATE
+from app_gas.models.base import GASSupplierSolidalPact
+from app_gas.forms.pact import GASAddPactForm
 
-from gasistafelice.rest.views.blocks import pacts
+from rest.views.blocks import pacts
 
 #------------------------------------------------------------------------------#
 #                                                                              #

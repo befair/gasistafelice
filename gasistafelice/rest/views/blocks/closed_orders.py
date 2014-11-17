@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
-from gasistafelice.rest.views.blocks.open_orders import Block as OpenOrdersBlock
+from rest.views.blocks.open_orders import Block as OpenOrdersBlock
 
 #------------------------------------------------------------------------------#
 #                                                                              #
