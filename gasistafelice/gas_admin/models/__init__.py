@@ -7,8 +7,8 @@ from app_supplier import models as supplier_models
 from app_gas import models as gas_models
 from simple_accounting import models as accounting_models
 
-from app_gas_admin.models.base import *
-from app_gas_admin.models.gas import *
+from gas_admin.models.base import *
+from gas_admin.models.gas import *
 
 
 class GasAdminSite(AdminSite):

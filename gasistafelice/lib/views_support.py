@@ -4,9 +4,8 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.utils.cache import add_never_cache_headers
-from django.utils import simplejson
 
-import os
+import os, json
 from django.conf import settings
 
 import logging, traceback
@@ -174,7 +173,7 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
 
     response_dict.update({'moreData':moreData})
 
-    response =  HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
+    response =  HttpResponse(json.dumps(response_dict), mimetype='application/javascript')
 
     #prevent from caching datatables result
     add_never_cache_headers(response)

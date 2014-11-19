@@ -19,7 +19,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models.query import QuerySet
 from django.db import models
 from django.http import *
-from django.utils import simplejson
+import json
 
 #from email.Header import Header
 
@@ -38,11 +38,11 @@ class JsonResponse(HttpResponse):
         if isinstance(object, QuerySet):
             try:
                 object = map(lambda x : x.toJson() , object)
-                content = simplejson.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
+                content = json.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
             except:
                 content = serialize('json', object)
         else:
-            content = simplejson.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
+            content = json.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
         super(JsonResponse, self).__init__(content, mimetype='application/json')
 
 #------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class HttpResponseWithXJSONMessages(HttpResponse):
     def __init__(self, request, *args, **kw):
         HttpResponse.__init__(self, *args, **kw)
         messages = request.user.get_and_delete_messages()
-        jsoned = simplejson.dumps({ 'user_messages' : messages })
+        jsoned = json.dumps({ 'user_messages' : messages })
         #TODO: Javascription X-JSON evaluation does not support quoting, support it !!!
         #jsoned = str(Header(jsoned, 'iso-8859-1'))
         self['X-JSON'] = jsoned

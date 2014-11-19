@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.utils import simplejson
+import json
 
 #Matteo: to restore when django_notification will be updated
 #from notification.models import Notice
@@ -153,7 +153,7 @@ def user_urns(request):
         rv += pacts_to_append
         rv += suppliers_to_append
 
-    return HttpResponse(simplejson.dumps(rv))
+    return HttpResponse(json.dumps(rv))
     
     
     for person in persons:
@@ -178,7 +178,7 @@ def user_urns(request):
         #References list
 #        for prr in request.user.principal_param_role_set.all():
 
-    return HttpResponse(simplejson.dumps(rv))
+    return HttpResponse(json.dumps(rv))
 
 
 @login_required
@@ -186,7 +186,7 @@ def user_roles(request):
     
     if request.user.is_superuser:
         rv = [{ 'role_name' : _("Master of the Universe"), 'role_resources' : [] }]
-        return HttpResponse(simplejson.dumps(rv))
+        return HttpResponse(json.dumps(rv))
 
     rv = []
     for prr in request.user.principal_param_role_set.all():
@@ -196,7 +196,7 @@ def user_roles(request):
             'role_resources': [ r.value.as_dict() for r in prr.role.params ],
         })
 
-    return HttpResponse(simplejson.dumps(rv))
+    return HttpResponse(json.dumps(rv))
 
 @login_required
 def switch_role(request):
@@ -589,8 +589,8 @@ def list_notifications(request):
 #    #pt = ['maps_menus.xml']
 #    #return render_to_response(pt, context)        
 #
-#    from django.utils import simplejson
-#    retdata = simplejson.dumps(context)
+#    import json
+#    retdata = json.dumps(context)
 #    return HttpResponse(retdata);
 #    
 #    

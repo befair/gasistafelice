@@ -63,7 +63,7 @@ class EditGASMemberForm(forms.ModelForm):
 
     class Meta:
         model = GASMember
-        exclude = ('id_in_des')
+        exclude = ('id_in_des',)
 
         gf_fieldsets = (
             (None, {

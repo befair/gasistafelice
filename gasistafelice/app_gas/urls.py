@@ -1,9 +1,5 @@
-try:
-    from django.conf.urls import patterns, url
-except ImportError as e:
-    # Using Django < 1.4
-    from django.conf.urls.defaults import patterns, url
 
+from django.conf.urls import patterns, include, url
 import app_gas.views as gas_views
 
 urlpatterns = patterns('',

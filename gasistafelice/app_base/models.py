@@ -574,6 +574,7 @@ class Person(models.Model, PermissionResource):
         verbose_name_plural = _("people")
         ordering = ('display_name',)
         app_label = 'app_base'
+        db_table = 'base_person'
 
     def __unicode__(self):
 
@@ -913,6 +914,7 @@ class Contact(models.Model):
         verbose_name = _("contact")
         verbose_name_plural = _("contacts")
         app_label = 'app_base'
+        db_table = 'base_contact'
 
     def __unicode__(self):
         return u"%(t)s: %(v)s" % {'t': self.flavour, 'v': self.value}
@@ -959,6 +961,7 @@ class Place(models.Model, PermissionResource):
         verbose_name_plural = _("places")
         ordering = ('name', 'address', 'city')
         app_label = 'app_base'
+        db_table = 'base_place'
 
     def __unicode__(self):
 
@@ -1069,6 +1072,7 @@ class DefaultTransition(models.Model, PermissionResource):
         verbose_name = _("default transition")
         verbose_name_plural = _("default transitions")
         app_label = 'app_base'
+        db_table = 'base_defaulttransition'
 
 class WorkflowDefinition(object):
     """

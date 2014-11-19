@@ -131,12 +131,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'gasistafelice.middleware.ResourceMiddleware',
-    'gasistafelice.middleware.UpdateRequestUserMiddleware',
+    'middleware.ResourceMiddleware',
+    'middleware.UpdateRequestUserMiddleware',
 #    'django.middleware.transaction.TransactionMiddleware',
 )
 
-ROOT_URLCONF = 'gasistafelice.urls'
+ROOT_URLCONF = 'gfdj.urls'
 
 TEMPLATE_DIRS = (
     PROJECT_ROOT + "/rest/templates",
@@ -473,8 +473,8 @@ APTCHA_LETTER_ROTATION = (-25,25)
 # Ajax_select settings
 
 AJAX_LOOKUP_CHANNELS = {
-    'placechannel' : ( 'gasistafelice.base.forms.lookups' , 'PlaceLookup'),
-    'personchannel' : ( 'gasistafelice.base.forms.lookups' , 'PersonLookup')
+    'placechannel' : ( 'base.forms.lookups' , 'PlaceLookup'),
+    'personchannel' : ( 'base.forms.lookups' , 'PersonLookup')
 }
 # magically include jqueryUI/js/css
 AJAX_SELECT_BOOTSTRAP = False
