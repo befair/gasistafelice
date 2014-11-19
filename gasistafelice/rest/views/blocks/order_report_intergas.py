@@ -7,10 +7,10 @@ from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
 from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from app_supplier.models import Supplier
-from app_gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
-from app_gas.models.base import GAS
-from app_gas.forms.order.gsop import GASSupplierOrderProductInterGAS
+from gf.supplier.models import Supplier
+from gf.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
+from gf.gas.models.base import GAS
+from gf.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
 from django.forms.formsets import formset_factory
 
 import cgi, os

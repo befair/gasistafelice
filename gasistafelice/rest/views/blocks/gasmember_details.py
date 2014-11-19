@@ -3,7 +3,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 from rest.views.blocks import details
-from app_gas.forms.base import EditGASMemberForm
+from gf.gas.forms.base import EditGASMemberForm
 
 class Block(details.Block):
 

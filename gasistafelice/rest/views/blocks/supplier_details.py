@@ -10,19 +10,13 @@ from ajax_select.fields import autoselect_fields_check_can_add
 
 from consts import EDIT
 
-<<<<<<< HEAD
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction, EXPORT_GDXP
-from gasistafelice.rest.views.blocks import details
-from gasistafelice.supplier.models import Supplier
-=======
-from rest.views.blocks.base import ResourceBlockAction
-from rest.views.blocks import details
-from app_supplier.models import Supplier
->>>>>>> [Django17] Variazione nome delle applicazioni e import
+from .base import ResourceBlockAction
+import details
+from gf.supplier.models import Supplier
 
 from lib.shortcuts import render_to_context_response
 
-from app_supplier.forms import EditSupplierForm, SupplierRoleForm
+from gf.supplier.forms import EditSupplierForm, SupplierRoleForm
 
 import logging
 log = logging.getLogger(__name__)

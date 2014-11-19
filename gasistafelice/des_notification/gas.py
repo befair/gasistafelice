@@ -2,7 +2,7 @@
 from django.contrib.auth.models import User
 import notification
 
-from app_gas.models import GASSupplierSolidalPact, GASMember
+from gf.gas.models import GASSupplierSolidalPact, GASMember
 from des_notification.models import FakeRecipient
 
 import datetime

@@ -2,9 +2,9 @@
 from django.contrib.admin.sites import AdminSite
 from django.contrib import admin
 
-from app_base import models as base_models
-from app_supplier import models as supplier_models
-from app_gas import models as gas_models
+from gf.base import models as base_models
+from gf.supplier import models as supplier_models
+from gf.gas import models as gas_models
 from simple_accounting import models as accounting_models
 
 from gas_admin.models.base import *

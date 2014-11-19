@@ -18,7 +18,7 @@ import cStringIO as StringIO
 #from simple_accounting.models import AccountingProxy
 #from simple_accounting.utils import register_transaction, register_simple_transaction
 
-#from app_base.accounting import PersonAccountingProxy
+#from gf.base.accounting import PersonAccountingProxy
 
 from lib.shortcuts import render_to_xml_response, render_to_context_response
 

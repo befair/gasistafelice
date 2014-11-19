@@ -7,8 +7,8 @@ from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
 from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
-from app_supplier.models import Supplier
-from app_supplier.forms import SingleSupplierStockFormSet, AddStockForm
+from gf.supplier.models import Supplier
+from gf.supplier.forms import SingleSupplierStockFormSet, AddStockForm
 
 from flexi_auth.models import ObjectWithContext
 

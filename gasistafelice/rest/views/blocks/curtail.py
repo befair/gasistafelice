@@ -6,9 +6,9 @@ from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREAT
 
 from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from app_gas.models import GASMember, GASMemberOrder
-from app_supplier.models import Supplier
-from app_gas.forms.cash import EcoGASMemberForm, NewEcoGASMemberForm
+from gf.gas.models import GASMember, GASMemberOrder
+from gf.supplier.models import Supplier
+from gf.gas.forms.cash import EcoGASMemberForm, NewEcoGASMemberForm
 from lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 

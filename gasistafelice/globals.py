@@ -1,12 +1,12 @@
 from des.models import DES
-from app_base.models import Person, Place
-from app_supplier.models import (
+from gf.base.models import Person, Place
+from gf.supplier.models import (
     Supplier, Product, ProductCategory, ProductMU, SupplierStock
 )
-from app_gas.models.base import (
+from gf.gas.models.base import (
     GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
 )
-from app_gas.models.order import GASSupplierOrder
+from gf.gas.models.order import GASSupplierOrder
 
 type_model_d = {
 	'site' : DES,

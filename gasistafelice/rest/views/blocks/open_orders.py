@@ -7,8 +7,8 @@ from flexi_auth.models import ObjectWithContext
 
 from rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from consts import CREATE, EDIT
-from app_gas.forms import order as order_forms
-from app_gas.models import GASSupplierOrder
+from gf.gas.forms import order as order_forms
+from gf.gas.models import GASSupplierOrder
 
 #------------------------------------------------------------------------------#
 #                                                                              #

@@ -7,9 +7,9 @@ from consts import EDIT, CONFIRM
 from lib.shortcuts import render_to_response, render_to_context_response
 from lib.http import HttpResponse
 
-from app_gas.models import GASMember
+from gf.gas.models import GASMember
 
-from app_gas.forms.order.gmo import BasketGASMemberOrderForm
+from gf.gas.forms.order.gmo import BasketGASMemberOrderForm
 from lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 

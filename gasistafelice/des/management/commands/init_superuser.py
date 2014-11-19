@@ -6,7 +6,7 @@ from flexi_auth.models import Param, ParamRole, PrincipalParamRoleRelation
 
 from consts import DES_ADMIN
 from des.models import DES, Siteattr
-from app_base.models import Person
+from gf.base.models import Person
 from des import models
 
 from django.conf import settings

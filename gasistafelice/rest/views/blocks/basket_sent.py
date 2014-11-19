@@ -8,7 +8,7 @@ from .base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from lib.http import HttpResponse
 
-from app_gas.models import GASMember
+from gf.gas.models import GASMember
 
 from django.http import HttpResponse
 from django.template.loader import get_template

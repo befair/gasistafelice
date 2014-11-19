@@ -5,8 +5,8 @@ from flexi_auth.models import ObjectWithContext
 
 from rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from consts import CREATE
-from app_gas.models.base import GASSupplierSolidalPact
-from app_gas.forms.pact import GASAddPactForm
+from gf.gas.models.base import GASSupplierSolidalPact
+from gf.gas.forms.pact import GASAddPactForm
 
 from rest.views.blocks import pacts
 

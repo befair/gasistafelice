@@ -30,11 +30,11 @@ from lib.fields import display
 
 from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from lib.formsets import BaseFormSetWithRequest
-from app_base.models import Resource
+from gf.base.models import Resource
 from des.models import Site
 from rest.views.blocks import AbstractBlock
 from rest.views.blocks.base import ResourceBlockAction
-from app_base.workflows_utils import get_allowed_transitions, do_transition
+from gf.base.workflows_utils import get_allowed_transitions, do_transition
 
 from consts import EDIT, VIEW_CONFIDENTIAL
 

@@ -6,8 +6,8 @@ from ajax_select.fields import autoselect_fields_check_can_add
 
 from rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from consts import CREATE
-from app_base.models import Person
-from app_base.forms import AddPersonForm
+from gf.base.models import Person
+from gf.base.forms import AddPersonForm
 from des.models import Siteattr
 
 #------------------------------------------------------------------------------#

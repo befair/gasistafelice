@@ -3,7 +3,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 from rest.views.blocks import details
-from app_gas.forms import order as order_forms
+from gf.gas.forms import order as order_forms
 
 from consts import INCOME, EXPENSE
 from rest.views.blocks.base import ResourceBlockAction

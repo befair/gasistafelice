@@ -6,10 +6,10 @@ from ajax_select.fields import autoselect_fields_check_can_add
 
 from rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from consts import CREATE
-from app_gas.models import GAS
+from gf.gas.models import GAS
 from des.models import Siteattr, DES
 
-from app_gas.forms.base import AddGASForm
+from gf.gas.forms.base import AddGASForm
 
 
 #------------------------------------------------------------------------------#

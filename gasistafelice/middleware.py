@@ -25,7 +25,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.conf import settings
 
 from globals import type_model_d
-from app_gas.models import GASMember
+from gf.gas.models import GASMember
 
 from django.contrib.sessions.backends.db import SessionStore
 from django.utils.dateformat import format

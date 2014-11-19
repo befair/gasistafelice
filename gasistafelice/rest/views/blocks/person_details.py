@@ -12,8 +12,8 @@ from flexi_auth.models import ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
 
 from rest.views.blocks import details
-from app_base.forms import EditPersonForm
-from app_base.models import Person
+from gf.base.forms import EditPersonForm
+from gf.base.models import Person
 from consts import EDIT
 from rest.views.blocks.base import ResourceBlockAction
 from lib.shortcuts import render_to_context_response

@@ -6,8 +6,8 @@ from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREAT
 
 from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from app_gas.models import GASMember
-from app_gas.forms.cash import EcoGASMemberRechargeFormSet
+from gf.gas.models import GASMember
+from gf.gas.forms.cash import EcoGASMemberRechargeFormSet
 
 from django.http import HttpResponse
 from django.template.loader import get_template

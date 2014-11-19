@@ -5,7 +5,7 @@ from flexi_auth.models import ObjectWithContext
 
 from rest.views.blocks.base import BlockWithList, ResourceBlockAction
 from consts import CREATE
-from app_gas.models.base import GASMember
+from gf.gas.models.base import GASMember
 
 #------------------------------------------------------------------------------#
 #                                                                              #

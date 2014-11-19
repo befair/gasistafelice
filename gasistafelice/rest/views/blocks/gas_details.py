@@ -14,8 +14,8 @@ from rest.views.blocks import details
 
 from lib.shortcuts import render_to_context_response
 
-from app_gas.forms.base import EditGASForm, GASRoleForm
-from app_gas.models import GAS
+from gf.gas.forms.base import EditGASForm, GASRoleForm
+from gf.gas.models import GAS
 
 
 import logging

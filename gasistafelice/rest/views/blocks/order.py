@@ -6,9 +6,9 @@ from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
 from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from app_supplier.models import Supplier
-from app_gas.models import GASMemberOrder
-from app_gas.forms.order.gmo import SingleGASMemberOrderForm
+from gf.supplier.models import Supplier
+from gf.gas.models import GASMemberOrder
+from gf.gas.forms.order.gmo import SingleGASMemberOrderForm
 from lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 

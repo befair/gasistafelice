@@ -7,7 +7,7 @@ from consts import GAS_MEMBER
 
 from registration.models import RegistrationProfile
 
-from app_gas.forms.base import GASSingleUserForm
+from gf.gas.forms.base import GASSingleUserForm
 from django.forms.formsets import formset_factory
 from lib.formsets import BaseFormSetWithRequest
 

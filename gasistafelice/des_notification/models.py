@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 
 from notification import models as notification
         
-from app_gas.models import GAS
-from app_gas import signals as gas_signals
+from gf.gas.models import GAS
+from gf.gas import signals as gas_signals
 from lib import unordered_uniq
 
 from des.models import Siteattr

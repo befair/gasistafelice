@@ -21,7 +21,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from lib.views_support import prepare_datatables_queryset, render_datatables
-from app_base.models import Resource
+from gf.base.models import Resource
 from des.models import Site
 from rest.views.blocks import AbstractBlock
 

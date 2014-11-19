@@ -1,5 +1,5 @@
 
-from app_base.models import Person
+from gf.base.models import Person
 from admin.models import GASAdmin, GASSupplierOrderAdmin, gas_models, supplier_models
 
 from consts import EDIT, CREATE

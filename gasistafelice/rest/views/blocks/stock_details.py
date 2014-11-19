@@ -3,7 +3,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 from rest.views.blocks import details
-from app_supplier.forms import EditStockForm
+from gf.supplier.forms import EditStockForm
 
 class Block(details.Block):
 

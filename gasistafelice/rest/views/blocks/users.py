@@ -6,12 +6,12 @@ from consts import EDIT, CONFIRM, EDIT_MULTIPLE, VIEW
 
 from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
-from app_gas.forms.base import SingleUserForm
+from gf.gas.forms.base import SingleUserForm
 from django.forms.formsets import formset_factory
 from lib.formsets import BaseFormSetWithRequest
 
 from flexi_auth.models import ObjectWithContext
-from app_base.models import Person
+from gf.base.models import Person
 
 #------------------------------------------------------------------------------#
 #                                                                              #

@@ -9,15 +9,15 @@ from django.db.models import Q
 from ajax_select import make_ajax_field
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from app_base import models as base_models
-from app_base.const import ALWAYS_AVAILABLE
-from app_supplier import models as supplier_models
-from app_gas import models as gas_models
+from gf.base import models as base_models
+from gf.base.const import ALWAYS_AVAILABLE
+from gf.supplier import models as supplier_models
+from gf.gas import models as gas_models
 from flexi_auth import models as auth_models
 from rest.models import pages as rest_models
 from users import models as user_models
 from simple_accounting import models as accounting_models
-from app_gas.models.base import GAS
+from gf.gas.models.base import GAS
 
 #from registration.models import RegistrationProfile as MyProfile
 

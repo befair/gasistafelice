@@ -3,7 +3,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
 from rest.views.blocks import details
-from app_gas.forms.pact import EditPactForm
+from gf.gas.forms.pact import EditPactForm
 
 
 class Block(details.Block):

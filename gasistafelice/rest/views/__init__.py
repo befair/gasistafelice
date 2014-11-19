@@ -18,9 +18,9 @@ from des.models import Siteattr
 
 from comments.views import get_all_notes, get_notes_for
 
-from app_base.models import Person
-from app_gas.models import GAS, GASMember, GASSupplierSolidalPact
-from app_supplier.models import Supplier
+from gf.base.models import Person
+from gf.gas.models import GAS, GASMember, GASSupplierSolidalPact
+from gf.supplier.models import Supplier
 import consts
 from profiling import profile
 
@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 
 #--- TEST view ---
 #from lib.formsets import BaseFormSetWithRequest
-#from app_gas.forms.base import GASRoleForm
+#from gf.gas.forms.base import GASRoleForm
 #from django.forms.formsets import formset_factory
 #def manage_roles(request, resource_type, resource_id):
 #

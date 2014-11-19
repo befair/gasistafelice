@@ -13,9 +13,9 @@ from captcha.fields import CaptchaField
 from flexi_auth.models import ParamRole, PrincipalParamRoleRelation
 from consts import SUPPLIER_REFERRER, GAS_MEMBER
 
-from app_gas.models import GAS, GASMember
-from app_supplier.models import Supplier
-from app_base.models import Place, Contact, Person
+from gf.gas.models import GAS, GASMember
+from gf.supplier.models import Supplier
+from gf.base.models import Place, Contact, Person
 
 from registration.models import RegistrationProfile
 

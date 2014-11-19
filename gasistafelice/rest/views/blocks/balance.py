@@ -8,12 +8,12 @@ from flexi_auth.models import ObjectWithContext
 
 from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from rest.views.blocks import details
-from app_gas.forms import cash as order_cash_forms
+from gf.gas.forms import cash as order_cash_forms
 
 from consts import CASH, VIEW, EDIT_MULTIPLE, INCOME
 from rest.views.blocks.base import ResourceBlockAction
 from rest.views.blocks import AbstractBlock
-from app_gas.forms.cash import BalanceForm
+from gf.gas.forms.cash import BalanceForm
 
 import logging
 log = logging.getLogger(__name__)
