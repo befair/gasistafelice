@@ -143,7 +143,7 @@ TEMPLATE_DIRS = (
     PROJECT_ROOT + "/templates",
 )
 
-INSTALLED_APPS = [
+INSTALLED_APPS = (
     'permissions',
     'workflows',
     'history',
@@ -152,8 +152,8 @@ INSTALLED_APPS = [
     'app_base',
     'app_supplier',
     'app_gas',
-    #'admin',
-    #'gas_admin',
+#    #'admin',
+#    #'gas_admin',
     'rest',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -172,7 +172,7 @@ INSTALLED_APPS = [
     'captcha',
     'ajax_select',
     'gdxp',
-]
+)
 
 #INSTALLED_APPS.insert(0, 'django_extensions')
 

@@ -69,6 +69,7 @@ class Supplier(models.Model, PermissionResource):
         verbose_name = _('supplier')
         verbose_name_plural = _('suppliers')
         ordering = ('name',)
+        app_label = "app_supplier"
 
     def __unicode__(self):
         #DOMTHU: rawfromiso = iso8859string.encode('iso-8859-1')
@@ -436,7 +437,9 @@ class SupplierConfig(models.Model):
     # Link to parent class
     supplier = models.OneToOneField(Supplier, related_name="config")
 
-    products_made_by_set = models.ManyToManyField(Supplier, verbose_name=_("products made by"), help_text=_("Select here producers of products you sell. YOU will be always enabled in this list"))
+    products_made_by_set = models.ManyToManyField(
+            Supplier, verbose_name=_("products made by"), help_text=_("Select here producers of products you sell. YOU will be always enabled in this list")
+    )
 
     receive_order_via_email_on_finalize = models.BooleanField(verbose_name=_("receive order via email on finalize"), default=True, help_text=_("Check this option if you want to let the GAS be able to send order via mail on finalize"))
 
@@ -465,6 +468,7 @@ class SupplierAgent(models.Model):
     class Meta:
         verbose_name = _('supplier agent')
         verbose_name_plural = _('supplier agents')
+        app_label = "app_supplier"
 
     @property
     def parent(self):
@@ -537,6 +541,7 @@ class Certification(models.Model, PermissionResource):
         verbose_name = _("certification")
         verbose_name_plural = _("certifications")
         ordering = ["name"]
+        app_label = "app_supplier"
 
     #-------------- Authorization API ---------------#
     
@@ -583,6 +588,7 @@ class ProductCategory(models.Model, PermissionResource):
         verbose_name=_('Product category')
         verbose_name_plural = _("Product categories")
         ordering = ('name',)
+        app_label = "app_supplier"
 
     def __unicode__(self):
         return self.name
@@ -667,6 +673,7 @@ class ProductMU(models.Model, PermissionResource):
         verbose_name=_("measure unit")
         verbose_name_plural=_("measure units")
         ordering = ('name',)
+        app_label = "app_supplier"
     
         #-------------- Authorization API ---------------#
     
@@ -724,6 +731,7 @@ class ProductPU(models.Model, PermissionResource):
         verbose_name=_("product unit")
         verbose_name_plural=_("product units")
         ordering = ('name',)
+        app_label = "app_supplier"
     
         #-------------- Authorization API ---------------#
     
@@ -779,6 +787,7 @@ class UnitsConversion(models.Model):
         verbose_name_plural = _("units conversions")
         ordering = ('src','dst', 'amount')
         unique_together = (('src','dst'),)
+        app_label = "app_supplier"
 
 
 #------------------------------------------------------------------------------
@@ -851,6 +860,7 @@ class Product(models.Model, PermissionResource):
         verbose_name = _('product')
         verbose_name_plural = _('products')
         ordering = ('name',)
+        app_label = "app_supplier"
 
     def __unicode__(self):
         rv = u" %s " % (self.name)
@@ -1037,6 +1047,7 @@ class SupplierStock(models.Model, PermissionResource):
         verbose_name = _('supplier stock')
         verbose_name_plural = _('supplier stocks')
         ordering = ('supplier_category__sorting', 'product__category')
+        app_label = "app_supplier"
         #Fixtures do not work: to be checked and then re-enabled TODO
         #unique_together = (('code', 'supplier'),)
 
@@ -1312,6 +1323,7 @@ class SupplierProductCategory(models.Model):
         verbose_name = _("supplier product category")
         verbose_name_plural = _("supplier product categories")
         ordering = ('supplier', 'sorting')
+        app_label = "app_supplier"
 
     def __unicode__(self):
         return self.name
