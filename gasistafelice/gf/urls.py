@@ -44,11 +44,6 @@ urlpatterns += patterns('',
     url(r'^%scaptcha/' % settings.URL_PREFIX, include('captcha.urls')),
 )
 
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    )
-
 if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
         url(r'^%srosetta/' % settings.URL_PREFIX, include('rosetta.urls')),

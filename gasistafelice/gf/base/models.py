@@ -472,7 +472,7 @@ class Resource(object):
     def icon(self):
         "Returns default icon for resource"""
         icon = models.ImageField(upload_to="fake")
-        basedir = os.path.join(settings.MEDIA_URL, "nui", "img", settings.THEME)
+        basedir = os.path.join(settings.STATIC_URL, "nui", "img", settings.THEME)
         icon.url = os.path.join(basedir, "%s%s.%s" % (self.resource_type, "128x128", "png"))
         return icon
 

@@ -185,7 +185,7 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
 #Needed to insert images in report
 
 def pisa_fetch_resources(uri, rel):
-    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
     return path
 
 #------------------------------------------------------------------------------

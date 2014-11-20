@@ -17,9 +17,9 @@ except ImportError:
 
 register = template.Library()
 
-@register.simple_tag
-def des_media_url():
-    return settings.MEDIA_URL
+#@register.simple_tag
+#def des_media_url():
+#    return settings.MEDIA_URL
 
 @register.simple_tag
 def des_debug():

@@ -1357,7 +1357,7 @@ class GASMember(models.Model, PermissionResource):
             'rec_count' : querySet.count(),
             'user' : requested_by,
             'total_amount' : self.total_basket,
-            'CSS_URL' : settings.MEDIA_ROOT,
+            'STATIC_URL' : settings.STATIC_URL,
         }
 
         REPORT_TEMPLATE = "blocks/basket/report.html"

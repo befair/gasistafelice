@@ -242,9 +242,9 @@ class Block(BlockSSDataTables):
         return rv
 
     def fetch_resources(uri, rel):
-        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
         log.debug("Order report Pisa image path (%s)" % path)
-        path = os.path.join(settings.MEDIA_ROOT, '/img/icon_beta3.jpg')
+        path = os.path.join(settings.STATIC_ROOT, '/img/icon_beta3.jpg')
         log.debug("Order report Pisa image path (%s)" % path)
         return path
 

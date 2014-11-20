@@ -35,8 +35,6 @@ def login(request, *args, **kw):
     kw['extra_context'] = {
         'VERSION': settings.VERSION,
         'THEME' : settings.THEME,
-        'MEDIA_URL' : settings.MEDIA_URL,
-        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
         'MAINTENANCE_MODE' : settings.MAINTENANCE_MODE,
         'gas_list' : gas_list,
     }
@@ -67,8 +65,6 @@ def registration(request, *args, **kw):
         'registration_form' : form,
         'VERSION': settings.VERSION,
         'THEME' : settings.THEME,
-        'MEDIA_URL' : settings.MEDIA_URL,
-        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
     }
 
     return render_to_response("registration/register.html", context,
@@ -100,8 +96,6 @@ def staff_registration(request, *args, **kw):
             'registration_form' : form,
             'VERSION': settings.VERSION,
             'THEME' : settings.THEME,
-            'MEDIA_URL' : settings.MEDIA_URL,
-            'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX
         }
 
         return render_to_response("registration/staff_register.html", context,

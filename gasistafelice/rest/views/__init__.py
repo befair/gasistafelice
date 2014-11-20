@@ -581,7 +581,7 @@ def list_notifications(request):
 #    
 #        
 #    context = {
-#          'media_url'   : settings.MEDIA_URL
+#          'static_url'   : settings.STATIC_URL
 #        , 'menus': menus
 #    }
 #    
@@ -775,7 +775,7 @@ def list_notifications(request):
 #    fontsize = 14
 #    
 #    filename = '%s_%s_%s.png' % (text, 'arial', fontsize)
-#    file_path = os.sep.join([settings.MEDIA_ROOT, LABELS_DIR, filename])
+#    file_path = os.sep.join([settings.STATIC_ROOT, LABELS_DIR, filename])
 #    
 #    #
 #    # Create label file

@@ -105,7 +105,7 @@ def get_context_menu(request):
     entries += get_external_menu_entries(resource, user)
     
     context = {
-          'media_url': settings.MEDIA_URL
+          'static_url': settings.STATIC_URL
         , 'resource': request.resource
         , 'menu_entries': entries
     }
