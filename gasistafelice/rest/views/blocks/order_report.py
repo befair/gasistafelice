@@ -255,7 +255,7 @@ class Block(BlockSSDataTables):
         if not pdf_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(pdf_data, mimetype='application/pdf')
+            response = HttpResponse(pdf_data, content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv
@@ -267,7 +267,7 @@ class Block(BlockSSDataTables):
         if not html_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(html_data, mimetype='text/html')
+            response = HttpResponse(html_data, content_type='text/html')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".html" 
             rv = response
         return rv

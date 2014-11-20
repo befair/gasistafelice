@@ -468,8 +468,8 @@ APTCHA_LETTER_ROTATION = (-25,25)
 # Ajax_select settings
 
 AJAX_LOOKUP_CHANNELS = {
-    'placechannel' : ( 'base.forms.lookups' , 'PlaceLookup'),
-    'personchannel' : ( 'base.forms.lookups' , 'PersonLookup')
+    'placechannel' : ( 'gf.base.forms.lookups' , 'PlaceLookup'),
+    'personchannel' : ( 'gf.base.forms.lookups' , 'PersonLookup')
 }
 # magically include jqueryUI/js/css
 AJAX_SELECT_BOOTSTRAP = False

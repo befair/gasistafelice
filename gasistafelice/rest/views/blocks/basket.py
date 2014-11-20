@@ -232,7 +232,7 @@ class Block(BlockSSDataTables):
         if not pdf_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(pdf_data, mimetype='application/pdf')
+            response = HttpResponse(pdf_data, content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv

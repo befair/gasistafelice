@@ -262,7 +262,7 @@ class Block(BlockSSDataTables):
         pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8", "ignore")), result ) #, link_callback = fetch_resources )
         if not pdf.err:
-            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
+            response = HttpResponse(result.getvalue(), content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=Suppliers.pdf"
             return response
         return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))

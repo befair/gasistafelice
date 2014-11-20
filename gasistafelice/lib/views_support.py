@@ -129,7 +129,7 @@ def render_datatables(request, records, dt_params, jsonTemplatePath, moreData=No
     iTotalDisplayRecords = dt_params["iTotalDisplayRecords"]
     
     jstonString = render_to_string(jsonTemplatePath, locals()) #prepare the JSON with the response, consider using : from django.template.defaultfilters import escapejs
-    response = HttpResponse(jstonString, mimetype="application/javascript")
+    response = HttpResponse(jstonString, content_type="application/javascript")
 
     #prevent from caching datatables result
     add_never_cache_headers(response)
@@ -173,7 +173,7 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
 
     response_dict.update({'moreData':moreData})
 
-    response =  HttpResponse(json.dumps(response_dict), mimetype='application/javascript')
+    response =  HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
     #prevent from caching datatables result
     add_never_cache_headers(response)

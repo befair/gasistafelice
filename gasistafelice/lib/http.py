@@ -43,20 +43,20 @@ class JsonResponse(HttpResponse):
                 content = serialize('json', object)
         else:
             content = json.dumps(object, ensure_ascii=False, cls=MyJSONEncoder)
-        super(JsonResponse, self).__init__(content, mimetype='application/json')
+        super(JsonResponse, self).__init__(content, content_type='application/json')
 
 #------------------------------------------------------------------------------
 
 class SVGHttpResponse(HttpResponse):
     def __init__(self, *args, **kw):
-        kw['mimetype']="image/svg+xml"
+        kw['content_type']="image/svg+xml"
         HttpResponse.__init__(self, *args, **kw)
 
 #------------------------------------------------------------------------------
 
 class XMLHttpResponse(HttpResponse):
     def __init__(self, *args, **kw):
-        kw['mimetype']="text/xml"
+        kw['content_type']="text/xml"
         HttpResponse.__init__(self, *args, **kw)
 
 #------------------------------------------------------------------------------
