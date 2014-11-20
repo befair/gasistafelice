@@ -61,7 +61,7 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = (
-            'base.backends.AuthenticationParamRoleBackend',
+            'gf.base.backends.AuthenticationParamRoleBackend',
             'flexi_auth.backends.ParamRoleBackend',
         )
 
@@ -107,11 +107,6 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/media/'
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '26lk413y7^-z^t$#u(xh4uv@+##0jh)&_wxzqho655)eux33@k'

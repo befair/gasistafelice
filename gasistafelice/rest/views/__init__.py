@@ -59,8 +59,7 @@ def index(request):
         'INSTALLED_APPS': settings.INSTALLED_APPS,
         'LOGOUT_URL' : settings.LOGOUT_URL,
         'THEME' : settings.THEME,
-        'MEDIA_URL' : settings.MEDIA_URL,
-        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
+        'STATIC_URL' : settings.STATIC_URL,
         'logged_user' : request.logged_user,
         'all_users' : all_users,
     }
