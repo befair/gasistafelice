@@ -187,7 +187,7 @@ class MultiContactField(forms.MultiValueField):
         pref_per_flav = {} # a list of contacts per flavour
 
         for curr_flav in CONTACT_CHOICES:
-            pref_per_flav[curr_flav[0]] = set()
+            pref_per_flav[curr_flav[0]] = []
 
         for curr_contact in data_list:
             if not curr_contact or curr_contact.value.strip() == "":
@@ -197,7 +197,7 @@ class MultiContactField(forms.MultiValueField):
             email_found = email_found or (curr_contact.flavour.lower() ==
                 "email")
 
-            pref_per_flav[curr_contact.flavour].add(curr_contact)
+            pref_per_flav[curr_contact.flavour].append(curr_contact)
 
         for flav,cont_set in pref_per_flav.items():
             if len(cont_set) == 1: # 1 contat for this flavour -> it's preferred
