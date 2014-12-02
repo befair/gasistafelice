@@ -586,25 +586,20 @@ jQuery.retrieve_form = function (action_el) {
     var action_name = action_el.val();
     var action_url = action_el.attr("url");
 	
-    var jqForm = "";
-    var jqMessagelist = "";
-    var form_script = "";
-
     var url = action_url;
 
-    $.ajax({
+    var res = $.ajax({
         url : action_url, 
-        success : function(d){
-
-            jqMessagelist = $(d).find('.messagelist');
-            jqForm = $(d).find('form');
-            jqForm.attr('action', action_url);
-            jqForm.find('.submit-row').each( function () { $(this).remove();});
-            form_script = $(d).find('script');
-        },
         async : false,
-        dataType : "xml", //xml needed to evaluate script by hand later
+        dataType : "xml" //xml needed to evaluate script by hand later
     });
+
+    var d = $(res.responseText);
+    var jqMessagelist = d.find('.messagelist');
+    var jqForm = d.find('form');
+    jqForm.attr('action', action_url);
+    jqForm.find('.submit-row').each( function () { $(this).remove();});
+    var form_script = d.find('script');
 
 	//
 	// Initialize dialog component
