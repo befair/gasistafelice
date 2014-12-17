@@ -1,0 +1,37 @@
+<gdxp protocolVersion = "" creationDate = "" applicationSignature = "">
+    <supplier><!-- * -->
+        <taxCode></taxCode>
+        <vatNumber></vatNumber>
+        <name></name>
+        <address>
+            <street></street>
+            <locality></locality>
+            <zipcode></zipcode>
+            <country></country>
+        </address>
+        <contacts>  
+            <contact><!-- * -->
+                <primary>
+                    <phoneNumber></phoneNumber>
+                    <faxNumber></faxNumber><!-- ? -->
+                    <emailAddress></emailAddress>
+                    <webSite></webSite><!-- ? -->
+                </primary>
+                <extraContact><!-- * -->
+                    <firstName></firstName>
+                    <lastName></lastName>
+                    <phoneNumber></phoneNumber>
+                    <mobileNumber></mobileNumber>
+                    <faxNumber></faxNumber><!-- ? -->
+                    <emailAddress></emailAddress>
+                </extraContact>
+            </contact>
+        </contacts>  
+        <note></note>
+        <products>
+        </products>
+        <extraFields><!-- ? -->
+                <extraField name=""></extraField>
+        </extraFields>
+    </supplier>
+</gdxp> 

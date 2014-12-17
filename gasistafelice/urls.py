@@ -40,8 +40,10 @@ urlpatterns = patterns('',
 
     url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
     (r'^%slookups/' % settings.URL_PREFIX, include('ajax_select.urls')),
-    # RDF middelware
-    (r'^%srdf/' % settings.URL_PREFIX, include('rdf_gf.urls')),
+    ## RDF middelware
+    #(r'^%srdf/' % settings.URL_PREFIX, include('rdf_gf.urls')),
+    # GDXP middelware
+    (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp_gf.urls')),
 )
 
 urlpatterns += patterns('',
