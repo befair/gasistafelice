@@ -1,0 +1,42 @@
+    <supplier><!-- * -->
+        <name>{{ el.name|escape }}</name>
+        <taxCode>{{ el.ssn|escape }}</taxCode>
+        <vatNumber>{{ el.vat_number|escape }}</vatNumber>
+        <note>{{ el.note|escape }}</note>
+        <address>
+            <street>{{ el.seat.address|escape }}</street>
+            <locality>{{ el.seat.city|escape }}</locality>
+            <zipcode>{{ el.seat.zipcode|escape }}</zipcode>
+            <country>{{ el.seat.country|escape }}</country>
+        </address>
+        <contacts>  
+            <contact><!-- * -->
+                <primary>
+                    <phoneNumber>{{ el.preferred_phone_address|escape }}</phoneNumber>
+                    <faxNumber>{{ el.preferred_fax_address|escape }}</faxNumber><!-- ? -->
+                    <emailAddress>{{ el.preferred_email_address|escape }}</emailAddress>
+                    <webSite>{{ el.website|escape }}</webSite><!-- ? -->
+                </primary>
+                {% with person=el.frontman %}
+                <extraContact><!-- * -->
+                    <firstName>{{ person.name|escape }}</firstName>
+                    <lastName>{{ person.surname|escape }}</lastName>
+                    <phoneNumber>{{ person.preferred_phone_address|escape }}</phoneNumber>
+                    <mobileNumber></mobileNumber>
+                    <faxNumber>{{ person.preferred_fax_address|escape }}</faxNumber><!-- ? -->
+                    <emailAddress>{{ person.preferred_email_address|escape }}</emailAddress>
+                </extraContact>
+                {% endwith %}
+                {% for person in el.agents %}
+                <extraContact><!-- * -->
+                    <firstName>{{ person.name|escape }}</firstName>
+                    <lastName>{{ person.surname|escape }}</lastName>
+                    <phoneNumber>{{ person.preferred_phone_address|escape }}</phoneNumber>
+                    <mobileNumber></mobileNumber>
+                    <faxNumber>{{ person.preferred_fax_address|escape }}</faxNumber><!-- ? -->
+                    <emailAddress>{{ person.preferred_email_address|escape }}</emailAddress>
+                </extraContact>
+                {% endfor %}
+            </contact>
+        </contacts>  
+
