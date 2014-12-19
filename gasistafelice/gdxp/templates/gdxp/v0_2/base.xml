@@ -1,0 +1,44 @@
+<gdxp protocolVersion = "0.2" creationDate = "{{ now }}" applicationSignature = "GasistaFelice">
+    {% for el in qs %} 
+        {% include "gdxp/v0_2/supplier_info.xml" %}
+        <products>
+            <product><!-- * -->
+                <sku></sku><!-- ? -->
+                <name></name>
+                <category></category>
+                <um></um>
+                <description></description>
+                <orderInfo>
+                    <packageQty></packageQty><!-- ? -->
+                    <minQty></minQty><!-- ? -->
+                    <mulQty></mulQty><!-- ? -->
+                    <maxQty></maxQty><!-- ? -->
+                    <umPrice></umPrice>
+                    <shippingCost></shippingCost><!-- ? -->
+                </orderInfo>
+                <variants><!-- ? -->
+                    <variant name=""><!-- + -->
+                        <value></value>
+                    </variant>
+                </variants>
+                <extraFields><!-- ? -->
+                    <extraField name=""></extraField>
+                </extraFields>
+            </product>
+        </products>
+        <orders>
+            <order><!-- * -->
+                <openDate></openDate>
+                <closeDate></closeDate>
+                <deliveryDate></deliveryDate><!-- ? -->
+                <extraFields><!-- ? -->
+                    <extraField name=""></extraField>
+                </extraFields>
+            </order>
+        </orders>
+        <extraFields><!-- ? -->
+                <extraField name=""></extraField>
+        </extraFields>
+    </supplier>
+    {% endfor %}
+</gdxp> 
