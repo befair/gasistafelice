@@ -11,7 +11,7 @@ from xml.dom import minidom
 from lxml import etree as letree
 
 from proxies import proxymodels
-from const import EXTRA, SINGLE, TREE, MULTIPLE
+from const import EXTRA, SINGLE, TREE, MULTIPLE, RETURN_CODE
 
 from datetime import datetime
 
@@ -67,6 +67,10 @@ def to_element( root, prox_instance,**kwargs):
         ele,
         gdxp_attr=prox_instance.contacts_tree
     )
+    build_element(
+        ele,
+        gdxp_attr=prox_instance.extra_fields_tree
+    )
                 
     return root
 
@@ -83,7 +87,7 @@ def build_element(element, prox_instance=None, field_name=None, **kwargs):
     except AttributeError as e:
         return
 
-    if gdxp_attr == 0:
+    if gdxp_attr in RETURN_CODE.values():
         return
 
     if gdxp_attr[0][0] == SINGLE:
@@ -95,19 +99,19 @@ def build_element(element, prox_instance=None, field_name=None, **kwargs):
         for elem in gdxp_attr[1]:
             build_element(element, gdxp_attr=elem) 
     elif gdxp_attr[0][0] == EXTRA:
-        app = element
-        for elem in gdxp_attr[1]:
-            if elem[0] == 'ELEMENT':
-                app = ET.SubElement(app, 
-                    '%s' % (elem[1]) 
-                )
-            else:
-                attr = {elem[2][0] : elem[2][1]}
-                app = ET.SubElement(app, 
-                    '%s' % (elem[0]),
-                    attr 
-                )
-                app.text = elem[1]
+        #app = element
+        #for elem in gdxp_attr[1]:
+            #if elem[0] == 'ELEMENT':
+            #    app = ET.SubElement(app, 
+            #        '%s' % (elem[1]) 
+            #    )
+            #else:
+            attr = {gdxp_attr[1][2][0] : gdxp_attr[1][2][1]}
+            element = ET.SubElement(element, 
+                '%s' % (gdxp_attr[1][0]),
+                attr 
+            )
+            element.text = gdxp_attr[1][1]
 
     elif gdxp_attr[0][0] == TREE:
         app = element

@@ -5,14 +5,14 @@ CONTACT_CHOICES_MAP = [
     (EMAIL, 'emailAddress'),
     (FAX, 'faxNumber'),
 ]
+RETURN_CODE = {
+    'contacts' : 10,
+    'extraFields' : 11,
+}
 
 
 EXTRA = 'extra'
 SINGLE = 'single'
 TREE = 'tree'
 MULTIPLE = 'multiple'
-#FIELD_TYPE = [
-#    (EXTRA, 'extra'),
-#    (SINGLE, 'single'),
-#    (TREE, 'tree'),
-#]
+

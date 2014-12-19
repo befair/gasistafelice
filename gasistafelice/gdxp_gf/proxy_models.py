@@ -9,136 +9,145 @@
 from gasistafelice.supplier.models import Supplier, SupplierStock
 from base.const import PHONE,EMAIL,FAX
 
-from const import EXTRA, SINGLE, TREE, MULTIPLE
+from const import EXTRA, SINGLE, TREE, MULTIPLE, RETURN_CODE
 
-#class SupplierStockGDXP(SupplierStock):
-#
-#    class Meta:
-#    
-#        proxy = True
-#        
-#    def supplier_gdxp(self):
-#
-#        return ['resource',
-#                'gf',
-#                ['rdf:resource',self.supplier]
-#                
-#        ]
-#
-#    def product_gdxp(self):
-#
-#        return ['element',
-#                'gf',
-#                ['rdf:datatype','\"&xsd;string\"'],
-#               
-#                self.product.name if self.product is not None else ""
-#
-#        ]
-#        #return ['resource',
-#        #        'gf',
-#        #        ['rdf:resource',self.product]
-#        #]
-#
-#    def supplier_category_gdxp(self):
-#
-#        return ['element',
-#                'gf',
-#                ['rdf:datatype','\"&xsd;string\"'],
-#                
-#                self.supplier_category.name if self.supplier_category is not None else ""
-#
-#        ]
-#        #return ['resource',
-#        #        'gf',
-#        #        ['rdf:resource','']
-#        #]
-#
-#    def image_gdxp(self):
-#
-#        return ['element',
-#                'dc',
-#                ['',''],
-#                self.image.name 
-#        ]
-#
-#    def price_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;decimal\"'],
-#                str(self.price)
-#        ]
-#
-#    def availability_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;boolean\"'],
-#                self.availability
-#        ]
-#    def code_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;string\"'],
-#                self.code
-#        ]
-#
-#    def amount_available_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;integer\"'],
-#                str(self.amount_available)
-#        ]
-#
-#    def units_minimum_amount_gdxp(self):
-#
-#        return ['element',
-#                 'gf', 
-#                ['rdf:datatype','\"&xsd;integer\"'],
-#                str(self.units_minimum_amount)
-#        ]
-#
-#    def units_per_box_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;integer\"'],
-#                str(self.units_per_box)
-#        ]
-#
-#    def detail_minimum_amount_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;decimal\"'],
-#                str(self.detail_minimum_amount)
-#        ]
-#
-#    def detail_step_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;decimal\"'],
-#                str(self.detail_step)
-#        ]
-#
-#    def delivery_notes_gdxp(self):
-#
-#        return ['element',
-#                 'gf',
-#                ['rdf:datatype','\"&xsd;string\"'],
-#                self.delivery_notes
-#        ]
-#        
-#    #def deleted_gdxp(self):
-#
-#    #    return ['element',
-#    #             'gf',
-#    #            ['rdf:datatype','\"&xsd;boolean\"'],
-#    #            self.deleted
-#    #    ]
+
+
+class SupplierStockGDXP(SupplierStock):
+
+    class Meta:
+    
+        proxy = True
+        
+    #def supplier_gdxp(self):
+
+    #    return ['resource',
+    #            'gf',
+    #            ['rdf:resource',self.supplier]
+    #            
+    #    ]
+
+    #def product_gdxp(self):
+
+    #    return ['element',
+    #            'gf',
+    #            ['rdf:datatype','\"&xsd;string\"'],
+    #           
+    #            self.product.name if self.product is not None else ""
+
+    #    ]
+
+    def supplier_category_gdxp(self):
+
+        return [[TREE],
+                
+                self.supplier_category.name if self.supplier_category is not None else ""
+
+        ]
+        return [[EXTRA],
+                [
+                    ['ELEMENT',
+                    'extraFields'
+                    ],
+                    ['extraField',
+                    self.flavour,
+                        ['name',
+                        'flavour'
+                        ]
+                    ]
+                ]
+                ]
+        #return ['resource',
+        #        'gf',
+        #        ['rdf:resource','']
+        #]
+
+    def image_gdxp(self):
+
+        return ['element',
+                'dc',
+                ['',''],
+                self.image.name 
+        ]
+
+    def price_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;decimal\"'],
+                str(self.price)
+        ]
+
+    def availability_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;boolean\"'],
+                self.availability
+        ]
+    def code_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;string\"'],
+                self.code
+        ]
+
+    def amount_available_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;integer\"'],
+                str(self.amount_available)
+        ]
+
+    def units_minimum_amount_gdxp(self):
+
+        return ['element',
+                 'gf', 
+                ['rdf:datatype','\"&xsd;integer\"'],
+                str(self.units_minimum_amount)
+        ]
+
+    def units_per_box_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;integer\"'],
+                str(self.units_per_box)
+        ]
+
+    def detail_minimum_amount_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;decimal\"'],
+                str(self.detail_minimum_amount)
+        ]
+
+    def detail_step_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;decimal\"'],
+                str(self.detail_step)
+        ]
+
+    def delivery_notes_gdxp(self):
+
+        return ['element',
+                 'gf',
+                ['rdf:datatype','\"&xsd;string\"'],
+                self.delivery_notes
+        ]
+        
+    #def deleted_gdxp(self):
+
+    #    return ['element',
+    #             'gf',
+    #            ['rdf:datatype','\"&xsd;boolean\"'],
+    #            self.deleted
+    #    ]
 
 class SupplierGDXP(Supplier):
 
@@ -157,6 +166,16 @@ class SupplierGDXP(Supplier):
                         ]
                     ]
 
+    extra_fields_tree = [[TREE], 
+                        [
+                            ['ELEMENT',
+                             'extraFields'
+                            ],
+                            [[MULTIPLE],
+                                []
+                            ]
+                        ]
+                    ]
 
     def name_gdxp(self):
 
@@ -293,7 +312,7 @@ class SupplierGDXP(Supplier):
         if len(agents) > 0:
             self.contacts_tree[1].append(agents)
 
-        return 0
+        return RETURN_CODE['contacts']
         #return [[TREE],
         #        agents
         #        ]
@@ -342,83 +361,89 @@ class SupplierGDXP(Supplier):
                 ]
             ])
 
-        return 0
+        return RETURN_CODE['contacts']
     
     def flavour_gdxp(self):
     
-        return [[EXTRA],
-                [
-                    ['ELEMENT',
-                    'extraFields'
-                    ],
+        flavour = [[EXTRA],
+                #[
+                    #['ELEMENT',
+                    #'extraFields'
+                    #],
                     ['extraField',
                     self.flavour,
                         ['name',
                         'flavour'
                         ]
                     ]
+                #]
                 ]
-                ]
+        self.extra_fields_tree[1][1][1].append(flavour)
+
+        return RETURN_CODE['extraFields']
     
     def n_employers_gdxp(self):
     
-        return [[EXTRA],
-                [
-                    ['ELEMENT',
-                    'extraFields'
-                    ],
+        n_employers =  [[EXTRA],
+                #[
+                    #['ELEMENT',
+                    #'extraFields'
+                    #],
                     ['extraField',
                     self.n_employers,
                         ['name',
                         'employersNumber'
                         ]
                     ]
+                #]
                 ]
-                ]
+        
+        self.extra_fields_tree[1][1][1].append(n_employers)
+        return RETURN_CODE['extraFields']
     
     def certifications_gdxp(self):
     
         certifications = []
         
         for cert in self.certifications.all():
-            #certifications.append([[SINGLE],
-            #    ['certification',
-            #    cert.name
-            #]
-            #])
-            certifications.append([[EXTRA],
-                [
-                    ['ELEMENT',
-                    'extraFields'
-                    ],
+            #certifications.append([[EXTRA],
+            self.extra_fields_tree[1][1][1].append([[EXTRA],
+                #[
+                    #['ELEMENT',
+                    #'extraFields'
+                    #],
                     ['extraField',
                      cert.name,
                         ['name',
                         'certification'
                         ]
                     ]
-                ]
+                #]
                 ])
 
-        return [[MULTIPLE],
-                certifications
-                ]
+        #return [[MULTIPLE],
+        #        certifications
+        #        ]
+        return RETURN_CODE['extraFields']
     
     def logo_gdxp(self):
     
-        return [[EXTRA],
-                [
-                    ['ELEMENT',
-                    'extraFields'
-                    ],
+        logo = [[EXTRA],
+                #[
+                    #['ELEMENT',
+                    #'extraFields'
+                    #],
                     ['extraField',
                     self.logo.name,
                         ['name',
                         'logo'
                         ]
                     ]
+                #]
                 ]
-                ]
+
+        self.extra_fields_tree[1][1][1].append(logo)
+        return RETURN_CODE['extraFields']
     
     def contact_set_gdxp(self):
    
@@ -464,7 +489,7 @@ class SupplierGDXP(Supplier):
                 ]
             ])
 
-        return 0
+        return RETURN_CODE['contacts']
    
          
         #contacts = []
@@ -482,20 +507,23 @@ class SupplierGDXP(Supplier):
     
     def iban_gdxp(self):
     
-        return [[EXTRA],
-                [
-                    ['ELEMENT',
-                    'extraFields'
-                    ],
+        iban = [[EXTRA],
+                #[
+                    #['ELEMENT',
+                    #'extraFields'
+                    #],
                     ['extraField',
                     self.iban,
                         ['name',
                         'iban'
                         ]
                     ]
-                ]
+                #]
                 ]
     
+        self.extra_fields_tree[1][1][1].append(iban)
+        return RETURN_CODE['extraFields']
+
     def description_gdxp(self):
     
         return [[SINGLE],
