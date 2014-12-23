@@ -2,39 +2,23 @@
     {% for el in qs %} 
         {% include "gdxp/v0_2/supplier_info.xml" %}
         <products>
-            <product><!-- * -->
-                <sku></sku><!-- ? -->
-                <name></name>
-                <category></category>
-                <um></um>
-                <description></description>
-                <orderInfo>
-                    <packageQty></packageQty><!-- ? -->
-                    <minQty></minQty><!-- ? -->
-                    <mulQty></mulQty><!-- ? -->
-                    <maxQty></maxQty><!-- ? -->
-                    <umPrice></umPrice>
-                    <shippingCost></shippingCost><!-- ? -->
-                </orderInfo>
-                <variants><!-- ? -->
-                    <variant name=""><!-- + -->
-                        <value></value>
-                    </variant>
-                </variants>
-                <extraFields><!-- ? -->
-                    <extraField name=""></extraField>
-                </extraFields>
-            </product>
+        {% if opts.opt_catalog == 'True' %}
+            {% for stock in el.stocks%}
+                {% include "gdxp/v0_2/product_info.xml" %}
+            {% endfor %}
+        {% endif %}
         </products>
         <orders>
-            <order><!-- * -->
-                <openDate></openDate>
-                <closeDate></closeDate>
-                <deliveryDate></deliveryDate><!-- ? -->
-                <extraFields><!-- ? -->
-                    <extraField name=""></extraField>
-                </extraFields>
-            </order>
+            {% if opts.opt_order == 'True' %}
+                <order><!-- * -->
+                    <openDate></openDate>
+                    <closeDate></closeDate>
+                    <deliveryDate></deliveryDate><!-- ? -->
+                    <extraFields><!-- ? -->
+                        <extraField name=""></extraField>
+                    </extraFields>
+                </order>
+            {% endif %}
         </orders>
         <extraFields><!-- ? -->
                 <extraField name=""></extraField>
