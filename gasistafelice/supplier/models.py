@@ -1066,6 +1066,14 @@ class SupplierStock(models.Model, PermissionResource):
         return self.price/(1 + self.product.vat_percent)
 
     @property
+    def umprice(self):
+        #WAS: return self.price/self.product.muppu
+        try:
+            return self.price/self.product.muppu
+        except ZeroDivisionError as e:
+            return None
+
+    @property
     def icon(self):
         return self.image or self.category.icon
 
