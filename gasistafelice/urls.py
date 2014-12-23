@@ -43,7 +43,8 @@ urlpatterns = patterns('',
     ## RDF middelware
     #(r'^%srdf/' % settings.URL_PREFIX, include('rdf_gf.urls')),
     # GDXP middelware
-    (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp_gf.urls')),
+    #WAS: (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp_gf.urls')),
+    (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp.urls')),
 )
 
 urlpatterns += patterns('',
