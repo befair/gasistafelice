@@ -16,23 +16,11 @@
             <variants><!-- ? -->
             </variants>
             <extraFields><!-- ? -->
-                <extraField name="supplier_category">
-                    {{ stock.supplier_category.name|escape }}
-                </extraField>
-                <extraField name="units_per_box">
-                    {{ stock.units_per_box|escape }}
-                </extraField>
-                <extraField name="detail_minimum_amount">
-                    {{ stock.detail_minimum_amount|escape }}
-                </extraField>
-                <extraField name="detail_step">
-                    {{ stock.detail_step|escape }}
-                </extraField>
-                <extraField name="delivery_notes">
-                    {{ stock.delivery_notes|escape }}
-                </extraField>
-                <extraField name="pu">
-                    {{ stock.product.pu.name|escape}}
-                </extraField>
+                <extraField name="supplier_category">{{ stock.supplier_category.name|escape }}</extraField>
+                <extraField name="units_per_box">{{ stock.units_per_box|escape }}</extraField>
+                <extraField name="detail_minimum_amount">{{ stock.detail_minimum_amount|escape }}</extraField>
+                <extraField name="detail_step">{{ stock.detail_step|escape }}</extraField>
+                <extraField name="delivery_notes">{{ stock.delivery_notes|escape }}</extraField>
+                <extraField name="pu">{{ stock.product.pu.name|escape}}</extraField>
             </extraFields>
         </product>

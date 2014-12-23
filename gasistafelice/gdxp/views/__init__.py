@@ -11,40 +11,37 @@ def suppliers(request):
     """ 
     GDXP API
 
-    suppliers?<key>=<value>*&<option>=<True | other>*
+    suppliers?<key>=<value>*&opt_<option>=<0|1>*
     
     Options are:
 
-    - opt_catalog
-    - opt_order
+    - catalog
+    - order
      
     """
 
-    qs_filter = request.GET.copy() 
-
-    if not qs_filter:
-        return HttpResponse('imposta un filtro')
-
+    # If querystring is empty return all suppliers and catalogs
     supplier_qs = Supplier.objects.all()
-    options = {}
+    options = {
+        'opt_catalog' : True,
+        'opt_order' : False,
+    }
 
+    qs_filter = request.GET.copy() 
     for k,values in qs_filter.iterlists(): 
         for v in values:
-            try:
-                is_opt = k.startswith('opt')
-            except AttributeError as e:
-                is_opt = False
+
+            if k.startswith('opt_'):
+                options.update({k : bool(int(v))})
+            else:
                 
-            if not is_opt:
                 try:
                     supplier_qs = supplier_qs.filter(**{k : v})
                 except FieldError as e:
-                    pass
-            else:
-                options.update({k : v})
+                    return HttpResponse('<h1>Request parameter is not supported</h1>', status=400, content_type='text/xml')
 
     if not supplier_qs:
-        return HttpResponse('da ritornare un 404 not found')
+        return HttpResponse('<h1>No supplier found for the requested filter</h1>', status=404, content_type='text/xml')
 
     gdxp_version = 'v0_2'
     return render_to_xml_response(

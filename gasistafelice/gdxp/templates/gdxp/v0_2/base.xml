@@ -2,14 +2,14 @@
     {% for el in qs %} 
         {% include "gdxp/v0_2/supplier_info.xml" %}
         <products>
-        {% if opts.opt_catalog == 'True' %}
-            {% for stock in el.stocks%}
+        {% if opts.opt_catalog %}
+            {% for stock in el.stocks %}
                 {% include "gdxp/v0_2/product_info.xml" %}
             {% endfor %}
         {% endif %}
         </products>
         <orders>
-            {% if opts.opt_order == 'True' %}
+            {% if opts.opt_order %}
                 <order><!-- * -->
                     <openDate></openDate>
                     <closeDate></closeDate>

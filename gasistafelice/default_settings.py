@@ -158,6 +158,7 @@ INSTALLED_APPS = [
     'captcha',
     'ajax_select',
     'south',
+    'gdxp',
     #'django.contrib.staticfiles',
 ]
 
