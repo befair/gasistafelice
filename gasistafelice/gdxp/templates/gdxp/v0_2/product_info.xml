@@ -2,7 +2,7 @@
         <product><!-- * -->
             <sku>{{ stock.code|escape }}</sku><!-- ? -->
             <name>{{ stock.product.name|escape }}</name>
-            <category>{{ stock.product.category.name|escape }}</category>
+            <category>{{ stock.product.category.name.strip|escape }}</category>
             <um>{{ stock.product.mu.name|escape }}</um>
             <description>{{ stock.product.description|escape }}</description>
             <orderInfo>
@@ -10,13 +10,13 @@
                 <minQty>{{ stock.units_minimum_amount|escape }}</minQty><!-- ? -->
                 <mulQty></mulQty><!-- ? -->
                 <maxQty>{{ stock.amount_available|escape }}</maxQty><!-- ? -->
-                <umPrice>{{ stock.umprice|escape }}</umPrice>
+                <umPrice>{{ stock.umprice|floatformat:"-4"|escape }}</umPrice>
                 <shippingCost>0</shippingCost><!-- ? -->
             </orderInfo>
             <variants><!-- ? -->
             </variants>
             <extraFields><!-- ? -->
-                <extraField name="supplier_category">{{ stock.supplier_category.name|escape }}</extraField>
+                <extraField name="supplier_category">{{ stock.supplier_category.name.strip|escape }}</extraField>
                 <extraField name="units_per_box">{{ stock.units_per_box|escape }}</extraField>
                 <extraField name="detail_minimum_amount">{{ stock.detail_minimum_amount|escape }}</extraField>
                 <extraField name="detail_step">{{ stock.detail_step|escape }}</extraField>
