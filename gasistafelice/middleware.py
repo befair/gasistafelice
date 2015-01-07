@@ -93,17 +93,13 @@ class UpdateRequestUserMiddleware(object):
         """
         request.logged_user = request.user
 
-        s = SessionStore()
-
-        s['user_id'] = request.logged_user.pk
-        s['last_login'] = request.logged_user.last_login
-
-        s.save()
-
         if request.user and not \
             isinstance(request.user, AnonymousUser):
 
             if request.session.get('user_to_simulate'):
                 request.user = User.objects.get(pk=request.session['user_to_simulate'])
+
+            request.session['logged_user_id'] = request.logged_user.pk
+            request.session['user_id'] = request.user.pk
 
         return 
