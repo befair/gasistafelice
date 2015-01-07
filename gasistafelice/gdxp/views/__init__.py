@@ -7,6 +7,11 @@ from supplier.models import Supplier
 
 from django.core.exceptions import FieldError
 
+from django.core.servers.basehttp import FileWrapper
+
+import tempfile
+import os
+
 def suppliers(request):
     """ 
     GDXP API
@@ -17,6 +22,7 @@ def suppliers(request):
 
     - catalog
     - order
+    - download
      
     """
 
@@ -25,6 +31,7 @@ def suppliers(request):
     options = {
         'opt_catalog' : True,
         'opt_order' : False,
+        'opt_download' : False,
     }
 
     qs_filter = request.GET.copy() 
@@ -44,7 +51,28 @@ def suppliers(request):
         return HttpResponse('<h1>No supplier found for the requested filter</h1>', status=404, content_type='text/xml')
 
     gdxp_version = 'v0_2'
-    return render_to_xml_response(
+
+    xml_response = render_to_xml_response(
         'gdxp/%s/base.xml' % gdxp_version, {'qs' : supplier_qs, 'opts' : options}
     )
 
+    if options['opt_download']:
+        return file_download_response(xml_response)
+    else:
+        return xml_response
+
+def file_download_response(xml_response):
+    """ """
+    temp = tempfile.NamedTemporaryFile()
+    splitted = xml_response.content
+    splitted.split("\n")
+    for line in splitted:
+        temp.file.write(line)
+    temp.file.seek(0)
+    response = HttpResponse(
+        temp,
+        mimetype='application/force-download'
+    )
+    response['Content-Disposition'] = "attachment; filename=%s" % temp.name
+    response['Content-Length'] = os.stat(temp.name).st_size
+    return response
