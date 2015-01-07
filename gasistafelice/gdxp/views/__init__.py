@@ -9,8 +9,7 @@ from django.core.exceptions import FieldError
 
 from django.core.servers.basehttp import FileWrapper
 
-import tempfile
-import os
+import urllib
 
 def suppliers(request):
     """ 
@@ -56,23 +55,9 @@ def suppliers(request):
         'gdxp/%s/base.xml' % gdxp_version, {'qs' : supplier_qs, 'opts' : options}
     )
 
-    if options['opt_download']:
-        return file_download_response(xml_response)
-    else:
-        return xml_response
-
-def file_download_response(xml_response):
-    """ """
-    temp = tempfile.NamedTemporaryFile()
-    splitted = xml_response.content
-    splitted.split("\n")
-    for line in splitted:
-        temp.file.write(line)
-    temp.file.seek(0)
-    response = HttpResponse(
-        temp,
-        mimetype='application/force-download'
+    fname = "GF_%s.gdxp" % urllib.quote_plus(
+        u"_".join(map(unicode, supplier_qs))
     )
-    response['Content-Disposition'] = "attachment; filename=%s" % temp.name
-    response['Content-Length'] = os.stat(temp.name).st_size
-    return response
+    xml_response['Content-Disposition'] = "attachment; filename=%s" % fname
+    return xml_response
+

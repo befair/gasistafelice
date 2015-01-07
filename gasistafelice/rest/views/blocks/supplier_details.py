@@ -44,16 +44,6 @@ class Block(details.Block):
                     url = reverse('admin:supplier_supplierconfig_change', args=(request.resource.config.pk,))
             )
 
-            #gdxp_export = ResourceBlockAction(
-            #        block_name = self.BLOCK_NAME,
-            #        resource = request.resource,
-            #        name="export", verbose_name=_("Export"),
-            #        popup_form=False,
-            #        url = "%s?%s" % (reverse('gdxp.views.suppliers'), "pk=%s&opt_catalog=0&opt_download=1" % request.resource.pk),
-            #        method="GET"
-            #)
-            #user_actions.insert(0, gdxp_export)
-
             for i,act in enumerate(user_actions):
                 # Change URL for action EDIT, insert "configure" action
                 if act.name == EDIT:
@@ -65,11 +55,10 @@ class Block(details.Block):
                 ResourceBlockAction(
                     block_name = self.BLOCK_NAME,
                     resource = request.resource,
-                    name="export", verbose_name=_("Export"),
+                    name="export", verbose_name="GDXP",
                     popup_form=False,
-                    #MATTEO
-                    #WAS: url = "%s?%s" % (reverse('gdxp.views.suppliers'), "pk=%s&opt_catalog=0&opt_download=1" % request.resource.pk),
-                    #method="GET"
+                    url = "%s?%s" % (reverse('gdxp.views.suppliers'), "pk=%s&opt_catalog=0&opt_download=1" % request.resource.pk),
+                    method="OPENURL"
                 ),
             ]
 
@@ -80,19 +69,4 @@ class Block(details.Block):
         autoselect_fields_check_can_add(form_class, Supplier, self.request.user)
         return form_class
 
-
-    def get_response(self, request, resource_type, resource_id, args):
-        """ MATTEO """
-
-        self.request = request
-        self.resource = resource = request.resource
-
-        if args == EXPORT_GDXP:
-            #MATTEO
-            #WAS:request.META['QUERY_STRING'] = "pk=%s&opt_catalog=0&opt_download=1" % request.resource.pk
-            #WAS:request.META['PATH_INFO'] = reverse('gdxp.views.suppliers')
-            #WAS:return suppliers(request)
-            return HttpResponseRedirect("%s?%s" % (reverse('gdxp.views.suppliers'), "pk=%s&opt_catalog=0&opt_download=1" % request.resource.pk))
-        else:
-            return super(Block, self).get_response(request, resource_type, resource_id, args)
 
