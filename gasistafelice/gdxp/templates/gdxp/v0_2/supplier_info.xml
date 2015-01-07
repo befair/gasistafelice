@@ -1,40 +1,40 @@
     <supplier><!-- * -->
         <name>{{ el.name|escape }}</name>
-        <taxCode>{{ el.ssn|escape }}</taxCode>
-        <vatNumber>{{ el.vat_number|escape }}</vatNumber>
-        <note>{{ el.note|escape }}</note>
+        <taxCode>{{ el.ssn|default:""|escape }}</taxCode>
+        <vatNumber>{{ el.vat_number|default:""|escape }}</vatNumber>
+        <note>{{ el.note|default:""|escape }}</note>
         <address>
-            <street>{{ el.seat.address|escape }}</street>
-            <locality>{{ el.seat.city|escape }}</locality>
-            <zipcode>{{ el.seat.zipcode|escape }}</zipcode>
-            <country>{{ el.seat.country|escape }}</country>
+            <street>{{ el.seat.address|default:""|escape }}</street>
+            <locality>{{ el.seat.city|default:""|escape }}</locality>
+            <zipcode>{{ el.seat.zipcode|default:""|escape }}</zipcode>
+            <country>{{ el.seat.country|default:""|escape }}</country>
         </address>
         <contacts>  
             <contact><!-- * -->
                 <primary>
-                    <phoneNumber>{{ el.preferred_phone_address|escape }}</phoneNumber>
-                    <faxNumber>{{ el.preferred_fax_address|escape }}</faxNumber><!-- ? -->
-                    <emailAddress>{{ el.preferred_email_address|escape }}</emailAddress>
-                    <webSite>{{ el.website|escape }}</webSite><!-- ? -->
+                    <phoneNumber>{{ el.preferred_phone_address|default:""|escape }}</phoneNumber>
+                    <faxNumber>{{ el.preferred_fax_address|default:""|escape }}</faxNumber><!-- ? -->
+                    <emailAddress>{{ el.preferred_email_address|default:""|escape }}</emailAddress>
+                    <webSite>{{ el.website|default:""|escape }}</webSite><!-- ? -->
                 </primary>
                 {% with person=el.frontman %}
                 <extraContact><!-- * -->
-                    <firstName>{{ person.name|escape }}</firstName>
-                    <lastName>{{ person.surname|escape }}</lastName>
-                    <phoneNumber>{{ person.preferred_phone_address|escape }}</phoneNumber>
+                    <firstName>{{ person.name|default:""|escape }}</firstName>
+                    <lastName>{{ person.surname|default:""|escape }}</lastName>
+                    <phoneNumber>{{ person.preferred_phone_address|default:""|escape }}</phoneNumber>
                     <mobileNumber></mobileNumber>
-                    <faxNumber>{{ person.preferred_fax_address|escape }}</faxNumber><!-- ? -->
-                    <emailAddress>{{ person.preferred_email_address|escape }}</emailAddress>
+                    <faxNumber>{{ person.preferred_fax_address|default:""|escape }}</faxNumber><!-- ? -->
+                    <emailAddress>{{ person.preferred_email_address|default:""|escape }}</emailAddress>
                 </extraContact>
                 {% endwith %}
                 {% for person in el.agents %}
                 <extraContact><!-- * -->
                     <firstName>{{ person.name|escape }}</firstName>
                     <lastName>{{ person.surname|escape }}</lastName>
-                    <phoneNumber>{{ person.preferred_phone_address|escape }}</phoneNumber>
+                    <phoneNumber>{{ person.preferred_phone_address|default:""|escape }}</phoneNumber>
                     <mobileNumber></mobileNumber>
-                    <faxNumber>{{ person.preferred_fax_address|escape }}</faxNumber><!-- ? -->
-                    <emailAddress>{{ person.preferred_email_address|escape }}</emailAddress>
+                    <faxNumber>{{ person.preferred_fax_address|default:""|escape }}</faxNumber><!-- ? -->
+                    <emailAddress>{{ person.preferred_email_address|default:""|escape }}</emailAddress>
                 </extraContact>
                 {% endfor %}
             </contact>

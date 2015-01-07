@@ -119,7 +119,6 @@ SingleSupplierStockFormSet = formset_factory(
 )
 
 
-
 #--------------------Supplier Stock-----------------------------------------------------------
 
 class EditStockForm(forms.ModelForm):
@@ -166,6 +165,7 @@ class EditStockForm(forms.ModelForm):
     detail_step = TolerantDecimalField(label=_("detail step").capitalize())
 
     def __init__(self, request, *args, **kw):
+        self.request = request
         super(EditStockForm, self).__init__(*args, **kw)
         self._supplier = request.resource.supplier
         self._product = request.resource.product
@@ -205,15 +205,17 @@ class EditStockForm(forms.ModelForm):
              if k.startswith('product_'):
                 setattr(self._product, k[len('product_'):], v)
 
-        log.debug(self._product.vat_percent)
         cleaned_data['product'] = self._product
         log.debug(self.errors)
 
         return cleaned_data
 
     def save(self):
-        log.debug("Saving updated product: %s" % self.instance.__dict__)
-        log.debug("cleaned data = %s" % self.cleaned_data)
+        log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
+            self.__class__.__name__,
+            self.request.user.username, 
+            self.instance, self.cleaned_data
+        ))
         product = self.cleaned_data['product']
         product.save()
         self.instance.product = product
@@ -254,6 +256,7 @@ class AddStockForm(EditStockForm):
 
     def __init__(self, request, *args, **kw):
 
+        self.request = request
         #AAA: super(EditStockForm IS RIGHT! Leave it here pls
         super(EditStockForm, self).__init__(*args, **kw)
         self._supplier = request.resource.supplier
@@ -300,8 +303,11 @@ class AddStockForm(EditStockForm):
         return cleaned_data
 
     def save(self):
-        log.debug("Saving new product:")
-        log.debug("cleaned data = %s" % self.cleaned_data)
+        log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
+            self.__class__.__name__,
+            self.request.user.username, 
+            self.instance, self.cleaned_data
+        ))
         product = self.cleaned_data['product']
         product.producer = self._supplier
         product.save()

@@ -27,6 +27,10 @@ from django.conf import settings
 from gasistafelice.globals import type_model_d
 from gasistafelice.gas.models import GASMember
 
+from django.contrib.sessions.backends.db import SessionStore
+from django.utils.dateformat import format
+import datetime
+
 def get_resource_by_path(resource_type, resource_id):
     # Valid path is: .../<resource_type>/<resource_id>/...others params...
 
@@ -88,6 +92,13 @@ class UpdateRequestUserMiddleware(object):
         if the original user has permission to do that
         """
         request.logged_user = request.user
+
+        s = SessionStore()
+
+        s['user_id'] = request.logged_user.pk
+        s['last_login'] = request.logged_user.last_login
+
+        s.save()
 
         if request.user and not \
             isinstance(request.user, AnonymousUser):

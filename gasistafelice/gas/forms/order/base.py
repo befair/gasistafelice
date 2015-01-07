@@ -237,8 +237,12 @@ class BaseOrderForm(forms.ModelForm):
             w.save()
         self.instance.withdrawal = w
 
+        log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
+            self.__class__.__name__,
+            self.request.user.username, 
+            self.instance, self.cleaned_data
+        ))
         super(BaseOrderForm, self).save(*args, **kwargs)
-
 
 #--------------------------------------------------------------------------------
 
@@ -365,20 +369,10 @@ class AddOrderForm(BaseOrderForm):
     def save(self, *args, **kwargs):
 
         self.instance.pact = self.cleaned_data['pact']
-
-        #TODO in clean(): Control if delivery referrer is a GAS's referrer
-
-#TODO            #send email
-#            #COMMENT domthu: Only if opened?  Util? use another politica
-#            _send_email = self.cleaned_data['email_gas']
-#            if bool(_send_email):
-#                TODO: May be we only need to disable the notification if not enabled
-
-        log.debug("AddOrderForm CREATED pre_save")
         super(AddOrderForm, self).save(*args, **kwargs)
 
-
     class Meta:
+
         model = GASSupplierOrder
          
         fields = ['pact', 'datetime_start', 'datetime_end', 'referrer_person']
@@ -393,7 +387,7 @@ class AddOrderForm(BaseOrderForm):
 
         })]
 #WAS: INTERGAS 6
-#                            , 'email_gas'
+#   a                        , 'email_gas'
 
 
 #-------------------------------------------------------------------------------

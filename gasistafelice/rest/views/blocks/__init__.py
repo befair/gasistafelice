@@ -10,6 +10,10 @@ from django.contrib.auth.models import User
 from gasistafelice.globals import type_model_d
 from gasistafelice.rest.models import BlockConfiguration
 
+import logging
+
+log = logging.getLogger(__name__)
+
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
@@ -150,6 +154,13 @@ class AbstractBlock(object):
                 'resource_id' : self.resource.pk,
                 'error_msg' : [],
         }
+
+        log.debug("[block:%s] user: %s, resource: %s, args: %s, response_dict: %s" % (
+            self.name, 
+            request.user.username,
+            self.resource, args,
+            self.response_dict,
+        ))
 
         return ""
 

@@ -77,5 +77,5 @@ if __name__ == "__main__":
     csvdata = f.read()
     f.close()
     m = CSVManager(fieldnames=fieldnames)
-    print m.read(csvdata)
+    #print m.read(csvdata)
     

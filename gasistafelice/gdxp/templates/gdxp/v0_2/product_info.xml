@@ -10,7 +10,7 @@
                 <minQty>{{ stock.units_minimum_amount|escape }}</minQty><!-- ? -->
                 <mulQty></mulQty><!-- ? -->
                 <maxQty>{{ stock.amount_available|escape }}</maxQty><!-- ? -->
-                <umPrice>{{ stock.umprice|escape }}</umPrice>
+                <umPrice>{{ stock.umprice|floatformat:"-4"|escape }}</umPrice>
                 <shippingCost>0</shippingCost><!-- ? -->
             </orderInfo>
             <variants><!-- ? -->

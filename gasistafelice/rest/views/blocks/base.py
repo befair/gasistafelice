@@ -31,6 +31,7 @@ VIEW_AS_HTML = "viewhtml"
 SENDME_PDF = "emailmepdf"
 SENDPROD_PDF = "emailprodpdf"
 CREATE_HTML = "createhtml"
+EXPORT_GDXP = "export"
 
 import logging
 log = logging.getLogger(__name__)
