@@ -155,12 +155,11 @@ class AbstractBlock(object):
                 'error_msg' : [],
         }
 
-        log.debug("[User: %s, is_authenticated: %s, response_dict: %s, resource: %s, args: %s]" % (
-            request.user,
-            request.user.is_authenticated(),
+        log.debug("[block:%s] user: %s, resource: %s, args: %s, response_dict: %s" % (
+            self.name, 
+            request.user.username,
+            self.resource, args,
             self.response_dict,
-            self.resource,
-            args
         ))
 
         return ""
