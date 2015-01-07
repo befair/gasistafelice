@@ -253,6 +253,17 @@ jQuery.UIBlock = Class.extend({
     },
 
     action_handler : function(action_el) {
+
+        var method = action_el.attr('method');
+
+        if (method && 
+            method.toUpperCase() == "OPENURL"
+        )
+            window.open(action_el.attr('url'), "_blank");
+            //this break execution...
+            
+        //-- else...
+
         /* TODO: action attribute "on_complete" can assume values
         /* reload_page, switch_view, reload_block, 
         if action_el.attr('on_complete')
@@ -278,7 +289,6 @@ jQuery.UIBlock = Class.extend({
 
         } else {
 
-            var method = action_el.attr("method");
             if (method.toLowerCase() == "get")
                 method = "get";
             else

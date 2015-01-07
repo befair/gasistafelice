@@ -3,7 +3,7 @@ from django.core import urlresolvers
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
 
 from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 from gasistafelice.lib.http import HttpResponse

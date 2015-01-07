@@ -62,6 +62,7 @@ class Block(BlockSSDataTables):
                         resource = request.resource,
                         name=CREATE_PDF, verbose_name=_("Create PDF"),
                         popup_form=False,
+                        method="OPENURL",
                     ),
                 ]
 

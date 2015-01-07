@@ -5,14 +5,6 @@ jQuery.UIBlockBasketSentList = jQuery.UIBlockWithList.extend({
         this._super("basket_sent", "table");
     },
 
-    action_handler : function(action_el) {
-        if (action_el.attr('name') == 'createpdf') {
-            window.location = action_el.attr('url');
-        } else {
-            return this._super(action_el);
-        }
-    },
-
     rendering_table_post_load_handler: function() {
 
         // Init dataTables

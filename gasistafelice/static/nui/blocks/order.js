@@ -8,14 +8,6 @@ jQuery.UIBlockOrder = jQuery.UIBlockWithList.extend({
         this.submit_name = "Metti nel paniere";
     },
 
-    action_handler : function(action_el) {
-        if (action_el.attr('name') == 'createpdf') {
-            window.location = action_el.attr('url');
-        } else {
-            return this._super(action_el);
-        }
-    },
-
     rendering_table_post_load_handler: function() {
 
         var block_obj = this;
