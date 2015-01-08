@@ -40,6 +40,9 @@ def suppliers(request):
             if k.startswith('opt_'):
                 options.update({k : bool(int(v))})
             else:
+
+                if k.endswith('__in'):
+                    v = v.split(',')
                 
                 try:
                     supplier_qs = supplier_qs.filter(**{k : v})
@@ -55,8 +58,8 @@ def suppliers(request):
         'gdxp/%s/base.xml' % gdxp_version, {'qs' : supplier_qs, 'opts' : options}
     )
 
-    fname = "GF_%s.gdxp" % urllib.quote_plus(
-        u"_".join(map(unicode, supplier_qs))
+    fname = u"GF_%s.gdxp" % urllib.quote_plus(
+        u"_".join(map(unicode, supplier_qs)).encode('latin-1')
     )
     xml_response['Content-Disposition'] = "attachment; filename=%s" % fname
     return xml_response

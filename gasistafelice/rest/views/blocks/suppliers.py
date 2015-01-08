@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.core.urlresolvers import reverse
 
 from flexi_auth.models import ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
@@ -41,6 +42,22 @@ class Block(BlockWithList):
                     #WAS Supplier admin: url=urlresolvers.reverse('admin:supplier_supplier_add')
                 )
             )
+
+        user_actions += [
+            ResourceBlockAction(
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name="export", verbose_name="GDXP",
+                popup_form=False,
+                url = "%s?%s" % (
+                    reverse('gdxp.views.suppliers'), 
+                    "pk__in=%s&opt_catalog=1" % ",".join(
+                        map(lambda x: str(x.pk), self._get_resource_list(request)),
+                    )
+                ),
+                method="OPENURL"
+            ),
+        ]
 
         return user_actions
         

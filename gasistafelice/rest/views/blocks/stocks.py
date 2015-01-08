@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.core.urlresolvers import reverse
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
 from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
@@ -65,6 +66,20 @@ class Block(BlockSSDataTables):
                     method="get",
                 ),
             ]
+
+        user_actions += [
+            ResourceBlockAction(
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name="export", verbose_name="GDXP",
+                popup_form=False,
+                url = "%s?%s" % (
+                    reverse('gdxp.views.suppliers'), 
+                    "pk=%s&opt_catalog=1" % request.resource.pk
+                ),
+                method="OPENURL"
+            ),
+        ]
 
         return user_actions
         

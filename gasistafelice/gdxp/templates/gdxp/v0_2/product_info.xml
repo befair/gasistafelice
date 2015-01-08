@@ -1,6 +1,6 @@
 <!-- Product -->
         <product><!-- * -->
-            <sku>{{ stock.code|escape }}</sku><!-- ? -->
+            <sku>{{ stock.code|default:""|escape }}</sku><!-- ? -->
             <name>{{ stock.product.name|escape }}</name>
             <category>{{ stock.product.category.name|escape }}</category>
             <um>{{ stock.product.mu.name|escape }}</um>

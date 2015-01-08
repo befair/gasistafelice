@@ -1,4 +1,4 @@
-<gdxp protocolVersion = "0.2" creationDate = "{{ now }}" applicationSignature = "GasistaFelice">
+<gdxp protocolVersion = "0.2" creationDate = "{% now "YmdHis" %}" applicationSignature = "GasistaFelice">
     {% for el in qs %} 
         {% include "gdxp/v0_2/supplier_info.xml" %}
         <products>

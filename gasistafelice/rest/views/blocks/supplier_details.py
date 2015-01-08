@@ -18,8 +18,6 @@ from gasistafelice.lib.shortcuts import render_to_context_response
 
 from gasistafelice.supplier.forms import EditSupplierForm, SupplierRoleForm
 
-from gdxp.views import suppliers
-
 import logging
 log = logging.getLogger(__name__)
 
@@ -57,7 +55,10 @@ class Block(details.Block):
                     resource = request.resource,
                     name="export", verbose_name="GDXP",
                     popup_form=False,
-                    url = "%s?%s" % (reverse('gdxp.views.suppliers'), "pk=%s&opt_catalog=0&opt_download=1" % request.resource.pk),
+                    url = "%s?%s" % (
+                        reverse('gdxp.views.suppliers'), 
+                        "pk=%s&opt_catalog=1" % request.resource.pk
+                    ),
                     method="OPENURL"
                 ),
             ]

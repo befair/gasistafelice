@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
+from django.core.urlresolvers import reverse
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
@@ -83,6 +84,22 @@ class Block(BlockSSDataTables):
                 resource = request.resource,
                 name=CREATE_PDF, verbose_name=_("Create PDF"),
                 popup_form=False,
+                method="OPENURL"
+            ),
+        ]
+
+        user_actions += [
+            ResourceBlockAction(
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name="export", verbose_name="GDXP",
+                popup_form=False,
+                url = "%s?%s" % (
+                    reverse('gdxp.views.suppliers'), 
+                    "pk__in=%s&opt_catalog=1" % ",".join(
+                        map(lambda x: str(x.pk), self._get_resource_list(request)),
+                    )
+                ),
                 method="OPENURL"
             ),
         ]
