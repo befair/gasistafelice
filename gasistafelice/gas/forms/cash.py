@@ -129,7 +129,7 @@ class EcoGASMemberForm(forms.Form):
                 #KO 14-04-01:     )
 
             #KO 14-04-01: else:
-            if amounted is not None:
+            if amounted or (amounted is 0 and original_amounted is None):
                 gm.gas.accounting.withdraw_from_member_account(
                     gm, amounted, refs, self.__order, comment=comment
                 )
