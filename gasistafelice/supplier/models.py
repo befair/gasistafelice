@@ -881,6 +881,9 @@ class Product(models.Model, PermissionResource):
         if not self.category:
             self.category = category_catchall()
 
+        if self.muppu == 0:
+            self.muppu = None
+
         return super(Product, self).clean()
         
     @property
@@ -1067,10 +1070,16 @@ class SupplierStock(models.Model, PermissionResource):
 
     @property
     def umprice(self):
-        #WAS: return self.price/self.product.muppu
         try:
             return self.price/self.product.muppu
+        except TypeError as e:
+            # muppu can be None -> see doc related to field
+            return None
         except ZeroDivisionError as e:
+            # ERROR! muppu must not be 0 -> autofix it!
+            log.error("MUPPU FOR %s IS 0, I set it to None" % self.product)
+            self.product.muppu = None
+            self.product.save()
             return None
 
     @property
