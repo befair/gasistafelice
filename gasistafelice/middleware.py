@@ -29,7 +29,9 @@ from gasistafelice.gas.models import GASMember
 
 from django.contrib.sessions.backends.db import SessionStore
 from django.utils.dateformat import format
-import datetime
+import datetime, logging
+
+log = logging.getLogger(__name__)
 
 def get_resource_by_path(resource_type, resource_id):
     # Valid path is: .../<resource_type>/<resource_id>/...others params...
@@ -98,6 +100,9 @@ class UpdateRequestUserMiddleware(object):
 
             if request.session.get('user_to_simulate'):
                 request.user = User.objects.get(pk=request.session['user_to_simulate'])
+                log.debug('Logged user %s is simulating user %s' % (
+                    request.logged_user.username, request.user.username)
+                )
 
             request.session['logged_user_id'] = request.logged_user.pk
             request.session['user_id'] = request.user.pk
