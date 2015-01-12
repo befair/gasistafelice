@@ -338,6 +338,8 @@ class GASSupplierOrderAdmin(admin.ModelAdmin):
               )
             }),
     )
+    search_fields = ('id', 'pact__supplier__name')
+    list_filter = ('pact__supplier', 'pact__gas')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
