@@ -208,7 +208,7 @@ class BaseOrderForm(forms.ModelForm):
         except klass.MultipleObjectsReturned as e:
 
             #FIXME TOVERIFY: get() returned more than one Delivery -- it returned 2!
-            log.error("%s.get_appointment_instance(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
+            log.error(u"%s.get_appointment_instance(%s, %s): returned more than one. Lookup parameters were date=%s, place=%s" % (
                 self.__class__.__name__,
                 name, klass, ddt, p
             ))
@@ -237,7 +237,7 @@ class BaseOrderForm(forms.ModelForm):
             w.save()
         self.instance.withdrawal = w
 
-        log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
+        log.info(u"[%s] user:%s, resource:%s, cleaned_data:%s" % (
             self.__class__.__name__,
             self.request.user.username, 
             self.instance, self.cleaned_data

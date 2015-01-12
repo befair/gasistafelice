@@ -67,10 +67,10 @@ class EcoGASMemberForm(forms.Form):
         try:
             cleaned_data['gasmember'] = GASMember.objects.get(pk=cleaned_data['gm_id'])
         except KeyError as e:
-            log.error("EcoGASMemberForm: cannot retrieve gasmember: " + e.message)
+            log.error(u"EcoGASMemberForm: cannot retrieve gasmember: " + e.message)
             raise forms.ValidationError(ugettext("Cannot retrieve gasmember: ") + e.message)
         except GASMember.DoesNotExist:
-            log.error("EcoGASMemberForm: cannot retrieve gasmember with id " + str(cleaned_data['gm_id']))
+            log.error(u"EcoGASMemberForm: cannot retrieve gasmember with id " + str(cleaned_data['gm_id']))
             raise forms.ValidationError(ugettext("Cannot retrieve gasmember with id ") + str(cleaned_data['gm_id']))
 
         amounted = cleaned_data.get('amounted')
@@ -106,7 +106,7 @@ class EcoGASMemberForm(forms.Form):
         enabled = self.cleaned_data.get('applied')
 
         if enabled and amounted is not None:
-            log.debug("Save EcoGASMemberForm enabled for %s (amount=%s)" % (gm, amounted))
+            log.debug(u"Save EcoGASMemberForm enabled for %s (amount=%s)" % (gm, amounted))
             # This kind of amount is ever POSITIVE!
             amounted = abs(amounted)
 
@@ -206,7 +206,7 @@ class NewEcoGASMemberForm(forms.Form):
 
         if amounted > 0 and enabled:
 
-            log.debug("Save NewEcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
+            log.debug(u"Save NewEcoGASMemberForm enabled(%s) for %s" % (enabled, gm))
             amounted = abs(amounted)
             self.create_fake_purchaser(gm, amounted, 
                 note=ugettext("added by: %s") % self.__loggedusr

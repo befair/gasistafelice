@@ -155,7 +155,7 @@ class AbstractBlock(object):
                 'error_msg' : [],
         }
 
-        log.debug("[block:%s] user: %s, resource: %s, args: %s, response_dict: %s" % (
+        log.debug(u"[block:%s] user: %s, resource: %s, args: %s, response_dict: %s" % (
             self.name, 
             request.user.username,
             self.resource, args,
