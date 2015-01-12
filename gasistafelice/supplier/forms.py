@@ -214,7 +214,8 @@ class EditStockForm(forms.ModelForm):
         log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
             self.__class__.__name__,
             self.request.user.username, 
-            self.instance, self.cleaned_data
+            self.instance,
+            (u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
         ))
         product = self.cleaned_data['product']
         product.save()

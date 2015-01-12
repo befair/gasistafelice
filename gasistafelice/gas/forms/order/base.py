@@ -240,7 +240,8 @@ class BaseOrderForm(forms.ModelForm):
         log.info(u"[%s] user:%s, resource:%s, cleaned_data:%s" % (
             self.__class__.__name__,
             self.request.user.username, 
-            self.instance, self.cleaned_data
+            self.instance,
+            (u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
         ))
         super(BaseOrderForm, self).save(*args, **kwargs)
 
