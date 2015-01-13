@@ -177,6 +177,7 @@ class EditPactForm(GASBasePactForm):
 
         super(EditPactForm, self).__init__(request, *args, **kw)
         self.fields['pact_referrers'].initial = self.instance.referrers_people
+        self.fields['is_suspended'].label = _("Temporarily suspend")
 
     def save(self):
 
