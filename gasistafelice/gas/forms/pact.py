@@ -201,6 +201,7 @@ class EditPactForm(GASBasePactForm):
         fields = ('date_signed', 'document',
             'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
             'send_email_on_order_close',
+            'is_suspended',
         )
 
         gf_fieldsets = [(None, { 
@@ -210,5 +211,6 @@ class EditPactForm(GASBasePactForm):
                 'order_deliver_interval',        
                 'send_email_on_order_close',
                 'pact_referrers',
+                'is_suspended',
         )})]
 
