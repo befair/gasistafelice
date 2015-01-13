@@ -304,10 +304,10 @@ class AddStockForm(EditStockForm):
         return cleaned_data
 
     def save(self):
-        log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
+        log.info("[%s] user:%s, cleaned_data:%s" % (
             self.__class__.__name__,
             self.request.user.username, 
-            self.instance, self.cleaned_data
+            self.cleaned_data
         ))
         product = self.cleaned_data['product']
         product.producer = self._supplier
