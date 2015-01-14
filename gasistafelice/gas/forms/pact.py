@@ -177,6 +177,7 @@ class EditPactForm(GASBasePactForm):
 
         super(EditPactForm, self).__init__(request, *args, **kw)
         self.fields['pact_referrers'].initial = self.instance.referrers_people
+        self.fields['is_suspended'].label = _("Temporarily suspend")
 
     def save(self):
 
@@ -201,6 +202,7 @@ class EditPactForm(GASBasePactForm):
         fields = ('date_signed', 'document',
             'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
             'send_email_on_order_close',
+            'is_suspended',
         )
 
         gf_fieldsets = [(None, { 
@@ -210,5 +212,6 @@ class EditPactForm(GASBasePactForm):
                 'order_deliver_interval',        
                 'send_email_on_order_close',
                 'pact_referrers',
+                'is_suspended',
         )})]
 

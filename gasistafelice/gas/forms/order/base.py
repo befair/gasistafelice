@@ -109,6 +109,8 @@ class BaseOrderForm(forms.ModelForm):
         if self.fields.get('withdrawal_referrer_person'):
             self.fields['withdrawal_referrer_person'].queryset = referrers
 
+        self.request = request
+
     def write_down_messages(self):
         """Used to return messages related to form.
 
@@ -241,7 +243,7 @@ class BaseOrderForm(forms.ModelForm):
             self.__class__.__name__,
             self.request.user.username, 
             self.instance,
-            (u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
+            tuple(u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
         ))
         super(BaseOrderForm, self).save(*args, **kwargs)
 
