@@ -211,11 +211,11 @@ class EditStockForm(forms.ModelForm):
         return cleaned_data
 
     def save(self):
-        log.info("[%s] user:%s, resource:%s, cleaned_data:%s" % (
+        log.info(u"[%s] user:%s, resource:%s, cleaned_data:%s" % (
             self.__class__.__name__,
             self.request.user.username, 
             self.instance,
-            (u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
+            tuple(u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
         ))
         product = self.cleaned_data['product']
         product.save()
@@ -304,10 +304,10 @@ class AddStockForm(EditStockForm):
         return cleaned_data
 
     def save(self):
-        log.info("[%s] user:%s, cleaned_data:%s" % (
+        log.info(u"[%s] user:%s, cleaned_data:%s" % (
             self.__class__.__name__,
             self.request.user.username, 
-            self.cleaned_data
+            tuple(u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
         ))
         product = self.cleaned_data['product']
         product.producer = self._supplier

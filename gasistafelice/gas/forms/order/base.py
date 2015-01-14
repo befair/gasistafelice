@@ -241,7 +241,7 @@ class BaseOrderForm(forms.ModelForm):
             self.__class__.__name__,
             self.request.user.username, 
             self.instance,
-            (u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
+            tuple(u"%s=%s" % (k,unicode(v)) for k,v in self.cleaned_data.items())
         ))
         super(BaseOrderForm, self).save(*args, **kwargs)
 
