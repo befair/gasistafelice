@@ -109,6 +109,8 @@ class BaseOrderForm(forms.ModelForm):
         if self.fields.get('withdrawal_referrer_person'):
             self.fields['withdrawal_referrer_person'].queryset = referrers
 
+        self.request = request
+
     def write_down_messages(self):
         """Used to return messages related to form.
 
