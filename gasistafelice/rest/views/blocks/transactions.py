@@ -4,9 +4,19 @@ from django.http import HttpResponse
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables
+from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_CSV
 from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
 
+#OLD: from gasistafelice.lib import get_params_from_template
+#OLD: from gasistafelice.lib.csvmanager import CSVManager
+
+#OLD: from gasistafelice.base.models import Person
+#OLD: from gasistafelice.gas.models.base import GAS
+#OLD: from gasistafelice.supplier.models import Supplier
+
+from django.template.loader import render_to_string
+
+import datetime
 
 #from simple_accounting.models import economic_subject, AccountingDescriptor
 #from simple_accounting.models import account_type
@@ -21,6 +31,8 @@ from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_contex
 #------------------------------------------------------------------------------#
 #                                                                              #
 #------------------------------------------------------------------------------#
+
+#OLD: ENCODING = "iso-8859-1"
 
 class Block(BlockSSDataTables):
 
@@ -89,6 +101,8 @@ class Block(BlockSSDataTables):
                     { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
                 )
 
+        if args == CREATE_CSV:
+            return self._create_csv(request)
 
         return super(Block, self).get_response(request, resource_type, resource_id, args)
 
@@ -126,3 +140,126 @@ class Block(BlockSSDataTables):
 #        #Can use html template loader
 #        return render_to_xml_response('eco-options.xml', ctx)
 
+    def _get_user_actions(self, request):
+
+        user_actions = []
+
+        resource_type = request.resource.resource_type
+
+        if resource_type == "gasmember":
+
+            if not request.user.has_perm(
+                VIEW_CONFIDENTIAL, obj=ObjectWithContext(request.resource)
+            ) and not request.user.has_perm(
+                CASH, obj=ObjectWithContext(request.resource.gas)
+            ):
+
+                return user_actions
+
+        elif resource_type == "site":
+
+            if not request.user in request.resource.gas_tech_referrers | \
+                request.resource.gas_cash_referrers:
+
+                return user_actions
+        else:
+
+            if not request.user.has_perm(
+                CASH, obj=ObjectWithContext(request.resource.gas)
+            ):
+
+                return user_actions
+
+        user_actions += [
+            ResourceBlockAction(
+                block_name = self.BLOCK_NAME,
+                resource = request.resource,
+                name=CREATE_CSV, verbose_name=_("Create CSV"),
+                popup_form=False,
+                method="OPENURL",
+            ),
+        ]
+
+        return user_actions
+
+    def _create_csv(self, request):
+        """ Create CSV of this block transactions
+
+            #MATTEO TOREMOVE: lascio la prima implementazione (da levare
+            ovviamente dall'integrazione) come monito a me stesso -->
+            kiss, kiss e ancora kiss !!
+
+            #NOTA: eliminare nell'integrazione tutte le righe commentate con #OLD:
+
+        """
+
+        #OLD: template = "%(Id)s %(Data)s %(Conto)s %(Kind)s %(Cash amount)s %(Descrizione)s"
+        #OLD: delimiter = ';'
+        #OLD: fieldnames = get_params_from_template(template)
+        #OLD: data = []
+        records = self._get_resource_list(request)
+
+        #OLD: reference to rest/templates/blocks/transactions/data.json
+        #OLD: for res in self._get_resource_list(request):
+        #OLD:    data.append(
+        #OLD:        {'Id' : res.pk,
+        #OLD:         'Data' : '{0:%a %d %b %Y %H:%M}'.format(res.date),
+        #OLD:         'Conto' : self.human_readable_account(res.account),
+        #OLD:         'Kind' : res.transaction.kind,
+        #OLD:         'Cash amount' : res.amount,
+        #OLD:         'Descrizione' : res.transaction.description.encode("utf-8", "ignore")
+        #OLD:        }
+        #OLD:    )
+
+        csv_data = render_to_string('blocks/transactions/data.csv', { 'records' : records })
+        #OLD: manager = CSVManager(fieldnames=fieldnames, delimiter=delimiter, encoding=ENCODING)
+        #OLD: csv_data = manager.write(data)
+
+        if not csv_data:
+            rv = self.response_error(_('Report not generated'))
+        else:
+            response = HttpResponse(csv_data, mimetype='text/csv')
+            filename = "%(res)s_%(date)s.csv" % {
+                'res': request.resource,
+                'date' : '{0:%Y%m%d_%H%M}'.format(datetime.datetime.now())
+            }
+            response['Content-Disposition'] = "attachment; filename=" + filename
+            rv = response
+        return rv
+
+    #OLD: def human_readable_account(self,account):
+    #OLD:     """
+    #OLD:         Return one string containing the resource
+    #OLD:     """
+    #OLD:     name = ""
+    #OLD:     if 'person-' in account.name:
+    #OLD:         p_pk = account.name.replace("person-", "")
+    #OLD:         try:
+    #OLD:             obj = Person.objects.get(pk=p_pk)
+    #OLD:         except GASMember.DoesNotExist:
+    #OLD:             pass
+    #OLD:         else:
+    #OLD:             name = obj.report_name
+
+    #OLD:     elif 'gas-' in account.name:
+    #OLD:         p_pk = account.name.replace("gas-", "")
+    #OLD:         try:
+    #OLD:             obj = GAS.objects.get(pk=p_pk)
+    #OLD:         except GAS.DoesNotExist:
+    #OLD:             pass
+    #OLD:         else:
+    #OLD:             name = obj.id_in_des
+
+    #OLD:     elif 'supplier-' in account.name:
+    #OLD:         p_pk = account.name.replace("supplier-", "")
+    #OLD:         try:
+    #OLD:             obj = Supplier.objects.get(pk=p_pk)
+    #OLD:         except Supplier.DoesNotExist:
+    #OLD:             pass
+    #OLD:         else:
+    #OLD:             name = obj.name
+
+    #OLD:     if name == "":
+    #OLD:         name = "%s" % account.system.owner.instance
+
+    #OLD:     return "%(name)s " % {'name': name.encode("utf-8", "ignore")}
