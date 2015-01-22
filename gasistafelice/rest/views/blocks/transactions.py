@@ -68,20 +68,7 @@ class Block(BlockSSDataTables):
     def get_response(self, request, resource_type, resource_id, args):
         """Check for confidential access permission and call superclass if needed"""
 
-        if resource_type == "gasmember":
-
-            if not request.user.has_perm(
-                VIEW_CONFIDENTIAL, obj=ObjectWithContext(request.resource)
-            ) and not request.user.has_perm(
-                CASH, obj=ObjectWithContext(request.resource.gas)
-            ): 
-
-                return render_to_xml_response(
-                    "blocks/table_html_message.xml", 
-                    { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
-                )
-
-        elif resource_type == "site":
+        if resource_type == "site":
 
             if not request.user in request.resource.gas_tech_referrers | \
                 request.resource.gas_cash_referrers:
@@ -146,17 +133,7 @@ class Block(BlockSSDataTables):
 
         resource_type = request.resource.resource_type
 
-        if resource_type == "gasmember":
-
-            if not request.user.has_perm(
-                VIEW_CONFIDENTIAL, obj=ObjectWithContext(request.resource)
-            ) and not request.user.has_perm(
-                CASH, obj=ObjectWithContext(request.resource.gas)
-            ):
-
-                return user_actions
-
-        elif resource_type == "site":
+        if resource_type == "site":
 
             if not request.user in request.resource.gas_tech_referrers | \
                 request.resource.gas_cash_referrers:
