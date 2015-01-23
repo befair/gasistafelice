@@ -4,9 +4,6 @@ $scope.btbd = [];
 $scope.orderByField = '';
 $scope.reverseSort = false;
     
-//URL per la GET del PANIERE -> http://gasistafelice.befair.it:8001/gasistafelice/rest/gasmember/20/basket/edit_multiple
-    
-var pathGet = "http://gasistafelice.befair.it:8001/gasistafelice/rest/gasmember/"+$rootScope.gasmemberID+"/basket/edit_multiple";
 var order = "";
 var suppliername = "";
 var productname = "";
