@@ -9,7 +9,10 @@
     <link href="{% static_url %}ui_ric1/css/datepicker.css" rel="stylesheet">
     <link href="{% static_url %}ui_ric1/css/style.css" rel="stylesheet">  
     <link href="{% static_url %}ui_ric1/css/font-awesome.css" rel="stylesheet">
+
+    <!-- a cosa serve questo css di una vecchia versione di jQueryUI -->
     <link href="{% static_url %}ui_ric1/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+
     <link href="{% static_url %}ui_ric1/css/ngDialog.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-theme-default.css">
     <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-theme-flat.css">
@@ -17,9 +20,9 @@
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
       
 
     <!--
@@ -37,8 +40,6 @@
 
     -->
       
- 
-
     <script type="text/javascript">
       (function(doc) {
 
@@ -60,6 +61,7 @@
           }
 
       }(document));
+
     </script>
 
 
@@ -69,7 +71,6 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-
 
   </head>
   <body>
@@ -184,9 +185,11 @@
     </div> 
 
 
+    {% comment %} DA TOGLIERE SE NON SERVONO, versione replicate o aggiuntive
     <script src="{% static_url %}ui_ric1/js/jquery-1.11.1.min.js"></script>
     <script src="{% static_url %}ui_ric1/js/jquery-ui-1.10.4.min.js"></script>
     <script src="{% static_url %}ui_ric1/js/jquery-ui.js"></script>
+    {% endcomment %}
     <script src="{% static_url %}ui_ric1/js/bootstrap.js"></script>
     <script src="{% static_url %}ui_ric1/js/modernizr.js"></script>
     <script src="{% static_url %}ui_ric1/js/jquery.simplePagination.js"></script>
