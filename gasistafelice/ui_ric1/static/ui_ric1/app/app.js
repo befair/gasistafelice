@@ -9,7 +9,7 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
     counter = 1;
     $rootScope.gasmemberID = "";
     $rootScope.peID = $location.path().substring(1,3); //$routeParams.pe;
-    $http.get('/gasistafelice/api/v1/person/'+$rootScope.peID+'/?format=json').success(function(data){ 
+    $http.get($.absurl_api+'person/'+$rootScope.peID+'/?format=json').success(function(data){ 
         $.each(data.gas_list, function(index,element)
         {
            $rootScope.gasID = element.id;    
@@ -99,28 +99,28 @@ GasistaFelice.config(['$routeProvider',function($routeProvider) {
     
             // route for home page
         .when('/:pe/', {
-				templateUrl : 'app/ordinare/ordinare.html',
+				templateUrl : $.absurl_static+'app/ordinare/ordinare.html',
 				controller  : 'orderController',
                 resolve     : orderController.resolve
 			})
 
 			// route for paniere page
 			.when('/:pe/paniere', {
-				templateUrl : 'app/paniere/paniere.html',
+				templateUrl : $.absurl_static+'app/paniere/paniere.html',
 				controller  : 'paniereController',
                  resolve     : paniereController.resolve
 			})
 
 			// route for scheda page
             .when('/:pe/scheda', {
-				templateUrl : 'app/scheda/scheda.html',
+				templateUrl : $.absurl_static+'app/scheda/scheda.html',
 				controller  : 'schedaController',
                 resolve     : schedaController.resolve
 			})
     
             // route for conto page
             .when('/:pe/conto', {
-				templateUrl : 'app/conto/conto.html',
+				templateUrl : $.absurl_static+'app/conto/conto.html',
 				controller  : 'contoController',
                 resolve     : contoController.resolve
 			})
@@ -147,7 +147,7 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
         $rootScope.gasID = gasname;
     }
         
-    $http.get('/gasistafelice/api/v1/person/'+$rootScope.peID+'/?format=json').success(function(data) {
+    $http.get($.absurl_api+'person/'+$rootScope.peID+'/?format=json').success(function(data) {
 
         $scope.gasmembers = [];
         $scope.balance = [];
@@ -166,7 +166,7 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
                 prova = prova + 1;
                 if (indice == prova)
                 {
-                    $http.get('/gasistafelice/api/v1/gasmember/'+element2+'/?format=json').success(function(data){ 
+                    $http.get($.absurl_api+'gasmember/'+element2+'/?format=json').success(function(data){ 
                      $scope.balance.push({balance: data.balance});
                      $scope.gasnames.push({
                             id: element.id,

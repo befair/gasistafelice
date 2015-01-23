@@ -6,7 +6,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
   $scope.reverseSort = false;
   $rootScope.peID = $routeParams.pe;
           
-  $http.get('/gasistafelice/api/v1/gasmember/'+$rootScope.gasmemberID+'/?format=json').success(function(data){
+  $http.get($.absurl_api+'gasmember/'+$rootScope.gasmemberID+'/?format=json').success(function(data){
       $scope.balance = parsingNumbers.parsing(data.balance,2);  
       $scope.tb = parsingNumbers.parsing(data.total_basket);
       $scope.tbtbd = parsingNumbers.parsing(data.total_basket_to_be_delivered);
@@ -15,9 +15,9 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
       $scope.resume = parsingNumbers.parsing($scope.resume,2);
   });
     
-  $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(data){
+  $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
     $scope.gasmemberid = data.id;
-    $scope.path = '/gasistafelice/rest/gasmember/'+$rootScope.gasmemberID+'/order/edit_multiple';
+    $scope.path = $.absurl_pre+'rest/gasmember/'+$rootScope.gasmemberID+'/order/edit_multiple';
  });
 
     
@@ -33,7 +33,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
     $scope.products = [];
     $scope.products_post = [];
     $scope.dataLoaded = "false";
-    $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(data){
+    $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
     $.each(data.gas_list, function(index, element){
         $.each(element.open_orders, function(index, element){
                 if (supplyID == element.supplier)
@@ -95,7 +95,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
  //LOADING ORDERS
  //TODO - gestione id persona (tramite rootscope o service)
  
-// $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(data){
+// $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
 //    $scope.person = data;
 //    $scope.supplier = [];
 //    $.each(data.gas_list, function(index, element){
@@ -103,7 +103,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
 //        {
 //            $scope.openorders = element;
 //            $.each(element.open_orders, function(index, element){
-//                $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(gf_person){
+//                $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(gf_person){
 //                  $.each(gf_person.suppliers, function(index,supply){
 //                        if (supply.id == element.supplier) 
 //                        {    
@@ -163,7 +163,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
 // });
     
     
- $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(data){
+ $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
     $scope.prodnumber = 0;
     $scope.person = data;
     $scope.supplier = [];
@@ -172,7 +172,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
         {
             $scope.openorders = element;
             $.each(element.open_orders, function(index, element){
-                $http.get('/gasistafelice/api/v1/person/'+$routeParams.pe+'/?format=json').success(function(gf_person){
+                $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(gf_person){
                   $.each(gf_person.suppliers, function(index,supply){
                         if (supply.id == element.supplier) 
                         {    
@@ -319,7 +319,7 @@ orderController.resolve = {
         var deferred = $q.defer();
         var appoggio = $route.current.params.pe;
         console.log(appoggio);
-         $http.get('/gasistafelice/api/v1/person/'+appoggio+'/?format=json')
+         $http.get($.absurl_api+'person/'+appoggio+'/?format=json')
             .success(function(data) {
                 $rootScope.gasID = data.gas_list[0].id;
                 $rootScope.gasmemberID = data.gasmembers[0];

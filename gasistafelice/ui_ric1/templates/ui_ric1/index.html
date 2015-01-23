@@ -24,6 +24,16 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
       
+    <script type="text/javascript">
+        $.app_name = 'ui_ric1';
+        $.uiglobals = new Array();
+
+        var url_elements = window.location.toString().split('/');
+        $.absurl_pre = url_elements[0]+'//'+url_elements[2]+'/{% dj_settings "URL_PREFIX" %}';
+        $.absurl_static = url_elements[0]+'//'+url_elements[2]+'{% static_url %}'+$.app_name+'/';
+        $.absurl_api = $.absurl_pre+'api/v1/';
+
+    </script>
 
     <!--
     ******************

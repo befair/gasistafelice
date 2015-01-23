@@ -16,14 +16,14 @@ $scope.basket_2 = [];
 $scope.basket_empty = "true";
 var index = 1;
 var value = "";
-$scope.path="/gasistafelice/rest/gasmember/"+ $rootScope.gasmemberID+"/basket/edit_multiple";
+$scope.path=$.absurl_pre+"rest/gasmember/"+ $rootScope.gasmemberID+"/basket/edit_multiple";
 
 //use $rootScope.gasmemberID to get the right JSON
     
 $scope.dataLoaded = "false";
 $scope.prodnumber = 0;
     
-//$http.get('/gasistafelice/rest/gasmember/'+$rootScope.gasmemberID+'/basket/edit_multiple?render_as=table&iDisplayLength=-1').success(function(data){
+//$http.get($.absurl_pre+'rest/gasmember/'+$rootScope.gasmemberID+'/basket/edit_multiple?render_as=table&iDisplayLength=-1').success(function(data){
 //      $.each(data.aaData, function(index, basket){
 //          value = basket[6].indexOf("value");
 //          step = basket[6].indexOf("step");
@@ -36,7 +36,7 @@ $scope.prodnumber = 0;
 //            amount = basket[6].substr(value+7,1);
 //          }
 //          //LOADING basket data
-//          $http.get('/gasistafelice/api/v1/gasmember/'+$rootScope.gasmemberID+'/?format=json').
+//          $http.get($.absurl_api+'gasmember/'+$rootScope.gasmemberID+'/?format=json').
 //          success(function(item){
 //              $.each(item.basket, function(i,b){
 //                 if (b.id == basket[0].substring(0,5))
@@ -77,7 +77,7 @@ var i = 0;
     
 $scope.getData = function(){
     
-$http.get('/gasistafelice/rest/gasmember/'+$rootScope.gasmemberID+'/basket/edit_multiple?render_as=table&iDisplayLength=-1').success(function(data){
+$http.get($.absurl_pre+'rest/gasmember/'+$rootScope.gasmemberID+'/basket/edit_multiple?render_as=table&iDisplayLength=-1').success(function(data){
       $scope.basket_2 = data;
     console.log($scope.basket_2.aaData);
        if ($scope.basket_2.aaData == "")
@@ -102,7 +102,7 @@ $http.get('/gasistafelice/rest/gasmember/'+$rootScope.gasmemberID+'/basket/edit_
           //LOADING basket data
           
           
-    $http.get('/gasistafelice/api/v1/gasmember/'+$rootScope.gasmemberID+'/?format=json').
+    $http.get($.absurl_api+'gasmember/'+$rootScope.gasmemberID+'/?format=json').
           success(function(item){
               i = 0;
               $.each(item.basket, function(i,b){
@@ -282,7 +282,7 @@ paniereController.resolve = {
         var deferred = $q.defer();
         var appoggio = $route.current.params.pe;
         console.log(appoggio);
-         $http.get('/gasistafelice/api/v1/person/'+appoggio+'/?format=json')
+         $http.get($.absurl_api+'person/'+appoggio+'/?format=json')
             .success(function(data) {
                 $rootScope.gasID = data.gas_list[0].id;
                 $rootScope.gasmemberID = data.gasmembers[0];
