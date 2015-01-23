@@ -161,6 +161,7 @@ INSTALLED_APPS = [
     'gdxp',
     'rest_framework',
     'real_rest',
+    'ui_ric1',
     #'django.contrib.staticfiles',
 ]
 

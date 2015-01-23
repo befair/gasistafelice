@@ -16,7 +16,8 @@ urlpatterns = patterns('',
 
 	(r'^$'       , 'base.views.index'  ),
 	(r'^%s$' % settings.URL_PREFIX , 'base.views.index'  ),
-	(r'^%snewui/$' % settings.URL_PREFIX , 'base.views.newria_index'  ),
+	(r'^%sui_ric1/' % settings.URL_PREFIX , include('ui_ric1.urls')),
+
 #	(r'^%s/newui/(?P<user_pk>\d+)/(?P<gasmember_pk>\d+)/$' % settings.URL_PREFIX , 'base.views.newria_index'  ),
 	(r'^%ssimulate_user/(?P<user_pk>\d+)/$' % settings.URL_PREFIX , 'base.views.simulate_user'  ),
 
@@ -38,7 +39,7 @@ urlpatterns = patterns('',
     (r'^gas-admin/', include(gas_admin.urls)),
     (r'^%sadmin/' % settings.URL_PREFIX, include(admin.site.urls)),
 
-	(r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
+    (r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
     (r'^%slookups/' % settings.URL_PREFIX, include('ajax_select.urls')),

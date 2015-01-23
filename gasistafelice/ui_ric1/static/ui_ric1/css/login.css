@@ -1,0 +1,63 @@
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #eee;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  /*margin-bottom: -1px;*/
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  /*margin-bottom: 10px;*/
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.gas{
+  margin-bottom:5px;
+}
+
+.no-margin{
+  margin-top:2px;
+  text-align:right;
+}
+
+.logCred{
+  margin-top:-19px;
+  margin-bottom: 10px;
+}
+
+.butlog{
+  margin-top:10px;
+  position:relative;
+}
+
+.cont-gas{
+  margin-left:0px;
+}
