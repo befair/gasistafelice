@@ -1,18 +1,19 @@
+{% load basic_tags %}
 <!DOCTYPE html>
 <html ng-app="ngGasistaFelice">
   <head>
-    <title>GasistaFelice</title>
+    <title>Gasista Felice</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <!-- Bootstrap -->
-    <link href="css/datepicker.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">  
-    <link href="css/font-awesome.css" rel="stylesheet">
-    <link href="css/jquery-ui-1.10.4.min.css" rel="stylesheet">
-    <link href="css/ngDialog.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/ngDialog-theme-default.css">
-    <link rel="stylesheet" href="css/ngDialog-theme-flat.css">
-    <link rel="stylesheet" href="css/ngDialog-custom.css">
+    <link href="{% static_url %}ui_ric1/css/datepicker.css" rel="stylesheet">
+    <link href="{% static_url %}ui_ric1/css/style.css" rel="stylesheet">  
+    <link href="{% static_url %}ui_ric1/css/font-awesome.css" rel="stylesheet">
+    <link href="{% static_url %}ui_ric1/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+    <link href="{% static_url %}ui_ric1/css/ngDialog.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-theme-default.css">
+    <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-theme-flat.css">
+    <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-custom.css">
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
@@ -20,9 +21,6 @@
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
       
-
-
-
 
     <!--
     ******************
@@ -79,7 +77,7 @@
      
       <nav class="userbar" role="navigation">
           <div class="logo">
-            <img src="img/befair.png" alt="..." class="imglogo">
+              <img src="{% static_url %}ui_ric1/img/befair.png" alt="..." class="imglogo">
           </div>
           
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -90,7 +88,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div class="brandname">GASISTAFELICE</div>
+          <div class="brandname">GASISTA FELICE</div>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         
@@ -128,7 +126,7 @@
                            
                 </div>
          <div class="navbar-right">
-             <a class="navpic" href="#/{{peID}}/scheda"><img src="img/user_pic.png" alt="..." class="imgpic"></a>
+             <a class="navpic" href="#/{{peID}}/scheda"><img src="{% static_url %}ui_ric1/img/user_pic.png" alt="..." class="imgpic"></a>
              <a class="titlenav" href="#/{{peID}}/scheda">Ciao {{person_name}}</a>
         </div>    
           
@@ -181,30 +179,30 @@
 
     <div id="footer">
         <div class="container">
-          <p class="text-muted">GASISTA FELICE V.1.0</p>
+            <p class="text-muted">GASISTA FELICE - NEW UI - V. {% des_version %}</p>
         </div>
     </div> 
 
 
-        <script src="js/jquery-1.11.1.min.js"></script>
-        <script src="js/jquery-ui-1.10.4.min.js"></script>
-        <script src="js/jquery-ui.js"></script>
-        <script src="js/bootstrap.js"></script>
-        <script src="js/modernizr.js"></script>
-        <script src="js/jquery.simplePagination.js"></script>
-        <script src="js/smartpaginator.js"></script>
-        <script src="js/local.js"></script>
-        <script src="js/angular.min.js"></script>
-        <script src="js/angular-route.js"></script>
-        <script src="app/app.js"></script>
-        <script src="js/ngDialog.min.js"></script>
-        <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
-        <script src="js/bootstrap-datepicker.js"></script>  
-        <script src="js/angular-locale_it-it.js"></script>        
-        <script src="app/conto/contoController.js"></script>
-        <script src="app/ordinare/orderController.js"></script>
-        <script src="app/paniere/paniereController.js"></script>
-        <script src="app/scheda/schedaController.js"></script>
+    <script src="{% static_url %}ui_ric1/js/jquery-1.11.1.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/jquery-ui-1.10.4.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/jquery-ui.js"></script>
+    <script src="{% static_url %}ui_ric1/js/bootstrap.js"></script>
+    <script src="{% static_url %}ui_ric1/js/modernizr.js"></script>
+    <script src="{% static_url %}ui_ric1/js/jquery.simplePagination.js"></script>
+    <script src="{% static_url %}ui_ric1/js/smartpaginator.js"></script>
+    <script src="{% static_url %}ui_ric1/js/local.js"></script>
+    <script src="{% static_url %}ui_ric1/js/angular.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/angular-route.js"></script>
+    <script src="{% static_url %}ui_ric1/app/app.js"></script>
+    <script src="{% static_url %}ui_ric1/js/ngDialog.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/bootstrap-datepicker.js"></script>  
+    <script src="{% static_url %}ui_ric1/js/angular-locale_it-it.js"></script>        
+    <script src="{% static_url %}ui_ric1/app/conto/contoController.js"></script>
+    <script src="{% static_url %}ui_ric1/app/ordinare/orderController.js"></script>
+    <script src="{% static_url %}ui_ric1/app/paniere/paniereController.js"></script>
+    <script src="{% static_url %}ui_ric1/app/scheda/schedaController.js"></script>
     
 
 </body>

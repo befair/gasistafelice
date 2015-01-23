@@ -18,6 +18,11 @@ except ImportError:
 register = template.Library()
 
 @register.simple_tag
+def static_url():
+    #TODO: change to settings.STATIC_URL when upgrading Django
+    return settings.MEDIA_URL
+
+@register.simple_tag
 def des_media_url():
     return settings.MEDIA_URL
 
