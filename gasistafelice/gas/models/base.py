@@ -1475,7 +1475,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     def price(self):
         # Product base price as updated by agreements contained in GASSupplierSolidalPact
         price_percent_update = self.pact.order_price_percent_update or 0
-        return self.stock.price*(1 + price_percent_update)
+        return self.stock.price*(1 - price_percent_update)
 
     @property
     def report_price(self):

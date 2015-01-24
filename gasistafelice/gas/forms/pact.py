@@ -105,7 +105,8 @@ class GASAddPactForm(GASBasePactForm):
         model = GASSupplierSolidalPact
         fields = ('supplier', 'date_signed', 'document', 
             'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
-            'send_email_on_order_close'
+            'send_email_on_order_close',
+            'order_price_percent_update'
         )
 
         gf_fieldsets = [(None, { 
@@ -113,7 +114,8 @@ class GASAddPactForm(GASBasePactForm):
                 'supplier', 'document', 'date_signed',  
                 ('order_minimum_amount', 'order_delivery_cost'),
                 'order_deliver_interval',        
-                'pact_referrers', 'send_email_on_order_close'
+                'pact_referrers', 'send_email_on_order_close',
+                'order_price_percent_update'
         )})]
 
 
@@ -203,6 +205,7 @@ class EditPactForm(GASBasePactForm):
             'order_minimum_amount', 'order_delivery_cost', 'order_deliver_interval',
             'send_email_on_order_close',
             'is_suspended',
+            'order_price_percent_update'
         )
 
         gf_fieldsets = [(None, { 
@@ -213,5 +216,6 @@ class EditPactForm(GASBasePactForm):
                 'send_email_on_order_close',
                 'pact_referrers',
                 'is_suspended',
+                'order_price_percent_update'
         )})]
 
