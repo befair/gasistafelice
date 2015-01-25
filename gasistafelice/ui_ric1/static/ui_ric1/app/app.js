@@ -3,13 +3,21 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
     'ngRoute',
     'ngDialog',
     'ngLocale'
-]).run(function($rootScope, $routeParams, $location,$http) {
+]).run(function($rootScope, $routeParams, $location, $http) {
+
+    $rootScope.app_name = $.app_name;
+    $rootScope.static_url = $.static_url;
+
+    $rootScope.absurl_pre = $.absurl_pre;
+    $rootScope.absurl_static = $.absurl_static;
+    $rootScope.absurl_api = $.absurl_api;
+
     $rootScope.gasID = ""; //default value
     $rootScope.first = true;
+    $rootScope.peID = 85;
     counter = 1;
     $rootScope.gasmemberID = "";
-    $rootScope.peID = $location.path().substring(1,3); //$routeParams.pe;
-    $http.get($.absurl_api+'person/'+$rootScope.peID+'/?format=json').success(function(data){ 
+    $http.get($.absurl_api+'person/my/?format=json').success(function(data){ 
         $.each(data.gas_list, function(index,element)
         {
            $rootScope.gasID = element.id;    
@@ -98,35 +106,35 @@ GasistaFelice.config(['$routeProvider',function($routeProvider) {
 		$routeProvider
     
             // route for home page
-        .when('/:pe/', {
+            .when('/', {
 				templateUrl : $.absurl_static+'app/ordinare/ordinare.html',
 				controller  : 'orderController',
                 resolve     : orderController.resolve
 			})
 
 			// route for paniere page
-			.when('/:pe/paniere', {
+			.when('/paniere', {
 				templateUrl : $.absurl_static+'app/paniere/paniere.html',
 				controller  : 'paniereController',
                  resolve     : paniereController.resolve
 			})
 
 			// route for scheda page
-            .when('/:pe/scheda', {
+            .when('/scheda', {
 				templateUrl : $.absurl_static+'app/scheda/scheda.html',
 				controller  : 'schedaController',
                 resolve     : schedaController.resolve
 			})
     
             // route for conto page
-            .when('/:pe/conto', {
+            .when('/conto', {
 				templateUrl : $.absurl_static+'app/conto/conto.html',
 				controller  : 'contoController',
                 resolve     : contoController.resolve
 			})
             .otherwise({
-                    redirectTo: '/:pe/'
-                });
+                redirectTo: '/'
+            });
 	}]);
 
 function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){

@@ -33,6 +33,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
     $scope.products = [];
     $scope.products_post = [];
     $scope.dataLoaded = "false";
+    $scope.absurl_static = $rootScope.absurl_static;
     $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
     $.each(data.gas_list, function(index, element){
         $.each(element.open_orders, function(index, element){
@@ -273,7 +274,7 @@ $scope.ordiniloaded = "true";
             $scope.products_post[i].ordered_amount -= product.step;
             product.total_price = product.quantity * product.price;
         }
-    }
+    };
     
     $scope.getTotal = function(){
     var total = 0;
