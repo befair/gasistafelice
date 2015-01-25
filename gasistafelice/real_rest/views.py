@@ -1,5 +1,5 @@
 #from django.http import HttpResponse
-#from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 #from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.models import User
@@ -12,8 +12,8 @@ from base.models import Person, Contact
 from gas.models import GAS, GASMember
 from supplier.models import Supplier
 
-#--------------------------------------------------------------------------------
 # REST API
+#--------------------------------------------------------------------------------
 
 class PersonCreateReadView(ListCreateAPIView):
 
@@ -23,6 +23,15 @@ class PersonReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     model = Person
     serializer_class = my_serializers.PersonSerializer
+
+@login_required
+def get_user_person(request):
+    """
+    Return serialized info for person bound to authed user
+    """
+    return PersonReadUpdateDeleteView.as_view()(request, pk=request.user.person.pk)
+
+#--------------------------------------------------------------------------------
 
 class GASReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
