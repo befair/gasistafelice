@@ -38,7 +38,7 @@ class Block(BlockSSDataTables):
 
     BLOCK_NAME = "transactions"
     BLOCK_DESCRIPTION = _("Economic transactions")
-    BLOCK_VALID_RESOURCE_TYPES = ["site", "gas", "supplier", "pact", "gasmember"]
+    BLOCK_VALID_RESOURCE_TYPES = ["gas", "supplier", "pact"]
 
     COLUMN_INDEX_NAME_MAP = {
         0: 'id',
@@ -68,25 +68,14 @@ class Block(BlockSSDataTables):
     def get_response(self, request, resource_type, resource_id, args):
         """Check for confidential access permission and call superclass if needed"""
 
-        if resource_type == "site":
+        if request.resource.gas and not request.user.has_perm(
+            CASH, obj=ObjectWithContext(request.resource.gas)
+        ): 
 
-            if not request.user in request.resource.gas_tech_referrers | \
-                request.resource.gas_cash_referrers:
-
-                return render_to_xml_response(
-                    "blocks/table_html_message.xml", 
-                    { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
-                )
-        else:
-
-            if not request.user.has_perm(
-                CASH, obj=ObjectWithContext(request.resource.gas)
-            ): 
-
-                return render_to_xml_response(
-                    "blocks/table_html_message.xml", 
-                    { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
-                )
+            return render_to_xml_response(
+                "blocks/table_html_message.xml", 
+                { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
+            )
 
         if args == CREATE_CSV:
             return self._create_csv(request)
@@ -133,19 +122,11 @@ class Block(BlockSSDataTables):
 
         resource_type = request.resource.resource_type
 
-        if resource_type == "site":
+        if request.resource.gas and not request.user.has_perm(
+            CASH, obj=ObjectWithContext(request.resource.gas)
+        ):
 
-            if not request.user in request.resource.gas_tech_referrers | \
-                request.resource.gas_cash_referrers:
-
-                return user_actions
-        else:
-
-            if not request.user.has_perm(
-                CASH, obj=ObjectWithContext(request.resource.gas)
-            ):
-
-                return user_actions
+            return user_actions
 
         user_actions += [
             ResourceBlockAction(

@@ -7,23 +7,16 @@ from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, C
 
 class Block(transactions.Block):
 
-    BLOCK_NAME = "gasmember_transactions"
-    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
+    BLOCK_NAME = "site_transactions"
+    BLOCK_VALID_RESOURCE_TYPES = ["site"] 
 
     def _check_permission(self, request):
 
-        return request.user.has_perm(
-            VIEW_CONFIDENTIAL, 
-            obj=ObjectWithContext(request.resource)
-        ) 
-        #WAS: checked in superclass 
-        #WAS:       or request.user.has_perm(
-        #WAS:            CASH, 
-        #WAS:            obj=ObjectWithContext(request.resource.gas)
-        #WAS:        )
-
+        return request.user in request.resource.gas_tech_referrers | \
+                request.resource.gas_cash_referrers
 
     def get_response(self, request, resource_type, resource_id, args):
+
         if not self._check_permission(request):
 
             rv = render_to_xml_response(
