@@ -150,23 +150,23 @@ class Block(BlockSSDataTables):
         records = self._get_resource_list(request)
         csvfile = StringIO.StringIO()
 
-        #writer = csv.writer(csvfile, delimiter=';',quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        #writer.writerow(headers)
-        #for res in self._get_resource_list(request):
-        #    writer.writerow([res.pk,
-        #        '{0:%a %d %b %Y %H:%M}'.format(res.date),
-        #        human_readable_account_csv(res.account),
-        #        human_readable_kind(res.transaction.kind),
-        #        signed_ledger_entry_amount(res),
-        #        res.transaction.description.encode("utf-8", "ignore")
-        #    ])
+        writer = csv.writer(csvfile, delimiter=';',quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(headers)
+        for res in self._get_resource_list(request):
+            writer.writerow([res.pk,
+                '{0:%a %d %b %Y %H:%M}'.format(res.date),
+                human_readable_account_csv(res.account),
+                human_readable_kind(res.transaction.kind),
+                signed_ledger_entry_amount(res),
+                res.transaction.description.encode("utf-8", "ignore")
+            ])
 
         csv_data = csvfile.getvalue()
 
         if not csv_data:
             rv = HttpResponseServerError(_('Report not generated'))
         else:
-            response = HttpResponse(csv_data, mimetype='text/csv')
+            response = HttpResponse(csv_data, content_type='text/csv')
             filename = "%(res)s_%(date)s.csv" % {
                 'res': request.resource,
                 'date' : '{0:%Y%m%d_%H%M}'.format(datetime.datetime.now())
