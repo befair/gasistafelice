@@ -15,22 +15,6 @@ class Block(transactions.Block):
         return request.user in request.resource.gas_tech_referrers | \
                 request.resource.gas_cash_referrers
 
-    def get_response(self, request, resource_type, resource_id, args):
-
-        if not self._check_permission(request):
-
-            rv = render_to_xml_response(
-                "blocks/table_html_message.xml", 
-                { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
-            )
-
-        else:
-            rv = super(Block, self).get_response(
-                request, resource_type, resource_id, args
-            )
-
-        return rv
-
     def _get_user_actions(self, request):
 
         if not self._check_permission(request):

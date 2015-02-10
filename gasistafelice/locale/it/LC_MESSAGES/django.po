@@ -2393,7 +2393,7 @@ msgstr "Si sono verificati alcuni errori<pre>%s</pre>"
 #: rest/views/blocks/order_report_intergas.py:237
 #: rest/views/blocks/transactions.py:219
 msgid "Report not generated"
-msgstr "Riporto non generato"
+msgstr "Report non generato"
 
 #: rest/views/blocks/basket_sent.py:30
 msgid "Basket to deliver"
