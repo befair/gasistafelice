@@ -38,6 +38,8 @@ urlpatterns = patterns('',
 
     url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
     (r'^%slookups/' % settings.URL_PREFIX, include('ajax_select.urls')),
+
+    (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp.urls')),
 )
 
 urlpatterns += patterns('',
