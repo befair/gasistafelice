@@ -21,10 +21,11 @@ import re, logging
 
 log = logging.getLogger("gasistafelice")
 
-def cmp_orders(a, b):
-    return [-1, 1][
-        int(a.orders.archived().count() < b.orders.archived().count())
-    ]
+def cmp_orders(gas_a, gas_b):
+    if gas_a.orders.archived().count() < gas_b.orders.archived().count():
+        return 1
+    else:
+        return -1
 
 @never_cache
 def login(request, *args, **kw):
