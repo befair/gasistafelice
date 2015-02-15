@@ -1,9 +1,22 @@
-Luca Ferroni <luca@befair.it>
-Lorenzo Franceschini <lorenzo.franceschini@informaetica.it>
-Dominque Thual <dom_thual@yahoo.fr>
+MAIN DEVELOPER
 
-Con contributi da:
+* Luca Ferroni <luca@befair.it>
 
-Giuseppe Mercanti <g_mercanti@hotmail.com>
-Loris Asoli <lorisasoli@alice.it>
-Orlando Marchetti <orlyposta@gmail.com>
+DEVELOPERS
+
+* Lorenzo Franceschini <lorenzo.franceschini@informaetica.it>
+* Dominque Thual <dom_thual@yahoo.fr>
+
+FUNCTIONS DESIGN by
+
+* Luca Ferroni
+* Lorenzo Franceschini
+* Dominique Thual
+* Giuseppe Mercanti
+
+CREDITS TO 
+
+* Loris Asoli
+* Orlando Marchetti
+
+
