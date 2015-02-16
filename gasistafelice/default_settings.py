@@ -263,7 +263,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance', 'transactions']
+        'blocks' : ['balance', 'site_transactions']
     },{
         'name' : 'archive',
         'descr' : 'Archivio',
@@ -309,7 +309,7 @@ RESOURCE_PAGE_BLOCKS = {
     },{
         'name' : 'accounting',
         'descr' : 'Conto',
-        'blocks' : ['balance_gm', 'transactions']
+        'blocks' : ['balance_gm', 'gasmember_transactions']
     }],
     'supplier' : [{
         'name' : 'products',

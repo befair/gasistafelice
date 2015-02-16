@@ -88,6 +88,47 @@ def human_readable_account(account):
     return "%(name)s|%(urn)s" % {'name': name, 'urn': urn}
 
 @register.simple_tag
+def human_readable_account_csv(account):
+    """
+        Return one string containing the resource
+    """
+    name = ""
+    if 'person-' in account.name:
+        from gasistafelice.base.models import Person
+        p_pk = account.name.replace("person-", "")
+        try:
+            obj = Person.objects.get(pk=p_pk)
+        except GASMember.DoesNotExist:
+            pass
+        else:
+            name = obj.report_name
+
+    elif 'gas-' in account.name:
+        from gasistafelice.gas.models.base import GAS
+        p_pk = account.name.replace("gas-", "")
+        try:
+            obj = GAS.objects.get(pk=p_pk)
+        except GAS.DoesNotExist:
+            pass
+        else:
+            name = obj.id_in_des
+
+    elif 'supplier-' in account.name:
+        from gasistafelice.supplier.models import Supplier
+        p_pk = account.name.replace("supplier-", "")
+        try:
+            obj = Supplier.objects.get(pk=p_pk)
+        except Supplier.DoesNotExist:
+            pass
+        else:
+            name = obj.name
+
+    if name == "":
+        name = "%s" % account.system.owner.instance
+
+    return "%(name)s " % {'name': name.encode("utf-8", "ignore")}
+
+@register.simple_tag
 def signed_ledger_entry_amount(ledger_entry):
 
     if ledger_entry.account.is_stock:

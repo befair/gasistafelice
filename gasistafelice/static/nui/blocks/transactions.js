@@ -1,8 +1,8 @@
 
 jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
 
-    init: function() {
-        this._super("transactions", "table");
+    init: function(block_name) {
+        this._super(block_name, "table");
     },
         //this.active_view = "edit_multiple";
         //this.default_view = this.active_view;
@@ -66,4 +66,6 @@ jQuery.UIBlockAccTransactsList = jQuery.UIBlockWithList.extend({
 
 });
 
-jQuery.BLOCKS["transactions"] = new jQuery.UIBlockAccTransactsList();
+jQuery.BLOCKS["transactions"] = new jQuery.UIBlockAccTransactsList("transactions");
+jQuery.BLOCKS["site_transactions"] = new jQuery.UIBlockAccTransactsList("site_transactions");
+jQuery.BLOCKS["gasmember_transactions"] = new jQuery.UIBlockAccTransactsList("gasmember_transactions");
