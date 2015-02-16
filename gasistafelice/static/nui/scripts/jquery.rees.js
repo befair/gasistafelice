@@ -668,6 +668,7 @@ jQuery.retrieve_form = function (action_el) {
 	});
 	
 	$(NEW_NOTE_DIALOG).dialog('open');
+    $(window).trigger('init-autocomplete');
 	return false;
 };
 
