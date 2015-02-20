@@ -1,16 +1,16 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF, SENDPROD_PDF
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF, SENDPROD_PDF
 
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
-from gasistafelice.gas.models.base import GAS
-from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
+from gf.supplier.models import Supplier
+from gf.gas.models.order import GASSupplierOrder, GASSupplierOrderProduct
+from gf.gas.models.base import GAS
+from gf.gas.forms.order.gsop import GASSupplierOrderProductInterGAS
 from django.forms.formsets import formset_factory
 
 import cgi, os
@@ -236,15 +236,15 @@ class Block(BlockSSDataTables):
         if not pdf_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(pdf_data, mimetype='application/pdf')
+            response = HttpResponse(pdf_data, content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=InterGAS_" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv
 
     def fetch_resources(uri, rel):
-        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
         log.debug("Order report Pisa image path (%s)" % path)
-        path = os.path.join(settings.MEDIA_ROOT, '/img/icon_beta3.jpg')
+        path = os.path.join(settings.STATIC_ROOT, '/img/icon_beta3.jpg')
         log.debug("Order report Pisa image path (%s)" % path)
         return path
 

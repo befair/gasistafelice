@@ -24,8 +24,8 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User, AnonymousUser
 from django.conf import settings
 
-from gasistafelice.globals import type_model_d
-from gasistafelice.gas.models import GASMember
+from globals import type_model_d
+from gf.gas.models import GASMember
 
 from django.contrib.sessions.backends.db import SessionStore
 from django.utils.dateformat import format

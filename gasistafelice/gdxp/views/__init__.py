@@ -1,9 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response
+from lib.shortcuts import render_to_response, render_to_xml_response
 
-from supplier.models import Supplier
+from gf.supplier.models import Supplier
 
 from django.core.exceptions import FieldError
 

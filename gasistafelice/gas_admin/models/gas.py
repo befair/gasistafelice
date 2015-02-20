@@ -1,8 +1,8 @@
 
-from gasistafelice.base.models import Person
-from gasistafelice.admin.models import GASAdmin, GASSupplierOrderAdmin, gas_models, supplier_models
+from gf.base.models import Person
+from admin.models import GASAdmin, GASSupplierOrderAdmin, gas_models, supplier_models
 
-from gasistafelice.consts import EDIT, CREATE
+from consts import EDIT, CREATE
 import logging
 log = logging.getLogger(__name__)
 

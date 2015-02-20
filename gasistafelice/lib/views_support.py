@@ -4,9 +4,8 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.utils.cache import add_never_cache_headers
-from django.utils import simplejson
 
-import os
+import os, json
 from django.conf import settings
 
 import logging, traceback
@@ -130,7 +129,7 @@ def render_datatables(request, records, dt_params, jsonTemplatePath, moreData=No
     iTotalDisplayRecords = dt_params["iTotalDisplayRecords"]
     
     jstonString = render_to_string(jsonTemplatePath, locals()) #prepare the JSON with the response, consider using : from django.template.defaultfilters import escapejs
-    response = HttpResponse(jstonString, mimetype="application/javascript")
+    response = HttpResponse(jstonString, content_type="application/javascript")
 
     #prevent from caching datatables result
     add_never_cache_headers(response)
@@ -174,7 +173,7 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
 
     response_dict.update({'moreData':moreData})
 
-    response =  HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
+    response =  HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
     #prevent from caching datatables result
     add_never_cache_headers(response)
@@ -186,7 +185,7 @@ def render_datatables_automagic(request, querySet, columnIndexNameMap, iTotalRec
 #Needed to insert images in report
 
 def pisa_fetch_resources(uri, rel):
-    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
     return path
 
 #------------------------------------------------------------------------------

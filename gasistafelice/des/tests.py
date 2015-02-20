@@ -10,9 +10,9 @@ from django.test.client import Client
 from workflows.models import State, Transition, Workflow
 from workflows.utils import set_workflow
 
-from gasistafelice.base.models import Place
-from gasistafelice.gas.models import GAS
-from gasistafelice.base.workflows_utils import get_allowed_transitions
+from gf.base.models import Place
+from gf.gas.models import GAS
+from gf.base.workflows_utils import get_allowed_transitions
 
 class GetAllowedTransitionsTestCase(TestCase):
     """

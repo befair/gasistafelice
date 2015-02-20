@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 
 from flexi_auth.models import Param, ParamRole, PrincipalParamRoleRelation
 
-from gasistafelice.consts import DES_ADMIN
-from gasistafelice.des.models import DES, Siteattr
-from gasistafelice.base.models import Person
-from gasistafelice.des import models
+from consts import DES_ADMIN
+from des.models import DES, Siteattr
+from gf.base.models import Person
+from des import models
 
 from django.conf import settings
 

@@ -2,14 +2,14 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 from django.core.urlresolvers import reverse
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.supplier.forms import SupplierForm, AddSupplierForm
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from gf.supplier.models import Supplier
+from gf.supplier.forms import SupplierForm, AddSupplierForm
+from lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 
 from django.http import HttpResponse
@@ -21,7 +21,7 @@ import xhtml2pdf.pisa as pisa
 import cStringIO as StringIO
 import cgi, os
 from django.conf import settings
-from gasistafelice.des.models import Siteattr
+from des.models import Siteattr
 
 from django.utils.encoding import smart_unicode
 from flexi_auth.models import ObjectWithContext
@@ -262,16 +262,16 @@ class Block(BlockSSDataTables):
         pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1", "ignore")), result)
         #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8", "ignore")), result ) #, link_callback = fetch_resources )
         if not pdf.err:
-            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
+            response = HttpResponse(result.getvalue(), content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=Suppliers.pdf"
             return response
         return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(html))
 
 
     def fetch_resources(uri, rel):
-        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
         log.debug("Order report Pisa image path (%s)" % path)
-        path = os.path.join(settings.MEDIA_ROOT, '/img/icon_beta3.jpg')
+        path = os.path.join(settings.STATIC_ROOT, '/img/icon_beta3.jpg')
         log.debug("Order report Pisa image path (%s)" % path)
         return path
 

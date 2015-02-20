@@ -4,12 +4,12 @@ from django.core import urlresolvers
 from flexi_auth.models import ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
-from gasistafelice.consts import CREATE
-from gasistafelice.gas.models import GAS
-from gasistafelice.des.models import Siteattr, DES
+from rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from consts import CREATE
+from gf.gas.models import GAS
+from des.models import Siteattr, DES
 
-from gasistafelice.gas.forms.base import AddGASForm
+from gf.gas.forms.base import AddGASForm
 
 
 #------------------------------------------------------------------------------#

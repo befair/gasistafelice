@@ -2,13 +2,13 @@
 from django.contrib.admin.sites import AdminSite
 from django.contrib import admin
 
-from gasistafelice.base import models as base_models
-from gasistafelice.supplier import models as supplier_models
-from gasistafelice.gas import models as gas_models
+from gf.base import models as base_models
+from gf.supplier import models as supplier_models
+from gf.gas import models as gas_models
 from simple_accounting import models as accounting_models
 
-from gasistafelice.gas_admin.models.base import *
-from gasistafelice.gas_admin.models.gas import *
+from gas_admin.models.base import *
+from gas_admin.models.gas import *
 
 
 class GasAdminSite(AdminSite):

@@ -4,7 +4,7 @@ from django.conf import settings
 
 import notification
 
-from gasistafelice.gas.models import GASMember
+from gf.gas.models import GASMember
 
 
 class Command(BaseCommand):

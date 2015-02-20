@@ -2,7 +2,7 @@
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
-from gasistafelice.rest.views.blocks import gasmembers
+from rest.views.blocks import gasmembers
 
 
 class Block(gasmembers.Block):

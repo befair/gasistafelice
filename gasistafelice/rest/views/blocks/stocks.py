@@ -2,13 +2,13 @@ from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 from django.core.urlresolvers import reverse
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.supplier.forms import SingleSupplierStockFormSet, AddStockForm
+from gf.supplier.models import Supplier
+from gf.supplier.forms import SingleSupplierStockFormSet, AddStockForm
 
 from flexi_auth.models import ObjectWithContext
 

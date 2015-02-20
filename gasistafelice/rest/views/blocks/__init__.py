@@ -3,12 +3,12 @@ import types
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
-from django.utils import simplejson
+import json
 
 from django.contrib.auth.models import User
 
-from gasistafelice.globals import type_model_d
-from gasistafelice.rest.models import BlockConfiguration
+from globals import type_model_d
+from rest.models import BlockConfiguration
 
 import logging
 
@@ -125,7 +125,7 @@ class AbstractBlock(object):
     #------------------------------------------------------------------------------#        
     
     def response_success(self):
-        return HttpResponse(simplejson.dumps(self.response_dict))
+        return HttpResponse(json.dumps(self.response_dict))
         #WAS HttpResponse('<div id="response" resource_type="%s" resource_id="%s" class="success">ok</div>' % (self.resource.resource_type, self.resource.pk))
 
     def response_error(self, error_msg):
@@ -133,7 +133,7 @@ class AbstractBlock(object):
         if not isinstance(error_msg, types.ListType):
             error_msg = [error_msg]
         response_dict['error_msg'] = error_msg
-        return HttpResponse(simplejson.dumps(response_dict))
+        return HttpResponse(json.dumps(response_dict))
         
     def get_response(self, request, resource_type, resource_id, args):
         """Entry point for requests.

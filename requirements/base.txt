@@ -1,4 +1,4 @@
-Django<1.4
+Django
 psycopg2==2.5.2
 django-permissions>=1.0
 django-workflows>=1.0
@@ -14,13 +14,13 @@ pysqlite>=1.0.1
 -e git+https://github.com/feroda/django-simple-accounting.git#egg=django-simple-accounting
 -e git+https://github.com/feroda/django-flexi-auth.git#egg=django-flexi-auth
 #file:../gasistafelice/submodules/django-notification
-#django-notification #FS
--e git+https://github.com/feroda/django-notification.git#egg=django-notification
+django-notification
+#-e git+https://github.com/feroda/django-notification.git#egg=django-notification
 django-registration==0.7
 django-simple-captcha
 #PIL
 pillow
-django-ajax-selects==1.2.4
+django-ajax-selects
 django-extensions #FS
 SOAPpy==0.12.5
 reportlab<3.0

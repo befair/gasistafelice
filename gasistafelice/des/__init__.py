@@ -1,7 +1,7 @@
 from django.db.models.signals import post_syncdb
 
-from gasistafelice.des.management.commands import init_superuser
-from gasistafelice.des import models as des_models
+from des.management.commands import init_superuser
+from des import models as des_models
 
 ## Cannot execute init_superuser because we need fixtures applied!
 #def init_su(sender, app, created_models, verbosity, **kwargs): 

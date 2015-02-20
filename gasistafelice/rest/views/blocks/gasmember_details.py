@@ -2,8 +2,8 @@
 
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
-from gasistafelice.rest.views.blocks import details
-from gasistafelice.gas.forms.base import EditGASMemberForm
+from rest.views.blocks import details
+from gf.gas.forms.base import EditGASMemberForm
 
 class Block(details.Block):
 

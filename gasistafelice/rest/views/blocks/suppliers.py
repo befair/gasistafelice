@@ -5,13 +5,13 @@ from django.core.urlresolvers import reverse
 from flexi_auth.models import ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
-from gasistafelice.consts import CREATE
+from rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from consts import CREATE
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.des.models import Siteattr
+from gf.supplier.models import Supplier
+from des.models import Siteattr
 
-from gasistafelice.supplier.forms import AddSupplierForm
+from gf.supplier.forms import AddSupplierForm
 
 #------------------------------------------------------------------------------#
 #                                                                              #

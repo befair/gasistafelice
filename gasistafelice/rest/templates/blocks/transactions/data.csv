@@ -1,0 +1,4 @@
+{% load basic_tags accounting_tags %}
+ID;DATA;CONTO;KIND;CASH AMOUNT;DESCRIZIONE  
+{% for entry in records %}"{{entry.pk|escapejs}}";"{{entry.date|date:"D d M Y H:i"}}";"{% human_readable_account_csv entry.account %}";"{% human_readable_kind entry.transaction.kind %}";"{% signed_ledger_entry_amount entry %}";"{{entry.transaction.description }}"
+{% endfor %}

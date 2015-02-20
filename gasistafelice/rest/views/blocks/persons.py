@@ -4,10 +4,10 @@ from django.core import urlresolvers
 from flexi_auth.models import ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from gasistafelice.rest.views.blocks.base import BlockWithList, ResourceBlockAction
-from gasistafelice.consts import CREATE
-from gasistafelice.base.models import Person
-from gasistafelice.base.forms import AddPersonForm
+from rest.views.blocks.base import BlockWithList, ResourceBlockAction
+from consts import CREATE
+from gf.base.models import Person
+from gf.base.forms import AddPersonForm
 from des.models import Siteattr
 
 #------------------------------------------------------------------------------#

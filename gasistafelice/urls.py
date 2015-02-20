@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-from gasistafelice.gas_admin.models import gas_admin
+from app_gas_admin.models import gas_admin
 
 js_info_dict = {
     'domain'  : 'djangojs',

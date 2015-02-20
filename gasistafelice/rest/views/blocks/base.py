@@ -19,14 +19,15 @@ from django.contrib.sites.models import Site as DjangoSite
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
-from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
-from gasistafelice.base.models import Resource
-from gasistafelice.des.models import Site
-from gasistafelice.rest.views.blocks import AbstractBlock
+from lib.shortcuts import render_to_response, render_to_xml_response, render_to_context_response
+from lib.views_support import prepare_datatables_queryset, render_datatables
+from gf.base.models import Resource
+from des.models import Site
+from rest.views.blocks import AbstractBlock
 
-from gasistafelice.consts import CREATE, EDIT_MULTIPLE
+from consts import CREATE, EDIT_MULTIPLE
 CREATE_PDF = "createpdf"
+CREATE_CSV = "createcsv"
 VIEW_AS_HTML = "viewhtml"
 SENDME_PDF = "emailmepdf"
 SENDPROD_PDF = "emailprodpdf"

@@ -6,11 +6,11 @@ from django.db import transaction
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.lib.shortcuts import render_to_xml_response
-from gasistafelice.consts import CASH, INCOME
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
-from gasistafelice.rest.views.blocks import AbstractBlock
-from gasistafelice.gas.forms.cash import BalanceForm, TransationPACTForm
+from lib.shortcuts import render_to_xml_response
+from consts import CASH, INCOME
+from rest.views.blocks.base import ResourceBlockAction
+from rest.views.blocks import AbstractBlock
+from gf.gas.forms.cash import BalanceForm, TransationPACTForm
 
 import logging
 log = logging.getLogger(__name__)

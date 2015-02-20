@@ -9,9 +9,9 @@
 
 {% block title %}{{ title }} | {% trans 'GAS administration' %}{% endblock %}
 
-{% block stylesheet %}{{ MEDIA_URL }}css/adminbase.css{% endblock %}
+{% block stylesheet %}{{ STATIC_URL }}css/adminbase.css{% endblock %}
 {% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/adminstyle.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/adminstyle.css" />
     {# head javascript goes here #}
 {% endblock %}
 
@@ -23,6 +23,6 @@
 
 {% block userlinks %}
 {{ block.super }}
-<img src="{{ MEDIA_URL }}img/icon_beta3.jpg" />
+<img src="{{ STATIC_URL }}img/icon_beta3.jpg" />
 {% endblock %}
 {% block footer %}<div style="text-align: center; font-style: italic; font-size: 10px; margin-bottom: 20px;">Gasista Felice - v{% des_version %}</div>{% endblock %}

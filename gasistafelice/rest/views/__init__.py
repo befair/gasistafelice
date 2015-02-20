@@ -4,25 +4,25 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.utils import simplejson
+import json
 
 #Matteo: to restore when django_notification will be updated
 #from notification.models import Notice
 from flexi_auth.models import ROLES_DICT, ParamRole
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.rest.utils import load_block_handler, load_symbols_from_dir
+from rest.utils import load_block_handler, load_symbols_from_dir
 
-from gasistafelice.des.models import Siteattr
+from des.models import Siteattr
 
-from gasistafelice.comments.views import get_all_notes, get_notes_for
+from comments.views import get_all_notes, get_notes_for
 
-from gasistafelice.base.models import Person
-from gasistafelice.gas.models import GAS, GASMember, GASSupplierSolidalPact
-from gasistafelice.supplier.models import Supplier
-from gasistafelice import consts
-from gasistafelice.profiling import profile
+from gf.base.models import Person
+from gf.gas.models import GAS, GASMember, GASSupplierSolidalPact
+from gf.supplier.models import Supplier
+import consts
+from profiling import profile
 
 import time, datetime, logging, copy
 log = logging.getLogger(__name__)
@@ -33,8 +33,8 @@ log = logging.getLogger(__name__)
 #------------------------------------------------------------------------------#
 
 #--- TEST view ---
-#from gasistafelice.lib.formsets import BaseFormSetWithRequest
-#from gasistafelice.gas.forms.base import GASRoleForm
+#from lib.formsets import BaseFormSetWithRequest
+#from gf.gas.forms.base import GASRoleForm
 #from django.forms.formsets import formset_factory
 #def manage_roles(request, resource_type, resource_id):
 #
@@ -59,8 +59,7 @@ def index(request):
         'INSTALLED_APPS': settings.INSTALLED_APPS,
         'LOGOUT_URL' : settings.LOGOUT_URL,
         'THEME' : settings.THEME,
-        'MEDIA_URL' : settings.MEDIA_URL,
-        'ADMIN_MEDIA_PREFIX' : settings.ADMIN_MEDIA_PREFIX,
+        'STATIC_URL' : settings.STATIC_URL,
         'logged_user' : request.logged_user,
         'all_users' : all_users,
     }
@@ -153,7 +152,7 @@ def user_urns(request):
         rv += pacts_to_append
         rv += suppliers_to_append
 
-    return HttpResponse(simplejson.dumps(rv))
+    return HttpResponse(json.dumps(rv))
     
     
     for person in persons:
@@ -178,7 +177,7 @@ def user_urns(request):
         #References list
 #        for prr in request.user.principal_param_role_set.all():
 
-    return HttpResponse(simplejson.dumps(rv))
+    return HttpResponse(json.dumps(rv))
 
 
 @login_required
@@ -186,7 +185,7 @@ def user_roles(request):
     
     if request.user.is_superuser:
         rv = [{ 'role_name' : _("Master of the Universe"), 'role_resources' : [] }]
-        return HttpResponse(simplejson.dumps(rv))
+        return HttpResponse(json.dumps(rv))
 
     rv = []
     for prr in request.user.principal_param_role_set.all():
@@ -196,7 +195,7 @@ def user_roles(request):
             'role_resources': [ r.value.as_dict() for r in prr.role.params ],
         })
 
-    return HttpResponse(simplejson.dumps(rv))
+    return HttpResponse(json.dumps(rv))
 
 @login_required
 def switch_role(request):
@@ -582,15 +581,15 @@ def list_notifications(request):
 #    
 #        
 #    context = {
-#          'media_url'   : settings.MEDIA_URL
+#          'static_url'   : settings.STATIC_URL
 #        , 'menus': menus
 #    }
 #    
 #    #pt = ['maps_menus.xml']
 #    #return render_to_response(pt, context)        
 #
-#    from django.utils import simplejson
-#    retdata = simplejson.dumps(context)
+#    import json
+#    retdata = json.dumps(context)
 #    return HttpResponse(retdata);
 #    
 #    
@@ -776,7 +775,7 @@ def list_notifications(request):
 #    fontsize = 14
 #    
 #    filename = '%s_%s_%s.png' % (text, 'arial', fontsize)
-#    file_path = os.sep.join([settings.MEDIA_ROOT, LABELS_DIR, filename])
+#    file_path = os.sep.join([settings.STATIC_ROOT, LABELS_DIR, filename])
 #    
 #    #
 #    # Create label file

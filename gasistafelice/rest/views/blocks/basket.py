@@ -1,16 +1,16 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF
-from gasistafelice.consts import EDIT, CONFIRM
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF, SENDME_PDF
+from consts import EDIT, CONFIRM
 
-from gasistafelice.lib.shortcuts import render_to_response, render_to_context_response
-from gasistafelice.lib.http import HttpResponse
+from lib.shortcuts import render_to_response, render_to_context_response
+from lib.http import HttpResponse
 
-from gasistafelice.gas.models import GASMember
+from gf.gas.models import GASMember
 
-from gasistafelice.gas.forms.order.gmo import BasketGASMemberOrderForm
-from gasistafelice.lib.formsets import BaseFormSetWithRequest
+from gf.gas.forms.order.gmo import BasketGASMemberOrderForm
+from lib.formsets import BaseFormSetWithRequest
 from django.forms.formsets import formset_factory
 
 import cgi, os
@@ -200,7 +200,7 @@ class Block(BlockSSDataTables):
         
         #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
         if args == self.KW_DATA:
-            from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
+            from lib.views_support import prepare_datatables_queryset, render_datatables
             
             querySet = self._get_resource_list(request) 
             #columnIndexNameMap is required for correct sorting behavior
@@ -232,7 +232,7 @@ class Block(BlockSSDataTables):
         if not pdf_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(pdf_data, mimetype='application/pdf')
+            response = HttpResponse(pdf_data, content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv

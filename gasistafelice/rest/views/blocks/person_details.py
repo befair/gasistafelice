@@ -11,12 +11,12 @@ from django.utils.html import escape
 from flexi_auth.models import ObjectWithContext
 from ajax_select.fields import autoselect_fields_check_can_add
 
-from gasistafelice.rest.views.blocks import details
-from gasistafelice.base.forms import EditPersonForm
-from gasistafelice.base.models import Person
-from gasistafelice.consts import EDIT
-from gasistafelice.rest.views.blocks.base import ResourceBlockAction
-from gasistafelice.lib.shortcuts import render_to_context_response
+from rest.views.blocks import details
+from gf.base.forms import EditPersonForm
+from gf.base.models import Person
+from consts import EDIT
+from rest.views.blocks.base import ResourceBlockAction
+from lib.shortcuts import render_to_context_response
 
 
 class Block(details.Block):

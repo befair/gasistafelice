@@ -2,20 +2,20 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
+from rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_PDF
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.gas.models import GASMember
-from gasistafelice.gas.forms.cash import EcoGASMemberRechargeFormSet
+from gf.gas.models import GASMember
+from gf.gas.forms.cash import EcoGASMemberRechargeFormSet
 
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
 
-from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
+from consts import CASH, VIEW, EDIT_MULTIPLE
+from consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
 from flexi_auth.models import ObjectWithContext
 
 import logging

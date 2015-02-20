@@ -1,12 +1,12 @@
-from gasistafelice.des.models import DES
-from gasistafelice.base.models import Person, Place
-from gasistafelice.supplier.models import (
+from des.models import DES
+from gf.base.models import Person, Place
+from gf.supplier.models import (
     Supplier, Product, ProductCategory, ProductMU, SupplierStock
 )
-from gasistafelice.gas.models.base import (
+from gf.gas.models.base import (
     GAS, GASMember, GASSupplierSolidalPact, GASSupplierStock
 )
-from gasistafelice.gas.models.order import GASSupplierOrder
+from gf.gas.models.order import GASSupplierOrder
 
 type_model_d = {
 	'site' : DES,

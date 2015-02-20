@@ -1,18 +1,18 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 from django.core import urlresolvers
 
-from gasistafelice.rest.views.blocks.base import ( BlockSSDataTables, ResourceBlockAction, 
+from rest.views.blocks.base import ( BlockSSDataTables, ResourceBlockAction, 
     CREATE_PDF, CREATE_HTML, SENDME_PDF, SENDPROD_PDF,
     VIEW_AS_HTML
 )
 
-from gasistafelice.consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
+from consts import CREATE, EDIT, EDIT_MULTIPLE, VIEW
 
-from gasistafelice.lib.shortcuts import render_to_xml_response, render_to_context_response
+from lib.shortcuts import render_to_xml_response, render_to_context_response
 
-from gasistafelice.supplier.models import Supplier
-from gasistafelice.base.models import Person
-from gasistafelice.gas.forms.order.gsop import GASSupplierOrderProductForm
+from gf.supplier.models import Supplier
+from gf.base.models import Person
+from gf.gas.forms.order.gsop import GASSupplierOrderProductForm
 from django.forms.formsets import formset_factory
 
 import cgi, os
@@ -215,7 +215,7 @@ class Block(BlockSSDataTables):
         
 #        #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
 #        if args == self.KW_DATA:
-#            from gasistafelice.lib.views_support import prepare_datatables_queryset, render_datatables
+#            from lib.views_support import prepare_datatables_queryset, render_datatables
 #            
 #            querySet = self._get_resource_list(request) 
 #            #columnIndexNameMap is required for correct sorting behavior
@@ -255,7 +255,7 @@ class Block(BlockSSDataTables):
         if not pdf_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(pdf_data, mimetype='application/pdf')
+            response = HttpResponse(pdf_data, content_type='application/pdf')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
             rv = response
         return rv
@@ -267,7 +267,7 @@ class Block(BlockSSDataTables):
         if not html_data:
             rv = self.response_error(_('Report not generated')) 
         else:
-            response = HttpResponse(html_data, mimetype='text/html')
+            response = HttpResponse(html_data, content_type='text/html')
             response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".html" 
             rv = response
         return rv
@@ -278,9 +278,9 @@ class Block(BlockSSDataTables):
         return HttpResponse(html)
 
     def fetch_resources(uri, rel):
-        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
         log.debug("Order report Pisa image path (%s)" % path)
-        path = os.path.join(settings.MEDIA_ROOT, '/img/icon_beta3.jpg')
+        path = os.path.join(settings.STATIC_ROOT, '/img/icon_beta3.jpg')
         log.debug("Order report Pisa image path (%s)" % path)
         return path
 

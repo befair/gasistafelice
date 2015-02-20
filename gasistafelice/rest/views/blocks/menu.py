@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy as _lazy
 
-from gasistafelice.rest.views.blocks import AbstractBlock
-from gasistafelice.rest.views.contextmenu import get_context_menu
+from rest.views.blocks import AbstractBlock
+from rest.views.contextmenu import get_context_menu
         
 
 #------------------------------------------------------------------------------#

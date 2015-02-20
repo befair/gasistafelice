@@ -1,6 +1,6 @@
 import os
 
-from gasistafelice.lib import load_symbol
+from lib import load_symbol
 
 from django.conf import settings
 import logging
