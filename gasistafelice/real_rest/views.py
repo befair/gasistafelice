@@ -8,9 +8,9 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIV
 
 import serializers as my_serializers
 
-from base.models import Person, Contact
-from gas.models import GAS, GASMember
-from supplier.models import Supplier
+from gf.base.models import Person, Contact
+from gf.gas.models import GAS, GASMember
+from gf.supplier.models import Supplier
 
 # REST API
 #--------------------------------------------------------------------------------
@@ -23,6 +23,7 @@ class PersonReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     model = Person
     serializer_class = my_serializers.PersonSerializer
+    queryset = Person.objects.all() #TODO HURRY
 
 @login_required
 def get_user_person(request):
@@ -49,4 +50,5 @@ class GASMemberReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     model = GASMember
     serializer_class = my_serializers.GASMemberSerializer
+    queryset = Person.objects.all() #TODO HURRY
 

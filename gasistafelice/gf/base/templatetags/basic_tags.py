@@ -23,12 +23,11 @@ def dj_settings(attr_name):
 
 @register.simple_tag
 def static_url():
-    #TODO: change to settings.STATIC_URL when upgrading Django
-    return settings.MEDIA_URL
+    return settings.STATIC_URL
 
 @register.simple_tag
 def des_media_url():
-    return settings.MEDIA_URL
+    return settings.STATIC_URL
 
 @register.simple_tag
 def des_debug():

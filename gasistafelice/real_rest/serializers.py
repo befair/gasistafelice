@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from base.models import Person, Contact
-from gas.models.base import GAS, GASMember, GASSupplierStock
-from gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASSupplierOrderProduct
-from supplier.models import Product, SupplierStock, Supplier
+from gf.base.models import Person, Contact
+from gf.gas.models.base import GAS, GASMember, GASSupplierStock
+from gf.gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASSupplierOrderProduct
+from gf.supplier.models import Product, SupplierStock, Supplier
 
 class ProductSerializer(serializers.ModelSerializer):
     mu = serializers.CharField()
@@ -31,9 +31,19 @@ class DeliverySerializer(serializers.ModelSerializer):
     class Meta:
         model = Delivery
 
-class GASMemberPkListingField(serializers.RelatedField):
+class QSListingField(serializers.ReadOnlyField):
 
-    def to_native(self, value):
+    def to_representation(self, value):
+        return map(lambda x: x.pk, value.all())
+
+class QSUnicodeModelField(serializers.ReadOnlyField):
+
+    def to_representation(self, value):
+        return map(lambda x: unicode(x), value.all())
+
+class PkModelField(serializers.ReadOnlyField):
+
+    def to_representation(self, value):
         return value.pk
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -42,7 +52,7 @@ class OrderSerializer(serializers.ModelSerializer):
     gasstock_set = GASSupplierStockSerializer(many=True)
     stocks = SupplierStockSerializer(many=True)
     delivery = DeliverySerializer()
-    supplier = GASMemberPkListingField()
+    supplier = QSListingField(read_only=True) #TODO... read_only?!?
 
     class Meta:
         model = GASSupplierOrder
@@ -65,8 +75,8 @@ class GASSerializer(serializers.ModelSerializer):
 class SupplierSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
-    certifications = serializers.RelatedField(many=True)
-    seat = serializers.RelatedField()
+    certifications = QSUnicodeModelField(read_only=True) #TODO... read_only?!?
+    seat = PkModelField(read_only=True) #TODO... read_only?!?
 
     class Meta:
         model = Supplier
@@ -75,7 +85,7 @@ class PersonSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
     gas_list = GASSerializer(many=True)
-    gasmembers = GASMemberPkListingField(many=True)
+    gasmembers = QSListingField(read_only=True) #TODO... read_only?!?
     suppliers = SupplierSerializer(many=True)
 
     class Meta:

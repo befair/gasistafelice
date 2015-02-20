@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 
-from gas.models import GAS
+from gf.gas.models import GAS
 
 @login_required
 def index(request):

@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
 	(r'^$'       , 'gf.base.views.index'  ),
 	(r'^%s$' % settings.URL_PREFIX , 'gf.base.views.index'  ),
+	(r'^%sui_ric1/' % settings.URL_PREFIX , include('ui_ric1.urls')),
 	(r'^%ssimulate_user/(?P<user_pk>\d+)/$' % settings.URL_PREFIX , 'gf.base.views.simulate_user'  ),
 
     #New user interface
@@ -40,6 +41,7 @@ urlpatterns = patterns('',
     (r'^%slookups/' % settings.URL_PREFIX, include('ajax_select.urls')),
 
     (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp.urls')),
+    (r'^%sapi/' % settings.URL_PREFIX, include('real_rest.urls'))
 )
 
 urlpatterns += patterns('',

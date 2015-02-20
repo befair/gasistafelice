@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from rest.models.pages import HomePage
 from users.models import UserProfile
 
-from gasistafelice.gas.models.base import GASMember
+from gf.gas.models.base import GASMember
 #---------------------------------------------------------------------#
 #                                                                     #
 #---------------------------------------------------------------------#
