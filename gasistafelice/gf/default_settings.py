@@ -138,7 +138,8 @@ TEMPLATE_DIRS = (
     PROJECT_ROOT + "/templates",
 )
 
-INSTALLED_APPS = (
+# MUST BE A LIST IN ORDER TO APPEND APPS (see django-rosetta below)
+INSTALLED_APPS = [
     'permissions',
     'workflows',
     'history',
@@ -167,7 +168,7 @@ INSTALLED_APPS = (
     'captcha',
     'ajax_select',
     'gdxp',
-)
+]
 
 #INSTALLED_APPS.insert(0, 'django_extensions')
 
