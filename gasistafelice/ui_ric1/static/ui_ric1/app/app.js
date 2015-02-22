@@ -12,17 +12,27 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
     $rootScope.absurl_static = $.absurl_static;
     $rootScope.absurl_api = $.absurl_api;
 
-    $rootScope.gasID = ""; //default value
-    $rootScope.first = true;
-    $rootScope.peID = 85;
-    counter = 1;
-    $rootScope.gasmemberID = "";
-    $http.get($.absurl_api+'person/my/?format=json').success(function(data){ 
-        $.each(data.gas_list, function(index,element)
-        {
-           $rootScope.gasID = element.id;    
-        });
+    $rootScope.first = true; //????
+    counter = 1; //????
+
+    //Default values for page
+    $rootScope.gas_id = $.default_gas_id;
+    $rootScope.gasmember_id = $.default_gasmember_id;
+    $rootScope.person_id = $.person_id;
+
+    $http.get($.absurl_api+'person/my/?format=json')
+    .success(function(data) {
+
+        //PUT my own person data in the scope
+        $rootScope.data_person = data;
     });
+
+
+    //TODO TOREMOVE
+    $rootScope.gasmemberID = $.default_gasmember_id;
+    $rootScope.peID = $.person_id;
+    $rootScope.gasID = $.default_gas_id;
+
 });
 
 GasistaFelice.directive('validPrice',function(){
@@ -103,39 +113,39 @@ GasistaFelice.factory(
 
 
 GasistaFelice.config(['$routeProvider',function($routeProvider) {
-		$routeProvider
-    
-            // route for home page
-            .when('/', {
-				templateUrl : $.absurl_static+'app/ordinare/ordinare.html',
-				controller  : 'orderController',
-                resolve     : orderController.resolve
-			})
+	
+    $routeProvider
+    .when('/ordinare/:gasmember_id', {
+        templateUrl : $.absurl_static+'app/ordinare/ordinare.html',
+        controller  : 'orderController',
+        resolve     : orderController.resolve
+    })
 
-			// route for paniere page
-			.when('/paniere', {
-				templateUrl : $.absurl_static+'app/paniere/paniere.html',
-				controller  : 'paniereController',
-                 resolve     : paniereController.resolve
-			})
 
-			// route for scheda page
-            .when('/scheda', {
-				templateUrl : $.absurl_static+'app/scheda/scheda.html',
-				controller  : 'schedaController',
-                resolve     : schedaController.resolve
-			})
-    
-            // route for conto page
-            .when('/conto', {
-				templateUrl : $.absurl_static+'app/conto/conto.html',
-				controller  : 'contoController',
-                resolve     : contoController.resolve
-			})
-            .otherwise({
-                redirectTo: '/'
-            });
-	}]);
+    // route for paniere page
+    .when('/paniere/:gasmember_id', {
+        templateUrl : $.absurl_static+'app/paniere/paniere.html',
+        controller  : 'paniereController',
+        resolve     : paniereController.resolve
+    })
+
+    // route for scheda page
+    .when('/scheda/:gasmember_id', {
+        templateUrl : $.absurl_static+'app/scheda/scheda.html',
+        controller  : 'schedaController',
+        resolve     : schedaController.resolve
+    })
+
+    // route for conto page
+    .when('/conto/:gasmember_id', {
+        templateUrl : $.absurl_static+'app/conto/conto.html',
+        controller  : 'contoController',
+        resolve     : contoController.resolve
+    })
+    .otherwise({
+        redirectTo: '/ordinare/'+$.default_gasmember_id //TODO: should be $rootScope.gasmember_id
+    });
+}]);
 
 function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 	$scope.pe = {};
@@ -155,8 +165,12 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
         $rootScope.gasID = gasname;
     }
         
-    $http.get($.absurl_api+'person/'+$rootScope.peID+'/?format=json').success(function(data) {
+    //TODO TOREMOVE see .run() for data_person injection
+    $http.get($.absurl_api+'person/my/?format=json')
+    .success(function(data) {
 
+        //PUT my own person data in the scope
+        $rootScope.data_person = data;
         $scope.gasmembers = [];
         $scope.balance = [];
         $scope.person_name = data.name;
@@ -165,7 +179,6 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
             $scope.gasmembers.push({id:element});
         });
         
-        i = 0;
         indice = 0;
         prova = 0;
         $.each(data.gas_list, function(index, element){
@@ -188,10 +201,8 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
                 }
             });
         });    
-            i = i + 1;
-        });
+    });
 }
-
 
 function menu_controller($scope,$http, $routeParams, $rootScope){
     $scope.gmID = $rootScope.gasmemberID;

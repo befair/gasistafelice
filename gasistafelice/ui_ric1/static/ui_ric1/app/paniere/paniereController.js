@@ -280,9 +280,7 @@ function FrmPaniereController($scope,$http,transformRequestAsFormPost){
 paniereController.resolve = {
     r_gasmemberID : function($q, $http, $routeParams, $route, $rootScope) {
         var deferred = $q.defer();
-        var appoggio = $route.current.params.pe;
-        console.log(appoggio);
-         $http.get($.absurl_api+'person/'+appoggio+'/?format=json')
+        $http.get($.absurl_api+'person/'+ $rootScope.peID +'/?format=json')
             .success(function(data) {
                 $rootScope.gasID = data.gas_list[0].id;
                 $rootScope.gasmemberID = data.gasmembers[0];

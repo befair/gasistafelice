@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
-
 import serializers as my_serializers
 
 from gf.base.models import Person, Contact

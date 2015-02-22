@@ -1,27 +1,22 @@
 function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasid, parsingNumbers, $locale){
 
-  $scope.dataLoaded = "false";
+  $scope.dataLoaded = true;
   $scope.ordiniloaded = "false";
   $scope.orderByField = '';
   $scope.reverseSort = false;
-  $rootScope.peID = $routeParams.pe;
+  $scope.POST_order_path = $.absurl_pre+'rest/gasmember/'+$routeParams.gasmember_id+'/order/edit_multiple';
           
-  $http.get($.absurl_api+'gasmember/'+$rootScope.gasmemberID+'/?format=json').success(function(data){
-      $scope.balance = parsingNumbers.parsing(data.balance,2);  
-      $scope.tb = parsingNumbers.parsing(data.total_basket);
-      $scope.tbtbd = parsingNumbers.parsing(data.total_basket_to_be_delivered);
-      var appo = $scope.tb + $scope.tbtbd;
-      $scope.resume = $scope.balance - appo;
-      $scope.resume = parsingNumbers.parsing($scope.resume,2);
-  });
-    
-  $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
-    $scope.gasmemberid = data.id;
-    $scope.path = $.absurl_pre+'rest/gasmember/'+$rootScope.gasmemberID+'/order/edit_multiple';
- });
+    var data = $rootScope.data_gm_selected; 
+    var data_person = $rootScope.data_person;
+    var gas_id = $rootScope.gas_id;
 
-    
- var gasid = $rootScope.gasID; //DEFAULT VALUE 
+    $scope.balance = parsingNumbers.parsing(data.balance,2);  
+    $scope.tb = parsingNumbers.parsing(data.total_basket);
+    $scope.tbtbd = parsingNumbers.parsing(data.total_basket_to_be_delivered);
+    var appo = $scope.tb + $scope.tbtbd;
+    $scope.resume = $scope.balance - appo;
+    $scope.resume = parsingNumbers.parsing($scope.resume,2);
+
         
  $scope.openorders = [];
  $scope.products = [];
@@ -32,10 +27,8 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
     $scope.prodnumber = 0;
     $scope.products = [];
     $scope.products_post = [];
-    $scope.dataLoaded = "false";
     $scope.absurl_static = $rootScope.absurl_static;
-    $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
-    $.each(data.gas_list, function(index, element){
+    $.each(data_person.gas_list, function(index, element) {
         $.each(element.open_orders, function(index, element){
                 if (supplyID == element.supplier)
                 {
@@ -87,31 +80,24 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
                 }
         });
     });
-      $scope.dataLoaded = "true";  
-    });
-     
-      
 };
   
  //LOADING ORDERS
  //TODO - gestione id persona (tramite rootscope o service)
  
-// $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
-//    $scope.person = data;
+//    $scope.person = data_person;
 //    $scope.supplier = [];
-//    $.each(data.gas_list, function(index, element){
-//        if (element.id == gasid)
+//    $.each(data_person.gas_list, function(index, element){
+//        if (element.id == gas_id)
 //        {
 //            $scope.openorders = element;
 //            $.each(element.open_orders, function(index, element){
-//                $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(gf_person){
-//                  $.each(gf_person.suppliers, function(index,supply){
+//                  $.each(data_person.suppliers, function(index,supply){
 //                        if (supply.id == element.supplier) 
 //                        {    
 //                            $scope.supplier.push({name:supply.name});
 //                        } 
 //                  });
-//                });
 //                if ($rootScope.first == true){
 //                    $rootScope.supplyID = element.supplier;
 //                    $rootScope.first = false;
@@ -160,28 +146,24 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
 //        } 
 //     }); 
 //      
-//$scope.ordiniloaded = "true";
-// });
     
     
- $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(data){
     $scope.prodnumber = 0;
     $scope.person = data;
     $scope.supplier = [];
-    $.each(data.gas_list, function(index, element){
-        if (element.id == gasid)
+    $.each(data_person.gas_list, function(index, element) {
+        if (element.id == gas_id)
         {
             $scope.openorders = element;
-            $.each(element.open_orders, function(index, element){
-                $http.get($.absurl_api+'person/'+$routeParams.pe+'/?format=json').success(function(gf_person){
-                  $.each(gf_person.suppliers, function(index,supply){
+            $.each(element.open_orders, function(index, element) {
+                  $.each(data_person.suppliers, function(index,supply){
                         if (supply.id == element.supplier) 
                         {    
                             $scope.supplier.push({name:supply.name});
                         } 
                   });
-                });
-                if ($rootScope.first == true){
+
+                if ($rootScope.first === true){
                     $rootScope.supplyID = element.supplier;
                     $rootScope.first = false;
                     $scope.dataLoaded = "true";
@@ -239,14 +221,6 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
         } 
      }); 
       
-$scope.ordiniloaded = "true";
- });
-    
-    
-    
-    
-
-    
     $scope.increment = function(product,i){
         quantity = parsingNumbers.parsing(product.quantity);
         quantity += product.step;
@@ -254,7 +228,7 @@ $scope.ordiniloaded = "true";
         product.total_price = quantity * product.price;
         $scope.products_post[i].ordered_amount += product.step;
         //console.log($scope.products_post[i].ordered_amount);
-    }
+    };
     
     $scope.change = function(product,i){
         quantity = parsingNumbers.parsing(product.quantity);
@@ -262,7 +236,7 @@ $scope.ordiniloaded = "true";
         $scope.products_post[i].ordered_amount = quantity;
         console.log(quantity);
         //console.log($scope.products_post[i].ordered_amount);
-    }
+    };
     
     $scope.decrement = function(product,i){
         quantity = parsingNumbers.parsing(product.quantity);
@@ -301,7 +275,7 @@ $scope.ordiniloaded = "true";
                                    INITIAL_FORMS:0,
                                     MAX_NUM_FORMS:""});
         
-        $http.post($scope.path, {form:$scope.products_post})
+        $http.post($scope.POST_order_path, {form:$scope.products_post})
         .success(function(){
              $scope.products_post.splice($scope.products_post.length - 1 , 1);                                      
             alert("Prodotti aggiunti al paniere!");
@@ -318,17 +292,17 @@ $scope.ordiniloaded = "true";
 orderController.resolve = {
     r_gasid : function($q, $http, $routeParams, $route, $rootScope) {
         var deferred = $q.defer();
-        var appoggio = $route.current.params.pe;
-        console.log(appoggio);
-         $http.get($.absurl_api+'person/'+appoggio+'/?format=json')
-            .success(function(data) {
-                $rootScope.gasID = data.gas_list[0].id;
-                $rootScope.gasmemberID = data.gasmembers[0];
-                deferred.resolve(data)
-            })
-            .error(function(data){
-                deferred.resolve("error value");
-            });
+        var gm_id = $route.current.params.gasmember_id;
+        $http.get($.absurl_api+'gasmember/'+ gm_id +'/?format=json')
+        .success(function(data) {
+            $rootScope.data_gm_selected = data;
+            $rootScope.gas_id = data.gas;
+            $rootScope.gasmember_id = data.id;
+            deferred.resolve(data)
+        })
+        .error(function(data){
+            deferred.resolve("error value");
+        });
 
         return deferred.promise;
     }

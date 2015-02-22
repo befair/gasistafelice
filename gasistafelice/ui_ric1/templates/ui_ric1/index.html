@@ -34,6 +34,10 @@
         $.absurl_pre = url_elements[0]+'//'+url_elements[2]+'/'+$.url_prefix;
         $.absurl_static = url_elements[0]+'//'+url_elements[2]+$.static_url+$.app_name+'/';
         $.absurl_api = $.absurl_pre+'api/v1/';
+
+        $.person_id = '{{ user.person.pk }}';
+        $.default_gas_id = '{{ user.person.gas_list.0.pk }}';
+        $.default_gasmember_id = '{{ user.person.gasmembers.0.pk }}';
     </script>
 
     <!--
@@ -100,7 +104,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div class="brandname">GASISTA FELICE</div>
+          <div class="brandname">GF</div>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         
@@ -108,14 +112,14 @@
           
             <div class="navbar-left">
                 <ul class="optionlist nav navbar-nav">
-                                                        <li ng-repeat="gasname in gasnames" 
-                                                            ng-class="{ 'active': $index == selectedIndex }"
-                                                            ng-click="itemClicked($index)">    
-                                                            <a href="#/{{peID}}/" ng-click="getID(gasname.id);">
-                       -                                            {{gasname.name}}
-                       -                                        </a>
-                                                            <div class="gaslabel">{{gasname.balance}}&#8364;</div> <!--{{gasname.balance}}-->
-                                                        </li>
+                        <li ng-repeat="gasname in gasnames" 
+                            ng-class="{ 'active': $index == selectedIndex }"
+                            ng-click="itemClicked($index)">    
+                            <a href="#/{{peID}}pippofixme/" ng-click="getID(gasname.id);">
+-                                            {{gasname.name}}
+-                                        </a>
+                            <div class="gaslabel">{{gasname.balance}}&#8364;</div> <!--{{gasname.balance}}-->
+                        </li>
                     {% comment %}
                     {% for gas in gas_list %}
                     <li class="{% if forloop.first %}active{% endif %} "
@@ -136,12 +140,12 @@
                   </li>
 
                  <li markable>
-                  <a href="#/paniere">
+                 <a href="#/paniere/{{ user.person.gasmembers.0.pk }}">
                    <i class="fa fa-shopping-cart"></i>Paniere
                  </a> 
                  </li>
                   <li markable>
-                  <a href="#/conto">
+                  <a href="#/conto/{{ user.person.gasmembers.0.pk }}">
                     <i class="fa fa-user"></i>Conto
                     </a>
                   </li>     
@@ -149,8 +153,8 @@
                        
             </div>
          <div class="navbar-right">
-             <a class="navpic" href="#/scheda"><img src="{% static_url %}ui_ric1/img/user_pic.png" alt="..." class="imgpic"></a>
-             <a class="titlenav" href="#/scheda">Ciao {{ user.person.name }}</a>
+             <a class="navpic" href="#/scheda/{{ user.person.gasmembers.0.pk }}"><img src="{% static_url %}ui_ric1/img/user_pic.png" alt="..." class="imgpic"></a>
+             <a class="titlenav" href="#/scheda/{{ user.person.gasmembers.0.pk }}">Ciao {{ user.person.name }}</a>
         </div>    
           
         </div><!-- /.navbar-collapse -->
