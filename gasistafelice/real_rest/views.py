@@ -50,5 +50,5 @@ class GASMemberReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     model = GASMember
     serializer_class = my_serializers.GASMemberSerializer
-    queryset = Person.objects.all() #TODO HURRY
+    queryset = GASMember.objects.all() #TODO HURRY
 

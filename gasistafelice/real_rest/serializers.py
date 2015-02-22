@@ -52,7 +52,7 @@ class OrderSerializer(serializers.ModelSerializer):
     gasstock_set = GASSupplierStockSerializer(many=True)
     stocks = SupplierStockSerializer(many=True)
     delivery = DeliverySerializer()
-    supplier = QSListingField(read_only=True) #TODO... read_only?!?
+    supplier = PkModelField(read_only=True) #TODO... read_only?!?
 
     class Meta:
         model = GASSupplierOrder
