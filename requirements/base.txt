@@ -13,10 +13,10 @@ pysqlite>=1.0.1
 #file:../gasistafelice/submodules/django-flexi-auth
 -e git+https://github.com/feroda/django-simple-accounting.git#egg=django-simple-accounting
 -e git+https://github.com/feroda/django-flexi-auth.git#egg=django-flexi-auth
-#file:../gasistafelice/submodules/django-notification
-django-notification
-#-e git+https://github.com/feroda/django-notification.git#egg=django-notification
-django-registration==0.7
+##file:../gasistafelice/submodules/django-notification
+#django-notification
+##-e git+https://github.com/feroda/django-notification.git#egg=django-notification
+django-registration
 django-simple-captcha
 #PIL
 pillow
