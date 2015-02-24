@@ -26,4 +26,3 @@ SOAPpy==0.12.5
 reportlab<3.0
 ipython
 djangorestframework
-django-rosetta

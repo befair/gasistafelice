@@ -1,3 +1,2 @@
 -r base.txt
-gunicorn
 django-rosetta
