@@ -164,7 +164,7 @@ INSTALLED_APPS = [
     'localejs',
     #TO DJ17'des_notification',
     #TO DJ17'notification',
-    'registration',
+    #TO DJ17'registration',
     'captcha',
     'ajax_select',
     'gdxp',
