@@ -37,7 +37,7 @@ urlpatterns = patterns('',
 
 	(r'^%sjsi18n/$'% settings.URL_PREFIX, 'django.views.i18n.javascript_catalog', js_info_dict),
 
-    url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
+    #url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
     (r'^%slookups/' % settings.URL_PREFIX, include('ajax_select.urls')),
 
     (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp.urls')),

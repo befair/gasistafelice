@@ -16,15 +16,15 @@ from gf.gas.models.base import GASMember
 @login_required
 def index(request):
 
-    if request.user.is_superuser:
-	return redirect("rest.views.index")
+    #TO DJ17: if request.user.is_superuser:
+    return redirect("rest.views.index")
 
-    role = request.user.get_profile().default_role
-    request.session["app_settings"]["active_role"] = role
-    request.session.modified = True
+#TO DJ17: role = request.user.get_profile().default_role
+#TO DJ17:     request.session["app_settings"]["active_role"] = role
+#TO DJ17:     request.session.modified = True
 
-    url = HomePage.get_user_home(request.user, role)
-    return HttpResponseRedirect(url)
+#TO DJ17:     url = HomePage.get_user_home(request.user, role)
+#TO DJ17:     return HttpResponseRedirect(url)
   
 #LF: no role selection anymore. 
 #WAS:    try: 
