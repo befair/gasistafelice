@@ -1,0 +1,157 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-28 16:35+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: static/nui/blocks/basket.js:59 static/nui/blocks/basket_sent.js:28
+#: static/nui/blocks/curtail.js:30 static/nui/blocks/fee.js:33
+#: static/nui/blocks/gas_users.js:37 static/nui/blocks/order.js:70
+#: static/nui/blocks/order_report.js:35
+#: static/nui/blocks/order_report_intergas.js:32
+#: static/nui/blocks/recharge.js:37 static/nui/blocks/stocks.js:39
+#: static/nui/blocks/supplier_users.js:35
+#: static/nui/blocks/suppliers_report.js:44 static/nui/blocks/users.js:35
+msgid "Display _MENU_ records per page"
+msgstr ""
+
+#: static/nui/blocks/basket.js:60 static/nui/blocks/basket_sent.js:29
+#: static/nui/blocks/curtail.js:31 static/nui/blocks/fee.js:34
+#: static/nui/blocks/gas_users.js:38 static/nui/blocks/order.js:71
+#: static/nui/blocks/order_report.js:36
+#: static/nui/blocks/order_report_intergas.js:33
+#: static/nui/blocks/recharge.js:38 static/nui/blocks/stocks.js:40
+#: static/nui/blocks/supplier_users.js:36
+#: static/nui/blocks/suppliers_report.js:45 static/nui/blocks/users.js:36
+msgid "Nothing found"
+msgstr ""
+
+#: static/nui/blocks/basket.js:61 static/nui/blocks/basket_sent.js:30
+#: static/nui/blocks/curtail.js:32 static/nui/blocks/fee.js:35
+#: static/nui/blocks/gas_users.js:39 static/nui/blocks/order.js:72
+#: static/nui/blocks/order_report.js:37
+#: static/nui/blocks/order_report_intergas.js:34
+#: static/nui/blocks/recharge.js:39 static/nui/blocks/stocks.js:41
+#: static/nui/blocks/supplier_users.js:37
+#: static/nui/blocks/suppliers_report.js:46 static/nui/blocks/users.js:37
+msgid "Showing _START_ to _END_ of _TOTAL_ records"
+msgstr ""
+
+#: static/nui/blocks/basket.js:62 static/nui/blocks/basket_sent.js:31
+#: static/nui/blocks/curtail.js:33 static/nui/blocks/fee.js:36
+#: static/nui/blocks/gas_users.js:40 static/nui/blocks/order.js:73
+#: static/nui/blocks/order_report.js:38
+#: static/nui/blocks/order_report_intergas.js:35
+#: static/nui/blocks/recharge.js:40 static/nui/blocks/stocks.js:42
+#: static/nui/blocks/supplier_users.js:38
+#: static/nui/blocks/suppliers_report.js:47 static/nui/blocks/users.js:38
+msgid "Showing 0 to 0 of 0 records"
+msgstr ""
+
+#: static/nui/blocks/basket.js:63 static/nui/blocks/basket_sent.js:32
+#: static/nui/blocks/curtail.js:34 static/nui/blocks/fee.js:37
+#: static/nui/blocks/gas_users.js:41 static/nui/blocks/order.js:74
+#: static/nui/blocks/order_report.js:39
+#: static/nui/blocks/order_report_intergas.js:36
+#: static/nui/blocks/recharge.js:41 static/nui/blocks/stocks.js:43
+#: static/nui/blocks/supplier_users.js:39
+#: static/nui/blocks/suppliers_report.js:48 static/nui/blocks/users.js:39
+msgid "(filtered from _MAX_ total records)"
+msgstr ""
+
+#: static/nui/blocks/details.js:13 static/nui/blocks/gas_details.js:13
+#: static/nui/blocks/gasmember_details.js:13
+#: static/nui/blocks/order_cash.js:13 static/nui/blocks/order_details.js:13
+#: static/nui/blocks/pact_details.js:13 static/nui/blocks/person_details.js:13
+#: static/nui/blocks/stock_details.js:13
+#: static/nui/blocks/supplier_details.js:13
+msgid "Add note"
+msgstr ""
+
+#: static/nui/blocks/details.js:42 static/nui/blocks/gas_details.js:42
+#: static/nui/blocks/gasmember_details.js:42
+#: static/nui/blocks/order_cash.js:42 static/nui/blocks/order_details.js:42
+#: static/nui/blocks/pact_details.js:42 static/nui/blocks/person_details.js:42
+#: static/nui/blocks/stock_details.js:42
+#: static/nui/blocks/supplier_details.js:42
+msgid "WARNING: some informations are omissed due to block's configuration"
+msgstr ""
+
+#: static/nui/blocks/details.js:100 static/nui/blocks/gas_details.js:100
+#: static/nui/blocks/gasmember_details.js:100
+#: static/nui/blocks/order_cash.js:102 static/nui/blocks/order_details.js:100
+#: static/nui/blocks/pact_details.js:102
+#: static/nui/blocks/person_details.js:100
+#: static/nui/blocks/stock_details.js:100
+#: static/nui/blocks/supplier_details.js:100
+msgid "Remove"
+msgstr ""
+
+#: static/nui/blocks/details.js:357 static/nui/blocks/gas_details.js:357
+#: static/nui/blocks/gasmember_details.js:357
+#: static/nui/blocks/order_cash.js:357 static/nui/blocks/order_details.js:357
+#: static/nui/blocks/pact_details.js:357
+#: static/nui/blocks/person_details.js:357
+#: static/nui/blocks/stock_details.js:357
+#: static/nui/blocks/supplier_details.js:357
+#: static/nui/scripts/jquery.rees.js:655
+msgid "Confirm"
+msgstr ""
+
+#: static/nui/blocks/details.js:367 static/nui/blocks/gas_details.js:367
+#: static/nui/blocks/gasmember_details.js:367
+#: static/nui/blocks/order_cash.js:367 static/nui/blocks/order_details.js:367
+#: static/nui/blocks/pact_details.js:367
+#: static/nui/blocks/person_details.js:367
+#: static/nui/blocks/stock_details.js:367
+#: static/nui/blocks/supplier_details.js:367
+msgid "New note"
+msgstr ""
+
+#: static/nui/blocks/details.js:392 static/nui/blocks/gas_details.js:392
+#: static/nui/blocks/gasmember_details.js:392
+#: static/nui/blocks/order_cash.js:392 static/nui/blocks/order_details.js:392
+#: static/nui/blocks/pact_details.js:392
+#: static/nui/blocks/person_details.js:392
+#: static/nui/blocks/stock_details.js:392
+#: static/nui/blocks/supplier_details.js:392
+msgid "Do you really want to delete this note?"
+msgstr ""
+
+#: static/nui/scripts/jquery.labs.xmpprender.js:49
+msgid "This block does not allow customization."
+msgstr ""
+
+#: static/nui/scripts/jquery.rees.js:12
+msgid "Text"
+msgstr ""
+
+#: static/nui/scripts/jquery.rees.js:44
+msgid "Please provide a name for this resource before rendering it"
+msgstr ""
+
+#: static/nui/scripts/jquery.rees.js:166 static/nui/scripts/jquery.rees.js:220
+msgid "An error occurred while retrieving the data from server ("
+msgstr ""
+
+#: static/nui/scripts/jquery.rees.js:362
+msgid "Submit"
+msgstr ""
+
+#: static/nui/scripts/jquery.rees.js:570
+msgid "There are no elements related to this resource."
+msgstr ""
