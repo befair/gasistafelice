@@ -1,7 +1,7 @@
 function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasid, parsingNumbers, $locale){
 
   $scope.dataLoaded = true;
-  $scope.ordiniloaded = "false";
+  $scope.ordiniloaded = true;
   $scope.orderByField = '';
   $scope.reverseSort = false;
   $scope.POST_order_path = $.absurl_pre+'rest/gasmember/'+$routeParams.gasmember_id+'/order/edit_multiple';
