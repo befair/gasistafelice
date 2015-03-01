@@ -22,7 +22,7 @@
             
         <tbody ng-show="ordiniloaded">
           <tr>
-              <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" src="{{ absurl_static }}img/user_pic.png"></img></td>
+              <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" ng-src="{{absurl_static}}img/user_pic.png"></img></td>
             <td class="menu_links">{{supplier[$index].name}}</td> <!--  {{order.supplier}} -->
           </tr>
           <tr>
@@ -100,7 +100,7 @@
                 <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{product.price}}"/>
 
               <td data-title="image" class="tdprod">                                                   
-                  <img src="img/Kitchen-Bread-icon.png" class="imgprod" alt="" />
+                  <img ng-src="{{absurl_static}}img/Kitchen-Bread-icon.png" class="imgprod" alt="" />
               </td>
               <td data-title="category" class="tdprod">
                 <div class="category">

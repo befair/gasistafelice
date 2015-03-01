@@ -27,7 +27,6 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
     $scope.prodnumber = 0;
     $scope.products = [];
     $scope.products_post = [];
-    $scope.absurl_static = $rootScope.absurl_static;
     $.each(data_person.gas_list, function(index, element) {
         $.each(element.open_orders, function(index, element){
                 if (supplyID == element.supplier)
@@ -298,7 +297,7 @@ orderController.resolve = {
             $rootScope.data_gm_selected = data;
             $rootScope.gas_id = data.gas;
             $rootScope.gasmember_id = data.id;
-            deferred.resolve(data)
+            deferred.resolve(data);
         })
         .error(function(data){
             deferred.resolve("error value");
@@ -308,6 +307,3 @@ orderController.resolve = {
     }
 };
 
-
-
- 
