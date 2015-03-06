@@ -57,7 +57,7 @@
                     <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
               </th>
-              <th scope="col" ng-click="orderByField='category'; reverseSort = !reverseSort">Categoria
+              <!-- <th scope="col" ng-click="orderByField='category'; reverseSort = !reverseSort">Categoria
                 
                 <span ng-show="orderByField == 'category'" class="listorder">
                     <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
@@ -65,6 +65,7 @@
                 </span>
                 
                 </th> 
+              -->
               <th scope="col" ng-click="orderByField='name'; reverseSort = !reverseSort">Prodotto
                   
                 <span ng-show="orderByField == 'name'" class="listorder">
@@ -102,18 +103,18 @@
               <td data-title="image" class="tdprod">                                                   
                   <img ng-src="{{absurl_static}}img/Kitchen-Bread-icon.png" class="imgprod" alt="" />
               </td>
-              <td data-title="category" class="tdprod">
+              <!-- <td data-title="category" class="tdprod">
                 <div class="category">
                   <i class="fa fa-minus-circle"></i> 
                 </div>
-              </td>   
+              </td> -->  
               <td data-title="product_name" class="tdprod">{{product.name}}                                        
                 </td>  
               <td data-title="product_price" class="tdprod" ng-model="productprice">{{product.price | limitTo: 4 | currency:"€"}}</td>     
               <td data-title="add_cart" class="tdprod" style="width:10%;">
                 <div class="input-group">
                     <span class="opcart_left menu_links" ng-click="decrement(product,$index);"><span class="glyphicon glyphicon-minus"></span></span>
-                  <input type="text" class="form-control" ng-change="change(product,$index)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+$/" required/>
+                  <input type="text" class="form-control form-control-ordered_amount" ng-change="change(product,$index)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
                   <span class="opcart_right menu_links" ng-click="increment(product,$index);"><span class="glyphicon glyphicon-plus"></span></span>
                 </div> 
               </td>  

@@ -8064,3 +8064,6 @@ body {
 input {
   text-align: center;
 }
+.form-control-ordered_amount {
+  padding: 3px 6px !important;
+}
