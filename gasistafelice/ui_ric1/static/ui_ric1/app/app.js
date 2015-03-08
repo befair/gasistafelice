@@ -3,7 +3,9 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
     'ngRoute',
     'ngDialog',
     'ngLocale'
-]).run(function($rootScope, $routeParams, $location, $http) {
+]).run(
+    
+  function($rootScope, $routeParams, $location, $http) {
 
     $rootScope.app_name = $.app_name;
     $rootScope.static_url = $.static_url;
@@ -35,81 +37,83 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
 
 });
 
-GasistaFelice.directive('validPrice',function(){
-				return{
-					require: "ngModel",
-					link: function(scope, elm, attrs, ctrl){
-						
-						var regex=/^\d{2,4}(\.\d{1,2})?$/;
-						ctrl.$parsers.unshift(function(viewValue){
-							var floatValue = parseFloat(viewValue);
-							if( floatValue >= 50 && floatValue <=5000 && regex.test(viewValue)){
-								ctrl.$setValidity('validPrice',true);
-								//return viewValue;
-							}
-                            else{
-							    ctrl.$setValidity('validPrice',false);
-                            }
-							return viewValue;
-						});
-					}
-				};
-			});
+GasistaFelice.directive('validPrice',function() {
+    return {
+        require: "ngModel",
+        link: function(scope, elm, attrs, ctrl){
+            
+            var regex=/^\d{2,4}(\.\d{1,2})?$/;
+            ctrl.$parsers.unshift(function(viewValue){
+                var floatValue = parseFloat(viewValue);
+                if( floatValue >= 50 && floatValue <=5000 && regex.test(viewValue)){
+                    ctrl.$setValidity('validPrice',true);
+                    //return viewValue;
+                }
+                else{
+                    ctrl.$setValidity('validPrice',false);
+                }
+                return viewValue;
+            });
+        }
+    };
+});
 
 GasistaFelice.factory(
-            "transformRequestAsFormPost",
-            function() {
- 
-                // I prepare the request data for the form post.
-                function transformRequest( data, getHeaders ) {
-                    var headers = getHeaders();
-                    headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
-                    return( serializeData( data ) );
-                }
-                // Return the factory value.
-                return( transformRequest );
- 
- 
-                // ---
-                // PRVIATE METHODS.
-                // ---
-                // I serialize the given Object into a key-value pair string. This
-                // method expects an object and will default to the toString() method.
-                // --
-                // NOTE: This is an atered version of the jQuery.param() method which
-                // will serialize a data collection for Form posting.
-                // --
-                // https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
-                
-                function serializeData( data ) {
-                    // If this is not an object, defer to native stringification.
-                    if ( ! angular.isObject( data ) ) {
-                        return( ( data == null ) ? "" : data.toString() );
-                    }
- 
-                    var buffer = [];
-                    // Serialize each key in the object.
-                    for ( var name in data ) {
-                        if ( ! data.hasOwnProperty( name ) ) {
-                            continue;
-                        }
-                        var value = data[ name ];
-                        buffer.push(
-                            encodeURIComponent( name ) +
-                            "=" +
-                            encodeURIComponent( ( value == null ) ? "" : value )
-                        );
-                    }
- 
-                    // Serialize the buffer and clean it up for transportation.
-                    var source = buffer
-                        .join( "&" )
-                        .replace( /%20/g, "+" )
-                    ;
-                    return( source );
-                }
+    "transformRequestAsFormPost",
+    function() {
+
+        // I prepare the request data for the form post.
+        function transformRequest( data, getHeaders ) {
+            var headers = getHeaders();
+            headers[ "Content-type" ] = "application/x-www-form-urlencoded; charset=utf-8";
+            return( serializeData( data ) );
+        }
+        // Return the factory value.
+        return( transformRequest );
+
+
+        // ---
+        // PRVIATE METHODS.
+        // ---
+        // I serialize the given Object into a key-value pair string. This
+        // method expects an object and will default to the toString() method.
+        // --
+        // NOTE: This is an atered version of the jQuery.param() method which
+        // will serialize a data collection for Form posting.
+        // --
+        // https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
+        
+        function serializeData( data ) {
+            // If this is not an object, defer to native stringification.
+            if ( ! angular.isObject( data ) ) {
+                return( ( data === null ) ? "" : data.toString() );
             }
-        );
+
+            var buffer = [];
+            // Serialize each key in the object.
+            var i;
+            for ( i=0; i<data.length; i++ ) {
+                var name = data[i];
+                if ( ! data.hasOwnProperty( name ) ) {
+                    continue;
+                }
+                var value = data[ name ];
+                buffer.push(
+                    encodeURIComponent( name ) +
+                    "=" +
+                    encodeURIComponent( ( value === null ) ? "" : value )
+                );
+            }
+
+            // Serialize the buffer and clean it up for transportation.
+            var source = buffer
+                .join( "&" )
+                .replace( /%20/g, "+" )
+            ;
+            return( source );
+        }
+    }
+);
 
 
 GasistaFelice.config(['$routeProvider',function($routeProvider) {
