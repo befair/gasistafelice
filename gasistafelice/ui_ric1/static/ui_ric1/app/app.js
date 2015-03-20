@@ -22,12 +22,6 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
     $rootScope.gasmember_id = $.default_gasmember_id;
     $rootScope.person_id = $.person_id;
 
-    $http.get($.absurl_api+'person/my/?format=json')
-    .success(function(data) {
-
-        //PUT my own person data in the scope
-        $rootScope.data_person = data;
-    });
 
 
     //TODO TOREMOVE
@@ -156,27 +150,25 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 }
 
 
-function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsingNumbers){
+function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsingNumbers, $q, person) {
 
     $scope.gasnames = [];
     $scope.selectedIndex = 0;
     
     $scope.itemClicked = function ($index) {
         $scope.selectedIndex = $index;
-    }
+    };
     
     $scope.getID = function(gasname){
         $rootScope.gasID = gasname;
-    }
+    };
         
-    //TODO TOREMOVE see .run() for data_person injection
-    $http.get($.absurl_api+'person/my/?format=json')
-    .success(function(data) {
+    $scope.gasmembers = [];
+    $scope.balance = [];
 
-        //PUT my own person data in the scope
-        $rootScope.data_person = data;
-        $scope.gasmembers = [];
-        $scope.balance = [];
+    person.get_info($q, $http).then(
+      function (data) {
+
         $scope.person_name = data.name;
         
         $.each(data.gasmembers, function (index,element){
@@ -225,7 +217,7 @@ GasistaFelice.config(function($httpProvider) {
             var name, value, fullSubName, subValue, innerObj, i, split, counter;
 
                 for (name in obj) {
-                value = obj[name];
+                    value = obj[name];
 
                     if (value instanceof Array) {
                         for (var i = 0; i < value.length; ++i) {
@@ -283,4 +275,36 @@ GasistaFelice.service('parsingNumbers', function() {
     };
 });
 
+GasistaFelice.service('person', function() {
+
+    this.data = null;
+    var this_svc = this;
+
+    this.get_info = function($q, $http) {
+
+        var deferred = $q.defer();
+        if (this_svc.data === null) {
+            $http.get($.absurl_api+'person/my/?format=json')
+            .success(function(data) {
+                this_svc.data = data;
+                deferred.resolve(data);
+            }).error(function(data){
+                deferred.resolve("http error get person data");
+            });
+        } else
+            deferred.resolve(this_svc.data);
+            
+        return deferred.promise;
+
+     }
+
+});
+
+GasistaFelice.base_resolver = {
+
+    get_person_data : function($q, $http, person) {
+        return person.get_info($q, $http);
+    }
+
+}
 

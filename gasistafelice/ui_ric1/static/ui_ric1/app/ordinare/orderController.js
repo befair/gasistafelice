@@ -1,4 +1,4 @@
-function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasid, parsingNumbers, $locale){
+function orderController($scope,$http,$rootScope, $routeParams, $timeout, person, parsingNumbers, $locale){
 
   $scope.dataLoaded = true;
   $scope.ordiniloaded = true;
@@ -7,7 +7,6 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
   $scope.POST_order_path = $.absurl_pre+'rest/gasmember/'+$routeParams.gasmember_id+'/order/edit_multiple';
           
     var data = $rootScope.data_gm_selected; 
-    var data_person = $rootScope.data_person;
     var gas_id = $rootScope.gas_id;
 
     $scope.balance = parsingNumbers.parsing(data.balance,2);  
@@ -27,7 +26,7 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
     $scope.prodnumber = 0;
     $scope.products = [];
     $scope.products_post = [];
-    $.each(data_person.gas_list, function(index, element) {
+    $.each(person.data.gas_list, function(index, element) {
         $.each(element.open_orders, function(index, element){
                 if (supplyID == element.supplier)
                 {
@@ -84,14 +83,14 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
  //LOADING ORDERS
  //TODO - gestione id persona (tramite rootscope o service)
  
-//    $scope.person = data_person;
+//    $scope.person = person.data;
 //    $scope.supplier = [];
-//    $.each(data_person.gas_list, function(index, element){
+//    $.each(person.data.gas_list, function(index, element){
 //        if (element.id == gas_id)
 //        {
 //            $scope.openorders = element;
 //            $.each(element.open_orders, function(index, element){
-//                  $.each(data_person.suppliers, function(index,supply){
+//                  $.each(person.data.suppliers, function(index,supply){
 //                        if (supply.id == element.supplier) 
 //                        {    
 //                            $scope.supplier.push({name:supply.name});
@@ -150,12 +149,12 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
     $scope.prodnumber = 0;
     $scope.person = data;
     $scope.supplier = [];
-    $.each(data_person.gas_list, function(index, element) {
+    $.each(person.data.gas_list, function(index, element) {
         if (element.id == gas_id)
         {
             $scope.openorders = element;
             $.each(element.open_orders, function(index, element) {
-                  $.each(data_person.suppliers, function(index,supply){
+                  $.each(person.data.suppliers, function(index,supply){
                         if (supply.id == element.supplier) 
                         {    
                             $scope.supplier.push({name:supply.name});
@@ -288,22 +287,22 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, r_gasi
  
 }
 
-orderController.resolve = {
-    r_gasid : function($q, $http, $routeParams, $route, $rootScope) {
-        var deferred = $q.defer();
-        var gm_id = $route.current.params.gasmember_id;
-        $http.get($.absurl_api+'gasmember/'+ gm_id +'/?format=json')
-        .success(function(data) {
-            $rootScope.data_gm_selected = data;
-            $rootScope.gas_id = data.gas;
-            $rootScope.gasmember_id = data.id;
-            deferred.resolve(data);
-        })
-        .error(function(data){
-            deferred.resolve("error value");
-        });
+orderController.resolve = GasistaFelice.base_resolver;
+orderController.resolve.r_gasid = function($q, $http, $routeParams, $route, $rootScope) {
 
-        return deferred.promise;
-    }
-};
+    var deferred = $q.defer();
+    var gm_id = $route.current.params.gasmember_id;
+    $http.get($.absurl_api+'gasmember/'+ gm_id +'/?format=json')
+    .success(function(data) {
+        $rootScope.data_gm_selected = data;
+        $rootScope.gas_id = data.gas;
+        $rootScope.gasmember_id = data.id;
+        deferred.resolve(data);
+    })
+    .error(function(data){
+        deferred.resolve("error value");
+    });
+
+    return deferred.promise;
+}
 
