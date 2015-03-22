@@ -23,11 +23,11 @@ class Command(BaseCommand):
         Siteattr.set_attribute("name", settings.INIT_OPTIONS['sitename'], "site name")
         Siteattr.set_attribute("descr", settings.INIT_OPTIONS['sitedescription'], "site description")
         
-        des = DES.objects.all()[0]
-        des.domain=settings.INIT_OPTIONS['domain'] 
-        des.name=settings.INIT_OPTIONS['sitename']
-        des.cfg_time=time.time()
-        des.save()
+        des = DES.objects.create(
+            domain=settings.INIT_OPTIONS['domain'],
+            name=settings.INIT_OPTIONS['sitename'],
+            cfg_time=time.time()
+        )
 
         # Initialize Superuser
         su, created = User.objects.get_or_create(username=settings.INIT_OPTIONS['su_username'],

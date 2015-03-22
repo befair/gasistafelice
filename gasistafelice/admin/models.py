@@ -19,6 +19,8 @@ from users import models as user_models
 from simple_accounting import models as accounting_models
 from gf.gas.models.base import GAS
 
+import reversion
+
 #from registration.models import RegistrationProfile as MyProfile
 
 ########################## Inlines #######################
@@ -65,12 +67,12 @@ class GASMemberRoleInline(admin.TabularInline):
 
 ########################## ModelAdmin customizations ######
 
-class PersonAdmin(admin.ModelAdmin):
+class PersonAdmin(reversion.VersionAdmin):
 
     inlines = [PersonContactInline, ]
     save_on_top = True
 
-    list_display = ('__unicode__', 'name', 'surname', 'city', 'user_with_link')
+    list_display = ('__unicode__', 'name', 'surname', 'city', 'user')
     list_editable = ('name', 'surname')
     list_display_links = ('__unicode__',)
     search_fields = ('^name','^surname', 'address__city')
@@ -81,11 +83,11 @@ class PersonAdmin(admin.ModelAdmin):
             )
     }),)
 
-    def user_with_link(self, obj):
-        user = obj.user
-        return u'<a target="_blank" href="%s">%s</a>' % (user.get_absolute_url(), user)
-    user_with_link.allow_tags = True
-    user_with_link.short_description = _("user")
+    #def user_with_link(self, obj):
+    #    user = obj.user
+    #    return u'<a target="_blank" href="%s">%s</a>' % (user.get_absolute_url(), user)
+    #user_with_link.allow_tags = True
+    #user_with_link.short_description = _("user")
 
 class PlaceAdmin(admin.ModelAdmin):
 
