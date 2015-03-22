@@ -139,7 +139,7 @@ Install Python requirements inside your virtualenv::
 Set your local settings::
 
     (gf_dev)$ cd gasistafelice
-    (gf_dev)$ cp settings.py{.dist,}
+    (gf_dev)$ cp gf/settings.py{.dist,}
 
 Edit ``settings.py`` accordingly to your needs::
 
@@ -147,7 +147,7 @@ Edit ``settings.py`` accordingly to your needs::
 
 Initialize the database::
 
-    (gf_dev)$ ./manage.py syncdb --noinput
+    (gf_dev)$ ./manage.py makemigrations --noinput
     (gf_dev)$ ./manage.py migrate
 
 Create the admin user::
@@ -157,11 +157,6 @@ Create the admin user::
 Optionally, you could load some example data::
 
     (gf_dev)$ ./manage.py loaddata fixtures/auth/test_data.json
-
-Export the following environment variables::
-
-    (gf_dev)$ export DJHISTORY_HOME=$WORKON_HOME/gf_dev/src/django-pro-history
-    (gf_dev)$ export PYTHONPATH=/usr/lib/python2.7/dist-packages
 
 Now let's run the web server::
 
@@ -184,8 +179,6 @@ Go to project root, inside ``gasistafelice`` directory::
 Enable virtualenv and export the following environment variables::
 
     $ workon gf_dev
-    (gf_dev)$ export DJHISTORY_HOME=$WORKON_HOME/gf_dev/src/django-pro-history
-    (gf_dev)$ export PYTHONPATH=/usr/lib/python2.7/dist-packages
 
 Run the web server::
 
