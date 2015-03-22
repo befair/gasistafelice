@@ -567,7 +567,7 @@ class Person(models.Model, PermissionResource):
     website = models.URLField(blank=True, verbose_name=_("web site"))
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
     
     class Meta:
         verbose_name = _("person")
@@ -1189,7 +1189,7 @@ def init_perms_for_groups():
         SupplierStock, Product, Supplier
     )
     from django.contrib.auth.models import User
-    from django.contrib.auth.management import _get_permission_codename
+    from django.contrib.auth import get_permission_codename
     
     g_techs = Group.objects.get(name=GROUP_TECHS)
     g_suppliers = Group.objects.get(name=GROUP_SUPPLIERS)
@@ -1245,7 +1245,7 @@ def init_perms_for_groups():
         for klass, actions in perms_d.items():
             ctype = ContentType.objects.get_for_model(klass)
             for action in actions:
-                codename = _get_permission_codename(action, klass._meta)
+                codename = get_permission_codename(action, klass._meta)
                 log.debug("Adding perm %s to group %s" % (codename, gr))
                 p = Permission.objects.get(
                     content_type=ctype, codename=codename
