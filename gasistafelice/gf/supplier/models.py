@@ -786,7 +786,7 @@ class UnitsConversion(models.Model):
 #------------------------------------------------------------------------------
 
 def category_catchall():
-    return ProductCategory.objects.get(name=settings.DEFAULT_CATEGORY_CATCHALL)
+    return ProductCategory.objects.get(name=settings.DEFAULT_CATEGORY_CATCHALL).pk
 
 class Product(models.Model, PermissionResource):
 

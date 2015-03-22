@@ -12,6 +12,12 @@ import current_user.models
 from django.conf import settings
 import django.core.validators
 
+from gf.gas.workflow_data import workflow_dict
+
+def create_workflows(apps, schema_editor):
+    for name, w in workflow_dict.items():
+        w.register_workflow()
+    return
 
 class Migration(migrations.Migration):
 
@@ -25,6 +31,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(create_workflows),
         migrations.CreateModel(
             name='Delivery',
             fields=[

@@ -1063,8 +1063,6 @@ class DefaultTransition(models.Model, PermissionResource):
     state = models.ForeignKey(State,verbose_name=_('state'))
     transition = models.ForeignKey(Transition,verbose_name=_('transition'))
 
-    history = HistoricalRecords()
-
     class Meta:
         verbose_name = _("default transition")
         verbose_name_plural = _("default transitions")

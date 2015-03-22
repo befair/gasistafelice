@@ -1,16 +1,33 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.management import call_command
 from django.db import models, migrations
-import datetime
 import lib.fields.models
 import gf.base.utils
 import gf.supplier.models
-from decimal import Decimal
 import gf.base.models
 import current_user.models
 from django.conf import settings
 
+import datetime, os
+from decimal import Decimal
+
+def create_default_category(apps, schema_editor):
+    ProductCategory = apps.get_model('supplier', "ProductCategory")
+    ProductCategory.objects.create(name=settings.DEFAULT_CATEGORY_CATCHALL)
+
+def load_supplier_initial_data(apps, schema_editor):
+    """
+    Test if models have been initialized correctly and 
+    load initial json data for suppliers.
+    """
+
+    ProductCategory = apps.get_model('supplier', "ProductCategory")
+    ProductMU = apps.get_model('supplier', "ProductMU")
+    ProductPU = apps.get_model('supplier', "ProductPU")
+
+    call_command("loaddata", os.path.join(os.path.dirname(__file__), "initial_data.json"))
 
 class Migration(migrations.Migration):
 
@@ -359,6 +376,7 @@ class Migration(migrations.Migration):
             name='unitsconversion',
             unique_together=set([('src', 'dst')]),
         ),
+        migrations.RunPython(load_supplier_initial_data),
         migrations.AddField(
             model_name='supplier',
             name='agent_set',

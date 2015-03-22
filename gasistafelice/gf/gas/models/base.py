@@ -605,10 +605,10 @@ class GAS(models.Model, PermissionResource):
 
 
 def get_supplier_order_default():
-    return Workflow.objects.get(name="SimpleSupplierOrderDefault")
+    return Workflow.objects.get(name="SimpleSupplierOrderDefault").pk
 
 def get_gasmember_order_default():
-    return Workflow.objects.get(name="GASMemberOrderDefault")
+    return Workflow.objects.get(name="GASMemberOrderDefault").pk
 
 class GASConfig(models.Model):
     """

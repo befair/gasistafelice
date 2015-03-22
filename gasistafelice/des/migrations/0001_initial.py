@@ -4,7 +4,14 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import gf.base.models
 import gf.base.utils
+from django.conf import settings
 
+def create_default_site(apps, schema_editor):
+    Site = apps.get_model("sites", "Site")
+    Site.objects.create(
+        domain=settings.INIT_OPTIONS["domain"], 
+        name=settings.INIT_OPTIONS["sitename"]
+    )
 
 class Migration(migrations.Migration):
 
@@ -14,6 +21,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(create_default_site),
         migrations.CreateModel(
             name='DES',
             fields=[

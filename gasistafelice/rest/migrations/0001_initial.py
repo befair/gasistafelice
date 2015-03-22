@@ -29,7 +29,6 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'blockconfiguration',
                 'verbose_name': 'Block configuration data',
-                'db_tablespace': 'restts',
             },
             bases=(models.Model,),
         ),
