@@ -1296,6 +1296,20 @@ def setup_data_handler(sender, instance, created, **kwargs):
         
 #-------------------------------------------------------------------------------
 
+@receiver(post_save, sender=Person)
+def update_user(sender, instance, **kwargs):
+    """
+    Get Person linked user, then set User email equals
+    to Person email_address
+    """
+
+    user = instance.user
+
+    try:
+        user.email = instance.email_address
+        user.save()
+    except AttributeError as e:
+        pass
 
 def validate(sender, instance, **kwargs):
         try:
