@@ -190,53 +190,79 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
 
     # Mail notifications
     # WAS: notification.create_notice_type(
-    notification.NoticeType(
-        label="gasmember_notification", 
-        display=_("Notification Received"), 
-        description=_("you have received a notification"), 
-        default=2
-    ).save()
+    notice_types = notification.NoticeType.objects.filter(label="gasmember_notification")
+    if not notice_types:
+        notification.NoticeType(
+            label="gasmember_notification", 
+            display=_("Notification Received"), 
+            description=_("you have received a notification"), 
+            default=2
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label gasmember_notification")
+
 
     # WAS: notification.create_notice_type(
-    notification.NoticeType(
-        label="gas_notification",
-        display=_("Notification Received"), 
-        description=_("this GAS has received a notification"),
-        default=2
-    ).save()
+    notice_types = notification.NoticeType.objects.filter(label="gas_notification")
+    if not notice_types:
+        notification.NoticeType(
+            label="gas_notification",
+            display=_("Notification Received"), 
+            description=_("this GAS has received a notification"),
+            default=2
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label gas_notification")
 
     # WAS: notification.create_notice_type(
-    notification.NoticeType(
-        label="gas_newsletter",
-        display=_("Newsletter Received"), 
-        description=_("this GAS has received the newsletter"), 
-        default=2
-    ).save()
-    
+    notice_types = notification.NoticeType.objects.filter(label="gas_newsletter")
+    if not notice_types:
+        notification.NoticeType(
+            label="gas_newsletter",
+            display=_("Newsletter Received"), 
+            description=_("this GAS has received the newsletter"), 
+            default=2
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label gas_newsletter")
+
     # WAS: notification.create_notice_type(
-    notification.NoticeType(
-        label="order_state_update", 
-        display=_("Order state updated"), 
-        description=_("an order has been updated"), 
-        default=2
-    ).save()
+    notice_types = notification.NoticeType.objects.filter(label="order_state_update")
+    if not notice_types:
+        notification.NoticeType(
+            label="order_state_update", 
+            display=_("Order state updated"), 
+            description=_("an order has been updated"), 
+            default=2
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label order_state_update")
     
     # Web notifications
     # WAS: notification.create_notice_type(
-    notification.NoticeType(
-        label="ordered_product_update", 
-        display=_("Ordered product update"), 
-        description=_("an ordered product has changed"), 
-        default=3
-    ).save()
+    notice_types = notification.NoticeType.objects.filter(label="ordered_product_update")
+    if not notice_types:
+        notification.NoticeType(
+            label="ordered_product_update", 
+            display=_("Ordered product update"), 
+            description=_("an ordered product has changed"), 
+            default=3
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label ordered_product_update")
     
     # WAS: notification.create_notice_type(
-    notification.NoticeType(
-        label="gasstock_update", 
-        display=_("Product update for GAS"), 
-        description=_("a product has been updated for GAS"), 
-        default=3
-    ).save()
+    notice_types = notification.NoticeType.objects.filter(label="gasstock_update")
+    if not notice_types:
+        notification.NoticeType(
+            label="gasstock_update", 
+            display=_("Product update for GAS"), 
+            description=_("a product has been updated for GAS"), 
+            default=3
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label gasstock_update")
+
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
 
