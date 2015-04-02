@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from history.models import HistoricalRecords
+#from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
@@ -63,7 +63,7 @@ class Supplier(models.Model, PermissionResource):
     description = models.TextField(blank=True, default='', verbose_name=_("description"))
 
     accounting =  AccountingDescriptor(SupplierAccountingProxy)
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
     
     class Meta:
         verbose_name = _('supplier')
@@ -462,7 +462,7 @@ class SupplierAgent(models.Model):
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('supplier agent')
@@ -524,7 +524,7 @@ class Certification(models.Model, PermissionResource):
     symbol = models.CharField(max_length=5, unique=True, verbose_name=_('symbol'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __unicode__(self):
         return self.name
@@ -579,7 +579,7 @@ class ProductCategory(models.Model, PermissionResource):
     description = models.TextField(blank=True,verbose_name=_('description'))
     image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True,verbose_name=_('image'))
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     class Meta:
         verbose_name=_('Product category')
@@ -660,7 +660,7 @@ class ProductMU(models.Model, PermissionResource):
     name = models.CharField(max_length=32, unique=True)
     symbol = models.CharField(max_length=5, unique=True)
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __unicode__(self):
         return self.name
@@ -717,7 +717,7 @@ class ProductPU(models.Model, PermissionResource):
     symbol = models.CharField(max_length=5, unique=True)
     description = models.TextField(blank=True)
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __unicode__(self):
         return self.name
@@ -847,7 +847,7 @@ class Product(models.Model, PermissionResource):
 
     deleted = models.BooleanField(default=False,verbose_name=_('deleted'))
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('product')
@@ -1033,7 +1033,7 @@ class SupplierStock(models.Model, PermissionResource):
 
     deleted = models.BooleanField(default=False,verbose_name=_('deleted'))
 
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('supplier stock')

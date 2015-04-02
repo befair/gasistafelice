@@ -15,7 +15,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from workflows.models import Workflow, Transition, State
-from history.models import HistoricalRecords
+#from history.models import HistoricalRecords
 
 from consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
@@ -567,7 +567,7 @@ class Person(models.Model, PermissionResource):
     website = models.URLField(blank=True, verbose_name=_("web site"))
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
-    # history = HistoricalRecords()
+    # #history = HistoricalRecords()
     
     class Meta:
         verbose_name = _("person")
@@ -907,7 +907,7 @@ class Contact(models.Model):
     is_preferred = models.BooleanField(default=False,verbose_name=_('preferred'))
     description = models.CharField(max_length=128, blank=True, default='',verbose_name=_('description'))
 
-    history = HistoricalRecords()
+    ##history = HistoricalRecords()
 
     class Meta:
         verbose_name = _("contact")
@@ -952,7 +952,7 @@ class Place(models.Model, PermissionResource):
     lon = models.FloatField(null=True, blank=True,verbose_name=_('lon'))
     lat = models.FloatField(null=True, blank=True,verbose_name=_('lat'))
 
-    history = HistoricalRecords()
+    ##history = HistoricalRecords()
     
     class Meta:
         verbose_name = _("place")

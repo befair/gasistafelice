@@ -143,7 +143,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = [
     'permissions',
     'workflows',
-    'history',
+    #'history',
     'reversion',
     'flexi_auth',
     'simple_accounting',
