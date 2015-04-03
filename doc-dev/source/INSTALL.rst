@@ -36,9 +36,9 @@ On Arch::
 Database
 --------
 
-    Only on Arch, first of all initialize ``postgres`` user::
+Only on Arch, first of all initialize ``postgres`` user::
 
-        $ sudo -u postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
+    $ sudo -u postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 
 Now start PostgreSQL daemon::
 
@@ -143,7 +143,7 @@ Set your local settings::
 
 Edit ``settings.py`` accordingly to your needs::
 
-    (gf_dev)$ vim settings.py
+    (gf_dev)$ vim gf/settings.py
 
 Initialize the database::
 
