@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from history.models import HistoricalRecords
+#WAS: from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
@@ -40,7 +40,7 @@ from gasistafelice.gas import signals
 from gasistafelice.base import const
 
 from decimal import Decimal
-import logging
+import logging, reversion
 log = logging.getLogger(__name__)
 
 @economic_subject
@@ -63,7 +63,7 @@ class Supplier(models.Model, PermissionResource):
     description = models.TextField(blank=True, default='', verbose_name=_("description"))
 
     accounting =  AccountingDescriptor(SupplierAccountingProxy)
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
     
     class Meta:
         verbose_name = _('supplier')
@@ -424,6 +424,9 @@ class Supplier(models.Model, PermissionResource):
         acc_tot = self.accounting.system['/wallet'].balance
         return acc_tot
 
+#register to revisions
+if not reversion.is_registered(Supplier):
+    reversion.register(Supplier)
 
 #------------------------------------------------------------------------------
 
@@ -460,7 +463,7 @@ class SupplierAgent(models.Model):
     job_title = models.CharField(max_length=256, blank=True)
     job_description = models.TextField(blank=True)
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('supplier agent')
@@ -515,6 +518,9 @@ class SupplierAgent(models.Model):
 #        allowed_users = self.supplier.des.admins | self.supplier.referrers
 #        return user in allowed_users 
 
+#register to revisions
+if not reversion.is_registered(SupplierAgent):
+    reversion.register(SupplierAgent)
 
 class Certification(models.Model, PermissionResource):
 
@@ -522,7 +528,7 @@ class Certification(models.Model, PermissionResource):
     symbol = models.CharField(max_length=5, unique=True, verbose_name=_('symbol'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     def __unicode__(self):
         return self.name
@@ -567,6 +573,9 @@ class Certification(models.Model, PermissionResource):
         
     #-----------------------------------------------#
 
+#register to revisions
+if not reversion.is_registered(Certification):
+    reversion.register(Certification)
 
 class ProductCategory(models.Model, PermissionResource):
 
@@ -577,7 +586,7 @@ class ProductCategory(models.Model, PermissionResource):
     description = models.TextField(blank=True,verbose_name=_('description'))
     image = models.ImageField(upload_to=get_resource_icon_path, null=True, blank=True,verbose_name=_('image'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name=_('Product category')
@@ -637,6 +646,10 @@ class ProductCategory(models.Model, PermissionResource):
     def categories(self):
         return ProductCategory.objects.filter(pk=self.pk)
 
+#register to revisions
+if not reversion.is_registered(ProductCategory):
+    reversion.register(ProductCategory)
+
 class ProductMU(models.Model, PermissionResource):
     #TODO: rename it to MU and place it in base
     """Measurement unit for a Product.
@@ -658,7 +671,7 @@ class ProductMU(models.Model, PermissionResource):
     name = models.CharField(max_length=32, unique=True)
     symbol = models.CharField(max_length=5, unique=True)
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     def __unicode__(self):
         return self.name
@@ -697,6 +710,10 @@ class ProductMU(models.Model, PermissionResource):
 
     #-----------------------------------------------#
 
+#register to revisions
+if not reversion.is_registered(ProductMU):
+    reversion.register(ProductMU)
+
 class ProductPU(models.Model, PermissionResource):
     """Product unit for a Product.
 
@@ -715,7 +732,7 @@ class ProductPU(models.Model, PermissionResource):
     symbol = models.CharField(max_length=5, unique=True)
     description = models.TextField(blank=True)
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     def __unicode__(self):
         return self.name
@@ -752,6 +769,9 @@ class ProductPU(models.Model, PermissionResource):
         allowed_users = DES.admins_all()
         return user in allowed_users
 
+#register to revisions
+if not reversion.is_registered(ProductPU):
+    reversion.register(ProductPU)
 
 #------------------------------------------------------------------------------
 
@@ -845,7 +865,7 @@ class Product(models.Model, PermissionResource):
 
     deleted = models.BooleanField(default=False,verbose_name=_('deleted'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('product')
@@ -967,6 +987,9 @@ http://www.jagom.org/trac/reesgas/ticket/157
         # * anyone can edit supplier
         return self.producer.can_edit(user)
     
+#register to revisions
+if not reversion.is_registered(Product):
+    reversion.register(Product)
     #-----------------------------------------------#
 
 class SupplierStock(models.Model, PermissionResource):
@@ -986,6 +1009,7 @@ class SupplierStock(models.Model, PermissionResource):
     True
 
     """
+
 
     # Resource API
     supplier = models.ForeignKey(Supplier, related_name="stock_set", verbose_name = _('supplier'))
@@ -1031,7 +1055,7 @@ class SupplierStock(models.Model, PermissionResource):
 
     deleted = models.BooleanField(default=False,verbose_name=_('deleted'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('supplier stock')
@@ -1297,6 +1321,9 @@ class SupplierStock(models.Model, PermissionResource):
         models.BooleanField(max_length=32, name="availability", verbose_name=_("Availability")),
     )
 
+#register to revisions
+if not reversion.is_registered(SupplierStock):
+    reversion.register(SupplierStock)
 
 class SupplierProductCategory(models.Model):
     """Let supplier to specify his own categories for products he sells.

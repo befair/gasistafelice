@@ -294,6 +294,17 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         else:
             log.debug("Found existing notice type for label gasstock_update. Not creating another one")
 
+    # WAS: notification.create_notice_type(
+    notice_types = notification.NoticeType.objects.filter(label="catalogs_digest")
+    if not notice_types:
+        notification.NoticeType(
+            label="catalogs_digest",
+            display=_("Catalogs Digest"), 
+            description=_("this GAS stocks have been modified"),
+            default=2
+        ).save()
+    elif len(notice_types) != 1:
+        log.error("Found more than one notice type for label catalogs_digest")
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
 

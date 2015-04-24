@@ -13,7 +13,7 @@ from django.core.validators import RegexValidator, MinLengthValidator
 from permissions.models import Role
 from workflows.models import Workflow
 from workflows.utils import get_workflow
-from history.models import HistoricalRecords
+#from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param, PrincipalParamRoleRelation
@@ -45,7 +45,7 @@ from gasistafelice.gf_exceptions import NoSenseException, DatabaseInconsistent
 
 from decimal import Decimal
 import datetime
-import logging
+import logging, reversion
 log = logging.getLogger(__name__)
 
 
@@ -102,7 +102,7 @@ class GAS(models.Model, PermissionResource):
 
     #-- Managers --#
     accounting =  AccountingDescriptor(GasAccountingProxy)
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     display_fields = (
         website, 
@@ -487,6 +487,22 @@ class GAS(models.Model, PermissionResource):
     def stocks(self):
         return SupplierStock.objects.filter(supplier__in=self.suppliers)
 
+    #left for documentation
+    #def stocks_revisions_with_duplicates(self, start_date, end_date):
+    #    for el in self.stocks:
+    #        revisions = el.get_revisions_with_duplicates(start_date,end_date)
+    #        if revisions: yield revisions
+
+    def stocks_versions(self, start_date, end_date):
+        #for el in self.stocks:
+        #    versions = el.get_versions(start_date,end_date)
+        #    if versions: yield versions
+        stock_vers = []
+        for el in self.stocks:
+            versions = el.get_versions(start_date,end_date)
+            if versions: stock_vers.append(versions)
+        return stock_vers
+
     @property
     def products(self):
         #TODO OPTIMIZE
@@ -592,6 +608,10 @@ class GAS(models.Model, PermissionResource):
         orders = GASSupplierOrder.objects.closed().filter(pact__gas=self) | \
             GASSupplierOrder.objects.unpaid().filter(pact__gas=self)
         return orders
+
+#register to revisions
+if not reversion.is_registered(GAS):
+    reversion.register(GAS)
 
 #------------------------------------------------------------------------------
 
@@ -776,13 +796,18 @@ class GASConfig(models.Model):
         default = GAS_SUPPLIERS,
     )
 
+    digest_days_interval = models.PositiveIntegerField(
+        verbose_name=_("How often a digest is sent"),
+        null=True, default=settings.DIGEST_INTERVAL_DAYS, 
+        help_text=_("How often do you want to send a digest to this GAS referrers?"),
+    )
 
     #notice_days_after_gmo_update = models.PositiveIntegerField(
     #   null=True, default=1, help_text=_("After how many days do 
     #   you want a gasmember receive updates on his own orders?")
     #)
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     #-- Meta --#
     class Meta:
@@ -801,6 +826,10 @@ class GASConfig(models.Model):
     def withdrawal_place(self):
         return self.default_withdrawal_place or self.gas.headquarter
 
+#register to revisions
+if not reversion.is_registered(GASConfig):
+    reversion.register(GASConfig)
+
 #----------------------------------------------------------------------------------------------------
 
 class GASActivist(models.Model):
@@ -815,7 +844,7 @@ class GASActivist(models.Model):
     info_title = models.CharField(max_length=256, blank=True)
     info_description = models.TextField(blank=True)
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('GAS activist')
@@ -825,6 +854,10 @@ class GASActivist(models.Model):
     @property
     def parent(self):
         return self.gas
+
+#register to revisions
+if not reversion.is_registered(GASActivist):
+    reversion.register(GASActivist)
 
 #----------------------------------------------------------------------------------------------------
 
@@ -866,7 +899,7 @@ class GASMember(models.Model, PermissionResource):
     objects = GASMemberManager()
     all_objects = IncludeSuspendedGASMemberManager()
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
@@ -1413,7 +1446,10 @@ class GASMember(models.Model, PermissionResource):
         return records
 
     #-----------------------------------------------#
-
+    
+#register to revisions
+if not reversion.is_registered(GASMember):
+    reversion.register(GASMember)
 
 #------------------------------------------------------------------------------
 
@@ -1438,7 +1474,7 @@ class GASSupplierStock(models.Model, PermissionResource):
                         default=1, verbose_name=_('step of increment')
     )
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     def __unicode__(self):
         return u"%s%s" % (self.stock, self.father_price)
@@ -1665,6 +1701,10 @@ class GASSupplierStock(models.Model, PermissionResource):
         return tot
 
 
+#register to revisions
+if not reversion.is_registered(GASSupplierStock):
+    reversion.register(GASSupplierStock)
+
 
 
 #-----------------------------------------------------------------------------------------------------
@@ -1768,7 +1808,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
@@ -2039,6 +2079,11 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         orders = GASSupplierOrder.objects.closed().filter(pact=self) | \
             GASSupplierOrder.objects.unpaid().filter(pact=self)
         return orders
+
+#register to revisions
+if not reversion.is_registered(GASSupplierSolidalPact):
+    reversion.register(GASSupplierSolidalPact)
+
 
 #------------------------------------------------------------------------------
 
