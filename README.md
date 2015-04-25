@@ -27,7 +27,7 @@ vi mettiamo alcune immagini di seguito.
 
 ![Gestione dei prodotti ordinati](doc-user/source/ui_ric1/GFric1_basket_list.png "Gestione dei prodotti ordinati")
 
-![Ordine da cellulare](doc-user/ui_ric1/GFric1_collapsed_product_list.png "Ordine da cellulare")
+![Ordine da cellulare](doc-user/source/ui_ric1/GFric1_collapsed_product_list.png "Ordine da cellulare")
 
 Questo è uno dei programmi che stiamo sviluppando per sostenere i territori con passione e una retribuzione equa.
 Se vuoi vienici a trovare su http://www.befair.it - ... in fase di aggiornamento ;)
