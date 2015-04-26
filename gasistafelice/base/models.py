@@ -1320,10 +1320,10 @@ def update_user_email(sender, instance, **kwargs):
          instance.flavour, 
          instance.value
     ))
-    people = instance.person_set.all()
+    people_with_user = instance.person_set.filter(user__isnull=False)
 
     if instance.flavour == const.EMAIL and instance.is_preferred:
-        for person in people:
+        for person in people_with_user:
             user = person.user
             user.email = instance.value
             user.save()
