@@ -1296,6 +1296,38 @@ def setup_data_handler(sender, instance, created, **kwargs):
         
 #-------------------------------------------------------------------------------
 
+@receiver(post_save, sender=Contact)
+def update_user_email(sender, instance, **kwargs):
+    """
+    Update User email when a Contact flavoured as 'Email' referring to the Person linked
+    to the User is modified.
+
+    Cases are:
+
+        1.  Contact, flavoured as Email, is modified -> nothing happens to User email
+        2.  Contact, flavoured as Email and preferred, is modified -> the User email is set to 
+            contact value
+        3.  Contact not flavoured as Email is modified -> nothing happens to User email
+        
+        ISSUE: User email is NOT set if the Contact is new and created as preferred. That is because 
+        there is still no Person assigned to the Contact person_set.
+        In that case, User email remains the same ad before.
+        
+    """
+
+    log.debug("Calling %s contact with flavour %s and value: %s" % (
+        "preferred" if instance.is_preferred else "not preferred",
+         instance.flavour, 
+         instance.value
+    ))
+    people_with_user = instance.person_set.filter(user__isnull=False)
+
+    if instance.flavour == const.EMAIL and instance.is_preferred:
+        for person in people_with_user:
+            user = person.user
+            user.email = instance.value
+            user.save()
+            log.debug("Saved %s's user(%s) email to %s" % (person,user,instance.value))
 
 def validate(sender, instance, **kwargs):
         try:
