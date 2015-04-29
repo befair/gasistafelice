@@ -38,5 +38,6 @@
                 </extraContact>
                 {% endfor %}
             </contact>
-        </contacts>  
+        </contacts>
+        <logo>{{el.icon}}</logo> 
 
