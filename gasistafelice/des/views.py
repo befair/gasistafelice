@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.contrib.auth.views import login as django_auth_login
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.shortcuts import render_to_response
 from django.views.decorators.cache import never_cache

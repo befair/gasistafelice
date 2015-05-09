@@ -518,7 +518,7 @@ def list_notifications(request):
 #from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
 #from django.template import Context, loader, RequestContext
 #
-#from django.contrib.comments.models import Comment
+#from django_comments.models import Comment
 #from django.contrib.auth.models import User
 #
 #from state.models import Site, Container, Node, Iface, Target, Measure, TargetStateLog

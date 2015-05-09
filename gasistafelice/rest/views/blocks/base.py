@@ -10,7 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.db import transaction
 
 # Notes (Comment)
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.contrib.auth.models import User
 
 #TODO fero CHECK this is not needed anymore because DES model is bound to DjangoSite

@@ -4,7 +4,7 @@ from registration.forms import RegistrationFormUniqueEmail
 from django import forms
 from django.db import transaction
 from django.contrib.auth.models import User
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.contrib.sites.models import Site as DjangoSite
 from django.utils.translation import ugettext_lazy as _
 
