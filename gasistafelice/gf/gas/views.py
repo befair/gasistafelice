@@ -49,7 +49,7 @@ class GASCreateView(CreateView):
         form = form_class(self.request, **self.get_form_kwargs())
         return form
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def form_valid(self, form):
 
         form.save()
@@ -73,7 +73,7 @@ class GASUpdateView(UpdateView, views_support.LoginRequiredView):
     #    #add kwarg here
     #    return kwargs
     
-    @transaction.commit_on_success
+    @transaction.atomic
     def form_valid(self, form):
 
         gas = self.get_object()

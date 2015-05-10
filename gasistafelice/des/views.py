@@ -111,7 +111,7 @@ def staff_registration(request, *args, **kw):
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
-@transaction.commit_on_success
+@transaction.atomic
 def activate_user(activation_key):
     """Make the user ready to be activated by GAS referrer tech, OR
     already active if he is a GASMember, his GAS specified a registration token,

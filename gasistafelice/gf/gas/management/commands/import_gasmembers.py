@@ -61,7 +61,7 @@ class Command(BaseCommand):
         g.config.save()
 
         # STEP 2: process data and create instances
-        with transaction.commit_on_success():
+        with transaction.atomic():
             for d in data:
                 log.info("#### ---- start new user import... ----####")
                 try:

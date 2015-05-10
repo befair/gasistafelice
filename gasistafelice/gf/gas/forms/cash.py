@@ -83,7 +83,7 @@ class EcoGASMemberForm(forms.Form):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #Control logged user KO if superuser
@@ -187,7 +187,7 @@ class NewEcoGASMemberForm(forms.Form):
         cleaned_data = super(NewEcoGASMemberForm, self).clean()
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #Control logged user KO if superuser
@@ -249,7 +249,7 @@ class EcoGASMemberRechargeForm(forms.Form):
            
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         # Do economic work
@@ -331,7 +331,7 @@ class EcoGASMemberFeeForm(forms.Form):
            
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #Do economic work
@@ -414,7 +414,7 @@ class InvoiceOrderForm(forms.Form):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #Do economic work
@@ -549,7 +549,7 @@ class InsoluteOrderForm(forms.Form):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #Do economic work
@@ -718,7 +718,7 @@ class TransationGASForm(BalanceGASForm):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #DT: not needeed all derived class are read only
@@ -887,7 +887,7 @@ class TransationPACTForm(BalanceForm):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #DT: not needeed all derived class are read only
@@ -1033,7 +1033,7 @@ class TransationGMForm(BalanceForm):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #Do economic work

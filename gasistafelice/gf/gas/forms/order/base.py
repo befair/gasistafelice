@@ -226,7 +226,7 @@ class BaseOrderForm(forms.ModelForm):
     def get_withdrawal(self):
         return self.get_appointment_instance('withdrawal', Withdrawal)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, *args, **kwargs):
 
         d = self.cleaned_data.get('delivery_appointment')
@@ -368,7 +368,7 @@ class AddOrderForm(BaseOrderForm):
         #log.debug("AddOrderForm delivery %s --> %s" % (d, dt))
         return dt
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, *args, **kwargs):
 
         self.instance.pact = self.cleaned_data['pact']

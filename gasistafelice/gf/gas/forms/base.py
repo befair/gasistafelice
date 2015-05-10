@@ -165,7 +165,7 @@ class GASSingleUserForm(SingleUserForm):
         self.cleaned_data['gm_is_active'] = gm_is_active
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
         super(GASSingleUserForm, self).save()
         # if exception not raised
@@ -232,7 +232,7 @@ class BaseGASForm(forms.ModelForm):
             for msg in msg_list:
                 getattr(messages, level)(self.request, msg)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, *args, **kw):
         """Save related objects and then save model instance"""
 

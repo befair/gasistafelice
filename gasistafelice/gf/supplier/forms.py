@@ -361,7 +361,7 @@ class SupplierForm(forms.Form):
         log.debug("Create SupplierForm")
         super(SupplierForm, self).__init__(*args, **kw)
 
-    #@transaction.commit_on_success
+    #@transaction.atomic
     def save(self):
 
         #log.debug("Save SupplierForm")
@@ -420,7 +420,7 @@ class BaseSupplierForm(forms.ModelForm):
             for msg in msg_list:
                 getattr(messages, level)(self.request, msg)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, *args, **kw):
         """Save related objects and then save model instance"""
 

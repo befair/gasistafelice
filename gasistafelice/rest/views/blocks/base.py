@@ -176,7 +176,7 @@ class BlockWithList(AbstractBlock):
 
         elif args == CREATE:
 
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 rv = self._add_resource(request)
             return rv
 
@@ -235,7 +235,7 @@ class BlockSSDataTables(BlockWithList):
             formset = form_class(request.POST)
 
         if formset.is_valid():
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 for form in formset:
                     # Check for data: empty formsets are full of empty data ;)
                     if form.cleaned_data:
@@ -293,7 +293,7 @@ class BlockSSDataTables(BlockWithList):
             
         elif args == CREATE:
 
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 rv = self._add_resource(request)
             return rv
 

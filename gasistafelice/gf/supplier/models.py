@@ -1135,7 +1135,7 @@ class SupplierStock(models.Model, PermissionResource):
         except SupplierStock.DoesNotExist:
             return False
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, *args, **kwargs):
 
         # if `code` is set to an empty string, set it to `None`, instead, before saving,

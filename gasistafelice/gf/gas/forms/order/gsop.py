@@ -18,7 +18,7 @@ class GASSupplierOrderProductForm(forms.Form):
     #KO fero: log.debug("Create GASSupplierOrderProductForm (%s)" % id)
 
     #OK fero: this code MUST be under transaction management
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         id = self.cleaned_data.get('id')
