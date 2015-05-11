@@ -74,7 +74,7 @@ class BasePersonForm(forms.ModelForm):
     def __init__(self, request, *args, **kw):
         super(BasePersonForm, self).__init__(*args, **kw)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, *args, **kw):
         """Save related objects and then save model instance"""
 

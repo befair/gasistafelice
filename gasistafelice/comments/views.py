@@ -14,15 +14,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with SANET. If not, see <http://www.gnu.org/licenses/>.
 
-from django.contrib.comments.views.moderation import *
-from django.contrib.comments.models import Comment
+from django_comments.views.moderation import *
+from django_comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 
 from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
 
-# Modified from django.contrib.comments.views.moderation
+# Modified from django_comments.views.moderation
 # WARNING !!!! All commments are deleted by "fake_moderator" user
 
 #---------------------------------------------------------------------#

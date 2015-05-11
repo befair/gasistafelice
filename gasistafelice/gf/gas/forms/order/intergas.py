@@ -112,7 +112,7 @@ class AddInterGASOrderForm(AddOrderForm):
 
         return new_obj
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         #WAS: INTERGAS 4 (rewritten. Set correctly group_id in base order to not repeat in planned orders)
@@ -147,7 +147,7 @@ class AddInterGASPlannedOrderForm(AddInterGASOrderForm, AddPlannedOrderForm):
     """Form to manage InterGAS and order planning at the same time."""
 
     
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         AddInterGASOrderForm.save(self)

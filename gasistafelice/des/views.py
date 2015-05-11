@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.contrib.auth.views import login as django_auth_login
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, MultipleObjectsReturned
 from django.shortcuts import render_to_response
 from django.views.decorators.cache import never_cache
@@ -111,7 +111,7 @@ def staff_registration(request, *args, **kw):
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
-@transaction.commit_on_success
+@transaction.atomic
 def activate_user(activation_key):
     """Make the user ready to be activated by GAS referrer tech, OR
     already active if he is a GASMember, his GAS specified a registration token,

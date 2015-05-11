@@ -105,7 +105,7 @@ class Block(details.Block):
         rv = super(Block, self).get_response(request, resource_type, resource_id, args)
         if not rv and args == "changepw":
             if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-                with transaction.commit_on_success():
+                with transaction.atomic():
                     rv = self.__change_password(request)
                 return rv
             raise PermissionDenied

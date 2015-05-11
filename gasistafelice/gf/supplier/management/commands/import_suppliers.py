@@ -69,7 +69,7 @@ class Command(BaseCommand):
         data_products = self._prepare_data(csv_filename_products, delimiter, tmpl_2)
 
         # Data prepared
-        with transaction.commit_on_success():
+        with transaction.atomic():
             i = 0
             sum_sup = 0
             sum_pro = 0

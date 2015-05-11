@@ -4,7 +4,7 @@ from registration.forms import RegistrationFormUniqueEmail
 from django import forms
 from django.db import transaction
 from django.contrib.auth.models import User
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.contrib.sites.models import Site as DjangoSite
 from django.utils.translation import ugettext_lazy as _
 
@@ -75,7 +75,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 
         return cleaned_data
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, send_email=True):
         """Start the registration process after a new user completed the registration form.
 
@@ -231,7 +231,7 @@ class DESRegistrationForm(RegistrationFormUniqueEmail):
 
 class DESStaffRegistrationForm(DESRegistrationForm):
         
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self, send_email=False):
         """Save and confirm the new user.
 

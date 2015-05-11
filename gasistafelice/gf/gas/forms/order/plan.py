@@ -139,7 +139,7 @@ class AddPlannedOrderForm(AddOrderForm):
 
 #WAS: INTERGAS 5
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         log.debug("Entering save order %s" % self.__class__)

@@ -86,7 +86,7 @@ class SingleGASMemberOrderForm(BaseGASMemberOrderForm):
         super(SingleGASMemberOrderForm, self).__init__(*args, **kw)
         self.fields['note'].widget.attrs['class'] = 'input_medium'
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         if self.is_valid():
@@ -182,7 +182,7 @@ class BasketGASMemberOrderForm(BaseGASMemberOrderForm):
     gm_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     enabled = forms.BooleanField(required=False)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def save(self):
 
         # COMMENT fero: removed some checks that are done in .clean()

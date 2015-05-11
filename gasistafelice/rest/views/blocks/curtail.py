@@ -221,7 +221,7 @@ class Block(BlockSSDataTables):
         new_fam_form = NewEcoGASMemberForm(request, new_fam_d)
 
         if formset.is_valid() and new_fam_form.is_valid():
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 for form in formset:
                     # Check for data: empty formsets are full of empty data ;)
                     if form.cleaned_data:

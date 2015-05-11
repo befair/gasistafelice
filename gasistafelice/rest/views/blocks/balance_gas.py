@@ -54,7 +54,7 @@ class Block(AbstractBlock):
                 if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
                     form = TransationGASForm(request, request.POST)
                     if form.is_valid():
-                        with transaction.commit_on_success():
+                        with transaction.atomic():
                             if form.cleaned_data:
                                 try:
 

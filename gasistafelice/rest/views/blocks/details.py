@@ -14,7 +14,7 @@ from django.db import transaction
 from django.template import RequestContext
 
 # Notes (Comment)
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.contrib.auth.models import User
 
 from django.contrib.sites.models import Site as DjangoSite
@@ -179,7 +179,7 @@ class Block(AbstractBlock):
             formset = formset_class(request, request.POST)
             
             if formset.is_valid():
-                with transaction.commit_on_success():
+                with transaction.atomic():
                     for form in formset:
                         # Check for data: empty formsets are full of empty data ;)
                         if form.cleaned_data:
@@ -294,7 +294,7 @@ class Block(AbstractBlock):
         elif args == EDIT:
             # Server-side check for permission on this view
             if request.user.has_perm(EDIT, obj=ObjectWithContext(request.resource)):
-                with transaction.commit_on_success():
+                with transaction.atomic():
                     rv = self._edit_resource(request)
                 return rv
             raise PermissionDenied

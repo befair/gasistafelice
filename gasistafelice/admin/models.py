@@ -168,6 +168,7 @@ class GASConfigForm(forms.ModelForm):
 
     class Meta:
         model = gas_models.GASConfig
+        exclude = ()
 
     def __init__(self, *args, **kwargs):
         super(GASConfigForm, self).__init__(*args, **kwargs)
