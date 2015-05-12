@@ -39,7 +39,6 @@ from consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, 
 
 from gf.supplier.models import Supplier, SupplierStock, Product, ProductCategory
 from gf.gas.managers import GASMemberManager, IncludeSuspendedGASMemberManager
-from gf.gas.query import GASMemberQuerySet
 from des.models import DES
 
 from gf_exceptions import NoSenseException, DatabaseInconsistent
@@ -872,7 +871,7 @@ class GASMember(models.Model, PermissionResource):
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
-    objects = GASMemberManager.from_queryset(GASMemberQuerySet)()
+    objects = GASMemberManager()
     all_objects = IncludeSuspendedGASMemberManager()
 
     #history = HistoricalRecords()
