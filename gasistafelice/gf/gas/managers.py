@@ -178,65 +178,8 @@ class IncludeSuspendedGASMemberManager(models.Manager):
 
 #-------------------------------------------------------------------------------
 
-class AppointmentManager(models.Manager):
-    # TODO UNITTEST
-    """Extends default manager with methods useful for appointments.
-
-    * future()
-    * past()
-    
-    """
-    
-    def get_queryset(self):
-        return AppointmentQuerySet(self.model)
-
-    def future(self):
-        """
-        Return a QuerySet containing all appointments scheduled for today or for a future date.
-        """
-        return self.get_queryset().future()
-
-    def past(self):
-        """
-        Return a QuerySet containing all past appointments.
-        """
-        return self.get_queryset().past()
-
-#-------------------------------------------------------------------------------
-
 class OrderManager(models.Manager):
     # TODO UNITTEST DOC
-
-    def get_queryset(self):
-        return OrderQuerySet(self.model)
-
-    def prepared(self):
-        return self.get_queryset().prepared()
-
-    def open(self):
-        return self.get_queryset().open()
-
-    def closed(self):
-        return self.get_queryset().closed()
-    
-    def on_completion(self):
-        return self.get_queryset().on_completion()
-    
-    def finalized(self):
-        return self.get_queryset().finalized()
-    
-    def unpaid(self):
-        return self.get_queryset().unpaid()
-
-    def delivered(self):
-        return self.get_queryset().delivered()
-    
-    def archived(self):
-        return self.get_queryset().archived()
-    
-    def canceled(self):
-        return self.get_queryset().canceled()
-  
 
     def get_new_intergas_group_id(self):
         """Retrieve next available intergas group id."""
