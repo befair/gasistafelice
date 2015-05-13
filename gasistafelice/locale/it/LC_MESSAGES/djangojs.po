@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASISTA FELICE 0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-28 12:27+0100\n"
+"POT-Creation-Date: 2015-05-13 18:40+0200\n"
 "PO-Revision-Date: 2011-11-27 06:18+1200\n"
 "Last-Translator: Dev Team <dev@gasistafelice.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -17,127 +17,131 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/nui/blocks/basket.js:66 static/nui/blocks/basket_sent.js:35
-#: static/nui/blocks/curtail.js:29 static/nui/blocks/fee.js:32
-#: static/nui/blocks/gas_users.js:37 static/nui/blocks/order.js:78
-#: static/nui/blocks/order_report.js:43
-#: static/nui/blocks/order_report_intergas.js:39
-#: static/nui/blocks/recharge.js:36 static/nui/blocks/stocks.js:39
-#: static/nui/blocks/supplier_users.js:35
-#: static/nui/blocks/suppliers_report.js:50 static/nui/blocks/users.js:35
-msgid "Display _MENU_ records per page"
-msgstr "Visualizza _MENU_ righe per pagina"
+#: rest/templates/html/index.html:454
+msgid "DES"
+msgstr "DES"
 
-#: static/nui/blocks/basket.js:67 static/nui/blocks/basket_sent.js:36
-#: static/nui/blocks/curtail.js:30 static/nui/blocks/fee.js:33
-#: static/nui/blocks/gas_users.js:38 static/nui/blocks/order.js:79
-#: static/nui/blocks/order_report.js:44
-#: static/nui/blocks/order_report_intergas.js:40
-#: static/nui/blocks/recharge.js:37 static/nui/blocks/stocks.js:40
-#: static/nui/blocks/supplier_users.js:36
-#: static/nui/blocks/suppliers_report.js:51 static/nui/blocks/users.js:36
-msgid "Nothing found"
-msgstr "Nessun risultato trovato"
+#: rest/templates/html/index.html:455
+msgid "Pact"
+msgstr "Patto"
 
-#: static/nui/blocks/basket.js:68 static/nui/blocks/basket_sent.js:37
-#: static/nui/blocks/curtail.js:31 static/nui/blocks/fee.js:34
-#: static/nui/blocks/gas_users.js:39 static/nui/blocks/order.js:80
-#: static/nui/blocks/order_report.js:45
-#: static/nui/blocks/order_report_intergas.js:41
-#: static/nui/blocks/recharge.js:38 static/nui/blocks/stocks.js:41
-#: static/nui/blocks/supplier_users.js:37
-#: static/nui/blocks/suppliers_report.js:52 static/nui/blocks/users.js:37
-msgid "Showing _START_ to _END_ of _TOTAL_ records"
-msgstr "Visualizzazione da _START_ a _END_ di _TOTAL_ righe"
+#: rest/templates/html/index.html:456
+msgid "Gasmember"
+msgstr "Gasista"
 
-#: static/nui/blocks/basket.js:69 static/nui/blocks/basket_sent.js:38
-#: static/nui/blocks/curtail.js:32 static/nui/blocks/fee.js:35
-#: static/nui/blocks/gas_users.js:40 static/nui/blocks/order.js:81
-#: static/nui/blocks/order_report.js:46
-#: static/nui/blocks/order_report_intergas.js:42
-#: static/nui/blocks/recharge.js:39 static/nui/blocks/stocks.js:42
-#: static/nui/blocks/supplier_users.js:38
-#: static/nui/blocks/suppliers_report.js:53 static/nui/blocks/users.js:38
-msgid "Showing 0 to 0 of 0 records"
-msgstr "Visualizzazione da 0 a 0 di 0 righe"
+#: rest/templates/html/index.html:457
+msgid "Order"
+msgstr "Ordine"
 
-#: static/nui/blocks/basket.js:70 static/nui/blocks/basket_sent.js:39
-#: static/nui/blocks/curtail.js:33 static/nui/blocks/fee.js:36
-#: static/nui/blocks/gas_users.js:41 static/nui/blocks/order.js:82
-#: static/nui/blocks/order_report.js:47
-#: static/nui/blocks/order_report_intergas.js:43
-#: static/nui/blocks/recharge.js:40 static/nui/blocks/stocks.js:43
-#: static/nui/blocks/supplier_users.js:39
-#: static/nui/blocks/suppliers_report.js:54 static/nui/blocks/users.js:39
-msgid "(filtered from _MAX_ total records)"
-msgstr "(filtrate da _MAX_ righe totali)"
+#: rest/templates/html/index.html:459
+msgid "Supplier"
+msgstr "Fornitore"
 
-#: static/nui/blocks/details.js:13 static/nui/blocks/gas_details.js:13
-#: static/nui/blocks/gasmember_details.js:13
-#: static/nui/blocks/order_cash.js:13 static/nui/blocks/order_details.js:13
-#: static/nui/blocks/pact_details.js:13 static/nui/blocks/person_details.js:13
-#: static/nui/blocks/stock_details.js:13
-#: static/nui/blocks/supplier_details.js:13
-msgid "Add note"
-msgstr "Aggiungi nota"
+#: rest/templates/html/index.html:460
+msgid "Product"
+msgstr "Prodotto"
 
-#: static/nui/blocks/details.js:336 static/nui/blocks/gas_details.js:336
-#: static/nui/blocks/gasmember_details.js:336
-#: static/nui/blocks/order_cash.js:336 static/nui/blocks/order_details.js:336
-#: static/nui/blocks/pact_details.js:336
-#: static/nui/blocks/person_details.js:336
-#: static/nui/blocks/stock_details.js:336
-#: static/nui/blocks/supplier_details.js:336
-#: static/nui/scripts/jquery.rees.js:627
-msgid "Confirm"
-msgstr "Conferma"
+#: rest/templates/html/index.html:461
+msgid "Person"
+msgstr "Persona"
 
-#: static/nui/blocks/details.js:346 static/nui/blocks/gas_details.js:346
-#: static/nui/blocks/gasmember_details.js:346
-#: static/nui/blocks/order_cash.js:346 static/nui/blocks/order_details.js:346
-#: static/nui/blocks/pact_details.js:346
-#: static/nui/blocks/person_details.js:346
-#: static/nui/blocks/stock_details.js:346
-#: static/nui/blocks/supplier_details.js:346
-msgid "New note"
-msgstr "Nuova nota"
+#: rest/templates/html/index.html:462
+msgid "Place"
+msgstr ""
 
-#: static/nui/blocks/details.js:370 static/nui/blocks/gas_details.js:370
-#: static/nui/blocks/gasmember_details.js:370
-#: static/nui/blocks/order_cash.js:370 static/nui/blocks/order_details.js:370
-#: static/nui/blocks/pact_details.js:370
-#: static/nui/blocks/person_details.js:370
-#: static/nui/blocks/stock_details.js:370
-#: static/nui/blocks/supplier_details.js:370
-msgid "Do you really want to delete this note?"
-msgstr "Sei sicuro di voler cancellare la nota?"
+#: rest/templates/html/index.html:606
+msgid "This section is empty!"
+msgstr "Nessun contenuto attualmente associato a questa pagina."
 
-#: static/nui/scripts/jquery.labs.xmpprender.js:47
-msgid "This block does not allow customization."
-msgstr "Questo blocco non consente personalizzazioni."
+#: rest/templates/html/index.html:777
+msgid "Do you really want to clean the navigation history?"
+msgstr "Sicuro di voler azzerare la cronologia?"
+
+#: rest/templates/html/index.html:781
+msgid "Navigation history cleaned."
+msgstr "Cronologia azzerata."
+
+#: rest/templates/html/index.html:1028
+msgid "Resource succesfully added to the user container"
+msgstr "Risorsa aggiunta al contenitore utente"
+
+#: rest/templates/html/index.html:1301
+#, fuzzy
+msgid "Are you sure you want to remove every block from your userpage?"
+msgstr "Sei sicuro di voler rimuovere questa misura"
+
+#: rest/templates/html/index.html:1478
+#, fuzzy
+msgid "Loading configuration..."
+msgstr "Caricamento della configurazione..."
+
+#: rest/templates/html/index.html:1782 rest/templates/html/index.html:1783
+#: rest/templates/html/index.html:1784
+msgid "Minimize block"
+msgstr "Riduci blocco"
+
+#: rest/templates/html/index.html:1798 rest/templates/html/index.html:1799
+#: rest/templates/html/index.html:1800
+msgid "Restore block"
+msgstr "Ripristina blocco"
+
+#: rest/templates/html/index.html:1879 rest/templates/html/index.html:1880
+#: rest/templates/html/index.html:1881
+msgid "Restore block size"
+msgstr "Ripristina dimensione del blocco"
+
+#: rest/templates/html/index.html:1885 rest/templates/html/index.html:1886
+#: rest/templates/html/index.html:1887
+msgid "Full screen"
+msgstr "Schermo intero"
+
+#~ msgid "Display _MENU_ records per page"
+#~ msgstr "Visualizza _MENU_ righe per pagina"
+
+#~ msgid "Nothing found"
+#~ msgstr "Nessun risultato trovato"
+
+#~ msgid "Showing _START_ to _END_ of _TOTAL_ records"
+#~ msgstr "Visualizzazione da _START_ a _END_ di _TOTAL_ righe"
+
+#~ msgid "Showing 0 to 0 of 0 records"
+#~ msgstr "Visualizzazione da 0 a 0 di 0 righe"
+
+#~ msgid "(filtered from _MAX_ total records)"
+#~ msgstr "(filtrate da _MAX_ righe totali)"
+
+#~ msgid "Add note"
+#~ msgstr "Aggiungi nota"
+
+#~ msgid "Confirm"
+#~ msgstr "Conferma"
+
+#~ msgid "New note"
+#~ msgstr "Nuova nota"
+
+#~ msgid "Do you really want to delete this note?"
+#~ msgstr "Sei sicuro di voler cancellare la nota?"
+
+#~ msgid "This block does not allow customization."
+#~ msgstr "Questo blocco non consente personalizzazioni."
 
 #
 # BLOCK 'details'
 #
-#: static/nui/scripts/jquery.rees.js:12
-msgid "Text"
-msgstr "Testo"
+#~ msgid "Text"
+#~ msgstr "Testo"
 
-#: static/nui/scripts/jquery.rees.js:44
-msgid "Please provide a name for this resource before rendering it"
-msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
+#~ msgid "Please provide a name for this resource before rendering it"
+#~ msgstr "Fornire un nome per questa risorsa prima di renderizzarla"
 
-#: static/nui/scripts/jquery.rees.js:163 static/nui/scripts/jquery.rees.js:216
-msgid "An error occurred while retrieving the data from server ("
-msgstr "Si è verificato un errore durante la lettura dei dati dal server"
+#~ msgid "An error occurred while retrieving the data from server ("
+#~ msgstr "Si è verificato un errore durante la lettura dei dati dal server"
 
-#: static/nui/scripts/jquery.rees.js:344
-msgid "Submit"
-msgstr "Invia"
+#~ msgid "Submit"
+#~ msgstr "Invia"
 
-#: static/nui/scripts/jquery.rees.js:544
-msgid "There are no elements related to this resource."
-msgstr "Non ci sono elementi associati alla risorsa."
+#~ msgid "There are no elements related to this resource."
+#~ msgstr "Non ci sono elementi associati alla risorsa."
 
 #
 # LOGACK
@@ -323,10 +327,6 @@ msgstr "Non ci sono elementi associati alla risorsa."
 #~ msgid "update asset node"
 #~ msgstr "aggiorna l'asset node"
 
-#, fuzzy
-#~ msgid "Configuration"
-#~ msgstr "Caricamento della configurazione..."
-
 #~ msgid "Location"
 #~ msgstr "Locazione"
 
@@ -347,10 +347,6 @@ msgstr "Non ci sono elementi associati alla risorsa."
 
 #~ msgid "Retrieving informations from the device"
 #~ msgstr "Sto recuperando informazioni dal dispositivo"
-
-#, fuzzy
-#~ msgid "Are you sure you want to remove this measure?"
-#~ msgstr "Sei sicuro di voler rimuovere questa misura"
 
 #~ msgid "Merged graph"
 #~ msgstr "Grafico ???"
@@ -601,51 +597,6 @@ msgstr "Non ci sono elementi associati alla risorsa."
 
 #~ msgid "There are notes on this target"
 #~ msgstr "Non ci sono note associate alla risorsa"
-
-#~ msgid "DES"
-#~ msgstr "DES"
-
-#~ msgid "Pact"
-#~ msgstr "Patto"
-
-#~ msgid "Gasmember"
-#~ msgstr "Gasista"
-
-#~ msgid "Order"
-#~ msgstr "Ordine"
-
-#~ msgid "Supplier"
-#~ msgstr "Fornitore"
-
-#~ msgid "Product"
-#~ msgstr "Prodotto"
-
-#~ msgid "Person"
-#~ msgstr "Persona"
-
-#~ msgid "This section is empty!"
-#~ msgstr "Nessun contenuto attualmente associato a questa pagina."
-
-#~ msgid "Do you really want to clean the navigation history?"
-#~ msgstr "Sicuro di voler azzerare la cronologia?"
-
-#~ msgid "Navigation history cleaned."
-#~ msgstr "Cronologia azzerata."
-
-#~ msgid "Resource succesfully added to the user container"
-#~ msgstr "Risorsa aggiunta al contenitore utente"
-
-#~ msgid "Minimize block"
-#~ msgstr "Riduci blocco"
-
-#~ msgid "Restore block"
-#~ msgstr "Ripristina blocco"
-
-#~ msgid "Restore block size"
-#~ msgstr "Ripristina dimensione del blocco"
-
-#~ msgid "Full screen"
-#~ msgstr "Schermo intero"
 
 #~ msgid "Suspend resourse"
 #~ msgstr "Motivazioni suggerite"
