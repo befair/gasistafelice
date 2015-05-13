@@ -4,7 +4,7 @@ from django.db.models import Max
 
 from consts import *
 from flexi_auth.models import ParamRole
-from gf.gas.query import AppointmentQuerySet, OrderQuerySet, GASMemberQuerySet
+from gf.gas.query import GASMemberQuerySet
 
 import logging
 
