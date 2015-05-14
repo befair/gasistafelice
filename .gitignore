@@ -2,7 +2,6 @@
 settings.py
 db/
 doc*/build/
-*.mo
 .metatada/
 build/
 src/

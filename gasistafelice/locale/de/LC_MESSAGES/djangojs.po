@@ -1,0 +1,95 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-13 18:40+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: rest/templates/html/index.html:454
+msgid "DES"
+msgstr ""
+
+#: rest/templates/html/index.html:455
+msgid "Pact"
+msgstr ""
+
+#: rest/templates/html/index.html:456
+msgid "Gasmember"
+msgstr ""
+
+#: rest/templates/html/index.html:457
+msgid "Order"
+msgstr ""
+
+#: rest/templates/html/index.html:459
+msgid "Supplier"
+msgstr ""
+
+#: rest/templates/html/index.html:460
+msgid "Product"
+msgstr ""
+
+#: rest/templates/html/index.html:461
+msgid "Person"
+msgstr ""
+
+#: rest/templates/html/index.html:462
+msgid "Place"
+msgstr ""
+
+#: rest/templates/html/index.html:606
+msgid "This section is empty!"
+msgstr ""
+
+#: rest/templates/html/index.html:777
+msgid "Do you really want to clean the navigation history?"
+msgstr ""
+
+#: rest/templates/html/index.html:781
+msgid "Navigation history cleaned."
+msgstr ""
+
+#: rest/templates/html/index.html:1028
+msgid "Resource succesfully added to the user container"
+msgstr ""
+
+#: rest/templates/html/index.html:1301
+msgid "Are you sure you want to remove every block from your userpage?"
+msgstr ""
+
+#: rest/templates/html/index.html:1478
+msgid "Loading configuration..."
+msgstr ""
+
+#: rest/templates/html/index.html:1782 rest/templates/html/index.html:1783
+#: rest/templates/html/index.html:1784
+msgid "Minimize block"
+msgstr ""
+
+#: rest/templates/html/index.html:1798 rest/templates/html/index.html:1799
+#: rest/templates/html/index.html:1800
+msgid "Restore block"
+msgstr ""
+
+#: rest/templates/html/index.html:1879 rest/templates/html/index.html:1880
+#: rest/templates/html/index.html:1881
+msgid "Restore block size"
+msgstr ""
+
+#: rest/templates/html/index.html:1885 rest/templates/html/index.html:1886
+#: rest/templates/html/index.html:1887
+msgid "Full screen"
+msgstr ""
