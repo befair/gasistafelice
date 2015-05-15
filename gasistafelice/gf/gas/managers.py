@@ -4,7 +4,7 @@ from django.db.models import Max
 
 from consts import *
 from flexi_auth.models import ParamRole
-from gf.gas.query import AppointmentQuerySet, OrderQuerySet, GASMemberQuerySet
+from gf.gas.query import GASMemberQuerySet
 
 import logging
 
@@ -14,7 +14,7 @@ class GASMemberManager(models.Manager):
     """
     A custom manager class for the `GASMember` model.
     """ 
-    def get_query_set(self):
+    def get_queryset(self):
         """Specific queryset object for GASMember management.
 
         Default behaviour is to hide 
@@ -173,70 +173,13 @@ class GASMemberManager(models.Manager):
 class IncludeSuspendedGASMemberManager(models.Manager):
     """Manager to retrieve ordinary behaviour"""
 
-    def get_query_set(self):
+    def get_queryset(self):
         return QuerySet(self.model)
-
-#-------------------------------------------------------------------------------
-
-class AppointmentManager(models.Manager):
-    # TODO UNITTEST
-    """Extends default manager with methods useful for appointments.
-
-    * future()
-    * past()
-    
-    """
-    
-    def get_query_set(self):
-        return AppointmentQuerySet(self.model)
-
-    def future(self):
-        """
-        Return a QuerySet containing all appointments scheduled for today or for a future date.
-        """
-        return self.get_query_set().future()
-
-    def past(self):
-        """
-        Return a QuerySet containing all past appointments.
-        """
-        return self.get_query_set().past()
 
 #-------------------------------------------------------------------------------
 
 class OrderManager(models.Manager):
     # TODO UNITTEST DOC
-
-    def get_query_set(self):
-        return OrderQuerySet(self.model)
-
-    def prepared(self):
-        return self.get_query_set().prepared()
-
-    def open(self):
-        return self.get_query_set().open()
-
-    def closed(self):
-        return self.get_query_set().closed()
-    
-    def on_completion(self):
-        return self.get_query_set().on_completion()
-    
-    def finalized(self):
-        return self.get_query_set().finalized()
-    
-    def unpaid(self):
-        return self.get_query_set().unpaid()
-
-    def delivered(self):
-        return self.get_query_set().delivered()
-    
-    def archived(self):
-        return self.get_query_set().archived()
-    
-    def canceled(self):
-        return self.get_query_set().canceled()
-  
 
     def get_new_intergas_group_id(self):
         """Retrieve next available intergas group id."""
