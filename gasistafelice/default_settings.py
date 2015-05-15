@@ -144,7 +144,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = [
     'permissions',
     'workflows',
-    'history',
+     #'history',
     'flexi_auth',
     'simple_accounting',
     'gasistafelice.base',
