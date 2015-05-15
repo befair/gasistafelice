@@ -44,4 +44,4 @@ Se invece preferisci installarlo su un tuo server segui la **[guida di installaz
 
 ## Licenza
 
-[GNU AGPLv3](./LICENSE.md)
+[GNU AGPLv3](./LICENSE)
