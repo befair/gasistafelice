@@ -45,6 +45,8 @@ urlpatterns = patterns('',
     # GDXP middelware
     #WAS: (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp_gf.urls')),
     (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp.urls')),
+
+    (r'^i18n/', include('django.conf.urls.i18n')),
 )
 
 urlpatterns += patterns('',

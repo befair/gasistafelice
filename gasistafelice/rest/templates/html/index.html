@@ -1566,6 +1566,7 @@
                         // Start with hidden resource panel
                         //show_resource_panel();
 
+
                         {% if logged_user.is_superuser %}
                         $('#user_name').html('<select id="user_to_simulate">' + 
                             {% for a_user in all_users %}
@@ -2131,7 +2132,18 @@
                 <span id='user_data_placeholder'>
 
                     {% trans 'Welcome,' %}
-                    <span id="user_name" class="user"></span>! 
+                    <span id="user_name" class="user"></span>&nbsp; 
+                    <form action="/i18n/setlang/" method="post" style="display:inline">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}" />
+                            {% get_current_language as LANGUAGE_CODE %}
+                        <select name="language" onchange="this.form.submit();">
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>{{ language.name_local|capfirst }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>&nbsp;
                     <span id="user_data">
                         <span id="user_urn_gasmember" class="menu_section" style="display:none">
                             <h3>Ordinare</h3>

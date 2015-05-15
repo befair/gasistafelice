@@ -64,6 +64,14 @@ AUTHENTICATION_BACKENDS = (
 # system time zone.
 TIME_ZONE = 'Europe/Rome'
 
+LANGUAGES = (
+    ('it', _('Italian')),
+    ('sl', _('Slovenian')),
+    ('de', _('German')),
+    ('en', _('English')),
+    ('fr', _('French')),
+    ('es', _('Spanish')),
+)
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'it'
