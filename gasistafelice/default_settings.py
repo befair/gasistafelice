@@ -13,7 +13,6 @@ EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
 PROFILING=False
 
 ACCOUNT_ACTIVATION_DAYS = 2
-DIGEST_INTERVAL_DAYS = 3
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 VERSION = __version__ = file(os.path.join(PROJECT_ROOT, 'VERSION')).read().strip()
@@ -122,7 +121,6 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,7 +142,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = [
     'permissions',
     'workflows',
-     #'history',
+    'history',
     'flexi_auth',
     'simple_accounting',
     'gasistafelice.base',

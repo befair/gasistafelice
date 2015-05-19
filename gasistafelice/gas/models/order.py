@@ -16,7 +16,7 @@ from django.utils.encoding import smart_unicode
 from workflows.models import Workflow, Transition
 from workflows.utils  import set_initial_state
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
-#from history.models import HistoricalRecords
+from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
@@ -51,7 +51,7 @@ from django.conf import settings
 
 from workflows.utils import do_transition
 from datetime import datetime, timedelta
-import logging, reversion
+import logging
 
 log = logging.getLogger(__name__)
 
@@ -166,7 +166,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     objects = OrderManager()
 
-    #WAS: history = HistoricalRecords()
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = _('order issued to supplier')
@@ -1461,11 +1461,6 @@ WHERE order_id = %s \
         withdrawal, display.Resource(name="withdrawal_referrer_person", verbose_name=_("Withdrawal referrer")),
     )
 
-#register to revisions
-if not reversion.is_registered(GASSupplierOrder):
-    reversion.register(GASSupplierOrder)
-
-
 #-------------------------------------------------------------------------------
 
 class GASSupplierOrderProduct(models.Model, PermissionResource):
@@ -1492,7 +1487,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
                         max_digits=8, decimal_places=2
     )
 
-    #WAS: history = HistoricalRecords()
+    history = HistoricalRecords()
 
     class Meta:
 
@@ -1640,10 +1635,6 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
         #WAS self.pact.gas_supplier_referrers  -->  self.pact.referrers
         return user in allowed_users
 
-#register to revisions
-if not reversion.is_registered(GASSupplierOrderProduct):
-    reversion.register(GASSupplierOrderProduct)
-
 
 
 class GASMemberOrder(models.Model, PermissionResource):
@@ -1671,7 +1662,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     note = models.CharField(max_length=64, verbose_name=_('product note'), null=True, blank=True, help_text=_("GAS member can write some short message about this product for the producer"))
 
-    #WAS: history = HistoricalRecords()
+    history = HistoricalRecords()
 
     class Meta:
         app_label = 'gas'
@@ -1828,10 +1819,6 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     #---------------------------------------------------#
 
-#register to revisions
-if not reversion.is_registered(GASMemberOrder):
-    reversion.register(GASMemberOrder)
-
 
 class Appointment(models.Model):
     """
@@ -1879,7 +1866,7 @@ class Delivery(Appointment, PermissionResource):
         verbose_name=_('date')
     )
 
-    #WAS: history = HistoricalRecords()
+    history = HistoricalRecords()
 
     class Meta:
         app_label = 'gas'
@@ -2010,10 +1997,6 @@ class Delivery(Appointment, PermissionResource):
 
     #---------------------------------------------------#
 
-#register to revisions
-if not reversion.is_registered(Delivery):
-    reversion.register(Delivery)
-
 
 
 class Withdrawal(Appointment, PermissionResource):
@@ -2035,7 +2018,7 @@ class Withdrawal(Appointment, PermissionResource):
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
 
-    #WAS: history = HistoricalRecords()
+    history = HistoricalRecords()
 
     class Meta:
         app_label = 'gas'
@@ -2166,8 +2149,3 @@ class Withdrawal(Appointment, PermissionResource):
         return user in allowed_users
 
     #---------------------------------------------------#
-
-#register to revisions
-if not reversion.is_registered(Withdrawal):
-    reversion.register(Withdrawal)
-

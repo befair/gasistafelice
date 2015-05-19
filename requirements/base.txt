@@ -8,20 +8,18 @@ pisa>=3.0.32
 #xhtml2pdf
 -e git+https://github.com/chrisglass/xhtml2pdf#egg=xhtml2pdf
 pysqlite>=1.0.1
-#-e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
+-e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
 #file:../gasistafelice/submodules/django-simple-accounting
 #file:../gasistafelice/submodules/django-flexi-auth
 -e git+https://github.com/feroda/django-simple-accounting.git#egg=django-simple-accounting
 -e git+https://github.com/feroda/django-flexi-auth.git#egg=django-flexi-auth
-#file:../gasistafelice/submodules/django-reversion
--e git+https://github.com/befair/django-reversion.git@release-1.5.7-middleware-with-user#egg=django-reversion
 #file:../gasistafelice/submodules/django-notification
 #django-notification #FS
 -e git+https://github.com/feroda/django-notification.git#egg=django-notification
 django-registration==0.7
 django-simple-captcha
 #PIL
-pillow==2.6.1
+pillow
 django-ajax-selects==1.2.4
 django-extensions #FS
 SOAPpy==0.12.5
