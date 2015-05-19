@@ -1,4 +1,4 @@
-Ciao,
+Ciao {{ recipient }},
 
 questa mail contiene tutte le modifiche fatte ai listini dei produttori che hanno un patto con il tuo gas {{ gas }}.
 
@@ -10,6 +10,6 @@ I prodotti modificati nel periodo che va da {{start_date }} a {{ end_date }} son
 {% endfor %}
 </ul>
 
-Gasista Felice
+Gasista Felice, installazione {{ site }}
 
 P.S: non rispondere a questo indirizzo email. Per chiarimenti puoi chiedere a <a href="mailto:{{ site_contact }}">{{ site_contact }}</a>

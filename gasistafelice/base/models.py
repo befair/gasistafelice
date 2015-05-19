@@ -15,7 +15,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from workflows.models import Workflow, Transition, State
-#WAS: from history.models import HistoricalRecords
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
@@ -186,14 +185,17 @@ class Resource(object):
     @property
     def as_of_creation(self):
         """
+        Return myself at creation
         """
-        if sys.version_info < (3,):
+        try:
+            return reversion.get_for_object(self).first()
+        except AttributeError:
+            #We are not in Django>=1.7
+            log.warning("We are not in Django>=1.7, falling back to old queryset api")
             try:
                 return reversion.get_for_object(self).order_by("id")[0]
             except IndexError as e:
                 return None
-        else:
-            return reversion.get_for_object(self).first() 
 
     @property
     def created_by_person(self):
@@ -227,13 +229,15 @@ class Resource(object):
     def as_of_last_update(self):
         """
         """
-        if sys.version_info < (3,):
+        try:
+            return reversion.get_for_object(self).last()
+        except AttributeError:
+            #We are not in Django>=1.7
+            log.warning("We are not in Django>=1.7, falling back to old queryset api")
             try:
                 return reversion.get_for_object(self).order_by("-id")[0]
             except IndexError as e:
                 return None
-        else:
-            return reversion.get_for_object(self).last()
 
     @property
     def updaters(self):
@@ -614,7 +618,7 @@ class Person(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
-    #WAS: history = HistoricalRecords()
+
     
     class Meta:
         verbose_name = _("person")
@@ -958,7 +962,7 @@ class Contact(models.Model):
     is_preferred = models.BooleanField(default=False,verbose_name=_('preferred'))
     description = models.CharField(max_length=128, blank=True, default='',verbose_name=_('description'))
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         verbose_name = _("contact")
@@ -1007,7 +1011,7 @@ class Place(models.Model, PermissionResource):
     lon = models.FloatField(null=True, blank=True,verbose_name=_('lon'))
     lat = models.FloatField(null=True, blank=True,verbose_name=_('lat'))
 
-    #WAS: history = HistoricalRecords()
+
     
     class Meta:
         verbose_name = _("place")
@@ -1121,7 +1125,7 @@ class DefaultTransition(models.Model, PermissionResource):
     state = models.ForeignKey(State,verbose_name=_('state'))
     transition = models.ForeignKey(Transition,verbose_name=_('transition'))
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         verbose_name = _("default transition")

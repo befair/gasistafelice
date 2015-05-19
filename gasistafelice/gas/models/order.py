@@ -16,7 +16,6 @@ from django.utils.encoding import smart_unicode
 from workflows.models import Workflow, Transition
 from workflows.utils  import set_initial_state
 from gasistafelice.base.workflows_utils import get_workflow, set_workflow, get_state, do_transition, get_allowed_transitions
-#from history.models import HistoricalRecords
 
 from gasistafelice.base.models import PermissionResource, Place, DefaultTransition
 
@@ -166,7 +165,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     objects = OrderManager()
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         verbose_name = _('order issued to supplier')
@@ -1492,7 +1491,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
                         max_digits=8, decimal_places=2
     )
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
 
@@ -1671,7 +1670,7 @@ class GASMemberOrder(models.Model, PermissionResource):
 
     note = models.CharField(max_length=64, verbose_name=_('product note'), null=True, blank=True, help_text=_("GAS member can write some short message about this product for the producer"))
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         app_label = 'gas'
@@ -1879,7 +1878,7 @@ class Delivery(Appointment, PermissionResource):
         verbose_name=_('date')
     )
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         app_label = 'gas'
@@ -2035,7 +2034,7 @@ class Withdrawal(Appointment, PermissionResource):
     start_time = models.TimeField(default="18:00", help_text=_("when the withdrawal will start"))
     end_time = models.TimeField(default="22:00", help_text=_("when the withdrawal will end"))
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         app_label = 'gas'

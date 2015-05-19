@@ -189,7 +189,7 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     """
 
     # Mail notifications
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gasmember_notification", defaults = { 
@@ -202,13 +202,13 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label gasmember_notification")
     else:
         if created:
-            log.debug("Created notice type for label gasmember_notification")
+            log.info("Created notice type for label gasmember_notification")
         else:
             log.debug("Found existing notice type for label gasmember_notification. Not creating another one.")
             
 
 
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gas_notification", defaults = {
@@ -221,11 +221,11 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label gas_notification")
     else:
         if created:
-            log.debug("Created notice type for label gas_notification")
+            log.info("Created notice type for label gas_notification")
         else:
             log.debug("Found existing notice type for label gas_notification. Not creating another one")
 
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gas_newsletter", defaults = {
@@ -238,11 +238,11 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label gas_newsletter")
     else:
         if created:
-            log.debug("Created notice type for label gas_newsletter")
+            log.info("Created notice type for label gas_newsletter")
         else:
             log.debug("Found existing notice type for label gas_newsletter. Not creating another one")
 
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="order_state_update", defaults = { 
@@ -255,12 +255,12 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label order_state_update")
     else:
         if created:
-            log.debug("Created notice type for label order_state_update")
+            log.info("Created notice type for label order_state_update")
         else:
             log.debug("Found existing notice type for label order_state_update. Not creating another one")
     
     # Web notifications
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="ordered_product_update", defaults = {
@@ -273,11 +273,11 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label ordered_product_update")
     else:
         if created:
-            log.debug("Created notice type for label ordered_product_update")
+            log.info("Created notice type for label ordered_product_update")
         else:
             log.debug("Found existing notice type for label ordered_product_update. Not creating anotherw one")
     
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gasstock_update", defaults = {
@@ -290,11 +290,11 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label gasstock_update")
     else:
         if created:
-            log.debug("Created notice type for label gasstock_update")
+            log.info("Created notice type for label gasstock_update")
         else:
             log.debug("Found existing notice type for label gasstock_update. Not creating another one")
 
-    # WAS: notification.create_notice_type(
+
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="catalogs_digest", defaults = {
@@ -307,7 +307,7 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         raise("Found more than one notice type for label catalogs_digest")
     else:
         if created:
-            log.debug("Created notice type for label catalogs_digest")
+            log.info("Created notice type for label catalogs_digest")
         else:
             log.debug("Found existing notice type for label catalogs_digest. Not creating another one")
     

@@ -13,7 +13,6 @@ from django.core.validators import RegexValidator, MinLengthValidator
 from permissions.models import Role
 from workflows.models import Workflow
 from workflows.utils import get_workflow
-#from history.models import HistoricalRecords
 
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param, PrincipalParamRoleRelation
@@ -102,7 +101,7 @@ class GAS(models.Model, PermissionResource):
 
     #-- Managers --#
     accounting =  AccountingDescriptor(GasAccountingProxy)
-    #WAS: history = HistoricalRecords()
+
 
     display_fields = (
         website, 
@@ -807,7 +806,7 @@ class GASConfig(models.Model):
     #   you want a gasmember receive updates on his own orders?")
     #)
 
-    #WAS: history = HistoricalRecords()
+
 
     #-- Meta --#
     class Meta:
@@ -844,7 +843,7 @@ class GASActivist(models.Model):
     info_title = models.CharField(max_length=256, blank=True)
     info_description = models.TextField(blank=True)
 
-    #WAS: history = HistoricalRecords()
+
 
     class Meta:
         verbose_name = _('GAS activist')
@@ -899,7 +898,7 @@ class GASMember(models.Model, PermissionResource):
     objects = GASMemberManager()
     all_objects = IncludeSuspendedGASMemberManager()
 
-    #WAS: history = HistoricalRecords()
+
 
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),
@@ -1474,7 +1473,7 @@ class GASSupplierStock(models.Model, PermissionResource):
                         default=1, verbose_name=_('step of increment')
     )
 
-    #WAS: history = HistoricalRecords()
+
 
     def __unicode__(self):
         return u"%s%s" % (self.stock, self.father_price)
@@ -1808,7 +1807,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     suspend_reason = models.TextField(blank=True, default='', db_index=False)
     suspend_auto_resume = models.DateTimeField(default=None, null=True, blank=True, db_index=True) # If not NULL and is_suspended, auto resume at specified time
 
-    #WAS: history = HistoricalRecords()
+
 
     display_fields = (
         display.Resource(name="gas", verbose_name=_("GAS")),

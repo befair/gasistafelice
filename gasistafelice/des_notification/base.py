@@ -9,7 +9,7 @@ import datetime
 
 from django.conf import settings
 
-def send_revisions(gas, unique=True):
+def send_catalogs_digest(gas, unique=True):
     """
     Send SupplierStock object revisions to gas activists
     """
@@ -25,7 +25,6 @@ def send_revisions(gas, unique=True):
     if not settings.DEBUG:
         recipients = [FakeRecipient(gas.orders_email_contact)]
     else:
-        #recipients = list(set(gas.tech_referrers) | set(gas.cash_referrers) | set(gas.supplier_referrers)) 
         recipients = set(gas.tech_referrers | gas.cash_referrers | gas.supplier_referrers) 
    
     notification.models.send(recipients, "catalogs_digest", {
@@ -37,7 +36,7 @@ def send_revisions(gas, unique=True):
 
 #-------------------------------------------------------------------------------
 
-def send_revisions_with_duplicates(gas):
+def send_catalogs_digest_with_duplicates(gas):
     """GAS notification for closing orders."""
 
-    send_revisions(gas,unique=False)
+    send_catalogs_digest(gas,unique=False)
