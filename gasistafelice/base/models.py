@@ -15,7 +15,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from workflows.models import Workflow, Transition, State
-from history.models import HistoricalRecords
+#WAS: from history.models import HistoricalRecords
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER
 from flexi_auth.models import PermissionBase # mix-in class for permissions management
@@ -33,8 +33,7 @@ from gasistafelice.base.utils import get_resource_icon_path
 from gasistafelice.base.accounting import PersonAccountingProxy
 
 from workflows.utils import do_transition
-import os
-import logging
+import os, logging, reversion, sys
 log = logging.getLogger(__name__)
 
 class Resource(object):
@@ -151,30 +150,50 @@ class Resource(object):
 
     #-- History API --#
 
-    # Requires that an history manager exists for the resource
-    # TODO: encapsulate it in HistoryResource class
+    # WAS: Requires that an history manager exists for the resource
+    # WAS: TODO: encapsulate it in HistoryResource class
+    # Uses DjangoReversion, no need for an history manager exists for the resource
 
     @property
     def created_on(self):
         """Returns datetime instance of when the instance has been created."""
        
         # There could be the case that a deleted id is reused, so, do not use .get method
-        self_as_of_creation = \
-            self._default_history.filter(id=self.pk, history_type="+")[0]
+        #WAS: self_as_of_creation = \
+        #WAS:     self._default_history.filter(id=self.pk, history_type="+")[0]
+        #TODO: factorize into a property for dj 1.7 optmization
+        try:
+            created_on = self.as_of_creation.revision.date_created
+        except AttributeError as e:
+            created_on = None
 
-        return self_as_of_creation.history_date
+        return created_on 
     
     @property
     def created_by(self):
         """Returns user that created the resource."""
-        #COMMENT fero: disabled user in history!
-        return User.objects.none()
        
         # There could be the case that a deleted id is reused, so, do not use .get method
-        self_as_of_creation = \
-            self._default_history.filter(id=self.pk, history_type="+")[0]
+        #WAS: self_as_of_creation = \
+        #WAS:     self._default_history.filter(id=self.pk, history_type="+")[0]
+        try:
+            created_by = self.as_of_creation.revison.user
+        except AttributeError as e:
+            created_by = User.objects.none()
 
-        return self_as_of_creation.history_user
+        return created_by 
+
+    @property
+    def as_of_creation(self):
+        """
+        """
+        if sys.version_info < (3,):
+            try:
+                return reversion.get_for_object(self).order_by("id")[0]
+            except IndexError as e:
+                return None
+        else:
+            return reversion.get_for_object(self).first() 
 
     @property
     def created_by_person(self):
@@ -187,19 +206,14 @@ class Resource(object):
     @property
     def last_update_by(self):
         """Returns user that has made the last update to the resource."""
-       
-        #COMMENT fero: disabled user in history!
-        return User.objects.none()
-
         # There could be the case that a deleted id is reused, so, do not use .get method
         try:
-            self_as_of_last_update = \
-                self._default_history.filter(id=self.pk, history_type="~")[0]
-        except IndexError:
+            #WAS: self_as_of_last_update = \
+            #WAS:     self._default_history.filter(id=self.pk, history_type="~")[0]
+            return self.as_of_last_update.revision.user
+        except AttributeError as e:
             # This object has never been update
             return None
-        else:
-            return self_as_of_last_update.history_user
 
     @property
     def last_update_by_person(self):
@@ -210,14 +224,47 @@ class Resource(object):
         return None
 
     @property
+    def as_of_last_update(self):
+        """
+        """
+        if sys.version_info < (3,):
+            try:
+                return reversion.get_for_object(self).order_by("-id")[0]
+            except IndexError as e:
+                return None
+        else:
+            return reversion.get_for_object(self).last()
+
+    @property
     def updaters(self):
         """Returns User QuerySet of who has updated the resource."""
        
-        self_updaters = unordered_uniq(
-                self._default_history.filter(id=self.pk, history_type="~").values_list('history_user')
+        #WAS: self_updaters = unordered_uniq(
+        #WAS:         self._default_history.filter(id=self.pk, history_type="~").values_list('history_user')
+        #WAS:     )
+        try:
+            self_updaters = unordered_uniq(
+                map(lambda x: x.revision.user.pk if x.revision.user else 0, reversion.get_for_object(self).order_by("id")[1:])
             )
+            updaters = User.objects.filter(pk__in=self_updaters)
+        except IndexError as e:
+            updaters = User.objects.none()
 
-        return User.objects.filter(pk__in=map(lambda x: x[0].pk, self_updaters))
+        #return User.objects.filter(pk__in=map(lambda x: x[0].pk, self_updaters))
+        return updaters
+
+    def get_versions_with_duplicates(self, start_date, end_date):
+        """
+        """
+        return reversion.get_for_object(self).filter(revision__date_created__range=(start_date,end_date))
+
+    def get_versions(self, start_date, end_date):
+        """
+        """
+        #for el in reversion.get_unique_for_object(self):
+        #    if (el.revision.date_created > start_date and el.revision.date_created < end_date):
+        #        yield el
+        return [x for x in reversion.get_unique_for_object(self) if (x.revision.date_created > start_date and x.revision.date_created < end_date)]
 
     #------------------------------------
     # Basic properties: cache management
@@ -567,7 +614,7 @@ class Person(models.Model, PermissionResource):
     website = models.URLField(verify_exists=True, blank=True, verbose_name=_("web site"))
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
     
     class Meta:
         verbose_name = _("person")
@@ -898,6 +945,11 @@ class Person(models.Model, PermissionResource):
             self.display_name = u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
         super(Person, self).save(*args, **kw)
 
+#register to revisions
+if not reversion.is_registered(Person):
+    reversion.register(Person)
+
+
 class Contact(models.Model):
     """If is a contact, just a contact email or phone"""
 
@@ -906,7 +958,7 @@ class Contact(models.Model):
     is_preferred = models.BooleanField(default=False,verbose_name=_('preferred'))
     description = models.CharField(max_length=128, blank=True, default='',verbose_name=_('description'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name = _("contact")
@@ -922,6 +974,11 @@ class Contact(models.Model):
         self.value = self.value.strip()
         self.description = self.description.strip()
         return super(Contact, self).clean()
+
+#register to revisions
+if not reversion.is_registered(Contact):
+    reversion.register(Contact)
+
 
 class Place(models.Model, PermissionResource):
     """Places should be managed as separate entities for various reasons:
@@ -950,7 +1007,7 @@ class Place(models.Model, PermissionResource):
     lon = models.FloatField(null=True, blank=True,verbose_name=_('lon'))
     lat = models.FloatField(null=True, blank=True,verbose_name=_('lat'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
     
     class Meta:
         verbose_name = _("place")
@@ -1051,6 +1108,10 @@ class Place(models.Model, PermissionResource):
         address, zipcode, city, province
     )
     
+#register to revisions
+if not reversion.is_registered(Place):
+    reversion.register(Place)
+
 
 # Generic workflow management
 
@@ -1060,11 +1121,16 @@ class DefaultTransition(models.Model, PermissionResource):
     state = models.ForeignKey(State,verbose_name=_('state'))
     transition = models.ForeignKey(Transition,verbose_name=_('transition'))
 
-    history = HistoricalRecords()
+    #WAS: history = HistoricalRecords()
 
     class Meta:
         verbose_name = _("default transition")
         verbose_name_plural = _("default transitions")
+
+#register to revisions
+if not reversion.is_registered(DefaultTransition):
+    reversion.register(DefaultTransition)
+
 
 class WorkflowDefinition(object):
     """

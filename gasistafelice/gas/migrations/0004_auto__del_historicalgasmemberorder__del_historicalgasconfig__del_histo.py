@@ -1,182 +1,279 @@
-# encoding: utf-8
-import datetime
+# -*- coding: utf-8 -*-
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
-        # Adding field 'HistoricalGASConfig.use_order_planning'
-        #db.add_column('gas_historicalgasconfig', 'use_order_planning', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        ## Deleting model 'HistoricalGASMemberOrder'
+        #db.delete_table('gas_historicalgasmemberorder')
 
-        ## Adding field 'HistoricalGASConfig.send_email_on_order_close'
-        #db.add_column('gas_historicalgasconfig', 'send_email_on_order_close', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        ## Deleting model 'HistoricalGASConfig'
+        #db.delete_table('gas_historicalgasconfig')
 
-        ## Adding field 'HistoricalGASConfig.registration_token'
-        #db.add_column('gas_historicalgasconfig', 'registration_token', self.gf('django.db.models.fields.CharField')(default='', max_length=32, blank=True), keep_default=False)
+        ## Deleting model 'HistoricalGASActivist'
+        #db.delete_table('gas_historicalgasactivist')
 
-        ## Adding field 'HistoricalGASConfig.privacy_phone'
-        #db.add_column('gas_historicalgasconfig', 'privacy_phone', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24), keep_default=False)
+        ## Deleting model 'HistoricalWithdrawal'
+        #db.delete_table('gas_historicalwithdrawal')
 
-        ## Adding field 'HistoricalGASConfig.privacy_email'
-        #db.add_column('gas_historicalgasconfig', 'privacy_email', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24), keep_default=False)
+        ## Deleting model 'HistoricalGASSupplierSolidalPact'
+        #db.delete_table('gas_historicalgassuppliersolidalpact')
 
-        ## Adding field 'HistoricalGASConfig.privacy_cash'
-        #db.add_column('gas_historicalgasconfig', 'privacy_cash', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24), keep_default=False)
+        ## Deleting model 'HistoricalGASSupplierOrderProduct'
+        #db.delete_table('gas_historicalgassupplierorderproduct')
 
-        # Adding field 'GASConfig.use_order_planning'
-        db.add_column('gas_gasconfig', 'use_order_planning', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        ## Deleting model 'HistoricalGASSupplierOrder'
+        #db.delete_table('gas_historicalgassupplierorder')
 
-        # Adding field 'GASConfig.send_email_on_order_close'
-        db.add_column('gas_gasconfig', 'send_email_on_order_close', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        ## Deleting model 'HistoricalDelivery'
+        #db.delete_table('gas_historicaldelivery')
 
-        # Adding field 'GASConfig.registration_token'
-        db.add_column('gas_gasconfig', 'registration_token', self.gf('django.db.models.fields.CharField')(default='', max_length=32, blank=True), keep_default=False)
+        ## Deleting model 'HistoricalGAS'
+        #db.delete_table('gas_historicalgas')
 
-        # Adding field 'GASConfig.privacy_phone'
-        db.add_column('gas_gasconfig', 'privacy_phone', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24), keep_default=False)
+        ## Deleting model 'HistoricalGASSupplierStock'
+        #db.delete_table('gas_historicalgassupplierstock')
 
-        # Adding field 'GASConfig.privacy_email'
-        db.add_column('gas_gasconfig', 'privacy_email', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24), keep_default=False)
+        ## Deleting model 'HistoricalGASMember'
+        #db.delete_table('gas_historicalgasmember')
 
-        # Adding field 'GASConfig.privacy_cash'
-        db.add_column('gas_gasconfig', 'privacy_cash', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24), keep_default=False)
-
-        # Adding M2M table for field intergas_connection_set on 'GASConfig'
-        db.create_table('gas_gasconfig_intergas_connection_set', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('gasconfig', models.ForeignKey(orm['gas.gasconfig'], null=False)),
-            ('gas', models.ForeignKey(orm['gas.gas'], null=False))
-        ))
-        db.create_unique('gas_gasconfig_intergas_connection_set', ['gasconfig_id', 'gas_id'])
-
-        ## Adding field 'HistoricalGASSupplierSolidalPact.send_email_on_order_close'
-        #db.add_column('gas_historicalgassuppliersolidalpact', 'send_email_on_order_close', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
-
-        # Adding field 'GASSupplierSolidalPact.send_email_on_order_close'
-        db.add_column('gas_gassuppliersolidalpact', 'send_email_on_order_close', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
-
-        ## Deleting field 'HistoricalGASMember.user_planned_list'
-        #db.delete_column('gas_historicalgasmember', 'user_planned_list')
-
-        ## Adding field 'HistoricalGASMember.use_planned_list'
-        #db.add_column('gas_historicalgasmember', 'use_planned_list', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
-
-        ## Adding field 'HistoricalGASMember.is_suspended'
-        #db.add_column('gas_historicalgasmember', 'is_suspended', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True), keep_default=False)
-
-        ## Adding field 'HistoricalGASMember.suspend_datetime'
-        #db.add_column('gas_historicalgasmember', 'suspend_datetime', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True), keep_default=False)
-
-        ## Adding field 'HistoricalGASMember.suspend_reason'
-        #db.add_column('gas_historicalgasmember', 'suspend_reason', self.gf('django.db.models.fields.TextField')(default='', blank=True), keep_default=False)
-
-        ## Adding field 'HistoricalGASMember.suspend_auto_resume'
-        #db.add_column('gas_historicalgasmember', 'suspend_auto_resume', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, db_index=True, blank=True), keep_default=False)
-
-        # Deleting field 'GASMember.user_planned_list'
-        db.delete_column('gas_gasmember', 'user_planned_list')
-
-        # Adding field 'GASMember.use_planned_list'
-        db.add_column('gas_gasmember', 'use_planned_list', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
-
-        # Adding field 'GASMember.is_suspended'
-        db.add_column('gas_gasmember', 'is_suspended', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True), keep_default=False)
-
-        # Adding field 'GASMember.suspend_datetime'
-        db.add_column('gas_gasmember', 'suspend_datetime', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True), keep_default=False)
-
-        # Adding field 'GASMember.suspend_reason'
-        db.add_column('gas_gasmember', 'suspend_reason', self.gf('django.db.models.fields.TextField')(default='', blank=True), keep_default=False)
-
-        # Adding field 'GASMember.suspend_auto_resume'
-        db.add_column('gas_gasmember', 'suspend_auto_resume', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, db_index=True, blank=True), keep_default=False)
+        # Adding field 'GASConfig.digest_days_interval'
+        db.add_column('gas_gasconfig', 'digest_days_interval',
+                      self.gf('django.db.models.fields.PositiveIntegerField')(default=3, null=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        
-        ## Deleting field 'HistoricalGASConfig.use_order_planning'
-        #db.delete_column('gas_historicalgasconfig', 'use_order_planning')
+        ## Adding model 'HistoricalGASMemberOrder'
+        #db.create_table('gas_historicalgasmemberorder', (
+        #    ('purchaser_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('ordered_amount', self.gf('gasistafelice.lib.fields.models.PrettyDecimalField')(max_digits=6, decimal_places=2)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('is_confirmed', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('withdrawn_amount', self.gf('gasistafelice.lib.fields.models.PrettyDecimalField')(null=True, max_digits=6, decimal_places=2, blank=True)),
+        #    ('ordered_price', self.gf('gasistafelice.lib.fields.models.CurrencyField')(max_digits=10, decimal_places=4)),
+        #    ('ordered_product_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('note', self.gf('django.db.models.fields.CharField')(max_length=64, null=True, blank=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gasmemberorder_history', null=True, to=orm['auth.User'])),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASMemberOrder'])
 
-        ## Deleting field 'HistoricalGASConfig.send_email_on_order_close'
-        #db.delete_column('gas_historicalgasconfig', 'send_email_on_order_close')
+        ## Adding model 'HistoricalGASConfig'
+        #db.create_table('gas_historicalgasconfig', (
+        #    ('can_change_withdrawal_place_on_each_order', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('suspend_reason', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
+        #    ('default_delivery_place_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('suspend_datetime', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
+        #    ('can_change_delivery_place_on_each_order', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('registration_token', self.gf('django.db.models.fields.CharField')(default='', max_length=32, blank=True)),
+        #    ('suspend_auto_resume', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True, db_index=True)),
+        #    ('default_close_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
+        #    ('use_withdrawal_place', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('default_workflow_gassupplier_order_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('send_email_on_order_close', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('default_workflow_gasmember_order_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('privacy_phone', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24)),
+        #    ('default_withdrawal_place_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('can_change_price', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('gasmember_auto_confirm_order', self.gf('django.db.models.fields.BooleanField')(default=True)),
+        #    ('gas_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('default_close_day', self.gf('django.db.models.fields.CharField')(max_length=16, blank=True)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('privacy_cash', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24)),
+        #    ('auto_populate_products', self.gf('django.db.models.fields.BooleanField')(default=True)),
+        #    ('use_scheduler', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('privacy_email', self.gf('django.db.models.fields.CharField')(default='gas,suppliers', max_length=24)),
+        #    ('default_delivery_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
+        #    ('is_suspended', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
+        #    ('order_show_only_one_at_a_time', self.gf('django.db.models.fields.BooleanField')(default=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('use_order_planning', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('notice_days_before_order_close', self.gf('django.db.models.fields.PositiveIntegerField')(default=1, null=True)),
+        #    ('default_delivery_day', self.gf('django.db.models.fields.CharField')(max_length=16, blank=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gasconfig_history', null=True, to=orm['auth.User'])),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('order_show_only_next_delivery', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASConfig'])
 
-        ## Deleting field 'HistoricalGASConfig.registration_token'
-        #db.delete_column('gas_historicalgasconfig', 'registration_token')
+        ## Adding model 'HistoricalGASActivist'
+        #db.create_table('gas_historicalgasactivist', (
+        #    ('person_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('info_title', self.gf('django.db.models.fields.CharField')(max_length=256, blank=True)),
+        #    ('info_description', self.gf('django.db.models.fields.TextField')(blank=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gasactivist_history', null=True, to=orm['auth.User'])),
+        #    ('gas_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASActivist'])
 
-        ## Deleting field 'HistoricalGASConfig.privacy_phone'
-        #db.delete_column('gas_historicalgasconfig', 'privacy_phone')
+        ## Adding model 'HistoricalWithdrawal'
+        #db.create_table('gas_historicalwithdrawal', (
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('end_time', self.gf('django.db.models.fields.TimeField')(default='22:00')),
+        #    ('date', self.gf('django.db.models.fields.DateTimeField')()),
+        #    ('start_time', self.gf('django.db.models.fields.TimeField')(default='18:00')),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('place_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_withdrawal_history', null=True, to=orm['auth.User'])),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalWithdrawal'])
 
-        ## Deleting field 'HistoricalGASConfig.privacy_email'
-        #db.delete_column('gas_historicalgasconfig', 'privacy_email')
+        ## Adding model 'HistoricalGASSupplierSolidalPact'
+        #db.create_table('gas_historicalgassuppliersolidalpact', (
+        #    ('date_signed', self.gf('django.db.models.fields.DateField')(default=None, null=True, blank=True)),
+        #    ('default_delivery_place_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('order_deliver_interval', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
+        #    ('order_price_percent_update', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=3, decimal_places=2, blank=True)),
+        #    ('suspend_datetime', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
+        #    ('order_minimum_amount', self.gf('gasistafelice.lib.fields.models.CurrencyField')(null=True, max_digits=10, decimal_places=4, blank=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('gas_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('default_delivery_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
+        #    ('default_delivery_day', self.gf('django.db.models.fields.CharField')(max_length=16, blank=True)),
+        #    ('orders_can_be_grouped', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('document', self.gf('django.db.models.fields.files.FileField')(max_length=100, null=True, blank=True)),
+        #    ('is_suspended', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('supplier_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('send_email_on_order_close', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('suspend_auto_resume', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True, db_index=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gassuppliersolidalpact_history', null=True, to=orm['auth.User'])),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('auto_populate_products', self.gf('django.db.models.fields.BooleanField')(default=True)),
+        #    ('order_delivery_cost', self.gf('gasistafelice.lib.fields.models.CurrencyField')(null=True, max_digits=10, decimal_places=4, blank=True)),
+        #    ('suspend_reason', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASSupplierSolidalPact'])
 
-        ## Deleting field 'HistoricalGASConfig.privacy_cash'
-        #db.delete_column('gas_historicalgasconfig', 'privacy_cash')
+        ## Adding model 'HistoricalGASSupplierOrderProduct'
+        #db.create_table('gas_historicalgassupplierorderproduct', (
+        #    ('delivered_price', self.gf('gasistafelice.lib.fields.models.CurrencyField')(null=True, max_digits=10, decimal_places=4, blank=True)),
+        #    ('maximum_amount', self.gf('gasistafelice.lib.fields.models.PrettyDecimalField')(null=True, max_digits=8, decimal_places=2, blank=True)),
+        #    ('order_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('gasstock_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('delivered_amount', self.gf('gasistafelice.lib.fields.models.PrettyDecimalField')(null=True, max_digits=8, decimal_places=2, blank=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('initial_price', self.gf('gasistafelice.lib.fields.models.CurrencyField')(max_digits=10, decimal_places=4)),
+        #    ('order_price', self.gf('gasistafelice.lib.fields.models.CurrencyField')(max_digits=10, decimal_places=4)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gassupplierorderproduct_history', null=True, to=orm['auth.User'])),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASSupplierOrderProduct'])
 
-        # Deleting field 'GASConfig.use_order_planning'
-        db.delete_column('gas_gasconfig', 'use_order_planning')
+        ## Adding model 'HistoricalGASSupplierOrder'
+        #db.create_table('gas_historicalgassupplierorder', (
+        #    ('referrer_person_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('root_plan_id', self.gf('django.db.models.fields.IntegerField')(default=None, null=True, blank=True, db_index=True)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('withdrawal_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('delivery_referrer_person_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('delivery_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('pact_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('withdrawal_referrer_person_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('datetime_start', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('datetime_end', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+        #    ('invoice_amount', self.gf('gasistafelice.lib.fields.models.CurrencyField')(null=True, max_digits=10, decimal_places=4, blank=True)),
+        #    ('order_minimum_amount', self.gf('gasistafelice.lib.fields.models.CurrencyField')(null=True, max_digits=10, decimal_places=4, blank=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('group_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
+        #    ('invoice_note', self.gf('django.db.models.fields.TextField')(blank=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gassupplierorder_history', null=True, to=orm['auth.User'])),
+        #    ('delivery_cost', self.gf('gasistafelice.lib.fields.models.CurrencyField')(null=True, max_digits=10, decimal_places=4, blank=True)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASSupplierOrder'])
 
-        # Deleting field 'GASConfig.send_email_on_order_close'
-        db.delete_column('gas_gasconfig', 'send_email_on_order_close')
+        ## Adding model 'HistoricalDelivery'
+        #db.create_table('gas_historicaldelivery', (
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('date', self.gf('django.db.models.fields.DateTimeField')()),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('place_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_delivery_history', null=True, to=orm['auth.User'])),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalDelivery'])
 
-        # Deleting field 'GASConfig.registration_token'
-        db.delete_column('gas_gasconfig', 'registration_token')
+        ## Adding model 'HistoricalGAS'
+        #db.create_table('gas_historicalgas', (
+        #    ('headquarter_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('website', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
+        #    ('name', self.gf('django.db.models.fields.CharField')(max_length=128, db_index=True)),
+        #    ('vat', self.gf('django.db.models.fields.CharField')(max_length=11, blank=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('birthday', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+        #    ('membership_fee', self.gf('gasistafelice.lib.fields.models.CurrencyField')(default='0', max_digits=10, decimal_places=4, blank=True)),
+        #    ('note', self.gf('django.db.models.fields.TextField')(blank=True)),
+        #    ('id_in_des', self.gf('django.db.models.fields.CharField')(max_length=8, db_index=True)),
+        #    ('orders_email_contact_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('des_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('logo', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
+        #    ('intent_act', self.gf('django.db.models.fields.files.FileField')(max_length=100, null=True, blank=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gas_history', null=True, to=orm['auth.User'])),
+        #    ('association_act', self.gf('django.db.models.fields.files.FileField')(max_length=100, null=True, blank=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('fcc', self.gf('django.db.models.fields.CharField')(max_length=16, blank=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGAS'])
 
-        # Deleting field 'GASConfig.privacy_phone'
-        db.delete_column('gas_gasconfig', 'privacy_phone')
+        ## Adding model 'HistoricalGASSupplierStock'
+        #db.create_table('gas_historicalgassupplierstock', (
+        #    ('stock_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #    ('pact_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('step', self.gf('gasistafelice.lib.fields.models.PrettyDecimalField')(default=1, max_digits=5, decimal_places=2)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
+        #    ('minimum_amount', self.gf('gasistafelice.lib.fields.models.PrettyDecimalField')(default=1, max_digits=5, decimal_places=2)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gassupplierstock_history', null=True, to=orm['auth.User'])),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASSupplierStock'])
 
-        # Deleting field 'GASConfig.privacy_email'
-        db.delete_column('gas_gasconfig', 'privacy_email')
+        ## Adding model 'HistoricalGASMember'
+        #db.create_table('gas_historicalgasmember', (
+        #    ('is_suspended', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
+        #    ('suspend_datetime', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
+        #    ('membership_fee_payed', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+        #    ('suspend_auto_resume', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True, db_index=True)),
+        #    ('id', self.gf('django.db.models.fields.IntegerField')(blank=True, db_index=True)),
+        #    ('history_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+        #    ('history_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+        #    ('use_planned_list', self.gf('django.db.models.fields.BooleanField')(default=False)),
+        #    ('id_in_gas', self.gf('django.db.models.fields.CharField')(max_length=10, null=True, blank=True)),
+        #    ('person_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('suspend_reason', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
+        #    ('history_user', self.gf('current_user.models.CurrentUserField')(related_name='_gasmember_history', null=True, to=orm['auth.User'])),
+        #    ('gas_id', self.gf('django.db.models.fields.IntegerField')(blank=True, null=True, db_index=True)),
+        #    ('history_id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        #))
+        #db.send_create_signal('gas', ['HistoricalGASMember'])
 
-        # Deleting field 'GASConfig.privacy_cash'
-        db.delete_column('gas_gasconfig', 'privacy_cash')
-
-        # Removing M2M table for field intergas_connection_set on 'GASConfig'
-        db.delete_table('gas_gasconfig_intergas_connection_set')
-
-        ## Deleting field 'HistoricalGASSupplierSolidalPact.send_email_on_order_close'
-        #db.delete_column('gas_historicalgassuppliersolidalpact', 'send_email_on_order_close')
-
-        ## Deleting field 'GASSupplierSolidalPact.send_email_on_order_close'
-        #db.delete_column('gas_gassuppliersolidalpact', 'send_email_on_order_close')
-
-        ## Adding field 'HistoricalGASMember.user_planned_list'
-        #db.add_column('gas_historicalgasmember', 'user_planned_list', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
-
-        ## Deleting field 'HistoricalGASMember.use_planned_list'
-        #db.delete_column('gas_historicalgasmember', 'use_planned_list')
-
-        ## Deleting field 'HistoricalGASMember.is_suspended'
-        #db.delete_column('gas_historicalgasmember', 'is_suspended')
-
-        ## Deleting field 'HistoricalGASMember.suspend_datetime'
-        #db.delete_column('gas_historicalgasmember', 'suspend_datetime')
-
-        ## Deleting field 'HistoricalGASMember.suspend_reason'
-        #db.delete_column('gas_historicalgasmember', 'suspend_reason')
-
-        ## Deleting field 'HistoricalGASMember.suspend_auto_resume'
-        #db.delete_column('gas_historicalgasmember', 'suspend_auto_resume')
-
-        # Adding field 'GASMember.user_planned_list'
-        db.add_column('gas_gasmember', 'user_planned_list', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
-
-        # Deleting field 'GASMember.use_planned_list'
-        db.delete_column('gas_gasmember', 'use_planned_list')
-
-        # Deleting field 'GASMember.is_suspended'
-        db.delete_column('gas_gasmember', 'is_suspended')
-
-        # Deleting field 'GASMember.suspend_datetime'
-        db.delete_column('gas_gasmember', 'suspend_datetime')
-
-        # Deleting field 'GASMember.suspend_reason'
-        db.delete_column('gas_gasmember', 'suspend_reason')
-
-        # Deleting field 'GASMember.suspend_auto_resume'
-        db.delete_column('gas_gasmember', 'suspend_auto_resume')
+        # Deleting field 'GASConfig.digest_days_interval'
+        db.delete_column('gas_gasconfig', 'digest_days_interval')
 
 
     models = {
@@ -218,7 +315,7 @@ class Migration(SchemaMigration):
             'value': ('django.db.models.fields.CharField', [], {'max_length': '256'})
         },
         'base.person': {
-            'Meta': {'ordering': "('name',)", 'object_name': 'Person'},
+            'Meta': {'ordering': "('display_name',)", 'object_name': 'Person'},
             'address': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['base.Place']", 'null': 'True', 'blank': 'True'}),
             'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'contact_set': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['base.Contact']", 'null': 'True', 'blank': 'True'}),
@@ -306,11 +403,11 @@ class Migration(SchemaMigration):
             'default_withdrawal_place': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'gas_default_withdrawal_set'", 'null': 'True', 'to': "orm['base.Place']"}),
             'default_workflow_gasmember_order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gmow_gasconfig_set'", 'blank': 'True', 'to': "orm['workflows.Workflow']"}),
             'default_workflow_gassupplier_order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gsopw_gasconfig_set'", 'blank': 'True', 'to': "orm['workflows.Workflow']"}),
+            'digest_days_interval': ('django.db.models.fields.PositiveIntegerField', [], {'default': '3', 'null': 'True'}),
             'gas': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'config'", 'unique': 'True', 'to': "orm['gas.GAS']"}),
             'gasmember_auto_confirm_order': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'intergas_connection_set': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['gas.GAS']", 'symmetrical': 'False'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'intergas_connection_set': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['gas.GAS']", 'null': 'True', 'blank': 'True'}),
             'is_suspended': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'notice_days_before_order_close': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1', 'null': 'True'}),
             'order_show_only_next_delivery': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -328,7 +425,7 @@ class Migration(SchemaMigration):
             'use_withdrawal_place': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         'gas.gasmember': {
-            'Meta': {'ordering': "('gas__name',)", 'unique_together': "(('gas', 'id_in_gas'), ('person', 'gas'))", 'object_name': 'GASMember'},
+            'Meta': {'ordering': "('gas__name', 'person__display_name')", 'unique_together': "(('gas', 'id_in_gas'), ('person', 'gas'))", 'object_name': 'GASMember'},
             'available_for_roles': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'gas_member_available_set'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['permissions.Role']"}),
             'gas': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['gas.GAS']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -414,209 +511,6 @@ class Migration(SchemaMigration):
             'step': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'default': '1', 'max_digits': '5', 'decimal_places': '2'}),
             'stock': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'gasstock_set'", 'to': "orm['supplier.SupplierStock']"})
         },
-        #'gas.historicaldelivery': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalDelivery'},
-        #    'date': ('django.db.models.fields.DateTimeField', [], {}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_delivery_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'place_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'})
-        #},
-        #'gas.historicalgas': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGAS'},
-        #    'association_act': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-        #    'birthday': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-        #    'des_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-        #    'fcc': ('django.db.models.fields.CharField', [], {'max_length': '16', 'blank': 'True'}),
-        #    'headquarter_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gas_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'id_in_des': ('django.db.models.fields.CharField', [], {'max_length': '8', 'db_index': 'True'}),
-        #    'intent_act': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-        #    'logo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-        #    'membership_fee': ('gasistafelice.lib.fields.models.CurrencyField', [], {'default': "'0'", 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'name': ('django.db.models.fields.CharField', [], {'max_length': '128', 'db_index': 'True'}),
-        #    'note': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-        #    'orders_email_contact_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'vat': ('django.db.models.fields.CharField', [], {'max_length': '11', 'blank': 'True'}),
-        #    'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        #},
-        #'gas.historicalgasactivist': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASActivist'},
-        #    'gas_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gasactivist_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'info_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-        #    'info_title': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),
-        #    'person_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'})
-        #},
-        #'gas.historicalgasconfig': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASConfig'},
-        #    'auto_populate_products': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-        #    'can_change_delivery_place_on_each_order': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'can_change_price': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'can_change_withdrawal_place_on_each_order': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'default_close_day': ('django.db.models.fields.CharField', [], {'max_length': '16', 'blank': 'True'}),
-        #    'default_close_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
-        #    'default_delivery_day': ('django.db.models.fields.CharField', [], {'max_length': '16', 'blank': 'True'}),
-        #    'default_delivery_place_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'default_delivery_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
-        #    'default_withdrawal_place_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'default_workflow_gasmember_order_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'default_workflow_gassupplier_order_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'gas_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'gasmember_auto_confirm_order': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gasconfig_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-        #    'is_suspended': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-        #    'notice_days_before_order_close': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1', 'null': 'True'}),
-        #    'order_show_only_next_delivery': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'order_show_only_one_at_a_time': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-        #    'privacy_cash': ('django.db.models.fields.CharField', [], {'default': "'gas,suppliers'", 'max_length': '24'}),
-        #    'privacy_email': ('django.db.models.fields.CharField', [], {'default': "'gas,suppliers'", 'max_length': '24'}),
-        #    'privacy_phone': ('django.db.models.fields.CharField', [], {'default': "'gas,suppliers'", 'max_length': '24'}),
-        #    'registration_token': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '32', 'blank': 'True'}),
-        #    'send_email_on_order_close': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'suspend_auto_resume': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
-        #    'suspend_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-        #    'suspend_reason': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-        #    'use_order_planning': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'use_scheduler': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'use_withdrawal_place': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        #},
-        #'gas.historicalgasmember': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASMember'},
-        #    'gas_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gasmember_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'id_in_gas': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-        #    'is_suspended': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-        #    'membership_fee_payed': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-        #    'person_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'suspend_auto_resume': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
-        #    'suspend_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-        #    'suspend_reason': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-        #    'use_planned_list': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
-        #},
-        #'gas.historicalgasmemberorder': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASMemberOrder'},
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gasmemberorder_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'note': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True', 'blank': 'True'}),
-        #    'ordered_amount': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'max_digits': '6', 'decimal_places': '2'}),
-        #    'ordered_price': ('gasistafelice.lib.fields.models.CurrencyField', [], {'max_digits': '10', 'decimal_places': '4'}),
-        #    'ordered_product_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'purchaser_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'withdrawn_amount': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'null': 'True', 'max_digits': '6', 'decimal_places': '2', 'blank': 'True'})
-        #},
-        #'gas.historicalgassupplierorder': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASSupplierOrder'},
-        #    'datetime_end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-        #    'datetime_start': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'delivery_cost': ('gasistafelice.lib.fields.models.CurrencyField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'delivery_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'delivery_referrer_person_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'group_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gassupplierorder_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'invoice_amount': ('gasistafelice.lib.fields.models.CurrencyField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'invoice_note': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-        #    'order_minimum_amount': ('gasistafelice.lib.fields.models.CurrencyField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'pact_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'referrer_person_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'root_plan_id': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
-        #    'withdrawal_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'withdrawal_referrer_person_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'})
-        #},
-        #'gas.historicalgassupplierorderproduct': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASSupplierOrderProduct'},
-        #    'delivered_amount': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'null': 'True', 'max_digits': '8', 'decimal_places': '2', 'blank': 'True'}),
-        #    'delivered_price': ('gasistafelice.lib.fields.models.CurrencyField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'gasstock_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gassupplierorderproduct_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'initial_price': ('gasistafelice.lib.fields.models.CurrencyField', [], {'max_digits': '10', 'decimal_places': '4'}),
-        #    'maximum_amount': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'null': 'True', 'max_digits': '8', 'decimal_places': '2', 'blank': 'True'}),
-        #    'order_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'order_price': ('gasistafelice.lib.fields.models.CurrencyField', [], {'max_digits': '10', 'decimal_places': '4'})
-        #},
-        #'gas.historicalgassuppliersolidalpact': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASSupplierSolidalPact'},
-        #    'auto_populate_products': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-        #    'date_signed': ('django.db.models.fields.DateField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-        #    'default_delivery_day': ('django.db.models.fields.CharField', [], {'max_length': '16', 'blank': 'True'}),
-        #    'default_delivery_place_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'default_delivery_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
-        #    'document': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-        #    'gas_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gassuppliersolidalpact_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'is_suspended': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-        #    'order_deliver_interval': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
-        #    'order_delivery_cost': ('gasistafelice.lib.fields.models.CurrencyField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'order_minimum_amount': ('gasistafelice.lib.fields.models.CurrencyField', [], {'null': 'True', 'max_digits': '10', 'decimal_places': '4', 'blank': 'True'}),
-        #    'order_price_percent_update': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '3', 'decimal_places': '2', 'blank': 'True'}),
-        #    'orders_can_be_grouped': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'send_email_on_order_close': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-        #    'supplier_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'suspend_auto_resume': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
-        #    'suspend_datetime': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-        #    'suspend_reason': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'})
-        #},
-        #'gas.historicalgassupplierstock': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalGASSupplierStock'},
-        #    'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_gassupplierstock_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'minimum_amount': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'default': '1', 'max_digits': '5', 'decimal_places': '2'}),
-        #    'pact_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'step': ('gasistafelice.lib.fields.models.PrettyDecimalField', [], {'default': '1', 'max_digits': '5', 'decimal_places': '2'}),
-        #    'stock_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'})
-        #},
-        #'gas.historicalwithdrawal': {
-        #    'Meta': {'ordering': "('-history_date',)", 'object_name': 'HistoricalWithdrawal'},
-        #    'date': ('django.db.models.fields.DateTimeField', [], {}),
-        #    'end_time': ('django.db.models.fields.TimeField', [], {'default': "'22:00'"}),
-        #    'history_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-        #    'history_id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-        #    'history_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-        #    'history_user': ('current_user.models.CurrentUserField', [], {'related_name': "'_withdrawal_history'", 'null': 'True', 'to': "orm['auth.User']"}),
-        #    'id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'blank': 'True'}),
-        #    'place_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-        #    'start_time': ('django.db.models.fields.TimeField', [], {'default': "'18:00'"})
-        #},
         'gas.withdrawal': {
             'Meta': {'object_name': 'Withdrawal'},
             'date': ('django.db.models.fields.DateTimeField', [], {}),

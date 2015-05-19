@@ -18,19 +18,23 @@ log = logging.getLogger(__name__)
 class Block(AbstractBlock):
 
     BLOCK_NAME = "balance_pact"
-    BLOCK_VALID_RESOURCE_TYPES = ["pact", "order"]
+    BLOCK_VALID_RESOURCE_TYPES = ["pact"]
     BLOCK_DESCRIPTION = ugettext("Balance")
 
     def _get_user_actions(self, request):
 
         user_actions = []
         gas_list = self.resource.gas.gas_list
+
+        pact = self.resource
+
         for gas in gas_list:
-            if request.user.has_perm(CASH, obj=ObjectWithContext(gas)):
+            #Pact referrers can make economic transactions BUT cannot do economic corrections
+            if request.user.has_perm(CASH, obj=ObjectWithContext(gas)) or request.user in pact.referrers:
                 user_actions += [
                     ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
-                        resource = self.resource,
+                        resource = pact,
                         name=INCOME, verbose_name=ugettext("Account transaction"),
                         popup_form=False,
                     ),

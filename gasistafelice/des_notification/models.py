@@ -294,6 +294,22 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
         else:
             log.debug("Found existing notice type for label gasstock_update. Not creating another one")
 
+    # WAS: notification.create_notice_type(
+    try:
+        obj, created = notification.NoticeType.objects.get_or_create(
+            label="catalogs_digest", defaults = {
+                'display' : _("Catalogs Digest"), 
+                'description' : _("this GAS stocks have been modified"),
+                'default' : 2 }
+        )
+    except notification.NoticeType.MultipleObjectsReturned as e:
+        log.error("Found more than one notice type for label catalogs_digest")
+        raise("Found more than one notice type for label catalogs_digest")
+    else:
+        if created:
+            log.debug("Created notice type for label catalogs_digest")
+        else:
+            log.debug("Found existing notice type for label catalogs_digest. Not creating another one")
     
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
 
