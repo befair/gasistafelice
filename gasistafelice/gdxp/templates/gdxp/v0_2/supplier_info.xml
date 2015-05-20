@@ -1,3 +1,4 @@
+{% load supplier_base %}
     <supplier><!-- * -->
         <name>{{ el.name|escape }}</name>
         <taxCode>{{ el.ssn|default:""|escape }}</taxCode>
@@ -39,5 +40,6 @@
                 {% endfor %}
             </contact>
         </contacts>
-        <logo>{{el.icon}}</logo> 
+        <logo>{{el.icon}}</logo>
+        <lastUpdate>{{el.last_update|timestamp}}</lastUpdate> 
 

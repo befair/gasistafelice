@@ -1,7 +1,7 @@
 
 from django import template
 from django.utils.translation import ugettext as _
-
+import datetime
 
 register = template.Library()
 
@@ -19,3 +19,10 @@ def render_stock_versions(versions):
 
     return rendering
 
+@register.filter
+def timestamp(date):
+    try:
+        return (date-datetime.datetime(1970, 1, 1)).total_seconds()
+    except AttributeError:
+        return ''
+    

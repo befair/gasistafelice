@@ -305,6 +305,16 @@ class Supplier(models.Model, PermissionResource):
             return True
         return False
 
+    @property
+    def last_update(self):
+
+        dt = self.as_of_last_update.revision.date_created
+        for stock in self.stocks:
+            stock_dt = stock.as_of_last_update.revision.date_created
+            if stock_dt > dt:
+                dt = stock_dt
+        return dt
+
     #-------------- Authorization API ---------------#
 
     # Table-level CREATE permission    
