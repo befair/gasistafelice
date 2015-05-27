@@ -79,30 +79,36 @@ class SingleSupplierStockForm(forms.Form):
 
         #log.debug("Save SingleSupplierStockForm")
         if self.cleaned_data.get('id'):
+            updated = False
             ss = SupplierStock.objects.get(pk=self.cleaned_data['id'])
             #prd = Product.objects.get(pk=ss.product.pk)
             prd = ss.product
-            log.debug("Save SingleSupplierStockForm id_ss(%s) id_prd(%s)" % (ss.pk, prd.pk))
+            log.debug("SingleSupplierStockForm id_ss(%s) id_prd(%s)" % (ss.pk, prd.pk))
             try:
                 #ss.code = self.cleaned_data.get('code')
                 #ss.supplier = self.__supplier
-                prd.name = self.cleaned_data['product']
+                if prd.name != self.cleaned_data['product']:
+                    prd.name = self.cleaned_data['product']
 #                prd.description = self.cleaned_data['description']
-                prd.save()
+                    prd.save()
                 #"SupplierStock.product" must be a "Product" instance
                 #ss.product = self.cleaned_data['product']
                 #ss.product.description = self.cleaned_data['description']
                 old_price = ss.price
                 ss.price = self.cleaned_data['price']
                 if old_price != ss.price:
+                    updated = True
                     #CASCADING price has changed
-                    log.debug("Save SingleSupplierStockForm price changed old(%s) new(%s)" % (old_price, ss.price))
+                    log.debug("SingleSupplierStockForm price changed old(%s) new(%s)" % (old_price, ss.price))
                 old_amount = ss.amount_available
                 ss.amount_available = [0, ALWAYS_AVAILABLE][self.cleaned_data.get('availability')]
                 if old_amount != ss.amount_available:
+                    updated = True
                     #CASCADING product availability has changed
-                    log.debug("Save SingleSupplierStockForm product availability has changed old(%s) new(%s)" % (old_amount, ss.amount_available))
-                ss.save()
+                    log.debug("SingleSupplierStockForm product availability has changed old(%s) new(%s)" % (old_amount, ss.amount_available))
+                if updated:
+                    log.debug("Save SingleSupplierStockForm id_ss(%s) id_prd(%s)" % (ss.pk, prd.pk))
+                    ss.save()
             except Exception, e:
                 raise
                 log.debug("Save SingleSupplierStockForm error(%s)" %  str(e))
