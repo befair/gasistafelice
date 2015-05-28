@@ -1,6 +1,6 @@
 Django<1.4
 psycopg2==2.5.2
-django-permissions>=1.0
+django-permissions>=1.1,<1.2
 django-workflows>=1.0
 South>=0.7.3
 Sphinx>=0.6.6
