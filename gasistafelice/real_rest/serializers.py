@@ -18,6 +18,8 @@ class SupplierStockSerializer(serializers.ModelSerializer):
 
 class GASSupplierOrderProductSerializer(serializers.ModelSerializer):
 
+    stock = SupplierStockSerializer()
+
     class Meta:
         model = GASSupplierOrderProduct
 
@@ -49,7 +51,7 @@ class PkModelField(serializers.ReadOnlyField):
 class OrderSerializer(serializers.ModelSerializer):
 
     orderable_product_set = GASSupplierOrderProductSerializer(many=True)
-    gasstock_set = GASSupplierStockSerializer(many=True)
+    # gasstock_set = GASSupplierStockSerializer(many=True)
     stocks = SupplierStockSerializer(many=True)
     delivery = DeliverySerializer()
     supplier = PkModelField(read_only=True) #TODO... read_only?!?
@@ -71,7 +73,7 @@ class GASSerializer(serializers.ModelSerializer):
     class Meta:
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'open_orders')
-        
+
 class SupplierSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
@@ -91,13 +93,13 @@ class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         fields = (
-            'id', 'name', 'surname', 'display_name', 
+            'id', 'name', 'surname', 'display_name',
             'ssn', 'avatar', 'website', 'contact_set',
             'user', 'gasmembers', 'gas_list', 'suppliers'
         )
 
 #---------------------------------------------------------------------------------
-# GAS Member serializers. 
+# GAS Member serializers.
 # Should be used carefully in views because they holds sensitive informations
 
 class GASMemberOrderSerializer(serializers.ModelSerializer):
@@ -128,9 +130,9 @@ class GASMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = GASMember
         fields = (
-            'id', 'gas', 'person', 'membership_fee_payed',  
+            'id', 'gas', 'person', 'membership_fee_payed',
             'is_suspended', 'suspend_datetime', 'suspend_auto_resume',
             'balance', 'total_basket', 'total_basket_to_be_delivered',
             'economic_state', 'basket', 'basket_to_be_delivered'
         )
-        
+
