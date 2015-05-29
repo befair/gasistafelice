@@ -150,7 +150,8 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 }
 
 
-function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsingNumbers, $q, person) {
+/* TODO TOREMOVE to be removed if not useful for the stable version
+ * function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsingNumbers, $q, person) {
 
     $rootScope.gasnames = [];
     $scope.selectedIndex = 0;
@@ -199,6 +200,7 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
         });    
     });
 }
+*/
 
 function menu_controller($scope,$http, $routeParams, $rootScope){
     $scope.gmID = $rootScope.gasmemberID;

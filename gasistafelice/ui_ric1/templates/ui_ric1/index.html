@@ -113,13 +113,13 @@
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         
-        <div class="collapse navbar-collapse" ng-controller="gas_controller" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"> <!-- ng-controller="gas_controller" --> 
           
             <div class="navbar-left">
                 <ul class="optionlist nav navbar-nav">
                         {% for gas in gas_list %}
                         <li class="{% if forloop.first %}active{% endif %} "> 
-                            <a href="{% url 'page_ui_ric1' %}" ng-click="getID({{gas.pk}});"> {{gas}}
+                            <a href="{% url 'page_ui_ric1' %}"> <!-- ng-click="getID({{gas.pk}});" --> {{gas}}
                             <div class="gaslabel">{{gas.balance}} &#8364;</div>  
                             </a>
                         </li>
