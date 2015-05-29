@@ -6797,7 +6797,7 @@ a.menu_links {
 }
 .optionlist > li > a {
   padding-top: 10px;
-  padding-bottom: 10px;
+  // padding-bottom: 10px;
   line-height: 20px;
 }
 @media (max-width: 999px) {
@@ -6832,21 +6832,21 @@ a.menu_links {
   }
   .optionlist > li > a {
     padding-top: 15px;
-    padding-bottom: 15px;
+    // padding-bottom: 15px;
   }
   .optionlist.navbar-right:last-child {
     margin-right: -15px;
   }
 }
 .optionlist > li > a {
-  padding-bottom: 27px;
+  // padding-bottom: 27px;
 }
 .tr1 {
   padding-right: 5px;
 }
 .gaslabel {
-  position: absolute;
-  width: 100%;
+  // position: absolute;
+  // width: 100%;
   color: #b3c921;
 }
 #wrap {

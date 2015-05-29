@@ -20,11 +20,16 @@
     <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-custom.css">
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
+    <!-- <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
-      
+    -->
+    {% comment %} DA TOGLIERE SE NON SERVONO, versione replicate o aggiuntive {% endcomment %}
+    <script src="{% static_url %}ui_ric1/js/jquery-1.11.1.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/jquery-ui-1.10.4.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/jquery-ui.js"></script>
+    {% comment %} {% endcomment %}
     <script type="text/javascript">
         $.app_name = 'ui_ric1';
         $.static_url = '{% static_url %}';
@@ -112,14 +117,13 @@
           
             <div class="navbar-left">
                 <ul class="optionlist nav navbar-nav">
-                        <li ng-repeat="gasname in gasnames" 
-                            ng-class="{ 'active': $index == selectedIndex }"
-                            ng-click="itemClicked($index)">    
-                            <a href="#/{{peID}}pippofixme/" ng-click="getID(gasname.id);">
--                                            {{gasname.name}}
--                                        </a>
-                            <div class="gaslabel">{{gasname.balance}}&#8364;</div> <!--{{gasname.balance}}-->
+                        {% for gas in gas_list %}
+                        <li class="{% if forloop.first %}active{% endif %} "> 
+                            <a href="{% url 'page_ui_ric1' %}" ng-click="getID({{gas.pk}});"> {{gas}}
+                            <div class="gaslabel">{{gas.balance}} &#8364;</div>  
+                            </a>
                         </li>
+                        {% endfor %}
                     {% comment %}
                     {% for gas in gas_list %}
                     <li class="{% if forloop.first %}active{% endif %} "
@@ -211,11 +215,6 @@
     </div> 
 
 
-    {% comment %} DA TOGLIERE SE NON SERVONO, versione replicate o aggiuntive
-    <script src="{% static_url %}ui_ric1/js/jquery-1.11.1.min.js"></script>
-    <script src="{% static_url %}ui_ric1/js/jquery-ui-1.10.4.min.js"></script>
-    <script src="{% static_url %}ui_ric1/js/jquery-ui.js"></script>
-    {% endcomment %}
     <script src="{% static_url %}ui_ric1/js/bootstrap.js"></script>
     <script src="{% static_url %}ui_ric1/js/modernizr.js"></script>
     <script src="{% static_url %}ui_ric1/js/jquery.simplePagination.js"></script>

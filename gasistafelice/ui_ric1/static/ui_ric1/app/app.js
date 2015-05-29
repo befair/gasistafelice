@@ -152,15 +152,15 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 
 function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsingNumbers, $q, person) {
 
-    $scope.gasnames = [];
+    $rootScope.gasnames = [];
     $scope.selectedIndex = 0;
     
     $scope.itemClicked = function ($index) {
         $scope.selectedIndex = $index;
     };
     
-    $scope.getID = function(gasname){
-        $rootScope.gasID = gasname;
+    $scope.getID = function(gas_id){
+        $rootScope.gasID = gas_id;
     };
         
     $scope.gasmembers = [];
@@ -185,7 +185,7 @@ function gas_controller($scope, $http, $routeParams,$rootScope, $location, parsi
                 {
                     $http.get($.absurl_api+'gasmember/'+element2+'/?format=json').success(function(data){ 
                      $scope.balance.push({balance: data.balance});
-                     $scope.gasnames.push({
+                     $rootScope.gasnames.push({
                             id: element.id,
                             name: element.name,
                             balance: parsingNumbers.parsing(data.balance,2)
