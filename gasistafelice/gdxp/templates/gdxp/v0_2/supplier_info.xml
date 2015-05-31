@@ -40,6 +40,6 @@
                 {% endfor %}
             </contact>
         </contacts>
-        <logo>{{el.icon}}</logo>
+        <logo>{{el.icon_url}}</logo>
         <lastUpdate>{{el.last_update|timestamp}}</lastUpdate> 
 
