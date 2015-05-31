@@ -14,7 +14,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.contrib.sites.models import Site
+#WAS: from django.contrib.sites.models import Site
 
 from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole
@@ -135,7 +135,8 @@ class Supplier(models.Model, PermissionResource):
 
     @property
     def icon_url(self):
-        domain = Site.objects.get_current().domain
+        #WAS: domain = Site.objects.get_current().domain
+        domain = settings.INIT_OPTIONS['domain']
         try:
             return u"%s%s" % (domain,self.logo.url or super(SUPPLIER, self).icon.url)
         except AttributeError:
