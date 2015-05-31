@@ -139,7 +139,7 @@ class Supplier(models.Model, PermissionResource):
         try:
             return u"%s%s" % (domain,self.logo.url or super(SUPPLIER, self).icon.url)
         except AttributeError:
-            return ""
+            return u""
 
     #-- Contacts --#
 
