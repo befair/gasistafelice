@@ -93,15 +93,19 @@ class SimpleGASSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GAS
-        fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'open_orders')
+        fields = ('id', 'name', 'id_in_des', 'logo', 'des')
 
 class GASSerializer(SimpleGASSerializer):
     open_orders = OrderSerializer(many=True)
 
+    class Meta:
+        model = GAS
+        fields = ('id', 'name', 'id_in_des', 'logo', 'des')
+
 class PersonSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
-    gas_list = GASSerializer(many=True) #TODO: replace with SimpleGASSerializer when client-side is updated
+    gas_list = SimpleGASSerializer(many=True)
     gasmembers = QSListingField(read_only=True) #TODO... read_only?!?
     suppliers = SupplierSerializer(many=True)
 
@@ -135,6 +139,7 @@ class CashInfoSerializer(serializers.CharField):
 
 class GASMemberSerializer(serializers.ModelSerializer):
 
+    gas = SimpleGASSerializer()
     economic_state = serializers.CharField()
     balance = serializers.FloatField()
     total_basket = serializers.FloatField()

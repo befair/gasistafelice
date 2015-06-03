@@ -25,10 +25,10 @@ function orderController($scope,$http,$rootScope, $routeParams, $timeout, parsin
 
         $scope.products = [];
         $scope.products_post = [];
-        $rootScope.order_id = order_id;
 
         $.each(data.open_orders, function(index, order) {
             if (order_id == order.id) {
+                $rootScope.selected_order = order;
                 $.each(order.orderable_product_set, function(index, gsop) {
 
                     prodel = gsop.stock.product;

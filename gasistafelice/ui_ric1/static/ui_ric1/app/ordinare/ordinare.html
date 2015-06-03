@@ -5,7 +5,7 @@
         Saldo dopo consegna prodotti: <span class="balance">&#8364; {{resume}}</span><br />
 
   </div>
-  <div class="ord-ord-title">Elenco ordini</div>
+  <div class="ord-ord-title">Gli ordini aperti del {{gasmember.gas.name}}</div>
     <div class="row">
       <div class="cont_orders_list" ng-repeat="order in open_orders">
         <div ng-click="set_order_catalog(order.id);" class="no_style">
@@ -36,7 +36,7 @@
 </div>
       </div>
     </div>
-    <div class="ord-el-title">Prodotti #</div>
+    <div class="ord-el-title">I prodotti di <i>{{selected_order.supplier.name}}</i></div>
       <div class="searchbar">
           <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
           <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>
