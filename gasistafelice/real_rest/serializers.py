@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from gf.base.models import Person, Contact
+from gf.base.models import Person, Contact, Place
 from gf.gas.models.base import GAS, GASMember, GASSupplierStock
 from gf.gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASSupplierOrderProduct
 from gf.supplier.models import Product, SupplierStock, Supplier
@@ -48,45 +48,60 @@ class PkModelField(serializers.ReadOnlyField):
     def to_representation(self, value):
         return value.pk
 
-class OrderSerializer(serializers.ModelSerializer):
-
-    orderable_product_set = GASSupplierOrderProductSerializer(many=True)
-    # gasstock_set = GASSupplierStockSerializer(many=True)
-    stocks = SupplierStockSerializer(many=True)
-    delivery = DeliverySerializer()
-    supplier = PkModelField(read_only=True) #TODO... read_only?!?
-
-    class Meta:
-        model = GASSupplierOrder
-
 class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
         fields = ('flavour', 'value', 'is_preferred')
 
-class GASSerializer(serializers.ModelSerializer):
+class SeatSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Place
+        fields = ('name', 'address', 'zipcode', 'city', 'province', 'lat', 'lon')
+
+class SimpleSupplierSerializer(serializers.ModelSerializer):
+
+    seat = SeatSerializer(read_only=True)
+
+    class Meta:
+        model = Supplier
+        fields = ('name', 'seat', 'preferred_phone_address', 'preferred_email_address')
+
+class SupplierSerializer(SimpleSupplierSerializer):
+
+    contact_set = ContactSerializer(many=True)
+    certifications = QSUnicodeModelField(read_only=True) #TODO... read_only?!?
+
+    class Meta:
+        model = Supplier
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    orderable_product_set = GASSupplierOrderProductSerializer(many=True)
+    #TODO TOREMOVE gasstock_set = GASSupplierStockSerializer(many=True)
+    stocks = SupplierStockSerializer(many=True)
+    delivery = DeliverySerializer()
+    supplier = SimpleSupplierSerializer(read_only=True)
+
+    class Meta:
+        model = GASSupplierOrder
+
+class SimpleGASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
-    open_orders = OrderSerializer(many=True)
 
     class Meta:
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'open_orders')
 
-class SupplierSerializer(serializers.ModelSerializer):
-
-    contact_set = ContactSerializer(many=True)
-    certifications = QSUnicodeModelField(read_only=True) #TODO... read_only?!?
-    seat = PkModelField(read_only=True) #TODO... read_only?!?
-
-    class Meta:
-        model = Supplier
+class GASSerializer(SimpleGASSerializer):
+    open_orders = OrderSerializer(many=True)
 
 class PersonSerializer(serializers.ModelSerializer):
 
     contact_set = ContactSerializer(many=True)
-    gas_list = GASSerializer(many=True)
+    gas_list = GASSerializer(many=True) #TODO: replace with SimpleGASSerializer when client-side is updated
     gasmembers = QSListingField(read_only=True) #TODO... read_only?!?
     suppliers = SupplierSerializer(many=True)
 
@@ -126,6 +141,7 @@ class GASMemberSerializer(serializers.ModelSerializer):
     total_basket_to_be_delivered = serializers.FloatField()
     basket = GASMemberOrderSerializer(many=True)
     basket_to_be_delivered = GASMemberOrderSerializer(many=True)
+    open_orders = OrderSerializer(many=True)
 
     class Meta:
         model = GASMember
@@ -133,6 +149,6 @@ class GASMemberSerializer(serializers.ModelSerializer):
             'id', 'gas', 'person', 'membership_fee_payed',
             'is_suspended', 'suspend_datetime', 'suspend_auto_resume',
             'balance', 'total_basket', 'total_basket_to_be_delivered',
-            'economic_state', 'basket', 'basket_to_be_delivered'
+            'economic_state', 'basket', 'basket_to_be_delivered', 'open_orders'
         )
 

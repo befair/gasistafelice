@@ -25,7 +25,7 @@ from flexi_auth.utils import get_parametric_roles
 
 from flexi_auth.models import PrincipalParamRoleRelation
 
-from simple_accounting.models import economic_subject, AccountingDescriptor, LedgerEntry, account_type 
+from simple_accounting.models import economic_subject, AccountingDescriptor, LedgerEntry, account_type
 
 from lib import ClassProperty, unordered_uniq
 from gf.base import const
@@ -42,9 +42,9 @@ class Resource(object):
 
     This is a basic mix-in class used to factor out data/behaviours common
     to the majority of model classes in the project's applications.
-    
+
     Resource API is composed of:
-    * Basic methods and properties: 
+    * Basic methods and properties:
      * basic type and resource string representation
      * caching operations
     * Relational properties:
@@ -65,14 +65,14 @@ class Resource(object):
     @classmethod
     def resource_type(cls):
         """String representation of resource type"""
-        
+
         return cls.__name__.lower()
 
     @property
     def urn(self):
         """Unique resource name"""
         return '%s/%s' % (self.resource_type, self.pk)
-    
+
     @property
     def ancestors(self):
         """List of ancestors of a resource.
@@ -82,7 +82,7 @@ class Resource(object):
 
         You SHOULD NOT implement it in subclasses
         """
-        
+
         if self.parent:
             return self.parent.ancestors + [self.parent]
         else:
@@ -97,7 +97,7 @@ class Resource(object):
         confident of who includes itself.
 
         This attribute is then used to make the list of `:ref:ancestors`.
-        
+
         You MUST implement it in subclasses if they have parent.
         """
         return None
@@ -113,9 +113,9 @@ class Resource(object):
 
     @permalink
     def get_absolute_url(self):
-        return ('rest.views.resource_page', (), { 
-                'resource_type' : self.resource_type, 
-                'resource_id' : self.pk 
+        return ('rest.views.resource_page', (), {
+                'resource_type' : self.resource_type,
+                'resource_id' : self.pk
         })
 
     def get_absolute_url_page(self):
@@ -157,19 +157,19 @@ class Resource(object):
     @property
     def created_on(self):
         """Returns datetime instance of when the instance has been created."""
-       
+
         # There could be the case that a deleted id is reused, so, do not use .get method
         self_as_of_creation = \
             self._default_history.filter(id=self.pk, history_type="+")[0]
 
         return self_as_of_creation.history_date
-    
+
     @property
     def created_by(self):
         """Returns user that created the resource."""
         #COMMENT fero: disabled user in history!
         return User.objects.none()
-       
+
         # There could be the case that a deleted id is reused, so, do not use .get method
         self_as_of_creation = \
             self._default_history.filter(id=self.pk, history_type="+")[0]
@@ -187,7 +187,7 @@ class Resource(object):
     @property
     def last_update_by(self):
         """Returns user that has made the last update to the resource."""
-       
+
         #COMMENT fero: disabled user in history!
         return User.objects.none()
 
@@ -212,7 +212,7 @@ class Resource(object):
     @property
     def updaters(self):
         """Returns User QuerySet of who has updated the resource."""
-       
+
         self_updaters = unordered_uniq(
                 self._default_history.filter(id=self.pk, history_type="~").values_list('history_user')
             )
@@ -222,16 +222,16 @@ class Resource(object):
     #------------------------------------
     # Basic properties: cache management
     #------------------------------------
-        
+
     def save_checkdata_in_cache(self):
         key = Resource.cache_key(self.pk)
         data_to_cache = {}
         for n in self.volatile_fields:
             data_to_cache[n] = getattr(self, n)
-        
+
         if not data_to_cache:
             return False
-                    
+
         try:
             pstore.savedata(key, data_to_cache)
         except Exception, e:
@@ -255,7 +255,7 @@ class Resource(object):
         return "%s/%s" % (cls.resource_type, resource_id)
 
     #---------------------------------------------
-    # Relational properties: 
+    # Relational properties:
     # not all must be implemented by Resource subclasses
     # but just only that makes sense
     #---------------------------------------------
@@ -418,7 +418,7 @@ class Resource(object):
     def preferred_email_address(self):
         """The email address, where we should write if we would know more info on the resource.
 
-        It is not necessarily bound to a person. 
+        It is not necessarily bound to a person.
 
         NOTE that it could be even a list of addresses following syntax in RFC 5322 and RFC 5321,
         or simply http://en.wikipedia.org/wiki/Email_address#Syntax :)
@@ -434,7 +434,7 @@ class Resource(object):
     def preferred_email_contacts(self):
         """Email Contacts, where we should write if we would know more info on the resource.
 
-        It is not necessarily bound to a person. 
+        It is not necessarily bound to a person.
 
         Usually you SHOULD NOT NEED TO OVERRIDE IT in subclasses
         """
@@ -530,10 +530,10 @@ class PermissionResource(Resource, PermissionBase):
         """
         Return a QuerySet containing all the parametric roles which have been assigned
         to this Resource.
-        
+
         """
 
-        # Roles MUST BE a property because roles are bound to a User 
+        # Roles MUST BE a property because roles are bound to a User
         # with `add_principal()` and not directly to a GAS member
         # costruct the result set by joining partial QuerySets
         roles = []
@@ -559,7 +559,7 @@ class Person(models.Model, PermissionResource):
     ssn = models.CharField(max_length=128, unique=True, editable=False, blank=True, null=True, help_text=_('Write your social security number here'),verbose_name=_('Social Security Number'))
     contact_set = models.ManyToManyField('Contact', null=True, blank=True,verbose_name=_('contacts'))
     user = models.OneToOneField(User, null=True, blank=True,
-        verbose_name=_('User'), 
+        verbose_name=_('User'),
         help_text=_("bind to a user if you want to give this person an access to the platform")
     )
     address = models.ForeignKey('Place', null=True, blank=True,verbose_name=_('main address'))
@@ -568,7 +568,7 @@ class Person(models.Model, PermissionResource):
 
     accounting = AccountingDescriptor(PersonAccountingProxy)
     # #history = HistoricalRecords()
-    
+
     class Meta:
         verbose_name = _("person")
         verbose_name_plural = _("people")
@@ -577,7 +577,7 @@ class Person(models.Model, PermissionResource):
 
     def __unicode__(self):
 
-        rv = self.display_name 
+        rv = self.display_name
 
         if not rv:
             # If display name is not provided --> save display name
@@ -609,14 +609,14 @@ class Person(models.Model, PermissionResource):
 
 
         return super(Person, self).clean()
-    
+
     @property
     def uid(self):
         """
         A unique ID (an ASCII string) for ``Person`` model instances.
         """
         return self.urn.replace('/','-')
-    
+
     @property
     def parent(self):
         return self.des
@@ -627,7 +627,7 @@ class Person(models.Model, PermissionResource):
 
     ## START Resource API
     # Note that all the following methods return a QuerySet
-    
+
     @property
     def persons(self):
         return Person.objects.filter(pk=self.pk)
@@ -641,38 +641,38 @@ class Person(models.Model, PermissionResource):
         #TODO UNITTEST
         """
         GAS members associated to this person;
-        to each of them corresponds a membership of this person in a GAS.        
+        to each of them corresponds a membership of this person in a GAS.
         """
         return self.gasmember_set.all()
 
-    
+
     @property
     def gas_list(self):
         #TODO UNITTEST
         """
         All GAS this person belongs to
         (remember that a person may be a member of more than one GAS).
-        """ 
+        """
         from gf.gas.models import GAS
         gas_pks = set(member.gas.pk for member in self.gasmembers)
         return GAS.objects.filter(pk__in=gas_pks)
-    
+
     @property
     def des_list(self):
         #TODO UNITTEST
         """
-        All DESs this person belongs to 
-        (either as a member of one or more GAS or as a referrer for one or more suppliers in the DES).         
+        All DESs this person belongs to
+        (either as a member of one or more GAS or as a referrer for one or more suppliers in the DES).
         """
         from des.models import DES
         des_set = set([gas.des for gas in self.gas_list])
         return DES.objects.filter(pk__in=[obj.pk for obj in des_set])
-    
+
     @property
     def des(self):
         from des.models import Siteattr
         return Siteattr.get_site()
-    
+
     @property
     def pacts(self):
         """
@@ -680,9 +680,9 @@ class Person(models.Model, PermissionResource):
         pacts signed with a GAS he/she belongs to
         """
         from gf.gas.models import GASSupplierSolidalPact
-        # initialize the return QuerySet 
+        # initialize the return QuerySet
         qs = GASSupplierSolidalPact.objects.none()
-        
+
         #add the suppliers who have signed a pact with a GAS this person belongs to
         for gas in self.gas_list:
             qs = qs | gas.pacts
@@ -698,20 +698,20 @@ class Person(models.Model, PermissionResource):
         2) suppliers who have signed a pact with a GAS he/she belongs to
         """
         from gf.supplier.models import Supplier
-        # initialize the return QuerySet 
+        # initialize the return QuerySet
         qs = Supplier.objects.none()
-        
+
         #add the suppliers who have signed a pact with a GAS this person belongs to
         for gas in self.gas_list:
             qs = qs | gas.suppliers
-        
+
         # add the suppliers for which this person is an agent
         referred_set = set([sr.supplier for sr  in self.supplieragent_set.all()])
         qs = qs | Supplier.objects.filter(pk__in=[obj.pk for obj in referred_set])
-        
+
         return qs
-        
-    
+
+
     @property
     def orders(self):
         #TODO UNITTEST
@@ -720,21 +720,21 @@ class Person(models.Model, PermissionResource):
         1) supplier orders opened by a GAS he/she belongs to
         2) supplier orders for which he/she is a referrer
         3) order to suppliers for which he/she is a referrer
-        
+
         """
 
         from gf.gas.models import GASSupplierOrder
-                
-        # initialize the return QuerySet 
+
+        # initialize the return QuerySet
         qs = GASSupplierOrder.objects.none()
-        
+
         #add the supplier orders opened by a GAS he/she belongs to
         for gas in self.gas_list:
             qs = qs | gas.orders
-        
+
         return qs
-        
-    
+
+
     @property
     def deliveries(self):
         #TODO UNITTEST
@@ -745,16 +745,16 @@ class Person(models.Model, PermissionResource):
         """
         from gf.gas.models import Delivery
         # initialize the return QuerySet
-        qs = Delivery.objects.none()    
-        # add  delivery appointments for which this person is a referrer   
+        qs = Delivery.objects.none()
+        # add  delivery appointments for which this person is a referrer
         for member in self.gasmembers:
             qs = qs | member.delivery_set.all()
         # add  delivery appointments associated with a GAS he/she belongs to
         for gas in self.gas_list:
             qs = qs | gas.deliveries
-                                
+
         return qs
-    
+
     @property
     def withdrawals(self):
         #TODO UNITTEST
@@ -765,23 +765,23 @@ class Person(models.Model, PermissionResource):
         """
         from gf.gas.models import Withdrawal
         # initialize the return QuerySet
-        qs = Withdrawal.objects.none()    
-        # add  withdrawal appointments for which this person is a referrer   
+        qs = Withdrawal.objects.none()
+        # add  withdrawal appointments for which this person is a referrer
         for member in self.gasmembers:
             qs = qs | member.withdrawal_set.all()
         # add  withdrawal appointments associated with a GAS he/she belongs to
         for gas in self.gas_list:
             qs = qs | gas.withdrawals
-                                
-        return qs  
-    
-    
-    ## END Resource API    
-    
+
+        return qs
+
+
+    ## END Resource API
+
     @property
     def city(self):
         if self.address:
-            return self.address.city 
+            return self.address.city
         else:
             return None
 
@@ -827,8 +827,8 @@ class Person(models.Model, PermissionResource):
         else:
             allowed_users = des.gas_tech_referrers
 
-        return user in allowed_users 
-        
+        return user in allowed_users
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit a Person in a DES ?
@@ -838,15 +838,15 @@ class Person(models.Model, PermissionResource):
         for des in self.des_list:
             des_admins += des.admins
         allowed_users = list(des_admins) + [self.user]
-        return user in allowed_users 
-    
+        return user in allowed_users
+
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete a Person from the system ?
         allowed_users = [self.user]
-        return user in allowed_users      
-    
-        
+        return user in allowed_users
+
+
     #-----------------------------------------------------#
 
     @property
@@ -857,43 +857,43 @@ class Person(models.Model, PermissionResource):
             return ugettext("has not an account in the system")
 
     display_fields = (
-        name, surname, 
+        name, surname,
         models.CharField(name="city", verbose_name=_("City")),
         models.CharField(name="username", verbose_name=_("Username")),
         #DO NOT SHOW now models.CharField(name="email_address", verbose_name=_("Email")),
         #DO NOT SHOW now models.CharField(name="phone_address", verbose_name=_("Phone")),
         address,
     )
-    
+
     def has_been_member(self, gas):
         """
         Return ``True`` if this person is bound to the GAS ``gas``
-        (GASMember exist whether it is suspended or not), 
-        ``False`` otherwise. 
-        
+        (GASMember exist whether it is suspended or not),
+        ``False`` otherwise.
+
         If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
         """
         from gf.gas.models import GAS, GASMember
         if not isinstance(gas, GAS):
             raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
         return bool(GASMember.all_objects.filter(gas=gas, person=self).count())
-    
+
     def is_member(self, gas):
         """
-        Return ``True`` if this person is an active (not suspended) member 
-        of GAS ``gas``, ``False`` otherwise. 
-        
+        Return ``True`` if this person is an active (not suspended) member
+        of GAS ``gas``, ``False`` otherwise.
+
         If ``gas`` is not a ``GAS`` model instance, raise ``TypeError``.
         """
         from gf.gas.models import GAS
         if not isinstance(gas, GAS):
             raise TypeError(_(u"GAS membership can only be tested against a GAS model instance"))
         return gas in [member.gas for member in self.gasmembers]
-    
+
     @property
     def full_name(self):
         return self.name + self.surname
-    
+
     def save(self, *args, **kw):
         if not self.display_name:
             self.display_name = u"%(name)s %(surname)s" % {'name' : self.name, 'surname': self.surname}
@@ -937,7 +937,7 @@ class Place(models.Model, PermissionResource):
     name = models.CharField(max_length=128, blank=True, help_text=_("You can avoid to specify a name if you specify an address"),verbose_name=_('name'))
     description = models.TextField(blank=True,verbose_name=_('description'))
 
-    # QUESTION: add place type from CHOICE (HOME, WORK, HEADQUARTER, WITHDRAWAL...)     
+    # QUESTION: add place type from CHOICE (HOME, WORK, HEADQUARTER, WITHDRAWAL...)
     # ANSWER: no place type here. It is just a point in the map
     address = models.CharField(max_length=128, blank=True,verbose_name=_('address'))
 
@@ -945,15 +945,15 @@ class Place(models.Model, PermissionResource):
     zipcode = models.CharField(verbose_name=_("Zip code"), max_length=128, blank=True)
 
     city = models.CharField(max_length=128,verbose_name=_('city'))
-    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"),verbose_name=_('province')) 
-        
-    #Geolocation: do not use GeoDjango PointField here. 
+    province = models.CharField(max_length=2, help_text=_("Insert the province code here (max 2 char)"),verbose_name=_('province'))
+
+    #Geolocation: do not use GeoDjango PointField here.
     #We can make a separate geo application maybe in future
     lon = models.FloatField(null=True, blank=True,verbose_name=_('lon'))
     lat = models.FloatField(null=True, blank=True,verbose_name=_('lat'))
 
     ##history = HistoricalRecords()
-    
+
     class Meta:
         verbose_name = _("place")
         verbose_name_plural = _("places")
@@ -962,7 +962,7 @@ class Place(models.Model, PermissionResource):
 
     def __unicode__(self):
 
-        rv = u"" 
+        rv = u""
         if self.name:
             rv += self.name + u" - "
         if self.address:
@@ -1003,18 +1003,18 @@ class Place(models.Model, PermissionResource):
 
         #TODO: Copy-on-write model
         # a) check if an already existent place with the same full address exist and in that case force update
-        # b) if we are updating a Place --> detach it from other stuff pointing to it and clone 
+        # b) if we are updating a Place --> detach it from other stuff pointing to it and clone
 
         super(Place, self).save(*args, **kw)
-        
+
     #----------------- Authorization API ------------------------#
-    
-    # Table-level CREATE permission    
+
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new Place in a DES ?
         # Everyone belongs to the DES
-        
+
         try:
             des = context['site']
         except KeyError:
@@ -1024,19 +1024,19 @@ class Place(models.Model, PermissionResource):
             return not user.is_anonymous()
             # otherwhise it should be
             # return user in User.objects.filter(person__in=des.persons)
-                
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of an existing place in a DES ?
         # (note that places can be shared among GASs)
         # * DES administrators
         # * User that created the place
-        # * User who has updated it. How he can do it? 
+        # * User who has updated it. How he can do it?
         #   If a User try to create a new place with the same parameters
         #   of an already existent one, he updates the place
         allowed_users =  self.des.admins | self.created_by | self.updaters
         return user in allowed_users
-        
+
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing place from a DES ?
@@ -1045,15 +1045,15 @@ class Place(models.Model, PermissionResource):
         # * User that created the place
         # * User who has updated it. How he can do it? see can_edit above
         allowed_users =  self.des.admins | self.created_by | self.updaters
-        return user in allowed_users       
-                
+        return user in allowed_users
+
     #-----------------------------------------------------#
 
     display_fields = (
-        name, description, 
+        name, description,
         address, zipcode, city, province
     )
-    
+
 
 # Generic workflow management
 
@@ -1078,7 +1078,7 @@ class WorkflowDefinition(object):
     described below, then call the `register_workflow` method.
     ## TODO: workflow declaration's specs go here.
     """
-    
+
     def __init__(self, workflow_name, state_list, transition_list, state_transition_map, initial_state, default_transitions):
         # stash the workflow specs for later use
         self.workflow_name = workflow_name
@@ -1087,7 +1087,7 @@ class WorkflowDefinition(object):
         self.state_transition_map = state_transition_map
         self.initial_state_name = initial_state
         self.default_transitions = default_transitions
-            
+
     def register_workflow(self):
         # check workflow specifications for internal consistency;
         # return an informative error message to the user if the check fails
@@ -1095,7 +1095,7 @@ class WorkflowDefinition(object):
             self.check_workflow_specs()
         except ImproperlyConfigured, e:
             raise ImproperlyConfigured(_("Workflow specifications are not consistent.\n %s") % e)
-            
+
         try:
             # Check for already existent workflow. Operation `register_workflow` is idempotent...
             Workflow.objects.get(name=self.workflow_name)
@@ -1117,7 +1117,7 @@ class WorkflowDefinition(object):
             for (state_name, transition_name) in self.state_transition_map:
                 log.debug("Workflow %(w)s, adding state=%(s)s transition=%(t)s" % {
                     'w' : self.workflow_name,
-                    's' : state_name, 
+                    's' : state_name,
                     't' : transition_name,
                 })
                 state = self.states[state_name]
@@ -1133,7 +1133,7 @@ class WorkflowDefinition(object):
                 state = self.states[state_name]
                 transition = self.transitions[transition_name]
                 self.workflow.default_transition_set.add(DefaultTransition(state=state, transition=transition))
-    
+
     def check_workflow_specs(self):
         """Check the provided workflow specifications for internal consistency.
 
@@ -1190,7 +1190,7 @@ def init_perms_for_groups():
     )
     from django.contrib.auth.models import User
     from django.contrib.auth import get_permission_codename
-    
+
     g_techs = Group.objects.get(name=GROUP_TECHS)
     g_suppliers = Group.objects.get(name=GROUP_SUPPLIERS)
     g_referrers_suppliers = Group.objects.get(name=GROUP_REFERRER_SUPPLIERS)
@@ -1291,11 +1291,11 @@ def setup_data_handler(sender, instance, created, **kwargs):
             try:
                 instance.user.groups.add(group)
             except KeyError:
-                log.debug("%s create cannot add %s's group %s(%s)" % 
+                log.debug("%s create cannot add %s's group %s(%s)" %
                     (role_name, group, instance, instance.pk)
                 )
 # END hack
-        
+
 #-------------------------------------------------------------------------------
 
 
@@ -1314,12 +1314,12 @@ def setup_data(sender, instance, created, **kwargs):
     This function just calls the `setup_data()` instance method of the sender model class (if defined);
     actual role-creation/setup logic is encapsulated there.
     """
-    if created: # Automatic data-setup should happen only at instance-creation time 
+    if created: # Automatic data-setup should happen only at instance-creation time
 
         try:
             # `instance` is the model instance that has just been created
             instance.setup_data()
-                                                
+
         except AttributeError:
             # sender model doesn't specify any data-related setup operations, so just ignore the signal
             pass

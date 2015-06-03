@@ -14,9 +14,6 @@ var GasistaFelice = angular.module('ngGasistaFelice', [
     $rootScope.absurl_static = $.absurl_static;
     $rootScope.absurl_api = $.absurl_api;
 
-    $rootScope.first = true; //????
-    counter = 1; //????
-
     //Default values for page
     $rootScope.gas_id = $.default_gas_id;
     $rootScope.gasmember_id = $.default_gasmember_id;

@@ -7,8 +7,8 @@
   </div>
   <div class="ord-ord-title">Elenco ordini</div>
     <div class="row">
-      <div class="cont_orders_list" ng-repeat="order in openorders.open_orders| filter: order">
-        <div ng-click="getsupplyID(order.supplier);" class="no_style">
+      <div class="cont_orders_list" ng-repeat="order in open_orders">
+        <div ng-click="set_order_catalog(order.id);" class="no_style">
         <table class="table orders_list">
             
                <tbody ng-hide="ordiniloaded">
@@ -23,7 +23,7 @@
         <tbody ng-show="ordiniloaded">
           <tr>
               <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" ng-src="{{absurl_static}}img/user_pic.png"></img></td>
-            <td class="menu_links">{{supplier[$index].name}}</td> <!--  {{order.supplier}} -->
+              <td class="menu_links">{{order.supplier.name}} ({{order.supplier.seat.province}})</td> <!--  {{order.supplier.name}} ({{order.supplier.seat.province}}) -->
           </tr>
           <tr>
             <td class="menu_links"><b>Si chiude il:</b> {{order.datetime_end|date:'medium'}}</td> <!--{{order.datetime_end}} -->
@@ -39,7 +39,7 @@
     <div class="ord-el-title">Prodotti #</div>
       <div class="searchbar">
           <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
-          <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>       
+          <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>
       </div> 
         <form name="myForm">
             <button class="def-btn" type="submit" ng-click="submitData()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
