@@ -4,8 +4,8 @@
 Import Bootstrap LESS and Site Specific LESS
 =================================================================== */
  
-@import '../../less/bootstrap.less';
-@import '../../less/responsive-utilities.less'; /* Load Responsive media queries  */
+@import '../bower_components/bootstrap/less/bootstrap.less';
+@import '../bower_components/bootstrap/less/responsive-utilities.less'; /* Load Responsive media queries  */
 @import 'variables.less'; /* Your site specific LESS variables - these override BS defaults  */
 @import 'elements.less';
 
@@ -281,7 +281,7 @@ border-right: 1px solid #FFF;
 }
 
 .optionlist >li >a{
-    padding-bottom:27px;
+    //padding-bottom:27px;
 }
 
 
@@ -292,8 +292,8 @@ border-right: 1px solid #FFF;
 
 
 .gaslabel{
-    position: absolute;
-    width:100%;
+    //position: absolute;
+    //width:100%;
     color: @gas-color;
     //background-color: @gas-color;
    // border-bottom: 1px solid;
@@ -469,10 +469,26 @@ thead{
  cursor: pointer;  
 }
 
-.cashresume{
- text-align:right;
- margin-right: 0px;
-    font-size: 16px;
+#cashresume{
+  text-align: justify;
+  margin-right: 0px;
+  font-size: 16px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  z-index: 1000;
+  border: 1px solid green;
+}
+
+#cashresume-body, #cashresume > h2 {
+    padding: 0.3em;
+}
+#cashresume > h2 {
+    color: white;
+    background-color: green;
+    font-size: 1.1em;
+    margin : 0;
 }
 
 .balance{
@@ -878,12 +894,12 @@ margin-top:10px;
 
 
 
-.gas{
+.gas {
 	clear:left;
 	.border-radius(4px,1px,#C7C7C7);
     
     border-spacing: 0; 
-	tbody{ 
+	tbody { 
 	height:auto; //Previously 400px
 	padding-bottom:0px;
 		tr:hover{

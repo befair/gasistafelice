@@ -120,21 +120,9 @@
                         {% for gas in gas_list %}
                         <li class="{% if forloop.first %}active{% endif %} "> 
                             <a href="{% url 'page_ui_ric1' %}"> <!-- ng-click="getID({{gas.pk}});" --> {{gas}}
-                            <div class="gaslabel">{{gas.balance}} &#8364;</div>  
                             </a>
                         </li>
                         {% endfor %}
-                    {% comment %}
-                    {% for gas in gas_list %}
-                    <li class="{% if forloop.first %}active{% endif %} "
-                        ng-click="itemClicked({{ forloop.counter }})">    
-                        <a href="#/my/" ng-click="getID({{ gas.id }});">
-                            {{ gas.name }}
-                        </a>
-                        <div class="gaslabel">{{ gas.balance|floatformat:3 }} &#8364;</div>
-                    </li>
-                    {% endfor %}
-                    {% endcomment %}
                 </ul>
                 <ul class="optionlist nav navbar-nav" ng-controller="menu_controller">
                   <li markable>
@@ -164,6 +152,14 @@
         </div><!-- /.navbar-collapse -->
       </nav>
       <div class="cont-gas"> <!-- Container -->
+        <div id="cashresume">
+            <h2>Il tuo saldo nel {{ gas_list.0.name}}</h2>
+            <div id="cashresume-body">
+            Attuale: <span class="balance">&#8364; {{ user.person.gasmembers.0.balance|floatformat:2 }}</span><br />
+            Dopo la consegna: <span class="balance">&#8364; {{ user.person.gasmembers.0.balance_expected_post_delivery|floatformat:"2"}}</span><br />
+            </div>
+
+        </div>
          <!-- 1° row -->
                                 
                   <div class="first_block"><!-- 1° col-md-8 -->

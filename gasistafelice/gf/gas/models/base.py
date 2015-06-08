@@ -1268,6 +1268,12 @@ class GASMember(models.Model, PermissionResource):
         return acc_tot
 
     @property
+    def balance_expected_post_delivery(self):
+        st1 = self.total_basket
+        st2 = self.total_basket_to_be_delivered
+        return self.balance - (st1 + st2)
+
+    @property
     def last_recharge(self):
         """last reharge for this gasmember"""
         rv = ''
