@@ -120,13 +120,27 @@ class PersonSerializer(serializers.ModelSerializer):
 #---------------------------------------------------------------------------------
 # GAS Member serializers.
 # Should be used carefully in views because they holds sensitive informations
+class PlainGASSupplierOrderProductSerializer(serializers.ModelSerializer):
+
+    stock = SupplierStockSerializer()
+
+    class Meta:
+        model = GASSupplierOrderProduct
+
 
 class GASMemberOrderSerializer(serializers.ModelSerializer):
 
-    ordered_product = GASSupplierOrderProductSerializer()
+    ordered_product = PlainGASSupplierOrderProductSerializer()
+    supplier = serializers.CharField()
+    order = serializers.CharField()
+    product = serializers.CharField()
 
     class Meta:
         model = GASMemberOrder
+        fields = (
+            'id', 'ordered_product', 'order', 'supplier', 'product',
+            'ordered_price', 'ordered_amount', 'is_confirmed'
+        )
 
 class CashInfoSerializer(serializers.CharField):
     """
