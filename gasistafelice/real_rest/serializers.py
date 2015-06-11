@@ -11,10 +11,21 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
 
+class SimpleProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ('__unicode__', 'producer', 'category')
+
 class SupplierStockSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    product = SimpleProductSerializer()
     class Meta:
         model = SupplierStock
+        fields = (
+            'id', 'product', 'image', 'price', 'code', 'amount_available',
+            'units_minimum_amount', 'units_per_box', 'detail_minimum_amount',
+            'detail_step', 'delivery_notes', 'supplier', 'supplier_category'
+        )
 
 class GASSupplierOrderProductSerializer(serializers.ModelSerializer):
 
@@ -66,7 +77,7 @@ class SimpleSupplierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supplier
-        fields = ('name', 'seat', 'preferred_phone_address', 'preferred_email_address')
+        fields = ('id', 'name', 'seat', 'preferred_phone_address', 'preferred_email_address')
 
 class SupplierSerializer(SimpleSupplierSerializer):
 
@@ -154,7 +165,7 @@ class CashInfoSerializer(serializers.CharField):
 class GASMemberSerializer(serializers.ModelSerializer):
 
     gas = SimpleGASSerializer()
-    economic_state = serializers.CharField()
+    # WAS: economic_state = serializers.CharField()
     balance = serializers.FloatField()
     total_basket = serializers.FloatField()
     total_basket_to_be_delivered = serializers.FloatField()
@@ -168,6 +179,6 @@ class GASMemberSerializer(serializers.ModelSerializer):
             'id', 'gas', 'person', 'membership_fee_payed',
             'is_suspended', 'suspend_datetime', 'suspend_auto_resume',
             'balance', 'total_basket', 'total_basket_to_be_delivered',
-            'economic_state', 'basket', 'basket_to_be_delivered', 'open_orders'
+            'basket', 'basket_to_be_delivered', 'open_orders'
         )
 
