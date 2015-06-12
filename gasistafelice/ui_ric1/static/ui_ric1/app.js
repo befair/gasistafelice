@@ -3,7 +3,7 @@
 var app = angular.module('ngGF', 
     [ 'ui.bootstrap', 'ngNewRouter', 'ngDialog', 'ngLocale' ]
     )
-    .controller("AppController", function($http, $router, $rootScope, $scope) {
+    .controller("AppController", function($http, $router, $rootScope, $location) {
 
         //TODO: settings
         $rootScope.app_name = $.app_name;
@@ -18,7 +18,8 @@ var app = angular.module('ngGF',
         $rootScope.gm_id = $.default_gasmember_id;
         $rootScope.person_id = $.person_id;
 
-        $scope.dataLoaded = false;
+        this.dataLoaded = false;
+        var THAT = this;
 
         //TODO TOREMOVE
         $rootScope.gasmemberID = $.default_gasmember_id;
@@ -39,14 +40,17 @@ var app = angular.module('ngGF',
         $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/?format=json')
             .success(function(data) {
                 $rootScope.gm = data;
-                $scope.dataLoaded = true;
+                THAT.dataLoaded = true;
                 // FIXME? Ugly here, but avoids to make me crazy
                 $router.config([
-                    { path: '/', redirectTo: "/gm/"+$rootScope.gm_id+"/order/" },
                     { path: "/gm/:gm_id/order/", component: "order", as: "order" },
                     { path: "/gm/:gm_id/basket/", component: "basket", as: "basket" },
-                    { path: "/gm/:gm_id/cash/", component: "cash", as: "cash" }
-        ]);
+                    { path: "/gm/:gm_id/cash/", component: "cash", as: "cash" },
+                    { path: "/gm/:gm_id/profile/", component: "profile", as: "profile" },
+                    { path: '/', redirectTo: "/gm/"+$rootScope.gm_id+"/order/" }
+                ]);
+                //$location.path('/'); //set default otherwise is blank
+                
             }).error(function(data){
                 alert("http error get GAS member data");
             });
