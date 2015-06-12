@@ -3,7 +3,7 @@
   <div class="ord-ord-title">Gli ordini aperti del {{gm.gas.name}}</div>
     <div class="row">
       <div class="cont_orders_list" ng-repeat="open_order in order.gm.open_orders">
-        <div ng-click="order.set_order_catalog(open_order);" class="no_style">
+        <div ng-click="order.pm.set_order_catalog(open_order);" class="no_style">
         <table class="table orders_list">
             
         <tbody>
@@ -39,7 +39,7 @@
           <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>
       </div> 
         <form name="myForm">
-            <button class="def-btn" type="submit" ng-click="order.submitData()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
+            <button class="def-btn" type="submit" ng-click="order.pm.updateBasket()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
         
 
       <div class="orderlist">
@@ -96,7 +96,7 @@
         </tr>
 
         <tbody id="gasbody" class="repeated-item" ng-show="order.dataLoaded">  
-            <tr ng-repeat="product in order.products |  filter: searchQuery | orderBy:orderByField:reverseSort">  
+            <tr ng-repeat="product in order.pm.products |  filter: searchQuery | orderBy:orderByField:reverseSort">  
                 <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
                 <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{product.id}}"/>
                 <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{product.price}}"/>
@@ -114,9 +114,9 @@
               <td data-title="product_price" class="tdprod" ng-model="productprice">{{product.price | limitTo: 4 | currency:"€"}}</td>     
               <td data-title="add_cart" class="tdprod" style="width:10%;">
                 <div class="input-group">
-                    <span class="opcart_left menu_links" ng-click="order.decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
-                  <input type="text" class="form-control form-control-ordered_amount" ng-change="order.change(product)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
-                  <span class="opcart_right menu_links" ng-click="order.increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
+                    <span class="opcart_left menu_links" ng-click="order.pm.decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
+                  <input type="text" class="form-control form-control-ordered_amount" ng-change="order.pm.change(product)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
+                  <span class="opcart_right menu_links" ng-click="order.pm.increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
                 </div> 
               </td>  
               <td data-title="total" class="tdprod" >{{product.quantity*product.price | currency:"€"}}</td>
@@ -132,7 +132,7 @@
                 Totale previsto:
             </td>  
             <td class="tableprice">
-                <b>€ {{order.getTotal()}}</b>
+                <b>€ {{order.pm.getTotal()}}</b>
             </td>    
         </tr>    
       </table>
