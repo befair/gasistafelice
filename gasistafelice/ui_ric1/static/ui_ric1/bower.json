@@ -1,0 +1,27 @@
+{
+  "name": "ui_ric1",
+  "version": "0.1",
+  "homepage": "https://github.com/befair/gasistafelice",
+  "authors": [
+    "Riccardo Pancotti",
+    "Luca Ferroni <luca@befair.it>"
+  ],
+  "description": "AngularJS 4 Gasista Felice based on Ric1 master thesis, thanks!",
+  "keywords": [
+    "orders",
+    "sse"
+  ],
+  "license": "AGPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "angularjs": "~1.4.0",
+    "angular-new-router": "~0.5.3"
+  }
+}

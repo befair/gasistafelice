@@ -1,43 +1,45 @@
 <div class="tab-pane active" id="ordinare"><!--ORDINARE-->
         
-  <div class="ord-ord-title">Gli ordini aperti del {{gasmember.gas.name}}</div>
+  <div class="ord-ord-title">Gli ordini aperti del {{gm.gas.name}}</div>
     <div class="row">
-      <div class="cont_orders_list" ng-repeat="order in open_orders">
-        <div ng-click="set_order_catalog(order.id);" class="no_style">
+      <div class="cont_orders_list" ng-repeat="open_order in order.gm.open_orders">
+        <div ng-click="order.set_order_catalog(open_order);" class="no_style">
         <table class="table orders_list">
             
-               <tbody ng-hide="ordiniloaded">
-<tr>
-<td colspan="8">
-<p style="text-align:center" ng-hide="dataLoaded">Caricando gli ordini <i class="fa fa-spinner fa-spin"></i></p>  
-            </td>
-</tr>
-                   </tbody>
-            
-            
-        <tbody ng-show="ordiniloaded">
+        <tbody>
           <tr>
               <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" ng-src="{{absurl_static}}img/user_pic.png"></img></td>
-              <td class="menu_links">{{order.supplier.name}} ({{order.supplier.seat.province}})</td> <!--  {{order.supplier.name}} ({{order.supplier.seat.province}}) -->
+              <td class="menu_links">{{open_order.supplier.name}} 
+                  <span ng-show="open_order.supplier.seat.province">
+                      ({{open_order.supplier.seat.province}})
+                  </span>
+              </td> 
           </tr>
           <tr>
-            <td class="menu_links"><b>Si chiude il:</b> {{order.datetime_end|date:'medium'}}</td> <!--{{order.datetime_end}} -->
+            <td class="menu_links"><b>Si chiude il:</b> 
+                {{open_order.datetime_end|date:'medium'}}
+            </td>
           </tr>
           <tr>
-            <td class="menu_links"><b>Si consegna il:</b>{{order.delivery.date|date:'medium'}}</td> <!-- {{order.delivery.date}}-->
+            <td class="menu_links"><b>Si consegna il:</b>
+                {{open_order.delivery.date|date:'medium'}}
+            </td>
           </tr>
           </tbody>
         </table>
-</div>
+        </div>
       </div>
     </div>
+
+    <!-- END open orders row ng-repeat -->
+
     <div class="ord-el-title">I prodotti di <i>{{selected_order.supplier.name}}</i></div>
       <div class="searchbar">
           <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
           <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>
       </div> 
         <form name="myForm">
-            <button class="def-btn" type="submit" ng-click="submitData()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
+            <button class="def-btn" type="submit" ng-click="order.submitData()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
         
 
       <div class="orderlist">
@@ -82,15 +84,19 @@
               <th scope="col">Nota
                 </th>                     
             </tr>   
-          </thead> 
-<tbody ng-hide="dataLoaded">
-<tr>
-<td colspan="8">
-<p style="text-align:center" ng-hide="dataLoaded">Caricando i prodotti <i class="fa fa-spinner fa-spin"></i></p>  
+        </thead> 
+
+        <tbody ng-hide="dataLoaded">
+        <tr>
+            <td colspan="8">
+                <p style="text-align:center">
+                    Caricando i prodotti <i class="fa fa-spinner fa-spin"></i>
+                </p>  
             </td>
-</tr>
-          <tbody id="gasbody" class="repeated-item" ng-show="dataLoaded">  
-            <tr ng-repeat="product in products |  filter: searchQuery | orderBy:orderByField:reverseSort">  
+        </tr>
+
+        <tbody id="gasbody" class="repeated-item" ng-show="dataLoaded">  
+            <tr ng-repeat="product in order.products |  filter: searchQuery | orderBy:orderByField:reverseSort">  
                 <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
                 <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{product.id}}"/>
                 <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{product.price}}"/>
@@ -108,12 +114,12 @@
               <td data-title="product_price" class="tdprod" ng-model="productprice">{{product.price | limitTo: 4 | currency:"€"}}</td>     
               <td data-title="add_cart" class="tdprod" style="width:10%;">
                 <div class="input-group">
-                    <span class="opcart_left menu_links" ng-click="decrement(product,$index);"><span class="glyphicon glyphicon-minus"></span></span>
-                  <input type="text" class="form-control form-control-ordered_amount" ng-change="change(product,$index)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
-                  <span class="opcart_right menu_links" ng-click="increment(product,$index);"><span class="glyphicon glyphicon-plus"></span></span>
+                    <span class="opcart_left menu_links" ng-click="order.decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
+                  <input type="text" class="form-control form-control-ordered_amount" ng-change="order.change(product)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
+                  <span class="opcart_right menu_links" ng-click="order.increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
                 </div> 
               </td>  
-              <td data-title="total" class="tdprod" >{{product.total_price | currency:"€"}}</td>
+              <td data-title="total" class="tdprod" >{{product.quantity*product.price | currency:"€"}}</td>
               <td data-title="note" class="tdprod">
               <input type="text" class="form-control notetext" placeholder="Note" name="form-{{$index}}-note" id="note" ng-model="product.note">{{product.note}}
               </td>
@@ -126,7 +132,7 @@
                 Totale previsto:
             </td>  
             <td class="tableprice">
-                <b>€ {{getTotal()}}</b>
+                <b>€ {{order.getTotal()}}</b>
             </td>    
         </tr>    
       </table>

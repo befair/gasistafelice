@@ -34,7 +34,7 @@ $("#checkAll").click(function(){
                                       <th>Fornitore</th>  
                                       <th>Prodotto</th>
                                       <th>Prezzo (€)</th>  
-                                      <th>Quantita'</th>  
+                                      <th>Quantit&agrave;</th>  
                                       <th>Totale</th>  
 			                          <th style="text-align:center">Cancella
                                           <br />
@@ -60,31 +60,31 @@ $("#checkAll").click(function(){
 					</tr>
                                            </tbody>
 					<tbody ng-show="dataLoaded">  
-                                    <tr ng-repeat="item in basket |  filter: searchQuery">
-                                        
-                                    <p ng-bind-html="myHTML"></p>
- 
-                                     <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
-                                     <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{item.id}}"/>
-                                     <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{item.price}}"/>
-                                      <input type="hidden"  name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount" value="{{item.amount}}"/>
-                                      <input type="hidden" name="form-{{$index}}-gm_id" id="form-{{$index}}-gm_id" value="{{item.gm}}"/>
+                        <tr ng-repeat="item in basket |  filter: searchQuery">
+                            
+                        <p ng-bind-html="myHTML"></p>
 
-                                      <td data-title="image" class="tdprod">{{item.id}}</td>  
-                                      <td data-title="image" class="tdprod">{{item.order}}</td>  
-                                      <td data-title="image" class="tdprod">{{item.supplier}}</td>  
-                                      <td data-title="image" class="tdprod">
-                                          {{item.product}}
-                                      </td>  
-                                      <td data-title="image" class="tdprice">
-                                          {{item.price|currency:"€"}}
-                                      </td> 
-                                            <td data-title="add_cart" class="tdprod" style="width:10%;">
-                                        <div class="input-group">
-                                            <span class="opcart_left" ng-click="decrement(item,$index);"><span class="glyphicon glyphicon-minus"></span></span>
-                                          <input type="text" class="form-control" ng-change="change(item,$index);" ng-model="item.amount" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
-                                          <span class="opcart_right" ng-click="increment(item,$index);"><span class="glyphicon glyphicon-plus"></span></span>
-                                        </div> 
+                         <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
+                         <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{item.id}}"/>
+                         <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{item.price}}"/>
+                          <input type="hidden"  name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount" value="{{item.amount}}"/>
+                          <input type="hidden" name="form-{{$index}}-gm_id" id="form-{{$index}}-gm_id" value="{{item.gm}}"/>
+
+                          <td data-title="image" class="tdprod">{{item.id}}</td>  
+                          <td data-title="image" class="tdprod">{{item.order}}</td>  
+                          <td data-title="image" class="tdprod">{{item.supplier}}</td>  
+                          <td data-title="image" class="tdprod">
+                              {{item.product}}
+                          </td>  
+                          <td data-title="image" class="tdprice">
+                              {{item.price|currency:"€"}}
+                          </td> 
+                                <td data-title="add_cart" class="tdprod" style="width:10%;">
+                            <div class="input-group">
+                                <span class="opcart_left" ng-click="decrement(item,$index);"><span class="glyphicon glyphicon-minus"></span></span>
+                              <input type="text" class="form-control" ng-change="change(item,$index);" ng-model="item.amount" name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount"/>
+                              <span class="opcart_right" ng-click="increment(item,$index);"><span class="glyphicon glyphicon-plus"></span></span>
+                            </div> 
                                       </td> 
                                       <td class="tdprice">
                                           {{item.total|currency:"€"}}
@@ -119,7 +119,7 @@ $("#checkAll").click(function(){
                             <input type="hidden" id="form-MAX_NUM_FORMS" name="form-MAX_NUM_FORMS" value="0"/>
                                 </form>
                          
-                          <div class="ord-ord-title">Panieri da consegnare</div>
+                          <div class="ord-ord-title">Paniere da consegnare</div>
                                 <div class="searchbar">
                                   <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
                                   <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>       
@@ -149,7 +149,7 @@ $("#checkAll").click(function(){
                                       <th scope="col">Prezzo
                                           
                                         </th>
-                                      <th scope="col">Quantita'
+                                      <th scope="col">Quantit&agrave;
                                          
                                         </th>  
                                       <th scope="col">Totale
