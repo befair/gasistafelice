@@ -18,7 +18,9 @@ class SimpleProductSerializer(serializers.ModelSerializer):
         fields = ('__unicode__', 'producer', 'category')
 
 class SupplierStockSerializer(serializers.ModelSerializer):
+
     product = SimpleProductSerializer()
+
     class Meta:
         model = SupplierStock
         fields = (
@@ -150,7 +152,7 @@ class GASMemberOrderSerializer(serializers.ModelSerializer):
         model = GASMemberOrder
         fields = (
             'id', 'ordered_product', 'order', 'supplier', 'product',
-            'ordered_price', 'ordered_amount', 'is_confirmed'
+            'ordered_price', 'ordered_amount', 'is_confirmed', 'note'
         )
 
 class CashInfoSerializer(serializers.CharField):
