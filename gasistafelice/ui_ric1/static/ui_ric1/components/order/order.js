@@ -125,8 +125,8 @@ app.controller("OrderController", function($http, $rootScope, $routeParams, pars
         });
 
         products_post.push({
-            "form-TOTAL_FORMS": products_post.length,
-            "form-INITIAL_FORMS": 0,
+            "TOTAL_FORMS": products_post.length,
+            "INITIAL_FORMS": 0,
             "form-MAX_NUM_FORMS": ""
         });
         
