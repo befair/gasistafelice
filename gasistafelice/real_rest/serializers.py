@@ -61,6 +61,11 @@ class PkModelField(serializers.ReadOnlyField):
     def to_representation(self, value):
         return value.pk
 
+class NameModelField(serializers.ReadOnlyField):
+
+    def to_representation(self, value):
+        return getattr(value, 'name', None)
+
 class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -100,6 +105,19 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = GASSupplierOrder
 
+class OrderInfoSerializer(serializers.ModelSerializer):
+
+    delivery = DeliverySerializer()
+    supplier = serializers.CharField()
+    current_state = NameModelField()
+
+    class Meta:
+        model = GASSupplierOrder
+        fields = (
+            'id', 'delivery', 'supplier',
+            '__unicode__', 'current_state'
+        )
+
 class SimpleGASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
@@ -136,6 +154,7 @@ class PersonSerializer(serializers.ModelSerializer):
 class PlainGASSupplierOrderProductSerializer(serializers.ModelSerializer):
 
     stock = SupplierStockSerializer()
+    order = OrderInfoSerializer()
 
     class Meta:
         model = GASSupplierOrderProduct
@@ -144,15 +163,12 @@ class PlainGASSupplierOrderProductSerializer(serializers.ModelSerializer):
 class GASMemberOrderSerializer(serializers.ModelSerializer):
 
     ordered_product = PlainGASSupplierOrderProductSerializer()
-    supplier = serializers.CharField()
-    order = serializers.CharField()
-    product = serializers.CharField()
 
     class Meta:
         model = GASMemberOrder
         fields = (
-            'id', 'ordered_product', 'order', 'supplier', 'product',
-            'ordered_price', 'ordered_amount', 'is_confirmed', 'note'
+            'id', 'ordered_product', 'ordered_price',
+            'ordered_amount', 'is_confirmed', 'note'
         )
 
 class CashInfoSerializer(serializers.CharField):
