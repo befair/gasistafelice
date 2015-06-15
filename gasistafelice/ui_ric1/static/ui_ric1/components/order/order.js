@@ -2,10 +2,10 @@ app.controller("OrderController", function($http, $rootScope, $routeParams, prod
 
     this.pm = productManager;
     this.gm = $rootScope.gm;
+    this.dataLoaded = true;
     
     console.debug('OrderController for gm=' + this.gm.id);
 
-    this.dataLoaded = true;
     this.ordiniloaded = true;
     this.orderByField = ''; //?
     this.reverseSort = false; //?

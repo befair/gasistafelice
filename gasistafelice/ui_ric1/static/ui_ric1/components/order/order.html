@@ -111,11 +111,11 @@
               </td> -->  
               <td data-title="product_name" class="tdprod">{{product.name}}                                        
                 </td>  
-              <td data-title="product_price" class="tdprod" ng-model="productprice">{{product.price | limitTo: 4 | currency:"€"}}</td>     
+              <td data-title="product_price" class="tdprod">{{product.price | limitTo: 4 | currency:"€"}}</td>     
               <td data-title="add_cart" class="tdprod" style="width:10%;">
                 <div class="input-group">
                     <span class="opcart_left menu_links" ng-click="order.pm.decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
-                  <input type="text" class="form-control form-control-ordered_amount" ng-change="order.pm.change(product)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
+                  <input type="text" class="form-control form-control-ordered_amount" ng-blur="order.pm.change(product)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
                   <span class="opcart_right menu_links" ng-click="order.pm.increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
                 </div> 
               </td>  
@@ -132,7 +132,7 @@
                 Totale previsto:
             </td>  
             <td class="tableprice">
-                <b>€ {{order.pm.getTotal()}}</b>
+                <b>€ {{order.pm.getTotal(order.pm.products)}}</b>
             </td>    
         </tr>    
       </table>
