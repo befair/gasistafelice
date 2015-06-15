@@ -74,13 +74,46 @@ var app = angular.module('ngGF',
 
         //Store ordered products info by gsop_id
         this.ordered_products_d = {};
-        angular.forEach(this.gm.basket, function(gmo, index) {
-            this.ordered_products_d[gmo.ordered_product.id] = {
-                price : parsingNumbers.parsing(gmo.ordered_price),
-                amount: parsingNumbers.parsing(gmo.ordered_amount),
-                note : gmo.note
-            };
-        }, this);
+
+        this.set_ordered_products_from_basket = function (basket) {
+            angular.forEach(basket, function(gmo, index) {
+                var gsop = gmo.ordered_product;
+                var min_amount = parsingNumbers.parsing(gsop.stock.detail_minimum_amount);
+                var step_unit = parsingNumbers.parsing(gsop.stock.detail_step);
+                var order_state = gsop.order.current_state.toLowerCase();
+
+                this.ordered_products_d[gsop.id] = {
+                    id : gsop.id,
+                    price : parsingNumbers.parsing(gmo.ordered_price),
+                    quantity: parsingNumbers.parsing(gmo.ordered_amount),
+                    note : gmo.note,
+                    name : gsop.stock.product.__unicode__,
+                    supplier : gsop.order.supplier,
+                    order_shortname : "Ord. " + gsop.order.id,
+                    can_update : order_state == "open",
+                    order_state : order_state,
+                    step : step_unit,
+                    min_amount : min_amount
+                };
+            }, THAT);
+        };
+
+        this.set_ordered_products_from_basket(this.gm.basket);
+        this.set_ordered_products_from_basket(this.gm.basket_to_be_delivered);
+
+        this.get_ordered_products = function () {
+            //TODO REVIEW offline coding
+            var ordered_products = [];
+            angular.forEach(THAT.ordered_products_d, function(ordered_product, index) {
+                ordered_products.push(ordered_product);
+            });
+            if (ordered_products.length === 0) {
+                THAT.basket_empty = true;
+            } else {
+                THAT.basket_empty = false;
+            }
+            return ordered_products;
+        };
 
         this.set_order_catalog = function(open_order) {
 
@@ -91,7 +124,7 @@ var app = angular.module('ngGF',
 
                 var ordered_info = THAT.ordered_products_d[gsop.id];
                 if (ordered_info === undefined) {
-                    ordered_info = { price : null, amount : 0, note : "" };
+                    ordered_info = { price : null, quantity : 0, note : "" };
                 }
 
                 var el_prod = gsop.stock.product;
@@ -107,7 +140,7 @@ var app = angular.module('ngGF',
                     price: gsop.stock.price,
                     step: step_unit,
                     min_amount: min_amount,
-                    quantity: ordered_info.amount,
+                    quantity: ordered_info.quantity,
                     note: ordered_info.note
                 });
 
@@ -134,10 +167,10 @@ var app = angular.module('ngGF',
                     product.quantity = product.min_amount;
                 } else if ((product.quantity-product.min_amount)%product.step !== 0) {
                     var base = product.quantity-product.min_amount;
-                    var next = parseInt(base/product.step, 10)*product.step+product.step;
-                    alert("Puoi ordinare " + next-product.step + " o " + next + " " + product.name + " ma non " + product.quantity);
+                    var next_step_allowed = parseInt(base/product.step, 10)*product.step+product.step+product.min_amount;
+                    alert("Puoi ordinare " + (next_step_allowed-product.step) + " o " + next_step_allowed + " " + product.name + " ma non " + product.quantity);
 
-                    product.quantity = product.next;
+                    product.quantity = next_step_allowed;
                 }
             }
         };
@@ -152,10 +185,10 @@ var app = angular.module('ngGF',
             }
         };
 
-        this.getTotal = function() {
+        this.getTotal = function(products) {
             var total = 0, i;
-            for(i = 0; i < THAT.products.length; i++) {
-                var product = THAT.products[i];
+            for(i = 0; i < products.length; i++) {
+                var product = products[i];
                 total += (product.price * product.quantity);
             }
             return parseFloat(total).toFixed(2);
