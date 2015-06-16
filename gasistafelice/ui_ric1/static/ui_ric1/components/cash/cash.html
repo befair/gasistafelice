@@ -5,7 +5,15 @@
         <tbody>
             <tr>
                 <td style="border:0px"> Saldo: </td>
-                <td style="border:0px"> <span class="saldo">{{balance}}&#8364;</span> </td>
+                <td style="border:0px"> <span class="saldo">{{cash.info.balance}}&#8364;</span> </td>
+                <td style="border:0px"> Totale nel paniere: </td>
+                <td style="border:0px"> <span class="saldo">{{cash.info.total_basket}}&#8364;</span> </td>
+                <td style="border:0px"> Totale nel paniere da consegnare: </td>
+                <td style="border:0px"> <span class="saldo">{{cash.info.total_basket_to_be_delivered}}&#8364;</span> </td>
+                <td style="border:0px"> Saldo dopo la consegna: </td>
+                <td style="border:0px"> <span class="saldo">
+                   {{cash.info.balance-cash.info.total_basket-cash.info.total_basket_to_be_delivered}}&#8364;
+                </span> </td>
             </tr>   
         </tbody>
         </table>
@@ -34,9 +42,9 @@
             <tr ng-repeat="item in cash.transactions">
                 <td data-title="image" class="tdprod">{{ item.id }}</td>
                 <td data-title="image" class="tdprod">{{ item.date }}</td>
-                <td data-title="image" class="tdprod">{{ item.kind }}</td>
+                <td data-title="image" class="tdprod">{{ item.transaction.kind }}</td>
                 <td data-title="image" class="tdprod">{{ item.amount }}</td>
-                <td data-title="image" class="tdprod">{{ item.details }}</td>
+                <td data-title="image" class="tdprod">{{ item.transaction.description }}</td>
             </tr>
         </tbody>  
         </table>
