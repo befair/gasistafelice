@@ -1,0 +1,44 @@
+<div class="tab-pane" id="conto">
+    <div class="scheda_title">Sintesi</div>
+    <div class="row">
+        <table class="table conto">  
+        <tbody>
+            <tr>
+                <td style="border:0px"> Saldo: </td>
+                <td style="border:0px"> <span class="saldo">{{balance}}&#8364;</span> </td>
+            </tr>   
+        </tbody>
+        </table>
+        <!--
+            <h2>Saldo: <span class="saldo">{{gasmember.balance}}</span></h2>
+            <hr>
+        <!--<div class="col-xs-12 col-sm-4 text-center">
+            <figure>
+                <img src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png"                                                               alt="" class="img-circle img-responsive">
+            </figure>
+        -->
+    </div>
+    <div class="scheda_title">Dettagli</div>
+    <div class="row">
+        <table class="table balance">
+        <thead>  
+        <tr>  
+            <th> Id </th>
+            <th> Data </th>
+            <th> Tipo </th>
+            <th> Importo </th>
+            <th> Descrizione </th>
+        </tr>   
+        </thead> 
+        <tbody id="gasbody" class="repeated-item">  
+            <tr ng-repeat="item in cash.transactions">
+                <td data-title="image" class="tdprod">{{ item.id }}</td>
+                <td data-title="image" class="tdprod">{{ item.date }}</td>
+                <td data-title="image" class="tdprod">{{ item.kind }}</td>
+                <td data-title="image" class="tdprod">{{ item.amount }}</td>
+                <td data-title="image" class="tdprod">{{ item.details }}</td>
+            </tr>
+        </tbody>  
+        </table>
+    </div>
+</div>
