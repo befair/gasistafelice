@@ -1264,14 +1264,21 @@ class GASMember(models.Model, PermissionResource):
         """Accounting sold for this gasmember"""
         #FIXME: only for this person in this GAS! Not for the person himself
         #acc_tot = self.person.accounting.system['/wallet'].balance
-        acc_tot = self.gas.accounting.system['/members/' + self.person.uid].balance
-        return acc_tot
+        return self.gas.accounting.system['/members/' + self.person.uid].balance
 
     @property
     def balance_expected_post_delivery(self):
         st1 = self.total_basket
         st2 = self.total_basket_to_be_delivered
         return self.balance - (st1 + st2)
+
+    @property
+    def cash_info(self):
+        return {
+            "balance" : self.balance,
+            "total_basket" : self.total_basket,
+            "total_basket_to_be_delivered" : self.total_basket_to_be_delivered,
+        }
 
     @property
     def last_recharge(self):

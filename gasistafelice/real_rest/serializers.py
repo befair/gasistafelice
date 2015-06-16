@@ -4,6 +4,7 @@ from gf.base.models import Person, Contact, Place
 from gf.gas.models.base import GAS, GASMember, GASSupplierStock
 from gf.gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASSupplierOrderProduct
 from gf.supplier.models import Product, SupplierStock, Supplier
+from simple_accounting.models import LedgerEntry, Transaction
 
 class ProductSerializer(serializers.ModelSerializer):
     mu = serializers.CharField()
@@ -198,5 +199,32 @@ class GASMemberSerializer(serializers.ModelSerializer):
             'is_suspended', 'suspend_datetime', 'suspend_auto_resume',
             'balance', 'total_basket', 'total_basket_to_be_delivered',
             'basket', 'basket_to_be_delivered', 'open_orders'
+        )
+
+class TransactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Transaction
+        fields = ('id', 'kind', 'description')
+
+class LedgerEntrySerializer(serializers.ModelSerializer):
+
+    transaction = TransactionSerializer()
+
+    class Meta:
+        model = LedgerEntry
+        fields = (
+            'id', 'date', 'account', 'transaction', 'amount'
+        )
+class GASMemberCashSerializer(serializers.ModelSerializer):
+
+    gas = SimpleGASSerializer()
+    economic_movements = LedgerEntrySerializer(many=True)
+
+    class Meta:
+        model = GASMember
+        fields = (
+            'id', 'gas', 'cash_info', 'membership_fee_payed',
+            'economic_movements'
         )
 

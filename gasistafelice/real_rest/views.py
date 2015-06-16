@@ -61,3 +61,11 @@ class GASMemberReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     serializer_class = my_serializers.GASMemberSerializer
     queryset = GASMember.objects.all() #TODO HURRY
 
+class GASMemberCashReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
+
+    #TODO: controllo sui permessi (solo su questa... non sulle altre...!)
+
+    model = GASMember
+    serializer_class = my_serializers.GASMemberCashSerializer
+    queryset = GASMember.objects.all() #TODO HURRY
+
