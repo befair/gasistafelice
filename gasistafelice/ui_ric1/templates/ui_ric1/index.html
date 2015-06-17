@@ -126,18 +126,18 @@
                 </ul>
                 <ul class="optionlist nav navbar-nav">
                   <li markable>
-                      <a ng-link="app.order({gm_id : {{ user.person.gasmembers.0.pk }}})"> 
+                      <a ng-link="order()" href=""> 
                           <i class="fa fa-book"></i>Ordinare 
                       </a>
                   </li>
 
                  <li markable>
-                     <a ng-link="app.basket({gm_id : {{ user.person.gasmembers.0.pk }}})">
+                     <a ng-link="basket()" href="">
                        <i class="fa fa-shopping-cart"></i>Paniere
                      </a> 
                  </li>
                   <li markable>
-                      <a ng-link="app.cash({gm_id : {{ user.person.gasmembers.0.pk }}})">
+                      <a ng-link="cash()" href="">
                     <i class="fa fa-user"></i>Conto
                     </a>
                   </li>     
@@ -145,10 +145,10 @@
                        
             </div>
          <div class="navbar-right">
-             <a class="navpic" ng-link="app.profile({ gm_id : {{ user.person.gasmembers.0.pk }}})">
+             <a class="navpic" ng-link="profile()" href="">
                  <img src="{% static_url %}ui_ric1/img/user_pic.png" alt="..." class="imgpic">
              </a>
-             <a class="titlenav" ng-link="app.profile({ gm_id : {{ user.person.gasmembers.0.pk }}})">
+             <a class="titlenav" ng-link="profile()" href="">
                  Ciao {{ user.person.name }} 
              </a>
         </div>    

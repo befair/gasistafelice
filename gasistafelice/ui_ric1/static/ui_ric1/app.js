@@ -16,6 +16,7 @@ var app = angular.module('ngGF',
         //Default values for page
         $rootScope.gas_id = $.default_gas_id;
         $rootScope.gm_id = $.default_gasmember_id;
+        $rootScope.gm = null;
         $rootScope.person_id = $.person_id;
 
         this.dataLoaded = false;
@@ -30,31 +31,19 @@ var app = angular.module('ngGF',
         $http.get($rootScope.absurl_api+'person/my/?format=json')
             .success(function(data) {
                 $rootScope.person = data;
+                THAT.dataLoaded = true;
             }).error(function(data){
                 alert("http error get person data");
             });
 
-        //TODO: questo potrebbe essere spostato in un "service" o in un "provider"
-        //ma ora non lo so fare
-        
-        $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/?format=json')
-            .success(function(data) {
-                $rootScope.gm = data;
-                THAT.dataLoaded = true;
-                // FIXME? Ugly here, but avoids to make me crazy
-                $router.config([
-                    { path: "/gm/:gm_id/order/", component: "order", as: "order" },
-                    { path: "/gm/:gm_id/basket/", component: "basket", as: "basket" },
-                    { path: "/gm/:gm_id/cash/", component: "cash", as: "cash" },
-                    { path: "/gm/:gm_id/profile/", component: "profile", as: "profile" },
-                    { path: '/', redirectTo: "/gm/"+$rootScope.gm_id+"/order/" }
-                ]);
-                //$location.path('/'); //set default otherwise is blank
-                
-            }).error(function(data){
-                alert("http error get GAS member data");
-            });
-       
+        $router.config([
+            { path: "/order/", component: "order", as: "order" },
+            { path: "/basket/", component: "basket", as: "basket" },
+            { path: "/cash/", component: "cash", as: "cash" },
+            { path: "/profile/", component: "profile", as: "profile" },
+            { path: '/', redirectTo: "/order/" }
+        ]);
+        //$location.path('/'); //set default otherwise is blank
     })
     .service('parsingNumbers', function() {
         this.parsing = function(number,d) {
@@ -68,7 +57,7 @@ var app = angular.module('ngGF',
     })
     .service('productManager', function($http, $rootScope, parsingNumbers) {
 
-        this.gm = $rootScope.gm;
+        //this.gm = $rootScope.gm;
         this.products = [];
         var THAT = this;
 
@@ -98,8 +87,8 @@ var app = angular.module('ngGF',
             }, THAT);
         };
 
-        this.set_ordered_products_from_basket(this.gm.basket);
-        this.set_ordered_products_from_basket(this.gm.basket_to_be_delivered);
+        //this.set_ordered_products_from_basket(this.gm.basket);
+        ////this.set_ordered_products_from_basket(this.gm.basket_to_be_delivered);
 
         this.get_ordered_products = function () {
             //TODO REVIEW offline coding
@@ -115,8 +104,9 @@ var app = angular.module('ngGF',
             return ordered_products;
         };
 
-        this.set_order_catalog = function(open_order) {
+        this.set_order_catalog = function(open_order, basket) {
 
+            THAT.set_ordered_products_from_basket(basket);
             $rootScope.selected_order = open_order;
             THAT.products = [];
 
@@ -216,7 +206,7 @@ var app = angular.module('ngGF',
                 "form-MAX_NUM_FORMS": ""
             });
             
-            var POST_order_path = $.absurl_pre+'rest/gasmember/'+THAT.gm.id+'/order/edit_multiple';
+            var POST_order_path = $.absurl_pre+'rest/gasmember/'+$rootScope.gm_id+'/order/edit_multiple';
             $http.post(POST_order_path, { form: products_post })
                 .success(function(){
                     alert("Prodotti aggiunti al paniere con successo!");
