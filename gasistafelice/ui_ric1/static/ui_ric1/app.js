@@ -87,9 +87,6 @@ var app = angular.module('ngGF',
             }, THAT);
         };
 
-        //this.set_ordered_products_from_basket(this.gm.basket);
-        ////this.set_ordered_products_from_basket(this.gm.basket_to_be_delivered);
-
         this.get_ordered_products = function () {
             //TODO REVIEW offline coding
             var ordered_products = [];

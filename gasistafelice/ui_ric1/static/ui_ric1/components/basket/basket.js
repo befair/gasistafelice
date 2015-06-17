@@ -7,7 +7,19 @@ app.controller("BasketController", function ($http, $rootScope, $routeParams, pa
     this.orderByField = ''; //?
     this.reverseSort = false; //?
 
-    console.debug("Sono nel paniere...");
+    $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/?format=json')
+    .success(function(data) {
+
+        $rootScope.gm = data;
+        var gm = $rootScope.gm;
+        console.debug("Recuperato il paniere per " + gm.id);
+
+        productManager.set_ordered_products_from_basket(gm.basket);
+        productManager.set_ordered_products_from_basket(gm.basket_to_be_delivered);
+        
+    }).error(function(data){
+        alert("http error get GAS member data");
+    });
 
     return;
 });
