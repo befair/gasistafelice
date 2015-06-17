@@ -5,12 +5,18 @@ app.controller("CashController", function($http, $rootScope, $routeParams) {
     this.info = {};
     var THAT = this;
 
+    this.get_cash_after_delivery = function() {
+        return THAT.info.balance - THAT.info.total_basket - THAT.info.total_basket_to_be_delivered;
+    };
+
     $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/cash/?format=json')
     .success(function (data) {
         THAT.transactions = data.economic_movements;
         THAT.info = data.cash_info;
     })
     .error(function (data) {
+        //DEBUG
+        alert("Error in retrieving economic movements, debug values loaded");
         THAT.transactions.push({
             id : 132,
             date: "21/07/2014 18:30",
