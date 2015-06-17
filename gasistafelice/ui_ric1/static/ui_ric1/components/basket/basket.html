@@ -4,27 +4,14 @@ $("#checkAll").click(function(){
 });
 </script>
 
-<div class="tab-pane" id="paniere"><!-- PANIERE -->
-    
-    <script type="text/ng-template" id="myModalContent.html">
-        <div class="modal-header">
-            <h3 class="modal-title">I'm a modal!</h3>
-        </div>
-        <div class="modal-body">
-            <ul>
-               
-            </ul>
-           
-        </div>
-        <div class="modal-footer">
-            
-        </div>
-    </script>
+<div class="tab-pane" id="paniere">
     
     <div class="ord-ord-title">Il tuo paniere</div>
-        <div class="imgpdf">
-        
-        </div>
+        <div class="searchbar">
+          <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
+          <input type="text" class="searchbar-text" id="search-bar-open" placeholder="Cerca tra i prodotti" ng-model="searchQueryOpen"/>       
+      </div> 
+
     <!--
     <form ng-controller="FrmPaniereController"> 
         <button ng-click="basket.addtoCart();" class="def-btn" type="submit">
@@ -76,10 +63,8 @@ $("#checkAll").click(function(){
     </tbody>
 
     <tbody ng-show="basket.dataLoaded">  
-    <tr ng-repeat="item in basket.pm.get_ordered_products() |  filter: searchQuery" class="{{item.order_state}}">
+    <tr ng-repeat="item in basket.pm.get_ordered_products() | filter: { 'can_update' : true } | filter: searchQueryOpen" class="{{item.order_state}}">
     
-        <p ng-bind-html="myHTML"></p>
-
         <!-- <td data-title="image" class="tdprod">{{item.id}}</td> -->
         <td data-title="image" class="tdprod">{{item.order_shortname}}</td>  
         <td data-title="image" class="tdprod">{{item.supplier}}</td>  
@@ -102,7 +87,7 @@ $("#checkAll").click(function(){
             </div> 
         </td> 
         <td data-title="image" class="tdprod" ng-show="!item.can_update">{{item.quantity}}</td> 
-        <td class="tdprice"> {{item.quantity*item.price|currency:"€"}}</td>
+        <td class="tdprice"> {{item.quantity * item.price|currency:"€"}}</td>
         <td class="tdprice">
             <fieldset ng-show="item.can_update">
                 <input name="checkbox_{{$index}}" id="checkbox_{{$index}}"
@@ -124,11 +109,12 @@ $("#checkAll").click(function(){
 
 <!--
         </form>
+-->
  
   <div class="ord-ord-title">Paniere da consegnare</div>
         <div class="searchbar">
           <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
-          <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>       
+          <input type="text" class="searchbar-text" id="search-bar-closed" placeholder="Cerca tra i prodotti" ng-model="searchQueryClosed"/>       
       </div> 
     <table class="table gas">   
           <thead>  
@@ -152,36 +138,22 @@ $("#checkAll").click(function(){
                     <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
                 </th>  
-              <th scope="col">Prezzo
-                  
-                </th>
-              <th scope="col">Quantit&agrave;
-                 
-                </th>  
-              <th scope="col">Totale
-                 
-                </th>     
+              <th scope="col">Prezzo</th>
+              <th scope="col">Quantit&agrave;</th>  
+              <th scope="col">Totale</th>     
             </tr>  
           </thead>  
-          <tbody >  
-            <tr ng-repeat="product in btbd |  filter: searchQuery|  orderBy:orderByField:reverseSort">  
-              <td data-title="image" class="tdprod">{{product.order_id}}</td>  
-              <td data-title="image" class="tdprod">{{product.supplier}}</td>  
-              <td data-title="image" class="tdprod">{{product.name}}</td>  
-              <td data-title="image" class="tdprod">
-                  {{product.price|currency:"€"}}
-              </td>  
-              <td data-title="image" class="tdprod">
-                  {{product.amount}}
-              </td> 
-              <td data-title="image" class="tdprod">
-                  {{product.total|currency:"€"}}
-              </td> 
+          <tbody>  
+          <tr ng-repeat="item in basket.pm.get_ordered_products() | filter: { 'can_update' : false } | filter: searchQueryClosed | orderBy:orderByField:reverseSort">  
+              <td data-title="image" class="tdprod">{{item.order_shortname}}</td>  
+              <td data-title="image" class="tdprod">{{item.supplier}}</td>  
+              <td data-title="image" class="tdprod">{{item.name}}</td>  
+              <td data-title="image" class="tdprod">{{item.price|currency:"€"}}</td>  
+              <td data-title="image" class="tdprod">{{item.quantity}}</td> 
+              <td data-title="image" class="tdprod">{{item.quantity * item.price|currency:"€"}}</td> 
             </tr>  
-              <tr><td colspan="8" style="text-align:center">TODO</td></tr>
           </tbody>
     </table>
-    -->
 </div>
 
 
