@@ -6,26 +6,26 @@ var app = angular.module('ngGF',
     .controller("AppController", function($http, $router, $rootScope, $location) {
 
         //TODO: settings
-        $rootScope.app_name = $.app_name;
-        $rootScope.static_url = $.static_url;
+        $rootScope.app_name = app_name;
+        $rootScope.static_url = static_url;
 
-        $rootScope.absurl_pre = $.absurl_pre;
-        $rootScope.absurl_static = $.absurl_static;
-        $rootScope.absurl_api = $.absurl_api;
+        $rootScope.absurl_pre = absurl_pre;
+        $rootScope.absurl_static = absurl_static;
+        $rootScope.absurl_api = absurl_api;
 
         //Default values for page
-        $rootScope.gas_id = $.default_gas_id;
-        $rootScope.gm_id = $.default_gasmember_id;
+        $rootScope.gas_id = default_gas_id;
+        $rootScope.gm_id = default_gasmember_id;
         $rootScope.gm = null;
-        $rootScope.person_id = $.person_id;
+        $rootScope.person_id = person_id;
 
         this.dataLoaded = false;
         var THAT = this;
 
         //TODO TOREMOVE
-        $rootScope.gasmemberID = $.default_gasmember_id;
-        $rootScope.peID = $.person_id;
-        $rootScope.gasID = $.default_gas_id;
+        $rootScope.gasmemberID = default_gasmember_id;
+        $rootScope.peID = person_id;
+        $rootScope.gasID = default_gas_id;
         //END TOREMOVE
         
         $http.get($rootScope.absurl_api+'person/my/?format=json')
@@ -203,7 +203,7 @@ var app = angular.module('ngGF',
                 "form-MAX_NUM_FORMS": ""
             });
             
-            var POST_order_path = $.absurl_pre+'rest/gasmember/'+$rootScope.gm_id+'/order/edit_multiple';
+            var POST_order_path = $rootScope.absurl_pre+'rest/gasmember/'+$rootScope.gm_id+'/order/edit_multiple';
             $http.post(POST_order_path, { form: products_post })
                 .success(function(){
                     alert("Prodotti aggiunti al paniere con successo!");

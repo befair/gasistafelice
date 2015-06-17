@@ -12,7 +12,6 @@
     <link href="{% static_url %}ui_ric1/css/font-awesome.css" rel="stylesheet">
 
     <!-- a cosa serve questo css di una vecchia versione di jQueryUI -->
-    <link href="{% static_url %}ui_ric1/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
 
     <link href="{% static_url %}ui_ric1/css/ngDialog.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static_url %}ui_ric1/css/ngDialog-theme-default.css">
@@ -25,24 +24,24 @@
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
     -->
-    {% comment %} DA TOGLIERE SE NON SERVONO, versione replicate o aggiuntive {% endcomment %}
+ {% comment %} DA TOGLIERE SE NON SERVONO, versione replicate o aggiuntive 
     <script src="{% static_url %}ui_ric1/js/jquery-1.11.1.min.js"></script>
     <script src="{% static_url %}ui_ric1/js/jquery-ui-1.10.4.min.js"></script>
     <script src="{% static_url %}ui_ric1/js/jquery-ui.js"></script>
-    {% comment %} {% endcomment %}
+ {% endcomment %}
     <script type="text/javascript">
-        $.app_name = 'ui_ric1';
-        $.static_url = '{% static_url %}';
-        $.url_prefix = '{% dj_settings "URL_PREFIX" %}';
+        var app_name = 'ui_ric1';
+        var static_url = '{% static_url %}';
+        var url_prefix = '{% dj_settings "URL_PREFIX" %}';
 
         var url_elements = window.location.toString().split('/');
-        $.absurl_pre = url_elements[0]+'//'+url_elements[2]+'/'+$.url_prefix;
-        $.absurl_static = url_elements[0]+'//'+url_elements[2]+$.static_url+$.app_name+'/';
-        $.absurl_api = $.absurl_pre+'api/v1/';
+        var absurl_pre = url_elements[0]+'//'+url_elements[2]+'/'+url_prefix;
+        var absurl_static = url_elements[0]+'//'+url_elements[2]+static_url+app_name+'/';
+        var absurl_api = absurl_pre+'api/v1/';
 
-        $.person_id = '{{ user.person.pk }}';
-        $.default_gas_id = '{{ user.person.gas_list.0.pk }}';
-        $.default_gasmember_id = '{{ user.person.gasmembers.0.pk }}';
+        var person_id = '{{ user.person.pk }}';
+        var default_gas_id = '{{ user.person.gas_list.0.pk }}';
+        var default_gasmember_id = '{{ user.person.gasmembers.0.pk }}';
     </script>
 
     <!--
@@ -196,17 +195,17 @@
     </div> 
 
 
-    <script src="{% static_url %}ui_ric1/js/bootstrap.js"></script>
-    <script src="{% static_url %}ui_ric1/js/modernizr.js"></script>
-    <script src="{% static_url %}ui_ric1/js/jquery.simplePagination.js"></script>
-    <script src="{% static_url %}ui_ric1/js/smartpaginator.js"></script>
-    <script src="{% static_url %}ui_ric1/js/local.js"></script>
-    <script src="{% static_url %}ui_ric1/bower_components/angularjs/angular.min.js"></script>
+    <script src="{% static_url %}ui_ric1/bower_components/angular/angular.min.js"></script>
     <script src="{% static_url %}ui_ric1/bower_components/angular-new-router/dist/router.es5.min.js"></script>
-    <script src="{% static_url %}ui_ric1/js/ngDialog.min.js"></script>
-    <script src="{% static_url %}ui_ric1/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
-    <script src="{% static_url %}ui_ric1/js/bootstrap-datepicker.js"></script>  
+    <script src="{% static_url %}ui_ric1/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="{% static_url %}ui_ric1/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
     <script src="{% static_url %}ui_ric1/js/angular-locale_it-it.js"></script>        
+    <script src="{% static_url %}ui_ric1/js/ngDialog.min.js"></script>
+    <script src="{% static_url %}ui_ric1/js/modernizr.js"></script>
+    <!-- <script src="{% static_url %}ui_ric1/js/local.js"></script> -->
+    <script src="{% static_url %}ui_ric1/js/bootstrap-datepicker.js"></script>  
+
     <script src="{% static_url %}ui_ric1/app.js"></script>
     <script src="{% static_url %}ui_ric1/components/order/order.js"></script>
     <script src="{% static_url %}ui_ric1/components/basket/basket.js"></script>
