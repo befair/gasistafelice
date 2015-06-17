@@ -1,4 +1,4 @@
-app.controller("BasketController", function ($http, $rootScope, $routeParams, parsingNumbers, productManager) {
+app.controller("BasketController", function ($http, $rootScope, parsingNumbers, productManager) {
 
     this.pm = productManager;
     this.gm = $rootScope.gm;
@@ -7,6 +7,36 @@ app.controller("BasketController", function ($http, $rootScope, $routeParams, pa
     this.orderByField = ''; //?
     this.reverseSort = false; //?
 
+    this.open_ordered_products = [];
+    this.closed_ordered_products = [];
+    var THAT = this;
+
+
+    this.get_ordered_products_from_basket = function(basket) {
+        var products = [];
+        angular.forEach(basket, function(gmo, index) {
+            var gsop = gmo.ordered_product;
+            var min_amount = parsingNumbers.parsing(gsop.stock.detail_minimum_amount);
+            var step_unit = parsingNumbers.parsing(gsop.stock.detail_step);
+            var order_state = gsop.order.current_state.toLowerCase();
+
+            products.push({
+                id : gsop.id,
+                price : parsingNumbers.parsing(gmo.ordered_price),
+                quantity: parsingNumbers.parsing(gmo.ordered_amount),
+                note : gmo.note,
+                name : gsop.stock.product.__unicode__,
+                supplier : gsop.order.supplier,
+                order_shortname : "Ord. " + gsop.order.id,
+                can_update : order_state == "open",
+                order_state : order_state,
+                step : step_unit,
+                min_amount : min_amount
+            });
+        });
+        return products;
+    };
+
     $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/?format=json')
     .success(function(data) {
 
@@ -14,9 +44,9 @@ app.controller("BasketController", function ($http, $rootScope, $routeParams, pa
         var gm = $rootScope.gm;
         console.debug("Recuperato il paniere per " + gm.id);
 
-        productManager.set_ordered_products_from_basket(gm.basket);
-        productManager.set_ordered_products_from_basket(gm.basket_to_be_delivered);
-        
+        THAT.open_ordered_products = THAT.get_ordered_products_from_basket(gm.basket);
+        THAT.closed_ordered_products = THAT.get_ordered_products_from_basket(gm.basket_to_be_delivered);
+
     }).error(function(data){
         alert("http error get GAS member data");
     });

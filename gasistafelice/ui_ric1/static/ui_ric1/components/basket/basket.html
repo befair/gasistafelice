@@ -63,7 +63,7 @@ $("#checkAll").click(function(){
     </tbody>
 
     <tbody ng-show="basket.dataLoaded">  
-    <tr ng-repeat="item in basket.pm.get_ordered_products() | filter: { 'can_update' : true } | filter: searchQueryOpen" class="{{item.order_state}}">
+    <tr ng-repeat="item in basket.open_ordered_products | filter: searchQueryOpen" class="{{item.order_state}}">
     
         <!-- <td data-title="image" class="tdprod">{{item.id}}</td> -->
         <td data-title="image" class="tdprod">{{item.order_shortname}}</td>  
@@ -103,7 +103,7 @@ $("#checkAll").click(function(){
     <table class="table total">
         <tr>
             <td> Totale previsto: </td>  
-            <td class="tableprice"> <b>€ {{basket.pm.getTotal(basket.pm.get_ordered_products())}}</b> </td>    
+            <td class="tableprice"> <b>€ {{ basket.pm.getTotal(basket.open_ordered_products) }}</b> </td>    
         </tr>    
     </table>
 
@@ -144,7 +144,7 @@ $("#checkAll").click(function(){
             </tr>  
           </thead>  
           <tbody>  
-          <tr ng-repeat="item in basket.pm.get_ordered_products() | filter: { 'can_update' : false } | filter: searchQueryClosed | orderBy:orderByField:reverseSort">  
+          <tr ng-repeat="item in basket.closed_ordered_products | filter: searchQueryClosed | orderBy:orderByField:reverseSort">  
               <td data-title="image" class="tdprod">{{item.order_shortname}}</td>  
               <td data-title="image" class="tdprod">{{item.supplier}}</td>  
               <td data-title="image" class="tdprod">{{item.name}}</td>  
@@ -153,6 +153,12 @@ $("#checkAll").click(function(){
               <td data-title="image" class="tdprod">{{item.quantity * item.price|currency:"€"}}</td> 
             </tr>  
           </tbody>
+    </table>
+    <table class="table total">
+        <tr>
+            <td> Totale previsto: </td>  
+            <td class="tableprice"> <b>€ {{ basket.pm.getTotal(basket.closed_ordered_products) }}</b> </td>    
+        </tr>    
     </table>
 </div>
 
