@@ -20,23 +20,13 @@
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
     <!-- <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
     -->
- {% comment %} DA TOGLIERE SE NON SERVONO, versione replicate o aggiuntive 
-    <script src="/static/ui_ric1/js/jquery-1.11.1.min.js"></script>
-    <script src="/static/ui_ric1/js/jquery-ui-1.10.4.min.js"></script>
-    <script src="/static/ui_ric1/js/jquery-ui.js"></script>
- {% endcomment %}
     <script type="text/javascript">
         var app_name = 'ui_ric1';
-        var static_url = '/static/';
-        var url_prefix = '{% dj_settings "URL_PREFIX" %}';
+        var url_prefix = 'gasistafelice/';
 
         var url_elements = window.location.toString().split('/');
-        var absurl_pre = url_elements[0]+'//'+url_elements[2]+'/'+url_prefix;
-        var absurl_static = url_elements[0]+'//'+url_elements[2]+static_url+app_name+'/';
+        var absurl_pre = '/'+url_prefix;
         var absurl_api = absurl_pre+'api/v1/';
 
         var person_id = '{{ user.person.pk }}';

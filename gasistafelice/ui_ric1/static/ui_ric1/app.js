@@ -7,10 +7,9 @@ var app = angular.module('ngGF',
 
         //TODO: settings
         $rootScope.app_name = app_name;
-        $rootScope.static_url = static_url;
+        $rootScope.static_url = '/static/ui_ric1/';
 
         $rootScope.absurl_pre = absurl_pre;
-        $rootScope.absurl_static = absurl_static;
         $rootScope.absurl_api = absurl_api;
 
         //Default values for page
