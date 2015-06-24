@@ -59,7 +59,7 @@ def suppliers(request):
     )
 
     fname = u"GF_%s.gdxp" % urllib.quote_plus(
-        u"_".join(map(unicode, supplier_qs)).encode('latin-1')
+        u"_".join(map(unicode, supplier_qs)).encode('utf-8')
     )
     xml_response['Content-Disposition'] = "attachment; filename=%s" % fname
     return xml_response
