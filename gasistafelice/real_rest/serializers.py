@@ -122,17 +122,18 @@ class OrderInfoSerializer(serializers.ModelSerializer):
 class SimpleGASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
+    headquarter = serializers.CharField()
 
     class Meta:
         model = GAS
-        fields = ('id', 'name', 'id_in_des', 'logo', 'des')
+        fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'headquarter')
 
 class GASSerializer(SimpleGASSerializer):
     open_orders = OrderSerializer(many=True)
 
     class Meta:
         model = GAS
-        fields = ('id', 'name', 'id_in_des', 'logo', 'des')
+        fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'headquarter')
 
 class PersonSerializer(serializers.ModelSerializer):
 
