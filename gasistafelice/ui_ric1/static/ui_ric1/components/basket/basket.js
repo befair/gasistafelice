@@ -4,8 +4,10 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
     this.gm = $rootScope.gm;
     this.dataLoaded = true;
 
-    this.orderByField = ''; //?
-    this.reverseSort = false; //?
+    this.sorting = ''; //basket table sorting name
+    this.reverseSort = false; //basket table sorting
+    this.tbd_sorting = ''; //basket to be delivered table sorting name
+    this.tbd_reverseSort = false; //basket to be delivered table sorting
 
     this.open_ordered_products = [];
     this.closed_ordered_products = [];

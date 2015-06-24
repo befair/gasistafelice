@@ -23,21 +23,21 @@ $("#checkAll").click(function(){
     <thead>  
         <tr>  
             <!-- <th>ID</th> -->
-            <th scope="col" ng-click="orderByField='order_id'; basket.reverseSort = !basket.reverseSort">Ordine
-              <span ng-show="orderByField == 'order_id'" class="listorder">
+            <th scope="col" ng-click="basket.sorting='order_shortname'; basket.reverseSort = !basket.reverseSort">Ordine
+              <span ng-show="basket.sorting == 'order_shortname'" class="listorder">
                 <span ng-show="!basket.reverseSort"><i class="fa fa-sort-desc"></i></span>
                 <span ng-show="basket.reverseSort"><i class="fa fa-sort-asc"></i></span>
               </span>
             </th>  
             <!-- <th>Stato</th>  -->
-            <th scope="col" ng-click="orderByField='supplier'; basket.reverseSort = !basket.reverseSort">Fornitore
-              <span ng-show="orderByField == 'supplier'" class="listorder">
+            <th scope="col" ng-click="basket.sorting='supplier'; basket.reverseSort = !basket.reverseSort">Fornitore
+              <span ng-show="basket.sorting == 'supplier'" class="listorder">
                 <span ng-show="!basket.reverseSort"><i class="fa fa-sort-desc"></i></span>
                 <span ng-show="basket.reverseSort"><i class="fa fa-sort-asc"></i></span>
             </span>
             </th>  
-            <th scope="col" ng-click="orderByField='name'; basket.reverseSort = !basket.reverseSort">Prodotto
-              <span ng-show="orderByField == 'name'" class="listorder">
+            <th scope="col" ng-click="basket.sorting='name'; basket.reverseSort = !basket.reverseSort">Prodotto
+              <span ng-show="basket.sorting == 'name'" class="listorder">
                 <span ng-show="!basket.reverseSort"><i class="fa fa-sort-desc"></i></span>
                 <span ng-show="basket.reverseSort"><i class="fa fa-sort-asc"></i></span>
             </span>
@@ -63,7 +63,7 @@ $("#checkAll").click(function(){
     </tbody>
 
     <tbody ng-show="basket.dataLoaded">  
-    <tr ng-repeat="item in basket.open_ordered_products | filter: searchQueryOpen" class="{{item.order_state}}">
+    <tr ng-repeat="item in basket.open_ordered_products | filter: searchQueryOpen | orderBy:basket.sorting:basket.reverseSort" class="{{item.order_state}}">
     
         <!-- <td data-title="image" class="tdprod">{{item.id}}</td> -->
         <td data-title="image" class="tdprod">{{item.order_shortname}}</td>  
@@ -100,6 +100,7 @@ $("#checkAll").click(function(){
     </tbody>
     </table>
 
+    <!-- TODO transform to <tfoot> of the previous table -->
     <table class="table total">
         <tr>
             <td> Totale previsto: </td>  
@@ -119,23 +120,23 @@ $("#checkAll").click(function(){
     <table class="table gas">   
           <thead>  
             <tr>  
-              <th scope="col" ng-click="orderByField='order_id'; reverseSort = !reverseSort">Ordine
-                  <span ng-show="orderByField == 'order_id'" class="listorder">
-                    <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
-                    <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+              <th scope="col" ng-click="basket.tbd_sorting='order_shortname'; basket.tbd_reverseSort = !basket.tbd_reverseSort">Ordine
+                  <span ng-show="basket.tbd_sorting == 'order_shortname'" class="listorder">
+                    <span ng-show="!basket.tbd_reverseSort"><i class="fa fa-sort-desc"></i></span>
+                    <span ng-show="basket.tbd_reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
                 
                 </th>  
-              <th scope="col" ng-click="orderByField='supplier'; reverseSort = !reverseSort">Fornitore
-                  <span ng-show="orderByField == 'supplier'" class="listorder">
-                    <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
-                    <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+              <th scope="col" ng-click="basket.tbd_sorting='supplier'; basket.tbd_reverseSort = !basket.tbd_reverseSort">Fornitore
+                  <span ng-show="basket.tbd_sorting == 'supplier'" class="listorder">
+                    <span ng-show="!basket.tbd_reverseSort"><i class="fa fa-sort-desc"></i></span>
+                    <span ng-show="basket.tbd_reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
                 </th>  
-              <th scope="col" ng-click="orderByField='name'; reverseSort = !reverseSort">Prodotto
-                  <span ng-show="orderByField == 'name'" class="listorder">
-                    <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
-                    <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
+              <th scope="col" ng-click="basket.tbd_sorting='name'; basket.tbd_reverseSort = !basket.tbd_reverseSort">Prodotto
+                  <span ng-show="basket.tbd_sorting == 'name'" class="listorder">
+                    <span ng-show="!basket.tbd_reverseSort"><i class="fa fa-sort-desc"></i></span>
+                    <span ng-show="basket.tbd_reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
                 </th>  
               <th scope="col">Prezzo</th>
@@ -144,7 +145,7 @@ $("#checkAll").click(function(){
             </tr>  
           </thead>  
           <tbody>  
-          <tr ng-repeat="item in basket.closed_ordered_products | filter: searchQueryClosed | orderBy:orderByField:reverseSort">  
+          <tr ng-repeat="item in basket.closed_ordered_products | filter: searchQueryClosed | orderBy:basket.tbd_sorting:basket.tbd_reverseSort">  
               <td data-title="image" class="tdprod">{{item.order_shortname}}</td>  
               <td data-title="image" class="tdprod">{{item.supplier}}</td>  
               <td data-title="image" class="tdprod">{{item.name}}</td>  
@@ -154,6 +155,7 @@ $("#checkAll").click(function(){
             </tr>  
           </tbody>
     </table>
+    <!-- TODO transform to <tfoot> of the previous table -->
     <table class="table total">
         <tr>
             <td> Totale previsto: </td>  
