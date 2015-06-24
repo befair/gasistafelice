@@ -1257,7 +1257,7 @@ class GASMember(models.Model, PermissionResource):
     @property
     def economic_movements(self):
         """Return accounting LedgerEntry instances."""
-        return self.person.accounting.entries_gasmember(self)
+        return self.person.accounting.entries_gasmember(self)[:10]  # TODO TOREMOVE WARNING: limited number of economic movements in order to develop AngularGF interface
 
     @property
     def balance(self):
