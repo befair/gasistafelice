@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
 from notification import models as notification
-        
+
 from gasistafelice.gas.models import GAS
 from gasistafelice.gas import signals as gas_signals
 from gasistafelice.lib import unordered_uniq
@@ -38,7 +38,7 @@ def notify_gmo_product_erased(sender, **kwargs):
     recipients = [gmo.gasmember.person.user]
 
     try:
-        notification.send(recipients, "ordered_product_update", 
+        notification.send(recipients, "ordered_product_update",
             extra_content
         )
     except Exception as e:
@@ -57,7 +57,7 @@ def notify_gmo_price_update(sender, **kwargs):
         'order' : gmo.order,
         'product' : gmo.product,
         'action' : _("price changed"),
-        'extra_append' : _("from %(old)s to %(new)s") % ({ 'old' : old_price, 
+        'extra_append' : _("from %(old)s to %(new)s") % ({ 'old' : old_price,
             'new' : new_price
         }),
     }
@@ -65,7 +65,7 @@ def notify_gmo_price_update(sender, **kwargs):
     recipients = [gmo.gasmember.person.user]
 
     try:
-        notification.send(recipients, "ordered_product_update", 
+        notification.send(recipients, "ordered_product_update",
             extra_content
         )
     except Exception as e:
@@ -93,7 +93,7 @@ def notify_gasstock_product_enabled(sender, **kwargs):
     log.debug("notify_gasstock_product_enabled recipients %s " % recipients)
 
     try:
-        notification.send(recipients, "gasstock_update", 
+        notification.send(recipients, "gasstock_update",
             extra_content
         )
     except Exception as e:
@@ -118,7 +118,7 @@ def notify_gasstock_product_disabled(sender, **kwargs):
 #        person__gasmember_set__in=gasstock.gasmembers
 
     try:
-        notification.send(recipients, "gasstock_update", 
+        notification.send(recipients, "gasstock_update",
             extra_content
         )
     except Exception as e:
@@ -160,7 +160,7 @@ def notify_order_state_update(sender, **kwargs):
     log.debug("Transition to: %s" % transition.destination.name)
     log.debug("Recipients: %s" % zip(recipients, map(lambda x: x.email, recipients)))
     try:
-        notification.send(recipients, "order_state_update", 
+        notification.send(recipients, "order_state_update",
             extra_content
         )
     except Exception as e:
@@ -192,33 +192,33 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
 
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
-            label="gasmember_notification", defaults = { 
-                'display': _("Notification Received"), 
-                'description' : _("you have received a notification"), 
+            label="gasmember_notification", defaults = {
+                'display': _("Notification Received"),
+                'description' : _("you have received a notification"),
                 'default': 2 }
         )
-    except notification.NoticeType.MultipleObjectsReturned as e:
+    except notification.NoticeType.MultipleObjectsReturned:
         log.error("Found more than one notice type for label gasmember_notification")
-        raise("Found more than one notice type for label gasmember_notification")
+        raise
     else:
         if created:
             log.info("Created notice type for label gasmember_notification")
         else:
             log.debug("Found existing notice type for label gasmember_notification. Not creating another one.")
-            
+
 
 
 
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gas_notification", defaults = {
-                'display' : _("Notification Received"), 
+                'display' : _("Notification Received"),
                 'description' : _("this GAS has received a notification"),
                 'default' : 2 }
         )
-    except notification.NoticeType.MultipleObjectsReturned as e:
+    except notification.NoticeType.MultipleObjectsReturned:
         log.error("Found more than one notice type for label gas_notification")
-        raise("Found more than one notice type for label gas_notification")
+        raise
     else:
         if created:
             log.info("Created notice type for label gas_notification")
@@ -229,13 +229,13 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gas_newsletter", defaults = {
-                'display' : _("Newsletter Received"), 
-                'description' : _("this GAS has received the newsletter"), 
+                'display' : _("Newsletter Received"),
+                'description' : _("this GAS has received the newsletter"),
                 'default' : 2 }
         )
     except notification.NoticeType.MultipleObjectsReturned as e:
         log.error("Found more than one notice type for label gas_newsletter")
-        raise("Found more than one notice type for label gas_newsletter")
+        raise
     else:
         if created:
             log.info("Created notice type for label gas_newsletter")
@@ -245,49 +245,49 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
 
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
-            label="order_state_update", defaults = { 
-                'display' : _("Order state updated"), 
-                'description' : _("an order has been updated"), 
+            label="order_state_update", defaults = {
+                'display' : _("Order state updated"),
+                'description' : _("an order has been updated"),
                 'default' : 2 }
         )
     except notification.NoticeType.MultipleObjectsReturned as e:
         log.error("Found more than one notice type for label order_state_update")
-        raise("Found more than one notice type for label order_state_update")
+        raise
     else:
         if created:
             log.info("Created notice type for label order_state_update")
         else:
             log.debug("Found existing notice type for label order_state_update. Not creating another one")
-    
+
     # Web notifications
 
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="ordered_product_update", defaults = {
-                'display' : _("Ordered product update"), 
-                'description' : _("an ordered product has changed"), 
+                'display' : _("Ordered product update"),
+                'description' : _("an ordered product has changed"),
                 'default' : 3 }
         )
     except notification.NoticeType.MultipleObjectsReturned as e:
         log.error("Found more than one notice type for label ordered_product_update")
-        raise("Found more than one notice type for label ordered_product_update")
+        raise
     else:
         if created:
             log.info("Created notice type for label ordered_product_update")
         else:
             log.debug("Found existing notice type for label ordered_product_update. Not creating anotherw one")
-    
+
 
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="gasstock_update", defaults = {
-                'display' : _("Product update for GAS"), 
-                'description' : _("a product has been updated for GAS"), 
+                'display' : _("Product update for GAS"),
+                'description' : _("a product has been updated for GAS"),
                 'default' : 3 }
         )
-    except notification.NoticeType.MultipleObjectsReturned as e:
+    except notification.NoticeType.MultipleObjectsReturned:
         log.error("Found more than one notice type for label gasstock_update")
-        raise("Found more than one notice type for label gasstock_update")
+        raise
     else:
         if created:
             log.info("Created notice type for label gasstock_update")
@@ -298,18 +298,18 @@ def create_notice_types(app, created_models, verbosity, **kwargs):
     try:
         obj, created = notification.NoticeType.objects.get_or_create(
             label="catalogs_digest", defaults = {
-                'display' : _("Catalogs Digest"), 
+                'display' : _("Catalogs Digest"),
                 'description' : _("this GAS stocks have been modified"),
                 'default' : 2 }
         )
-    except notification.NoticeType.MultipleObjectsReturned as e:
+    except notification.NoticeType.MultipleObjectsReturned:
         log.error("Found more than one notice type for label catalogs_digest")
-        raise("Found more than one notice type for label catalogs_digest")
+        raise
     else:
         if created:
             log.info("Created notice type for label catalogs_digest")
         else:
             log.debug("Found existing notice type for label catalogs_digest. Not creating another one")
-    
+
 models.signals.post_syncdb.connect(create_notice_types, sender=notification)
 
