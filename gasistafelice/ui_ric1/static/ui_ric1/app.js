@@ -118,7 +118,7 @@ var app = angular.module('ngGF',
                 var min_amount = parsingNumbers.parsing(gsop.stock.detail_minimum_amount);
                 var step_unit = parsingNumbers.parsing(gsop.stock.detail_step);
 
-                console.debug("Adding product " + el_prod.__unicode__ + " to open order "+ open_order.id+"...");
+                // console.debug("Adding product " + el_prod.__unicode__ + " to open order "+ open_order.id+"...");
 
                 THAT.products.push({
                     id: gsop.id,
