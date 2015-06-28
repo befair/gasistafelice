@@ -38,25 +38,25 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'des_orders_db',
         'USER': 'des_db_user',
-        'PASSWORD': '', 
-        'HOST': '',    
-        'PORT': '',   
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     },
     'super': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'des_orders_db',    
-        'USER': 'postgres',   
-        'PASSWORD': '',      
-        'HOST': '',         
-        'PORT': '',        
+        'NAME': 'des_orders_db',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     },
     'maintenance': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',    
-        'USER': 'postgres',   
-        'PASSWORD': '',      
-        'HOST': '',         
-        'PORT': '',        
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -64,6 +64,12 @@ AUTHENTICATION_BACKENDS = (
             'gf.base.backends.AuthenticationParamRoleBackend',
             'flexi_auth.backends.ParamRoleBackend',
         )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -88,7 +94,7 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
-DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M', '%Y-%m-%d %H:%M:%S', 
+DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M', '%Y-%m-%d %H:%M:%S',
 '%Y-%m-%d %H:%M', '%Y-%m-%d', '%m/%d/%Y %H:%M:%S', '%m/%d/%Y',
 '%m/%d/%y %H:%M:%S', '%m/%d/%y %H:%M', '%m/%d/%y')
 TIME_INPUT_FORMATS = ('%H:%M', '%H:%M:%S')
@@ -171,6 +177,7 @@ INSTALLED_APPS = [
     'ajax_select',
     'gdxp',
     'rest_framework',
+    'rest_framework.authtoken',
     'real_rest',
     'ui_ric1',
     #'django.contrib.staticfiles',
@@ -286,11 +293,11 @@ RESOURCE_PAGE_BLOCKS = {
     'gas' : [{
         'name' : 'orders',
         'descr': 'Ordini',
-        'blocks': ['open_orders', 'closed_orders', 'prepared_orders'], 
+        'blocks': ['open_orders', 'closed_orders', 'prepared_orders'],
     },{
         'name' : 'suppliers',
         'descr': 'Patti',
-        'blocks': ['gas_pacts', 'categories'], 
+        'blocks': ['gas_pacts', 'categories'],
     },{
         'name' : 'info',
         'descr' : 'Scheda del GAS',
@@ -350,15 +357,15 @@ RESOURCE_PAGE_BLOCKS = {
         'descr' : 'Archivio',
         'blocks' : ['stored_orders']
     }],
-    'order' : [{ 
+    'order' : [{
         'name' : 'info',
         'descr': 'Ordine',
         'blocks': ['order_details', 'order_report']
-    },{ 
+    },{
         'name' : 'registration',
         'descr': 'Registrazione',
         'blocks': ['order_invoice', 'curtail']
-#    },{ 
+#    },{
 #        'name' : 'pay',
 #        'descr': 'Pagamento',
 #        'blocks': ['order_insolute']
@@ -370,7 +377,7 @@ RESOURCE_PAGE_BLOCKS = {
         'blocks' : ['person_details', 'person_gasmembers']
     }],
 
-    'pact' : [{ 
+    'pact' : [{
         'name' : 'stock',
         'descr': 'Prodotti',
         'blocks': ['open_orders', 'gasstocks']
@@ -438,7 +445,7 @@ INIT_OPTIONS = {
     'su_name'   : "Referente informatico",
     'su_surname': "del DES-MC",
     'su_email'  : "",
-    'su_PASSWORD' : "admin", 
+    'su_PASSWORD' : "admin",
 }
 
 MAINTENANCE_MODE = False

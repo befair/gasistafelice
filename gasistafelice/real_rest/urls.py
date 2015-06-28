@@ -3,8 +3,11 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 
 import views as rest_views
+from rest_framework.authtoken import views
 
 urlpatterns = patterns('',
+
+    url(r'^v1/token-auth/', views.obtain_auth_token),
 
     url(r'^v1/person/$', rest_views.PersonCreateReadView.as_view(), name='api-v1-person-list'),
     url(r'^v1/person/my/$', rest_views.get_user_person, name='api-v1-person-user'),

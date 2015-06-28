@@ -9,7 +9,4 @@ urlpatterns = patterns('ui_ric1.views',
     # Main page
     url(r'^$', 'index', name="page_ui_ric1"),
     url(r'^components/(.*)$', 'components', name="components"),
-
 )
-
-
