@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
 import serializers as my_serializers
 
 from gf.base.models import Person, Contact
@@ -34,7 +37,8 @@ class PersonReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     serializer_class = my_serializers.PersonSerializer
     queryset = Person.objects.all() #TODO HURRY
 
-@login_required
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def get_user_person(request):
     """
     Return serialized info for person bound to authed user

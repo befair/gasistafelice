@@ -26,3 +26,4 @@ reportlab<3.0
 ipython
 djangorestframework
 django-contrib-comments
+djangorestframework-jwt
