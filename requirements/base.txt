@@ -27,3 +27,4 @@ ipython
 djangorestframework
 django-contrib-comments
 geocoder
+djangorestframework-jwt
