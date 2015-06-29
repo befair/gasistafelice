@@ -1,5 +1,10 @@
 app.controller("BasketController", function ($http, $rootScope, parsingNumbers, productManager) {
 
+    if (!$rootScope.gm_id) {
+        console.log("basket: GASMember info not already retrieved...");
+        return;
+    }
+
     this.pm = productManager;
     this.gm = $rootScope.gm;
     this.dataLoaded = true;

@@ -1,9 +1,18 @@
 // Gasista Felice frontend evolved from a master thesis by Riccard1
 //
 var app = angular.module('ngGF', 
-    [ 'ui.bootstrap', 'ngNewRouter', 'ngDialog', 'ngLocale' ]
+    [ 'ui.bootstrap', 'ngNewRouter', 'satellizer', 'ngDialog', 'ngLocale' ]
     )
-    .controller("AppController", function($http, $router, $rootScope, $location) {
+    .factory('navigateTo', function ($location, $router) {
+      return function (name) {
+          $location.url($router.generate(name));
+      };
+    })
+    .config(function ($authProvider) {
+        //$authProvider.loginUrl = $rootScope.absurl_api + 'token-auth/';
+        $authProvider.loginUrl = 'gasistafelice/api/v1/token-auth/';
+    })
+    .controller("AppController", function($http, $router, $rootScope, $location, $auth) {
 
         //TODO: settings
         $rootScope.static_url = '/static/ui_ric1/';
@@ -12,28 +21,48 @@ var app = angular.module('ngGF',
         $rootScope.absurl_api = '/'+$rootScope.url_prefix+'api/v1/';
 
         //Default values for page
-        $rootScope.gas_id = default_gas_id;
-        $rootScope.gm_id = default_gasmember_id;
+        $rootScope.gas_id = null;
+        $rootScope.gm_id = null;
         $rootScope.gm = null;
-        $rootScope.person_id = person_id;
 
         this.dataLoaded = false;
         var THAT = this;
 
-        //TODO TOREMOVE
-        $rootScope.gasmemberID = default_gasmember_id;
-        $rootScope.peID = person_id;
-        $rootScope.gasID = default_gas_id;
-        //END TOREMOVE
-        
-        $http.get($rootScope.absurl_api+'person/my/?format=json')
-            .success(function(data) {
-                $rootScope.person = data;
-                THAT.dataLoaded = true;
-            }).error(function(data){
-                alert("http error get person data");
-            });
+        this.login = function() {
+            $auth.login({
+                username: THAT.username,
+                password: THAT.password
+            })
+            .then(
+                function(response) {
 
+                    $http.get($rootScope.absurl_api+'person/my/?format=json')
+                    .success( function(data) {
+                        $rootScope.person = data;
+                        $rootScope.gas_id = data.gas_list[0].id;
+                        $rootScope.gm_id = data.gasmembers[0];
+                        THAT.dataLoaded = true;
+                    })
+                    .error( function (response, status) {
+                        alert("http error get person data");
+                    });
+                },
+                function (data) {
+                    $rootScope.msg = 'Error';
+                }
+            );
+        };
+
+        this.logout = function() {
+            $auth.logout();
+            if (!THAT.isAuth()) {
+                return navigateTo('order');
+            }
+        };
+        this.isAuth = function() {
+            return $auth.isAuthenticated();
+        };
+        
         $router.config([
             { path: "/order/", component: "order", as: "order" },
             { path: "/basket/", component: "basket", as: "basket" },

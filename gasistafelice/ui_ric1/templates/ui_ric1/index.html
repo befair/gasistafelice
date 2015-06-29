@@ -98,7 +98,7 @@
         
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"> <!-- ng-controller="gas_controller" --> 
           
-            <div class="navbar-left">
+            <div ng-show="app.dataLoaded" class="navbar-left">
                 <ul class="optionlist nav navbar-nav">
                         {% for gas in gas_list %}
                         <li class="{% if forloop.first %}active{% endif %} "> 
@@ -127,19 +127,22 @@
                 </ul>
                        
             </div>
-         <div class="navbar-right">
+
+         <div ng-show="app.dataLoaded" class="navbar-right">
              <a class="navpic" ng-link="profile()" href="">
                  <img src="/static/ui_ric1/img/user_pic.png" alt="..." class="imgpic">
              </a>
              <a class="titlenav" ng-link="profile()" href="">
                  Ciao {{ user.person.name }} 
              </a>
+             <a class="waves-effect waves-light" href="" ng-click="app.logout()">LOGOUT</a>
         </div>    
           
         </div><!-- /.navbar-collapse -->
       </nav>
+
       <div class="cont-gas"> <!-- Container -->
-        <div id="cashresume">
+        <div ng-if="app.dataLoaded" id="cashresume">
             <h2>Il tuo saldo nel {{ gas_list.0.name}}</h2>
             <div id="cashresume-body">
             Attuale: <span class="balance">&#8364; {{ user.person.gasmembers.0.balance|floatformat:2 }}</span><br />
@@ -149,20 +152,40 @@
         </div>
         <!-- 1° row -->
                                 
-          <div class="first_block"><!-- 1° col-md-8 -->
-              <div class="tab-content tab-gas">
-                    
-                    <p style="text-align:center" ng-hide="app.dataLoaded">
-                        Un attimo che carico...
-                        <i class="fa fa-spinner fa-spin"></i>
-                    </p>  
-                    <!-- angular templating -->
-                    <!-- this is where content will be injected -->
-                    <div ng-viewport>
-                    </div>
-              </div>
+        <p style="text-align:center" ng-hide="app.dataLoaded" ng-if="app.isAuth()">
+            Un attimo che carico...
+            <i class="fa fa-spinner fa-spin"></i>
+        </p>  
 
-          </div><!-- /1° col-md-8 -->
+        <div ng-if="app.dataLoaded" class="first_block"><!-- 1° col-md-8 -->
+            <div class="tab-content tab-gas">
+                
+                <!-- this is where content will be injected -->
+                <div ng-viewport> </div>
+            </div>
+        </div><!-- /1° col-md-8 -->
+
+        <div ng-if="!app.isAuth()" class="first_block"><!-- 1° col-md-8 -->
+                <h4>Login</h4>
+                <!-- TODO @veon82 <li><a href="/#/signup">Sign up</a></li> -->
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input ng-model="app.username" id="username" type="text" class="validate">
+                                <label for="username">Username</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input ng-model="app.password" id="password" type="password" class="validate">
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <a ng-click="app.login()" href="#" class="waves-effect waves-blue-grey waves-grey-blue btn modal-action modal-close">GO</a>
+        </div><!-- /1° col-md-8 -->
 
         <!-- 1° row -->
 
@@ -184,6 +207,7 @@
     <script src="/static/ui_ric1/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
     <script src="/static/ui_ric1/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="/static/ui_ric1/bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="/static/ui_ric1/bower_components/satellizer/satellizer.min.js"></script>
 
     <script src="/static/ui_ric1/js/angular-locale_it-it.js"></script>        
     <script src="/static/ui_ric1/js/ngDialog.min.js"></script>
