@@ -23,6 +23,7 @@
     "bootstrap": "~3.3.4",
     "angularjs": "~1.4.0",
     "angular-new-router": "~0.5.3",
-    "angular-bootstrap": "~0.13.0"
+    "angular-bootstrap": "~0.13.0",
+    "leaflet": "~0.7.3"
   }
 }

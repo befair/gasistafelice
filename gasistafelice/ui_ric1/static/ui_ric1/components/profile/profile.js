@@ -1,7 +1,16 @@
 app.controller("ProfileController", function ($http, $rootScope, ngDialog, parsingNumbers) {
 
+    // create the map (map container must be loaded in dom)
+    var map = L.map('map').setView([41.89, 12.53], 10);
+    
+    // add open street map layer to map
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">' +
+                     'OpenStreetMap</a> contributors'
+    }).addTo(map);
+
     this.person = $rootScope.person;
-    console.debug('profile '+ this.person.id);
+
     this.clickToOpen = function () {
         ngDialog.open({ 
             template: 'popupTemplate',
@@ -9,8 +18,23 @@ app.controller("ProfileController", function ($http, $rootScope, ngDialog, parsi
             scope: $rootScope
         });
     };
-    
-    return;
+
+    var coords;
+
+    angular.forEach(this.person.gas_list, function(gas) {
+        hq = gas.headquarter;
+
+        // add to map
+        L.marker([hq.lat, hq.lon]).addTo(map)
+            .bindPopup("<b>" + gas.name + "</b><br>" + hq.address + " " + hq.city); 
+
+        // remember coords to center the map
+        coords = new L.LatLng(hq.lat, hq.lon);
+    });
+
+    // center the map to last marker
+    map.panTo(coords);
+
 }); 
 
 /* TODO DISASTER RECOVERY...
