@@ -1,5 +1,10 @@
 app.controller("OrderController", function($http, $rootScope, productManager) {
 
+    if (!$rootScope.gm_id) {
+        console.log("order: GASMember info not already retrieved...");
+        return;
+    }
+
     this.pm = productManager;
     this.dataLoaded = true;
     
