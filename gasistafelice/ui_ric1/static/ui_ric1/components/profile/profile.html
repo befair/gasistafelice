@@ -48,7 +48,11 @@
   
     <!--<div class="ord-ord-title">GAS a cui {{profile.display_name}} appartiene</div>-->
       <div class="col-md-6">
-      <div class="scheda_title">GAS a cui {{profile.display_name}} appartiene</div>
+          <div class="scheda_title">GAS a cui {{profile.display_name}} appartiene</div>
+          <div class="well prof">
+              <!-- mappa gas -->
+              <div id="map" style="height: 300px"></div> 
+          </div>
           {{gasl.name}}
       <div class="" ng-repeat="gas in profile.gas_list">
         <a href="" class="no_style">
