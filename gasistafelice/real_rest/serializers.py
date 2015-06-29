@@ -122,7 +122,7 @@ class OrderInfoSerializer(serializers.ModelSerializer):
 class SimpleGASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
-    headquarter = serializers.CharField()
+    headquarter = SeatSerializer()
 
     class Meta:
         model = GAS
