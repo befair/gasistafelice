@@ -6,12 +6,10 @@ var app = angular.module('ngGF',
     .controller("AppController", function($http, $router, $rootScope, $location) {
 
         //TODO: settings
-        $rootScope.app_name = app_name;
-        $rootScope.static_url = static_url;
-
-        $rootScope.absurl_pre = absurl_pre;
-        $rootScope.absurl_static = absurl_static;
-        $rootScope.absurl_api = absurl_api;
+        $rootScope.static_url = '/static/ui_ric1/';
+        $rootScope.url_prefix = 'gasistafelice/';
+        $rootScope.absurl_pre = '/'+$rootScope.url_prefix;
+        $rootScope.absurl_api = '/'+$rootScope.url_prefix+'api/v1/';
 
         //Default values for page
         $rootScope.gas_id = default_gas_id;
