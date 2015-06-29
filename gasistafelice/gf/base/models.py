@@ -35,6 +35,7 @@ from gf.base.accounting import PersonAccountingProxy
 from workflows.utils import do_transition
 import os
 import logging
+import geocoder
 log = logging.getLogger(__name__)
 
 class Resource(object):
@@ -977,6 +978,14 @@ class Place(models.Model, PermissionResource):
             rv += u" (%s)" % self.province.upper()
 
         return rv
+
+    # fetch coords from open street map
+    def update_coords(self):
+        addressString = self.zipcode + ' ' + self.city + ' ' + self.province + ' ' + self.address
+        location = geocoder.osm(addressString)
+        if location.status == 'OK':
+            self.lon = location.lng
+            self.lat = location.lat
 
     def clean(self):
 
