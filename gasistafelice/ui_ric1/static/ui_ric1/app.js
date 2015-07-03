@@ -38,6 +38,7 @@ var app = angular.module('ngGF',
 
                     $http.get($rootScope.absurl_api+'person/my/?format=json')
                     .success( function(data) {
+                        data.gas_list[0].ui_status = 'active';
                         $rootScope.person = data;
                         $rootScope.gas_id = data.gas_list[0].id;
                         $rootScope.gm_id = data.gasmembers[0];
