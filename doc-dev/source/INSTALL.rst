@@ -134,7 +134,7 @@ Go inside new directory and install submodules::
 
 Install Python requirements inside your virtualenv::
 
-    (gf_dev)$ pip install -r requirements/dev.txt
+    (gf_dev)$ pip install -r gasistafelice/deps/dev.txt
 
 Set your local settings::
 
