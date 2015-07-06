@@ -136,13 +136,9 @@ Install Python requirements inside your virtualenv::
 
     (gf_dev)$ pip install -r requirements/dev.txt
 
-Set your local settings::
-
-    (gf_dev)$ cd gasistafelice
-    (gf_dev)$ cp gf/settings.py{.dist,}
-
 Edit ``settings.py`` accordingly to your needs::
 
+    (gf_dev)$ cd gasistafelice
     (gf_dev)$ vim gf/settings.py
 
 Initialize the database::
