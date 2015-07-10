@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 
 from django.contrib import admin
@@ -14,14 +15,13 @@ urlpatterns = patterns('',
 
 	(r'^$'       , 'gf.base.views.index'  ),
 	(r'^%s$' % settings.URL_PREFIX , 'gf.base.views.index'  ),
-	(r'^%sui_ric1/' % settings.URL_PREFIX , include('ui_ric1.urls')),
 	(r'^%ssimulate_user/(?P<user_pk>\d+)/$' % settings.URL_PREFIX , 'gf.base.views.simulate_user'  ),
 
     #New user interface
 	(r'^%sgas/' % settings.URL_PREFIX, include('gf.gas.urls')),
 	#(r'^%ssupplier/' % settings.URL_PREFIX, include('gf.supplier.urls')),
 	#(r'^%sorder/' % settings.URL_PREFIX, include('gf.gas.order_urls')),
-    
+
     #End new user interface
 	(r'^%srest/' % settings.URL_PREFIX, include('rest.urls')),
 
@@ -52,3 +52,6 @@ if 'rosetta' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
         url(r'^%srosetta/' % settings.URL_PREFIX, include('rosetta.urls')),
     )
+
+urlpatterns += staticfiles_urlpatterns()
+
