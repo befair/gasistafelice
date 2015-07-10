@@ -17,9 +17,9 @@ var NEW_NOTE_FORM_TEXT= "\
 jQuery.render_bool = function (val) {
     var rv;
     if (val.trim().toLowerCase() == "false") {
-        rv = '<img alt="False" src="/media/img/admin/icon-no.gif">';
+        rv = '<img alt="False" src="/static/img/admin/icon-no.gif">';
     } else if (val.trim().toLowerCase() == "true") {
-        rv = '<img alt="True" src="/media/img/admin/icon-yes.gif">';
+        rv = '<img alt="True" src="/static/img/admin/icon-yes.gif">';
     } else {
         alert("Variable of boolean type has nor true or false value");
     }

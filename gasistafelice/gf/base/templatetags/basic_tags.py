@@ -40,9 +40,9 @@ def des_version():
 @register.simple_tag
 def bool_img(value):
     if bool(value):
-        rv = '<img alt="True" src="/media/img/admin/icon-yes.gif">'
+        rv = '<img alt="True" src="/static/img/admin/icon-yes.gif">'
     else:
-        rv = '<img alt="False" src="/media/img/admin/icon-no.gif">'
+        rv = '<img alt="False" src="/static/img/admin/icon-no.gif">'
     return rv
 
 @register.simple_tag
