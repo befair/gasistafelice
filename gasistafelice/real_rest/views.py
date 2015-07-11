@@ -20,7 +20,7 @@ def test573(request):
     from django.conf import settings
     import os.path
     f = open(os.path.join(
-        os.path.dirname(settings.PROJECT_ROOT), 'test_data', 'gm573.json')
+        os.path.dirname(settings.PROJECT_ROOT), 'gasistafelice', 'fixtures', 'gm573.json')
     )
     return HttpResponse(f.read())
 
