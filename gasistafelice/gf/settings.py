@@ -167,7 +167,6 @@ INSTALLED_APPS = [
     'gf.supplier',
     'gf.gas',
     #'admin',
-    #'gas_admin',
     'rest',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -10,7 +10,6 @@ ENV PYTHONPATH              /code:/code/gasistafelice:/usr/local/lib/python2.7/s
 ENV UWSGI_CHDIR             /code/gasistafelice
 ENV UWSGI_WSGI_FILE         /code/gasistafelice/gf/wsgi.py
 ENV DJANGO_SETTINGS_MODULE  gf.settings
-#ENV UWSGI_STATIC_MAP        /static/admin=/usr/local/lib/python2.7/site-packages/django/contrib/admin/static/admin
 ENV UWSGI_STATIC_MAP        /static=/code/gasistafelice/static
 ENV UWSGI_STATIC_SAFE       /usr/local/lib/python2.7/site-packages/django/contrib/admin/static/admin
 
