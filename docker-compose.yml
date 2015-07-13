@@ -1,0 +1,30 @@
+proxy:
+  image: nginx:1.9
+  volumes:
+    - ./proxy:/etc/nginx/conf.d:ro
+  volumes_from:
+    - back
+  ports:
+    - '127.0.0.1:8080:80'
+    - '127.0.0.1:8443:443'
+  links:
+    - front
+    - back
+
+front:
+  image: kobe25/gf-front:latest
+  volumes:
+    - ./ui:/code/ui:rw
+
+back:
+  image: kobe25/gf-back:latest
+  volumes:
+    - ./gasistafelice:/code/gasistafelice:ro
+  links:
+    - db
+
+db:
+  image: postgres:9.4
+  environment:
+    POSTGRES_USER:     app
+    POSTGRES_PASSWORD: app
