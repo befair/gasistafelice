@@ -28,3 +28,25 @@ db:
   environment:
     POSTGRES_USER:     app
     POSTGRES_PASSWORD: app
+
+hub:
+  image: selenium/hub:latest
+
+firefox:
+  image: selenium/node-firefox:latest
+  links:
+    - hub
+    - proxy
+
+chrome:
+  image: selenium/node-chrome:latest
+  links:
+    - hub
+    - proxy
+
+e2e:
+  image: michelesr/protractor:latest
+  volumes:
+    - ./test/e2e:/code:ro
+  links:
+    - hub
