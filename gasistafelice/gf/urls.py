@@ -3,7 +3,6 @@ from django.conf import settings
 
 from django.contrib import admin
 
-from gas_admin.models import gas_admin
 
 js_info_dict = {
     'domain'  : 'djangojs',
@@ -30,7 +29,6 @@ urlpatterns = patterns('',
         'des.views.activate', name='registration_activate'),
     (r'^gasistafelice/accounts/reserved_registration/$', 'des.views.staff_registration'),
 
-    (r'^gasistafelice/gas-admin/', include(gas_admin.urls)),
     (r'^gasistafelice/admin/', include(admin.site.urls)),
 
     (r'^gasistafelice/jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
