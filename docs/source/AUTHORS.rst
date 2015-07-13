@@ -14,9 +14,8 @@ FUNCTIONS DESIGN by
 * Dominique Thual
 * Giuseppe Mercanti
 
-CREDITS TO 
+CREDITS TO
 
 * Loris Asoli
 * Orlando Marchetti
-
-
+* Riccardo Pancotti
