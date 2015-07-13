@@ -6,17 +6,20 @@ from gf.gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASS
 from gf.supplier.models import Product, SupplierStock, Supplier
 from simple_accounting.models import LedgerEntry, Transaction
 
+
 class ProductSerializer(serializers.ModelSerializer):
     mu = serializers.CharField()
     pu = serializers.CharField()
     class Meta:
         model = Product
 
+
 class SimpleProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
         fields = ('__unicode__', 'producer', 'category')
+
 
 class SupplierStockSerializer(serializers.ModelSerializer):
 
@@ -30,12 +33,14 @@ class SupplierStockSerializer(serializers.ModelSerializer):
             'detail_step', 'delivery_notes', 'supplier', 'supplier_category'
         )
 
+
 class GASSupplierOrderProductSerializer(serializers.ModelSerializer):
 
     stock = SupplierStockSerializer()
 
     class Meta:
         model = GASSupplierOrderProduct
+
 
 class GASSupplierStockSerializer(serializers.ModelSerializer):
     class Meta:
@@ -202,11 +207,13 @@ class GASMemberSerializer(serializers.ModelSerializer):
             'basket', 'basket_to_be_delivered', 'open_orders'
         )
 
+
 class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
         fields = ('id', 'kind', 'description')
+
 
 class LedgerEntrySerializer(serializers.ModelSerializer):
 
@@ -217,6 +224,8 @@ class LedgerEntrySerializer(serializers.ModelSerializer):
         fields = (
             'id', 'date', 'account', 'transaction', 'amount'
         )
+
+
 class GASMemberCashSerializer(serializers.ModelSerializer):
 
     gas = SimpleGASSerializer()
@@ -228,4 +237,3 @@ class GASMemberCashSerializer(serializers.ModelSerializer):
             'id', 'gas', 'cash_info', 'membership_fee_payed',
             'economic_movements'
         )
-
