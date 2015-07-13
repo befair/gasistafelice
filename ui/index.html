@@ -3,20 +3,20 @@
   <head>
 
     <title>Gasista Felice</title>
+    <base href="/ui/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <!-- Bootstrap -->
-    <link href="/static/ui_ric1/css/datepicker.css" rel="stylesheet">
-    <link href="/static/ui_ric1/css/style.css" rel="stylesheet">  
-    <link href="/static/ui_ric1/css/font-awesome.css" rel="stylesheet">
+    <link href="/ui/css/style.css" rel="stylesheet">  
+    <link href="/ui/css/font-awesome.css" rel="stylesheet">
 
     <!-- a cosa serve questo css di una vecchia versione di jQueryUI -->
 
-    <link rel="stylesheet" href="/static/ui_ric1/css/ngDialog.min.css">
-    <link rel="stylesheet" href="/static/ui_ric1/css/ngDialog-theme-default.css">
-    <link rel="stylesheet" href="/static/ui_ric1/css/ngDialog-theme-flat.css">
-    <link rel="stylesheet" href="/static/ui_ric1/css/ngDialog-custom.css">
-    <link rel="stylesheet" href="/static/ui_ric1/bower_components/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="/ui/css/ngDialog.min.css">
+    <link rel="stylesheet" href="/ui/css/ngDialog-theme-default.css">
+    <link rel="stylesheet" href="/ui/css/ngDialog-theme-flat.css">
+    <link rel="stylesheet" href="/ui/css/ngDialog-custom.css">
+    <link rel="stylesheet" href="/ui/bower_components/leaflet/dist/leaflet.css">
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
     <!-- <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
@@ -88,7 +88,7 @@
           </button>
           <div class="brandname">
               <a href="http://www.befair.it" target="_blank" title="beFair: sostenere lo sviluppo dei territori">
-                  <img src="/static/ui_ric1/img/befair.png" alt="beFair: sostenere lo sviluppo dei territori" class="imglogo">
+                  <img src="/ui/img/befair.png" alt="beFair: sostenere lo sviluppo dei territori" class="imglogo">
               </a>
           </div>
         </div>
@@ -119,7 +119,7 @@
 
          <div ng-show="app.dataLoaded" class="navbar-right">
              <a class="navpic" ng-link="profile()" href="">
-                 <img src="/static/ui_ric1/img/user_pic.png" alt="..." class="imgpic">
+                 <img src="/ui/img/user_pic.png" alt="..." class="imgpic">
              </a>
              <a class="titlenav" ng-link="profile()" href=""> Ciao {{ person.display_name }} </a>
         </div>    
@@ -183,29 +183,28 @@
 
     <div id="footer">
         <div class="container">
-            <p class="text-muted">GASISTA FELICE - NEW UI - V. {% des_version %}</p>
+            <p class="text-muted">GASISTA FELICE v{{ appVersion }}</p>
         </div>
     </div> 
 
 
-    <script src="/static/ui_ric1/bower_components/angular/angular.min.js"></script>
-    <script src="/static/ui_ric1/bower_components/angular-new-router/dist/router.es5.min.js"></script>
-    <script src="/static/ui_ric1/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-    <script src="/static/ui_ric1/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="/static/ui_ric1/bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="/static/ui_ric1/bower_components/satellizer/satellizer.min.js"></script>
+    <script src="/ui/bower_components/angular/angular.min.js"></script>
+    <script src="/ui/bower_components/angular-new-router/dist/router.es5.min.js"></script>
+    <script src="/ui/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="/ui/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="/ui/bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="/ui/bower_components/satellizer/satellizer.min.js"></script>
 
-    <script src="/static/ui_ric1/js/angular-locale_it-it.js"></script>        
-    <script src="/static/ui_ric1/js/ngDialog.min.js"></script>
-    <script src="/static/ui_ric1/js/modernizr.js"></script>
-    <!-- <script src="/static/ui_ric1/js/local.js"></script> -->
-    <script src="/static/ui_ric1/js/bootstrap-datepicker.js"></script>  
+    <script src="/ui/js/angular-locale_it-it.js"></script>        
+    <script src="/ui/js/ngDialog.min.js"></script>
+    <script src="/ui/js/modernizr.js"></script>
+    <!-- <script src="/ui/js/local.js"></script> -->
 
-    <script src="/static/ui_ric1/app.js"></script>
-    <script src="/static/ui_ric1/components/order/order.js"></script>
-    <script src="/static/ui_ric1/components/basket/basket.js"></script>
-    <script src="/static/ui_ric1/components/cash/cash.js"></script>
-    <script src="/static/ui_ric1/components/profile/profile.js"></script>
+    <script src="/ui/app.js"></script>
+    <script src="/ui/components/order/order.js"></script>
+    <script src="/ui/components/basket/basket.js"></script>
+    <script src="/ui/components/cash/cash.js"></script>
+    <script src="/ui/components/profile/profile.js"></script>
 
 </body>
 </html>

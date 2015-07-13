@@ -1,17 +1,14 @@
 {
-  "name": "ui_ric1",
-  "version": "0.1",
+  "name": "gasistafelice",
+  "version": "0.0.0",
   "homepage": "https://github.com/befair/gasistafelice",
-  "authors": [
-    "Riccardo Pancotti",
-    "Luca Ferroni <luca@befair.it>"
-  ],
+  "authors": "beFair",
   "description": "AngularJS 4 Gasista Felice based on Ric1 master thesis, thanks!",
   "keywords": [
     "orders",
     "sse"
   ],
-  "license": "AGPLv3",
+  "license": "AGPL-3.0",
   "ignore": [
     "**/.*",
     "node_modules",

@@ -9,16 +9,12 @@ var app = angular.module('ngGF',
       };
     })
     .config(function ($authProvider) {
-        //$authProvider.loginUrl = $rootScope.absurl_api + 'token-auth/';
-        $authProvider.loginUrl = 'gasistafelice/api/v1/token-auth/';
+        $authProvider.loginUrl = '/api/v1/token-auth/';
     })
     .controller("AppController", function($http, $router, $rootScope, $location, $auth) {
 
         //TODO: settings
-        $rootScope.static_url = '/static/ui_ric1/';
-        $rootScope.url_prefix = 'gasistafelice/';
-        $rootScope.absurl_pre = '/'+$rootScope.url_prefix;
-        $rootScope.absurl_api = '/'+$rootScope.url_prefix+'api/v1/';
+        $rootScope.appVersion = '0.13-dev';
 
         //Default values for page
         $rootScope.gas_id = null;
@@ -36,7 +32,7 @@ var app = angular.module('ngGF',
             .then(
                 function(response) {
 
-                    $http.get($rootScope.absurl_api+'person/my/?format=json')
+                    $http.get('/api/v1/person/my/?format=json')
                     .success( function(data) {
                         data.gas_list[0].ui_status = 'active';
                         $rootScope.person = data;
@@ -231,7 +227,7 @@ var app = angular.module('ngGF',
                 "form-MAX_NUM_FORMS": ""
             });
             
-            var POST_order_path = $rootScope.absurl_pre+'rest/gasmember/'+$rootScope.gm_id+'/order/edit_multiple';
+            var POST_order_path = '/gasistafelice/rest/gasmember/'+$rootScope.gm_id+'/order/edit_multiple';
             $http.post(POST_order_path, { form: products_post })
                 .success(function(){
                     alert("Prodotti aggiunti al paniere con successo!");
@@ -402,7 +398,7 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
                 prova = prova + 1;
                 if (indice == prova)
                 {
-                    $http.get($.absurl_api+'gasmember/'+element2+'/?format=json').success(function(data){ 
+                    $http.get('/api/v1/gasmember/'+element2+'/?format=json').success(function(data){ 
                      $scope.balance.push({balance: data.balance});
                      $rootScope.gasnames.push({
                             id: element.id,

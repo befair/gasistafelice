@@ -44,7 +44,7 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
         return products;
     };
 
-    $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/?format=json')
+    $http.get('/api/v1/gasmember/' + $rootScope.gm_id+'/?format=json')
     .success(function(data) {
 
         $rootScope.gm = data;

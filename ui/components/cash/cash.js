@@ -9,7 +9,7 @@ app.controller("CashController", function($http, $rootScope, $routeParams) {
         return THAT.info.balance - THAT.info.total_basket - THAT.info.total_basket_to_be_delivered;
     };
 
-    $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/cash/?format=json')
+    $http.get('/api/v1/gasmember/' + $rootScope.gm_id+'/cash/?format=json')
     .success(function (data) {
         THAT.transactions = data.economic_movements;
         THAT.info = data.cash_info;

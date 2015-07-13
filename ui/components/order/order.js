@@ -12,7 +12,7 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
     this.orderByField = ''; //?
     this.reverseSort = false; //?
 
-    $http.get($rootScope.absurl_api+'gasmember/' + $rootScope.gm_id+'/?format=json')
+    $http.get('/api/v1/gasmember/' + $rootScope.gm_id+'/?format=json')
     .success(function(data) {
 
         $rootScope.gm = data;
