@@ -9,17 +9,36 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 
-import os, locale
+import os
+import locale
 import consts
+
 from django.utils.translation import ugettext_lazy as _
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+
+ENV = os.getenv('APP_ENV', 'dev')
+
+if ENV == 'prod':
+    DEBUG = False
+    TEMPLATE_DEBUG = False
+    EMAIL_DEBUG = False
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+elif ENV == 'stage':
+    DEBUG = True
+    TEMPLATE_DEBUG = True
+    EMAIL_DEBUG = True
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+else:
+    DEBUG = True
+    TEMPLATE_DEBUG = True
+    EMAIL_DEBUG = True
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+
 FORM_DEBUG = False
-EMAIL_DEBUG = True
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
-PROFILING=False
+EMAIL_FILE_PATH = os.getenv('APP_EMAIL_FILE_PATH', '/dev/stdout')
+PROFILING = os.getenv('APP_PROFILING', False)
 
 ACCOUNT_ACTIVATION_DAYS = 2
 
@@ -36,34 +55,18 @@ ALLOWED_HOSTS = []
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'des_orders_db',
-        'USER': 'des_db_user',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    },
-    'super': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'des_orders_db',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    },
-    'maintenance': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'NAME': os.getenv('POSTGRES_DBNAME', 'app'),
+        'USER': os.getenv('POSTGRES_USERNAME', 'app'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'app'),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'PORT': os.getenv('POSTGRES_PORT', 5432),
     }
 }
 
 AUTHENTICATION_BACKENDS = (
-            'gf.base.backends.AuthenticationParamRoleBackend',
-            'flexi_auth.backends.ParamRoleBackend',
-        )
+    'gf.base.backends.AuthenticationParamRoleBackend',
+    'flexi_auth.backends.ParamRoleBackend',
+)
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -186,8 +189,7 @@ INSTALLED_APPS = [
     'gdxp',
     'rest_framework',
     'rest_framework.authtoken',
-    'real_rest',
-    'ui_ric1',
+    'api_v1',
     #'django.contrib.staticfiles',
 ]
 
@@ -209,8 +211,8 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
 )
 
-LOG_FILE = os.path.join(PROJECT_ROOT, 'gf.log')
-LOG_FILE_DEBUG = os.path.join(PROJECT_ROOT, 'gf_debug.log')
+LOG_FILE = os.getenv('APP_LOG_FILE', '/dev/stdout')
+LOG_FILE_DEBUG = os.getenv('APP_LOG_FILE_DEBUG', '/dev/stdout')
 
 LOGGING = {
     'version': 1,
@@ -274,7 +276,6 @@ LOGGING = {
 
 THEME = "milky"
 AUTH_PROFILE_MODULE = 'users.UserProfile'
-URL_PREFIX = "gasistafelice/"
 
 RESOURCE_PAGE_BLOCKS = {
     'site' : [{
@@ -415,10 +416,9 @@ RESOURCE_PAGE_BLOCKS = {
 }
 
 
-LOGIN_URL = "/%saccounts/login/" % URL_PREFIX
-#LOGIN_REDIRECT_URL = "/%s" % URL_PREFIX
-LOGIN_REDIRECT_URL = "/%snewui/" % URL_PREFIX
-LOGOUT_URL = "/%saccounts/logout/" % URL_PREFIX
+LOGIN_URL = "/gasistafelice/accounts/login/"
+LOGIN_REDIRECT_URL = "/gasistafelice"
+LOGOUT_URL = "/gasistafelice/accounts/logout/"
 CAN_CHANGE_CONFIGURATION_VIA_WEB = False
 ENABLE_OLAP_REPORTS = False
 
@@ -430,7 +430,7 @@ LONG_DATETIME_FMT = "%A %d %B %Y %H:%M"
 SHORT_DATE_FMT = "%Y-%m-%d"
 
 
-locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+locale.setlocale(locale.LC_ALL, os.getenv('APP_LOCALE', 'it_IT.UTF-8'))
 #DOMTHU:
 #locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
 #locale.setlocale(locale.LC_ALL, 'it_IT.1252')
@@ -446,23 +446,26 @@ locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 VALIDATE_NUMERICAL_ZIPCODES = True
 
 INIT_OPTIONS = {
-    'domain' : "ordini.desmacerata.it",
-    'sitename' : "DES Macerata",
-    'sitedescription' : "Gestione degli ordini per il Distretto di Economia Solidale della Provincia di Macerata (DES-MC)",
-    'su_username' : "admin",
-    'su_name'   : "Referente informatico",
-    'su_surname': "del DES-MC",
-    'su_email'  : "",
-    'su_PASSWORD' : "admin",
+    'domain':          '{}:{}'.format(
+        os.getenv('APP_SERVER_NAME', 'ordini.desmacerata.it'),
+        os.getenv('APP_HTTP_PORT', '80'),
+    ),
+    'sitename':        os.getenv('APP_SITE_NAME', 'DES Macerata'),
+    'sitedescription': os.getenv('APP_SITE_DESC', "Gestione degli ordini per il Distretto di Economia Solidale della Provincia di Macerata (DES-MC)"),
+    'su_username':     os.getenv('APP_ADMIN_USER', 'admin'),
+    'su_name':         os.getenv('APP_ADMIN_NAME', 'Referente informatico'),
+    'su_surname':      os.getenv('APP_ADMIN_SURNAME', 'del DES-MC'),
+    'su_email':        os.getenv('APP_ADMIN_EMAIL', ''),
+    'su_PASSWORD':     os.getenv('APP_ADMIN_PW', 'admin'),
 }
 
-MAINTENANCE_MODE = False
+MAINTENANCE_MODE = os.getenv('APP_MAINTENANCE_MODE', False)
 
 # --- WARNING: changing following parameters implies fixtures adaptation --
 # Default category for all uncategorized products
 DEFAULT_CATEGORY_CATCHALL = 'Non definita' #fixtures/supplier/initial_data.json
 JUNK_EMAIL = 'devnull@desmacerata.it'
-EMAIL_DEBUG_ADDR = 'gftest@gasistafelice.org'
+EMAIL_DEBUG_ADDR = os.getenv('APP_EMAIL_DEBUG_ADDR', 'gftest@gasistafelice.org')
 DEFAULT_SENDER_EMAIL = 'gasistafelice@desmacerata.it'
 SUPPORT_EMAIL="dev@gasistafelice.org"
 
@@ -475,14 +478,12 @@ from flexi_auth_settings import *
 from simple_accounting_settings import *
 
 #------ NOTIFICATION settings
-
-DEFAULT_FROM_EMAIL = "gasistafelice@desmacerata.it"
+DEFAULT_FROM_EMAIL = os.getenv('APP_DEFAULT_FROM_EMAIL', 'gasistafelice@desmacerata.it')
 NOTIFICATION_BACKENDS = (
     ("email", "notification.backends.email.EmailBackend"),
 )
 
 #------ CAPTCHA settings
-
 CAPTCHA_FONT_SIZE = 40
 APTCHA_LETTER_ROTATION = (-25,25)
 
@@ -506,5 +507,4 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'final_static')
 
 #------------------------------------------------------------------------------
 #The path where the profiling files are stored
-PROFILE_LOG_BASE = PROJECT_ROOT + '/profiling_logs'
-
+PROFILE_LOG_BASE = os.getenv('APP_PROFILE_LOG_BASE', '/tmp')
