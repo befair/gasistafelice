@@ -85,4 +85,4 @@ test-integration:
 	@echo 'TODO: integration test'
 
 test-e2e:
-	@echo 'TODO: e2e test'
+	@docker-compose run --rm e2e
