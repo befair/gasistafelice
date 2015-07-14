@@ -86,7 +86,7 @@ def site_settings(request):
         'user'                 : request.user.username,
         'user_id'              : request.user.pk,
         'base_usercontainer_id': base_usercontainer_id,
-        'url_prefix'           : settings.URL_PREFIX,
+        'url_prefix'           : 'gasistafelice/',
         'type'                 : 'site',
         'id'                   : site.pk,
         'site_id'              : site.pk,
@@ -757,7 +757,7 @@ def list_notifications(request):
 #        return HttpResponse("Target with path '%s' not found! It doesn't exits or it has changed path." % (path,))
 #
 #def get_rest_page(resource_type, resource_id):
-#    url =  '/%srest/#rest/%s/%s' % (settings.URL_PREFIX, resource_type, resource_id)
+#    url =  '/gasistafelice/rest/#rest/%s/%s' % (resource_type, resource_id)
 #    return url        
 #
 #

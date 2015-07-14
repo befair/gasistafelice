@@ -1,0 +1,30 @@
+Django>=1.7,<1.8
+psycopg2==2.5.2
+django-permissions>=1.1,<1.2
+django-workflows>=1.0
+South>=0.7.3
+Sphinx>=0.6.6
+pisa>=3.0.32
+#xhtml2pdf
+-e git+https://github.com/chrisglass/xhtml2pdf#egg=xhtml2pdf
+pysqlite>=1.0.1
+#-e git+https://github.com/feroda/django-pro-history.git#egg=django-pro-history
+django-reversion
+-e git+https://github.com/feroda/django-simple-accounting.git#egg=django-simple-accounting
+-e git+https://github.com/feroda/django-flexi-auth.git#egg=django-flexi-auth
+##file:../gasistafelice/submodules/django-notification
+#django-notification
+##-e git+https://github.com/feroda/django-notification.git#egg=django-notification
+django-registration-redux
+django-simple-captcha
+#PIL
+pillow
+django-ajax-selects
+django-extensions
+SOAPpy==0.12.5
+reportlab<3.0
+ipython
+djangorestframework>=3.1,<3.2
+django-contrib-comments
+geocoder
+djangorestframework-jwt

@@ -19,7 +19,7 @@ and examination.
 
 It takes one argument, the profile log name, which is joined to the end 
 of the path 'gasistafelice/profiling_logs' (this absolute path is, however,  
-defined by PROFILE_LOG_BASE in default_settings.py. 
+defined by PROFILE_LOG_BASE in settings.py. 
 It also inserts a time stamp into the file name, such that 'my_view.prof' 
 become 'my_view-20100211T170321.prof',where the time stamp is in UTC. 
 This makes it easy to run and compare multiple trials.

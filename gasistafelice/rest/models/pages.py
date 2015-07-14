@@ -31,7 +31,7 @@ class Page(models.Model):
     # AAA: be careful that resource_id can be null!
     resource = generic.GenericForeignKey(ct_field="resource_ctype", fk_field="resource_id")
 
-    # Configuration is the serialization of default_settings.RESOURCE_PAGE_BLOCKS[resource type] 
+    # Configuration is the serialization of settings.RESOURCE_PAGE_BLOCKS[resource type] 
     # (or even resource in our case)
     confdata = models.TextField(default='', null=True, db_index=False, verbose_name=_('Configuration data'))
 

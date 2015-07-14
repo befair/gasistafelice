@@ -445,7 +445,7 @@ class GAS(models.Model, PermissionResource):
     def open_orders(self):
         """
         Return open orders bound to resource.
-        NOTE: this has been added for simple real_rest.ModelSerializers
+        NOTE: this has been added for simple api_v1.ModelSerializers
         """
         return self.orders.open()
 

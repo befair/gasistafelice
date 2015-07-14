@@ -1,4 +1,4 @@
-from default_settings import *
+from settings import *
 
 DATABASES = {
     'default': {
@@ -19,4 +19,3 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
-
