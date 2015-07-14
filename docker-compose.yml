@@ -12,12 +12,12 @@ proxy:
     - back
 
 front:
-  image: kobe25/gf-front:latest
+  image: befair/gasistafelice-front:latest
   volumes:
     - ./ui:/code/ui:rw
 
 back:
-  image: kobe25/gf-back:latest
+  image: befair/gasistafelice-back:latest
   volumes:
     - ./gasistafelice:/code/gasistafelice:ro
   links:

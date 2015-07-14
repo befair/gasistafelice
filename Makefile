@@ -67,7 +67,7 @@ rm:
 	@docker-compose rm -f
 
 rmall: rm
-	@docker rmi -f kobe25/gf-{front,back}
+	@docker rmi -f befair/gasistafelice-{front,back}
 
 rmc:
 	@docker rm -f $(docker ps -aq)
