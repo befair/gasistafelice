@@ -12,23 +12,22 @@ proxy:
     - back
 
 front:
-  image: kobe25/gf-front:latest
+  image: befair/gasistafelice-front:latest
   volumes:
     - ./ui:/code/ui:rw
 
 back:
-  image: kobe25/gf-back:latest
+  image: befair/gasistafelice-back:latest
   volumes:
     - ./gasistafelice:/code/gasistafelice:ro
     - ./gasistafelice/fixtures:/code/gasistafelice/fixtures:rw
   links:
     - db
+  env_file: ./settings.env
 
 db:
   image: postgres:9.4
-  environment:
-    POSTGRES_USER:     app
-    POSTGRES_PASSWORD: app
+  env_file: ./settings.env
 
 hub:
   image: selenium/hub:latest
