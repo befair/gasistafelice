@@ -26,9 +26,7 @@ back:
 
 db:
   image: postgres:9.4
-  environment:
-    POSTGRES_USER:     app
-    POSTGRES_PASSWORD: app
+  env_file: ./settings.env
 
 hub:
   image: selenium/hub:latest
