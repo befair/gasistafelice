@@ -22,6 +22,7 @@ back:
     - ./gasistafelice:/code/gasistafelice:ro
   links:
     - db
+  env_file: ./settings.env
 
 db:
   image: postgres:9.4

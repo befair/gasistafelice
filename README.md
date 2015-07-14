@@ -21,6 +21,8 @@ Now go on:
 
 and login with `admin`/`admin`.
 
+If you want to change any (default) configuration, please edit the `settings.env` file.
+
 ## Routing
 
 New:
