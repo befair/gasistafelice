@@ -7,11 +7,11 @@
 
 Then you could use the test database:
 
-    $ make testdb
+    $ make dbtest
 
 Or you could initialize an empty database:
 
-    $ make initdb
+    $ make dbinit
 
 Now go on:
 

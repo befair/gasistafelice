@@ -20,6 +20,7 @@ back:
   image: kobe25/gf-back:latest
   volumes:
     - ./gasistafelice:/code/gasistafelice:ro
+    - ./gasistafelice/fixtures:/code/gasistafelice/fixtures:rw
   links:
     - db
 

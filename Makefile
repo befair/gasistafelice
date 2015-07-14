@@ -54,13 +54,16 @@ shell:
 dbshell:
 	@docker-compose run back django-admin dbshell
 
-initdb:
+dbinit:
 	@docker-compose run back django-admin makemigrations --noinput
 	@docker-compose run back django-admin migrate
 	@docker-compose run back django-admin init_superuser
 
-testdb:
+dbtest:
 	@docker-compose run back psql -f /code/gasistafelice/fixtures/test.sql
+
+dbdump:
+	@docker-compose run back pg_dump -f /code/gasistafelice/fixtures/test.sql app
 
 rm:
 	@docker-compose stop
