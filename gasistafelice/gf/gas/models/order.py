@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, EmailMessage
 
@@ -108,7 +109,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
 
     pact = models.ForeignKey(GASSupplierSolidalPact, related_name="order_set",verbose_name=_('pact'))
     datetime_start = models.DateTimeField(verbose_name=_('date open'),
-        default=datetime.now, help_text=_("when the order will be opened")
+        default=timezone.now, help_text=_("when the order will be opened")
     )
     datetime_end = models.DateTimeField(verbose_name=_('date close'),
         help_text=_("when the order will be closed"), null=True, blank=True
@@ -310,7 +311,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             log.debug("open_if_needed: GAS(%s) suspended" % (self.gas))
             return
 
-        if self.datetime_start <= datetime.now():
+        if self.datetime_start <= timezone.now():
 
             # Act as superuser
             user = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
@@ -365,7 +366,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
             return
 
         if self.datetime_end:
-            if self.datetime_end <= datetime.now():
+            if self.datetime_end <= timezone.now():
 
                 #InterGAS.
                 cc_intergas_people = Person.objects.none()
@@ -406,7 +407,7 @@ class GASSupplierOrder(models.Model, PermissionResource):
         if self.delivery and self.delivery.date:
             n += '_{0:%Y%m%d}'.format(self.delivery.date)
         else:
-            n += '_{0:%Y%m%d}'.format(datetime.now())
+            n += '_{0:%Y%m%d}'.format(timezone.now())
         return n
         #return self.pact.supplier.name.replace('-', '_').replace(' ', '_')
 
@@ -1583,7 +1584,7 @@ class GASSupplierOrderProduct(models.Model, PermissionResource):
             log.debug('Price has changed for gsop (%s) [ %s--> %s]' %  (self.pk, self.order_price))
             for gmo in self.gasmember_order_set:
                 #gmo.order_price = self.order_price
-                gmo.note = ugettext("Price changed on %(date)s") % { 'date' : datetime.now() }
+                gmo.note = ugettext("Price changed on %(date)s") % { 'date' : timezone.now() }
                 gmo.save()
 
 
