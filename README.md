@@ -37,3 +37,16 @@ Old:
     /gasistafelice        UI
     /gasistafelice/rest   API
     /gasistafelice/admin  Django Admin
+
+## Development
+
+### Test
+
+To launch all the tests:
+
+    $ make test
+
+Additionally, you can visualize the end-to-end tests running in the browsers via a VNC client:
+
+- `localhost:5900` for Firefox
+- `localhost:5901` for Chrome
