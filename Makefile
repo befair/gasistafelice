@@ -40,30 +40,30 @@ ps:
 	@docker-compose ps
 
 t:
-	@docker-compose run test /bin/bash
+	@docker-compose run --rm test /bin/bash
 
 front fe frontend ui:
-	@docker-compose run front /bin/bash
+	@docker-compose run --rm front /bin/bash
 
 back be backend api:
-	@docker-compose run back /bin/bash
+	@docker-compose run --rm back /bin/bash
 
 shell:
-	@docker-compose run back django-admin shell
+	@docker-compose run --rm back django-admin shell
 
 dbshell:
-	@docker-compose run back django-admin dbshell
+	@docker-compose run --rm back django-admin dbshell
 
 dbinit:
-	@docker-compose run back django-admin makemigrations --noinput
-	@docker-compose run back django-admin migrate
-	@docker-compose run back django-admin init_superuser
+	@docker-compose run --rm back django-admin makemigrations --noinput
+	@docker-compose run --rm back django-admin migrate
+	@docker-compose run --rm back django-admin init_superuser
 
 dbtest:
-	@docker-compose run back psql -f /code/gasistafelice/fixtures/test.sql
+	@docker-compose run --rm back psql -f /code/gasistafelice/fixtures/test.sql
 
 dbdump:
-	@docker-compose run back pg_dump -f /code/gasistafelice/fixtures/test.sql app
+	@docker-compose run --rm back pg_dump -f /code/gasistafelice/fixtures/test.sql app
 
 rm:
 	@docker-compose stop
