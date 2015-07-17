@@ -1530,7 +1530,7 @@ class GASSupplierStock(models.Model, PermissionResource):
         This is useful to say how much it cost at liter or at kilo.
         """
 
-        if self.stock.product.mu:
+        if self.stock.product.mu and self.stock.product.muppu:
 
             #find relative UnitsConversion
             #TODO 1a) add boolean flag into UnitsConversion table to define father units 
