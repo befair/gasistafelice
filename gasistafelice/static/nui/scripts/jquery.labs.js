@@ -263,6 +263,8 @@ function start_generic_update_timer(timers, url, timeout, node_css_selector, pre
 	}
 }
 
+/* TOREVIEW EXPLORER -
+ * Dropped support for jQuery.browser in jQuery 1.9: http://jquery.com/upgrade-guide/1.9/#jquery-browser-removed
 //==============================================================================
 //IE BUG ON XML
 //==============================================================================
@@ -278,6 +280,7 @@ jQuery.parseXml = function(xml)
 
         return xml;
 };
+*/
 
 // ============================================================================
 // OTHER
