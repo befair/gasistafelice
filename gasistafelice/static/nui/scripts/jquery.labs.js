@@ -27,10 +27,10 @@ $.JSON = JSON;
 
 // Hashtable of loaded javascript files indexed by 'src'.
 // If a 'src' is present, the javascript file is already loaded.
-jQuery.loadedBlockSrcLoaded  = new Array();	
+jQuery.loadedBlockSrcLoaded  = new Array();
 
 // Hashtable of blocks' update handler
-jQuery.loadedBlockUpdate     = new Array();     // List of update 
+jQuery.loadedBlockUpdate     = new Array();     // List of update
 
 // List of blocks waiting for the related javascript file
 jQuery.pendingBlocks         = new Array();
@@ -56,7 +56,7 @@ jQuery.GET_BLOCK_UPDATE_HANDLER = function(block_name)
 jQuery.set_block_script_loaded = function(block_name)
 {
 	var src_path  = "/static/nui/blocks/"+block_name+".js";
-	jQuery.loadedBlockSrcLoaded.push( src_path );	
+	jQuery.loadedBlockSrcLoaded.push( src_path );
 }
 
 jQuery.is_block_script_loaded = function(block_name)
@@ -72,22 +72,22 @@ jQuery.load_block_script = function (block_name, on_load_callback )
 		on_load_callback(block_name);
 		return
 	}
-	
+
 	var src_path  = "/static/nui/blocks/"+block_name+".js";
 
 	// Force the current page to download the javascript file
 	var head = $('HEAD')[0];
-	
+
 	var script = document.createElement("script");
 	script.type = "text/javascript";
 	script.src  = src_path;
-	
+
 	script.onload             = function(){
 		/* FIREFOX, CHROME */
 		jQuery.set_block_script_loaded( block_name );
  		on_load_callback(block_name);
 	}
-	
+
 	script.onreadystatechange = function () {
 		/* IE 8 */
 		//alert("onreadystatechange " + this.readyState);
@@ -97,7 +97,7 @@ jQuery.load_block_script = function (block_name, on_load_callback )
       		}
    	}
 
-	head.appendChild(script);	
+	head.appendChild(script);
 }
 
 jQuery.add_pending_block=function( script_src, block_id )
@@ -108,16 +108,16 @@ jQuery.add_pending_block=function( script_src, block_id )
 jQuery.showBlock = function(block_box_id, force_update)
 {
 	var block_name = $('#'+block_box_id).attr('block_name');
-	
+
 	var is_loaded = jQuery.is_block_script_loaded(block_name);
 
 	if (is_loaded == false) {
-		
+
 		var src_path  = "/static/nui/blocks/"+block_name+".js";
 
 		// Remember informations about the unrendered block
 		jQuery.add_pending_block(src_path, block_box_id);
-		
+
 		// Dinamicaly download the javascript and remember to
 		// render the pending blocks when download is completed.
 		var onload_completed = function(){
@@ -133,11 +133,11 @@ jQuery.showBlock = function(block_box_id, force_update)
 					jQuery.updateBlockContent(jQuery.pendingBlocks[i].block_id, true); // force update
 				}
 			}
-		}	
-		
+		}
+
 		// Force the current page to download the javascript file
 		var head = $('HEAD')[0];
-		
+
 		var script = document.createElement("script");
 		script.type = "text/javascript";
 		script.src  = src_path;
@@ -145,7 +145,7 @@ jQuery.showBlock = function(block_box_id, force_update)
 		script.onload = function () {
       			/*if (this.readyState == 'complete') */
       				onload_completed();
-   		}		
+   		}
 
 		head.appendChild(script);
 	}
@@ -159,16 +159,16 @@ jQuery.updateBlockContent = function(block_box_id, force_update)
 	var block_name = $('#' + block_box_id).attr('block_name');
 
 	var start_handler = jQuery.GET_BLOCK_UPDATE_HANDLER(block_name);
-	
+
 	if ( start_handler ) {
-		
+
 		start_handler(block_box_id, force_update);
-		
+
 		// Perform global event bindings
-		jQuery.post_load_handler();	
+		jQuery.post_load_handler();
 	}
 	else {
-		alert('No update handler defined for "'+ block_name+'"');	
+		alert('No update handler defined for "'+ block_name+'"');
 	}
 }
 
@@ -177,7 +177,7 @@ jQuery.removeBlock = function(rtype, rid, tname)
 {
         var resource_path = "rest/"+rtype+"/"+rid+"/"+tname+"/";
         var node_selector = '.block[sanet_url='+resource_path+']';
-	
+
         $(node_selector).remove();
 };
 
@@ -194,15 +194,15 @@ var SANET_COOKIE_EXPIRATION_TIME = new Date(2038, 1, 1);
 function save_block_attribute(block_name, attribute_name, value)
 {
 	var cookie_name = block_name + "_" + attribute_name;
-	
+
 	$.cookie(cookie_name, value, { path: '/', expires: SANET_COOKIE_EXPIRATION_TIME } );
 }
 
 function get_block_attribute(block_name, attribute_name)
 {
 	var cookie_name = block_name + "_" + attribute_name;
-	
-	return $.cookie(cookie_name); 
+
+	return $.cookie(cookie_name);
 }
 
 //==============================================================================
@@ -213,9 +213,9 @@ function get_block_attribute(block_name, attribute_name)
 function add_new_timer(timers, callback_function, interval)
 {
 	var ONE_SECOND = 1000;
-	
+
 	var timer_id = setInterval( callback_function, interval * ONE_SECOND);
-	
+
 	// Add new timer
 	timers.push( timer_id );
 }
@@ -233,9 +233,9 @@ function start_generic_update_timer(timers, url, timeout, node_css_selector, pre
 {
 	pre_update_handler  = pre_update_handler ==null ? function(){} : pre_update_handler;
 	post_update_handler = post_update_handler==null ? function(){} : post_update_handler;
-	
+
 	var update_code = function() {
-	
+
 		pre_update_handler();
 		$.ajax({
 			type:'GET',
@@ -254,10 +254,10 @@ function start_generic_update_timer(timers, url, timeout, node_css_selector, pre
 			}
 		});
 	}
-	
+
 	// Update the first time
 	update_code();
-	
+
 	if (timeout > 0) {
 		add_new_timer(timers, update_code , timeout);
 	}
@@ -275,7 +275,7 @@ jQuery.parseXml = function(xml)
                 xmlDoc.loadXML(xml);
                 return xmlDoc;
         }
-        
+
         return xml;
 };
 
@@ -297,15 +297,15 @@ jQuery.timeToHuman =  function (time)
 jQuery.timestamp_to_smart_format = function(timestamp)
 {
 	var n = new Date();
-	
+
 	var t = new Date( parseInt(timestamp) *1000 );
-	
+
 	if ((n.getDate() == t.getDate()) && (n.getMonth() == t.getMonth()) && (n.getFullYear() == t.getFullYear())) {
-		
+
 		var h   = t.getHours();
 		var min = t.getMinutes();
 		var s   = t.getSeconds();
-		return  ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);		
+		return  ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);
 	}
 	else {
 		var y   = t.getFullYear();
@@ -314,11 +314,11 @@ jQuery.timestamp_to_smart_format = function(timestamp)
 		var h   = t.getHours();
 		var min = t.getMinutes();
 		var s   = t.getSeconds();
-		return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d) +" "+ ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);		
-		
-	}		
-	    
-	
+		return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d) +" "+ ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);
+
+	}
+
+
 }
 
 jQuery.timestamp_to_iso = function(timestamp)
@@ -330,8 +330,8 @@ jQuery.timestamp_to_iso = function(timestamp)
 	var h   = t.getHours();
 	var min = t.getMinutes();
 	var s   = t.getSeconds();
-	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d) +" "+ ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);		
-}	
+	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d) +" "+ ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);
+}
 
 jQuery.timestamp_to_iso_short = function(timestamp)
 {
@@ -339,8 +339,8 @@ jQuery.timestamp_to_iso_short = function(timestamp)
 	var y   = t.getFullYear();
 	var m   = t.getMonth() + 1;
 	var d   = t.getDate();
-	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d);		
-}	
+	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d);
+}
 
 
 // ============================================================================
@@ -382,8 +382,8 @@ jQuery.timestamp_to_iso = function(timestamp)
 	var h   = t.getHours();
 	var min = t.getMinutes();
 	var s   = t.getSeconds();
-	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d) +" "+ ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);		
-}	
+	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d) +" "+ ((h<=9)? '0'+h:h) +":"+ ((min<=9)? '0'+min:min) +":" + ((s<=9)? '0'+s:s);
+}
 
 jQuery.timestamp_to_iso_short = function(timestamp)
 {
@@ -391,24 +391,24 @@ jQuery.timestamp_to_iso_short = function(timestamp)
 	var y   = t.getFullYear();
 	var m   = t.getMonth() + 1;
 	var d   = t.getDate();
-	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d);		
-}	
+	return  y +"-"+  ((m<=9)? '0'+m:m)  +"-"+ ((d<=9)? '0'+d:d);
+}
 
 
 
 
-// Original JavaScript code by Chirp Internet: www.chirp.com.au 
-// Please acknowledge use of this code by including this header. 
+// Original JavaScript code by Chirp Internet: www.chirp.com.au
+// Please acknowledge use of this code by including this header.
 function checkTime(v)
 {
 	var r = "";
 	var h;
 	var m='00';
 	var s='00';
-	
+
 	// regular expression to match required time format
 	re = /^(\d{1,2})(?:\:(\d{2})(?:\:(\d{2}))?)?$/;
-	
+
 	if (v != '') {
 		if ((regs = v.match(re))) {
 
@@ -417,23 +417,23 @@ function checkTime(v)
 				return ""
 			else
 				h = regs[1];
-			
+
 			if (regs[2])
 			if (regs[2] < 0 || 59 < regs[2])
 				return ""
-			else 
+			else
 				m = regs[2];
-				
-			if (regs[3]) 
+
+			if (regs[3])
 			if (regs[3] < 0 || 59 < regs[3])
 				return ""
 			else
 				s = regs[3];
-			
+
 			r = h+':'+m+':'+s;
 		}
 	}
-	
+
 	return r;
 }
 
