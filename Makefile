@@ -59,11 +59,15 @@ dbinit:
 	@docker-compose run --rm back django-admin migrate
 	@docker-compose run --rm back django-admin init_superuser
 
-dbtest:
+dbtest: dbclean
 	@docker-compose run --rm back psql -f /code/gasistafelice/fixtures/test.sql
 
 dbdump:
 	@docker-compose run --rm back pg_dump -f /code/gasistafelice/fixtures/test.sql app
+
+dbclean:
+	@docker-compose run --rm back dropdb app
+	@docker-compose run --rm back createdb app -O app
 
 rm:
 	@docker-compose stop
@@ -78,14 +82,20 @@ rmc:
 rmi: rmc
 	@docker rmi -f $(docker images -aq)
 
-test: test-unit test-integration test-e2e
+test: test-info test-unit test-integration test-e2e
 	@echo 'All tests passed!'
 
+test-info:
+	@echo 'To prepare the test db (this will clear your data):'
+	@echo '    $$ make dbtest'
+	@echo
+
 test-unit:
-	@echo 'TODO: unit test'
+	@echo 'Unit test: not implemented yet'
 
 test-integration:
-	@echo 'TODO: integration test'
+	@echo 'Integration test: not implemented yet'
 
 test-e2e:
+	@echo 'End-to-end test: running protractor'
 	@docker-compose run --rm e2e
