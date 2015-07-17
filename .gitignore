@@ -13,3 +13,4 @@ tmp/
 *import.json
 *.log
 *.prof
+bower_components/
