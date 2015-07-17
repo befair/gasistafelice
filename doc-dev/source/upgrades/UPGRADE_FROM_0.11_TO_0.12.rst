@@ -1,9 +1,9 @@
-Aggiornare dalla 0.11 alla 0.12
-===============================
+Aggiornare dalla -1.11 alla 0.12
+================================
 
-#. Installare `django-reversion`::
+#. Installare ``django-reversion``::
 
-    $ pip install -r requirements/base.py
+    $ pip install -r requirements/base.txt
 
 #. **OPZIONALE**: rimuovere le tabelle relative a django-pro-history::
 
@@ -11,9 +11,18 @@ Aggiornare dalla 0.11 alla 0.12
  
     ATTENZIONE: questo rimuoverà tutti dati esistenti relativi alla history.
 
+#. Eliminare tutti gli oggetti di tipo NoticeType dal db::
+
+    $ ./manage.py shell
+
+    > from des_notification.models import notification
+
+    > for obj in notification.NoticeType.objects.all():
+    >     obj.delete()
+
 #. Sincronizzare il database::
 
-    $ ./manage.py syncdb
+    $ ./manage.py syncdb --noinput
 
 #. Eseguire le migrazioni del database::
 
