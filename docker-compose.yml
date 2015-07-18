@@ -21,6 +21,7 @@ back:
   volumes:
     - ./gasistafelice:/code/gasistafelice:ro
     - ./gasistafelice/fixtures:/code/gasistafelice/fixtures:rw
+    - /tmp/gf_tracebacker:/tmp/tracebacker:rw
   links:
     - db
   env_file: ./settings.env
