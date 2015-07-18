@@ -1,38 +1,22 @@
-Babel==1.3
-Django==1.3.7
--e git+https://github.com/feroda/django-pro-history.git@306a1f801e3c6e2813ab7aa93571233f83f7b5bb#egg=Django_Pro_History-master
-Jinja2==2.7.3
-MarkupSafe==0.23
-Pillow==2.8.1
-PyPDF2==1.24
-Pygments==2.0.2
-SOAPpy==0.12.5
-South==1.0.2
-Sphinx==1.3.1
-alabaster==0.7.4
-argparse==1.2.1
+Django<1.4
+Pillow
+South
+Sphinx
 django-ajax-selects==1.2.4
-django-extensions==1.5.5
--e git+https://github.com/feroda/django-flexi-auth.git@35788a486fdd57440e173c0d466318b61381229b#egg=django_flexi_auth-origin/master
--e git+https://github.com/feroda/django-notification.git@9dae221c2942bca8b2cdd114dd682dfbd84d3e81#egg=django_notification-master
-django-permissions==1.1
+django-extensions==1.3.3
+-e git+https://github.com/feroda/django-flexi-auth.git@35788a486fdd57440e173c0d466318b61381229b#egg=django_flexi_auth-dev
+-e git+https://github.com/feroda/django-notification.git@9dae221c2942bca8b2cdd114dd682dfbd84d3e81#egg=django_notification-dev
+django-permissions==1.0.3
 django-registration==0.7
--e git+https://github.com/feroda/django-simple-accounting.git@fc628622cea5f8877f0f437afb400f1a79ca82d8#egg=django_simple_accounting-master
-django-simple-captcha==0.4.5
-django-workflows==1.1.1
-docutils==0.12
-fpconst==0.7.2
-gunicorn==19.3.0
-html5lib==0.99999
-ipython==3.1.0
+-e git+https://github.com/feroda/django-simple-accounting.git@e2770b17fe2e031bc352c066c72b0fbe021d06d1#egg=django_simple_accounting-dev
+django-simple-captcha==0.4.2
+django-workflows==1.0.2
+flup==1.0.2
+ipython==0.10
 pisa==3.0.33
 psycopg2==2.5.2
-pysqlite==2.6.3
-pytz==2015.4
 reportlab==2.7
-six==1.9.0
-snowballstemmer==1.2.0
-sphinx-rtd-theme==0.1.8
-wsgiref==0.1.2
-wstools==0.4.3
--e git+https://github.com/chrisglass/xhtml2pdf@73bab26a285912dc42bed70e57ae74bac1c0669a#egg=xhtml2pdf-master
+simplejson==2.0.9
+six==1.6.1
+-e git+https://github.com/chrisglass/xhtml2pdf@a94b95b0570b8e8e3ebf296ca62d057834438560#egg=xhtml2pdf-dev
+-e git+https://github.com/befair/django-reversion.git@release-1.5.7-middleware-with-user#egg=django-reversion
