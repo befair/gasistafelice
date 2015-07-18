@@ -1,6 +1,6 @@
 // Gasista Felice frontend evolved from a master thesis by Riccard1
 //
-var app = angular.module('ngGF', 
+var app = angular.module('ngGF',
     [ 'ui.bootstrap', 'ngNewRouter', 'satellizer', 'ngDialog', 'ngLocale' ]
     )
     .factory('navigateTo', function ($location, $router) {
@@ -9,7 +9,12 @@ var app = angular.module('ngGF',
       };
     })
     .config(function ($authProvider) {
-        $authProvider.loginUrl = '/api/v1/token-auth/';
+        //WAS: JWT auth $authProvider.loginUrl = '/api/v1/token-auth/';
+        $authProvider.loginUrl = '/gasistafelice/accounts/login/';
+    })
+    .config(function ($httpProvider) {
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     })
     .controller("AppController", function($http, $router, $rootScope, $location, $auth) {
 
@@ -21,13 +26,16 @@ var app = angular.module('ngGF',
         $rootScope.gm_id = null;
         $rootScope.gm = null;
 
+        $http.get('/gasistafelice/accounts/login/'); //GET the csrf cookie from Django
+
         this.dataLoaded = false;
         var THAT = this;
 
         this.login = function() {
             $auth.login({
                 username: THAT.username,
-                password: THAT.password
+                password: THAT.password,
+                next : '/ui/'
             })
             .then(
                 function(response) {
@@ -52,6 +60,7 @@ var app = angular.module('ngGF',
 
         this.logout = function() {
             $auth.logout();
+            $http.get('/gasistafelice/accounts/logout/');
             if (!THAT.isAuth()) {
                 return navigateTo('order');
             }
@@ -59,7 +68,10 @@ var app = angular.module('ngGF',
         this.isAuth = function() {
             return $auth.isAuthenticated();
         };
-        
+
+        //When the page is loaded the first time log the user out
+        $auth.removeToken();
+
         $router.config([
             { path: "/order/", component: "order", as: "order" },
             { path: "/basket/", component: "basket", as: "basket" },
@@ -206,7 +218,7 @@ var app = angular.module('ngGF',
         };
 
         this.updateBasket = function() {
-          
+
             var products_post = [];
 
             angular.forEach(THAT.products, function(product, i) {
@@ -226,7 +238,7 @@ var app = angular.module('ngGF',
                 "INITIAL_FORMS": 0,
                 "form-MAX_NUM_FORMS": ""
             });
-            
+
             var POST_order_path = '/gasistafelice/rest/gasmember/'+$rootScope.gm_id+'/order/edit_multiple';
             $http.post(POST_order_path, { form: products_post })
                 .success(function(){
@@ -242,7 +254,7 @@ var app = angular.module('ngGF',
         return {
             require: "ngModel",
             link: function(scope, elm, attrs, ctrl) {
-                
+
                 var regex=/^\d{2,4}(\.\d{1,2})?$/;
                 ctrl.$parsers.unshift(function(viewValue){
                     var floatValue = parseFloat(viewValue);
@@ -270,7 +282,7 @@ var app = angular.module('ngGF',
             // will serialize a data collection for Form posting.
             // --
             // https://github.com/jquery/jquery/blob/master/src/serialize.js#L45
-            
+
             function serializeData( data ) {
                 // If this is not an object, defer to native stringification.
                 if ( ! angular.isObject( data ) ) {
@@ -317,7 +329,7 @@ var app = angular.module('ngGF',
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
         // Override $http service's default transformRequest
-        $httpProvider.defaults.transformRequest = [ function(data) {      
+        $httpProvider.defaults.transformRequest = [ function(data) {
             var param = function(obj) {
                 var query = '';
                 var name, value, fullSubName, subValue, innerObj, i, split, counter, subName;
@@ -337,13 +349,13 @@ var app = angular.module('ngGF',
                     } else if (value instanceof Object) {
                         for (subName in value) {
                             subValue = value[subName];
-                            
-                            if (subName == "TOTAL_FORMS" || subName=="INITIAL_FORMS" || subName=="MAX_NUM_FORMS") {    
+
+                            if (subName == "TOTAL_FORMS" || subName=="INITIAL_FORMS" || subName=="MAX_NUM_FORMS") {
                                 fullSubName = "form-" + subName;
-                            } else { 
+                            } else {
                                 fullSubName = name + subName;
                             }
-                            
+
                             innerObj = {};
                             innerObj[fullSubName] = subValue;
                             query += param(innerObj) + '&';
@@ -357,7 +369,7 @@ var app = angular.module('ngGF',
             return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
         }];
 
-    }]); 
+    }]);
 
 function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 	$scope.pe = {};
@@ -369,15 +381,15 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
 
     $rootScope.gasnames = [];
     $scope.selectedIndex = 0;
-    
+
     $scope.itemClicked = function ($index) {
         $scope.selectedIndex = $index;
     };
-    
+
     $scope.getID = function(gas_id){
         $rootScope.gasID = gas_id;
     };
-        
+
     $scope.gasmembers = [];
     $scope.balance = [];
 
@@ -385,11 +397,11 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
       function (data) {
 
         $scope.person_name = data.name;
-        
+
         $.each(data.gasmembers, function (index,element){
             $scope.gasmembers.push({id:element});
         });
-        
+
         indice = 0;
         prova = 0;
         $.each(data.gas_list, function(index, element){
@@ -398,7 +410,7 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
                 prova = prova + 1;
                 if (indice == prova)
                 {
-                    $http.get('/api/v1/gasmember/'+element2+'/?format=json').success(function(data){ 
+                    $http.get('/api/v1/gasmember/'+element2+'/?format=json').success(function(data){
                      $scope.balance.push({balance: data.balance});
                      $rootScope.gasnames.push({
                             id: element.id,
@@ -406,12 +418,12 @@ function wrapcontroller($scope,$http,$rootScope,$window,$routeParams){
                             balance: parsingNumbers.parsing(data.balance,2)
                         });
                     });
-                    
+
                     prova = 0;
                     indice = indice + 1;
                 }
             });
-        });    
+        });
     });
 }
 

@@ -17,7 +17,9 @@ from des.models import Siteattr
 from gf.gas.models import GASMember, GAS
 
 from registration.models import RegistrationProfile
-import re, logging
+import re
+import logging
+import json
 
 log = logging.getLogger("gasistafelice")
 
@@ -44,7 +46,15 @@ def login(request, *args, **kw):
             request.POST.get('username') != settings.INIT_OPTIONS['su_username']:
             return HttpResponse(_("Maintenance in progress, please retry later..."))
 
-    return django_auth_login(request, *args, **kw)
+    tmpl_response = django_auth_login(request, *args, **kw)
+    if tmpl_response.status_code == 302:
+        accept = request.META.get('HTTP_ACCEPT', '')
+        if accept and accept.startswith('application/json'):
+            response = HttpResponse(
+                json.dumps({'token': 'bravo, questo e il JWT zuccherino per te'})
+            )
+            return response
+    return tmpl_response
 
 @csrf_protect
 @never_cache
