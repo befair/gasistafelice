@@ -506,4 +506,4 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'final_static')
 
 #------------------------------------------------------------------------------
 #The path where the profiling files are stored
-PROFILE_LOG_BASE = os.getenv('APP_PROFILE_LOG_BASE', '/tmp')
+PROFILE_LOG_BASE = os.getenv('APP_PROFILE_LOG_BASE', '/tmp/profiling')

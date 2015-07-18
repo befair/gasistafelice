@@ -22,6 +22,7 @@ back:
     - ./gasistafelice:/code/gasistafelice:ro
     - ./gasistafelice/fixtures:/code/gasistafelice/fixtures:rw
     - /tmp/gf_tracebacker:/tmp/tracebacker:rw
+    - /tmp/gf_profiling:/tmp/profiling:rw
   links:
     - db
   env_file: ./settings.env
