@@ -21,6 +21,10 @@ back:
   volumes:
     - ./gasistafelice:/code/gasistafelice:ro
     - ./gasistafelice/fixtures:/code/gasistafelice/fixtures:rw
+    - /tmp/gf_tracebacker:/tmp/tracebacker:rw
+    - /tmp/gf_profiling:/tmp/profiling:rw
+  ports:
+    - '127.0.0.1:7000:7000'
   links:
     - db
   env_file: ./settings.env

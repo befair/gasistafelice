@@ -21,6 +21,11 @@ Now go on:
 
 and login with `admin`/`admin`.
 
+For debugging purpose, you could use the backend directly at:
+
+* [`localhost:7000/gasistafelice/`](http://localhost:7000/gasistafelice/)
+* [`localhost:7000/gasistafelice/admin/`](http://localhost:7000/gasistafelice/admin/)
+
 If you want to change any (default) configuration, please edit the `settings.env` file.
 
 ## Routing

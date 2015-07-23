@@ -38,7 +38,7 @@ cd $GF_HOME
 
 export GF_HOME
 export PYTHONPATH=$GF_HOME:$PYTHONPATH
-export DJANGO_SETTINGS_MODULE=maintenance_settings
+export DJANGO_SETTINGS_MODULE=gf.maintenance_settings
 
 function settings_var {
   export name=$1

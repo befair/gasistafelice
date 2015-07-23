@@ -35,7 +35,7 @@ var app = angular.module('ngGF',
             $auth.login({
                 username: THAT.username,
                 password: THAT.password,
-                next : '/ui/'
+                next : '/'
             })
             .then(
                 function(response) {
