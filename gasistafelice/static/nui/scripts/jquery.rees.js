@@ -47,7 +47,7 @@ jQuery.Resource = Class.extend({
 
         //AAAAA FIXME TODO: ancora non è implementata la pagina della risorsa categoria
         //TOGLIERE L'IF QUANDO SARà IMPLEMENTATA
-        if ((this.type == 'productcategory')|| (this.type == 'delivery')|| (this.type == 'withdrawal')) { 
+        if ((this.type == 'productcategory')|| (this.type == 'delivery')|| (this.type == 'withdrawal')) {
             res = this.name;
         } else {
             res = "<a class='ctx_enabled resource inline @@resource_type@@' sanet_urn='@@urn@@' href='@@url@@'> @@name@@</a>@@more_details@@";
@@ -65,7 +65,7 @@ jQuery.Resource = Class.extend({
     },
 
 });
-    
+
 /* jQuery.BLOCKS are used to store Block instances.
    They will be retrieved by the update procedure
  */
@@ -95,11 +95,11 @@ jQuery.UIBlock = Class.extend({
     },
 
     get_control_panel: function() {
-        
+
         var block_el = $('#' + this.block_box_id);
         var block_urn = block_el.attr('block_urn');
         this.url = jQuery.pre + jQuery.app + '/' + block_urn;
-        
+
         var block_obj = this;
 
         $.ajax({
@@ -108,9 +108,9 @@ jQuery.UIBlock = Class.extend({
             dataType: 'xml',
             async: false,
             complete: function(r, s){
-                
+
                 if (s == "success") {
-                    
+
                     var jQel = jQuery(jQuery.parseXml(r.responseText));
                     if (jQel.children('error').length > 0)
                         return jQel.text()
@@ -134,14 +134,14 @@ jQuery.UIBlock = Class.extend({
                                 //Display field label as usual
                                 _fl = new jQuery.Resource(urn, _fl).render();
                             }
-                            
+
                             var checked = '';
                             if ((_ft == 'checkbox')||(_ft == 'radio')) {
                                 var _fchk = $(this).children('value').attr('xselected');
                                 if (_fchk == 'True')
                                     checked = 'checked="checked"';
                             }
-                            
+
                             if(_ft != 'select')
                                 form.append("<tr><td><input type='"+_ft+"' name='gfCP_"+_fv+"' value='"+_fval+"' " + checked + "/></td><td><label>"+_fl+"</label></td></tr>" );
                             else
@@ -166,7 +166,7 @@ jQuery.UIBlock = Class.extend({
                     block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
                 }
             }
-        });	
+        });
     },
 
     get_data_source : function() {
@@ -187,7 +187,7 @@ jQuery.UIBlock = Class.extend({
         if (urn == undefined) {
             var urn = jQel.attr('resource_type') + "/" + jQel.attr('resource_id');
         }
-        
+
         this.resource = new jQuery.Resource(urn);
     },
 
@@ -198,21 +198,21 @@ jQuery.UIBlock = Class.extend({
         var block_box_el = $('#' + block_box_id);
         this.block_el = block_box_el.children('.block_body');
         this.block_el.empty();
-        
+
         var block_urn = block_box_el.attr('block_urn');
         this.url = jQuery.pre + jQuery.app + '/' + block_urn;
 
         var block_obj = this;
-        
+
         $.ajax({
             type:'GET',
             url: block_obj.url,
             dataType: 'xml',
             data : { render_as : block_obj.rendering },
             complete: function(r, s){
-                
+
                 if (s == "success") {
-                    
+
                     block_obj.update_content(r.responseText);
                     block_obj.post_load_handler(); // Update GUI event handlers
                 }
@@ -220,8 +220,8 @@ jQuery.UIBlock = Class.extend({
                     block_obj.block_el.html( gettext("An error occurred while retrieving the data from server (" + s +")") );
                 }
             }
-        });	
-    },  
+        });
+    },
 
     update_content: function(data) {
 
@@ -243,7 +243,7 @@ jQuery.UIBlock = Class.extend({
 
         // Set click handlers for actions
         var block_obj = this;
-        this.block_el.find('.block_action').each(function () { 
+        this.block_el.find('.block_action').each(function () {
             $(this).click(function () { return block_obj.action_handler($(this))});
         });
     },
@@ -256,16 +256,16 @@ jQuery.UIBlock = Class.extend({
 
         var method = action_el.attr('method');
 
-        if (method && 
+        if (method &&
             method.toUpperCase() == "OPENURL"
         )
             window.open(action_el.attr('url'), "_blank");
             //this break execution...
-            
+
         //-- else...
 
         /* TODO: action attribute "on_complete" can assume values
-        /* reload_page, switch_view, reload_block, 
+        /* reload_page, switch_view, reload_block,
         if action_el.attr('on_complete')
         */
         var name = action_el.attr('name');
@@ -313,16 +313,16 @@ jQuery.UIBlock = Class.extend({
     render_actions : function(data) {
 
         var res = "<div class='list_actions'>@@list_actions@@</div>";
-        
+
         var jQel = this.parsed_data;
-        
+
         //Render block actions
         var contents = jQel.find('content[type="user_actions"]');
         var action_template = "<input type='button' href=\"#\" url=\"@@action_url@@\" class=\"block_action\" name=\"@@action_name@@\" popup_form=\"@@popup_form@@\" value=\"@@action_verbose_name@@\" method=\"@@action_method@@\" confirm_text=\"@@confirm_text@@\" />";
         var actions = '';
 
         if (contents.find('action').length > 0) {
-        
+
             contents.find('action').each(function(){
                 var action = action_template.replace(/@@action_name@@/g, $(this).attr("name"));
                 action = action.replace(/@@action_verbose_name@@/g, $(this).attr("verbose_name"));
@@ -336,9 +336,9 @@ jQuery.UIBlock = Class.extend({
 
         res = res.replace('@@list_actions@@', actions);
         return res;
-    
+
     },
-    
+
     render_content : function(data) {
         // to be defined in subclasses (see: blocks/details.js
     }
@@ -365,7 +365,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
     update_content: function(data) {
         this._super(data);
-        
+
     },
 
     post_load_handler: function() {
@@ -412,7 +412,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
     },
 
-    form_beforeSubmit : function (form_el, formData, jqForm, options) { 
+    form_beforeSubmit : function (form_el, formData, jqForm, options) {
 
             form_el.find('.errorlist').remove();
 
@@ -445,10 +445,10 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 return false;
 
 //                //FIXME: this serialize MUST be applied to form widgets of all table nodes:
-//                //get them with oTable.fnGetNodes() 
+//                //get them with oTable.fnGetNodes()
 //                var sData = $(this).serialize();
 //                alert( "The following data would have been submitted to the server: \n\n"+sData );
-                
+
             });
         }
     },
@@ -482,7 +482,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         }
 
         return res;
-        
+
     },
 
     render_content_as_icons: function(data) {
@@ -499,7 +499,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
             @@inforow@@	\
         </table> 		\
         ";
-        
+
         var inforow = " \
             <tr id='@@row_id@@' > 			\
                 <td width='100%'>   			\
@@ -513,24 +513,24 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
         ";
 
         var jQel = this.parsed_data;
-        
+
         if (jQel.children('error').length > 0)
             return jQel.text()
-        if (jQel.children('sysmsg').length > 0) 
+        if (jQel.children('sysmsg').length > 0)
             return jQel.text()
-            
-        
+
+
         // Resource ID
         var resource_type =  jQel.attr('resource_type');
         var resource_id   =  jQel.attr('resource_id');
-        
+
         // Resources
         var contents = jQel.find('content[type="list"]');
-        
+
         if (contents.find('info').length > 0) {
-        
+
             contents.find('info').each(function(){
-                
+
                 var name = $(this).attr('name');
                 var urn = $(this).attr('sanet_urn');
                 var more_details = $(this).attr('more_details');
@@ -538,7 +538,7 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
 
                 var a = inforow
                 a = a.replace(/@@row_id@@/g, row_id);
-                
+
                 a = a.replace(/@@resource@@/g, new jQuery.Resource(urn, name, more_details).render());
 
                 var actions = '<ul style="display:table">';
@@ -559,12 +559,12 @@ jQuery.UIBlockWithList = jQuery.UIBlock.extend({
                 });
                 actions += "</ul>"
 
-                a = a.replace(/@@actions@@/g, actions);		
+                a = a.replace(/@@actions@@/g, actions);
 
                 res = res.replace('@@inforow@@', a);
             });
-            
-            res = res.replace('@@inforow@@', '');	
+
+            res = res.replace('@@inforow@@', '');
         }
         else {
             res = res.replace('@@inforow@@', gettext('There are no elements related to this resource.'));
@@ -585,11 +585,11 @@ jQuery.retrieve_form = function (action_el) {
 
     var action_name = action_el.val();
     var action_url = action_el.attr("url");
-	
+
     var url = action_url;
 
     var res = $.ajax({
-        url : action_url, 
+        url : action_url,
         async : false,
         dataType : "xml" //xml needed to evaluate script by hand later
     });
@@ -604,8 +604,24 @@ jQuery.retrieve_form = function (action_el) {
 	//
 	// Initialize dialog component
 	//
-	var options = { 
-		success : function (responseText, statusText)  { 
+
+	$(NEW_NOTE_DIALOG).dialog({
+		title: gettext(action_name),
+		autoOpen: false,
+		width: 600,
+		height: "auto",
+		modal: true,
+		buttons: [{
+            text: gettext('Confirm'),
+            click: function() {
+                $(jqForm).ajaxSubmit(options);
+            }
+        }],
+		close: function() { }
+	});
+
+	var options = {
+		success : function (responseText, statusText)  {
             if (responseText.match('class="errorlist"')) {
                 jqMessagelist = $(responseText).find('.messagelist');
                 jqForm = $(responseText).find('form');
@@ -615,58 +631,41 @@ jQuery.retrieve_form = function (action_el) {
                 $(NEW_NOTE_DIALOG).html(jqForm);
                 //-- LF: it should be needed only if there are <script> tags outside <form>
                 //eval(form_script);
-            } 
+            }
             else {
                 //
                 // "hide"/close the dialog
                 //
                 $(NEW_NOTE_DIALOG).dialog('destroy');
-                $(NEW_NOTE_DIALOG).dialog('close');
                 update_page();
                 //
                 //
 				// response = jQuery.parseXml(responseText);
 				// var resource_type = $(response).attr('resource_type');
 				// var resource_id   = $(response).attr('resource_id');
-				
+
                 // var block_box_el = $(action_el).parentsUntil('li[block_name]');
                 // if (block_box_el) {
                 //     var block_name = block_box_el.attr('block_name');
                 //     jQuery.GET_BLOCK_UPDATE_HANDLER(block_name)(block_box_id);
                 // }
-			}			
+			}
 		}
-	}		
-	
+	}
+
 	//
 	// CREATE THE DIALOG
 	//
     // Comment fero: use the same as global new_note form dialog
-	$(NEW_NOTE_DIALOG).dialog('close');
-	$(NEW_NOTE_DIALOG).dialog('destroy');
-	
+    if ($(NEW_NOTE_DIALOG).dialog('isOpen')) {
+        $(NEW_NOTE_DIALOG).dialog('destroy');
+    }
 	$(NEW_NOTE_DIALOG).empty();
 	$(NEW_NOTE_DIALOG).append(jqMessagelist);
 	$(NEW_NOTE_DIALOG).append(jqForm);
     //-- LF: it should be needed only if there are <script> tags outside <form>
     //eval(form_script);
-	
-	var buttons = new Object();
-	buttons[gettext('Confirm')] = function() {
-		$(jqForm).ajaxSubmit(options);
-	};
-	
-	$(NEW_NOTE_DIALOG).dialog({
-		title: gettext(action_name),
-		bgiframe: true,
-		autoOpen: false,
-		width: 600,
-		height: "auto",
-		modal: true,
-		buttons: buttons,
-		close: function() { }
-	});
-	
+
 	$(NEW_NOTE_DIALOG).dialog('open');
     $(window).trigger('init-autocomplete');
 	return false;
@@ -678,7 +677,7 @@ jQuery.retrieve_form = function (action_el) {
 
 /* Retrieve and update blocks that include resource list */
 jQuery.resource_list_block_update = function(block_box_id) {
-    alert("vecchia gestione blocco "+block_box_id); 
+    alert("vecchia gestione blocco "+block_box_id);
 }
 
 //------------------------------------------------------------------------------//
@@ -689,7 +688,7 @@ function fncOrder(x, _step, _min, _price, _blk){
   try {
     var el = null;
     _step > 0 ? (el = x.prev('input')) : (el = x.next('input'));
-    var qta = parseFloat(el.val().replace(',','.')); 
+    var qta = parseFloat(el.val().replace(',','.'));
     var prev_row_total = parseFloat(qta*_price);
     var new_qta = 0
     if (_step > 0)
@@ -697,7 +696,7 @@ function fncOrder(x, _step, _min, _price, _blk){
     else
         qta <= _min ? (new_qta = 0) : (new_qta = qta + _step);
     el.val(SetFloat(new_qta))
-    var next_td = x.parent('td').next(); 
+    var next_td = x.parent('td').next();
     var row_total = new_qta * _price;
     next_td.html('€ ' + SetFloat(row_total));
     var total = parseFloat($(_blk).html().substr(2).replace(',','.')) + row_total - prev_row_total;
@@ -731,14 +730,14 @@ jQuery.Clock = Class.extend({
         this.interval = interval;
         if (this.interval == undefined)
             this.interval = 1;
-        
+
         this.is_set = false;
-        
+
     },
 
     set_start : function(now) {
-        //Takes in input a string like 
-        //mar 01 nov 2011 18:49:44 
+        //Takes in input a string like
+        //mar 01 nov 2011 18:49:44
         //which is split into prefix + hh:mm:ss
 
         this.start = now;
@@ -753,7 +752,7 @@ jQuery.Clock = Class.extend({
         i = rnow.indexOf(' ')
         this.prefix = rnow.slice(i+1).trim().split(' ').reverse().join(' ');
         this.is_set = true;
-        
+
     },
 
     update : function() {
@@ -777,12 +776,12 @@ jQuery.Clock = Class.extend({
             s += this.mm + ':';
             if (this.ss<10) s += '0';
             s += this.ss;
-            
+
             this.jQel.html(s);
         }
     }
 });
-        
+
 
 var FADE_LEVEL = 0.60;
 var FADE_TIME_MS = 1500;
