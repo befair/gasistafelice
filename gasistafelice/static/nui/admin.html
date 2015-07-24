@@ -50,14 +50,14 @@ and open the template in the editor.
         <script src="scripts/jquery.form.js" type="text/javascript"></script>
 
         <!-- 2001-01-11 (dbilli) widgets for Report forms -->
-        <script src="scripts/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
+        <script src="scripts/jquery-ui.min.js" type="text/javascript"></script>
 
         <script type="text/javascript">
             jQuery.url = window.location.toString();
             jQuery.url = jQuery.url.split('/');
             jQuery.pre = jQuery.url[0]+"//"+jQuery.url[2]+"/"+jQuery.url[3]+"/";
             oldhash = "";
-            
+
 
             function refresh(){
                 $.get(jQuery.pre+"admin/auth/group/",function(d){
@@ -89,7 +89,7 @@ and open the template in the editor.
                     $('#user_list').html(r);
                 });
             }
-            
+
             $(function(){
                 $('#messages').hide();
                 $('.debug').hide();
@@ -106,7 +106,7 @@ and open the template in the editor.
                     $.post($(this).attr('href'), {'post':'yes'});
                     refresh();
                 });
-                
+
                 $('button.edit').live('click', function(e){
                     var action = $(this).parent('.block').parent('.block').children('.block:first').children('form');
                     alert(action.attr('id'));

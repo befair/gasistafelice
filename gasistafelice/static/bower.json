@@ -20,6 +20,7 @@
   ],
   "dependencies": {
     "jquery-ui": "<2.0",
-    "jquery": "<2.0"
+    "jquery": "<2.0",
+    "datatables": "~1.10.7"
   }
 }
