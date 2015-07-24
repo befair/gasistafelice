@@ -572,6 +572,8 @@
                 );
 
 
+                $("#section_tabs").tabs();
+
                 for (var i=0; i<CURRENT_PAGE_SECTIONS.length; i++) {
 
                     var s = CURRENT_PAGE_SECTIONS[i];
@@ -588,32 +590,10 @@
                             '</ul>' +
                         '</div>'
                     );
-
-                    $("#section_tabs").tabs('add', 'section_element_id');
                 }
-
-                $("#section_tabs").tabs({
-                    cache: true,
-
-                    select: function(event, ui) {
-                        // Objects available in the function context:
-                        //ui.tab     // anchor element of the selected (clicked) tab
-                        //ui.panel   // element, that contains the selected/clicked tab contents
-                        //ui.index   // zero-based index of the selected (clicked) tab
-
-                        $.cookie('selected_tab_index', ui.index);
-
-                        var section_blocks_ul_elementt_id = 'section_blocks_' + CURRENT_PAGE_SECTIONS[ui.index]['name'];
-
-                        if ($('#'+section_blocks_ul_elementt_id).children('li').length==0) {
-                            render_blocks(section_blocks_ul_elementt_id, CURRENT_PAGE_SECTIONS[ui.index]['blocks']);
-                        }
-                    }
-                });
 
                 var start_section = CURRENT_PAGE_SECTIONS[selected_tab_index];
                 var content_placeholder_element_id = 'section_blocks_' + start_section['name'];
-                $("#section_tabs").tabs("select", selected_tab_index);
 
                 render_blocks(content_placeholder_element_id, start_section['blocks']);
             }

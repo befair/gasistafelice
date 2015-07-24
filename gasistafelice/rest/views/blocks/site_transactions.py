@@ -1,14 +1,11 @@
 
 from rest.views.blocks import transactions
 
-from flexi_auth.models import ObjectWithContext
-
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
 
 class Block(transactions.Block):
 
     BLOCK_NAME = "site_transactions"
-    BLOCK_VALID_RESOURCE_TYPES = ["site"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["site"]
 
     def _check_permission(self, request):
 
@@ -23,4 +20,3 @@ class Block(transactions.Block):
             rv = super(Block, self)._get_user_actions(request)
 
         return rv
-
