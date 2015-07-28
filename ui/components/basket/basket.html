@@ -69,11 +69,6 @@ $("#checkAll").click(function(){
         <td data-title="image" class="tdprod">{{item.name}}</td>
         <td data-title="image" class="tdprice">{{item.price|currency:"€"}}</td>
         <td data-title="add_cart" class="tdprod" style="width:10%;" ng-show="item.can_update">
-            <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id" value="{{item.id}}"/>
-            <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{item.gsop_id}}"/>
-            <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{item.price}}"/>
-            <input type="hidden"  name="form-{{$index}}-ordered_amount" id="form-{{$index}}-ordered_amount" value="{{item.quantity}}"/>
-            <input type="hidden" name="form-{{$index}}-gm_id" id="form-{{$index}}-gm_id" value="{{gm.id}}"/>
             <div class="input-group">
                 <span class="opcart_left menu_links" ng-click="basket.pm.decrement(item);">
                     <span class="glyphicon glyphicon-minus"></span>
@@ -89,8 +84,7 @@ $("#checkAll").click(function(){
         <td class="tdprice">
             <fieldset ng-show="item.can_update">
                 <input name="checkbox_{{$index}}" id="checkbox_{{$index}}"
-                    ng-model="item.enabled"
-                    type="checkbox">
+                    ng-model="item.enabled" type="checkbox">
             </fieldset>
         </td>
     </tr>

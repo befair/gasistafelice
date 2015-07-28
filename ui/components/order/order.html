@@ -97,10 +97,6 @@
 
         <tbody id="gasbody" class="repeated-item" ng-show="order.dataLoaded">
             <tr ng-repeat="product in order.pm.products |  filter: searchQuery | orderBy:orderByField:reverseSort">
-                <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
-                <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{product.id}}"/>
-                <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{product.price}}"/>
-
               <td data-title="image" class="tdprod">
                   <img ng-src="/ui/img/Kitchen-Bread-icon.png" class="imgprod" alt="" />
               </td>
@@ -137,9 +133,5 @@
         </tr>
       </table>
     </div>
-    <input type="hidden" id="form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="{{prodnumber}}"/>
-    <input type="hidden" id="form-TOTAL_FORM_COUNT" name="form-TOTAL_FORM_COUNT" value="{{prodnumber}}" />
-    <input type="hidden" id="form-INITIAL_FORMS" name="form-INITIAL_FORMS" value="0"/>
-    <input type="hidden" id="form-MAX_NUM_FORMS" name="form-MAX_NUM_FORMS" value="0"/>
 </form>
 </div>
