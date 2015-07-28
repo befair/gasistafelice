@@ -39,7 +39,8 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
                 order_state : order_state,
                 step : step_unit,
                 min_amount : min_amount,
-                gsop_id : gsop.id
+                gsop_id : gsop.id,
+                enabled: false //flag to __remove__ a product from basket
             });
         });
         return products;

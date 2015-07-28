@@ -262,8 +262,10 @@ var app = angular.module('ngGF',
                     ordered_amount: product.quantity,
                     note: product.note,
                     gm_id: $rootScope.gm_id,
-                    gsop_id: product.gsop_id
+                    gsop_id: product.gsop_id,
+                    enabled: product.enabled //WARNING: if __true__ --> remove the product from the basket
                 });
+
             });
 
             products_post.push({
@@ -275,6 +277,14 @@ var app = angular.module('ngGF',
             var POST_order_path = '/gasistafelice/rest/gasmember/'+$rootScope.gm_id+'/basket/edit_multiple';
             $http.post(POST_order_path, { form: products_post })
                 .success(function(){
+                    //Remove the product from the basket ui
+                    angular.forEach(ordered_products, function(product, i) {
+                        if (product.enabled) {
+                            product.quantity = 0;
+                            ordered_products.splice(i, 1);
+                        }
+                    });
+
                     alert("Paniere aggiornato con successo!");
                 })
                 .error(function(){

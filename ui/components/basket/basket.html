@@ -89,9 +89,8 @@ $("#checkAll").click(function(){
         <td class="tdprice">
             <fieldset ng-show="item.can_update">
                 <input name="checkbox_{{$index}}" id="checkbox_{{$index}}"
-                    ng-click="basket.toggleSelection($index)"
+                    ng-model="item.enabled"
                     type="checkbox">
-
             </fieldset>
         </td>
     </tr>
