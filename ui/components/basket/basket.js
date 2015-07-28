@@ -28,7 +28,7 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
             var order_state = gsop.order.current_state.toLowerCase();
 
             products.push({
-                id : gsop.id,
+                id : gmo.id,
                 price : parsingNumbers.parsing(gmo.ordered_price),
                 quantity: parsingNumbers.parsing(gmo.ordered_amount),
                 note : gmo.note,
@@ -38,7 +38,8 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
                 can_update : order_state == "open",
                 order_state : order_state,
                 step : step_unit,
-                min_amount : min_amount
+                min_amount : min_amount,
+                gsop_id : gsop.id
             });
         });
         return products;
@@ -63,11 +64,11 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
 
 /*
  * app.controller("BasketController", function ($http, $rootScope, $sce, ngDialog, $modal, person, parsingNumbers) {
-    
+
 $scope.btbd = [];
 $scope.orderByField = '';
 $scope.reverseSort = false;
-    
+
 var order = "";
 var suppliername = "";
 var productname = "";
@@ -83,10 +84,10 @@ var value = "";
 $scope.path=$.absurl_pre+"rest/gasmember/"+ $rootScope.gasmemberID+"/basket/edit_multiple";
 
 //use $rootScope.gasmemberID to get the right JSON
-    
+
 $scope.dataLoaded = "false";
 $scope.prodnumber = 0;
-    
+
 // NEW CODE
 var gm = person.selected_gasmember;
 $.each(gm.basket_to_be_delivered, function(i, el) {
@@ -138,11 +139,11 @@ $.each(gm.basket_to_be_delivered, function(i, el) {
 //              $.each(item.basket, function(i,b){
 //                 if (b.id == basket[0].substring(0,5))
 //                 {
-//                     
+//
 //                 }
 //              });
 //          });
-//          
+//
 //          $scope.basket.push({
 //			id: basket[0].substring(0,5),
 //                        order: basket[1],
@@ -153,7 +154,7 @@ $.each(gm.basket_to_be_delivered, function(i, el) {
 //                        total: amount * parseFloat(basket[4].substring(13,8)),
 //                        step: parseFloat(basket[6].substr(step+6,1)),
 //                        delete: "false"});
-//          
+//
 //          //LOADING POST basket data
 //          $scope.basket_post.push({
 //			id: basket[0].substring(0,5),
@@ -161,19 +162,19 @@ $.each(gm.basket_to_be_delivered, function(i, el) {
 //                        price: parseFloat(basket[4].substring(13,8)),
 //                        amount: parseFloat(amount)
 //          });
-//          
+//
 //          $scope.prodnumber = $scope.prodnumber + 1;
 //      });
 //	$scope.dataLoaded = "true";
-// });      
-//    
-    
-var i = 0;
-    
+// });
+//
 
-    
+var i = 0;
+
+
+
 $scope.getData = function(){
-    
+
 /*$http.get($.absurl_pre+'rest/gasmember/'+$rootScope.gasmemberID+'/basket/edit_multiple?render_as=table&iDisplayLength=-1').success(function(data){
     $scope.basket_2 = data;
     console.log($scope.basket_2.aaData);
@@ -181,7 +182,7 @@ $scope.getData = function(){
             $scope.basket_empty = "false";
     }
     $.each(data.aaData, function(index, basket){
-          
+
           value = basket[6].indexOf("value");
           step = basket[6].indexOf("step");
           if ($.isNumeric(basket[6].substr(value+7,2)))
@@ -192,19 +193,19 @@ $scope.getData = function(){
           else{
             $scope.amount[i] = basket[6].substr(value+7,1);
           }
-          
+
           i = i + 1;
-         
+
           //LOADING basket data
-          
-          
+
+
         $http.get($.absurl_api+'gasmember/'+$rootScope.gasmemberID+'/?format=json').
           success(function(item){
               i = 0;
               $.each(item.basket, function(i,b){
                  if (b.id == basket[0].substring(0,5)) {
                         bp = basket[4].substring(13,8);
-                        bp = bp.replace(",", "."); 
+                        bp = bp.replace(",", ".");
                         $scope.basket.push({
                             id: b.ordered_product.id,
                             order: basket[1],
@@ -228,7 +229,7 @@ $scope.getData = function(){
                             ordered_price: parsingNumbers.parsing(basket[4].substring(13,8)),
                             ordered_amount: parsingNumbers.parsing($scope.amount[i])
                       });
-                      
+
                       $scope.prodnumber = $scope.prodnumber + 1;
                      i = i + 1;
                 }
@@ -237,11 +238,11 @@ $scope.getData = function(){
       });
 	$scope.dataLoaded = "true";
     console.log($scope.basket_post);
- });finecommento// 
+ });finecommento//
 };
 
 $scope.getData();
-    
+
 //BTBD getting data
 /*$http.get('./lib/gasmemberNEW.json').success(function(data){
       $.each(data.basket_to_be_delivered, function(index, basket){
@@ -261,7 +262,7 @@ $scope.getData();
  });finecommento//
 
 $scope.toggleSelection = function toggleSelection(i) {
-    
+
     if ($scope.basket_post[i].enabled == true)
     {
         $scope.basket_post[i].enabled = false;
@@ -269,15 +270,15 @@ $scope.toggleSelection = function toggleSelection(i) {
     else{
         $scope.basket_post[i].enabled = true;
     }
-    
+
 };
 
 $scope.delete = function ( idx ) {
   var person_to_delete = $scope.basket[idx];
   $scope.basket.splice(idx, 1);
   $scope.basket_post.splice(idx, 1);
-};   
-    
+};
+
      $scope.increment = function(product,i){
         quantity = parsingNumbers.parsing(product.amount);
         quantity += product.step;
@@ -286,14 +287,14 @@ $scope.delete = function ( idx ) {
         $scope.basket_post[i].ordered_amount += product.step;
         //console.log($scope.products_post[i].ordered_amount);
     }
-    
+
     $scope.change = function(product,i){
         quantity = parsingNumbers.parsing(product.amount);
         product.total = quantity * product.price;
         $scope.basket_post[i].ordered_amount = quantity;
         //console.log($scope.products_post[i].ordered_amount);
     }
-    
+
         $scope.decrement = function(product,i){
         quantity = parsingNumbers.parsing(product.amount, 10);
         console.log(quantity);
@@ -305,7 +306,7 @@ $scope.delete = function ( idx ) {
             product.total = product.amount * product.price;
         }
         }
-    
+
     $scope.getTotal = function(){
     var total = 0;
     for(var i = 0; i < $scope.basket.length; i++){
@@ -314,10 +315,10 @@ $scope.delete = function ( idx ) {
     }
     return parseFloat(total).toFixed(2);
 }
- 
-      
-$scope.elimina = function(){   
-}  
+
+
+$scope.elimina = function(){
+}
 
 $scope.open = function (size) {
 
@@ -344,29 +345,29 @@ $scope.close = function()
                             scope: $scope}); finecommentostar//
             $http.post($scope.path, {form:$scope.basket_post})
             .success(function(){
-                $scope.basket_post.splice($scope.basket_post.length - 1 , 1);  
+                $scope.basket_post.splice($scope.basket_post.length - 1 , 1);
                 $scope.basket = [];
                 $scope.basket_post = [];
                 $scope.getData();
                 alert("Paniere aggiornato!");
             })
             .error(function(){
-                $scope.basket_post.splice($scope.basket_post.length - 1, 1);   
+                $scope.basket_post.splice($scope.basket_post.length - 1, 1);
                 alert("Qualcosa è andato storto, riprova!");
             });
     }
-    
+
     $scope.clickToOpen = function () {
-           
+
     };
-       
+
 
 }
 
 
 
 function FrmPaniereController($scope,$http,transformRequestAsFormPost){
-                
+
 }
 
 

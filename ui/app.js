@@ -217,13 +217,13 @@ var app = angular.module('ngGF',
             return parseFloat(total).toFixed(2);
         };
 
-        this.updateBasket = function() {
+        this.addToCart = function(products) {
 
             var products_post = [];
 
-            angular.forEach(THAT.products, function(product, i) {
+            angular.forEach(products, function(product, i) {
 
-                //FORMATTING products for the POST
+                //FORMATTING products for the POST -> order/edit_multiple
                 products_post.push({
                     id: "",
                     gsop_id: product.id,
@@ -249,6 +249,38 @@ var app = angular.module('ngGF',
                 });
         };
 
+        this.updateCart = function(ordered_products) {
+
+            var products_post = [];
+
+            angular.forEach(ordered_products, function(product, i) {
+
+                //FORMATTING products for the POST -> basket/edit_multiple
+                products_post.push({
+                    id: product.id,
+                    ordered_price: product.price,
+                    ordered_amount: product.quantity,
+                    note: product.note,
+                    gm_id: $rootScope.gm_id,
+                    gsop_id: product.gsop_id
+                });
+            });
+
+            products_post.push({
+                "TOTAL_FORMS": products_post.length,
+                "INITIAL_FORMS": 0,
+                "form-MAX_NUM_FORMS": ""
+            });
+
+            var POST_order_path = '/gasistafelice/rest/gasmember/'+$rootScope.gm_id+'/basket/edit_multiple';
+            $http.post(POST_order_path, { form: products_post })
+                .success(function(){
+                    alert("Paniere aggiornato con successo!");
+                })
+                .error(function(){
+                    alert("C'è stato qualche problema, riprova");
+                });
+        };
     })
     .directive('validPrice',function() {
         return {

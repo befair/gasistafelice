@@ -1,22 +1,22 @@
 <div class="tab-pane active" id="ordinare"><!--ORDINARE-->
-        
+
   <div class="ord-ord-title">Gli ordini aperti del {{gm.gas.name}}</div>
     <div class="row">
       <div class="cont_orders_list" ng-repeat="open_order in gm.open_orders">
         <div ng-click="order.pm.set_order_catalog(open_order);" class="no_style">
         <table class="table orders_list">
-            
+
         <tbody>
           <tr>
               <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" ng-src="/ui/img/user_pic.png"></img></td>
-              <td class="menu_links">{{open_order.supplier.name}} 
+              <td class="menu_links">{{open_order.supplier.name}}
                   <span ng-show="open_order.supplier.seat.province">
                       ({{open_order.supplier.seat.province}})
                   </span>
-              </td> 
+              </td>
           </tr>
           <tr>
-            <td class="menu_links"><b>Si chiude il:</b> 
+            <td class="menu_links"><b>Si chiude il:</b>
                 {{open_order.datetime_end|date:'medium'}}
             </td>
           </tr>
@@ -37,104 +37,104 @@
       <div class="searchbar">
           <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
           <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>
-      </div> 
+      </div>
         <form name="myForm">
-            <button class="def-btn" type="submit" ng-click="order.pm.updateBasket()"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
-        
+            <button class="def-btn" type="submit" ng-click="order.pm.addToCart(order.pm.products)"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
+
 
       <div class="orderlist">
-       
-      <table class="table gas">  
-          <thead>  
-            <tr>  
+
+      <table class="table gas">
+          <thead>
+            <tr>
               <th scope="col" ng-click="orderByField='image'; reverseSort = !reverseSort">Immagine
-                
+
                   <span ng-show="orderByField == 'image'" class="listorder">
                     <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
                     <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
               </th>
               <!-- <th scope="col" ng-click="orderByField='category'; reverseSort = !reverseSort">Categoria
-                
+
                 <span ng-show="orderByField == 'category'" class="listorder">
                     <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
                     <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
-                
-                </th> 
+
+                </th>
               -->
               <th scope="col" ng-click="orderByField='name'; reverseSort = !reverseSort">Prodotto
-                  
+
                 <span ng-show="orderByField == 'name'" class="listorder">
                     <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
                     <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
-                
-                </th>  
+
+                </th>
               <th scope="col" ng-click="orderByField='price'; reverseSort = !reverseSort">Prezzo
-                
+
                   <span ng-show="orderByField == 'price'" class="listorder">
                     <span ng-show="!reverseSort"><i class="fa fa-sort-desc"></i></span>
                     <span ng-show="reverseSort"><i class="fa fa-sort-asc"></i></span>
                 </span>
-                
+
                 </th>
-              <th scope="col">Quantit&#224;</th> 
+              <th scope="col">Quantit&#224;</th>
               <th scope="col">Totale</th>
               <th scope="col">Nota
-                </th>                     
-            </tr>   
-        </thead> 
+                </th>
+            </tr>
+        </thead>
 
         <tbody ng-hide="order.dataLoaded">
         <tr>
             <td colspan="8">
                 <p style="text-align:center">
                     Caricando i prodotti <i class="fa fa-spinner fa-spin"></i>
-                </p>  
+                </p>
             </td>
         </tr>
 
-        <tbody id="gasbody" class="repeated-item" ng-show="order.dataLoaded">  
-            <tr ng-repeat="product in order.pm.products |  filter: searchQuery | orderBy:orderByField:reverseSort">  
+        <tbody id="gasbody" class="repeated-item" ng-show="order.dataLoaded">
+            <tr ng-repeat="product in order.pm.products |  filter: searchQuery | orderBy:orderByField:reverseSort">
                 <input type="hidden" id="form-{{$index}}-id" name="form-{{$index}}-id"/>
                 <input type="hidden" id="form-{{$index}}-gsop_id" name="form-{{$index}}-gsop_id" value="{{product.id}}"/>
                 <input type="hidden" id="form-{{$index}}-ordered_price" name="form-{{$index}}-ordered_price"  value="{{product.price}}"/>
 
-              <td data-title="image" class="tdprod">                                                   
+              <td data-title="image" class="tdprod">
                   <img ng-src="/ui/img/Kitchen-Bread-icon.png" class="imgprod" alt="" />
               </td>
               <!-- <td data-title="category" class="tdprod">
                 <div class="category">
-                  <i class="fa fa-minus-circle"></i> 
+                  <i class="fa fa-minus-circle"></i>
                 </div>
-              </td> -->  
-              <td data-title="product_name" class="tdprod">{{product.name}}                                        
-                </td>  
-              <td data-title="product_price" class="tdprod">{{product.price | limitTo: 4 | currency:"€"}}</td>     
+              </td> -->
+              <td data-title="product_name" class="tdprod">{{product.name}}
+                </td>
+              <td data-title="product_price" class="tdprod">{{product.price | limitTo: 4 | currency:"€"}}</td>
               <td data-title="add_cart" class="tdprod" style="width:10%;">
                 <div class="input-group">
                     <span class="opcart_left menu_links" ng-click="order.pm.decrement(product);"><span class="glyphicon glyphicon-minus"></span></span>
                   <input type="text" class="form-control form-control-ordered_amount" ng-blur="order.pm.change(product)" ng-model="product.quantity"  id="form-{{$index}}-ordered_amount" ng-pattern="/^(\d)+(\.\d+)*$/" required/>
                   <span class="opcart_right menu_links" ng-click="order.pm.increment(product);"><span class="glyphicon glyphicon-plus"></span></span>
-                </div> 
-              </td>  
+                </div>
+              </td>
               <td data-title="total" class="tdprod" >{{product.quantity*product.price | currency:"€"}}</td>
               <td data-title="note" class="tdprod">
               <input type="text" class="form-control notetext" placeholder="Note" name="form-{{$index}}-note" id="note" ng-model="product.note">{{product.note}}
               </td>
-            </tr>  
-          </tbody>  
+            </tr>
+          </tbody>
       </table>
       <table class="table total">
         <tr>
             <td>
                 Totale previsto:
-            </td>  
+            </td>
             <td class="tableprice">
                 <b>€ {{order.pm.getTotal(order.pm.products)}}</b>
-            </td>    
-        </tr>    
+            </td>
+        </tr>
       </table>
     </div>
     <input type="hidden" id="form-TOTAL_FORMS" name="form-TOTAL_FORMS" value="{{prodnumber}}"/>
