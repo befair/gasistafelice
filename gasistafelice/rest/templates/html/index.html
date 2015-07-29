@@ -513,32 +513,30 @@
             create_page_sections_and_blocks(t);
         }
 
+        var CURRENT_PAGE_TABS = undefined;
+        var CURRENT_PAGE_TABS_SELECTORS = [];
 
-
-
-        var CURRENT_PAGE_SECTIONS = undefined;
-
-        function get_page_config(xml)
-        {
-            var sections = new Array();
+        function get_page_config(xml) {
+            var sections = [];
 
             $('section', xml).each(function() {
-                var s = new Array();
-                s['name']    = $(this).attr('name');
-                s['descr']   = $(this).attr('descr');
-
-                s['blocks']  = new Array();
+                var s = {
+                    name: $(this).attr('name'),
+                    descr: $(this).attr('descr'),
+                    blocks: []
+                }
                 $('block', $(this)).each(function() {
-                    var b = new Array();
-                    b['block_name']          = $(this).attr('block_name');
-                    b['block_description']   = $(this).attr('block_description');
-                    b['resource_descr']      = $(this).attr('resource_name');
-                    b['block_urn']           = $(this).attr('block_urn');
-                    b['refresh_rate']        = $(this).attr('refresh_rate'); // seconds
-                    b['start_open']          = $(this).attr('start_open');
-                    b['auto_refresh']        = $(this).attr('auto_refresh');
+                    var b = {
+                        block_name          : $(this).attr('block_name'),
+                        block_description   : $(this).attr('block_description'),
+                        resource_descr      : $(this).attr('resource_name'),
+                        block_urn           : $(this).attr('block_urn'),
+                        refresh_rate        : $(this).attr('refresh_rate'), // seconds
+                        start_open          : $(this).attr('start_open'),
+                        auto_refresh        : $(this).attr('auto_refresh')
+                    }
 
-                    s['blocks'].push(b);
+                    s.blocks.push(b);
                 });
                 sections.push(s);
             });
@@ -548,57 +546,67 @@
 
         function create_page_sections_and_blocks(t)
         {
-            CURRENT_PAGE_SECTIONS = get_page_config(t);
+            CURRENT_PAGE_TABS = get_page_config(t);
 
             //
             // RENDER SECTION TABS
             //
 
-            if (CURRENT_PAGE_SECTIONS.length > 1) {
+            if (CURRENT_PAGE_TABS.length > 1) {
 
                 $('#body_content').append(
                     '<div id="section_tabs">'+
                         '<ul id="section_tabs_header">'+
-                        // <li> <a href='' title='section1'> section1 </a></li>
-                        // <li> <a href='' title='section2'> section2 </a></li>
                         '</ul>'+
-                        //<div id='section1'>
-                        //   ...
-                        //</div>
-                        //<div id='section2'>
-                        //   ...
-                        //</div>
                     '</div>'
                 );
 
+                for (var i=0; i<CURRENT_PAGE_TABS.length; i++) {
 
-                $("#section_tabs").tabs();
-
-                for (var i=0; i<CURRENT_PAGE_SECTIONS.length; i++) {
-
-                    var s = CURRENT_PAGE_SECTIONS[i];
+                    var s = CURRENT_PAGE_TABS[i];
+                    CURRENT_PAGE_TABS_SELECTORS.push('#'+s.name);
 
                     // Add an element to the tab
                     $('#section_tabs_header').append(
-                        '<li> <a style="font-size:18px" href="#'+s['name']+'" title="'+s['name']+'">'+s['descr']+'</a></li>'
+                        '<li> <a style="font-size:18px" href="#'+ s.name +'" title="'+ s.name +'" section_name="'+ s.name +'">'+s.descr +'</a></li>'
                     );
 
                     // Create the container for the tab's content
                     $('#section_tabs').append(
-                        '<div id="'+s['name']+'"class="page_section">'+
-                            '<ul id="section_blocks_'+s['name']+'">' +
+                        '<div id="'+ s.name +'" class="page_section">'+
+                            '<ul id="section_blocks_'+ s.name +'">' +
                             '</ul>' +
                         '</div>'
                     );
-                }
+                };
 
-                var start_section = CURRENT_PAGE_SECTIONS[selected_tab_index];
-                var content_placeholder_element_id = 'section_blocks_' + start_section['name'];
 
-                render_blocks(content_placeholder_element_id, start_section['blocks']);
+                $("#section_tabs").tabs({
+
+                    beforeActivate: function(event, ui) {
+                        // Objects available in the function context:
+                        //ui.newTab     // anchor element of the selected (clicked) tab
+                        //ui.newPanel   // element, that contains the selected/clicked tab contents
+
+                        index = CURRENT_PAGE_TABS_SELECTORS.indexOf(ui.newPanel.selector);
+
+                        $.cookie('selected_tab_index', index);
+
+                        var section_blocks_ul_element_id = 'section_blocks_' + CURRENT_PAGE_TABS[index].name;
+
+                        if ($('#'+section_blocks_ul_element_id).children('li').length === 0) {
+                            render_blocks(section_blocks_ul_element_id, CURRENT_PAGE_TABS[index].blocks);
+                        }
+                    }
+                });
+
+                var start_section = CURRENT_PAGE_TABS[selected_tab_index];
+                var content_placeholder_element_id = 'section_blocks_' + start_section.name;
+
+                render_blocks(content_placeholder_element_id, start_section.blocks);
             }
             else {
-                render_blocks('body_content', CURRENT_PAGE_SECTIONS[0]['blocks']);
+                render_blocks('body_content', CURRENT_PAGE_TABS[0].blocks);
             }
 
 
@@ -1704,8 +1712,7 @@
         jQuery.updt = new Date().getTime();
 
         $(function(){
-            alert('ciao');
-            console.log('111');
+
             $('.toolbar ul').hide();
 
             $('.block_menu_trigger').click(function(){
@@ -1728,7 +1735,6 @@
                 }
             });
 
-            console.log('222');
             $('#log').ajaxStart(function(){
                 //alert("it begins");
                 $('html').css('cursor','wait');
@@ -1830,10 +1836,6 @@
                 });
             });
             $('.configure').children('img').attr('src', '{{ STATIC_URL }}nui/img/config.png');
-
-
-            console.log('333');
-
 
 
             //
