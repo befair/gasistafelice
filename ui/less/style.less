@@ -1,9 +1,9 @@
 /* Gasista LESS File */
- 
+
 /* ===================================================================
 Import Bootstrap LESS and Site Specific LESS
 =================================================================== */
- 
+
 @import '../bower_components/bootstrap/less/bootstrap.less';
 @import '../bower_components/bootstrap/less/responsive-utilities.less'; /* Load Responsive media queries  */
 @import 'variables.less'; /* Your site specific LESS variables - these override BS defaults  */
@@ -68,8 +68,8 @@ a.menu_links { cursor: pointer; }
   		//togliendo il padding-left il blocco rimarrà allineato con gli altri
   	}
   }
-  	
-//GRID-LAYOUT ORDINI TAB according to  -- display layout -- 
+
+//GRID-LAYOUT ORDINI TAB according to  -- display layout --
 
     //DESKTOP
 
@@ -112,7 +112,7 @@ a.menu_links { cursor: pointer; }
 
 		}
 	}
-    
+
     //LARGE DESKTOP
 	@media (min-width:1031px){
 		.cont_orders_list{
@@ -244,9 +244,8 @@ a.menu_links { cursor: pointer; }
 }
 
 .imgpic{
-	width:50px;
-	height:50px;
-	margin-top:-15px;
+	width:40px;
+	height:40px;
     .img-circle;
 }
 
@@ -265,6 +264,7 @@ border-right: 1px solid #FFF;
 
 .navbar-right{
     margin-top:5px;
+    margin-right:0;
 }
 
 .gaslist{
@@ -287,7 +287,7 @@ border-right: 1px solid #FFF;
 
 .tr1{
     padding-right:5px;
-    
+
 }
 
 
@@ -300,8 +300,8 @@ border-right: 1px solid #FFF;
     //border-left: 1px solid;
     //border-right: 1px solid;
     //margin-right:5px;
-    
-    
+
+
 }
 //WRAP
 
@@ -325,8 +325,8 @@ border-right: 1px solid #FFF;
 	font-family: Verdana;
 	font-size:@foot-font;
 	width:100%;
-	.bordered(#EEE, #E5E5E5, #DDD, #E5E5E5);	
-	
+	.bordered(#EEE, #E5E5E5, #DDD, #E5E5E5);
+
 	.container{
 		padding-left: @foot-padding;
 		padding-right: @foot-padding;
@@ -456,7 +456,7 @@ border-right: 1px solid #FFF;
 .tableprice{
     color: green;
     width:10%;
-    
+
     font-style: bold;
 }
 
@@ -466,29 +466,17 @@ border-right: 1px solid #FFF;
 }
 
 thead{
- cursor: pointer;  
+ cursor: pointer;
 }
 
-#cashresume{
-  text-align: justify;
-  margin-right: 0px;
-  font-size: 16px;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  background-color: white;
-  z-index: 1000;
-  border: 1px solid green;
-}
-
-#cashresume-body, #cashresume > h2 {
-    padding: 0.3em;
-}
-#cashresume > h2 {
+.subnav {
     color: white;
     background-color: green;
-    font-size: 1.1em;
-    margin : 0;
+    font-size: 0.8em;
+    padding-top: 0.1em;
+}
+.container-fluid {
+    padding: 0;
 }
 
 .balance{
@@ -509,37 +497,37 @@ thead{
 .tottitle{
     background-color: red;
 }
-#feedback { 
-  height: 104px; 
-  width: 104px; 
-  position: fixed; 
-  top: 40%; 
+#feedback {
+  height: 104px;
+  width: 104px;
+  position: fixed;
+  top: 40%;
   z-index: 999;
   left:98%;
   transform: rotate(-90deg);
-  -webkit-transform: rotate(-90deg); 
-  -moz-transform: rotate(-90deg); 
-  -o-transform: rotate(-90deg); 
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 
-#feedback a { 
-  display: block; 
-  background: #f01; 
+#feedback a {
+  display: block;
+  background: #f01;
   padding: 1px 16px;
-  color: #fff; 
-  font-family: Arial, sans-serif; 
-  font-size: 17px; 
-  font-weight: bold; 
-  text-decoration: none; 
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  font-weight: bold;
+  text-decoration: none;
   border-bottom: solid 1px #333;
   border-left: solid 1px #333;
   border-right: solid 1px #fff;
-  
+
 }
 
-#feedback a:hover { 
-  background: #06c; 
+#feedback a:hover {
+  background: #06c;
 }
 
 .nofound{
@@ -665,22 +653,22 @@ margin-top:10px;
     font-size:14px!important;
     td
     {
-        font-color:  black!important; 
-    }   
+        font-color:  black!important;
+    }
 }
 
  @media (max-width: 750px) {
-  
+
 	  // make each table separate from other ones
 
-     
+
       .balance{
-      table, thead, tbody, th, td, tr { 
-				display: block; 
+      table, thead, tbody, th, td, tr {
+				display: block;
 				width:100%;
                 font-size:12px!important;
 			}
-			thead tr { 
+			thead tr {
 				position: absolute;
 				top: -9999px;
 				left: -9999px;
@@ -688,14 +676,14 @@ margin-top:10px;
 			tbody tr{
 				margin-bottom:5px;
 			}
-			td{ 
+			td{
 				/* Behave  like a "row" */
 				//border: none!important;
-				//border-bottom: 1px solid #eee!important; 
+				//border-bottom: 1px solid #eee!important;
 				position: relative;
                 width:100%;
                 //margin-left:45%;
-				padding-left: 40%!important; 
+				padding-left: 40%!important;
                 border-right: 1px solid #eee!important;
 			}
 			tbody{
@@ -724,26 +712,26 @@ margin-top:10px;
                 }
 			}
 
-			td:before{ 
+			td:before{
 				/* Now like a table header */
 				position: absolute;
 				/* Top/left values mimic padding */
 				top: 6px;
 				left: 6px;
-				width: 40%; 
-				//margin-left: 0px!mportant; 
+				width: 40%;
+				//margin-left: 0px!mportant;
 				white-space: nowrap;
-			}      
+			}
       }
-     
+
 	  .gas{
-	  		table, thead, tbody, th, td, tr { 
-				display: block; 
+	  		table, thead, tbody, th, td, tr {
+				display: block;
 				width:100%;
-				
+
                 font-size:15px!important;
 			}
-			thead tr { 
+			thead tr {
 				position: absolute;
 				top: -9999px;
 				left: -9999px;
@@ -751,14 +739,14 @@ margin-top:10px;
 			tbody tr{
 				margin-bottom:5px;
 			}
-			td { 
+			td {
 				/* Behave  like a "row" */
 				//border: none!important;
-				//border-bottom: 1px solid #eee!important; 
+				//border-bottom: 1px solid #eee!important;
 				position: relative;
                 width:100%;
                 //margin-left:45%;
-				padding-left: 40%!important; 
+				padding-left: 40%!important;
                 border-right: 1px solid #eee!important;
 			}
 			tbody{
@@ -789,44 +777,44 @@ margin-top:10px;
                 }
 			}
 
-			td:before{ 
+			td:before{
 				/* Now like a table header */
 				position: absolute;
 				/* Top/left values mimic padding */
 				top: 6px;
 				left: 6px;
-				width: 40%; 
-				//margin-left: 0px!mportant; 
+				width: 40%;
+				//margin-left: 0px!mportant;
 				white-space: nowrap;
 			}
-          
+
             .form-control{
                 width:40px!important;
             }
-          
+
             .notetext{
                 width:200px!important;
             }
-          
+
             .tdprice{
                 text-align: left!important;
             }
-          
+
 	  }
-     
+
      .conto{
-         
+
          .saldo{
             font-size:18px!important;
          }
-         
-        table, thead, tbody, th, td, tr { 
-				display: block; 
+
+        table, thead, tbody, th, td, tr {
+				display: block;
 				width:100%;
 				border:none;
                 font-size: 20px!important;
 			}
-			thead tr { 
+			thead tr {
 				position: absolute;
 				top: -9999px;
 				left: -9999px;
@@ -836,23 +824,23 @@ margin-top:10px;
 			tbody tr{
 				margin-bottom:5px;
 			}
-			td { 
+			td {
 				/* Behave  like a "row" */
 				//border: none!important;
-                border-bottom: 1px solid #eee!important; 
+                border-bottom: 1px solid #eee!important;
 				border-top: 0px!important;
                 position: relative;
                 width:100%;
-            
-				//padding-left: 40%!important; 
+
+				//padding-left: 40%!important;
 			}
-         
+
             td:nth-child(odd){
                 border-bottom:0px!important;
                 font-weight: bold;
             }
             td:nth-child(even){
-                
+
             }
 			tbody{
 				tr:hover:nth-child(even){
@@ -866,26 +854,26 @@ margin-top:10px;
                 }
 			}
 
-			td:before{ 
+			td:before{
 				/* Now like a table header */
 				position: absolute;
 				/* Top/left values mimic padding */
 				top: 6px;
 				left: 6px;
-				width: 40%; 
-				//margin-left: 0px!mportant; 
+				width: 40%;
+				//margin-left: 0px!mportant;
 				white-space: nowrap;
 			}
-          
+
             .form-control{
                 width:200px!important;
             }
-          
+
             .tdprice{
                 text-align: left!important;
-            }   
+            }
      }
-     
+
      .infoconto{
         font-size: 12px;
         color: green;
@@ -897,9 +885,9 @@ margin-top:10px;
 .gas {
 	clear:left;
 	.border-radius(4px,1px,#C7C7C7);
-    
-    border-spacing: 0; 
-	tbody { 
+
+    border-spacing: 0;
+	tbody {
 	height:auto; //Previously 400px
 	padding-bottom:0px;
 		tr:hover{
@@ -937,7 +925,7 @@ td { height:50px; width:115px;}*/
 //PER ORA COMMENTATO, RIMETTERE A 750 PER LO SLIDE ORIZZONTALE!!!
 
 /*@media (max-width: 750px) {
-	
+
 	#home, .tab-gas{
 		width: @table-size px!important;
 		overflow-x:scroll;
@@ -1109,12 +1097,12 @@ td { height:50px; width:115px;}*/
 }
 
 
-.shape{    
+.shape{
     border-style: solid; border-width: 0 40px 40px 0; float:right; height: 0px; width: 0px;
-    -webkit-transform: rotate(360deg);  
-    -moz-transform: rotate(360deg);  
-    -o-transform: rotate(360deg);  
-    transform: rotate(360deg); 
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
 }
 .shape-text{
     color:#fff; font-size:12px; font-weight:bold; position:relative; right:-22px; top:-3px; white-space: nowrap;
@@ -1187,7 +1175,7 @@ td { height:50px; width:115px;}*/
   }
 
 
-.profile 
+.profile
 {
     min-height: 355px;
     display: inline-block;
@@ -1207,15 +1195,15 @@ figcaption.ratings a:hover
     color:#f39c12;
     text-decoration:none;
     }
-.divider 
+.divider
 {
     border-top:1px solid rgba(0,0,0,0.1);
     }
-.emphasis 
+.emphasis
 {
     border-top: 4px solid transparent;
     }
-.emphasis:hover 
+.emphasis:hover
 {
     border-top: 4px solid #1abc9c;
     }
@@ -1223,7 +1211,7 @@ figcaption.ratings a:hover
 {
     margin-bottom:0;
     }
-span.tags 
+span.tags
 {
     background: #1abc9c;
     border-radius: 0px;

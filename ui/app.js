@@ -22,7 +22,7 @@ var app = angular.module('ngGF',
         $rootScope.appVersion = '0.13-dev';
 
         //Default values for page
-        $rootScope.gas_id = null;
+        $rootScope.gas_active = null;
         $rootScope.gm_id = null;
         $rootScope.gm = null;
 
@@ -44,7 +44,7 @@ var app = angular.module('ngGF',
                     .success( function(data) {
                         data.gas_list[0].ui_status = 'active';
                         $rootScope.person = data;
-                        $rootScope.gas_id = data.gas_list[0].id;
+                        $rootScope.gas_active = data.gas_list[0];
                         $rootScope.gm_id = data.gasmembers[0];
                         THAT.dataLoaded = true;
                     })

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <!-- Bootstrap -->
-    <link href="/ui/css/style.css" rel="stylesheet">  
+    <link href="/ui/css/style.css" rel="stylesheet">
     <link href="/ui/css/font-awesome.css" rel="stylesheet">
 
     <!-- a cosa serve questo css di una vecchia versione di jQueryUI -->
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/ui/bower_components/leaflet/dist/leaflet.css">
     <!--<link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Oswald:300' rel='stylesheet' type='text/css'>-->
-    <!-- <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">  
+    <!-- <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Montserrat:700|Pacifico" rel="stylesheet" type="text/css">
     -->
 
     <!--
@@ -35,7 +35,7 @@
     the device is rotated the scale is restored.
 
     -->
-      
+
     <script type="text/javascript">
       (function(doc) {
 
@@ -64,13 +64,66 @@
   </head>
   <body>
   <div id="wrap">
-     
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- LF: ... inelegante
+                    <a href="http://www.befair.it" target="_blank" title="beFair: sostenere lo sviluppo dei territori" class="navbar-brand">
+                      <img src="/ui/img/befair.png" alt="beFair: sostenere lo sviluppo dei territori" class="imglogo">
+                    </a>
+                -->
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav" ng-show="app.dataLoaded">
+                    <!-- Dropdown with the selected GAS if more than one GAS -->
+                    <li ng-if="person.gas_list[1]" class="dropdown" dropdown>
+                        <a href="#" dropdown-toggle role="button"> {{gas_active.name}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="gas in person.gas_list | orderBy: gas.name" ng-show="gas != gas_active">
+                                <a href="#" ng-click="gas_active = gas"> {{ gas.name }} </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li ng-if="person.gas_list[1] === undefined"> <a href="#" role="button"> {{gas_active.name}} </a> </li>
+                    <li markable> <a ng-link="order()" href=""> <span class="glyphicon glyphicon-book"></span> Ordinare </a></li>
+                    <li markable> <a ng-link="basket()" href=""> <span class="glyphicon glyphicon-shopping-cart"></span> Paniere </a></li>
+                    <li markable> <a ng-link="cash()" href=""> <span class="glyphicon glyphicon-euro"></span> Conto </a> </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" ng-show="app.isAuth()">
+                    <li style="padding-right: 0.5em"><span>
+                         <img src="/ui/img/user_pic.png" alt="Il mio profilo" class="imgpic">
+                         <a ng-link="profile()" href="" title="Il mio profilo">
+                         Ciao {{ person.display_name }} </a>
+                    </span></li>
+                    <li>
+                        <button type="button" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.logout()">
+                           <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="subnav" ng-show="app.isAuth()">
+            <span class="cash-current">Saldo: {{ gm.balance | currency }} </span>
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="cash-after-delivery"> Dopo la consegna: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}} </span>
+        </div>
+      </nav>
+
+      <!--
       <nav class="userbar" role="navigation">
-          <div class="logo" ng-if="app.isAuth()"> 
+          <div class="logo" ng-if="app.isAuth()">
              <a class="waves-effect waves-light" href="" ng-click="app.logout()">QUIT</a>
           </div>
-          
-        <!-- Brand and toggle get grouped for better mobile display -->
+
         <div class="navhead">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
             <span class="sr-only">Toggle navigation</span>
@@ -84,14 +137,20 @@
               </a>
           </div>
         </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"> <!-- ng-controller="gas_controller" --> 
-          
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
             <div ng-show="app.dataLoaded" class="navbar-left">
                 <ul class="optionlist nav navbar-nav">
-                    <li ng-repeat="gas in person.gas_list | orderBy: gas.name" class="{{ gas.ui_status }} "> 
-                        <a href="#"> <!-- ng-click="getID({{gas.pk}});" --> {{ gas.name }} </a>
+                    <li ng-repeat="gas in person.gas_list | orderBy: gas.name" class="{{ gas.ui_status }} ">
+                        <a href="#"> {{ gas.name }} </a>
+                        <span ng-if="gas.ui_status == 'active'" class="cashresume">
+                            <div id="cashresume-body">
+                            Ora: <span class="balance">{{ gm.balance | currency }}</span><br />
+                            Dopo: <span class="balance">{{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}}</span><br />
+                            </div>
+
+                        </span>
                     </li>
                 </ul>
                 <ul class="optionlist nav navbar-nav">
@@ -100,13 +159,13 @@
                   </li>
 
                  <li markable>
-                     <a ng-link="basket()" href=""> <i class="fa fa-shopping-cart"></i>Paniere </a> 
+                     <a ng-link="basket()" href=""> <i class="fa fa-shopping-cart"></i>Paniere </a>
                  </li>
                   <li markable>
                       <a ng-link="cash()" href=""> <i class="fa fa-user"></i>Conto </a>
-                  </li>     
+                  </li>
                 </ul>
-                       
+
             </div>
 
          <div ng-show="app.dataLoaded" class="navbar-right">
@@ -114,30 +173,22 @@
                  <img src="/ui/img/user_pic.png" alt="..." class="imgpic">
              </a>
              <a class="titlenav" ng-link="profile()" href=""> Ciao {{ person.display_name }} </a>
-        </div>    
-          
-        </div><!-- /.navbar-collapse -->
-      </nav>
-
-      <div class="cont-gas"> <!-- Container -->
-        <div ng-if="app.dataLoaded" id="cashresume">
-            <h2>Il tuo saldo nel {{ gas.name }}</h2>
-            <div id="cashresume-body">
-            Attuale: <span class="balance">&#8364; {{ gm.balance | currency }}</span><br />
-            Dopo la consegna: <span class="balance">&#8364; {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}}</span><br />
-            </div>
+        </div>
 
         </div>
+      </nav> -->
+
+      <div class="cont-gas" style="margin-top: 4em"> <!-- Container -->
         <!-- 1° row -->
-                                
+
         <p style="text-align:center" ng-hide="app.dataLoaded" ng-if="app.isAuth()">
             Un attimo che carico...
             <i class="fa fa-spinner fa-spin"></i>
-        </p>  
+        </p>
 
         <div ng-if="app.dataLoaded" class="first_block"><!-- 1° col-md-8 -->
             <div class="tab-content tab-gas">
-                
+
                 <!-- this is where content will be injected -->
                 <div ng-viewport> </div>
             </div>
@@ -171,13 +222,13 @@
 
 
     </div><!-- /Wrap -->
-    
+
 
     <div id="footer">
         <div class="container">
             <p class="text-muted">GASISTA FELICE v{{ appVersion }}</p>
         </div>
-    </div> 
+    </div>
 
 
     <script src="/ui/bower_components/angular/angular.min.js"></script>
@@ -187,7 +238,7 @@
     <script src="/ui/bower_components/leaflet/dist/leaflet.js"></script>
     <script src="/ui/bower_components/satellizer/satellizer.min.js"></script>
 
-    <script src="/ui/js/angular-locale_it-it.js"></script>        
+    <script src="/ui/js/angular-locale_it-it.js"></script>
     <script src="/ui/js/ngDialog.min.js"></script>
     <script src="/ui/js/modernizr.js"></script>
     <!-- <script src="/ui/js/local.js"></script> -->
