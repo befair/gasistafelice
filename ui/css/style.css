@@ -6909,6 +6909,16 @@ a.menu_links {
     border-radius: 4px;
   }
 }
+.userbar li.active {
+  border-color: green;
+  border-width: 1px 1px 0px;
+  border-style: solid;
+  border-radius: 0.5em 0.5em 0px 0px;
+}
+.userbar li.active a {
+  background-color: white !important;
+  border-radius: 0.5em 0.5em 0px 0px;
+}
 .userbar .navbar-brand {
   color: #777777;
 }
@@ -7783,6 +7793,16 @@ thead {
 }
 .container-fluid {
   padding: 0;
+}
+.navbar li.active {
+  border-color: green;
+  border-width: 1px 1px 0px;
+  border-style: solid;
+  border-radius: 0.5em 0.5em 0px 0px;
+}
+.navbar li.active a {
+  background-color: white !important;
+  border-radius: 0.5em 0.5em 0px 0px;
 }
 .balance {
   color: green;

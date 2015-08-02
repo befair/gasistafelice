@@ -93,15 +93,20 @@
                         </ul>
                     </li>
                     <li ng-if="person.gas_list[1] === undefined"> <a href="#" role="button"> {{gas_active.name}} </a> </li>
-                    <li markable> <a ng-link="order()" href=""> <span class="glyphicon glyphicon-book"></span> Ordinare </a></li>
-                    <li markable> <a ng-link="basket()" href=""> <span class="glyphicon glyphicon-shopping-cart"></span> Paniere </a></li>
-                    <li markable> <a ng-link="cash()" href=""> <span class="glyphicon glyphicon-euro"></span> Conto </a> </li>
+                    <li markable ng-class="{ active: active_section == 'order'}" ng-click="active_section='order';">
+                        <a ng-link="order()" href=""> <span class="glyphicon glyphicon-book"></span> Ordinare </a>
+                    </li>
+                    <li markable ng-class="{ active: active_section == 'basket'}" ng-click="active_section='basket';">
+                        <a ng-link="basket()" href=""> <span class="glyphicon glyphicon-shopping-cart"></span> Paniere </a>
+                    </li>
+                    <li markable ng-class="{ active: active_section == 'cash'}" ng-click="active_section='cash';">
+                        <a ng-link="cash()" href=""> <span class="glyphicon glyphicon-euro"></span> Conto </a>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-show="app.isAuth()">
                     <li style="padding-right: 0.5em"><span>
                          <img src="/ui/img/user_pic.png" alt="Il mio profilo" class="imgpic">
-                         <a ng-link="profile()" href="" title="Il mio profilo">
-                         Ciao {{ person.display_name }} </a>
+                         <a ng-link="profile()" href="" title="Il mio profilo"> {{ person.display_name }} </a>
                     </span></li>
                     <li>
                         <button type="button" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.logout()">
