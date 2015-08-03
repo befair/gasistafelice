@@ -22,8 +22,13 @@ describe('GF ng-app', function() {
 
       // expect to be the user 01gas1
       // on mobile the profile name is not available
-      if (!index)
-        expect(element(by.binding('person.display_name')).getText()).toBe("Ciao Gasista_01 DelGas_01");
+      if (index) {
+        $$('.navbar-toggle').click(); 
+        expect(element(by.binding('person.display_name')).getText()).toBe("Gasista_01 DelGas_01");
+        $$('.navbar-toggle').click(); 
+      }
+      else
+        expect(element(by.binding('person.display_name')).getText()).toBe("Gasista_01 DelGas_01");
     });
 
     it('should increment/decrement the price/qty when "+/-" are clicked', function () {
