@@ -14,11 +14,12 @@ describe('GF ng-app', function() {
     it('should connect to the UI and get the user orders', function() {
       browser.get('http://proxy/');
       // fill login form
-      element(by.css('#username')).sendKeys('01gas1');
-      element(by.css('#password')).sendKeys('des');
+      element(by.model('app.username')).sendKeys('01gas1');
+      element(by.model('app.password')).sendKeys('des');
 
       // click on 'GO' button!
-      element(by.css('.btn')).click();
+      // $$(selector) = element(by.css(selector))
+      $$('#go').click();
 
       // expect to be the user 01gas1
       // on mobile the profile name is not available
@@ -37,11 +38,11 @@ describe('GF ng-app', function() {
 
       // click 20 time on '+'
       for (var i=0; i < 20; i++)
-        item.element(by.css('.glyphicon-plus')).click();
+        item.$$('.glyphicon-plus').click();
 
       // click 10 times on '-'
       for (var i=0; i < 10; i++)
-        item.element(by.css('.glyphicon-minus')).click();
+        item.$$('.glyphicon-minus').click();
 
       // qty should be 10
       expect(item.element(by.model('product.quantity')).getAttribute('value')).toBe('10');
@@ -49,16 +50,14 @@ describe('GF ng-app', function() {
       // product.quantity * product.price is used to output the total price
       // so we can get that with by.binding('product.quantity')
       // does the code need revision? the bindings maybe shouldn't make operations
-      item.element(by.binding('product.quantity')).getText().then(function (price) {
-        expect(price).toBe('€ 250,00');
-      });
+      expect(item.element(by.binding('product.quantity')).getText()).toBe('€ 250,00');
     });
 
     it('should never decrement the price/qty under 0', function () {
       var item = element.all(by.repeater('product in order.pm.products')).get(1);
 
       for (var i=0; i < 20; i++)
-        item.element(by.css('.glyphicon-minus')).click();
+        item.$$('.glyphicon-minus').click();
 
       expect(item.element(by.model('product.quantity')).getAttribute('value')).toBe('0');
 
@@ -86,7 +85,7 @@ describe('GF ng-app', function() {
       // get the first order
       item = element.all(by.repeater('item in basket.open_ordered_products')).get(0);
 
-      // get all the column from the first order ($$ is an alias for element(by.css)
+      // get all the column from the first order
       var columns = item.$$('td');
 
       // expects to have 8 columns (counting the hidden ones)
