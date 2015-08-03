@@ -26,6 +26,12 @@ var app = angular.module('ngGF',
         $rootScope.gm_id = null;
         $rootScope.gm = null;
 
+        $rootScope.navbar = { isCollapsed: true };
+
+        $rootScope.collapseNavbar = function() {
+          this.navbar.isCollapsed = !this.navbar.isCollapsed;
+        };
+
         $http.get('/gasistafelice/accounts/login/'); //GET the csrf cookie from Django
 
         this.dataLoaded = false;

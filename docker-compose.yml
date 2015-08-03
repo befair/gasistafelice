@@ -1,5 +1,5 @@
 proxy:
-  image: nginx:1.9
+  image: befair/gasistafelice-proxy:latest
   volumes:
     - ./proxy:/etc/nginx/conf.d:ro
   volumes_from:
@@ -43,6 +43,8 @@ firefox:
     - proxy
   ports:
     - '127.0.0.1:5900:5900'
+  env_file:
+    - ./test/e2e/settings.env
 
 chrome:
   image: selenium/node-chrome-debug:latest
@@ -51,6 +53,8 @@ chrome:
     - proxy
   ports:
     - '127.0.0.1:5901:5900'
+  env_file:
+    - ./test/e2e/settings.env
 
 e2e:
   image: michelesr/protractor:latest
