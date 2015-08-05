@@ -3,11 +3,6 @@
 var app = angular.module('ngGF',
     [ 'ui.bootstrap', 'ngNewRouter', 'satellizer', 'ngDialog', 'ngLocale' ]
     )
-    .factory('navigateTo', function ($location, $router) {
-      return function (name) {
-          $location.url($router.generate(name));
-      };
-    })
     .config(function ($authProvider) {
         //WAS: JWT auth $authProvider.loginUrl = '/api/v1/token-auth/';
         $authProvider.loginUrl = '/gasistafelice/accounts/login/';
@@ -69,11 +64,8 @@ var app = angular.module('ngGF',
         };
 
         this.logout = function() {
-            $auth.logout();
             $http.get('/gasistafelice/accounts/logout/');
-            if (!THAT.isAuth()) {
-                return navigateTo('order');
-            }
+            $auth.logout();
         };
         this.isAuth = function() {
             return $auth.isAuthenticated();
