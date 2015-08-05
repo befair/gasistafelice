@@ -54,7 +54,7 @@ class Block(BlockSSDataTables):
             #if request.user.has_perm(EDIT, obj=request.resource):
             if request.user == request.resource.person.user:
                 user_actions += [
-                    ResourceBlockAction( 
+                    ResourceBlockAction(
                         block_name = self.BLOCK_NAME,
                         resource = request.resource,
                         name=CONFIRM, verbose_name=_("Confirm all"),
@@ -82,7 +82,7 @@ class Block(BlockSSDataTables):
             ]
 
         return user_actions
-        
+
     def _get_resource_list(self, request):
         #qs = request.resource.basket | request.resource.basket_to_be_delivered
         qs = request.resource.basket
@@ -93,7 +93,7 @@ class Block(BlockSSDataTables):
         qs = self._get_resource_list(self.request)
         return formset_factory(
                     form=BasketGASMemberOrderForm,
-                    formset=BaseFormSetWithRequest, 
+                    formset=BaseFormSetWithRequest,
                     extra=qs.count()
         )
 
@@ -107,7 +107,7 @@ class Block(BlockSSDataTables):
 #        data2 = {}
         i = 0
         c = gmos.count()
-        
+
         # Store mapping between GSSOP-id and neededs info: formset_index and ordered_total
         map_info = { }
 
@@ -121,7 +121,7 @@ class Block(BlockSSDataTables):
                '%s-id' % key_prefix : el.pk, #gmo.pk,
                '%s-ordered_amount' % key_prefix : el.ordered_amount or 0,
                '%s-ordered_price' % key_prefix : el.ordered_product.order_price, #displayed as hiddend field
-               '%s-gm_id' % key_prefix : gmo.pk, #displayed as hiddend field !Attention is gmo_id 
+               '%s-gm_id' % key_prefix : gmo.pk, #displayed as hiddend field !Attention is gmo_id
                '%s-gsop_id' % key_prefix : el.ordered_product.pk,
                '%s-enabled' % key_prefix : bool(av),
             })
@@ -143,7 +143,7 @@ class Block(BlockSSDataTables):
             form = formset[map_info[el.pk]['formset_index']]
             total = map_info[el.pk]['ordered_total']
 
-            form.fields['ordered_amount'].widget.attrs = { 
+            form.fields['ordered_amount'].widget.attrs = {
                 'class' : 'amount',
                 'step' : el.ordered_product.gasstock.step or 1,
                 'minimum_amount' : el.ordered_product.gasstock.minimum_amount or 1,
@@ -197,19 +197,19 @@ class Block(BlockSSDataTables):
             rv = self._create_pdf()
         elif args == SENDME_PDF:
             rv = self._send_email_logged()
-        
+
         #TODO FIXME: ugly patch to fix AFTERrecords.append( 6
         if args == self.KW_DATA:
             from lib.views_support import prepare_datatables_queryset, render_datatables
-            
-            querySet = self._get_resource_list(request) 
+
+            querySet = self._get_resource_list(request)
             #columnIndexNameMap is required for correct sorting behavior
             columnIndexNameMap = self.COLUMN_INDEX_NAME_MAP
             #path to template used to generate json (optional)
             jsonTemplatePath = 'blocks/%s/data.json' % self.BLOCK_NAME
 
             querySet, dt_params = prepare_datatables_queryset(request, querySet, columnIndexNameMap)
-            #TODO FIXME: AFTER 6 
+            #TODO FIXME: AFTER 6
             formset, records, moreData = self._get_records(request, querySet)
             rv = render_datatables(request, records, dt_params, jsonTemplatePath)
 
@@ -222,7 +222,7 @@ class Block(BlockSSDataTables):
             #WAS: self.resource.send_email([to],None, 'Order Email me', self.request.user)
             self.resource.send_email_to_gasmember(None, 'Order Email me', self.request.user)
             return self.response_success()
-        except Exception, e:
+        except Exception as e:
             return self.response_error(_('We had some errors<pre>%s</pre>') % cgi.escape(e))
 
     def _create_pdf(self):
@@ -230,10 +230,10 @@ class Block(BlockSSDataTables):
         pdf_data = self.resource.get_pdf_data(requested_by=self.request.user)
 
         if not pdf_data:
-            rv = self.response_error(_('Report not generated')) 
+            rv = self.response_error(_('Report not generated'))
         else:
             response = HttpResponse(pdf_data, content_type='application/pdf')
-            response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf" 
+            response['Content-Disposition'] = "attachment; filename=" + self.resource.get_valid_name() + ".pdf"
             rv = response
         return rv
 
