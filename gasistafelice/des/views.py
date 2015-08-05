@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.conf import settings
 from django.contrib import messages
-from django.core import urlresolvers
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db import transaction
 from des.forms import DESRegistrationForm, DESStaffRegistrationForm
@@ -17,11 +16,19 @@ from des.models import Siteattr
 from gf.gas.models import GASMember, GAS
 
 from registration.models import RegistrationProfile
+
+from rest_framework_jwt.utils import (
+        jwt_payload_handler, jwt_encode_handler, jwt_response_payload_handler
+)
+from calendar import timegm
+from datetime import datetime
+
 import re
 import logging
 import json
 
 log = logging.getLogger("gasistafelice")
+
 
 def cmp_orders(gas_a, gas_b):
     if gas_a.orders.archived().count() < gas_b.orders.archived().count():
@@ -31,15 +38,18 @@ def cmp_orders(gas_a, gas_b):
 
 @never_cache
 def login(request, *args, **kw):
+    """
+    Authenticate and return a valid JSONWebToken
+    """
 
     gas_list = list(GAS.objects.all())
     gas_list.sort(cmp_orders)
 
     kw['extra_context'] = {
         'VERSION': settings.VERSION,
-        'THEME' : settings.THEME,
-        'MAINTENANCE_MODE' : settings.MAINTENANCE_MODE,
-        'gas_list' : gas_list,
+        'THEME': settings.THEME,
+        'MAINTENANCE_MODE': settings.MAINTENANCE_MODE,
+        'gas_list': gas_list,
     }
     if settings.MAINTENANCE_MODE:
         if request.method == "POST" and \
@@ -50,10 +60,13 @@ def login(request, *args, **kw):
     if tmpl_response.status_code == 302:
         accept = request.META.get('HTTP_ACCEPT', '')
         if accept and accept.startswith('application/json'):
-            response = HttpResponse(
-                json.dumps({'token': 'bravo, questo e il JWT zuccherino per te'})
-            )
-            return response
+            # Return a valid JSONWebToken
+            payload = jwt_payload_handler(request.user)
+            payload['orig_iat'] = timegm(datetime.utcnow().utctimetuple())
+            token = jwt_encode_handler(payload)
+            response_data = jwt_response_payload_handler(token, request.user, request)
+            return HttpResponse(json.dumps(response_data))
+
     return tmpl_response
 
 @csrf_protect
