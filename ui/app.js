@@ -22,6 +22,7 @@ var app = angular.module('ngGF',
         $rootScope.appVersion = '0.13-dev';
 
         //Default values for page
+        $rootScope.active_section = 'order';
         $rootScope.gas_active = null;
         $rootScope.gm_id = null;
         $rootScope.gm = null;
@@ -37,6 +38,20 @@ var app = angular.module('ngGF',
         this.dataLoaded = false;
         var THAT = this;
 
+        this.load_person = function() {
+            $http.get('/api/v1/person/my/?format=json')
+            .success( function(data) {
+                data.gas_list[0].ui_status = 'active';
+                $rootScope.person = data;
+                $rootScope.gas_active = data.gas_list[0];
+                $rootScope.gm_id = data.gasmembers[0];
+                THAT.dataLoaded = true;
+            })
+            .error( function (response, status) {
+                alert("http error get person data");
+            });
+        };
+
         this.login = function() {
             $auth.login({
                 username: THAT.username,
@@ -45,18 +60,7 @@ var app = angular.module('ngGF',
             })
             .then(
                 function(response) {
-
-                    $http.get('/api/v1/person/my/?format=json')
-                    .success( function(data) {
-                        data.gas_list[0].ui_status = 'active';
-                        $rootScope.person = data;
-                        $rootScope.gas_active = data.gas_list[0];
-                        $rootScope.gm_id = data.gasmembers[0];
-                        THAT.dataLoaded = true;
-                    })
-                    .error( function (response, status) {
-                        alert("http error get person data");
-                    });
+                    THAT.load_person();
                 },
                 function (data) {
                     $rootScope.msg = 'Error';
@@ -75,8 +79,10 @@ var app = angular.module('ngGF',
             return $auth.isAuthenticated();
         };
 
-        //When the page is loaded the first time log the user out
-        $auth.removeToken();
+        //When the page is loaded the first if the user is authenticated, load data
+        if ($auth.isAuthenticated()) {
+            this.load_person();
+        }
 
         $router.config([
             { path: "/order/", component: "order", as: "order" },
