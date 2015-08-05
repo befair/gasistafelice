@@ -7,7 +7,7 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
 
     this.pm = productManager;
     this.dataLoaded = true;
-    
+
     this.ordiniloaded = true;
     this.orderByField = ''; //?
     this.reverseSort = false; //?
@@ -25,7 +25,7 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
         } else {
             alert("Nessun ordine aperto per " + gm.gas.name);
         }
-        
+
     }).error(function(data){
         alert("http error get GAS member data");
     });

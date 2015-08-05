@@ -68,7 +68,7 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" ng-click="collapseNavbar()" 
+                <button type="button" class="navbar-toggle collapsed" ng-click="collapseNavbar()"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -83,7 +83,7 @@
             </div>
 
             <div class="collapse navbar-collapse" collapse="navbar.isCollapsed">
-                <ul class="nav navbar-nav" ng-show="app.dataLoaded">
+                <ul class="nav navbar-nav" ng-show="dataLoaded">
                     <!-- Dropdown with the selected GAS if more than one GAS -->
                     <li ng-if="person.gas_list[1]" class="dropdown" dropdown>
                         <a href="#" dropdown-toggle role="button"> {{gas_active.name}} <span class="caret"></span></a>
@@ -94,30 +94,30 @@
                         </ul>
                     </li>
                     <li ng-if="person.gas_list[1] === undefined"> <a href="#" role="button"> {{gas_active.name}} </a> </li>
-                    <li markable ng-class="{ active: active_section == 'order'}" ng-click="active_section='order';">
+                    <li markable ng-class="{ active: active_section == 'order'}" ng-click="app.lm.set_active_section('order');">
                         <a ng-link="order()" href=""> <span class="glyphicon glyphicon-book"></span> Ordinare </a>
                     </li>
-                    <li markable ng-class="{ active: active_section == 'basket'}" ng-click="active_section='basket';">
+                    <li markable ng-class="{ active: active_section == 'basket'}" ng-click="app.lm.set_active_section('basket');">
                         <a ng-link="basket()" href=""> <span class="glyphicon glyphicon-shopping-cart"></span> Paniere </a>
                     </li>
-                    <li markable ng-class="{ active: active_section == 'cash'}" ng-click="active_section='cash';">
+                    <li markable ng-class="{ active: active_section == 'cash'}" ng-click="app.lm.set_active_section('cash');">
                         <a ng-link="cash()" href=""> <span class="glyphicon glyphicon-euro"></span> Conto </a>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right" ng-show="app.isAuth()">
-                    <li style="padding-right: 0.5em"><span>
+                <ul class="nav navbar-nav navbar-right" ng-show="app.lm.isAuth()">
+                    <li style="padding-right: 0.5em" ng-click="app.lm.set_active_section('settings');"><span>
                          <img src="/ui/img/user_pic.png" alt="Il mio profilo" class="imgpic">
                          <a ng-link="profile()" href="" title="Il mio profilo"> {{ person.display_name }} </a>
                     </span></li>
                     <li>
-                        <button type="button" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.logout()">
+                        <button type="button" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.lm.logout()">
                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         </button>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="subnav" ng-show="app.isAuth()">
+        <div class="subnav" ng-show="app.lm.isAuth()">
             <span class="cash-current">Saldo: {{ gm.balance | currency }} </span>
             <span class="glyphicon glyphicon-chevron-right"></span>
             <span class="cash-after-delivery"> Dopo la consegna: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}} </span>
@@ -126,7 +126,7 @@
 
       <!--
       <nav class="userbar" role="navigation">
-          <div class="logo" ng-if="app.isAuth()">
+          <div class="logo" ng-if="app.lm.isAuth()">
              <a class="waves-effect waves-light" href="" ng-click="app.logout()">QUIT</a>
           </div>
 
@@ -146,7 +146,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-            <div ng-show="app.dataLoaded" class="navbar-left">
+            <div ng-show="dataLoaded" class="navbar-left">
                 <ul class="optionlist nav navbar-nav">
                     <li ng-repeat="gas in person.gas_list | orderBy: gas.name" class="{{ gas.ui_status }} ">
                         <a href="#"> {{ gas.name }} </a>
@@ -174,7 +174,7 @@
 
             </div>
 
-         <div ng-show="app.dataLoaded" class="navbar-right">
+         <div ng-show="dataLoaded" class="navbar-right">
              <a class="navpic" ng-link="profile()" href="">
                  <img src="/ui/img/user_pic.png" alt="..." class="imgpic">
              </a>
@@ -187,42 +187,18 @@
       <div class="cont-gas" style="margin-top: 4em"> <!-- Container -->
         <!-- 1° row -->
 
-        <p style="text-align:center" ng-hide="app.dataLoaded" ng-if="app.isAuth()">
+        <p style="text-align:center" ng-hide="dataLoaded" ng-if="app.lm.isAuth()">
             Un attimo che carico...
             <i class="fa fa-spinner fa-spin"></i>
         </p>
 
-        <div ng-if="app.dataLoaded" class="first_block"><!-- 1° col-md-8 -->
+        <div class="first_block"><!-- 1° col-md-8 -->
             <div class="tab-content tab-gas">
 
                 <!-- this is where content will be injected -->
                 <div ng-viewport> </div>
             </div>
         </div><!-- /1° col-md-8 -->
-
-        <div ng-if="!app.isAuth()" class="first_block"><!-- 1° col-md-8 -->
-                <h4>Login</h4>
-                <!-- TODO @veon82 <li><a href="/#/signup">Sign up</a></li> -->
-                <div class="row">
-                    <form class="col s12">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input ng-model="app.username" id="username" type="text" class="validate">
-                                <label for="username">Username</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input ng-model="app.password" id="password" type="password" class="validate">
-                                <label for="password">Password</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <a ng-click="app.login()" href="#" id="go" class="waves-effect waves-blue-grey waves-grey-blue btn modal-action modal-close">GO</a>
-        </div><!-- /1° col-md-8 -->
-
-        <!-- 1° row -->
 
       </div> <!-- /Container -->
 
@@ -250,6 +226,7 @@
     <!-- <script src="/ui/js/local.js"></script> -->
 
     <script src="/ui/app.js"></script>
+    <script src="/ui/components/login/login.js"></script>
     <script src="/ui/components/order/order.js"></script>
     <script src="/ui/components/basket/basket.js"></script>
     <script src="/ui/components/cash/cash.js"></script>

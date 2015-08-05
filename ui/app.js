@@ -11,27 +11,69 @@ var app = angular.module('ngGF',
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     })
-    .controller("AppController", function($http, $router, $rootScope, $location, $auth) {
+    .controller("AppController", function($http, $router, $rootScope, $location, loginManager) {
 
-        //TODO: settings
-        $rootScope.appVersion = '0.13-dev';
-
-        //Default values for page
-        $rootScope.active_section = 'order';
-        $rootScope.gas_active = null;
-        $rootScope.gm_id = null;
-        $rootScope.gm = null;
+        this.lm = loginManager;
+        this.lm.reset_app();
+        this.lm.set_active_section($location.path());
 
         $rootScope.navbar = { isCollapsed: true };
-
         $rootScope.collapseNavbar = function() {
           this.navbar.isCollapsed = !this.navbar.isCollapsed;
         };
+        $router.config([
+            { path: "/order/", component: "order", as: "order" },
+            { path: "/basket/", component: "basket", as: "basket" },
+            { path: "/cash/", component: "cash", as: "cash" },
+            { path: "/profile/", component: "profile", as: "profile" },
+            { path: "/login/", component: "login", as: "login" },
+            { path: '/', redirectTo: "/order/" }
+        ]);
 
-        $http.get('/gasistafelice/accounts/login/'); //GET the csrf cookie from Django
+        if (this.lm.isAuth()) {
+            this.lm.load_person();
+        } else {
+            this.lm.nav_from_unauth_page_to_auth('/login/');
+        }
 
-        this.dataLoaded = false;
-        var THAT = this;
+    })
+    .service('loginManager', function($http, $auth, $rootScope, $location) {
+
+        var self = this;
+        this.nav_from_unauth_page_to_auth = function(login_path) {
+            var next = $rootScope.active_section;
+            //strip "?"
+            i = next.indexOf('?');
+            next = i === -1 ? next : next.substring(0, i);
+            next = next.indexOf(login_path) === -1 ? next : '/';
+            $location.path(login_path + "?next=" + next);
+        };
+        this.reset_app = function() {
+            //TODO: settings
+            $rootScope.appVersion = '0.13-dev';
+
+            //Default values for page
+            $rootScope.gas_active = null;
+            $rootScope.gm_id = null;
+            $rootScope.gm = null;
+            $rootScope.dataLoaded = false;
+        };
+        this.set_active_section = function(path) {
+            var sections = ['order', 'basket', 'cash', 'settings'];
+            var i;
+            for (i = 0; i < sections.length; i++) {
+                var section = sections[i];
+                if (path.indexOf(section) !== -1) {
+                    $rootScope.active_section = section;
+                    break;
+                }
+            }
+        };
+
+        this.get_csrf_token = function() {
+            //GET the csrf cookie from Django
+            $http.get('/gasistafelice/accounts/login/');
+        };
 
         this.load_person = function() {
             $http.get('/api/v1/person/my/?format=json')
@@ -40,22 +82,22 @@ var app = angular.module('ngGF',
                 $rootScope.person = data;
                 $rootScope.gas_active = data.gas_list[0];
                 $rootScope.gm_id = data.gasmembers[0];
-                THAT.dataLoaded = true;
+                $rootScope.dataLoaded = true;
             })
             .error( function (response, status) {
                 alert("http error get person data");
             });
         };
+        this.login = function(username, password, next) {
 
-        this.login = function() {
-            $auth.login({
-                username: THAT.username,
-                password: THAT.password,
-                next : '/'
-            })
+            next = next === undefined ? '/' : next;
+            return $auth.login({
+                username: username,
+                password: password
+            }, next)
             .then(
                 function(response) {
-                    THAT.load_person();
+                    self.load_person();
                 },
                 function (data) {
                     $rootScope.msg = 'Error';
@@ -64,26 +106,13 @@ var app = angular.module('ngGF',
         };
 
         this.logout = function() {
+            $auth.logout('/login/?next=/'+$rootScope.active_section+'/');
             $http.get('/gasistafelice/accounts/logout/');
-            $auth.logout();
+            self.reset_app();
         };
         this.isAuth = function() {
             return $auth.isAuthenticated();
         };
-
-        //When the page is loaded the first if the user is authenticated, load data
-        if ($auth.isAuthenticated()) {
-            this.load_person();
-        }
-
-        $router.config([
-            { path: "/order/", component: "order", as: "order" },
-            { path: "/basket/", component: "basket", as: "basket" },
-            { path: "/cash/", component: "cash", as: "cash" },
-            { path: "/profile/", component: "profile", as: "profile" },
-            { path: '/', redirectTo: "/order/" }
-        ]);
-        //$location.path('/'); //set default otherwise is blank
     })
     .service('parsingNumbers', function() {
         this.parsing = function(number,d) {
