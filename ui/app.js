@@ -16,7 +16,7 @@ var app = angular.module('ngGF',
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     })
-    .controller("AppController", function($http, $router, $rootScope, $location, $auth) {
+    .controller("AppController", function($http, $router, $rootScope, $location, $auth, navigateTo) {
 
         //TODO: settings
         $rootScope.appVersion = '0.13-dev';
@@ -54,10 +54,9 @@ var app = angular.module('ngGF',
 
         this.login = function() {
             $auth.login({
-                username: THAT.username,
-                password: THAT.password,
-                next : '/'
-            })
+                    username: THAT.username,
+                    password: THAT.password,
+                }, $location.path())
             .then(
                 function(response) {
                     THAT.load_person();
@@ -71,9 +70,8 @@ var app = angular.module('ngGF',
         this.logout = function() {
             $auth.logout();
             $http.get('/gasistafelice/accounts/logout/');
-            if (!THAT.isAuth()) {
-                return navigateTo('order');
-            }
+            THAT.dataLoaded = false;
+            navigateTo("/");
         };
         this.isAuth = function() {
             return $auth.isAuthenticated();

@@ -1,3 +1,9 @@
+var handleAlertPopup = function() {
+  var EC = protractor.ExpectedConditions;
+  browser.wait(EC.alertIsPresent(), 5000);
+  browser.switchTo().alert().accept();
+};
+
 describe('GF ng-app', function() {
 
   [0,1].map(function(index) {
@@ -24,9 +30,9 @@ describe('GF ng-app', function() {
       // expect to be the user 01gas1
       // on mobile the profile name is not available
       if (index) {
-        $$('.navbar-toggle').click(); 
+        $$('.navbar-toggle').click();
         expect(element(by.binding('person.display_name')).getText()).toBe("Gasista_01 DelGas_01");
-        $$('.navbar-toggle').click(); 
+        $$('.navbar-toggle').click();
       }
       else
         expect(element(by.binding('person.display_name')).getText()).toBe("Gasista_01 DelGas_01");
@@ -75,9 +81,7 @@ describe('GF ng-app', function() {
       element(by.buttonText('Aggiungi al paniere')).click();
 
       // handle the alert popup
-      var EC = protractor.ExpectedConditions;
-      browser.wait(EC.alertIsPresent(), 5000);
-      browser.switchTo().alert().accept();
+      handleAlertPopup();
 
       // go to the basket
       browser.setLocation('basket');
@@ -98,6 +102,12 @@ describe('GF ng-app', function() {
       expect(columns.get(3).getText()).toBe('€ 20,00');
       expect(item.element(by.model('item.quantity')).getAttribute('value')).toBe('3');
       expect(columns.get(6).getText()).toBe('€ 60,00');
+    });
+
+    it('should logout', function() {
+      if(index)
+        $$('.navbar-toggle').click();
+      $$('#btn-logout').click();
     });
   });
 });

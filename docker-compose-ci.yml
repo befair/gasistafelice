@@ -12,8 +12,6 @@ front:
 
 back:
   build: ./gasistafelice
-  ports:
-    - '127.0.0.1:7000:7000'
   links:
     - db
   env_file: ./settings_ci.env
@@ -35,8 +33,6 @@ firefox:
   links:
     - hub
     - proxy
-  ports:
-    - '127.0.0.1:5900:5900'
   env_file:
     - ./test/e2e/settings.env
 
@@ -45,7 +41,5 @@ chrome:
   links:
     - hub
     - proxy
-  ports:
-    - '127.0.0.1:5901:5900'
   env_file:
     - ./test/e2e/settings.env
