@@ -13,13 +13,16 @@ ENV DJANGO_SETTINGS_MODULE  gf.settings
 ENV UWSGI_STATIC_MAP        /static=/code/gasistafelice/static
 ENV UWSGI_STATIC_SAFE       /usr/local/lib/python2.7/site-packages/django/contrib/admin/static/admin
 
-COPY . /code/gasistafelice
-COPY ./deps/locale.gen /etc/locale.gen
-
+COPY deps/debian /code/gasistafelice/deps/debian
 RUN apt update && \
     apt install -y $(cat /code/gasistafelice/deps/debian) && \
     rm -rf /var/lib/apt/lists/*
+
+COPY deps/locale.gen /etc/locale.gen
 RUN locale-gen
+
+COPY deps/ /code/gasistafelice/deps/
 RUN pip install -r /code/gasistafelice/deps/dev.txt
 
-WORKDIR /code/gasistafelice
+COPY ./ /code/gasistafelice/
+WORKDIR /code/gasistafelice/
