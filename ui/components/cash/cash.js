@@ -1,5 +1,7 @@
 app.controller("CashController", function($http, $rootScope, $routeParams) {
 
+    $rootScope.active_section = "cash";
+
     console.debug('CashController for gm=' + $rootScope.gm_id);
     this.transactions = [];
     this.info = {};

@@ -1,5 +1,7 @@
 app.controller("ProfileController", function ($http, $rootScope, ngDialog, parsingNumbers) {
 
+    $rootScope.active_section = "profile";
+
     // create the map (map container must be loaded in dom)
     var map = L.map('map').setView([41.89, 12.53], 10);
     

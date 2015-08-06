@@ -5,6 +5,8 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
         return;
     }
 
+    $rootScope.active_section = "basket";
+
     this.pm = productManager;
     this.gm = $rootScope.gm;
     this.dataLoaded = true;

@@ -5,6 +5,8 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
         return;
     }
 
+    $rootScope.active_section = "order";
+
     this.pm = productManager;
     this.dataLoaded = true;
     
