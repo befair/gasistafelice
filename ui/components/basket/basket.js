@@ -1,7 +1,7 @@
 app.controller("BasketController", function ($http, $rootScope, parsingNumbers, productManager) {
 
     if (!$rootScope.gm_id) {
-        console.log("basket: GASMember info not already retrieved...");
+        console.debug("basket: GASMember info not already retrieved...");
         return;
     }
 
@@ -57,7 +57,7 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
         THAT.closed_ordered_products = THAT.get_ordered_products_from_basket(gm.basket_to_be_delivered);
 
     }).error(function(data){
-        alert("http error get GAS member data");
+        console.debug("http error get GAS member data");
     });
 
     return;

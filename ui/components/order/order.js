@@ -1,7 +1,7 @@
 app.controller("OrderController", function($http, $rootScope, productManager) {
 
     if (!$rootScope.gm_id) {
-        console.log("order: GASMember info not already retrieved...");
+        console.debug("order: GASMember info not already retrieved...");
         return;
     }
 
@@ -23,11 +23,11 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
             console.debug("Setting the default order catalog...");
             productManager.set_order_catalog(gm.open_orders[0], gm.basket);
         } else {
-            alert("Nessun ordine aperto per " + gm.gas.name);
+            console.debug("Nessun ordine aperto per " + gm.gas.name);
         }
         
     }).error(function(data){
-        alert("http error get GAS member data");
+        console.debug("http error get GAS member data");
     });
 });
 

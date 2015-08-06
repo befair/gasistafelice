@@ -16,7 +16,7 @@ app.controller("CashController", function($http, $rootScope, $routeParams) {
     })
     .error(function (data) {
         //DEBUG
-        alert("Error in retrieving economic movements, debug values loaded");
+        console.debug("Error in retrieving economic movements, debug values loaded");
         THAT.transactions.push({
             id : 132,
             date: "21/07/2014 18:30",
