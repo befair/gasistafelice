@@ -23,18 +23,22 @@ if ENV == 'prod':
     TEMPLATE_DEBUG = False
     EMAIL_DEBUG = False
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    ALLOWED_HOSTS = [os.getenv('APP_SERVER_NAME', 'ordini.desmacerata.it')]
 
 elif ENV == 'stage':
     DEBUG = True
     TEMPLATE_DEBUG = True
     EMAIL_DEBUG = True
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    ALLOWED_HOSTS = []
 
 else:
     DEBUG = True
     TEMPLATE_DEBUG = True
     EMAIL_DEBUG = True
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+    ALLOWED_HOSTS = []
+
 
 FORM_DEBUG = False
 EMAIL_FILE_PATH = os.getenv('APP_EMAIL_FILE_PATH', '/dev/stdout')
@@ -50,7 +54,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-ALLOWED_HOSTS = []
 
 DATABASES = {
     'default': {
