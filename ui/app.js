@@ -54,10 +54,9 @@ var app = angular.module('ngGF',
 
         this.login = function() {
             $auth.login({
-                username: THAT.username,
-                password: THAT.password,
-                next : '/'
-            })
+                    username: THAT.username,
+                    password: THAT.password,
+                }, $location.path())
             .then(
                 function(response) {
                     THAT.load_person();
