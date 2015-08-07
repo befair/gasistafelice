@@ -1,4 +1,4 @@
-Aggiornare dalla -1.11 alla 0.12
+Aggiornare dalla 0.11 alla 0.12
 ================================
 
 #. Installare ``django-reversion``::
@@ -8,7 +8,7 @@ Aggiornare dalla -1.11 alla 0.12
 #. **OPZIONALE**: rimuovere le tabelle relative a django-pro-history::
 
     decommentare le righe dalla 11 alla 41, relative alla cancellazione della history, nel file `gasistafelice/gas/migrations/0004_auto__del_historicalgasmemberorder__del_historicalgasconfig__del_histo.py`
- 
+
     ATTENZIONE: questo rimuoverà tutti dati esistenti relativi alla history.
 
 #. Eliminare tutti gli oggetti di tipo NoticeType dal db::
