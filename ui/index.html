@@ -68,7 +68,7 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" ng-click="collapseNavbar()" 
+                <button type="button" class="navbar-toggle collapsed" ng-click="collapseNavbar()"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -109,6 +109,11 @@
                          <img src="/ui/img/user_pic.png" alt="Il mio profilo" class="imgpic">
                          <a ng-link="profile()" href="" title="Il mio profilo"> {{ person.display_name }} </a>
                     </span></li>
+                    <li>
+                        <button type="button" id="btn-admin" class="btn btn-default btn-lg" aria-label="Gestione" ng-click="app.go_to_admin()">
+                           <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </button>
+                    </li>
                     <li>
                         <button type="button" id="btn-logout" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.logout()">
                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>

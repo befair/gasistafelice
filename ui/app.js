@@ -38,6 +38,10 @@ var app = angular.module('ngGF',
         this.dataLoaded = false;
         var THAT = this;
 
+        this.go_to_admin = function() {
+            window.location = '/gasistafelice/rest/#rest/gasmember/' + $rootScope.gm_id;
+        };
+
         this.load_person = function() {
             $http.get('/api/v1/person/my/?format=json')
             .success( function(data) {
@@ -55,7 +59,7 @@ var app = angular.module('ngGF',
         this.login = function() {
             $auth.login({
                     username: THAT.username,
-                    password: THAT.password,
+                    password: THAT.password
                 }, $location.path())
             .then(
                 function(response) {
