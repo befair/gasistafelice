@@ -7011,6 +7011,10 @@ fieldset[disabled] .userbar .btn-link:hover,
 fieldset[disabled] .userbar .btn-link:focus {
   color: #cccccc;
 }
+.navhead {
+  padding: 0.2em 0.5em;
+  margin: 0px !important;
+}
 @media (min-width: 1000px) {
   .navhead {
     float: left;
@@ -7767,6 +7771,10 @@ textarea.searchbar-text {
   z-index: 100;
   margin-left: 0px;
   margin-right: 90%;
+}
+.navbar-header {
+  padding: 0.2em 0.5em;
+  margin: 0px !important;
 }
 .total {
   margin-top: -15px !important;

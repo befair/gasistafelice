@@ -68,7 +68,8 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" ng-click="collapseNavbar()"
+                <button id="btn-toggle-collapse" type="button" class="navbar-toggle collapsed"
+                        ng-click="collapseNavbar()" style="z-index:1000;"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -80,20 +81,22 @@
                       <img src="/ui/img/befair.png" alt="beFair: sostenere lo sviluppo dei territori" class="imglogo">
                     </a>
                 -->
+            <!-- Dropdown with the selected GAS if more than one GAS -->
+            <ul class="nav navbar-nav" ng-show="app.dataLoaded">
+                <li ng-if="person.gas_list[1]" class="dropdown" dropdown>
+                    <a href="#" dropdown-toggle role="button"> {{gas_active.name}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="gas in person.gas_list | orderBy: gas.name" ng-show="gas != gas_active">
+                            <a href="#" ng-click="gas_active = gas"> {{ gas.name }} </a>
+                        </li>
+                    </ul>
+                </li>
+                <li ng-if="person.gas_list[1] === undefined"> <a href="#" role="button"> {{gas_active.name}} </a> </li>
+            </ul>
             </div>
 
             <div class="collapse navbar-collapse" collapse="navbar.isCollapsed">
                 <ul class="nav navbar-nav" ng-show="app.dataLoaded">
-                    <!-- Dropdown with the selected GAS if more than one GAS -->
-                    <li ng-if="person.gas_list[1]" class="dropdown" dropdown>
-                        <a href="#" dropdown-toggle role="button"> {{gas_active.name}} <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li ng-repeat="gas in person.gas_list | orderBy: gas.name" ng-show="gas != gas_active">
-                                <a href="#" ng-click="gas_active = gas"> {{ gas.name }} </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li ng-if="person.gas_list[1] === undefined"> <a href="#" role="button"> {{gas_active.name}} </a> </li>
                     <li markable ng-class="{ active: active_section == 'order'}" ng-click="active_section='order';">
                         <a ng-link="order()" href=""> <span class="glyphicon glyphicon-book"></span> Ordinare </a>
                     </li>
@@ -111,12 +114,12 @@
                     </span></li>
                     <li>
                         <button type="button" id="btn-admin" class="btn btn-default btn-lg" aria-label="Gestione" ng-click="app.go_to_admin()">
-                           <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                           <span class="glyphicon glyphicon-cog" id="glyph-admin" aria-hidden="true"></span>
+                           Gestione
                         </button>
-                    </li>
-                    <li>
                         <button type="button" id="btn-logout" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.logout()">
-                           <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                           <span class="glyphicon glyphicon-off" id="glyph-off" aria-hidden="true"></span>
+                           Esci
                         </button>
                     </li>
                 </ul>
@@ -128,66 +131,6 @@
             <span class="cash-after-delivery"> Dopo la consegna: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}} </span>
         </div>
       </nav>
-
-      <!--
-      <nav class="userbar" role="navigation">
-          <div class="logo" ng-if="app.isAuth()">
-             <a class="waves-effect waves-light" href="" ng-click="app.logout()">QUIT</a>
-          </div>
-
-        <div class="navhead">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <div class="brandname">
-              <a href="http://www.befair.it" target="_blank" title="beFair: sostenere lo sviluppo dei territori">
-                  <img src="/ui/img/befair.png" alt="beFair: sostenere lo sviluppo dei territori" class="imglogo">
-              </a>
-          </div>
-        </div>
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-            <div ng-show="app.dataLoaded" class="navbar-left">
-                <ul class="optionlist nav navbar-nav">
-                    <li ng-repeat="gas in person.gas_list | orderBy: gas.name" class="{{ gas.ui_status }} ">
-                        <a href="#"> {{ gas.name }} </a>
-                        <span ng-if="gas.ui_status == 'active'" class="cashresume">
-                            <div id="cashresume-body">
-                            Ora: <span class="balance">{{ gm.balance | currency }}</span><br />
-                            Dopo: <span class="balance">{{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}}</span><br />
-                            </div>
-
-                        </span>
-                    </li>
-                </ul>
-                <ul class="optionlist nav navbar-nav">
-                  <li markable>
-                      <a ng-link="order()" href=""> <i class="fa fa-book"></i>Ordinare </a>
-                  </li>
-
-                 <li markable>
-                     <a ng-link="basket()" href=""> <i class="fa fa-shopping-cart"></i>Paniere </a>
-                 </li>
-                  <li markable>
-                      <a ng-link="cash()" href=""> <i class="fa fa-user"></i>Conto </a>
-                  </li>
-                </ul>
-
-            </div>
-
-         <div ng-show="app.dataLoaded" class="navbar-right">
-             <a class="navpic" ng-link="profile()" href="">
-                 <img src="/ui/img/user_pic.png" alt="..." class="imgpic">
-             </a>
-             <a class="titlenav" ng-link="profile()" href=""> Ciao {{ person.display_name }} </a>
-        </div>
-
-        </div>
-      </nav> -->
 
       <div class="cont-gas" style="margin-top: 4em"> <!-- Container -->
         <!-- 1° row -->
