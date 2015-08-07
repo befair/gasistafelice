@@ -39,6 +39,9 @@ Se invece preferisci installarlo su un tuo server segui la **[guida di installaz
 * `Dominque Thual <dom_thual@yahoo.fr>`
 * `Lorenzo Franceschini <lorenzo.franceschini@informaetica.it>`
 * `Matteo Micheletti <marko@befair.it>`
+* `Antonio Esposito <kobe@befair.it>`
+* `Michele Sorcinelli <mike@befair.it>`
+* `Andrea Colangelo <warp10@befair.it>`
 * `Riccardo Pancotti`
 * `Francesco Spegni`
 
