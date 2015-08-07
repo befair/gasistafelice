@@ -15,6 +15,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        if settings.MAINTENANCE_MODE:
+            print("GF is in maintenance mode... skipping order_fix_state")
+            return 0
+
         for order in GASSupplierOrder.objects.prepared():
             #Pass argument for issuer is cron job. The function will send email if necesary
             order.open_if_needed(True)
@@ -22,5 +26,5 @@ class Command(BaseCommand):
         for order in GASSupplierOrder.objects.open():
             #Pass argument for issuer is cron job. The function will send email if necesary
             order.close_if_needed()
-            
+
         return 0
