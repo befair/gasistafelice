@@ -33,13 +33,13 @@
 .subtitle{
 	position:absolute;
 	height:25px;
-	right:60px;	
+	right:60px;
 	vertical-align:top;
 }
 
 .hand {cursor: pointer;}
 .dataTables_wrapper{width:95%}
-td input[type="text"] {max-width: 95%;}
+td input[type="text"], td input[type="number"] { max-width: 95%;}
 .input_small{width:40px; color: blue;}
 .input_short{width:70px; color: blue;}
 .input_medium{width:160px; color: green;}
@@ -49,7 +49,7 @@ span.helptext, .helptext {color: green;font-weight: bold;font-family: "Lucida Gr
 .button, input[type="submit"], input[type="button"], .submit-row input {cursor: pointer;}
 .input_payment{font-size: 16px; color:blue;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right; width:80px;}
 .dataTables_length{width: 95%;}
-td input[type="text"].balance {font-size: 20px;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right; width:100px; color:blue}
+td input[type="text"].balance, td input[type="number"].balance {font-size: 20px;font-weight: bold;font-family:monospace, "Lucida Grande";text-align: right; width:100px; color:blue}
 .positive, td input[type="text"].positive {color: green;}
 .stalled, td input[type="text"].stalled {color: #FF8C00;}
 .negative, td input[type="text"].negative {color: red;}
@@ -58,7 +58,7 @@ ul li {list-style-type: none;}
 .menu_section {display : inline-block;}
 .menu_section h3 {padding : 0 0.5em;
     /*color : white;*/
-    background-color: #AFD909; 
+    background-color: #AFD909;
     border : 1px solid grey; }
 .menu_section ul {background-color: transparent;}
 .menu_section li {margin: 0px;
@@ -69,11 +69,11 @@ ul li {list-style-type: none;}
     text-align:left; }
 .menu_section ul {display : none; }
 .menu_section ul li {float: none; }
-.menu_section:hover ul {display: block; 
+.menu_section:hover ul {display: block;
     position: absolute;
-    font-size: 8pt; 
+    font-size: 8pt;
     /*padding-top: 5px;*/
-    /*color:red;*/ 
+    /*color:red;*/
     z-index:99; }
 .menu_section li:hover {background-color: #DCEECD;}
 .submenu {max-height : 300px; overflow-y : auto;}
@@ -85,9 +85,12 @@ ul li {list-style-type: none;}
 #user_urn_gasmember li:hover {background-color: #99ffff;}
 
 .row_action {
-    border: 1px dotted #aaa; 
+    border: 1px dotted #aaa;
     background-color: #ddd;
-    width: 40px; 
+    width: 40px;
     height: 40px;
     background-size : contain;
+}
+.ui-dialog {
+    z-index: 1000;
 }
