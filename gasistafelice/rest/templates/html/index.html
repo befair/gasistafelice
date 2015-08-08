@@ -31,8 +31,6 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}nui/style/wholestyle.css" />
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}nui/style/{{ THEME }}.css" title="{{ THEME }}" />
-    <link rel="alternate stylesheet" type="text/css" href="{{ STATIC_URL }}nui/style/nuvola.css" title="nuvola" />
-    <link rel="alternate stylesheet" type="text/css" href="{{ STATIC_URL }}nui/style/tango.css" title="tango" />
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}nui/style/report.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}nui/style/rest.css" />
@@ -88,7 +86,8 @@
     <script src="{{ STATIC_URL }}nui/scripts/jquery.rees.js"                type="text/javascript"></script>
     <script src="{{ STATIC_URL }}nui/scripts/jquery.dataTables.min.js"          type="text/javascript"></script>
     <script src="{{ STATIC_URL }}nui/scripts/dataTables.sorting.js"          type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}nui/scripts/jquery-ui-timepicker-addon.js"          type="text/javascript"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}nui/scripts/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}nui/scripts/jquery-ui-sliderAccess.js"></script>
     <script src="{{ STATIC_URL }}ajax_select/js/ajax_select.js" type="text/javascript"></script>
 
     <!-- end fero -->
@@ -1426,8 +1425,7 @@
         // GLOBAL CONTROLLS
         // ============================================================================
 
-        function init_global_form_controlls_events()
-        {
+        function init_global_form_controlls_events() {
 
             $('.vDateField').on('click', function() {
 

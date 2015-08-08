@@ -21,6 +21,7 @@
   "dependencies": {
     "jquery-ui": "<2.0",
     "jquery": "<2.0",
-    "datatables": "~1.10.7"
+    "datatables": "~1.10.7",
+    "jquery-timepicker-addon": "~1.3.1"
   }
 }
