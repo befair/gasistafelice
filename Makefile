@@ -98,4 +98,6 @@ test-integration:
 
 test-e2e:
 	@echo 'End-to-end test: running protractor'
-	@docker-compose run --rm e2e
+	@docker-compose -f docker-compose-test.yml up -d
+	@sleep 5
+	@docker-compose -f docker-compose-test.yml run --rm e2e
