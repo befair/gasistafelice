@@ -19,11 +19,13 @@ app = get_wsgi_application()
 
 if settings.ENV in ('stage', 'prod'):
 
-    @timer(600)
-    def order_fix_state(sig):
-        from django.core.management import call_command
+    if not settings.MAINTENANCE_MODE:
 
-        call_command('order_fix_state', interactive=False)
+        @timer(600)
+        def order_fix_state(sig):
+            from django.core.management import call_command
+
+            call_command('order_fix_state', interactive=False)
 
 else:
     from django.utils import autoreload
