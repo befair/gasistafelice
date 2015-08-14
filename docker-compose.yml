@@ -1,12 +1,10 @@
 proxy:
   image: befair/gasistafelice-proxy:latest
   volumes:
-    - ./proxy:/etc/nginx/conf.d:ro
-  volumes_from:
-    - back
+    - ./proxy/site.conf.dev:/etc/nginx/conf.d/site.conf:ro
   ports:
-    - '127.0.0.1:8080:80'
-    - '127.0.0.1:8443:443'
+    - '127.0.0.1:8080:8080'
+    - '127.0.0.1:8443:8443'
   links:
     - front
     - back
