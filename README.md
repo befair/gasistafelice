@@ -55,3 +55,19 @@ Additionally, you can visualize the end-to-end tests running in the browsers via
 
 - `localhost:5900` for Firefox
 - `localhost:5901` for Chrome
+
+### Debugging
+
+To see the tracebacker (this requires `uwsgi` installed on your host machine):
+
+    $ uwsgi --connect-and-read /tmp/gf_tracebacker1
+
+For further info, you can see the [docs](https://uwsgi-docs.readthedocs.org/en/latest/Tracebacker.html).
+
+### Profiling
+
+Enable profiling adding the following line in your `settings.env`:
+
+    APP_PROFILING=true
+
+Then see `/tmp/gf_profiling` on your host machine.
