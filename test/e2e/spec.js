@@ -13,12 +13,12 @@ describe('GF ng-app', function() {
         browser.driver.manage().window().maximize();
       else
         browser.driver.manage().window().setSize(768, 1024);
-      browser.get('http://proxy/');
+      browser.get('http://proxy:8080/');
       expect(browser.getTitle()).toEqual('Gasista Felice');
     });
 
     it('should connect to the UI and get the user orders', function() {
-      browser.get('http://proxy/');
+      browser.get('http://proxy:8080/');
       // fill login form
       element(by.model('app.username')).sendKeys('01gas1');
       element(by.model('app.password')).sendKeys('des');
