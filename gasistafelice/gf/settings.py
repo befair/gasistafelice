@@ -213,9 +213,6 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures/gas/'),
 )
 
-LOG_FILE = os.getenv('APP_LOG_FILE', '/dev/stdout')
-LOG_FILE_DEBUG = os.getenv('APP_LOG_FILE_DEBUG', '/dev/stdout')
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -239,18 +236,12 @@ LOGGING = {
         },
         'logfile':{
             'level':'INFO',
-            'class':'lib.loghandlers.GroupWriteRotatingFileHandler',
-            'filename': LOG_FILE,
-            'maxBytes': 1024*1024*5,
-            'backupCount' : 5,
+            'class':'logging.StreamHandler',
             'formatter': 'simple'
         },
         'logfile_debug':{
             'level':'DEBUG',
-            'class':'lib.loghandlers.GroupWriteRotatingFileHandler',
-            'filename': LOG_FILE_DEBUG,
-            'maxBytes': 1024*1024*5,
-            'backupCount' : 10,
+            'class':'logging.StreamHandler',
             'formatter': 'verbose'
         },
 #        'mail_admins': {
