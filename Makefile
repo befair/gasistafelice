@@ -29,7 +29,7 @@ start:
 	@docker-compose ps
 
 stop:
-	@docker-compose stop
+	@docker-compose -f docker-compose-test.yml stop
 	@docker-compose ps
 
 restart:
@@ -69,9 +69,8 @@ dbclean:
 	@docker-compose run --rm back dropdb app
 	@docker-compose run --rm back createdb app -O app
 
-rm:
-	@docker-compose stop
-	@docker-compose rm -f
+rm: stop
+	@docker-compose -f docker-compose-test.yml rm -f
 
 rmall: rm
 	@docker rmi -f befair/gasistafelice-{front,back}
