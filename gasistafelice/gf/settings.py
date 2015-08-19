@@ -23,7 +23,7 @@ if ENV == 'prod':
     TEMPLATE_DEBUG = False
     EMAIL_DEBUG = False
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    ALLOWED_HOSTS = [os.getenv('APP_SERVER_NAME', 'ordini.desmacerata.it')]
+    ALLOWED_HOSTS = [os.getenv('APP_SERVER_NAME', '*')]
 
 elif ENV == 'stage':
     DEBUG = True
