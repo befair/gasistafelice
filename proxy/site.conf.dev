@@ -29,28 +29,23 @@ server {
 
   location = / {
     proxy_pass      http://front:5000/ui/index.html;
-    expires max;
   }
 
   location /components/ {
     proxy_pass      http://front:5000/ui/components/;
-    expires max;
   }
 
   location /ui/bower_components/ {
     proxy_pass      http://front:5000/libs/bower_components/;
-    expires max;
   }
 
   location /ui/ {
     proxy_pass      http://front:5000;
-    expires max;
   }
 
   location /static/ {
     include          uwsgi_params;
     uwsgi_pass       uwsgi://back:5000;
-    expires max;
   }
 
   location /media/ {

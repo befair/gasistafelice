@@ -1,3 +1,4 @@
 -r base.txt
 django-rosetta
 django-debug-toolbar
+pgcli

@@ -1,6 +1,5 @@
-FROM nginx:1.9
+FROM kobe25/nginx:latest
 
 MAINTAINER Antonio Esposito "kobe@befair.it"
 
-RUN rm -rf /etc/nginx/conf.d/*
-COPY . /etc/nginx/conf.d
+COPY site.conf /etc/nginx/conf.d/site.conf

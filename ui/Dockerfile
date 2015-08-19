@@ -1,4 +1,4 @@
-FROM iojs:2.4
+FROM iojs:2.5
 
 MAINTAINER Antonio Esposito "kobe@befair.it"
 

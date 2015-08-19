@@ -8,16 +8,9 @@ from flexi_auth.models import ParamRole, PrincipalParamRoleRelation, Param
 
 from middleware import get_resource_by_path
 
-import os, logging
+import logging
 
 log = logging.getLogger(__name__)
-if settings.LOG_FILE:
-
-    if not log.handlers:
-        log.setLevel( logging.INFO )
-        hdlr = logging.FileHandler(settings.LOG_FILE)
-        hdlr.setFormatter( logging.Formatter('%(asctime)s %(levelname)s %(message)s') )
-        log.addHandler(hdlr)
 
 
 class Command(BaseCommand):
