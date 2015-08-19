@@ -28,17 +28,15 @@ server {
   }
 
   location = / {
-    rewrite ^/$ /ui/index.html last;
+    proxy_pass      http://front:5000/ui/index.html;
   }
 
   location /components/ {
     proxy_pass      http://front:5000/ui/components/;
-    proxy_redirect  default;
   }
 
   location /ui/bower_components/ {
     proxy_pass      http://front:5000/libs/bower_components/;
-    proxy_redirect  default;
   }
 
   location /ui/ {
