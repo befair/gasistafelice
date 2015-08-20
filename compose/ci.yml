@@ -14,11 +14,11 @@ back:
   build: ./gasistafelice
   links:
     - db
-  env_file: ./settings_ci.env
+  env_file: ./compose/settings_ci.env
 
 db:
   image: postgres:9.4
-  env_file: ./settings_ci.env
+  env_file: ./compose/settings_ci.env
 
 hub:
   image: selenium/hub:latest
