@@ -76,7 +76,7 @@ dbclean:
 	@docker-compose run --rm back createdb app -O app
 
 rm: stop
-	@docker-compose -f test-cat.yml rm -f
+	@docker-compose -f test-cat.yml rm -v -f
 
 rmall: rm
 	@docker rmi -f befair/gasistafelice-{front,back}
