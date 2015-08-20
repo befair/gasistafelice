@@ -14,6 +14,12 @@ help:
 	@echo 'make logs-back  See only backend logs'
 	@echo 'make back       Debug in backend via iPython'
 
+test-cat.yml: docker-compose.yml compose/test.yml Makefile
+	@cat docker-compose.yml compose/test.yml > test-cat.yml
+
+clean:
+	@rm test-cat.yml
+
 up:
 	@docker-compose up -d
 	@docker-compose ps
@@ -28,8 +34,8 @@ start:
 	@docker-compose start
 	@docker-compose ps
 
-stop:
-	@docker-compose -f docker-compose-test.yml stop
+stop: test-cat.yml
+	@docker-compose -f test-cat.yml stop
 	@docker-compose ps
 
 restart:
@@ -70,7 +76,7 @@ dbclean:
 	@docker-compose run --rm back createdb app -O app
 
 rm: stop
-	@docker-compose -f docker-compose-test.yml rm -f
+	@docker-compose -f test-cat.yml rm -f
 
 rmall: rm
 	@docker rmi -f befair/gasistafelice-{front,back}
@@ -95,8 +101,8 @@ test-unit:
 test-integration:
 	@echo 'Integration test: not implemented yet'
 
-test-e2e:
+test-e2e: test-cat.yml
 	@echo 'End-to-end test: running protractor'
-	@docker-compose -f docker-compose-test.yml up -d
+	@docker-compose -f test-cat.yml up -d
 	@sleep 5
-	@docker-compose -f docker-compose-test.yml run --rm e2e
+	@docker-compose -f test-cat.yml run --rm e2e
