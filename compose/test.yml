@@ -1,0 +1,29 @@
+hub:
+  image: selenium/hub:latest
+
+firefox:
+  image: selenium/node-firefox-debug:latest
+  links:
+    - hub
+    - proxy
+  ports:
+    - '127.0.0.1:5900:5900'
+  env_file:
+    - ./test/e2e/settings.env
+
+chrome:
+  image: selenium/node-chrome-debug:latest
+  links:
+    - hub
+    - proxy
+  ports:
+    - '127.0.0.1:5901:5900'
+  env_file:
+    - ./test/e2e/settings.env
+
+e2e:
+  image: michelesr/protractor:latest
+  volumes:
+    - ./test/e2e:/code:ro
+  links:
+    - hub

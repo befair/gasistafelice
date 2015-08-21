@@ -25,8 +25,8 @@ back:
     - '127.0.0.1:7000:7000'
   links:
     - db
-  env_file: ./settings.env
+  env_file: ./compose/settings.env
 
 db:
   image: postgres:9.4
-  env_file: ./settings.env
+  env_file: ./compose/settings.env
