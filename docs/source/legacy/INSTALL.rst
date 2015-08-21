@@ -1,178 +1,191 @@
-Install development version - 2nd february 2012
------------------------------------------------
-
-0. Prepare with your system with required software:
-
-  * Git
-  * PostgreSQL
-
-  for Debian/Ubuntu --> apt-get install postgresql git-core
-  other requirements are installed via pip install. Such as...
-
-  * Django < 1.4
-
-  Create locale for your sytem 
-  * sudo locale-gen it_IT.UTF-8
-
-  We suggest you to make a local deploy in virtualenv, not a big virtual machine!
-  but a virtual python environment in order to keep your system clean.
-
-  Search for virtualenvwrapper 
-
-1. Clone project GASISTA FELICE from GitHub repository
-
-  * git clone https://github.com/feroda/gasistafelice.git
-
-2. Install package requirements and submodules
-
-  * git submodule update --init
-  * pip install -r requirements/prod.txt
-
-  If you are setupping a development installation issue also:
-
-  * pip install -r requirements/dev.txt
-
-3. Set your local settings
-
-  * cd gasistafelice
-  * gasistafelice/gasistafelice$ cp settings.py.dist settings.py --> copy the file to customize
-  * /gasistafelice/gasistafelice$ gedit settings.py
-
-  The main thing is to set the database connection
-  ADMINS = (('xxxxx', 'a@a.it'),)
-  DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gasdb',           
-        'USER': 'utente',         
-        'PASSWORD': 'xxxx',      
-        'HOST': '',             
-        'PORT': '',            
-    }
-  }
-
-  INIT_OPTIONS = {
-    'domain' : "ordini.desmacerata.it",
-    'sitename' : "DES Macerata",
-    'sitedescription' : "Gestione degli ordini per il Distretto di Economia Solidale della Provincia di Macerata (DES-MC)",
-    'su_username' : "admin",
-    'su_name'   : "Referente informatico",
-    'su_surname': "del DES-MC",
-    'su_email'  : "",
-    'su_PASSWORD' : "admin",
-  }
+.. _installationguide:
 
 
-4. Initialize data:
+Installation guide for developers
+=================================
 
-  * python manage.py syncdb --noinput
-  * python manage.py migrate
-  * python manage.py init_superuser
+This guide is intended for modern Debian/Ubuntu-based and Arch-based GNU/Linux distributions.
 
-
-5. (Optional) Load some data for testing
-
-  * gasistafelice/gasistafelice$ python manage.py loaddata fixtures/auth/test_data.json
-
-6. Running
-
-  * gasistafelice/gasistafelice$ python manage.py runserver
-
-  From your preferred browser (GF works with Firefox but you can try others...) 
-  use the follwing links reguardless of your customization:
-
-  http://localhost:8000/
-
-  you could use also the admin interface to do some tests...:
-
-  http://localhost:8000/admin/  --> Admin interface for Django 
+    Note: we'll use ``gf_dev`` as reference name for this guide.  Of course, you can change it as you wish.
 
 
-Use PostgreSQL database
-[-----------------------
+System Requirements
+-------------------
 
-If you want to set up a PostgreSQL db follow these steps:
+Generate Italian locale for your system::
 
-.. sourcecode:: python
+    $ sudo locale-gen it_IT.UTF-8
 
-    (desmacerata1)fero@archgugu:~/src/gasistafelice/gasistafelice$ psql -U postgres
-    psql (9.1.1)
+We need to install common development packages, Git, Python and related packages, SQLite and PostgreSQL databases.
+
+On Debian/Ubuntu::
+
+    $ sudo apt-get install build-essential git-core \
+        python python-{dev,imaging,pip,setuptools,virtualenv} virtualenvwrapper \
+        sqlite3 libsqlite3-dev python-sqlite \
+        postgresql postgresql-client libpq-dev python-psycopg2
+
+On Arch::
+
+    $ sudo pacman -S base-devel git \
+        python2 python2-pip python-virtualenvwrapper \
+        sqlite \
+        postgresql postgresql-libs python2-psycopg2
+
+
+Database
+--------
+
+Only on Arch, first of all initialize ``postgres`` user::
+
+    $ sudo -u postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
+
+Now start PostgreSQL daemon::
+
+    # On Debian/Ubuntu
+    $ sudo service postgresql start
+
+    # On Arch (and Debian Jessie?)
+    $ sudo systemctl start postgresql
+
+Then, open the file::
+
+    # On Debian/Ubuntu  (if necessary, replace "9.3" accordingly to your version of PostgreSQL)
+    $ sudo vim /etc/postgresql/9.3/main/pg_hba.conf
+
+    # On Arch
+    $ sudo vim /var/lib/postgres/data/pg_hba.conf
+
+Add the last line::
+		
+    # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
+
+    local   all         postgres                          peer
+    local   all         gf_dev                            trust
+
+Reload PostgreSQL::
+
+    # On Debian/Ubuntu
+    $ sudo service postgresql reload
+
+    # On Arch (and Debian Jessie?)
+    $ sudo systemctl reload postgresql
+
+Create ``gf_dev`` PostgreSQL user::
+
+    $ sudo -u postgres createuser -D -A gf_dev
+
+Create ``gf_dev`` PostgreSQL database::
+
+    $ sudo -u postgres createdb -O gf_dev -E utf-8 -T template0 gf_dev
+
+Test access to the new database (then, exit with ``\q`` or ``CTRL+d``)::
+
+    $ psql -d gf_dev -U gf_dev
+    psql (9.3.5)
     Type "help" for help.
 
-    postgres=# create role desadmin  login password '';
-    CREATE ROLE
-    postgres=# create database desmc owner desadmin encoding 'utf8' template template0;
-    CREATE DATABASE
-    postgres=# grant all privileges on database desmc to desadmin;
-    GRANT
-    postgres=# \q
+    gf_dev=#
 
 
-Setup cron for automatic order open and close
----------------------------------------------
+Virtual Environment
+-------------------
 
-Check every two minutes if there are orders to be opened or closed
+    Note: we'll assume your virtualenvs root is ``~/.config/venvs``.
 
-.. sourcecode:: crontab
+Set the virtualenv root to your ``.bashrc`` (or ``.zshrc``) and reload it::
 
-   \*/2 * * * * root /usr/local/gasistafelice/extra/sh_manage_wrapper.sh order_fix_state
+    $ echo 'export WORKON_HOME=$HOME/.config/venvs' >> ~/.bashrc
+    $ source ~/.bashrc
 
+Create your virtualenv::
 
-WAS: OLD GUIDE
---------------
+    $ mkvirtualenv -p `which python2` gf_dev
 
-1/7 download project code for GASISTA FELICE project from git repository
-You must have your github account, set your public SSH ley on github and set localy your API Token
-(gasdev)$ git clone git@github.com:feroda/gasistafelice.git
+Now, you've enabled the virtualenv and you'll see something like::
 
-2/7 Install sub modules
-(gasdev)$ cd gasistafelice
-(gasdev)/gasistafelice$ git submodule update --init
+    (gf_dev)$
 
-3/7 Install requirements
-(gasdev)$ pip install -r requirements.txt`
+..
 
-4/7 Set your local settings
-(gasdev)$ cd gasistafelice
-(gasdev)/gasistafelice/gasistafelice$ cp settings.py.dist settings.py --> copy the file to customize
-(gasdev)/gasistafelice/gasistafelice$ gedit settings.py
-The main thing is to set the database connection
-ADMINS = (('xxxxx', 'a@a.it'),)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'gasdb',                      # Or path to database file if using sqlite3.
-        'USER': 'utente',                     # Not used with sqlite3.
-        'PASSWORD': 'xxxx',                   # Not used with sqlite3.
-        'HOST': '',                           # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
-    }
-}
+    For deactivate it use ``deactivate``, for enable it again ``workon gf_dev``.
 
 
-$ export DJANGO_SETTINGS_MODULE=gasistafelice.settings
-(optional)$ export PYTHONPATH=/www
-$ sudo locale-gen it_IT.UTF-8
-$ django-admin.py runserver
-Validating models...
-0 errors found
+Web Application
+---------------
+
+    Note: we'll assume your repositories root is ``~/src``.
+
+Clone the Gasista Felice repository::
+
+    (gf_dev)$ cd ~/src
+    (gf_dev)$ git clone git://github.com/befair/gasistafelice.git gf_dev
+
+..
+
+    Alternatively, if you've a Github account::
+
+        (gf_dev)$ git clone git@github.com:befair/gasistafelice.git gf_dev
+
+Go inside new directory and install submodules::
+
+    (gf_dev)$ cd gf_dev
+    (gf_dev)$ git submodule update --init
+
+Install Python requirements inside your virtualenv::
+
+    (gf_dev)$ pip install -r gasistafelice/deps/dev.txt
+
+Edit ``settings.py`` accordingly to your needs::
+
+    (gf_dev)$ cd gasistafelice
+    (gf_dev)$ vim gf/settings.py
+
+Initialize the database::
+
+    (gf_dev)$ ./manage.py makemigrations --noinput
+    (gf_dev)$ ./manage.py migrate
+
+Create the admin user::
+
+    (gf_dev)$ ./manage.py init_superuser
+
+Optionally, you could load some example data::
+
+    (gf_dev)$ ./manage.py loaddata fixtures/auth/test_data.json
+
+Now let's run the web server::
+
+    (gf_dev)$ ./manage.py runserver
+
+Go to http://localhost:8000/ and enjoy Gasista Felice!!
+
+You could use also the Django admin interface to do some tests at http://localhost:8000/gasistafelice/admin/.
 
 
-5/7 Sincronizzare database
-create your empty database first
-(gasdev)/gasistafelice/gasistafelice$ python manage.py syncdb  --> Create tables but SAY NO when asked to create the super user (!)
-(gasdev)/gasistafelice/gasistafelice$ python manage.py init_superuser --> Create DES base object and the super user following settings.py 
-Note: (gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata initial_data.json --> Initial data are loaded automaticaly with the syncdb operation
+Next time
+---------
 
-6/7 (optional) Load some data for testing
-(gasdev)/gasistafelice/gasistafelice$ python manage.py loaddata test_data.json
+Next time you'll run Gasista Felice, you've to:
 
-7/7 Running
-(gasdev)/gasistafelice/gasistafelice$ python manage.py runserver
-From your preferred browser use the follwing links reguardless of your customizzation:
-http://127.0.0.1:8000/admin/  --> Admin interface for Django 
-http://127.0.0.1:8000/gas-admin/   --> Advancded Django admin interface
-http://127.0.0.1:8000/gasistafelice/rest/   --> SANET interface customization for Gassista use
+Go to project root, inside ``gasistafelice`` directory::
+
+    $ cd ~/src/gf_dev/gasistafelice
+
+Enable virtualenv and export the following environment variables::
+
+    $ workon gf_dev
+
+Run the web server::
+
+    (gf_dev)$ ./manage.py runserver
 
 
+Next steps
+----------
 
+Now you can see next guides:
+
+* configure mail
+* use GitHub account
+* forking model
