@@ -250,11 +250,11 @@ class BaseGASForm(forms.ModelForm):
         model = GAS
         fields = (
             'description', 'name','id_in_des','birthday','headquarter','contact_set',
-            'logo','association_act','intent_act', 'membership_fee'
+            'logo','association_act','intent_act', 'membership_fee', 'fcc'
         )
         gf_fieldsets = [(None, {
             'fields' : (
-                'name','id_in_des','birthday','headquarter', 'membership_fee', 
+                'name', 'fcc', 'id_in_des','birthday','headquarter', 'membership_fee', 
                 'contact_set','logo', 'description', 'association_act','intent_act'
             ),
         })]
