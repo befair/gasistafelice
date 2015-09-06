@@ -39,8 +39,6 @@
           <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>
       </div>
         <form name="myForm">
-            <button class="def-btn" type="submit" ng-click="order.pm.addToCart(order.pm.products)"><span class="glyphicon glyphicon-shopping-cart"></span> Aggiungi al paniere</button>
-
 
       <div class="orderlist">
 
@@ -125,6 +123,12 @@
       <table class="table total">
         <tr>
             <td>
+                <button class="btn btn-default btn-lg def-btn" ng-click="order.pm.addToCart(order.pm.products)" type="button" id="btn-admin" aria-label="Gestione" style="width:200px; margin:auto;">
+                <span class="glyphicon glyphicon-shopping-cart" id="glyph-admin" aria-hidden="true"></span>
+                    Aggiungi al paniere
+                </button>
+            </td>
+            <td style="white-space: nowrap; width:20%">
                 Totale previsto:
             </td>
             <td class="tableprice">

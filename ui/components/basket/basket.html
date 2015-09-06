@@ -13,9 +13,6 @@ $("#checkAll").click(function(){
       </div>
 
     <form>
-        <button ng-click="basket.pm.updateCart(basket.open_ordered_products);" class="def-btn" type="submit">
-            <span class="glyphicon glyphicon-shopping-cart"></span>Aggiorna paniere
-        </button>
 
     <table class="table gas">
     <thead>
@@ -94,7 +91,13 @@ $("#checkAll").click(function(){
     <!-- TODO transform to <tfoot> of the previous table -->
     <table class="table total">
         <tr>
-            <td> Totale previsto: </td>
+            <td>
+                <button class="btn btn-default btn-lg def-btn" ng-click="basket.pm.updateCart(basket.open_ordered_products);" type="button" id="btn-admin" aria-label="Gestione" style="width:200px; margin:auto;">
+                <span class="glyphicon glyphicon-shopping-cart" id="glyph-admin" aria-hidden="true"></span>
+                    Aggiungi al paniere
+                </button>
+            </td>
+            <td style="white-space: nowrap; width:20%"> Totale previsto: </td>
             <td class="tableprice"> <b>€ {{ basket.pm.getTotal(basket.open_ordered_products) }}</b> </td>
         </tr>
     </table>
