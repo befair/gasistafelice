@@ -1,14 +1,14 @@
 <div class="tab-pane active" id="ordinare"><!--ORDINARE-->
 
-  <div class="ord-ord-title">Gli ordini aperti del {{gm.gas.name}}</div>
+  <div class="ord-title">Gli ordini aperti del {{gm.gas.name}}</div>
     <div class="row">
-      <div class="cont_orders_list" ng-repeat="open_order in gm.open_orders">
+      <div class="cont_order_info" ng-repeat="open_order in gm.open_orders">
         <div ng-click="order.pm.set_order_catalog(open_order);" class="no_style">
-        <table class="table orders_list">
+        <table class="table order_info" ng-class="{ order_selected: selected_order == open_order }">
 
         <tbody>
           <tr>
-              <td rowspan="3" class="img_orders_list menu_links"><img class="pic_orders_list" ng-src="/ui/img/user_pic.png"></img></td>
+              <td rowspan="3" class="img_order_info menu_links"><img class="pic_order_info" ng-src="/ui/img/user_pic.png"></img></td>
               <td class="menu_links">{{open_order.supplier.name}}
                   <span ng-show="open_order.supplier.seat.province">
                       ({{open_order.supplier.seat.province}})
@@ -33,7 +33,7 @@
 
     <!-- END open orders row ng-repeat -->
 
-    <div class="ord-el-title">I prodotti di <i>{{selected_order.supplier.name}}</i></div>
+    <div class="ord-title">I prodotti di <i>{{selected_order.supplier.name}}</i></div>
       <div class="searchbar">
           <span class="font-searchbar"><span class="glyphicon glyphicon-search"></span></span>
           <input type="text" class="searchbar-text" id="search-bar" placeholder="Cerca tra i prodotti" ng-model="searchQuery"/>

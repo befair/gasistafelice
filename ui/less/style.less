@@ -75,7 +75,7 @@ a.menu_links { cursor: pointer; }
 
   	@media (min-width:750px)
   	{
-	  	.cont_orders_list{
+	  	.cont_order_info{
 	  		.make-md-column(3);
 	  		//background-color: red;
 	  		float:left; display:block;
@@ -86,7 +86,7 @@ a.menu_links { cursor: pointer; }
     //SMARTPHONE - TABLET
 
 	@media (max-width:750px){
-		.cont_orders_list{
+		.cont_order_info{
 		.make-sm-column(2);
 		//width:auto!important;
 		//background-color: green;
@@ -100,7 +100,7 @@ a.menu_links { cursor: pointer; }
     //SMALL SMARTPHONE
 
 	@media (max-width:400px){
-		.cont_orders_list{
+		.cont_order_info{
 		.make-xs-column(10);
 		//width:auto!important;
 		//background-color: green;
@@ -115,7 +115,7 @@ a.menu_links { cursor: pointer; }
 
     //LARGE DESKTOP
 	@media (min-width:1031px){
-		.cont_orders_list{
+		.cont_order_info{
 		.make-sm-column(3);
 		//width:auto!important;
 		//background-color: green;
@@ -168,7 +168,7 @@ a.menu_links { cursor: pointer; }
 	min-width:98%;
 }
 
-.pic_orders_list{
+.pic_order_info{
 	height:50px;
 	width:50px;
 }
@@ -215,6 +215,10 @@ a.menu_links { cursor: pointer; }
 	//background-color: red;
 	height:@navbar-height + 14;
 	padding-top:8px;
+}
+
+.navbar-nav {
+    margin: 0px 0px -0.3em 0px;
 }
 
 .navbar-menu{
@@ -266,6 +270,7 @@ border-right: 1px solid #FFF;
     margin-right: 0.2em;
 }
 
+/* TOREMOVE
 .gaslist{
     .nav;
     .navbar-nav;
@@ -277,7 +282,7 @@ border-right: 1px solid #FFF;
     .nav;
     .navbar-nav;
     float:left!important;
-}
+} */
 
 .optionlist >li >a{
     //padding-bottom:27px;
@@ -350,21 +355,38 @@ border-right: 1px solid #FFF;
 	text-align:center;
 }
 
-.cont_orders_list{
+.cont_order_info{
 	padding-right: 5px;
 	margin-bottom:10px;
 }
 
-.orders_list{
+.order_info{
 	td{
 		height:auto;
 	}
 	margin-bottom: 5px;
-	.img_orders_list{
+	.img_order_info{
 		text-align: center;
 	}
 
 	box-shadow:0px 2px 2px #9D9D9D;
+}
+
+.order_selected {
+    // bello ma troppo forte color: white;
+    // bello ma troppo forte background-color: #D5F4F9;
+    border-radius: 14px;
+    background-color: rgb(255, 214, 182);
+    tr > td {
+        border-top: 1px solid darkgrey !important;
+    }
+    tr:first-child > td {
+        border-top: 0px none !important;
+    }
+    /* mi sembrava potesse piacere, ma non mi piace
+    tr:first-child > td:first-child {
+        border-right: 1px solid darkgrey !important;
+    } */
 }
 
 
@@ -455,12 +477,14 @@ border-right: 1px solid #FFF;
     margin-top:-15px!important;
     text-align:right;
     font-size:25px;
+    tr td {
+        border: none !important;
+    }
 }
 
 .tableprice{
     color: green;
     width:10%;
-
     font-style: bold;
 }
 
@@ -482,6 +506,7 @@ thead{
     padding: 0.1em 0.1em 0.1em 1.1em;
     //color: rgb(34, 34, 34);
     //background-color: lightblue;
+    border-radius: 0px 0px 6px 6px;
 }
 .container-fluid {
     padding: 0;
@@ -570,21 +595,21 @@ thead{
 margin-top:10px;
 }
 
-.ord-ord-title{
+.ord-title{
 	.pan-ord-title;
-	border-radius:0px;
+	border-radius:6px;
 	background-color:@label-color;
 	color: @text-label-color;
 }
 
-.ord-el-title{
+/* TOREMOVE .ord-el-title{
 	.pan-cons-title;
 	background-color:@label-color;
 	border-radius:0px;
 	margin-top:20px;
     margin-bottom:30px;
 	color: @text-label-color;
-}
+}*/
 
 .category{
 	color:#EB2127;
@@ -603,11 +628,11 @@ margin-top:10px;
  border-left: @tab-border;
  border-bottom: @tab-border;
  border-top-left-radius: 1px;
- padding: @tab-padding @tab-padding 0 @tab-padding;
+ padding: 0.3em 0.6em;
  background-color: white;
  min-height: 100%;
+ margin-top: 1em;
  .box-shadow(@string);
- padding-top:15px;
 }
 
 
@@ -1033,24 +1058,16 @@ td { height:50px; width:115px;}*/
 	margin-top:5px;
 }
 
-.pan-ord-title, .pan-cons-title{
+.pan-ord-title {
 	//font-size:15px;
 	color: black;
 	background-color: @foot-color;
 	padding-left: 10px;
 	padding-right: 10px;
-	//width:100%;
-	margin-bottom:10px;
-    margin-left:-5px;
-    margin-right:-5px;
-    margin-top:10px;
+    margin: 10px -11px;
 	//.top-border-radius(9px,1px,#C7C7C7);
 	//font-weight: bold;
 
-}
-
-.panc-cons-title{
-	margin-top:20px;
 }
 
 .fa{
@@ -1255,7 +1272,7 @@ span.tags
 
 
 .scheda_title{
-    .ord-ord-title;
+    .ord-title;
     margin-left:0px!important;
     margin-right:0px!important;
 }
