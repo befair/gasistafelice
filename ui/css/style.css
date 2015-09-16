@@ -6914,6 +6914,7 @@ a.menu_links {
   border-width: 1px 1px 0px;
   border-style: solid;
   border-radius: 0.5em 0.5em 0px 0px;
+  z-index: -10;
 }
 .userbar li.active a {
   background-color: white !important;
@@ -7408,7 +7409,7 @@ tbody.collapsebar.in {
 }
 .navbar-right {
   margin-top: 5px;
-  margin-right: 0;
+  margin-right: 0.2em;
 }
 .gaslist {
   margin-bottom: 0;
@@ -7797,6 +7798,8 @@ thead {
   background-color: green;
   font-size: 0.8em;
   padding-top: 0.1em;
+  font-weight: bold;
+  padding: 0.1em 0.1em 0.1em 1.1em;
 }
 .container-fluid {
   padding: 0;
@@ -7806,6 +7809,7 @@ thead {
   border-width: 1px 1px 0px;
   border-style: solid;
   border-radius: 0.5em 0.5em 0px 0px;
+  z-index: -10;
 }
 .navbar li.active a {
   background-color: white !important;
@@ -8761,6 +8765,7 @@ body {
   width: 100%;
   font-family: 'Source Sans Pro', 'Helvetica', Arial, sans-serif;
   font-size: 20px;
+  background-color: #ececec;
 }
 input {
   text-align: center;
