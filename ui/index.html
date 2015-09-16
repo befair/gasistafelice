@@ -149,25 +149,35 @@
         </div><!-- /1° col-md-8 -->
 
         <div ng-if="!app.isAuth()" class="first_block"><!-- 1° col-md-8 -->
-                <h4>Login</h4>
+            <div id="cont_login">
+                <h4>Benvenuto gasista!</h4>
                 <!-- TODO @veon82 <li><a href="/#/signup">Sign up</a></li> -->
-                <div class="row">
-                    <form class="col s12">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input ng-model="app.username" id="username" type="text" class="validate">
-                                <label for="username">Username</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <input ng-model="app.password" id="password" type="password" class="validate">
-                                <label for="password">Password</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <a ng-click="app.login()" href="#" id="go" class="waves-effect waves-blue-grey waves-grey-blue btn modal-action modal-close">GO</a>
+                <form class="col s12">
+                    <table>
+                        <tr>
+                            <td> <label for="username">utente</label> </td>
+                            <td> <input ng-model="app.username" id="username" type="text" class="validate"> </td>
+                        </tr>
+                            <!-- <div class="input-field col s12">
+                                </div> -->
+                        <tr>
+                            <td> <label for="password">password</label> </td>
+                            <td> <input ng-model="app.password" id="password" type="password" class="validate"> </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td>
+                                <button class="btn btn-default btn-lg" ng-click="app.login()" type="button" id="go" aria-label="Entra">
+                                <span class="glyphicon glyphicon-thumbs-up" id="glyph-go" aria-hidden="true"></span>
+                                    Entra
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div id="map" ng-controller="MapController">
+            </div>
         </div><!-- /1° col-md-8 -->
 
         <!-- 1° row -->
@@ -198,6 +208,7 @@
     <!-- <script src="/ui/js/local.js"></script> -->
 
     <script src="/ui/app.js"></script>
+    <script src="/ui/components/map/map.js"></script>
     <script src="/ui/components/order/order.js"></script>
     <script src="/ui/components/basket/basket.js"></script>
     <script src="/ui/components/cash/cash.js"></script>

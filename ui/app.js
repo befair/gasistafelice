@@ -20,6 +20,7 @@ var app = angular.module('ngGF',
 
         //TODO: settings
         $rootScope.appVersion = '0.13-dev';
+        $rootScope.geoApiBaseUrl = 'http://sbcatalog.labs.befair.it';
 
         //Default values for page
         $rootScope.active_section = 'order';

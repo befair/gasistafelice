@@ -7181,6 +7181,9 @@ tbody.collapsebar.in {
     padding: 0px;
     margin-left: 20px;
   }
+  #map {
+    height: 450;
+  }
 }
 @media (max-width: 750px) and (min-width: 768px) {
   .cont_order_info {
@@ -7200,6 +7203,9 @@ tbody.collapsebar.in {
     padding: 0px;
     margin-left: 20px;
   }
+  #map {
+    height: 300px;
+  }
 }
 @media (min-width: 1031px) {
   .cont_order_info {
@@ -7212,12 +7218,39 @@ tbody.collapsebar.in {
     padding: 0px;
     margin-left: 20px;
   }
+  #map {
+    height: 720px;
+  }
 }
 @media (min-width: 1031px) and (min-width: 768px) {
   .cont_order_info {
     float: left;
     width: 25%;
   }
+}
+#cont_login {
+  float: right;
+  position: fixed;
+  top: 150px;
+  right: 100px;
+  z-index: 1000;
+  padding: 0.2em 1.2em;
+  border-radius: 10px;
+  background-color: #428bca;
+  color: white;
+}
+#cont_login td,
+#cont_login th {
+  padding: 0.2em;
+}
+#cont_login #go {
+  float: right;
+}
+#cont_login input {
+  color: black;
+}
+label {
+  font-weight: normal;
 }
 .delete {
   font-size: 10px;

@@ -71,64 +71,94 @@ a.menu_links { cursor: pointer; }
 
 //GRID-LAYOUT ORDINI TAB according to  -- display layout --
 
-    //DESKTOP
+//DESKTOP
 
-  	@media (min-width:750px)
-  	{
-	  	.cont_order_info{
-	  		.make-md-column(3);
-	  		//background-color: red;
-	  		float:left; display:block;
-	  		padding-right:10px;
-	  	}
-	}
+@media (min-width:750px)
+{
+    .cont_order_info{
+        .make-md-column(3);
+        //background-color: red;
+        float:left; display:block;
+        padding-right:10px;
+    }
+}
 
-    //SMARTPHONE - TABLET
+//SMARTPHONE - TABLET
 
-	@media (max-width:750px){
-		.cont_order_info{
-		.make-sm-column(2);
-		//width:auto!important;
-		//background-color: green;
-		float:left; display:block;
-		padding:0px;
-		margin-left:20px;
-		//.border-radius(4px,1px,#C7C7C7);
-		}
-	}
+@media (max-width:750px){
+    .cont_order_info{
+        .make-sm-column(2);
+        //width:auto!important;
+        //background-color: green;
+        float:left; display:block;
+        padding:0px;
+        margin-left:20px;
+        //.border-radius(4px,1px,#C7C7C7);
+    }
+    #map {
+        height: 450;
+    }
+}
 
-    //SMALL SMARTPHONE
+//SMALL SMARTPHONE
 
-	@media (max-width:400px){
-		.cont_order_info{
-		.make-xs-column(10);
-		//width:auto!important;
-		//background-color: green;
-		float:left; display:block;
-		padding:0px;
-		margin-left:20px;
+@media (max-width:400px){
+    .cont_order_info{
+        .make-xs-column(10);
+        //width:auto!important;
+        //background-color: green;
+        float:left; display:block;
+        padding:0px;
+        margin-left:20px;
 
-		//.border-radius(4px,1px,#C7C7C7);
+        //.border-radius(4px,1px,#C7C7C7);
+    }
+    #map {
+        height: 300px;
+    }
+}
 
-		}
-	}
-
-    //LARGE DESKTOP
-	@media (min-width:1031px){
-		.cont_order_info{
-		.make-sm-column(3);
-		//width:auto!important;
-		//background-color: green;
-		float:left; display:block;
-		padding:0px;
-		margin-left:20px;
-
-		//.border-radius(4px,1px,#C7C7C7);
-
-		}
-	}
+//LARGE DESKTOP
+@media (min-width:1031px){
+    .cont_order_info{
+        .make-sm-column(3);
+        //width:auto!important;
+        //background-color: green;
+        float:left; display:block;
+        padding:0px;
+        margin-left:20px;
+        //.border-radius(4px,1px,#C7C7C7);
+    }
+    #map {
+        height: 720px;
+    }
+}
 /////////////////////////////////////////////////////
 
+#cont_login {
+    float: right;
+    position: fixed;
+    top: 150px;
+    right: 100px;
+    z-index: 1000;
+    padding: 0.2em 1.2em;
+    border-radius: 10px;
+    background-color: @label-color;
+	color: @text-label-color;
+    td, th {
+        padding: 0.2em;
+    }
+    #go {
+        float: right;
+    }
+    input {
+        color: black;
+    }
+}
+
+label {
+    font-weight: normal;
+}
 
 .delete{
 	font-size: 10px;
