@@ -5603,8 +5603,8 @@ COPY auth_user (id, username, first_name, last_name, email, password, is_staff, 
 20	riprovo	Riprovo	Ioriprovo	ciriprovo@example.org	pbkdf2_sha256$15000$0G6iC8TX0PXZ$dYc+rzmyFNTYI2gESE13dOQSqdiMO7sXY0TtWwsvt3k=	t	t	f	2014-02-20 16:31:20+00	2014-02-19 23:30:25+00
 5	01gas2	Gasista_01	DelGas_02	gasista01@gas02.test	pbkdf2_sha256$15000$An55XILGpRbc$F0kExTsDifnA8In/ko1pwStQMF/sLrij4t9R28DvC3I=	t	t	f	2014-11-04 15:07:29.651626+00	2014-01-19 14:33:17+00
 4	02gas2	Gasista_02	DelGas_02	gasista02@gas02.test	pbkdf2_sha256$15000$8H1947aBp4uH$IaDNJttZUcdqsUzOcdvOUOs58A86ydIGoDr9wLKD9vI=	t	t	f	2014-11-04 15:08:48.818095+00	2014-01-19 14:31:50+00
-2	01gas1	Gasista_01	DelGas_01	gasista01@gas01.test	pbkdf2_sha256$15000$tzmnr2M14APB$bwKiWbhG9bwiPZpbBNk6kmqSQeA0rTTK+80i3Sn5lXo=	t	t	f	2015-02-03 09:02:40.384927+00	2014-01-19 13:54:46+00
 1	admin	Referente informatico	del Test-Des	wargames@example.org	pbkdf2_sha256$15000$JN32TW4rAGct$yg82J1u9JZyhUNIGJIPsgSWUrfc9sooM66wuKa6Vr1Q=	t	t	t	2015-07-14 15:44:45.343131+00	2014-01-18 01:20:14+00
+2	01gas1	Gasista_01	DelGas_01	gasista01@gas01.test	pbkdf2_sha256$15000$tzmnr2M14APB$bwKiWbhG9bwiPZpbBNk6kmqSQeA0rTTK+80i3Sn5lXo=	t	t	f	2015-09-16 14:27:06.840763+00	2014-01-19 13:54:46+00
 \.
 
 
@@ -5923,6 +5923,7 @@ SELECT pg_catalog.setval('blockconfiguration_id_seq', 1, false);
 --
 
 COPY captcha_captchastore (id, challenge, response, hashkey, expiration) FROM stdin;
+121	IZYM	izym	2c53bab88d332cf372adc860af3719d00affbb61	2015-08-12 11:19:16.366815+00
 \.
 
 
@@ -5930,7 +5931,7 @@ COPY captcha_captchastore (id, challenge, response, hashkey, expiration) FROM st
 -- Name: captcha_captchastore_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('captcha_captchastore_id_seq', 120, true);
+SELECT pg_catalog.setval('captcha_captchastore_id_seq', 121, true);
 
 
 --
@@ -6156,19 +6157,6 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 17, true);
 --
 
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
-cf8d3caeccce1477393004d85f2fe056	OTVhN2ZlZTY0NmI5OTZmMzkyMGZjZjA1MWJmMTMwM2I2MjM1ZmMwYjqAAn1xAShVCnRlc3Rjb29r\naWVxAlUGd29ya2VkcQNVDGFwcF9zZXR0aW5nc3EEfXEFKFUFREVCVUdxBohVBVRIRU1FcQdVBW1p\nbGt5cQhVB1ZFUlNJT05xCVUEMC4xMXEKdXUu\n	2015-03-17 01:20:26.065857+00
-3c0f771f80d0d4ee2e0a1e5d02db3f57	NjUzYjU3YmYzMzlmNmRmNzIzMGE4YWVlYTFjNTRhNWM4YmFjZTk2YjqAAn1xAVUMYXBwX3NldHRp\nbmdzcQJ9cQMoVQVERUJVR3EEiFUFVEhFTUVxBVUFbWlsa3lxBlUHVkVSU0lPTnEHVQQwLjExcQh1\ncy4=\n	2015-03-17 01:20:26.183167+00
-f665e979a6a695e479b79d87c7d5f2c8	OTVhN2ZlZTY0NmI5OTZmMzkyMGZjZjA1MWJmMTMwM2I2MjM1ZmMwYjqAAn1xAShVCnRlc3Rjb29r\naWVxAlUGd29ya2VkcQNVDGFwcF9zZXR0aW5nc3EEfXEFKFUFREVCVUdxBohVBVRIRU1FcQdVBW1p\nbGt5cQhVB1ZFUlNJT05xCVUEMC4xMXEKdXUu\n	2015-03-17 01:30:26.925148+00
-8d1d06019e857d0630760526c73d300f	NjUzYjU3YmYzMzlmNmRmNzIzMGE4YWVlYTFjNTRhNWM4YmFjZTk2YjqAAn1xAVUMYXBwX3NldHRp\nbmdzcQJ9cQMoVQVERUJVR3EEiFUFVEhFTUVxBVUFbWlsa3lxBlUHVkVSU0lPTnEHVQQwLjExcQh1\ncy4=\n	2015-03-17 01:30:27.059978+00
-w2dn7qnr0ee1lv95c9wx537bpjyzny19	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:18.284271+00
-4zee5e2py4gnnp04xf8go2aw609tvixw	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:18.543333+00
-eqguyle6tz366hxvopsto432gn7tpw7b	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:18.654953+00
-yfxtedlj23trvauczofamoy9a197nfrv	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:18.831678+00
-bkqk018cdu0uo25cygqx7qct8gyo8myx	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:22.793411+00
-db5ph9hpai1pqpbcl3f9w7yhcdbyxmra	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:22.835089+00
-gyt95uz28sy48p23kp3uj8o2eew5803r	NDM4YmZlMzdhZDNmYzBlZGQxZjBkNDJjYWI1MzI3ZDI5MWE2YzI0Mzp7ImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9fQ==	2015-07-10 15:16:25.389534+00
-ll7x5nmum6ken01fnsjud3ygdzsnxzai	MmExNGI5MzljNWQ2NWE1YTA2MGZhMzQ1NDdiNTVhZjdkMDBmMzM5MDp7InVzZXJfaWQiOjEsIl9hdXRoX3VzZXJfaWQiOjEsImxvZ2dlZF91c2VyX2lkIjoxLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJnZi5iYXNlLmJhY2tlbmRzLkF1dGhlbnRpY2F0aW9uUGFyYW1Sb2xlQmFja2VuZCIsImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9LCJfYXV0aF91c2VyX2hhc2giOiIzM2U2ZDViYzc1MDE0YjZjOTBiMTRjNzY5ZTE3ZDcyZTQzNDMwYTc5In0=	2015-07-10 15:16:52.851148+00
-g6mf3qqzjrj40foku223m5ey11jczi5g	MmExNGI5MzljNWQ2NWE1YTA2MGZhMzQ1NDdiNTVhZjdkMDBmMzM5MDp7InVzZXJfaWQiOjEsIl9hdXRoX3VzZXJfaWQiOjEsImxvZ2dlZF91c2VyX2lkIjoxLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJnZi5iYXNlLmJhY2tlbmRzLkF1dGhlbnRpY2F0aW9uUGFyYW1Sb2xlQmFja2VuZCIsImFwcF9zZXR0aW5ncyI6eyJERUJVRyI6dHJ1ZSwiVEhFTUUiOiJtaWxreSIsIlZFUlNJT04iOiIwLjEyLWRldiJ9LCJfYXV0aF91c2VyX2hhc2giOiIzM2U2ZDViYzc1MDE0YjZjOTBiMTRjNzY5ZTE3ZDcyZTQzNDMwYTc5In0=	2015-07-28 16:10:23.341619+00
 \.
 
 
@@ -6425,6 +6413,23 @@ COPY gas_delivery (id, place_id, date) FROM stdin;
 48	1	2014-06-29 15:40:00+00
 49	1	2015-02-22 12:37:00+00
 50	11	2015-07-31 15:57:00+00
+51	1	2015-08-30 11:17:00+00
+52	1	2015-08-30 11:18:00+00
+53	1	2015-09-20 00:30:00+00
+54	1	2015-09-27 00:30:00+00
+55	1	2015-10-04 00:30:00+00
+56	1	2015-10-11 00:30:00+00
+57	1	2015-10-18 00:30:00+00
+58	1	2015-10-25 00:30:00+00
+59	1	2015-11-01 00:30:00+00
+60	1	2015-11-08 00:30:00+00
+61	1	2015-11-15 00:30:00+00
+62	1	2015-11-22 00:30:00+00
+63	1	2015-11-29 00:30:00+00
+64	1	2015-12-06 00:30:00+00
+65	1	2015-12-13 00:30:00+00
+66	1	2015-12-20 00:30:00+00
+67	1	2015-09-30 00:36:00+00
 \.
 
 
@@ -6432,7 +6437,7 @@ COPY gas_delivery (id, place_id, date) FROM stdin;
 -- Name: gas_delivery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('gas_delivery_id_seq', 50, true);
+SELECT pg_catalog.setval('gas_delivery_id_seq', 67, true);
 
 
 --
@@ -6638,6 +6643,14 @@ COPY gas_gasmemberorder (id, purchaser_id, ordered_product_id, ordered_price, or
 115	20	211	20.0000	4.00	\N	t	[ord da admin] 
 116	20	207	20.0000	4.00	\N	t	CIAOCIAO
 113	20	210	10.0000	5.00	\N	t	[ord da admin] 
+128	1	229	3.5000	7.00	\N	t	
+127	1	225	50.0000	4.00	\N	t	
+117	1	214	10.0000	10.00	\N	t	pippo
+122	1	216	25.0000	8.00	\N	t	mi piacciono verdi
+126	1	219	20.0000	3.00	\N	t	
+124	1	221	3.5000	9.00	\N	t	
+123	1	218	10.0000	2.00	\N	t	numero 35 quelle gialle
+125	1	220	25.0000	1.00	\N	t	
 \.
 
 
@@ -6645,7 +6658,7 @@ COPY gas_gasmemberorder (id, purchaser_id, ordered_product_id, ordered_price, or
 -- Name: gas_gasmemberorder_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('gas_gasmemberorder_id_seq', 116, true);
+SELECT pg_catalog.setval('gas_gasmemberorder_id_seq', 128, true);
 
 
 --
@@ -6673,6 +6686,23 @@ COPY gas_gassupplierorder (id, pact_id, datetime_start, datetime_end, order_mini
 57	3	2014-06-12 15:30:00+00	2014-06-22 15:36:00+00	\N	47	\N	\N	2	\N	\N	\N	\N		\N
 58	3	2014-06-12 15:40:00+00	2014-06-22 15:40:00+00	\N	48	\N	\N	2	\N	\N	\N	\N		\N
 59	3	2015-07-14 11:30:00+00	2015-07-24 11:37:00+00	\N	50	\N	\N	2	\N	\N	\N	\N		\N
+61	4	2015-08-12 11:10:00+00	2015-08-23 11:18:00+00	\N	52	\N	\N	2	\N	\N	\N	\N		\N
+62	4	2015-09-06 00:30:00+00	2015-09-13 00:30:00+00	\N	53	\N	\N	3	\N	\N	\N	\N		\N
+76	4	2015-09-13 00:30:00+00	2015-09-20 00:30:00+00	\N	54	\N	\N	3	\N	\N	\N	\N		62
+77	4	2015-09-20 00:30:00+00	2015-09-27 00:30:00+00	\N	55	\N	\N	3	\N	\N	\N	\N		62
+78	4	2015-09-27 00:30:00+00	2015-10-04 00:30:00+00	\N	56	\N	\N	3	\N	\N	\N	\N		62
+79	4	2015-10-04 00:30:00+00	2015-10-11 00:30:00+00	\N	57	\N	\N	3	\N	\N	\N	\N		62
+80	4	2015-10-11 00:30:00+00	2015-10-18 00:30:00+00	\N	58	\N	\N	3	\N	\N	\N	\N		62
+81	4	2015-10-18 00:30:00+00	2015-10-25 00:30:00+00	\N	59	\N	\N	3	\N	\N	\N	\N		62
+82	4	2015-10-25 00:30:00+00	2015-11-01 00:30:00+00	\N	60	\N	\N	3	\N	\N	\N	\N		62
+83	4	2015-11-01 00:30:00+00	2015-11-08 00:30:00+00	\N	61	\N	\N	3	\N	\N	\N	\N		62
+84	4	2015-11-08 00:30:00+00	2015-11-15 00:30:00+00	\N	62	\N	\N	3	\N	\N	\N	\N		62
+85	4	2015-11-15 00:30:00+00	2015-11-22 00:30:00+00	\N	63	\N	\N	3	\N	\N	\N	\N		62
+86	4	2015-11-22 00:30:00+00	2015-11-29 00:30:00+00	\N	64	\N	\N	3	\N	\N	\N	\N		62
+87	4	2015-11-29 00:30:00+00	2015-12-06 00:30:00+00	\N	65	\N	\N	3	\N	\N	\N	\N		62
+88	4	2015-12-06 00:30:00+00	2015-12-13 00:30:00+00	\N	66	\N	\N	3	\N	\N	\N	\N		62
+60	3	2015-08-12 11:10:00+00	2015-08-23 11:17:00+00	\N	51	\N	\N	2	\N	\N	\N	136.5000		\N
+89	3	2015-09-06 00:30:00+00	2015-09-20 00:36:00+00	\N	67	\N	\N	2	\N	\N	\N	\N		\N
 \.
 
 
@@ -6680,7 +6710,7 @@ COPY gas_gassupplierorder (id, pact_id, datetime_start, datetime_end, order_mini
 -- Name: gas_gassupplierorder_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('gas_gassupplierorder_id_seq', 59, true);
+SELECT pg_catalog.setval('gas_gassupplierorder_id_seq', 89, true);
 
 
 --
@@ -6766,6 +6796,18 @@ COPY gas_gassupplierorderproduct (id, order_id, gasstock_id, maximum_amount, ini
 215	59	2	\N	20.0000	20.0000	20.0000	\N
 216	59	4	\N	25.0000	25.0000	25.0000	\N
 217	59	17	\N	3.5000	3.5000	3.5000	\N
+218	60	6	\N	10.0000	10.0000	10.0000	\N
+219	60	2	\N	20.0000	20.0000	20.0000	\N
+220	60	4	\N	25.0000	25.0000	25.0000	\N
+221	60	17	\N	3.5000	3.5000	3.5000	\N
+222	61	8	\N	40.0000	40.0000	40.0000	\N
+223	61	10	\N	50.0000	50.0000	50.0000	\N
+224	62	8	\N	40.0000	40.0000	40.0000	\N
+225	62	10	\N	50.0000	50.0000	50.0000	\N
+226	89	6	\N	10.0000	10.0000	10.0000	\N
+227	89	2	\N	20.0000	20.0000	20.0000	\N
+228	89	4	\N	25.0000	25.0000	25.0000	\N
+229	89	17	\N	3.5000	3.5000	3.5000	\N
 \.
 
 
@@ -6773,7 +6815,7 @@ COPY gas_gassupplierorderproduct (id, order_id, gasstock_id, maximum_amount, ini
 -- Name: gas_gassupplierorderproduct_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('gas_gassupplierorderproduct_id_seq', 217, true);
+SELECT pg_catalog.setval('gas_gassupplierorderproduct_id_seq', 229, true);
 
 
 --
@@ -8028,6 +8070,10 @@ COPY simple_accounting_cashflow (id, account_id, amount) FROM stdin;
 208	10	-2.0000
 209	10	165.0000
 210	86	-165.0000
+211	30	136.5000
+212	10	-136.5000
+213	23	850.0000
+214	30	-850.0000
 \.
 
 
@@ -8035,7 +8081,7 @@ COPY simple_accounting_cashflow (id, account_id, amount) FROM stdin;
 -- Name: simple_accounting_cashflow_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('simple_accounting_cashflow_id_seq', 210, true);
+SELECT pg_catalog.setval('simple_accounting_cashflow_id_seq', 214, true);
 
 
 --
@@ -8302,6 +8348,12 @@ COPY simple_accounting_ledgerentry (id, account_id, transaction_id, entry_id, am
 231	495	87	1	100.0000	100.0000
 273	104	105	30	165.0000	285.0000
 274	86	105	91	165.0000	555.0000
+275	30	106	264	-136.5000	-221.0000
+276	10	106	272	136.5000	1074.4900
+277	23	107	92	-850.0000	-2200.0000
+278	24	107	53	850.0000	2000.0000
+279	13	107	168	850.0000	3814.0000
+280	30	107	276	850.0000	629.0000
 \.
 
 
@@ -8309,7 +8361,7 @@ COPY simple_accounting_ledgerentry (id, account_id, transaction_id, entry_id, am
 -- Name: simple_accounting_ledgerentry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('simple_accounting_ledgerentry_id_seq', 274, true);
+SELECT pg_catalog.setval('simple_accounting_ledgerentry_id_seq', 280, true);
 
 
 --
@@ -8419,6 +8471,8 @@ COPY simple_accounting_split (id, exit_point_id, entry_point_id, target_id, desc
 103	\N	\N	206	
 104	\N	\N	208	
 105	103	104	210	
+106	\N	\N	212	
+107	24	13	214	
 \.
 
 
@@ -8426,7 +8480,7 @@ COPY simple_accounting_split (id, exit_point_id, entry_point_id, target_id, desc
 -- Name: simple_accounting_split_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('simple_accounting_split_id_seq', 105, true);
+SELECT pg_catalog.setval('simple_accounting_split_id_seq', 107, true);
 
 
 --
@@ -8576,6 +8630,8 @@ COPY simple_accounting_transaction (id, date, description, issuer_id, source_id,
 103	2014-05-07 21:01:31.834366+00	Ord. 55 GA1 - Fornitore 01 ([MOD] old_amount=33.50 -> new_amount=32.50)	2	205	GAS_WITHDRAWAL	f
 104	2014-05-07 21:01:32.124915+00	Ord. 55 GA1 - Fornitore 01 ([MOD] old_amount=7.00 -> new_amount=9.00)	2	207	GAS_WITHDRAWAL	f
 105	2014-05-07 21:11:26.849619+00	Ord. 55 GA1 - Fornitore 01. Fattura n.0101010	2	209	PAYMENT	f
+106	2015-09-06 00:35:17.458383+00	Ord. 60 GA1 - Fornitore 01	2	211	GAS_WITHDRAWAL	f
+107	2015-09-06 01:18:40.678441+00	GA1 LIABILITY aggiunta al gasista di debug	3	213	ADJUST	f
 \.
 
 
@@ -8583,7 +8639,7 @@ COPY simple_accounting_transaction (id, date, description, issuer_id, source_id,
 -- Name: simple_accounting_transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('simple_accounting_transaction_id_seq', 105, true);
+SELECT pg_catalog.setval('simple_accounting_transaction_id_seq', 107, true);
 
 
 --
@@ -8684,6 +8740,8 @@ COPY simple_accounting_transaction_split_set (id, transaction_id, split_id) FROM
 105	103	103
 106	104	104
 107	105	105
+108	106	106
+109	107	107
 \.
 
 
@@ -8691,7 +8749,7 @@ COPY simple_accounting_transaction_split_set (id, transaction_id, split_id) FROM
 -- Name: simple_accounting_transaction_split_set_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('simple_accounting_transaction_split_set_id_seq', 107, true);
+SELECT pg_catalog.setval('simple_accounting_transaction_split_set_id_seq', 109, true);
 
 
 --
@@ -8849,6 +8907,8 @@ COPY simple_accounting_transactionreference (id, transaction_id, content_type_id
 170	104	84	30
 171	104	90	55
 172	105	90	55
+173	106	84	1
+174	106	90	60
 \.
 
 
@@ -8856,7 +8916,7 @@ COPY simple_accounting_transactionreference (id, transaction_id, content_type_id
 -- Name: simple_accounting_transactionreference_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('simple_accounting_transactionreference_id_seq', 172, true);
+SELECT pg_catalog.setval('simple_accounting_transactionreference_id_seq', 174, true);
 
 
 --
@@ -9603,7 +9663,45 @@ COPY workflows_stateobjectrelation (id, content_type_id, content_id, state_id) F
 49	90	41	3
 50	90	42	3
 44	90	37	4
-85	90	59	2
+86	94	117	15
+87	94	122	15
+85	90	59	3
+90	94	123	15
+91	94	124	15
+92	94	126	15
+93	94	125	15
+94	90	62	2
+95	90	63	1
+96	90	64	1
+97	90	65	1
+98	90	66	1
+99	90	67	1
+100	90	68	1
+101	90	69	1
+102	90	70	1
+103	90	71	1
+104	90	72	1
+105	90	73	1
+106	90	74	1
+107	90	75	1
+108	90	76	1
+109	90	77	1
+110	90	78	1
+111	90	79	1
+112	90	80	1
+113	90	81	1
+114	90	82	1
+115	90	83	1
+116	90	84	1
+117	90	85	1
+118	90	86	1
+119	90	87	1
+120	90	88	1
+89	90	61	3
+88	90	60	4
+121	90	89	2
+122	94	127	15
+123	94	128	15
 \.
 
 
@@ -9611,7 +9709,7 @@ COPY workflows_stateobjectrelation (id, content_type_id, content_id, state_id) F
 -- Name: workflows_stateobjectrelation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('workflows_stateobjectrelation_id_seq', 85, true);
+SELECT pg_catalog.setval('workflows_stateobjectrelation_id_seq', 123, true);
 
 
 --
@@ -9762,6 +9860,44 @@ COPY workflows_workflowobjectrelation (id, content_type_id, content_id, workflow
 83	94	115	3
 84	94	116	3
 85	90	59	1
+86	94	117	3
+87	94	122	3
+88	90	60	1
+89	90	61	1
+90	94	123	3
+91	94	124	3
+92	94	126	3
+93	94	125	3
+94	90	62	1
+95	90	63	1
+96	90	64	1
+97	90	65	1
+98	90	66	1
+99	90	67	1
+100	90	68	1
+101	90	69	1
+102	90	70	1
+103	90	71	1
+104	90	72	1
+105	90	73	1
+106	90	74	1
+107	90	75	1
+108	90	76	1
+109	90	77	1
+110	90	78	1
+111	90	79	1
+112	90	80	1
+113	90	81	1
+114	90	82	1
+115	90	83	1
+116	90	84	1
+117	90	85	1
+118	90	86	1
+119	90	87	1
+120	90	88	1
+121	90	89	1
+122	94	127	3
+123	94	128	3
 \.
 
 
@@ -9769,7 +9905,7 @@ COPY workflows_workflowobjectrelation (id, content_type_id, content_id, workflow
 -- Name: workflows_workflowobjectrelation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('workflows_workflowobjectrelation_id_seq', 85, true);
+SELECT pg_catalog.setval('workflows_workflowobjectrelation_id_seq', 123, true);
 
 
 --
