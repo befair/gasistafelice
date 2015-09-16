@@ -69,6 +69,7 @@ dbtest: dbclean
 	@docker-compose run --rm back psql -f /code/gasistafelice/fixtures/test.sql
 
 dbdump:
+	@docker-compose run --rm back psql app -c "DELETE FROM django_session;" > /dev/null
 	@docker-compose run --rm back pg_dump -f /code/gasistafelice/fixtures/test.sql app
 
 dbclean:
