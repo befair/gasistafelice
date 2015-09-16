@@ -10,6 +10,7 @@ from simple_accounting.models import LedgerEntry, Transaction
 class ProductSerializer(serializers.ModelSerializer):
     mu = serializers.CharField()
     pu = serializers.CharField()
+
     class Meta:
         model = Product
 
@@ -46,31 +47,37 @@ class GASSupplierStockSerializer(serializers.ModelSerializer):
     class Meta:
         model = GASSupplierStock
 
+
 class DeliverySerializer(serializers.ModelSerializer):
     place = serializers.CharField()
 
     class Meta:
         model = Delivery
 
+
 class QSListingField(serializers.ReadOnlyField):
 
     def to_representation(self, value):
         return map(lambda x: x.pk, value.all())
+
 
 class QSUnicodeModelField(serializers.ReadOnlyField):
 
     def to_representation(self, value):
         return map(lambda x: unicode(x), value.all())
 
+
 class PkModelField(serializers.ReadOnlyField):
 
     def to_representation(self, value):
         return value.pk
 
+
 class NameModelField(serializers.ReadOnlyField):
 
     def to_representation(self, value):
         return getattr(value, 'name', None)
+
 
 class ContactSerializer(serializers.ModelSerializer):
 
@@ -78,11 +85,13 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ('flavour', 'value', 'is_preferred')
 
+
 class SeatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
         fields = ('name', 'address', 'zipcode', 'city', 'province', 'lat', 'lon')
+
 
 class SimpleSupplierSerializer(serializers.ModelSerializer):
 
@@ -92,6 +101,7 @@ class SimpleSupplierSerializer(serializers.ModelSerializer):
         model = Supplier
         fields = ('id', 'name', 'seat', 'preferred_phone_address', 'preferred_email_address')
 
+
 class SupplierSerializer(SimpleSupplierSerializer):
 
     contact_set = ContactSerializer(many=True)
@@ -100,16 +110,18 @@ class SupplierSerializer(SimpleSupplierSerializer):
     class Meta:
         model = Supplier
 
+
 class OrderSerializer(serializers.ModelSerializer):
 
     orderable_product_set = GASSupplierOrderProductSerializer(many=True)
-    #TODO TOREMOVE gasstock_set = GASSupplierStockSerializer(many=True)
+    # TODO TOREMOVE gasstock_set = GASSupplierStockSerializer(many=True)
     stocks = SupplierStockSerializer(many=True)
     delivery = DeliverySerializer()
     supplier = SimpleSupplierSerializer(read_only=True)
 
     class Meta:
         model = GASSupplierOrder
+
 
 class OrderInfoSerializer(serializers.ModelSerializer):
 
@@ -124,6 +136,7 @@ class OrderInfoSerializer(serializers.ModelSerializer):
             '__unicode__', 'current_state'
         )
 
+
 class SimpleGASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
@@ -133,12 +146,14 @@ class SimpleGASSerializer(serializers.ModelSerializer):
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'headquarter')
 
+
 class GASSerializer(SimpleGASSerializer):
     open_orders = OrderSerializer(many=True)
 
     class Meta:
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'headquarter')
+
 
 class PersonSerializer(serializers.ModelSerializer):
 
@@ -154,6 +169,7 @@ class PersonSerializer(serializers.ModelSerializer):
             'ssn', 'avatar', 'website', 'contact_set',
             'user', 'gasmembers', 'gas_list', 'suppliers'
         )
+
 
 #---------------------------------------------------------------------------------
 # GAS Member serializers.
@@ -178,6 +194,7 @@ class GASMemberOrderSerializer(serializers.ModelSerializer):
             'ordered_amount', 'is_confirmed', 'note'
         )
 
+
 class CashInfoSerializer(serializers.CharField):
     """
     Cash are sensible info
@@ -186,6 +203,7 @@ class CashInfoSerializer(serializers.CharField):
     def __init__(self, *args, **kw):
 
         return super(CashInfoSerializer, self).__init__(*args, **kw)
+
 
 class GASMemberSerializer(serializers.ModelSerializer):
 
@@ -208,16 +226,47 @@ class GASMemberSerializer(serializers.ModelSerializer):
         )
 
 
+class TranslateAlVoloKindSerializer(serializers.ReadOnlyField):
+
+    KINDS_D = {
+        "GAS_WITHDRAWAL": "DECURTAZIONE",
+        "ADJUST": "AGGIUSTAMENTO",
+        "MEMBERSHIP_FEE": "TESSERA ASSOCIATIVA",
+        "RECHARGE": "RICARICA",
+        "GASMEMBER_GAS": "TRA GAS E GASISTA"
+    }
+
+    def to_representation(self, value):
+
+        return self.KINDS_D.get(value, value)
+
+
+class TranslateAlVoloDescrSerializer(serializers.ReadOnlyField):
+
+    def to_representation(self, value):
+        return value.replace("LIABILITY", "").replace("INCOME", "entrata").replace("EXPENSE", "uscita")
+
+
 class TransactionSerializer(serializers.ModelSerializer):
+
+    kind = TranslateAlVoloKindSerializer()
+    description = TranslateAlVoloDescrSerializer()
 
     class Meta:
         model = Transaction
         fields = ('id', 'kind', 'description')
 
 
+class DateMinuteSerializer(serializers.ReadOnlyField):
+
+    def to_representation(self, value):
+        return value.strftime("%d %m %Y %H:%M")
+
+
 class LedgerEntrySerializer(serializers.ModelSerializer):
 
     transaction = TransactionSerializer()
+    date = DateMinuteSerializer()
 
     class Meta:
         model = LedgerEntry
