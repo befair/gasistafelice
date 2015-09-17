@@ -192,6 +192,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api_v1',
+    'api_remote',
     #'django.contrib.staticfiles',
 ]
 

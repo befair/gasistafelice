@@ -38,6 +38,7 @@ urlpatterns = patterns('',
 
     (r'^gasistafelice/gdxp/', include('gdxp.urls')),
     (r'^api/v1/', include('api_v1.urls')),
+    (r'^api/remote/', include('api_remote.urls')),
 )
 
 urlpatterns += patterns('',
