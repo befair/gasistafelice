@@ -5,14 +5,14 @@ from django.contrib import admin
 
 
 js_info_dict = {
-    'domain'  : 'djangojs',
-    'packages' : ('gasistafelice.localejs', ),
+    'domain': 'djangojs',
+    'packages': ('gasistafelice.localejs', ),
 }
 
 urlpatterns = patterns('',
 
-    (r'^gasistafelice/$', 'gf.base.views.index' ),
-    (r'^gasistafelice/simulate_user/(?P<user_pk>\d+)/$', 'gf.base.views.simulate_user'  ),
+    (r'^gasistafelice/$', 'gf.base.views.index'),
+    (r'^gasistafelice/simulate_user/(?P<user_pk>\d+)/$', 'gf.base.views.simulate_user'),
 
     #New user interface
     (r'^gasistafelice/gas/', include('gf.gas.urls')),
@@ -37,7 +37,7 @@ urlpatterns = patterns('',
     (r'^gasistafelice/lookups/', include('ajax_select.urls')),
 
     (r'^gasistafelice/gdxp/', include('gdxp.urls')),
-    (r'^api/v1/', include('api_v1.urls'))
+    (r'^api/v1/', include('api_v1.urls')),
 )
 
 urlpatterns += patterns('',

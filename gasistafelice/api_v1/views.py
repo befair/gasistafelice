@@ -1,7 +1,7 @@
-#-*- encoding: utf-8 -*-
-#from django.http import HttpResponse
+#-*- coding: utf-8 -*-
+# from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-#from django.core.exceptions import PermissionDenied
+# from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
@@ -26,7 +26,6 @@ def test573(request):
 
 
 # REST API
-#--------------------------------------------------------------------------------
 
 class PersonCreateReadView(ListCreateAPIView):
 
@@ -37,7 +36,8 @@ class PersonReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
     model = Person
     serializer_class = my_serializers.PersonSerializer
-    queryset = Person.objects.all() #TODO HURRY
+    queryset = Person.objects.all() # TODO HURRY
+
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
@@ -46,8 +46,6 @@ def get_user_person(request):
     Return serialized info for person bound to authed user
     """
     return PersonReadUpdateDeleteView.as_view()(request, pk=request.user.person.pk)
-
-#--------------------------------------------------------------------------------
 
 
 class GASReadUpdateDeleteView(RetrieveUpdateDestroyAPIView):
