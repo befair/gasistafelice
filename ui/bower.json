@@ -22,6 +22,7 @@
     "angular-new-router": "~0.5.3",
     "angular-bootstrap": "~0.13.0",
     "leaflet": "~0.7.3",
-    "satellizer": "~0.11.2"
+    "satellizer": "~0.11.2",
+    "lodash": "~3.10.1"
   }
 }
