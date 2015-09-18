@@ -15,78 +15,78 @@ help:
 	@echo 'make back       Debug in backend via iPython'
 
 test-cat.yml: docker-compose.yml compose/test.yml Makefile
-	@cat docker-compose.yml compose/test.yml > test-cat.yml
+	cat docker-compose.yml compose/test.yml > test-cat.yml
 
 clean:
-	@rm test-cat.yml
+	rm test-cat.yml
 
 up:
-	@docker-compose up -d
-	@docker-compose ps
+	docker-compose up -d
+	docker-compose ps
 
 logs log:
-	@docker-compose logs
+	docker-compose logs
 
 logs-back log-back:
-	@docker-compose logs back
+	docker-compose logs back
 
 start:
-	@docker-compose start
-	@docker-compose ps
+	docker-compose start
+	docker-compose ps
 
 stop: test-cat.yml
-	@docker-compose -f test-cat.yml stop
-	@docker-compose ps
+	docker-compose -f test-cat.yml stop
+	docker-compose ps
 
 restart:
-	@docker-compose restart
-	@docker-compose ps
+	docker-compose restart
+	docker-compose ps
 
 ps:
-	@docker-compose ps
+	docker-compose ps
 
 t:
-	@docker-compose run --rm test /bin/bash
+	docker-compose run --rm test /bin/bash
 
 front fe frontend ui:
-	@docker-compose run --rm front /bin/bash
+	docker-compose run --rm front /bin/bash
 
 back be backend api:
-	@docker-compose run --rm back /bin/bash
+	docker-compose run --rm back /bin/bash
 
 shell:
-	@docker-compose run --rm back django-admin shell
+	docker-compose run --rm back django-admin shell
 
 dbshell:
-	@docker-compose run --rm back django-admin dbshell
+	docker-compose run --rm back django-admin dbshell
 
 dbinit:
-	@docker-compose run --rm back django-admin makemigrations --noinput
-	@docker-compose run --rm back django-admin migrate
-	@docker-compose run --rm back django-admin init_superuser
+	docker-compose run --rm back django-admin makemigrations --noinput
+	docker-compose run --rm back django-admin migrate
+	docker-compose run --rm back django-admin init_superuser
 
 dbtest: dbclean
-	@docker-compose run --rm back psql -f /code/gasistafelice/fixtures/test.sql
+	docker-compose run --rm back psql -f /code/gasistafelice/fixtures/test.sql
 
 dbdump:
-	@docker-compose run --rm back psql app -c "DELETE FROM django_session;" > /dev/null
-	@docker-compose run --rm back pg_dump -f /code/gasistafelice/fixtures/test.sql app
+	docker-compose run --rm back psql app -c "DELETE FROM django_session;" > /dev/null
+	docker-compose run --rm back pg_dump -f /code/gasistafelice/fixtures/test.sql app
 
 dbclean:
-	@docker-compose run --rm back dropdb app
-	@docker-compose run --rm back createdb app -O app
+	docker-compose run --rm back dropdb app
+	docker-compose run --rm back createdb app -O app
 
 rm: stop
-	@docker-compose -f test-cat.yml rm -v -f
+	docker-compose -f test-cat.yml rm -v -f
 
 rmall: rm
-	@docker rmi -f befair/gasistafelice-{front,back}
+	docker rmi -f befair/gasistafelice-{front,back}
 
 rmc:
-	@docker rm -f $(docker ps -aq)
+	docker rm -f $(docker ps -aq)
 
 rmi: rmc
-	@docker rmi -f $(docker images -aq)
+	docker rmi -f $(docker images -aq)
 
 test: test-info test-unit test-integration test-e2e
 	@echo 'All tests passed!'
@@ -104,6 +104,6 @@ test-integration:
 
 test-e2e: test-cat.yml
 	@echo 'End-to-end test: running protractor'
-	@docker-compose -f test-cat.yml up -d
-	@sleep 5
-	@docker-compose -f test-cat.yml run --rm e2e
+	docker-compose -f test-cat.yml up -d
+	sleep 5
+	docker-compose -f test-cat.yml run --rm e2e
