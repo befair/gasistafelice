@@ -1,5 +1,7 @@
 # Gasista Felice development docs
 
+Before contributing, see [beFair coding styleguide](http://docs.befair.it/doku.php?id=dev:coding-styleguide).
+
 ## Overview
 
 * **Base:** É l'app che contiene tutte le funzionalità di base estese da tutte le altre applicazioni. Organizza il sistema di gestione degli account.
