@@ -31,7 +31,7 @@ Se vuoi vienici a trovare su [www.befair.it](http://www.befair.it) - ... in fase
 ## Quickstart
 
 Se vuoi provare Gasista Felice puoi scrivere a dev@gasistafelice.org per avere accesso ad una installazione di test.
-Se invece preferisci installarlo su un tuo server segui la **[guida di installazione](doc-dev/source/INSTALL.rst)**.
+Se invece preferisci installarlo su un tuo server segui la **[guida di installazione](docs/dev/quickstart.md)**.
 
 ## Autori
 
