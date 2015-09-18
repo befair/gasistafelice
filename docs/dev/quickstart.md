@@ -11,6 +11,10 @@ Or you could initialize an empty database:
 
     $ make dbinit
 
+Further, you may want to dump the database (on `gasistafelice/fixtures/test.sql`):
+
+    $ make dbdump
+
 Now go on:
 
 * [`localhost:8080/`](http://localhost:8080/) for UI
@@ -25,21 +29,6 @@ For debugging purpose, you could use the backend directly at:
 * [`localhost:7000/gasistafelice/admin/`](http://localhost:7000/gasistafelice/admin/)
 
 If you want to change any (default) configuration, please edit the `settings.env` file.
-
-## Routing
-
-New:
-
-    / -> /ui/index.html
-    /ui       UI
-    /api/v1   API
-
-Old:
-
-    /static
-    /gasistafelice        UI
-    /gasistafelice/rest   API
-    /gasistafelice/admin  Django Admin
 
 ## Test
 
