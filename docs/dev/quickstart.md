@@ -1,6 +1,6 @@
 # Quickstart
 
-    $ git clone https://github.com/kobe25/gasistafelice && cd gasistafelice
+    $ git clone https://github.com/befair/gasistafelice && cd gasistafelice
     $ make up
 
 Then you could use the test database:
