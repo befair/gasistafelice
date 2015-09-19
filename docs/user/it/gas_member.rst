@@ -3,22 +3,22 @@
 Il gasista
 ==========
 
-|head2_descr|
+Descrizione
 -------------
 
-Il |res_gasmember| è una persona che appartiene ad un :ref:`GAS <resource-gas>`. 
-Lo scopo del |res_gasmember| è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`.
+Il gasista è una persona che appartiene ad un :ref:`GAS <resource-gas>`. 
+Lo scopo del gasista è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`.
 
-Le tipiche attività del |res_gasmember| comprendono:
+Le tipiche attività del gasista comprendono:
 
 * ordinare i prodotti;
 * visualizzare il paniere contenente i prodotti ordinati;
-* confermare i prodotti, se previsto nel modo di operare del |res_gas|.
+* confermare i prodotti, se previsto nel modo di operare del GAS.
   
 .. NOTE::
-   |project_short_name| consente ad una persona di appartenere a più |res_gas| contemporaneamente.
+   *Gasista Felice* consente ad una persona di appartenere a più GAS contemporaneamente.
 
-|head2_actions|
+Azioni
 ---------------
 
 Entra con nome utente e password
@@ -85,20 +85,20 @@ In questo secondo blocco è possibile anche cambiare la propria password
 
     Visualizzazione e gestione informazioni del profilo utente
 
-|head2_terms|
+Terminologia
 -------------
 
 Breve definizione dei termini:
 
-* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al |res_supplier| con i prodotti ordinati dai gasisti
-* Consegna: processo in cui un |res_supplier| consegna fisicamente ad un |res_gas| la merce relativa ad un ordine
+* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al fornitore con i prodotti ordinati dai gasisti
+* Consegna: processo in cui un fornitore consegna fisicamente ad un GAS la merce relativa ad un ordine
 * Paniere: l'insieme dei prodotti ordinati per gli ordini aperti
 * Paniere da consegnare: l'insieme dei prodotti ordinati negli ordini attualmente chiusi e da consegnare
-* |res_supplier|: soggetto che fornisce un |res_gas|
+* fornitore: soggetto che fornisce un GAS
 * Prezzo ordinato: prezzo di un prodotto al momento dell'ordine
 * Prezzo consegnato: prezzo di un prodotto al momento della consegna
 
-|head2_start|
+Da cosa parte
 -------------
 
 Il gasista non deve pensare a curare i seguenti aspetti che sono di competenza di altri ruoli:

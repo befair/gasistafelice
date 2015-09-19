@@ -5,7 +5,7 @@
 
 .. Sostituzioni globali: le sostituzioni globali vanno in conf.py variabile rst_epilog
 
-Benvenuto nel manuale utente di |project_name|
+Benvenuto nel manuale utente di *Gasista Felice: acquistiamo insieme nel DES*
 ==============================================
 
 NOTA: Il manuale utente è scritto dal punto di vista dell'utente. Quindi lo strutturiamo per ruoli.

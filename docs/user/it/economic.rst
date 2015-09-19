@@ -3,7 +3,7 @@ Doppia partita
 
 Il sistema economico del GAS.
 
-|head2_descr|
+Descrizione
 -------------
 
 La gestione della contabilità di un GAS (e dei relativi pagamenti) può coinvolgere, a seconda dell'organizzazione interna del GAS, più ruoli: Referente, Turnista, Contabile.  Ognuno di questi ruoli svolge compiti diversi in fasi diverse dei processi che avvengono nel GAS: anche per questo aspetto, i dettagli possono variare da GAS a GAS.

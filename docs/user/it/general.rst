@@ -4,7 +4,7 @@ Concetti generali
 La risorsa
 ----------
 
-La risorsa è un elemento fondamentale della presentazione grafica di |project_short_name|.
+La risorsa è un elemento fondamentale della presentazione grafica di *Gasista Felice*.
 Si presenta in modo omogeneo in ogni pagina e ci si può interagire in modo coerente
 in ogni parte dell'applicazione.
 
@@ -15,7 +15,7 @@ Prevede le seguenti possibilità di interazione:
 * **click**: fa accedere alla pagina dedicata alla risorsa;
 * **click-destro**: mostra il menù contestuale con le azioni specifiche per quella risorsa
 
-Le risorse in |project_short_name| sono:
+Le risorse in *Gasista Felice* sono:
 
 * La persona
 * Il GAS
@@ -23,7 +23,7 @@ Le risorse in |project_short_name| sono:
 * Il patto di solidarietà
 * L'ordine
 
-|TODO|: mettere immagini esempi di risorsa
+**DA FARE**: mettere immagini esempi di risorsa
 
 Ogni risorsa ha delle caratteristiche comuni:
 
@@ -50,7 +50,7 @@ Facilitazioni
 -------------
 
 .. note:
-    |TODO|
+    **DA FARE**
 
 Il software è progettato per richiedere il minor numero di informazioni all'inserimento
 delle informazioni. Tuttavia, ogni mese verrà mandata una mail di notifica 
@@ -62,7 +62,7 @@ di mancato inserimento di informazioni importanti, se si verificherà questa sit
 Notifiche
 ---------
 
-Il sistema di notifica di |project_short_name| prevede attualmente due sistemi di notifica:
+Il sistema di notifica di *Gasista Felice* prevede attualmente due sistemi di notifica:
 
 * uno interno all'applicazione
 * uno via mail
@@ -109,13 +109,13 @@ Email ai fornitori ed ai referenti
 1. **chiusura**: i gasisti non possono più modificare gli ordini fatti. 
 2. **invio**: nessuno può più modificare gli ordini effettuati
 
-|TODO| *descrivere meglio l'ordine nella sezione apposita* :ref:`resource-order`
+**DA FARE** *descrivere meglio l'ordine nella sezione apposita* :ref:`resource-order`
 
 
 1. alla chiusura di ogni ordine viene inviata una mail ai referenti fornitori. Questa mail include il report in formato PDF.
 2. all' invio di ogni ordine l'email viene inviata al fornitore e al referente fornitore stesso
 
-|TODO| I referenti fornitore potranno sollecitare l'invio sia dall'email stessa di chiusura (tramite link)
+**DA FARE** I referenti fornitore potranno sollecitare l'invio sia dall'email stessa di chiusura (tramite link)
 
 Le azioni vengono effettuate nel blocco "dettagli" di un ordine.
 

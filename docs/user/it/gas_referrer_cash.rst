@@ -3,16 +3,16 @@
 Il referente contabile del GAS
 ==============================
 
-|head2_descr|
+Descrizione
 -------------
 
 Il referente contabile è il responsabile della gestione economica del :ref:`GAS <resource-gas>` e dei  :ref:`gasisti <role-gasmember>`.
-È suo compito registrare il pagamento degli ordini ai :ref:`fornitori <role-supplier>`, ricaricare i conti dei |res_gasmember| a seguito di un versamento e registrare il pagamento delle quote associative dei |res_gasmember|.
+È suo compito registrare il pagamento degli ordini ai :ref:`fornitori <role-supplier>`, ricaricare i conti dei gasista a seguito di un versamento e registrare il pagamento delle quote associative dei gasista.
 
-Può decurtare i conti dei |res_gasmember| dell'importo dovuto per un ordine e registrare la fattura ricevuta.
+Può decurtare i conti dei gasista dell'importo dovuto per un ordine e registrare la fattura ricevuta.
 Queste ultime due operazioni sono gestibili anche dai :ref:`referenti fornitori <role-gasreferrersupplier>` rispettivamente ai :ref:`patti di solidarietà <resource-pact>` di cui sono referenti.
 
-Il referente contabile ha visibilità completa di tutti i conti afferenti al |res_gas|.
+Il referente contabile ha visibilità completa di tutti i conti afferenti al GAS.
 
 NOTA DI LUCA: IL SEGUITO è DA RIVEDERE (mettere nelle azioni?) - il primo impatto deve essere sintetico.
 
@@ -34,7 +34,7 @@ Il Referente Economico deve:
 
 Il Referente Contabile conosce anche la cronologia dei flussi economici. Nel gas è sempre disponibile un ordinamento temporale del succedersi delle transazioni economiche.
 
-|head2_actions|
+Azioni
 ---------------
 
 Gestione di un ordine
@@ -317,7 +317,7 @@ Approfondire
 .. seealso:: economic.rst
 
 
-|head2_terms|
+Terminologia
 -------------
 
 I soggetti che compongono il Distretto di Economia Solidale sono
@@ -384,7 +384,7 @@ Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le
 2 correzione sugli soggetti attivi: gasista e produttori
 
 
-|head2_start|
+Da cosa parte
 -------------
 
 * Gestione di un ordine

@@ -3,19 +3,19 @@ Amministratore (Master of the Universe)
 
 Non è prioritario compilare questo ruolo ora.
 
-|head2_descr|
+Descrizione
 -------------
 
-|head2_terms|
+Terminologia
 -------------
 
-|head2_start|
+Da cosa parte
 -------------
 
-|head2_homepage|
+Pagina iniziale
 ----------------
 
-|head2_actions|
+Azioni
 ---------------
 
 Inserire un nuovo GAS

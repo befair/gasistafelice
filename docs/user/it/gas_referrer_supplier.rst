@@ -3,31 +3,31 @@
 Il referente fornitore
 ========================
 
-|head2_descr|
+Descrizione
 -------------
 
 Il referente fornitore è un :ref:`gasista <role-gasmember>` responsabile di un :ref:`patto di solidarietà <resource-pact>` che esprime la relazione tra il :ref:`GAS <resource-gas>` e uno specifico :ref:`fornitore <role-supplier>`.
 
-Il referente fornitore si occupa di aprire e gestire un ordine per il |res_pds| di cui è referente, in modo che i gasisti possano ordinare i beni offerti dal |res_supplier|. 
+Il referente fornitore si occupa di aprire e gestire un ordine per il patto di solidarietà di cui è referente, in modo che i gasisti possano ordinare i beni offerti dal fornitore. 
 
-Inoltre può disabilitare alcuni prodotti disponibili nel listino del |res_supplier|, ma che il |res_gas| non intende acquistare per ragioni etiche o di altra natura. 
+Inoltre può disabilitare alcuni prodotti disponibili nel listino del fornitore, ma che il GAS non intende acquistare per ragioni etiche o di altra natura. 
 
 Le tipiche attività del referente fornitore comprendono:
 * visualizzazione del riepilogo dell'ordine;
 * stampa del report dell'ordine sotto forma di file pdf;
 * apertura dell'ordine;
-* gestione del patto di solidarietà tra un |res_gas| ed un |res_supplier|.
+* gestione del patto di solidarietà tra un GAS ed un fornitore.
 
-|head2_actions|
+Azioni
 ---------------
 
-Come accennato nella sezione precedente, le azioni del referente fornitore sono mirate a gestire le relazioni tra |res_gas| e |res_supplier|, con particolare attenzione alla gestione degli ordini dalla loro apertura fino alla chiusura.
+Come accennato nella sezione precedente, le azioni del referente fornitore sono mirate a gestire le relazioni tra GAS e fornitore, con particolare attenzione alla gestione degli ordini dalla loro apertura fino alla chiusura.
 
-La relazione |res_gas| e |res_supplier| prende il nome di |res_pds|.
+La relazione GAS e fornitore prende il nome di patto di solidarietà.
 
 Apre l'ordine
 ^^^^^^^^^^^^^^^^^
-Il  compito principale di un referente fornitore è di gestire gli ordini. Aprire un ordine, vuol dire rendere ordinabili dai gasisti un insieme di prodotti collegati ad un |res_pds|.
+Il  compito principale di un referente fornitore è di gestire gli ordini. Aprire un ordine, vuol dire rendere ordinabili dai gasisti un insieme di prodotti collegati ad un patto di solidarietà.
 
 Per aprire un ordine il referente fornitore va nella scheda Ordini -> blocco Ordini aperti e preme il bottone "Aggiungi ordine". Si aprirà un modulo in cui potrà impostare:
 
@@ -83,12 +83,12 @@ Nella testata del documento si vedono i dati dell'ordine e i relativi soggetti c
 Chiude l'ordine
 ^^^^^^^^^^^^^^^^^
 
-Al momento della chiusura dell'ordine il referente fornitore può inviare una mail al |res_supplier| con il pdf descritto nella sezione precedente. L'invio avviene automaticamente se il |res_supplier| ha configurato la propria Scheda fornitore in modo da richiedere questo servizio.
+Al momento della chiusura dell'ordine il referente fornitore può inviare una mail al fornitore con il pdf descritto nella sezione precedente. L'invio avviene automaticamente se il fornitore ha configurato la propria Scheda fornitore in modo da richiedere questo servizio.
 
 Gestisce il patto di solidarietà
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Nel patto di solidarietà si regolano i rapporti tra  il |res_gas| e un |res_supplier|.
+Nel patto di solidarietà si regolano i rapporti tra  il GAS e un fornitore.
 
 Il referente fornitore può impostare tali aspetti che sono:
 
@@ -105,9 +105,9 @@ Il referente fornitore può impostare tali aspetti che sono:
     
     Schermata di creazione del Patto di solidarietà
     
-Un |res_pds| può essere creato da un referente fornitore oppure dal referente informatico del |res_gas|.
+Un patto di solidarietà può essere creato da un referente fornitore oppure dal referente informatico del GAS.
 
-È possibile modificare tali impostazioni nella risorsa |res_pds| che si raggiunge cliccando sul patto. Da lì accedere alla Scheda del Patto --> blocco Dettagli e premere il bottone "Modifica"
+È possibile modificare tali impostazioni nella risorsa patto di solidarietà che si raggiunge cliccando sul patto. Da lì accedere alla Scheda del Patto --> blocco Dettagli e premere il bottone "Modifica"
 
 .. figure:: _static/block_details.png
     :alt: Blocco con i dettagli del Patto
@@ -115,18 +115,18 @@ Un |res_pds| può essere creato da un referente fornitore oppure dal referente i
     
     Blocco che consente la visualizzazione e la modifica dei dettagli del Patto
 
-|head2_terms|
+Terminologia
 -------------
 
 Breve definizione dei termini:
 
-* |res_supplier|: soggetto che fornisce un |res_gas|
-* |res_gas|: Gruppo di Acquisto Solidale 
-* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al |res_supplier| con i prodotti ordinati dai gasisti
-* Prodotto: bene che un |res_supplier| propone ad un |res_gas|, è caratterizzato dal |res_supplier| che lo produce e da una categoria di prodotto del |res_des|
-* Consegna: processo in cui un |res_supplier| consegna fisicamente ad un |res_gas| la merce relativa ad un ordine
+* fornitore: soggetto che fornisce un GAS
+* GAS: Gruppo di Acquisto Solidale 
+* Ordine: l'ordine che il referente fornitore apre, chiude ed invia al fornitore con i prodotti ordinati dai gasisti
+* Prodotto: bene che un fornitore propone ad un GAS, è caratterizzato dal fornitore che lo produce e da una categoria di prodotto del DES
+* Consegna: processo in cui un fornitore consegna fisicamente ad un GAS la merce relativa ad un ordine
 
-|head2_start|
+Da cosa parte
 -------------
 
 * :ref:`Patto di solidarietà <resource-pact>` già instaurato
