@@ -1,12 +1,10 @@
-Introduzione
-============
+# Introduzione
 
 * Introduzione
 * Il significato di ruolo nell'applicazione *Gasista Felice: acquistiamo insieme nel DES*
 * Cambiare il ruolo (vorrei metterlo dopo...)
 
-Questo manuale
---------------
+## Questo manuale
 
 Il manuale è strutturato per ruolo e si conclude con alcuni concetti generali validi per tutti.
 e sezioni suddivise per ruolo. 
@@ -18,10 +16,8 @@ programmi per la gestione degli ordini. Per questo in ogni sezione si prevede un
 Da cosa parte. I contenuti del paragrafo si riferiscono ai dati già in uso nei GAS del
 DES Macerata.
 
-Simboli utilizzati
-------------------
+## Simboli utilizzati
 
 * Simboli:
 
  * **TODO** mettere la direttiva image con il simbolo usato per dire che una cosa è configurabile questo per me significa "se il GAS è configurato in un determinato modo"
-

@@ -1,16 +1,12 @@
-.. _role-gasreferrercash:
+# Il referente contabile del GAS
 
-Il referente contabile del GAS
-==============================
+## Descrizione
 
-Descrizione
--------------
-
-Il referente contabile è il responsabile della gestione economica del :ref:`GAS <resource-gas>` e dei  :ref:`gasisti <role-gasmember>`.
-È suo compito registrare il pagamento degli ordini ai :ref:`fornitori <role-supplier>`, ricaricare i conti dei gasista a seguito di un versamento e registrare il pagamento delle quote associative dei gasista.
+Il referente contabile è il responsabile della gestione economica del [GAS](resource_gas.md) e dei [gasisti](gas_member.md).
+È suo compito registrare il pagamento degli ordini ai [fornitori](supplier.md), ricaricare i conti dei gasista a seguito di un versamento e registrare il pagamento delle quote associative dei gasista.
 
 Può decurtare i conti dei gasista dell'importo dovuto per un ordine e registrare la fattura ricevuta.
-Queste ultime due operazioni sono gestibili anche dai :ref:`referenti fornitori <role-gasreferrersupplier>` rispettivamente ai :ref:`patti di solidarietà <resource-pact>` di cui sono referenti.
+Queste ultime due operazioni sono gestibili anche dai [referenti fornitori](gas_referrer_supplier.md) rispettivamente ai [patti di solidarietà](resource_pact.md) di cui sono referenti.
 
 Il referente contabile ha visibilità completa di tutti i conti afferenti al GAS.
 
@@ -31,16 +27,14 @@ Il Referente Economico deve:
 ** l'ammontare dei depositi dei gasisti;
 ** il totale degli insoluti dovuti ai fornitori.
 
-
 Il Referente Contabile conosce anche la cronologia dei flussi economici. Nel gas è sempre disponibile un ordinamento temporale del succedersi delle transazioni economiche.
 
-Azioni
----------------
+## Azioni
 
-Gestione di un ordine
-+++++++++++++++++++++
+### Gestione di un ordine
 
-da un punto di vista economico si fa in 3 steps separati
+Da un punto di vista economico si fa in 3 steps separati:
+
 1) Registra la Fattura di un ordine. ordine_invoice_
 
 2) Decurta il totale famiglia per ciascun famiglie di un ordine. ordine_decurta_
@@ -49,11 +43,9 @@ da un punto di vista economico si fa in 3 steps separati
 
 .. _order_steps:
 
-.. figure:: _static/eco_ord_steps.png
-    :alt: 3 steps per evadere un ordine chiuso
-    :align: center
+![3 steps per evadere un ordine chiuso](_static/eco_ord_steps.png)
 
-    Tab di gestione dei 3 steps per evadere un ordine chiuso
+> Tab di gestione dei 3 steps per evadere un ordine chiuso
 
 In pratica la consegna è già avvenuta. Per vari motivi (il produttore non riesce a soddisfare completamente la domanda, i prezzi subiscono un aggiornamento, la merce è di qualità inferiore alla media e il produttore decide di applicare uno sconto,..), le quantità/prezzi registrati al momento dell'invio dell'ordine possono differire da quelli effettivi, conoscibili solo al momento della consegna della merce da parte del produttore. Di conseguenza, il GAS dovrebbe verificare la corrispondenza tra ciò che viene ordinato e ciò che viene effettivamente consegnato (a livello di prezzi, quantità e, eventualmente, qualità).
 
@@ -72,11 +64,9 @@ E possibile vedere la lista degli ordini chiusi nella pagina del suo GAS
 
 .. _ordini_chiusi:
 
-.. figure:: _static/gas_ord_closed.png
-    :alt: griglia ordini chiusi
-    :align: center
+![griglia ordini chiusi](_static/gas_ord_closed.png)
 
-    Griglia che elenca gli ordini chiusi
+> Griglia che elenca gli ordini chiusi
 
 Cliccando su una riga si raggiunge la scheda dell'ordine dove è possibile nel tab **Pagamento** gestire la consegna economica
 
@@ -85,11 +75,9 @@ si fa nella scheda dell'ordine
 
 .. _ordine_invoice:
 
-.. figure:: _static/ord_invoice.png
-    :alt: scheda registrazione fattura
-    :align: center
+![scheda registrazione fattura](_static/ord_invoice.png)
 
-    riquadro per la registrazione della fattura di un ordine
+> riquadro per la registrazione della fattura di un ordine
 
 Inserire l'ammontare richiesto dal produttore. Ovviamente è un valore positivo con centesimi.
 Aggiungere note se necessario. Di solito viene annotato il numero della fattura del produttore o altre informazioni in modo da risalire al documento rilasciato. Questo documento varia in funzione del regime fiscale del produttore.
@@ -109,10 +97,10 @@ Si aggiunge il pagamento finale del produttore. Che potrà anche essere la somma
 
 Queste 3 prime cifre sono idealmente uguali.
 
-In pratica queste 3 cifre sono speso differente tra di loro. Ad esempio se il totale prenotato dalle famiglie del GAS si ammonta ad 100 euro di prodotti, ma, durante la consegna, il prezzo di alcuni prodotti è variabile con il peso o in altri casi mancano proprio dei prodotti al momento della consegna; in questi casi la fattura emessa dopo la consegna reale sarà sicuramente differente dal prenotato. 
+In pratica queste 3 cifre sono speso differente tra di loro. Ad esempio se il totale prenotato dalle famiglie del GAS si ammonta ad 100 euro di prodotti, ma, durante la consegna, il prezzo di alcuni prodotti è variabile con il peso o in altri casi mancano proprio dei prodotti al momento della consegna; in questi casi la fattura emessa dopo la consegna reale sarà sicuramente differente dal prenotato.
 
-Altro esempio: il produttore consegna per 80,32 euro. Il produttore arrotonda la fattura per chiedere 
-80 euro. Il GAS decurterà effettivamente 80,32 euro alle varie famiglie. Il GAS registrerà la fattura e pagherà realmente 80 euro al produttore. Il GAS troverà nel suo borsellino un ammontare di 0,32 in più. 
+Altro esempio: il produttore consegna per 80,32 euro. Il produttore arrotonda la fattura per chiedere
+80 euro. Il GAS decurterà effettivamente 80,32 euro alle varie famiglie. Il GAS registrerà la fattura e pagherà realmente 80 euro al produttore. Il GAS troverà nel suo borsellino un ammontare di 0,32 in più.
 
 I casi per il quale queste 3 cifre divergono sono tante. In ogni modo il sistema proverà a mostrare queste 3 cifre, quando inserite nel sistema, in modo da aiutare il controllo e l'immissione da parte del referente. Questa indicazione si trova sotto la casella di inserimento del prezzo.
 
@@ -122,11 +110,9 @@ Quando avete registrato la fattura il sistema non permette più di modificarla. 
 
 .. _order_invoiced:
 
-.. figure:: _static/ord_invoiced.png
-    :alt: ordine chiuso con registrazione fattura effettuata
-    :align: center
+![ordine chiuso con registrazione fattura effettuata](_static/ord_invoiced.png)
 
-    ordine chiuso con registrazione fattura effettuata
+> ordine chiuso con registrazione fattura effettuata
 
 2) Decurta del conto gasista
 
@@ -140,11 +126,9 @@ Cliccando su **Modifica** la griglia entra in modalità di editing
 
 .. _ordine_decurta:
 
-.. figure:: _static/ord_curtail.png
-    :alt: griglia ordini chiusi
-    :align: center
+![griglia ordini chiusi](_static/ord_curtail.png)
 
-    Stato economico delle famiglie per un dato ordine
+> Stato economico delle famiglie per un dato ordine
 
 Il referente dell'ordine o uno dei referenti economico può sistemare ciascun famiglia secondo le informazione e il svolgersi della consegna.
  O aiutandosi dal foglio di consegna modificato a mano.
@@ -171,20 +155,18 @@ In pratica, speso gli ordini vengono pagato direttamente. Al volo. Pero succede 
 
 La registrazione del pagamento archivia definitivamente un ordine.
 
-
-Ricarica di un Gasista
-++++++++++++++++++++++
+### Ricarica di un Gasista
 
 La gestione delle ricariche segue il modello del prepagato. Un gasista consegna soldi al referente economico che lo registra nel gestionale. La ricarica accredita il conto gasista.
- Il conto viene decurtato ad ogni consegna produttore. Non c'è scambio di moneta tra il referente produttore e il gasista. 
+ Il conto viene decurtato ad ogni consegna produttore. Non c'è scambio di moneta tra il referente produttore e il gasista.
 
 La gestione delle ricariche è abilitata solo per i referenti economici
 .
 Un economico accede al riquadro delle ricariche GF-ECO-Ricarica_ andando su:
 DES > pagina del GAS > tab Conto
 
-La griglia delle ricariche presenta la lista dei gasisti del GAS. 
-Per ciascuno è evidenziato l'ultima ricarica fatta con la relativa data. 
+La griglia delle ricariche presenta la lista dei gasisti del GAS.
+Per ciascuno è evidenziato l'ultima ricarica fatta con la relativa data.
 Cosi l'economico tiene sotto occhio le ricariche già fatte.
 
 [FAQ] Ricaricare un gasista
@@ -194,28 +176,21 @@ Appare una colonna *Recharge* dove è possibile inserire di fronte al nome del g
 In questa modalità di editing appare anche un pulsante **Prepagato: ricarica il conto gasista**
 Il referente economico ripete l'operazione per tutti gasisti da ricaricare lasciando vuoto l'inserimento da quelli da lasciare invariato.
 Una volta inserito tutti gasisti da ricaricare, il referente economico preme su **Prepagato: ricarica il conto gasista**
-La pagina viene rinfrescata e le somme vengono accreditate ad ciascun gasista. L'economico può controllare l'effettivo versamento scorrendo la colonna *Last recharge*. 
+La pagina viene rinfrescata e le somme vengono accreditate ad ciascun gasista. L'economico può controllare l'effettivo versamento scorrendo la colonna *Last recharge*.
 
 .. _GF-ECO-Ricarica:
 
-.. figure:: _static/eco_ricarica.png
-    :alt: riquadro di gestione economica delle ricarciche
-    :align: center
+![riquadro di gestione economica delle ricariche](_static/eco_ricarica.png)
 
-    Griglia per la gestione delle ricariche
+> Griglia per la gestione delle ricariche
 
-
-
-Quota dei gasisti
-+++++++++++++++++
+### Quota dei gasisti
 
 .. _GF-eco-quota:
 
-.. figure:: _static/eco-quota.png
-    :alt: riquadro di gestione economica delle quote
-    :align: center
+![riquadro di gestione economica delle quote](_static/eco-quota.png)
 
-    Griglia per la gestione delle quote dei gasisti
+> Griglia per la gestione delle quote dei gasisti
 
 [FAQ] Pagamento della quota:
 
@@ -240,10 +215,7 @@ Il sistema deve prevedere se impostare la transazione prelevando dal conto del s
 
     Il sistema non prevede rilancio sulla situazione del gasista. In un primo tempo il sistema potrà evidenziare le righe in sfondo rosso per un gasista che ha già versato almeno una quota e se l'ultima quota versata è superiore ad un hanno fa.
 
-
-
-Conti dei soggetti: Produttori
-++++++++++++++++++++++++++++++
+### Conti dei soggetti: Produttori
 
 La visualizzazione del conto del soggetto produttore nel DES si trova:
 
@@ -253,8 +225,7 @@ La visualizzazione del conto del soggetto produttore nel DES si trova:
 
 * Scheda del GAS nella parte economica
 
-Conti dei soggetti: Gasisti
-+++++++++++++++++++++++++++
+### Conti dei soggetti: Gasisti
 
 .. warning::
 
@@ -270,33 +241,27 @@ La visualizzazione del conto del soggetto gasista nel DES si trova:
 
 * Scheda del GAS al quale aderisce nella parte economica mediante filtraggio.
 
-
-Conti dei soggetti: GAS cassa
-+++++++++++++++++++++++++++++
+### Conti dei soggetti: GAS cassa
 
 La visualizzazione del conto del soggetto GAS nel DES si trova:
 
 * Scheda del GAS
 
-Conti dei soggetti: GAS borsellino
-++++++++++++++++++++++++++++++++++
+### Conti dei soggetti: GAS borsellino
 
 La visualizzazione del conto del soggetto GAS nel DES si trova:
 
 * Scheda del GAS
 
-
-Correggere una transazione
-++++++++++++++++++++++++++
+### Correggere una transazione
 
 [FAQ] Ho sbagliato a ricaricare un gasista
 
-L'economico non può ritornare su una transazione economica. In questo caso l'economico deve portare una correzione. 
+L'economico non può ritornare su una transazione economica. In questo caso l'economico deve portare una correzione.
 
-* Se l'ammontare da accreditare e superiore a quanto ricaricato, l'economico può procedere ad una seconda ricarica con la differenza mancante. 
+* Se l'ammontare da accreditare e superiore a quanto ricaricato, l'economico può procedere ad una seconda ricarica con la differenza mancante.
 
 * Se l'ammontare accreditato sul conto è superiore a quanto sborsato realmente dal gasista allora rimane solo una correzione in negativo da portare sul conto gasista. cf. my-correct-gasmember_
-
 
 .. _my-correct-gasmember:
 
@@ -304,21 +269,17 @@ L'economico non può ritornare su una transazione economica. In questo caso l'ec
 
     non implementato ancora
 
-Genera un bilancio annuale? (in futuro)
-+++++++++++++++++++++++++++++++++++++++
+### Genera un bilancio annuale? (in futuro)
 
 .. TODO
 
     FUTURE non previsto ancora
 
-Approfondire
-++++++++++++
+### Approfondire
 
 .. seealso:: economic.rst
 
-
-Terminologia
--------------
+## Terminologia
 
 I soggetti che compongono il Distretto di Economia Solidale sono
 Gasista
@@ -336,10 +297,7 @@ Se il GAS paga un produttore. La rete verifica una perdita.
 
 Il pagamento di una fattura o altre servizi esterni verificano un uscita.
 
-
-Gestione d'ordine
-+++++++++++++++++
-
+### Gestione d'ordine
 
 .. warning::
 
@@ -347,14 +305,12 @@ Gestione d'ordine
 
 Nel gestionale un referente produttore ha la possibilità di gestire la decurtazione dei gasisti che hanno partecipato ad uno suo ordine e registrare la fattura emessa dal produttore. Varie operazione del cassiere possono essere affidate al respettivo responsabile di consegna di un ordine.
 
-
 .. warning::
 
    L'economico non deve sapere niente della consegna. Interessa solo il totale monetario per ogni famiglia consegnata e l'ammontare della fattura.
 
 Il sistema attuale non prevede che l'economico o il referente gestisce la consegna economica al livello del prodotto.
  il sistema si accontenta di movimentare il valore economico di prodotti consegnati per famiglia.
-
 
 Nella gestione ordinaria di un ordine, l'economico deve eseguire 3 operazioni:
 1 la registrazione della fattura
@@ -369,13 +325,13 @@ L'ordine diventa un insoluto che si somma ai ipotetici altri insoluti da pagare 
 Il punto 3 è asincrono. Se il pagamento viene registrato insieme al punto 1 e 2 l' ordine cambio stato ad **ARCHIVIATO**.
 
 Un ordine può essere annullato.  .. seealso:: gas_referrer_supplier.rst
- 
+
 .. warning::
 
-   Un ordine archiviato non può essere modificato. 
-   Ogni modifica future, correzione gasista o pagamento, deve essere fatta tramite correzione. 
+   Un ordine archiviato non può essere modificato.
+   Ogni modifica future, correzione gasista o pagamento, deve essere fatta tramite correzione.
 
-Oltre all'economico di turno, il punto 1 e 2 possono essere effettuate dal referente produttore di quel ordine. 
+Oltre all'economico di turno, il punto 1 e 2 possono essere effettuate dal referente produttore di quel ordine.
 
 Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le seguente operazioni:
 
@@ -383,9 +339,7 @@ Oltre alla gestione dell'ordine, il referente economico deve poter effettuare le
 
 2 correzione sugli soggetti attivi: gasista e produttori
 
-
-Da cosa parte
--------------
+## Da cosa parte
 
 * Gestione di un ordine
 
@@ -394,4 +348,3 @@ Da cosa parte
 * gestione delle quote annui per i gasisti
 
 * Conto dei soggetti: visualizzazione dello stato, delle transazione e correzione economiche
-

@@ -1,6 +1,4 @@
-
-Appendice D: stato dei lavori e segnalazione dei problemi
-=========================================================
+# Appendice D: stato dei lavori e segnalazione dei problemi
 
 Questa pagina è mantenuta aggiornata per illustrare, alla versione attuale, 
 cosa funziona nel software, e cosa non funziona nella piattaforma 
@@ -10,8 +8,7 @@ Nella pagina si specificano anche **quali problemi segnalare**.
 
 .. _what_works_now:
 
-Cosa funziona
--------------
+## Cosa funziona
 
 **Per i referenti fornitori e i fornitori**:
 
@@ -22,7 +19,7 @@ Cosa funziona
 5. Assegnazione ruolo fornitore nella scheda del fornitore
 
 *NOTA: una modifica in questo punto del software comporterà il cambiamento per tutto il DES.
-Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa a* :ref:`resource-pact`.
+Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel "listino fornitore per il GAS" presente nella scheda "Prodotti" della pagina relativa a* [resource_pact](../resource_pact.md).
 
 **Per i referenti fornitori**:
 
@@ -55,8 +52,7 @@ Per modificare la presenza di un prodotto nel listino del proprio GAS, agire nel
 
 .. _what_is_in_testing:
 
-Cosa è in fase di test
-----------------------
+## Cosa è in fase di test
 
 3. Aggiungi/Modifica categoria
 4. Aggiungi/Modifica GAS
@@ -74,8 +70,7 @@ Cosa è in fase di test
 
 .. _what_does_not_work:
 
-Cosa non funziona / non c'è
-----------------------------
+## Cosa non funziona / non c'è
 
 Le cose non citate qui sopra sono da considerarsi non funzionanti o non realizzate oggi. Ne citiamo alcune:
 
@@ -87,8 +82,7 @@ Le cose non citate qui sopra sono da considerarsi non funzionanti o non realizza
 
 .. _which_problems:
 
-Quali problemi segnalare
-------------------------
+## Quali problemi segnalare
 
 In questa fase di primo utilizzo del software, vi chiediamo il piacere di segnalare esclusivamente problemi relativi alle parti:
 
@@ -99,8 +93,7 @@ Grazie
 
 .. _how_to_tell_us_a_problem:
 
-Come segnalare i problemi
--------------------------
+## Come segnalare i problemi
 
 Vi chiediamo di segnalare i problemi specificati al punto :ref:`which_problems` su http://dialogo.desmacerata.it dove potete accedere con lo stesso utente con cui accedete al gestionale.
 

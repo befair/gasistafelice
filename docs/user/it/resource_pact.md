@@ -1,15 +1,11 @@
-.. _resource-pact:
+# Il patto di solidarietà
 
-Il patto di solidarietà
-=======================
+## Descrizione
 
-Descrizione
--------------
+Il Patto di Solidarietà è l'insieme delle condizioni di fornitura, economiche e non, condivise e sottoscritte da un [GAS](resource_gas.md) e un [fornitore](supplier.md). È composto da diversi punti, di cui i principali sono :
 
-Il Patto di Solidarietà è l'insieme delle condizioni di fornitura, economiche e non, condivise e sottoscritte da un :ref:`GAS <resource-gas>` e un :ref:`fornitore <role-supplier>`. È composto da diversi punti, di cui i principali sono :
-
-* il catalogo del fornitore per il GAS, cioè i prodotti che il GAS sceglie di includere nei suoi :ref:`ordini <resource-order>` verso il fornitore, scelti tra quelli resi disponibili dal fornitore stesso; 
-* i gasisti che fungono da :ref:`referenti fornitore <role-gasreferrersupplier>` per il fornitore;
+* il catalogo del fornitore per il GAS, cioè i prodotti che il GAS sceglie di includere nei suoi [ordini](resource_order.md) verso il fornitore, scelti tra quelli resi disponibili dal fornitore stesso;
+* i gasisti che fungono da [referenti fornitore](gas_referrer_supplier.md) per il fornitore;
 * quanti giorni prima della consegna è necessario chiudere l'ordine;
 * le spese di consegna per ogni ordine.
 
@@ -25,18 +21,11 @@ Nella pratica, il percorso intrapreso dal prodotto comprende tre passi:
 
 Nella figura sottostante, per chiarezza, mostriamo il percorso intrapreso dal prodotto nel DES, dal fornitore al GAS:
 
+![I tre livelli del percorso del prodotto nel DES](_static/des_pact.png)
 
+> Percorso del prodotto dal fornitore al gasista
 
-.. figure:: _static/des_pact.png
-    :alt: I tre livelli del percorso del prodotto nel DES 
-    :align: center
-    
-    Percorso del prodotto dal fornitore al gasista
-
-
-
-Terminologia
--------------
+## Terminologia
 
 * Listino fornitore
 * Listino fornitore per il GAS
@@ -44,8 +33,7 @@ Terminologia
 
 .. _pact-options:
 
-Opzioni di configurazione
----------------
+## Opzioni di configurazione
 
 Il software offre l'opportunità di configurare ogni aspetto del patto di solidarietà, in particolare:
 
@@ -57,19 +45,14 @@ Il software offre l'opportunità di configurare ogni aspetto del patto di solida
 * l'eventuale importo minimo al di sotto del quale le parti concordano che non è possibile far partire un ordine.
 
 
-.. figure:: _static/pact_config.png
-    :alt: Configurazione del patto di solidarietà
-    :align: center
-    
-    Schermata per la configurazione del patto di solidarietà
+![Configurazione del patto di solidarietà](_static/pact_config.png)
 
+> Schermata per la configurazione del patto di solidarietà
 
+## Relazioni con le altre risorse del DES
 
-Relazioni con le altre risorse del DES
------------------
-
-* :ref:`GAS <resource-gas>` 
-* :ref:`Fornitore <role-supplier>`
-* :ref:`Ordine <resource-order>` 
-* :ref:`Gasista <role-gasmember>`
-* :ref:`Referente fornitore <role-gasreferrersupplier>` 
+* [GAS](resource_gas.md)
+* [Fornitore](supplier.md)
+* [Ordine](resource_order.md)
+* [Gasista](gas_member.md)
+* [Referente fornitore](gas_referrer_supplier.md)

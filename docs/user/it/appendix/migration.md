@@ -1,10 +1,8 @@
-
-Appendice C: migrazione dei GAS su Gasista Felice
-=================================================
+# Appendice C: migrazione dei GAS su Gasista Felice
 
 In questo documento si definisce una procedura di migrazione dei GAS
-alla piattaforma Gasista Felice. L'obiettivo è ovviamente quello di 
-semplificare l'integrazione di ogni GAS e di poter effettuare i test 
+alla piattaforma Gasista Felice. L'obiettivo è ovviamente quello di
+semplificare l'integrazione di ogni GAS e di poter effettuare i test
 di utilizzo nell'ambiente di produzione minimizzando gli sforzi di chi
 effettua e di chi supervisiona il test.
 
@@ -23,14 +21,12 @@ Essa è composta dai seguenti passi:
 La demo che viene fatta sul posto dovrebbe avvenire fra la fase 3 e la fase 4, o in ogni caso,
 dopo che il gruppo sviluppo abbia creato l'utente ed assegnato il ruolo di *referente informatico del GAS*
 
-Dati da importare
------------------
+## Dati da importare
 
-.. note::
-    L'importazione dei dati si spinge fin dove il referente informatico di ogni GAS intende portarla,
-    sulla base delle proprie esigenze, disponibilità di tempo e dei dati del proprio GAS!
-    I dati richiesti si dividono in obbligatori e opzionali. L'invito è di mettere TUTTI i dati a
-    disposizione. Questo semplificherà l'interazione con il software ed eviterà integrazioni future.
+> L'importazione dei dati si spinge fin dove il referente informatico di ogni GAS intende portarla,
+  sulla base delle proprie esigenze, disponibilità di tempo e dei dati del proprio GAS!
+  I dati richiesti si dividono in obbligatori e opzionali. L'invito è di mettere TUTTI i dati a
+  disposizione. Questo semplificherà l'interazione con il software ed eviterà integrazioni future.
 
 I documenti da cui si importano i dati sono fogli di calcolo elaborati con il proprio programma
 di foglio di calcolo preferito ed inviati via mail al team operativo del DES.
@@ -38,31 +34,27 @@ Si prega di creare file con un solo foglio. Il primo.
 
 Il formato dei documenti di importazione deve essere uno a scelta fra:
 
-1. ``ods`` 
-2. ``xls`` 
+1. ``ods``
+2. ``xls``
 
-.. note:
-    TUTTE le colonne obbligatorie devono essere presenti nel file consegnato anche se vuote.
+> TUTTE le colonne obbligatorie devono essere presenti nel file consegnato anche se vuote.
 
 Vengono messi a disposizione dei file di esempio per facilitare la compilazione
 
-.. note
-    TODO Li sta preparando Peppe di Civitanova che ringraziamo
-
+> TODO Li sta preparando Peppe di Civitanova che ringraziamo
 
 **Programmi per la realizzazione**
 
 In un contesto di economia solidale si privilegiano i programmi liberi di cui citiamo i più diffusi:
 
-* `LibreOffice <http://www.libreoffice.org>`__ (su tutti sistemi operativi)
-* `GNUmeric <http://it.wikipedia.org/wiki/Gnumeric>`__ (per sistemi GNU/Linux)
+* [LibreOffice](http://www.libreoffice.org) (su tutti sistemi operativi)
+* [GNUmeric](http://it.wikipedia.org/wiki/Gnumeric) (per sistemi GNU/Linux)
 
-Per ulteriori approfondimenti rimandiamo alla pagina di Wikipedia `Software di produttività personale <http://it.wikipedia.org/wiki/Software_di_produttivit%C3%A0_personale>`__
+Per ulteriori approfondimenti rimandiamo alla pagina di Wikipedia [Software di produttività personale](http://it.wikipedia.org/wiki/Software_di_produttivit%C3%A0_personale)
 
 .. _import-GAS:
 
-GAS
-^^^
+### GAS
 
 Le informazioni da comunicare relative al "soggetto" GAS sono poche e non è necessario comunicarle tramite un foglio di calcolo,
 basta inserirle nella mail in cui si comunicano gli altri dati. Esse sono:
@@ -80,23 +72,19 @@ e opzionalmente:
 * quanto è la quota di iscrizione annuale
 * entro quanto richiedete che la quota venga pagata: questo ci servirà per poter mandare un reminder a tutti i gasisti, ma non ci sarà nella prima implementazione
 
-Il recapito email per comunicazioni del gestionale verso il GAS è importante 
+Il recapito email per comunicazioni del gestionale verso il GAS è importante
 per poter inviare alcune (le minime) comunicazioni del gestionale, che potete leggere al capitolo :ref:`notifications`
-
-
-
 
 .. _import-gasmembers:
 
-Gasisti
-^^^^^^^
+### Gasisti
 
 **Campi obbligatori**
 
 1. Nome
 2. Cognome
 3. Indirizzo email
-4. Città 
+4. Città
 
 **Campi opzionali**
 
@@ -106,13 +94,11 @@ Gasisti
 8. Numero di telefono
 9. Numero di tessera nel GAS
 
-.. note::
-    Il nome utente (username) verrà impostato al nome della persona, seguito da un numero progressivo per evitare duplicati.
+> Il nome utente (username) verrà impostato al nome della persona, seguito da un numero progressivo per evitare duplicati.
 
 .. _import-company:
 
-Fornitori - il soggetto giuridico
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+### Fornitori - il soggetto giuridico
 
 **Campi obbligatori**
 
@@ -135,13 +121,11 @@ Fornitori - il soggetto giuridico
 14. Nome del file con l'immagine che sarà inviata insieme al foglio di calcolo compilato
 15. Descrizione
 
-Fornitori - le persone associate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+### Fornitori - le persone associate
 
-.. note:
-    Per ogni fornitore è fondamentale associare una persona di tipo RAPPRESENTANTE
+> Per ogni fornitore è fondamentale associare una persona di tipo RAPPRESENTANTE
 
-Esistono 3 tipi di soggetti che ruotano intorno al fornitore: 
+Esistono 3 tipi di soggetti che ruotano intorno al fornitore:
 
 * il rappresentante della piattaforma;
 * la persona che funge da contatto informativo;
@@ -160,15 +144,12 @@ I campi obbligatori per l'importazione di questi tipi di soggetti sono:
 
 e a seguire gli altri campi previsti per i :ref:`import-gasmembers`
 
-.. note::
-    Le persone di tipo "RAPPRESENTANTE" e "INFO" non avranno un utente abilitato all'accesso al sistema
+> Le persone di tipo "RAPPRESENTANTE" e "INFO" non avranno un utente abilitato all'accesso al sistema
 
-.. note::
-    Si consiglia di mettere in questa scheda solamente le persone che non sono già gasisti.
-    Il referente informatico potrà gestire al meglio l'associazione dei propri gasisti ai propri fornitori.
+> Si consiglia di mettere in questa scheda solamente le persone che non sono già gasisti.
+  Il referente informatico potrà gestire al meglio l'associazione dei propri gasisti ai propri fornitori.
 
-Prodotti
-^^^^^^^^
+### Prodotti
 
 Per ora parliamo solamente dei produttori, ossia chi vende prodotti realizzati in proprio.
 
@@ -191,7 +172,7 @@ Campi opzionali:
 12. Quantità minima del dettaglio
 13. Quantità minima di avanzamento
 
-**Esempi** 
+**Esempi**
 
 Il caso più semplice è *1 KG di prosciutto crudo*:
 
@@ -214,19 +195,14 @@ Infine poniamo il caso del prodotto *1 forma da 10 KG di formaggio pecorino tagl
 * Quantità minima del dettaglio = 20gr/10KG = 20/10000 = 0,002
 * Quantità minima di avanzamento = 20gr/10KG = 20/10000 = 0,002
 
-La quantità minima ordinabile entra in gioco se nel caso sia necessario ordinare almeno 2 forme di formaggio. 
+La quantità minima ordinabile entra in gioco se nel caso sia necessario ordinare almeno 2 forme di formaggio.
 
 In questo caso:
 
 * Quantità minima ordinabile = 2
 
-
-Importazione (per tecnici)
---------------------------
+## Importazione (per tecnici)
 
 Aprire il file ed esportarlo in formato ``csv`` in cui i valori dei campi sono delimitati da ``"`` (doppio apice) e i campi sono separati da ``;`` (punto e virgola).
 
 Eseguire il comando ``python manage.py import`` come l'opzione ``--subject=`` a scelta tra "person", "supplier", "person_supplier", "product".
-
-
-

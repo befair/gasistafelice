@@ -1,41 +1,31 @@
-.. _role-gasmember:
+# Il gasista
 
-Il gasista
-==========
+## Descrizione
 
-Descrizione
--------------
-
-Il gasista è una persona che appartiene ad un :ref:`GAS <resource-gas>`. 
-Lo scopo del gasista è ordinare prodotti, resi disponibili in un :ref:`ordine <resource-order>` aperto da un :ref:`referente fornitore <role-gasreferrersupplier>`.
+Il gasista è una persona che appartiene ad un [GAS](resource_gas.md).
+Lo scopo del gasista è ordinare prodotti, resi disponibili in un [ordine](resource_order.md) aperto da un [referente fornitore](gas_referrer_supplier.md).
 
 Le tipiche attività del gasista comprendono:
 
 * ordinare i prodotti;
 * visualizzare il paniere contenente i prodotti ordinati;
 * confermare i prodotti, se previsto nel modo di operare del GAS.
-  
-.. NOTE::
-   *Gasista Felice* consente ad una persona di appartenere a più GAS contemporaneamente.
 
-Azioni
----------------
+> *Gasista Felice* consente ad una persona di appartenere a più GAS contemporaneamente.
 
-Entra con nome utente e password
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+## Azioni
+
+### Entra con nome utente e password
 
 Nella pagina iniziale del sito, un utente inserisce il nome utente e la password. In questo modo il sistema può identificare l'utente, consentirgli di ordinare e di fare tutte le azioni corrispondenti ai ruoli che riveste.
 
 È solo dopo aver messo nome utente e password che il sistema sa se l'utente è un "semplice" gasista, un referente fornitore, un fornitore, un referente economico o un referente informatico del GAS.
 
-.. figure:: _static/gas_member_auth.png
-    :alt: Schermata di autenticazione
-    :align: center
+![Schermata di autenticazione](_static/gas_member_auth.png)
 
-    Pagina iniziale: l'utente inserisce nome utente e password.
+> Pagina iniziale: l'utente inserisce nome utente e password.
 
-Ordina
-^^^^^^^^^
+### Ordina
 
 Il gasista accede direttamente alla pagina con il listino dei prodotti ordinabili. La lista dei prodotti che si trova davanti è quella degli ordini aperti per il suo GAS (se solo un ordine o se listino misto di più ordini, questo è deciso dal referente informatico).
 
@@ -43,35 +33,27 @@ Dei prodotti che si trova davanti, il gasista dovrà impostare la quantità rich
 
 Premendo il bottone "Metti nel paniere" i prodotti selezionati andranno nel paniere.
 
-.. figure:: _static/order.png
-    :alt: Schermata di gestione del paniere
-    :align: center
+![Schermata di gestione del paniere](_static/order.png)
 
-    Gestione del paniere: permette l'inserimento dei prodotti che si vuole ordinare
+> Gestione del paniere: permette l'inserimento dei prodotti che si vuole ordinare
 
-Gestisce il proprio paniere
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+### Gestisce il proprio paniere
 
 Una volta ordinati i prodotti è possibile visualizzarli nella scheda paniere --> blocco paniere.
 
-.. figure:: _static/basket.png
-    :alt: Schermata di gestione del paniere
-    :align: center
+![Schermata di gestione del paniere](_static/basket.png)
 
-    Paniere dei prodotti ordinati: permette la modifica/eliminazione/conferma dei prodotti ordinati
+> Paniere dei prodotti ordinati: permette la modifica/eliminazione/conferma dei prodotti ordinati
 
-Se il gas lo richiede è necessario confermare i prodotti ordinati. 
+Se il gas lo richiede è necessario confermare i prodotti ordinati.
 
 Una volta che l'ordine è chiuso, i prodotti passano dal "paniere" al "paniere da consegnare". A questo punto non resta che attendere la consegna dei prodotti! Quantità e note non sono più modificabili.
 
-.. figure:: _static/basket_to_deliver.png
-    :alt: Schermata del paniere dei prodotti in consegna
-    :align: center
+![Schermata del paniere dei prodotti in consegna](_static/basket_to_deliver.png)
 
-    Paniere dei prodotti in consegna: visualizza i prodotti da ricevere. Non modificabili
+> Paniere dei prodotti in consegna: visualizza i prodotti da ricevere. Non modificabili
 
-Modifica la propria scheda gasista
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+### Modifica la propria scheda gasista
 
 Il gasista può modificare le informazioni relative al proprio profilo utente: nome, cognome, indirizzo, recapiti.
 
@@ -79,14 +61,11 @@ Nella scheda del gasista troviamo due riquadri (blocchi): scheda del gasista e s
 
 In questo secondo blocco è possibile anche cambiare la propria password
 
-.. figure:: _static/gas_member_info.png
-    :alt: Scheda del gasista
-    :align: center
+![Scheda del gasista](_static/gas_member_info.png)
 
-    Visualizzazione e gestione informazioni del profilo utente
+> Visualizzazione e gestione informazioni del profilo utente
 
-Terminologia
--------------
+## Terminologia
 
 Breve definizione dei termini:
 
@@ -98,12 +77,11 @@ Breve definizione dei termini:
 * Prezzo ordinato: prezzo di un prodotto al momento dell'ordine
 * Prezzo consegnato: prezzo di un prodotto al momento della consegna
 
-Da cosa parte
--------------
+## Da cosa parte
 
 Il gasista non deve pensare a curare i seguenti aspetti che sono di competenza di altri ruoli:
 
-* :ref:`GAS <resource-gas>` già inserito
-* :ref:`Fornitori <resource-supplier>` già inseriti
-* :ref:`Patto di solidarietà <resource-pact>` già costituito
-* :ref:`Ordine <resource-order>` già aperto
+* [GAS](resource_gas.md) già inserito
+* [Fornitori](resource_supplier.md) già inseriti
+* [Patto di solidarietà](resource_pact.md) già costituito
+* [Ordine](resource_order.md) già aperto
