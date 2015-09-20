@@ -7,7 +7,7 @@ RUN npm config set registry http://registry.npmjs.org/
 COPY deps/npm /code/ui/deps/npm
 RUN npm install -g $(cat /code/ui/deps/npm)
 
-COPY ./bower.json /code/libs/bower.json
+COPY deps/bower.json /code/libs/bower.json
 RUN cd /code/libs/ && bower install --allow-root
 
 EXPOSE 5000
