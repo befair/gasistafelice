@@ -1,2 +1,0 @@
-Notifica cambiamenti nel DES
-============================

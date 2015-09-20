@@ -1,73 +1,55 @@
 # Gasista Felice
 
+[Gasista Felice](http://www.gasistafelice.org/) è una piattaforma per gestire gli scambi economici solidali in un territorio, detto Distretto di Economia Solidale (DES), ed e' stato inizialmente sviluppato per il [DES Macerata](http://ordini.desmacerata.it/).
+
+In un DES il distacco tra produttori e consumatori viene superato grazie un rapporto fiduciario tra il Gruppo di Acquisto Solidale (GAS) e il fornitore:  è il cosiddetto *Patto di Solidarietà*, che consente di sviluppare l'economia delle relazioni nei territori.
+
+Gasista Felice consente:
+
+1. ai **referenti fornitori** di gestire in modo semplice gli ordini, inclusi la pianificazione, l'invio dei documenti di ordine, la decurtazione dal conto gasisti e la registrazione delle fatture;
+2. ai **GAS** di *siglare* patti di solidarietà con i fornitori, di effettuare ordini InterGAS e di avere la visione del DES cui appartengono;
+3. ai **fornitori** di gestire i propri listini e proporli a tutto il DES;
+4. ai **gasisti** di ordinare con un click e di appoggiarsi ad un conto prepagato nel GAS;
+5. ai **referenti economici** di registrare i pagamenti ai fornitori, di gestire quote, ricariche e donazioni al GAS
+
+Per rendere più fruibile il software stiamo sviluppando
+una nuova interfaccia grafica con cui i gasisti potranno ordinare anche da cellulare!
+vi mettiamo alcune immagini di seguito.
+
+Elenco degli ordini aperti:
+![Elenco degli ordini aperti](doc-user/source/ui_ric1/GFric1_home.png "Elenco degli ordini aperti")
+
+Gestione dei prodotti ordinati:
+![Gestione dei prodotti ordinati](doc-user/source/ui_ric1/GFric1_basket_list.png "Gestione dei prodotti ordinati")
+
+Ordine da cellulare:
+![Ordine da cellulare](doc-user/source/ui_ric1/GFric1_collapsed_product_list.png "Ordine da cellulare")
+
+Questo è uno dei programmi che stiamo sviluppando per sostenere i territori con passione e una retribuzione equa.
+Se vuoi vienici a trovare su [www.befair.it](http://www.befair.it) - ... in fase di aggiornamento ;)
+
 ## Quickstart
 
-    $ git clone https://github.com/kobe25/gasistafelice && cd gasistafelice
-    $ make up
+Se vuoi provare Gasista Felice puoi scrivere a dev@gasistafelice.org per avere accesso ad una installazione di test.
+Se invece preferisci installarlo su un tuo server segui la **[guida di installazione](docs/dev/quickstart.md)**.
 
-Then you could use the test database:
+## Autori
 
-    $ make dbtest
+* `Luca Ferroni <luca@befair.it>`
+* `Dominque Thual <dom_thual@yahoo.fr>`
+* `Lorenzo Franceschini <lorenzo.franceschini@informaetica.it>`
+* `Matteo Micheletti <marko@befair.it>`
+* `Antonio Esposito <kobe@befair.it>`
+* `Michele Sorcinelli <mike@befair.it>`
+* `Andrea Colangelo <warp10@befair.it>`
+* `Riccardo Pancotti`
+* `Francesco Spegni`
+* `Giuseppe Mercanti <g_mercanti@hotmail.com>`
+* `Loris Asoli <lorisasoli@alice.it>`
+* `Orlando Marchetti <orlyposta@gmail.com>`
 
-Or you could initialize an empty database:
+## Licenza
 
-    $ make dbinit
+The source code is released under the [GNU AGPLv3](./LICENSE).
 
-Now go on:
-
-* [`localhost:8080/`](http://localhost:8080/) for UI
-* [`localhost:8080/gasistafelice/`](http://localhost:8080/gasistafelice/) for old UI
-* [`localhost:8080/gasistafelice/admin/`](http://localhost:8080/gasistafelice/admin/) for Django Admin UI
-
-and login with `admin`/`admin`.
-
-For debugging purpose, you could use the backend directly at:
-
-* [`localhost:7000/gasistafelice/`](http://localhost:7000/gasistafelice/)
-* [`localhost:7000/gasistafelice/admin/`](http://localhost:7000/gasistafelice/admin/)
-
-If you want to change any (default) configuration, please edit the `settings.env` file.
-
-## Routing
-
-New:
-
-    / -> /ui/index.html
-    /ui       UI
-    /api/v1   API
-
-Old:
-
-    /static
-    /gasistafelice        UI
-    /gasistafelice/rest   API
-    /gasistafelice/admin  Django Admin
-
-## Development
-
-### Test
-
-To launch all the tests:
-
-    $ make test
-
-Additionally, you can visualize the end-to-end tests running in the browsers via a VNC client:
-
-- `localhost:5900` for Firefox
-- `localhost:5901` for Chrome
-
-### Debugging
-
-To see the tracebacker (this requires `uwsgi` installed on your host machine):
-
-    $ uwsgi --connect-and-read /tmp/gf_tracebacker1
-
-For further info, you can see the [docs](https://uwsgi-docs.readthedocs.org/en/latest/Tracebacker.html).
-
-### Profiling
-
-Enable profiling adding the following line in your `settings.env`:
-
-    APP_PROFILING=true
-
-Then see `/tmp/gf_profiling` on your host machine.
+The documentation is released under a [CC BY-SA 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/legalcode).

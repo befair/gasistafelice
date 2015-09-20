@@ -3,7 +3,6 @@ psycopg2==2.5.2
 django-permissions>=1.1,<1.2
 django-workflows>=1.0
 South>=0.7.3
-Sphinx>=0.6.6
 pisa>=3.0.32
 #xhtml2pdf
 -e git+https://github.com/chrisglass/xhtml2pdf@a94b95b0570b8e8e3ebf296ca62d057834438560#egg=xhtml2pdf-dev

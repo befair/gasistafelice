@@ -1,2 +1,0 @@
-Interfaccia Grafica
-====================
