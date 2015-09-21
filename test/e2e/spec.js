@@ -42,7 +42,16 @@ describe('GF ng-app', function() {
           .toBe("Gasista_01 DelGas_01");
     });
 
+    it('should get the right order', function () {
+      var item = element.all(
+        by.repeater('open_order in gm.open_orders')
+      ).get(1);
+
+      item.$$('.no_style').click();
+    });
+
     it('should increment/decrement the price/qty when "+/-" are clicked', function () {
+
       // get the second item in the table
       var item = element.all(
                    by.repeater('product in order.pm.products')
@@ -102,10 +111,10 @@ describe('GF ng-app', function() {
       // go to the basket
       browser.setLocation('basket');
 
-      // get the first order
+      // get the second order
       item = element.all(
                by.repeater('item in basket.open_ordered_products')
-             ).get(0);
+             ).get(1);
 
       // get all the column from the first order
       var columns = item.$$('td');
@@ -117,7 +126,7 @@ describe('GF ng-app', function() {
       // check the fields
       expect(columns.get(0)
         .getText())
-          .toBe('Ord. 59');
+          .toBe('Ord. 89');
       expect(columns.get(1)
         .getText())
           .toBe('Fornitore 01');
