@@ -22,7 +22,7 @@ urlpatterns = patterns('',
 	(r'^%sgas/' % settings.URL_PREFIX, include('gas.urls')),
 	#(r'^%ssupplier/' % settings.URL_PREFIX, include('supplier.urls')),
 	#(r'^%sorder/' % settings.URL_PREFIX, include('gas.order_urls')),
-    
+
     #End new user interface
 	(r'^%srest/' % settings.URL_PREFIX, include('rest.urls')),
 
@@ -40,10 +40,6 @@ urlpatterns = patterns('',
 
     url(r"^%snotices/" % settings.URL_PREFIX, include("notification.urls")),
     (r'^%slookups/' % settings.URL_PREFIX, include('ajax_select.urls')),
-    ## RDF middelware
-    #(r'^%srdf/' % settings.URL_PREFIX, include('rdf_gf.urls')),
-    # GDXP middelware
-    #WAS: (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp_gf.urls')),
     (r'^%sgdxp/' % settings.URL_PREFIX, include('gdxp.urls')),
 
     (r'^i18n/', include('django.conf.urls.i18n')),
