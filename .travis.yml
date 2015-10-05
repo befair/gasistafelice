@@ -1,0 +1,26 @@
+sudo: required
+
+services:
+  - docker
+
+language:
+  - python
+
+python:
+  - "2.7"
+
+before_install:
+  - sudo apt-get -y update
+  - sudo apt-get -y install lxc-docker
+  - pip2 install pip --upgrade
+  - pip2 install docker-compose
+  - mv compose/ci.yml docker-compose.yml
+
+install:
+  - docker-compose build
+  - docker-compose up -d db front back proxy hub firefox chrome
+  - sleep 5
+  - make dbtest
+
+script:
+  - docker-compose run e2e
