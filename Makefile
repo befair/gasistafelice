@@ -104,6 +104,6 @@ test-integration:
 
 test-e2e: test-cat.yml
 	@echo 'End-to-end test: running protractor'
-	docker-compose -f test-cat.yml up -d
+	docker-compose -f test-cat.yml up -d hub firefox chrome
 	sleep 5
 	docker-compose -f test-cat.yml run --rm e2e
