@@ -1,0 +1,39 @@
+sudo: required
+
+services:
+  - docker
+
+language:
+  - python
+
+python:
+  - "2.7"
+
+before_install:
+  # remove old version of docker
+  - sudo apt-get remove -y lxc-docker-1.7.0
+  # install last version of docker
+  - curl -sSL https://get.docker.com/ | sudo sh
+  - curl -L https://github.com/docker/compose/releases/download/1.4.2/docker-compose-`uname -s`-`uname -m` > docker-compose
+  # install compose
+  - sudo chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+install:
+  # replace the docker-compose.yml with the specific for the CI
+  - mv compose/ci.yml docker-compose.yml
+  # set containers as privileged to bypass Travis environment limitations
+  - 'sed -i "/image/a \ \ privileged: true" docker-compose.yml'
+  - 'sed -i "/build/a \ \ privileged: true" docker-compose.yml'
+  # start app containers
+  - docker-compose up -d db back front proxy > /dev/null
+  # init the test db
+  - make dbtest
+
+script:
+  # start test containers
+  - docker-compose up -d hub
+  - docker-compose up -d firefox chrome
+
+  # start tests
+  - docker-compose run e2e
