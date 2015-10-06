@@ -1,5 +1,7 @@
 # Gasista Felice
 
+[![Build Status](https://travis-ci.org/befair/gasistafelice.svg)](https://travis-ci.org/befair/gasistafelice)
+
 [Gasista Felice](http://www.gasistafelice.org/) è una piattaforma per gestire gli scambi economici solidali in un territorio, detto Distretto di Economia Solidale (DES), ed e' stato inizialmente sviluppato per il [DES Macerata](http://ordini.desmacerata.it/).
 
 In un DES il distacco tra produttori e consumatori viene superato grazie un rapporto fiduciario tra il Gruppo di Acquisto Solidale (GAS) e il fornitore:  è il cosiddetto *Patto di Solidarietà*, che consente di sviluppare l'economia delle relazioni nei territori.
