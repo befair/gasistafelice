@@ -2,8 +2,6 @@ FROM iojs:2.5
 
 MAINTAINER Antonio Esposito "kobe@befair.it"
 
-RUN npm config set registry http://registry.npmjs.org/
-
 COPY deps/npm /code/ui/deps/npm
 RUN npm install -g $(cat /code/ui/deps/npm)
 
