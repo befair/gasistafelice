@@ -1,8 +1,35 @@
 // Gasista Felice frontend evolved from a master thesis by Riccard1
 //
-var app = angular.module('ngGF',
-    [ 'ui.bootstrap', 'ngNewRouter', 'satellizer', 'ngDialog', 'ngLocale' ]
-    )
+var app = angular.module('ngGF', [
+        'ui.bootstrap',
+        'ngNewRouter',
+        'satellizer',
+        'ngDialog',
+        'ngLocalize', 'ngLocalize.Config', 'ngLocalize.InstalledLanguages'
+    ])
+    .value('localeSupported', [
+        'en-US',
+        'it-IT'
+    ])
+    .value('localeFallbacks', {
+        'en': 'en-US',
+        'it': 'it-IT'
+    })
+    .value('localeConf', {
+        basePath: 'languages',
+        defaultLocale: 'it-IT',
+        sharedDictionary: 'common',
+        fileExtension: '.lang.json',
+        persistSelection: true,
+        cookieName: 'COOKIE_LOCALE_LANG',
+        observableAttrs: new RegExp('^data-(?!ng-|i18n)'),
+        delimiter: '::'
+    })
+    .filter('capitalize', function() {
+        return function(input, all) {
+            return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
+        };
+    })
     .factory('navigateTo', function ($location, $router) {
       return function (name) {
           $location.url($router.generate(name));

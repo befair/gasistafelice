@@ -5604,7 +5604,7 @@ COPY auth_user (id, username, first_name, last_name, email, password, is_staff, 
 5	01gas2	Gasista_01	DelGas_02	gasista01@gas02.test	pbkdf2_sha256$15000$An55XILGpRbc$F0kExTsDifnA8In/ko1pwStQMF/sLrij4t9R28DvC3I=	t	t	f	2014-11-04 15:07:29.651626+00	2014-01-19 14:33:17+00
 4	02gas2	Gasista_02	DelGas_02	gasista02@gas02.test	pbkdf2_sha256$15000$8H1947aBp4uH$IaDNJttZUcdqsUzOcdvOUOs58A86ydIGoDr9wLKD9vI=	t	t	f	2014-11-04 15:08:48.818095+00	2014-01-19 14:31:50+00
 1	admin	Referente informatico	del Test-Des	wargames@example.org	pbkdf2_sha256$15000$JN32TW4rAGct$yg82J1u9JZyhUNIGJIPsgSWUrfc9sooM66wuKa6Vr1Q=	t	t	t	2015-07-14 15:44:45.343131+00	2014-01-18 01:20:14+00
-2	01gas1	Gasista_01	DelGas_01	gasista01@gas01.test	pbkdf2_sha256$15000$tzmnr2M14APB$bwKiWbhG9bwiPZpbBNk6kmqSQeA0rTTK+80i3Sn5lXo=	t	t	f	2015-09-16 14:27:06.840763+00	2014-01-19 13:54:46+00
+2	01gas1	Gasista_01	DelGas_01	gasista01@gas01.test	pbkdf2_sha256$15000$tzmnr2M14APB$bwKiWbhG9bwiPZpbBNk6kmqSQeA0rTTK+80i3Sn5lXo=	t	t	f	2015-09-20 02:01:58.731404+00	2014-01-19 13:54:46+00
 \.
 
 
@@ -6430,6 +6430,8 @@ COPY gas_delivery (id, place_id, date) FROM stdin;
 65	1	2015-12-13 00:30:00+00
 66	1	2015-12-20 00:30:00+00
 67	1	2015-09-30 00:36:00+00
+68	1	2100-09-30 01:36:00+00
+69	1	2100-09-20 01:30:00+00
 \.
 
 
@@ -6437,7 +6439,7 @@ COPY gas_delivery (id, place_id, date) FROM stdin;
 -- Name: gas_delivery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: app
 --
 
-SELECT pg_catalog.setval('gas_delivery_id_seq', 67, true);
+SELECT pg_catalog.setval('gas_delivery_id_seq', 69, true);
 
 
 --
@@ -6644,7 +6646,7 @@ COPY gas_gasmemberorder (id, purchaser_id, ordered_product_id, ordered_price, or
 116	20	207	20.0000	4.00	\N	t	CIAOCIAO
 113	20	210	10.0000	5.00	\N	t	[ord da admin] 
 128	1	229	3.5000	7.00	\N	t	
-127	1	225	50.0000	4.00	\N	t	
+127	1	225	50.0000	6.00	\N	t	
 117	1	214	10.0000	10.00	\N	t	pippo
 122	1	216	25.0000	8.00	\N	t	mi piacciono verdi
 126	1	219	20.0000	3.00	\N	t	
@@ -6687,7 +6689,6 @@ COPY gas_gassupplierorder (id, pact_id, datetime_start, datetime_end, order_mini
 58	3	2014-06-12 15:40:00+00	2014-06-22 15:40:00+00	\N	48	\N	\N	2	\N	\N	\N	\N		\N
 59	3	2015-07-14 11:30:00+00	2015-07-24 11:37:00+00	\N	50	\N	\N	2	\N	\N	\N	\N		\N
 61	4	2015-08-12 11:10:00+00	2015-08-23 11:18:00+00	\N	52	\N	\N	2	\N	\N	\N	\N		\N
-62	4	2015-09-06 00:30:00+00	2015-09-13 00:30:00+00	\N	53	\N	\N	3	\N	\N	\N	\N		\N
 76	4	2015-09-13 00:30:00+00	2015-09-20 00:30:00+00	\N	54	\N	\N	3	\N	\N	\N	\N		62
 77	4	2015-09-20 00:30:00+00	2015-09-27 00:30:00+00	\N	55	\N	\N	3	\N	\N	\N	\N		62
 78	4	2015-09-27 00:30:00+00	2015-10-04 00:30:00+00	\N	56	\N	\N	3	\N	\N	\N	\N		62
@@ -6702,7 +6703,8 @@ COPY gas_gassupplierorder (id, pact_id, datetime_start, datetime_end, order_mini
 87	4	2015-11-29 00:30:00+00	2015-12-06 00:30:00+00	\N	65	\N	\N	3	\N	\N	\N	\N		62
 88	4	2015-12-06 00:30:00+00	2015-12-13 00:30:00+00	\N	66	\N	\N	3	\N	\N	\N	\N		62
 60	3	2015-08-12 11:10:00+00	2015-08-23 11:17:00+00	\N	51	\N	\N	2	\N	\N	\N	136.5000		\N
-89	3	2015-09-06 00:30:00+00	2015-09-20 00:36:00+00	\N	67	\N	\N	2	\N	\N	\N	\N		\N
+89	3	2015-09-06 00:30:00+00	2100-09-20 01:36:00+00	\N	68	\N	\N	2	\N	\N	\N	\N		\N
+62	4	2015-09-06 00:30:00+00	2100-09-13 01:30:00+00	\N	69	\N	\N	3	\N	\N	\N	\N		\N
 \.
 
 
