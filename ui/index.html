@@ -24,7 +24,7 @@
                 <button id="btn-toggle-collapse" type="button" class="navbar-toggle collapsed"
                         ng-click="collapseNavbar()" style="z-index:1000;"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only" translate>Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -51,37 +51,37 @@
             <div class="collapse navbar-collapse" collapse="navbar.isCollapsed">
                 <ul class="nav navbar-nav" ng-show="app.dataLoaded">
                     <li markable ng-class="{ active: active_section == 'order'}" ng-click="active_section='order';">
-                        <a ng-link="order()" href=""> <span class="glyphicon glyphicon-book"></span> Ordinare </a>
+                        <a ng-link="order()" href=""><span class="glyphicon glyphicon-book"></span> <translate>Orders</translate></a>
                     </li>
                     <li markable ng-class="{ active: active_section == 'basket'}" ng-click="active_section='basket';">
-                        <a ng-link="basket()" href=""> <span class="glyphicon glyphicon-shopping-cart"></span> Paniere </a>
+                        <a ng-link="basket()" href=""><span class="glyphicon glyphicon-shopping-cart"></span> <translate>Basket</translate></a>
                     </li>
                     <li markable ng-class="{ active: active_section == 'cash'}" ng-click="active_section='cash';">
-                        <a ng-link="cash()" href=""> <span class="glyphicon glyphicon-euro"></span> Conto </a>
+                        <a ng-link="cash()" href=""><span class="glyphicon glyphicon-euro"></span> <translate>Cash</translate></a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-show="app.isAuth()">
                     <li style="padding-right: 0.5em"><span>
-                         <img src="/ui/img/user_pic.png" alt="Il mio profilo" class="imgpic">
-                         <a ng-link="profile()" href="" title="Il mio profilo"> {{ person.display_name }} </a>
+                            <img src="/ui/img/user_pic.png" alt="{{ 'My profile' | translate }}" class="imgpic">
+                        <a ng-link="profile()" href="" title="{{ 'My profile' | translate }}"> {{ person.display_name }} </a>
                     </span></li>
                     <li>
-                        <button type="button" id="btn-admin" class="btn btn-default btn-lg" aria-label="Gestione" ng-click="app.go_to_admin()">
+                        <button type="button" id="btn-admin" class="btn btn-default btn-lg" aria-label="{{ 'Manage' | translate }}" ng-click="app.go_to_admin()">
                            <span class="glyphicon glyphicon-cog" id="glyph-admin" aria-hidden="true"></span>
-                           Gestione
+                           {{ 'Manage' | translate }}
                         </button>
-                        <button type="button" id="btn-logout" class="btn btn-default btn-lg" aria-label="Esci" ng-click="app.logout()">
+                        <button type="button" id="btn-logout" class="btn btn-default btn-lg" aria-label="{{ 'Logout' | translate }}" ng-click="app.logout()">
                            <span class="glyphicon glyphicon-off" id="glyph-off" aria-hidden="true"></span>
-                           Esci
+                           {{ 'Logout' | translate }}
                         </button>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="subnav" ng-show="app.isAuth()">
-            <span class="cash-current">Saldo: {{ gm.balance | currency }} </span>
+            <span class="cash-current" translate>Balance: {{ gm.balance | currency }}</span>
             <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="cash-after-delivery"> Dopo la consegna: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}} </span>
+            <span class="cash-after-delivery" translate>After delivery: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}}</span>
         </div>
       </nav>
 
@@ -89,7 +89,7 @@
         <!-- 1° row -->
 
         <p style="text-align:center" ng-hide="app.dataLoaded" ng-if="app.isAuth()">
-            Un attimo che carico...
+            {{ 'Just a moment please, I am loading...' | translate }}
             <i class="fa fa-spinner fa-spin"></i>
         </p>
 
@@ -103,26 +103,26 @@
 
         <div ng-if="!app.isAuth()" class="first_block"><!-- 1° col-md-8 -->
             <div id="cont_login">
-                <h4>Benvenuto gasista!</h4>
+                <h4 translate-comment="an happy and joking greeting" translate>Welcome to the real world, Neo...!</h4>
                 <!-- TODO @veon82 <li><a href="/#/signup">Sign up</a></li> -->
                 <form class="col s12">
                     <table>
                         <tr>
-                            <td> <label for="username">utente</label> </td>
+                            <td> <label for="username" translate>username</label> </td>
                             <td> <input ng-model="app.username" id="username" type="text" class="validate"> </td>
                         </tr>
                             <!-- <div class="input-field col s12">
                                 </div> -->
                         <tr>
-                            <td> <label for="password">password</label> </td>
+                            <td> <label for="password" translate>password</label> </td>
                             <td> <input ng-model="app.password" id="password" type="password" class="validate"> </td>
                         </tr>
                         <tr>
                             <td> </td>
                             <td>
-                                <button class="btn btn-default btn-lg" ng-click="app.login()" type="button" id="go" aria-label="Entra">
+                                <button class="btn btn-default btn-lg" ng-click="app.login()" type="button" id="go" aria-label="{{ 'Login' | translate }}">
                                 <span class="glyphicon glyphicon-thumbs-up" id="glyph-go" aria-hidden="true"></span>
-                                    Entra
+                                    {{ 'Login' | translate }}
                                 </button>
                             </td>
                         </tr>
@@ -146,6 +146,7 @@
     </div>
 
     <script src="/ui/bower_components/angular/angular.min.js"></script>
+    <script src="/ui/bower_components/angular-gettext/dist/angular-gettext.min.js"></script>
     <script src="/ui/bower_components/angular-new-router/dist/router.es5.min.js"></script>
     <script src="/ui/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
     <script src="/ui/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
@@ -155,6 +156,7 @@
 
     <script src="/ui/js/angular-locale_it-it.js"></script>
     <script src="/ui/js/ngDialog.min.js"></script>
+    <script src="/ui/locale/i18n.js"></script>
 
     <script src="/ui/app.js"></script>
     <script src="/ui/components/map/map.js"></script>
