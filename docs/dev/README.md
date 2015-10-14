@@ -25,3 +25,37 @@ Old:
     /gasistafelice        UI
     /gasistafelice/rest   API
     /gasistafelice/admin  Django Admin
+
+## Frontend dependencies
+
+Frontend dependencies are defined in `ui/deps/bower.json`, and installed during
+the build of the frontend image. Additional dependencies have to be added in
+`ui/deps/bower.json`.
+
+To locally install the new dependencies, the frontend image has to be rebuilt:
+
+    $ make rebuild-front
+
+This will delete test containers (they will be recreated the next time `make
+test` is used), rebuild the frontend image with the new dependencies installed,
+and finally recreate the `front` and `proxy` containers. After that the
+application should be updated and available for use.
+
+Once the changes to `ui/deps/bower.json` are merged in the upstream, a hook for
+rebuilding the image will be triggered on the registry, and the developers will
+be able to update their development images with:
+
+    $ docker-compose pull
+
+### Troubleshooting
+
+If `npm` reports connection issues, restart the Docker daemon and repeat
+the build. Additional informations can be found
+[here](https://stackoverflow.com/questions/27992146/cant-install-npm-in-the-docker-container).
+
+If the application doesn't work after the rebuild, remove and recreate all the
+containers:
+
+    $ make rm             # remove containers
+    $ make up             # recreate the containers
+    $ make dbtest         # reload the db
