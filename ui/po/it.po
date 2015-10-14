@@ -15,46 +15,48 @@ msgid ""
 "After delivery: {{ gm.balance - gm.total_basket_to_be_delivered - gm."
 "total_basket | currency}}"
 msgstr ""
+"Dopo la consegna: {{ gm.balance - gm.total_basket_to_be_delivered - gm."
+"total_basket | currency}}"
 
 #: index.html:82
 msgid "Balance: {{ gm.balance | currency }}"
-msgstr ""
+msgstr "Saldo: {{ gm.balance | currency }}"
 
 #: index.html:57
 msgid "Basket"
-msgstr ""
+msgstr "Paniere"
 
 #: index.html:60
 msgid "Cash"
-msgstr ""
+msgstr "Conto"
 
 #: index.html:92
 msgid "Just a moment please, I am loading..."
-msgstr ""
+msgstr "Un attimo, sto caricando..."
 
 #: index.html:123 index.html:125
 msgid "Login"
-msgstr ""
+msgstr "Entra"
 
 #: index.html:73 index.html:75
 msgid "Logout"
-msgstr ""
+msgstr "Esci"
 
 #: index.html:69 index.html:71
 msgid "Manage"
-msgstr ""
+msgstr "Gestione"
 
 #: index.html:65 index.html:66
 msgid "My profile"
-msgstr ""
+msgstr "Il mio profilo"
 
 #: index.html:54
 msgid "Orders"
-msgstr ""
+msgstr "Ordini"
 
 #: index.html:117
 msgid "password"
-msgstr ""
+msgstr "password"
 
 #: index.html:27
 msgid "Toggle navigation"
@@ -62,9 +64,9 @@ msgstr ""
 
 #: index.html:111
 msgid "username"
-msgstr ""
+msgstr "utente"
 
 #. an happy and joking greeting
 #: index.html:106
 msgid "Welcome to the real world, Neo...!"
-msgstr ""
+msgstr "Benvenuto nel nuovo mondo...!"
