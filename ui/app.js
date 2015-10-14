@@ -8,6 +8,9 @@ var app = angular.module('ngGF', [
         'ngLocale',
         'gettext'
     ])
+    .run(function (gettextCatalog) {
+      gettextCatalog.setCurrentLanguage('it');
+    })
     .factory('navigateTo', function ($location, $router) {
       return function (name) {
           $location.url($router.generate(name));
