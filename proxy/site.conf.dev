@@ -39,6 +39,11 @@ server {
     proxy_pass      http://front:5000/libs/bower_components/;
   }
 
+  location /ui/fonts/ {
+    proxy_pass      http://front:5000/libs/bower_components/bootstrap/fonts/;
+    expires max;
+  }
+
   location /ui/ {
     proxy_pass      http://front:5000;
   }
