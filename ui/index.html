@@ -51,13 +51,13 @@
             <div class="collapse navbar-collapse" collapse="navbar.isCollapsed">
                 <ul class="nav navbar-nav" ng-show="app.dataLoaded">
                     <li markable ng-class="{ active: active_section == 'order'}" ng-click="active_section='order';">
-                        <a ng-link="order()" href="" class="space-side-padding"><span class="glyphicon glyphicon-book"></span><translate>Orders</translate></a>
+                        <a ng-link="order()" href=""><span class="glyphicon glyphicon-book"></span> <translate>Orders</translate></a>
                     </li>
                     <li markable ng-class="{ active: active_section == 'basket'}" ng-click="active_section='basket';">
-                        <a ng-link="basket()" href="" class="space-side-padding"><span class="glyphicon glyphicon-shopping-cart"></span><translate>Basket</translate></a>
+                        <a ng-link="basket()" href=""><span class="glyphicon glyphicon-shopping-cart"></span> <translate>Basket</translate></a>
                     </li>
                     <li markable ng-class="{ active: active_section == 'cash'}" ng-click="active_section='cash';">
-                        <a ng-link="cash()" href="" class="space-side-padding"><span class="glyphicon glyphicon-euro"></span><translate>Cash</translate></a>
+                        <a ng-link="cash()" href=""><span class="glyphicon glyphicon-euro"></span> <translate>Cash</translate></a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-show="app.isAuth()">
@@ -79,9 +79,9 @@
             </div>
         </div>
         <div class="subnav" ng-show="app.isAuth()">
-            <span class="cash-current space-side-padding" translate>Balance: {{ gm.balance | currency }}</span>
+            <span class="cash-current" translate>Balance: {{ gm.balance | currency }}</span>
             <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="cash-after-delivery space-side-padding" translate>After delivery: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}}</span>
+            <span class="cash-after-delivery" translate>After delivery: {{ gm.balance - gm.total_basket_to_be_delivered - gm.total_basket | currency}}</span>
         </div>
       </nav>
 
