@@ -2,17 +2,19 @@ help:
 	@echo 'make            Print this help'
 	@echo
 	@echo 'Whole app commands:'
-	@echo 'make up         Download and start all'
-	@echo 'make ps         Container status'
-	@echo 'make logs       See all logs'
-	@echo 'make stop       Stop all containers'
-	@echo 'make restart    Restart all containers'
-	@echo 'make rm         Delete containers'
-	@echo 'make test       Run all tests'
+	@echo 'make up              Download and start all'
+	@echo 'make ps              Container status'
+	@echo 'make logs            See all logs'
+	@echo 'make stop            Stop all containers'
+	@echo 'make restart         Restart all containers'
+	@echo 'make rm              Delete containers'
+	@echo 'make test            Run all tests'
 	@echo
 	@echo 'Container commands:'
-	@echo 'make logs-back  See only backend logs'
-	@echo 'make back       Debug in backend via iPython'
+	@echo 'make logs-back       See only backend logs'
+	@echo 'make back            Debug in backend via iPython'
+	@echo 'make rebuild-back    Rebuild back image from Dockerfile'
+	@echo 'make rebuild-front   Rebuild front image from Dockerfile'
 
 test-cat.yml: docker-compose.yml compose/test.yml Makefile
 	cat docker-compose.yml compose/test.yml > test-cat.yml
@@ -76,6 +78,14 @@ dbclean:
 	docker-compose run --rm back dropdb app
 	docker-compose run --rm back createdb app -O app
 
+rebuild-back:
+	docker build -t befair/gasistafelice-back:latest gasistafelice/
+	make up
+
+rebuild-front:
+	docker build -t befair/gasistafelice-front:latest ui/
+	make up
+
 rm: stop
 	docker-compose -f test-cat.yml rm -v -f
 
@@ -87,6 +97,11 @@ rmc:
 
 rmi: rmc
 	docker rmi -f $(docker images -aq)
+
+rmt:
+	@echo 'Removing test containers'
+	docker-compose -f test-cat.yml stop hub firefox chrome
+	docker-compose -f test-cat.yml rm -f hub firefox chrome
 
 test: test-info test-unit test-integration test-e2e
 	@echo 'All tests passed!'
