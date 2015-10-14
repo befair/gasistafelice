@@ -1,8 +1,13 @@
 // Gasista Felice frontend evolved from a master thesis by Riccard1
 //
-var app = angular.module('ngGF',
-    [ 'ui.bootstrap', 'ngNewRouter', 'satellizer', 'ngDialog', 'ngLocale' ]
-    )
+var app = angular.module('ngGF', [
+        'ui.bootstrap',
+        'ngNewRouter',
+        'satellizer',
+        'ngDialog',
+        'ngLocale',
+        'gettext'
+    ])
     .factory('navigateTo', function ($location, $router) {
       return function (name) {
           $location.url($router.generate(name));
