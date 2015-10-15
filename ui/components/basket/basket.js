@@ -1,5 +1,7 @@
 app.controller("BasketController", function ($http, $rootScope, parsingNumbers, productManager) {
 
+    $rootScope.checkAuth();
+
     if (!$rootScope.gm_id) {
         console.debug("basket: GASMember info not already retrieved...");
         return;

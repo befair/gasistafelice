@@ -1,5 +1,7 @@
 app.controller("OrderController", function($http, $rootScope, productManager) {
 
+    $rootScope.checkAuth();
+
     if (!$rootScope.gm_id) {
         console.debug("order: GASMember info not already retrieved...");
         return;
@@ -9,7 +11,7 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
 
     this.pm = productManager;
     this.dataLoaded = true;
-    
+
     this.ordiniloaded = true;
     this.orderByField = ''; //?
     this.reverseSort = false; //?
@@ -27,7 +29,7 @@ app.controller("OrderController", function($http, $rootScope, productManager) {
         } else {
             console.debug("Nessun ordine aperto per " + gm.gas.name);
         }
-        
+
     }).error(function(data){
         console.debug("http error get GAS member data");
     });

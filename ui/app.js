@@ -90,8 +90,14 @@ var app = angular.module('ngGF', [
             return $auth.isAuthenticated();
         };
 
+        // close session if token expired
+        $rootScope.checkAuth = function() {
+          if (!THAT.isAuth())
+            THAT.logout();
+        }
+
         //When the page is loaded the first if the user is authenticated, load data
-        if ($auth.isAuthenticated()) {
+        if (THAT.isAuth()) {
             this.load_person();
         }
 
