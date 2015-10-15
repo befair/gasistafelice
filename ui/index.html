@@ -37,7 +37,7 @@
             <!-- Dropdown with the selected GAS if more than one GAS -->
             <ul class="nav navbar-nav" ng-show="app.dataLoaded">
                 <li ng-if="person.gas_list[1]" class="dropdown" dropdown>
-                    <a href="#" dropdown-toggle role="button"> {{gas_active.name}} <span class="caret"></span></a>
+                    <!-- <a href="#" dropdown-toggle role="button"> {{gas_active.name}} <span class="caret"></span></a> -->
                     <ul class="dropdown-menu">
                         <li ng-repeat="gas in person.gas_list | orderBy: gas.name" ng-show="gas != gas_active">
                             <a href="#" ng-click="gas_active = gas"> {{ gas.name }} </a>
