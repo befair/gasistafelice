@@ -1,5 +1,7 @@
 app.controller("ProfileController", function ($http, $rootScope, ngDialog, parsingNumbers) {
 
+    $rootScope.checkAuth();
+
     $rootScope.active_section = "profile";
 
     // create the map (map container must be loaded in dom)

@@ -14,7 +14,7 @@ import locale
 import consts
 
 from django.utils.translation import ugettext_lazy as _
-
+from datetime import timedelta
 
 ENV = os.getenv('APP_ENV', 'dev')
 
@@ -83,6 +83,7 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_VERIFY_EXPIRATION': False,
+    'JWT_EXPIRATION_DELTA': timedelta(hours=6)
 }
 
 # Local time zone for this installation. Choices can be found here:

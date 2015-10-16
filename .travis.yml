@@ -1,5 +1,8 @@
 sudo: required
 
+git:
+  submodules: false
+
 services:
   - docker
 
@@ -11,7 +14,7 @@ python:
 
 before_install:
   # remove old version of docker
-  - sudo apt-get remove -y lxc-docker-1.7.0
+  - sudo apt-get remove -y docker-engine
   # install last version of docker
   - curl -sSL https://get.docker.com/ | sudo sh
   - curl -L https://github.com/docker/compose/releases/download/1.4.2/docker-compose-`uname -s`-`uname -m` > docker-compose
