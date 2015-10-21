@@ -4,18 +4,14 @@
 {% block table_rows %}
     {% for el in records %}
     [
-
         "{{el.order|escapejs}}",
         "{{el.supplier|escapejs}}",
         "{{el.product|escapejs}}",
-        "{{el.ordered_amount}}",
+        "{{el.ordered_amount|escapejs}}",
         "&#8364; {{ el.price}}",
         "&#8364; {{ el.ordered_total}}",
-        "eliminare",
-    ]
-    {% if not forloop.last %}
-    ,
-    {% endif %}
+        "eliminare"
+    ]{% if not forloop.last %},{% endif %}
     {% endfor %}
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from gf.base.models import Person, Contact, Place
-from gf.gas.models.base import GAS, GASMember, GASSupplierStock
+from gf.gas.models.base import GAS, GASMember, GASSupplierStock, GASConfig
 from gf.gas.models.order import GASSupplierOrder, GASMemberOrder, Delivery, GASSupplierOrderProduct
 from gf.supplier.models import Product, SupplierStock, Supplier
 from simple_accounting.models import LedgerEntry, Transaction
@@ -136,15 +136,22 @@ class OrderInfoSerializer(serializers.ModelSerializer):
             '__unicode__', 'current_state'
         )
 
+class GASConfigSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GASConfig
+        fields = ('gasmember_auto_confirm_order', )
 
 class SimpleGASSerializer(serializers.ModelSerializer):
 
     des = serializers.CharField()
     headquarter = SeatSerializer()
+    config = GASConfigSerializer()
 
     class Meta:
         model = GAS
-        fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'headquarter')
+        fields = ('id', 'name', 'id_in_des', 'logo',
+                  'des', 'headquarter', 'config')
 
 
 class GASSerializer(SimpleGASSerializer):
@@ -153,7 +160,6 @@ class GASSerializer(SimpleGASSerializer):
     class Meta:
         model = GAS
         fields = ('id', 'name', 'id_in_des', 'logo', 'des', 'headquarter')
-
 
 class PersonSerializer(serializers.ModelSerializer):
 

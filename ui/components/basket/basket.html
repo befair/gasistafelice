@@ -40,6 +40,7 @@ $("#checkAll").click(function(){
             <th>Prezzo (€)</th>
             <th>Quantit&agrave;</th>
             <th>Totale</th>
+            <th scope="col" ng-show="{{!gm.gas.config.gasmember_auto_confirm_order}}" translate> Confirmed </th>
             <th style="text-align:center">Cancella</th>
         </tr>
     </thead>
@@ -78,6 +79,9 @@ $("#checkAll").click(function(){
         </td>
         <td data-title="image" class="tdprod" ng-show="!item.can_update">{{item.quantity}}</td>
         <td class="tdprice"> {{item.quantity * item.price|currency:"€"}}</td>
+        <td ng-show="{{!gm.gas.config.gasmember_auto_confirm_order}}"  class="tdprice">
+            <span ng-show="item.is_confirmed" class="glyphicon glyphicon-ok-sign" aria-hidden="true" style="color:green;"></span>
+        </td>
         <td class="tdprice">
             <fieldset ng-show="item.can_update">
                 <input name="checkbox_{{$index}}" id="checkbox_{{$index}}"
@@ -92,12 +96,17 @@ $("#checkAll").click(function(){
     <table class="table total">
         <tr>
             <td>
-                <button class="btn btn-default btn-lg def-btn" ng-click="basket.pm.updateCart(basket.open_ordered_products);" type="button" id="btn-admin" aria-label="Gestione" style="width:200px; margin:auto;">
+                <button class="btn btn-default btn-lg def-btn" ng-click="basket.pm.updateCart(basket.open_ordered_products);" type="button" id="btn-admin" aria-label="{{ 'Update basket' | translate }}" style="width:200px; margin:auto;">
                 <span class="glyphicon glyphicon-shopping-cart" id="glyph-admin" aria-hidden="true"></span>
-                    Aggiungi al paniere
+                    {{ 'Update basket' | translate }}
+                </button>
+                <button class="btn btn-default btn-lg def-btn" ng-show="{{!gm.gas.config.gasmember_auto_confirm_order}}"
+                        ng-click="basket.confirm()" type="button" id="btn-update" aria-label="{{ 'Confirm basket' | translate }}" style="width:200px; margin:auto;">
+                  <span class="glyphicon glyphicon-shopping-cart" id="glyph-update" aria-hidden="true"></span>
+                    {{ 'Confirm basket' | translate }}
                 </button>
             </td>
-            <td style="white-space: nowrap; width:20%"> Totale previsto: </td>
+            <td style="white-space: nowrap; width:20%">Totale previsto:</td>
             <td class="tableprice"> <b>€ {{ basket.pm.getTotal(basket.open_ordered_products) }}</b> </td>
         </tr>
     </table>
@@ -112,6 +121,7 @@ $("#checkAll").click(function(){
     <table class="table gas">
           <thead>
             <tr>
+
               <th scope="col" ng-click="basket.tbd_sorting='order_shortname'; basket.tbd_reverseSort = !basket.tbd_reverseSort">Ordine
                   <span ng-show="basket.tbd_sorting == 'order_shortname'" class="listorder">
                     <span ng-show="!basket.tbd_reverseSort"><i class="fa fa-sort-desc"></i></span>

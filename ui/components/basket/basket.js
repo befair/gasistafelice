@@ -8,7 +8,6 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
     }
 
     $rootScope.active_section = "basket";
-
     this.pm = productManager;
     this.gm = $rootScope.gm;
     this.dataLoaded = true;
@@ -22,6 +21,19 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
     this.closed_ordered_products = [];
     var THAT = this;
 
+    // export the basket scope for debugging
+    $rootScope.basket_scope = this;
+
+    this.confirm = function() {
+        $http.post('/gasistafelice/rest/gasmember/'+$rootScope.gm_id+'/basket/confirm')
+            .success(function (data) {
+                angular.forEach(THAT.open_ordered_products, function(item) {
+                    console.debug(item.is_confirmed);
+                    item.is_confirmed = true;
+                    console.debug(item.is_confirmed);
+                });
+            });
+    };
 
     this.get_ordered_products_from_basket = function(basket) {
         var products = [];
@@ -44,6 +56,7 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
                 step : step_unit,
                 min_amount : min_amount,
                 gsop_id : gsop.id,
+                is_confirmed: gmo.is_confirmed,
                 enabled: false //flag to __remove__ a product from basket
             });
         });

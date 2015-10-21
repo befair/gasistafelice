@@ -119,9 +119,9 @@ describe('GF ng-app', function() {
       // get all the column from the first order
       var columns = item.$$('td');
 
-      // expects to have 8 columns (counting the hidden ones)
+      // expects to have 9 columns (counting the hidden ones)
       expect(columns.count())
-        .toBe(8);
+        .toBe(9);
 
       // check the fields
       expect(columns.get(0)
