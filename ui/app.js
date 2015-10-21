@@ -320,6 +320,7 @@ var app = angular.module('ngGF', [
                     alert("C'è stato qualche problema, riprova");
                 });
         };
+
     })
     .directive('validPrice',function() {
         return {

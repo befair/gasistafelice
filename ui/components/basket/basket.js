@@ -25,8 +25,15 @@ app.controller("BasketController", function ($http, $rootScope, parsingNumbers, 
     $rootScope.basket_scope = this;
 
     this.confirm = function() {
-      console.debug('basket.confirm() not implemented yet');
-    }
+        $http.post('/gasistafelice/rest/gasmember/'+$rootScope.gm_id+'/basket/confirm')
+            .success(function (data) {
+                angular.forEach(THAT.open_ordered_products, function(item) {
+                    console.debug(item.is_confirmed);
+                    item.is_confirmed = true;
+                    console.debug(item.is_confirmed);
+                });
+            });
+    };
 
     this.get_ordered_products_from_basket = function(basket) {
         var products = [];
