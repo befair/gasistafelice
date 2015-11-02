@@ -93,7 +93,8 @@ def test_entrypoint():
 
     if __name__ == "__main__":
         try:
-            base_url = sys.argv[1]
+            # two slashes are better then zero
+            base_url = sys.argv[1] + "/"
         except IndexError:
             pass
 
