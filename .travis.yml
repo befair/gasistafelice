@@ -23,6 +23,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 install:
+  - pip install pytest
   # replace the docker-compose.yml with the specific for the CI
   - mv compose/ci.yml docker-compose.yml
   # set containers as privileged to bypass Travis environment limitations
@@ -40,3 +41,4 @@ script:
 
   # start tests
   - docker-compose run e2e
+  - py.test test/integration/http
