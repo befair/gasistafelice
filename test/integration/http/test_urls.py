@@ -1,36 +1,46 @@
 #!/usr/bin/env python2
 
 import Cookie
-import urllib2
-import sys
-from selenium import webdriver
-from gf.settings import RESOURCE_PAGE_BLOCKS
+import cookielib
 import collections
+import sys
+import urllib
+import urllib2
+from os.path import realpath
 
 LEGACY_REST_PREFIX = "gasistafelice/rest/"
+verbose = False
 
-def get_default_check_rel_paths():
-    rel_paths = []
-    for resource, tabs in RESOURCE_PAGE_BLOCKS.items():
-        rel_paths.append("{}/1/".format(resource))
-        for tab in tabs:
-            rel_paths += [
-                "{}/1/{}".format(resource, block_name) for block_name in tab['blocks']]
-    return rel_paths
 
-def init_gf_connection(base_url):
-    browser = webdriver.PhantomJS()
-    # Login
-    browser.get(base_url + '/gasistafelice/accounts/login/?next=/gasistafelice/rest/')
-    el = browser.find_element_by_id("id_username")
-    el.send_keys("01gas1")
-    el = browser.find_element_by_id("id_password")
-    el.send_keys("des")
-    el = browser.find_element_by_css_selector("input[type=submit]")
-    el.click()
-    return browser
+def get_cookie(base_url):
+    """ Init the session with the backend and return the session cookie """
 
-def check_url(browser, url):
+    auth_url = base_url + \
+        "gasistafelice/accounts/login/?next=/gasistafelice/rest"
+    req = urllib2.Request(auth_url)
+    cj = cookielib.CookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    opener.open(req)
+
+    for cookie in cj:
+        if cookie.name == "csrftoken":
+            csrftoken = cookie.value
+        elif cookie.name == "sessionid":
+            sessionid = cookie.value
+
+    data = urllib.urlencode({"username": "01gas1",
+                             "password": "des",
+                             "csrfmiddlewaretoken": csrftoken})
+    c = Cookie.SimpleCookie()
+    c['sessionid'] = sessionid
+    c['csrftoken'] = csrftoken
+    cookie_string = c.output(header="", sep=";")
+
+    urllib2.Request(auth_url, data=data, headers={"Cookie": cookie_string})
+    return c
+
+
+def check_url(cookie, url):
     """
     Check that a url returns HTTP status code 200
     """
@@ -41,62 +51,61 @@ def check_url(browser, url):
     # it in the cookie header
     user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
 
-    cookie = Cookie.SimpleCookie()
-    cookie["sessionid"] = browser.get_cookie('sessionid')['value']
     cookie_string = cookie.output(header="", sep=";")
 
-    headers = {
-        'User-Agent' : user_agent,
-        'Cookie' : cookie_string,
-    }
+    headers = {'User-Agent': user_agent, 'Cookie': cookie_string, }
 
     req = urllib2.Request(url, headers=headers)
     resp = urllib2.urlopen(req)
     return resp
 
-def iterpaths(rel_paths):
-    """
-    Combine urls with relative paths in a single list
-    """
-    for rel_path in rel_paths:
-        yield LEGACY_REST_PREFIX + rel_path
 
-def main(base_url, rel_paths):
+def main(base_url):
     """
     Do the job and return a dictionary with elements:
     * 'OK' => a list of dicts with 'code' and 'url' of success;
     * 'ERROR' => a list of dicts with 'code' and 'url' of failures;
+    The urls are readed from the "urls.txt" failures
     """
 
-    browser = init_gf_connection(base_url)
-    rv = collections.OrderedDict([('OK',[]),('ERROR',[])])
+    cookie = get_cookie(base_url)
+    rv = collections.OrderedDict([('OK', []), ('ERROR', [])])
 
-    for path in iterpaths(rel_paths):
-        url = base_url + '/' + path
-        try:
-            response = check_url(browser, url)
-        except urllib2.HTTPError, e:
-            rv['ERROR'].append({'code': e.code, 'url': url})
-        else:
-            rv['OK'].append({'code': response.getcode(), 'url': url})
+    # get the script directory, that is the same of "urls.txt"
+    file_dir = '/'.join(realpath(__file__).split('/')[:-1])
+    with open(file_dir + "/urls.txt", "r") as urls_file:
+        for line in urls_file.readlines():
+            # strip the '/n'
+            url = base_url + line[:-1]
+            try:
+                response = check_url(cookie, url)
+            except urllib2.HTTPError, e:
+                rv['ERROR'].append({'code': e.code, 'url': url})
+            else:
+                rv['OK'].append({'code': response.getcode(), 'url': url})
 
     return rv
 
-if __name__ == "__main__":
 
-    try:
-        base_url = sys.argv[1]
-    except IndexError:
-        base_url = "http://localhost:8080/"
+def test_entrypoint():
+    """Entrypoint for pytest runner"""
+    base_url = "http://localhost:8080/"
 
-    try:
-        rel_paths = sys.argv[2].split(",")
-    except IndexError:
-        rel_paths = get_default_check_rel_paths()
+    if __name__ == "__main__":
+        try:
+            base_url = sys.argv[1]
+        except IndexError:
+            pass
 
-    rv = main(base_url, rel_paths)
+    rv = main(base_url)
     for kind, resps in rv.items():
         for r in resps:
-            print("{}[{}] {}".format(kind, r['code'], r['url']))
+            formatted_out = "{}[{}] {}".format(kind, r['code'], r['url'])
+            if verbose:
+                print(formatted_out)
+            assert r['code'] == 200, formatted_out
 
-    sys.exit(0) if not rv['ERROR'] else sys.exit(100)
+
+if __name__ == "__main__":
+    verbose = True
+    test_entrypoint()
