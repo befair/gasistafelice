@@ -83,18 +83,19 @@ def on_ppr_save_set_default_role(sender, **kwargs):
 def on_ppr_delete_reset_default_role(sender, **kwargs):
 
     deleted_ppr = kwargs['instance']
-    p = deleted_ppr.principal #Principal can be a User or a Group
 
-    # Reset default role for user if it is not set
-
-    if isinstance(p, Group):
-
-        for u in p.user_set.all():
-            set_default_role_if_deleted(u, deleted_ppr)
-
+    try:
+        p = deleted_ppr.principal # Principal can be a User or a Group
+    except User.DoesNotExist:
+        pass # Principal can be deleted (see #215)
     else:
-        set_default_role_if_deleted(p, deleted_ppr)
 
+        # Reset default role for user
+        if isinstance(p, Group):
+            for u in p.user_set.all():
+                set_default_role_if_deleted(u, deleted_ppr)
+        else:
+            set_default_role_if_deleted(p, deleted_ppr)
 
 post_save.connect(on_ppr_save_set_default_role, sender=PrincipalParamRoleRelation)
 post_delete.connect(on_ppr_delete_reset_default_role, sender=PrincipalParamRoleRelation)
