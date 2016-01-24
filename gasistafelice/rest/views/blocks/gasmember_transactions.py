@@ -3,22 +3,23 @@ from rest.views.blocks import transactions
 
 from flexi_auth.models import ObjectWithContext
 
+from lib.shortcuts import render_to_xml_response
 from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
 
 class Block(transactions.Block):
 
     BLOCK_NAME = "gasmember_transactions"
-    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"] 
+    BLOCK_VALID_RESOURCE_TYPES = ["gasmember"]
 
     def _check_permission(self, request):
 
         return request.user.has_perm(
-            VIEW_CONFIDENTIAL, 
+            VIEW_CONFIDENTIAL,
             obj=ObjectWithContext(request.resource)
-        ) 
-        #WAS: checked in superclass 
+        )
+        #WAS: checked in superclass
         #WAS:       or request.user.has_perm(
-        #WAS:            CASH, 
+        #WAS:            CASH,
         #WAS:            obj=ObjectWithContext(request.resource.gas)
         #WAS:        )
 
@@ -27,7 +28,7 @@ class Block(transactions.Block):
         if not self._check_permission(request):
 
             rv = render_to_xml_response(
-                "blocks/table_html_message.xml", 
+                "blocks/table_html_message.xml",
                 { 'msg' : CONFIDENTIAL_VERBOSE_HTML }
             )
 
