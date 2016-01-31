@@ -1270,7 +1270,7 @@ class GASMember(models.Model, PermissionResource):
         return user in allowed_users
 
     def can_view_confidential(self, user, context):
-        return user == self.person.user
+        return user in [self.person.user] + self.gas.cash_referrers
 
     #--------------------------#
 
