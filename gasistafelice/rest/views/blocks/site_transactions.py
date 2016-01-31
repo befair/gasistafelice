@@ -3,7 +3,7 @@ from rest.views.blocks import transactions
 
 from flexi_auth.models import ObjectWithContext
 
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
+from gasistafelice.consts import CONFIDENTIAL_VERBOSE_HTML, CASH
 
 class Block(transactions.Block):
 
