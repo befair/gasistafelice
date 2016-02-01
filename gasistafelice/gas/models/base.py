@@ -18,7 +18,7 @@ from flexi_auth.utils import register_parametric_role
 from flexi_auth.models import ParamRole, Param, PrincipalParamRoleRelation
 from flexi_auth.exceptions import WrongPermissionCheck
 
-from simple_accounting.models import (economic_subject, Account, 
+from simple_accounting.models import (economic_subject, Account,
     AccountingDescriptor, LedgerEntry, account_type,
     AccountSystem
 )
@@ -74,7 +74,7 @@ class GAS(models.Model, PermissionResource):
     membership_fee = CurrencyField(default=Decimal("0"), help_text=_("Membership fee for partecipating in this GAS"), blank=True,verbose_name=_('membership fee'))
 
     supplier_set = models.ManyToManyField(Supplier, through='GASSupplierSolidalPact', null=True, blank=True, help_text=_("Suppliers bound to the GAS through a solidal pact"),verbose_name=_('Suppliers'))
-    
+
     birthday = models.DateField(null=True, blank=True, help_text=_("When this GAS is born"), verbose_name=_('birthday'))
     vat = models.CharField(max_length=11, blank=True, help_text=_("VAT number"),verbose_name=_('VAT'))
     fcc = models.CharField(max_length=16, blank=True, help_text=_("Fiscal code card"),verbose_name=_('Fiscal code card'))
@@ -104,9 +104,9 @@ class GAS(models.Model, PermissionResource):
 
 
     display_fields = (
-        website, 
+        website,
         models.CharField(max_length=32, name="city", verbose_name=_("City")),
-        headquarter, birthday, description, 
+        headquarter, birthday, description,
         membership_fee, vat, fcc,
         association_act, intent_act,
         display.ResourceList(name="info_people", verbose_name=_("info people")),
@@ -150,8 +150,8 @@ class GAS(models.Model, PermissionResource):
         return super(GAS, self).clean()
 
     #-- Authorization API --#
-    
-    # Table-level CREATE permission    
+
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new GAS in a DES ?
@@ -160,17 +160,17 @@ class GAS(models.Model, PermissionResource):
         try:
             des = context['site']
         except KeyError:
-            raise WrongPermissionCheck('CREATE', cls, context)   
+            raise WrongPermissionCheck('CREATE', cls, context)
         return user in allowed_users
-    
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of an existing GAS ?
         # * GAS tech referrers
         # * administrators of the DES that GAS belongs to
-        allowed_users =  self.tech_referrers 
-        return user in allowed_users  
-    
+        allowed_users =  self.tech_referrers
+        return user in allowed_users
+
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing GAS from a DES ?
@@ -183,7 +183,7 @@ class GAS(models.Model, PermissionResource):
         #NOTE LF: this is due to role/permission pyramid: see commit on 26th of april
         return user in self.cash_referrers or \
             user in self.tech_referrers
-        
+
 
     @property
     def roles(self):
@@ -195,16 +195,16 @@ class GAS(models.Model, PermissionResource):
         return roles
 
     #--------------------------#
-    
+
     #-- Properties --#
-    
+
     @property
     def uid(self):
         """
         A unique ID (an ASCII string) for ``GAS`` model instances.
         """
         return self.urn.replace('/','-')
-    
+
     @property
     def icon(self):
         return self.logo or super(GAS, self).icon
@@ -237,7 +237,7 @@ class GAS(models.Model, PermissionResource):
         # retrieve 'tech referrer' parametric role for this GAS
         pr = ParamRole.get_role(GAS_REFERRER_TECH, gas=self)
         # retrieve all Users having this role
-        return pr.get_users()       
+        return pr.get_users()
 
     @property
     def cash_referrers(self):
@@ -247,8 +247,8 @@ class GAS(models.Model, PermissionResource):
         # retrieve 'cash referrer' parametric role for this GAS
         pr = ParamRole.get_role(GAS_REFERRER_CASH, gas=self)
         # retrieve all Users having this role
-        return pr.get_users()  
-    
+        return pr.get_users()
+
     @property
     def supplier_referrers(self):
         """
@@ -267,18 +267,18 @@ class GAS(models.Model, PermissionResource):
     @property
     def tech_referrers_people(self):
         return Person.objects.filter(user__in=self.tech_referrers)
-        
+
     @property
     def cash_referrers_people(self):
         return Person.objects.filter(user__in=self.cash_referrers)
-        
+
     @property
     def supplier_referrers_people(self):
         return Person.objects.filter(user__in=self.supplier_referrers)
-        
+
     @property
     def city(self):
-        return self.headquarter.city 
+        return self.headquarter.city
 
     @property
     def economic_state(self):
@@ -316,7 +316,7 @@ class GAS(models.Model, PermissionResource):
                     self.id_in_des = self.id_in_des[:2] + chr(ord(self.id_in_des[2]) + 1)
                 except: #DoesNotExist or MultipleObjectsReturned
                     break
-                    
+
         self.id_in_des = self.id_in_des.upper()
 
         created = False
@@ -447,10 +447,10 @@ class GAS(models.Model, PermissionResource):
     @property
     def deliveries(self):
         from gasistafelice.gas.models.order import Delivery
-        # The GAS deliveries appointments take from orders. Do distinct operation. 
+        # The GAS deliveries appointments take from orders. Do distinct operation.
         rv = Delivery.objects.none()
         for obj in self.orders:
-            if obj.delivery: 
+            if obj.delivery:
                 rv |= obj.delivery
         return rv
 
@@ -464,7 +464,7 @@ class GAS(models.Model, PermissionResource):
         # The GAS withdrawal appointments. Do distinct operation.
         rv = Withdrawal.objects.none()
         for obj in self.orders:
-            if obj.withdrawal: 
+            if obj.withdrawal:
                 rv |= obj.withdrawal
         return rv
 
@@ -629,10 +629,10 @@ class GASConfig(models.Model):
     # Link to parent class
     gas = models.OneToOneField(GAS, related_name="config")
 
-    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False, 
+    default_workflow_gasmember_order = models.ForeignKey(Workflow, editable=False,
         related_name="gmow_gasconfig_set", blank=True, default=get_gasmember_order_default
     )
-    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False, 
+    default_workflow_gassupplier_order = models.ForeignKey(Workflow, editable=False,
         related_name="gsopw_gasconfig_set", blank=True, default=get_supplier_order_default
     )
 
@@ -640,26 +640,26 @@ class GASConfig(models.Model):
         help_text=_("GAS can change supplier products price (i.e. to hold some funds for the GAS itself)")
     )
 
-#    show_order_by_supplier = models.BooleanField(default=True, 
+#    show_order_by_supplier = models.BooleanField(default=True,
 #        help_text=_("GAS views open orders by supplier. If disabled, views open order by delivery appointment")
 #    )
 
-    order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False, 
+    order_show_only_next_delivery = models.BooleanField(verbose_name=_('Show only next delivery'), default=False,
         help_text=_("GASMember can choose to filter order block among one or more orders that share the next withdrawal appointment"))
     order_show_only_one_at_a_time = models.BooleanField(
-        verbose_name=_('Select only one order at a time'), default=True, 
+        verbose_name=_('Select only one order at a time'), default=True,
         help_text=_("GASMember can select only one open order at a time in order block")
     )
 
     #TODO: see ticket #65
     default_close_day = models.CharField(
-        max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        max_length=16, blank=True, choices=const.DAY_CHOICES,
         help_text=_("default closing order day of the week"),
         verbose_name=_('default close day')
     )
     #TODO: see ticket #65
     default_delivery_day = models.CharField(
-        max_length=16, blank=True, choices=const.DAY_CHOICES, 
+        max_length=16, blank=True, choices=const.DAY_CHOICES,
         help_text=_("default delivery day of the week"),
         verbose_name=_('default delivery day')
     )
@@ -669,59 +669,59 @@ class GASConfig(models.Model):
     default_close_time = models.TimeField(verbose_name=_('Default close time'), blank=True, null=True,
         help_text=_("default order closing hour and minutes")
     )
-  
+
     default_delivery_time = models.TimeField(verbose_name=_('Default delivery day time'), blank=True, null=True,
         help_text=_("default delivery closing hour and minutes")
     )
 
-    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'), 
+    use_withdrawal_place = models.BooleanField(verbose_name=_('Use concept of withdrawal place'),
         default=False,
         help_text=_("If False, GAS never use concept of withdrawal place that is the default")
     )
     can_change_withdrawal_place_on_each_order = models.BooleanField(
-        verbose_name=_('can change withdrawal place on each order'), default=False, 
+        verbose_name=_('can change withdrawal place on each order'), default=False,
         help_text=_("If False, GAS uses only one withdrawal place that is the default or if not set it is the GAS headquarter")
     )
 
     can_change_delivery_place_on_each_order = models.BooleanField(
-        verbose_name=_('can change delivery place on each order'), default=False, 
+        verbose_name=_('can change delivery place on each order'), default=False,
         help_text=_("If False, GAS uses only one delivery place that is the default or if not set it is the GAS headquarter")
     )
 
     # Do not set default to both places because we want to have the ability
     # to follow headquarter value if it changes.
     # Provide delivery place and withdrawal place properties to get the right value
-    default_withdrawal_place = models.ForeignKey(Place, 
-        verbose_name=_('default withdrawal place'), 
-        blank=True, null=True, related_name="gas_default_withdrawal_set", 
+    default_withdrawal_place = models.ForeignKey(Place,
+        verbose_name=_('default withdrawal place'),
+        blank=True, null=True, related_name="gas_default_withdrawal_set",
         help_text=_("to specify if different from headquarter")
     )
-    default_delivery_place = models.ForeignKey(Place, 
-        verbose_name=_('default delivery place'), blank=True, null=True, 
-        related_name="gas_default_delivery_set", 
+    default_delivery_place = models.ForeignKey(Place,
+        verbose_name=_('default delivery place'), blank=True, null=True,
+        related_name="gas_default_delivery_set",
         help_text=_("to specify if different from withdrawal place")
     )
 
     #auto_populate_products always True until Gasista Felice 2.0
     auto_populate_products = models.BooleanField(
-        verbose_name=_('auto populate products'), default=True, 
+        verbose_name=_('auto populate products'), default=True,
         help_text=_("automatic selection of all products bound to a supplier when a relation with the GAS is activated")
     )
 
-    use_scheduler = models.BooleanField(default=False, 
-        verbose_name=_("use scheduler"), 
+    use_scheduler = models.BooleanField(default=False,
+        verbose_name=_("use scheduler"),
         help_text=_("Enable scheduler for automatic and planned operations")
     )
 
     gasmember_auto_confirm_order = models.BooleanField(
-        verbose_name=_('GAS members orders are auto confirmed'), 
-        default=True, 
+        verbose_name=_('GAS members orders are auto confirmed'),
+        default=True,
         help_text=_("if checked, gasmember's orders are automatically confirmed. If not, each gasmember must confirm by himself his own orders")
     )
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(verbose_name=_("is suspended"),
-        default=False, db_index=True, 
+        default=False, db_index=True,
         help_text=_("The GAS is not available (holidays, closed). The scheduler uses this flag to operate or not some automatisms")
     )
 
@@ -731,16 +731,16 @@ class GASConfig(models.Model):
 
     notice_days_before_order_close = models.PositiveIntegerField(
         verbose_name=_("Notice days before order close"),
-        null=True, default=1, 
+        null=True, default=1,
         help_text=_("How many days before do you want your GAS receive reminder on closing orders?"),
     )
-    
-    use_order_planning = models.BooleanField(default=False, 
+
+    use_order_planning = models.BooleanField(default=False,
         help_text=_("Show order planning section when creating a new order"),
         verbose_name=_("use order planning")
     )
 
-    send_email_on_order_close = models.BooleanField(default=False, 
+    send_email_on_order_close = models.BooleanField(default=False,
         help_text=_("Default value for pact option to let the system send an email to supplier and gas referrer supplier as soon as an order is closed"),
         verbose_name=_("default for pacts: send email on order close")
     )
@@ -768,28 +768,28 @@ class GASConfig(models.Model):
     GAS_SUPPLIERS = 'gas,suppliers'
     INTERGAS_SUPPLIERS = 'intergas,suppliers'
     DES_SUPPLIERS = 'des,suppliers'
-    
+
     PRIVACY_CHOICES = (
-        (NOBODY, _('Nobody')), 
-        (GAS, _('Only to GAS members')), 
-        (INTERGAS, _('To every possible intergas members')), 
-        (DES, _('To DES members')), 
-        (GAS_SUPPLIERS, _('GAS and suppliers')), 
-        (INTERGAS_SUPPLIERS, _('To every possible intergas members and suppliers')), 
-        (DES_SUPPLIERS, _('DES and suppliers')), 
+        (NOBODY, _('Nobody')),
+        (GAS, _('Only to GAS members')),
+        (INTERGAS, _('To every possible intergas members')),
+        (DES, _('To DES members')),
+        (GAS_SUPPLIERS, _('GAS and suppliers')),
+        (INTERGAS_SUPPLIERS, _('To every possible intergas members and suppliers')),
+        (DES_SUPPLIERS, _('DES and suppliers')),
     )
 
-    privacy_phone = models.CharField(max_length=24, 
+    privacy_phone = models.CharField(max_length=24,
         verbose_name = _("Show gas members phone number to"),
         choices = PRIVACY_CHOICES,
         default = GAS_SUPPLIERS,
     )
-    privacy_email = models.CharField(max_length=24, 
+    privacy_email = models.CharField(max_length=24,
         verbose_name=_("Show gas members email address to"),
         choices = PRIVACY_CHOICES,
         default = GAS_SUPPLIERS,
     )
-    privacy_cash = models.CharField(max_length=24, 
+    privacy_cash = models.CharField(max_length=24,
         verbose_name=_("Show gas members cash amount to"),
         choices = PRIVACY_CHOICES,
         default = GAS_SUPPLIERS,
@@ -797,12 +797,12 @@ class GASConfig(models.Model):
 
     digest_days_interval = models.PositiveIntegerField(
         verbose_name=_("How often a digest is sent"),
-        null=True, default=settings.DIGEST_INTERVAL_DAYS, 
+        null=True, default=settings.DIGEST_INTERVAL_DAYS,
         help_text=_("How often do you want to send a digest to this GAS referrers?"),
     )
 
     #notice_days_after_gmo_update = models.PositiveIntegerField(
-    #   null=True, default=1, help_text=_("After how many days do 
+    #   null=True, default=1, help_text=_("After how many days do
     #   you want a gasmember receive updates on his own orders?")
     #)
 
@@ -815,7 +815,7 @@ class GASConfig(models.Model):
         app_label = 'gas'
 
     def __unicode__(self):
-        return ug('Configuration for GAS "%s"') % self.gas 
+        return ug('Configuration for GAS "%s"') % self.gas
 
     @property
     def delivery_place(self):
@@ -864,24 +864,24 @@ class GASMember(models.Model, PermissionResource):
     """A bind of a Person into a GAS.
     Each GAS member specifies which Roles he is available for.
     This way, every time there is a need to assign one or more GAS Members to a given Role,
-    there is already a group of people to choose from. 
-    
+    there is already a group of people to choose from.
+
     """
     # Resource API
     person = models.ForeignKey(Person,verbose_name=_('person'))
     # Resource API
     gas = models.ForeignKey(GAS,verbose_name=_('gas'))
 
-    id_in_gas = models.CharField(verbose_name=_("card number"), 
-        max_length=10, blank=True, null=True, 
+    id_in_gas = models.CharField(verbose_name=_("card number"),
+        max_length=10, blank=True, null=True,
         help_text=_("GAS card number")
     )
-    available_for_roles = models.ManyToManyField(Role, null=True, 
+    available_for_roles = models.ManyToManyField(Role, null=True,
         blank=True, related_name="gas_member_available_set",
         verbose_name=_('available for roles')
     )
-    membership_fee_payed = models.DateField(auto_now=False, 
-        verbose_name=_("membership_fee_payed"), auto_now_add=False, 
+    membership_fee_payed = models.DateField(auto_now=False,
+        verbose_name=_("membership_fee_payed"), auto_now_add=False,
         null=True, blank=True, help_text=_("When was the last the annual quote payment")
     )
 
@@ -915,7 +915,7 @@ class GASMember(models.Model, PermissionResource):
         #display.Resource(name="person", verbose_name=_("Person")),
 
     #FUTURE TODO: display_fields should be DisplayField classes with properties is_confidential
-    confidential_fields = ('economic_state',) 
+    confidential_fields = ('economic_state',)
 
     class Meta:
         verbose_name = _('GAS member')
@@ -940,17 +940,17 @@ class GASMember(models.Model, PermissionResource):
         """
         Return a QuerySet containing all the parametric roles which have been assigned
         to the User associated with this GAS member.
-        
-        Only roles which make sense for the GAS member belongs to are returned 
+
+        Only roles which make sense for the GAS member belongs to are returned
         (excluding roles the User may have been assigned with respect to other GAS).
         """
-        # Roles MUST BE a property because roles are bound to a User 
+        # Roles MUST BE a property because roles are bound to a User
         # with `add_principal()` and not directly to a GAS member
         # costruct the result set by joining partial QuerySets
         roles = []
         # get all parametric roles assigned to the User associated with this GAS member;
         # note that "spurious" roles can be included, since a User can be a member of more
-        # than one GAS, while here we're interested only in roles bound to the GAS this 
+        # than one GAS, while here we're interested only in roles bound to the GAS this
         # GAS member belongs to
         qs = ParamRole.objects.filter(principal_param_role_set__user = self.person.user)
         # add  `GAS_REFERRER`, `GAS_REFERRER_CASH`, `GAS_REFERRER_TECH`, `GAS_REFERRER_SUPPLIER` and `GAS_MEMBER` roles
@@ -962,8 +962,8 @@ class GASMember(models.Model, PermissionResource):
         # add  `GAS_REFERRER_WITHDRAWAL` roles
         roles += [pr for pr in qs if self.gas in pr.withdrawal.gas_list]
         # HACK: convert a list of model instances to a QuerySet by filtering on instance's primary keys
-        qs = ParamRole.objects.filter(pk__in=[obj.pk for obj in roles]) 
-        return qs 
+        qs = ParamRole.objects.filter(pk__in=[obj.pk for obj in roles])
+        return qs
 
     def _set_roles(self, list):
         raise NotImplementedError
@@ -1090,7 +1090,7 @@ class GASMember(models.Model, PermissionResource):
                 remove_gmrole = True
             if old_gm.is_suspended and not self.is_suspended:
                 activate_gmrole = True
-            
+
         super(GASMember, self).save(*args, **kw)
 
         if activate_gmrole:
@@ -1124,7 +1124,7 @@ class GASMember(models.Model, PermissionResource):
 
         person_system = self.person.accounting.system
         gas_system = self.gas.accounting.system
-        
+
         ## Person-side
         # placeholder for payments made by this person to GASs (s)he belongs to
         try:
@@ -1136,7 +1136,7 @@ class GASMember(models.Model, PermissionResource):
 
         # base account for expenses related to this GAS membership
         person_system.get_or_create_account(
-            parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense, 
+            parent_path='/expenses/gas', name=self.gas.uid, kind=account_type.expense,
             is_placeholder=True
         )
         # recharges
@@ -1229,18 +1229,18 @@ class GASMember(models.Model, PermissionResource):
     def orderable_products(self):
         from gasistafelice.gas.models import GASSupplierOrderProduct
         return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
-    
+
     @property
     def issued_orders(self):
         """
-        The queryset of orders this member has issued against his/her GAS. 
+        The queryset of orders this member has issued against his/her GAS.
         """
         return self.gasmember_order_set.all()
-        
-    
+
+
     #-- Authorization API --#
-    
-    # Table-level CREATE permission    
+
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         # Who can add a new Person to a GAS ?
@@ -1253,24 +1253,24 @@ class GASMember(models.Model, PermissionResource):
             raise WrongPermissionCheck('CREATE', cls, context)
 
         return user in allowed_users
-    
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details of a GAS member ?
         # * the member itself
         # * tech referrers for that GAS
-        allowed_users = list(self.gas.tech_referrers) + [self.person.user] 
-        return user in allowed_users  
-    
+        allowed_users = list(self.gas.tech_referrers) + [self.person.user]
+        return user in allowed_users
+
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can remove a member from a GAS ?
         # * tech referrers for that GAS
-        allowed_users = self.gas.tech_referrers  
+        allowed_users = self.gas.tech_referrers
         return user in allowed_users
 
     def can_view_confidential(self, user, context):
-        return user in [self.person.user] + self.gas.cash_referrers
+        return user == self.person.user or user in self.gas.cash_referrers
 
     #--------------------------#
 
@@ -1313,7 +1313,7 @@ class GASMember(models.Model, PermissionResource):
             }
         return rv
 
-    
+
     #----------------------------------------------#
 
     def send_email(self, to, cc=[], more_info='', issued_by=None):
@@ -1356,7 +1356,7 @@ class GASMember(models.Model, PermissionResource):
             )
 
         email.send()
-        return 
+        return
 
     def get_valid_name(self):
         from django.template.defaultfilters import slugify
@@ -1382,7 +1382,7 @@ class GASMember(models.Model, PermissionResource):
             requested_by = User.objects.get(username=settings.INIT_OPTIONS['su_username'])
 
         querySet = self.basket | self.basket_to_be_delivered
-        querySet = querySet.order_by('ordered_product__order__pk') 
+        querySet = querySet.order_by('ordered_product__order__pk')
         context_dict = {
             'gasmember' : self,
             'records' : self._get_pdfrecords(querySet),
@@ -1445,7 +1445,7 @@ class GASMember(models.Model, PermissionResource):
         return records
 
     #-----------------------------------------------#
-    
+
 #register to revisions
 if not reversion.is_registered(GASMember):
     reversion.register(GASMember)
@@ -1464,7 +1464,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     enabled = models.BooleanField(default=True,verbose_name=_('enabled'))
 
     # how many Product units a GAS Member is able to order
-    minimum_amount = PrettyDecimalField(max_digits=5, decimal_places=2, 
+    minimum_amount = PrettyDecimalField(max_digits=5, decimal_places=2,
                         default=1, verbose_name=_('minimum order amount')
     )
     # increment step (in Product units) for amounts exceeding minimum;
@@ -1481,7 +1481,7 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     def __init__(self, *args, **kw):
         super(GASSupplierStock, self).__init__(*args, **kw)
-    
+
     @property
     def gasmembers(self):
         return self.gas.gasmembers
@@ -1489,7 +1489,7 @@ class GASSupplierStock(models.Model, PermissionResource):
     @property
     def gas(self):
         return self.pact.gas
-    
+
     @property
     def supplier(self):
         return self.stock.supplier
@@ -1522,7 +1522,7 @@ class GASSupplierStock(models.Model, PermissionResource):
             'price': "%.2f" % round(self.price,2),
         }
         return rv
-        
+
     @property
     def father_price(self):
         """Parent price is the price in respect to parent unit.
@@ -1533,8 +1533,8 @@ class GASSupplierStock(models.Model, PermissionResource):
         if self.stock.product.mu and self.stock.product.muppu:
 
             #find relative UnitsConversion
-            #TODO 1a) add boolean flag into UnitsConversion table to define father units 
-            #TODO or 1b) add boolean flag into UnitsConversion table to define father units 
+            #TODO 1a) add boolean flag into UnitsConversion table to define father units
+            #TODO or 1b) add boolean flag into UnitsConversion table to define father units
             if self.stock.product.mu.symbol == "DAM":
                 return self.set_father_price(self.price / 5, 'Lt')
             if self.stock.product.mu.symbol == "Lt" and self.stock.product.muppu != 1:
@@ -1552,7 +1552,7 @@ class GASSupplierStock(models.Model, PermissionResource):
             if self.stock.product.mu.symbol == "Kg" and self.stock.product.muppu != 1:
                 return self.set_father_price(self.price / self.stock.product.muppu, self.stock.product.mu.symbol)
         else:
-            #This case should not be possible but the PU list offer the possibility to do it 
+            #This case should not be possible but the PU list offer the possibility to do it
             if self.stock.product.pu.symbol.strip() == "Ml":
                 return self.set_father_price(self.price * 1000 / self.stock.product.muppu, 'Lt')
             if self.stock.product.pu.symbol.strip() == "Cl":
@@ -1611,7 +1611,7 @@ class GASSupplierStock(models.Model, PermissionResource):
                     if self.enabled:
                         order.add_product(self)
                     else:
-                        # Delete GASSupplierOrderProduct for GASSupplierOrder 
+                        # Delete GASSupplierOrderProduct for GASSupplierOrder
                         # in Open State or Closed state. Delete GASMemberOrder associated
                         order.remove_product(self)
         else:
@@ -1643,7 +1643,7 @@ class GASSupplierStock(models.Model, PermissionResource):
 
     #-- Authorization API --#
 
-    # Table-level CREATE permission    
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         # Who can create a new supplier stock for a GAS ?
@@ -1656,20 +1656,20 @@ class GASSupplierStock(models.Model, PermissionResource):
         except KeyError:
             raise WrongPermissionCheck('CREATE', cls, context)
         return user in allowed_users
-    
+
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details for an existing supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
-        # * GAS administrators 
+        # * GAS administrators
         allowed_users = self.gas.tech_referrers | self.pact.referrers
         return user in allowed_users
-    
+
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete an existing supplier stock for a GAS ?
         # * referrers for the pact the supplier stock is associated to
-        # * GAS administrators 
+        # * GAS administrators
         allowed_users = self.gas.tech_referrers | self.pact.referrers
         return user in allowed_users
 
@@ -1678,12 +1678,12 @@ class GASSupplierStock(models.Model, PermissionResource):
     # how many items of this gas supplier stock were ordered (globally by the GAS for this GASSupplierProduct)
     @property
     def tot_amount(self):
-        amount = 0 
+        amount = 0
 #        for gsop in self.orderable_products.values('tot_amount'):
 #            amount += gsop['tot_amount']
         for gsop in self.orderable_products:
             amount += gsop.tot_amount
-        return amount 
+        return amount
 
     @property
     def tot_gasmembers(self):
@@ -1707,7 +1707,7 @@ if not reversion.is_registered(GASSupplierStock):
 
 
 #-----------------------------------------------------------------------------------------------------
-    
+
 class GASSupplierSolidalPact(models.Model, PermissionResource):
     """Define a GAS <-> Supplier relationship agreement.
 
@@ -1759,48 +1759,48 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
 
     # how much (in percentage) base prices from the Supplier are modified for the GAS
     order_price_percent_update = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=3, verbose_name=_('order price percent update'))
-    
+
     # default_delivery_day should holds a "datetime string syntax" to be interpreted by software.
     # It must express "first day of the month", "first day of the first and third week of the month", ... : see ticket #65
-    default_delivery_day = models.CharField(max_length=16, 
+    default_delivery_day = models.CharField(max_length=16,
         choices=const.DAY_CHOICES, blank=True, help_text=_("delivery week day agreement"),
         verbose_name=_('default delivery day')
     )
-    default_delivery_time = models.TimeField(null= True, blank=True, 
+    default_delivery_time = models.TimeField(null= True, blank=True,
         help_text=_("delivery time agreement"), verbose_name=_('default delivery time')
     )
 
-    default_delivery_place = models.ForeignKey(Place, 
-        verbose_name=_('Default delivery place'), 
+    default_delivery_place = models.ForeignKey(Place,
+        verbose_name=_('Default delivery place'),
         related_name="pact_default_delivery_place_set", null=True, blank=True
     )
 
     # Field to reflect
     # http://www.jagom.org/trac/REESGas/wiki/BozzaAnalisiFunzionale/Gestione dei fornitori e dei listini
     # This MUST NOT be shown in form if GASConfig.auto_populate_products is True
-    auto_populate_products = models.BooleanField(default=True, 
+    auto_populate_products = models.BooleanField(default=True,
         help_text=_("automatic population of all products bound to a supplier in gas supplier stock"),
         verbose_name=_('auto populate products')
     )
 
-    orders_can_be_grouped = models.BooleanField(verbose_name=_('can be InterGAS'), 
-        default=False, 
+    orders_can_be_grouped = models.BooleanField(verbose_name=_('can be InterGAS'),
+        default=False,
         help_text=_("If true, this supplier can aggregate orders from several GAS")
     )
 
-    document = models.FileField(upload_to=base_utils.get_pact_path, 
-        null=True, blank=True, verbose_name=_("document"), 
+    document = models.FileField(upload_to=base_utils.get_pact_path,
+        null=True, blank=True, verbose_name=_("document"),
         help_text=_("Document signed by GAS and Supplier")
     )
 
-    send_email_on_order_close = models.BooleanField(default=False, 
+    send_email_on_order_close = models.BooleanField(default=False,
         help_text=_("Automatically send email to supplier and gas referrer supplier as soon as an order is closed"),
         verbose_name=_("send email on order close")
     )
 
     # Fields for suspension management:
     is_suspended = models.BooleanField(verbose_name=_("is suspended"),
-        default=False, db_index=True, 
+        default=False, db_index=True,
         help_text=_("A pact can be broken or removed by one of the partner. If it is not active no orders can be done and the pact will not appear anymore in the interface. When a pact is suspended you can specify when it could be resumed")
     )
     suspend_datetime = models.DateTimeField(default=None, null=True, blank=True) # When this pact was suspended
@@ -1841,13 +1841,13 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         # retrieve 'GAS supplier referrer' parametric role for this pact
         pr = ParamRole.get_role(GAS_REFERRER_SUPPLIER, pact=self)
         # retrieve all Users having this role
-        return pr.get_users()    
+        return pr.get_users()
 
     #FIXME: remove when this property is subsituted by referrers_people's property in all part of the application
     @property
     def supplier_referrers_people(self):
         return self.referrers_people
- 
+
     @property
     def referrers_people(self):
         prs = Person.objects.none()
@@ -1953,7 +1953,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def stock(self):
         raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one stock")
-        
+
     @property
     def gasstock(self):
         raise NoSenseException("A GASSupplierSolidalPact is ALWAYS connected to more than one gas stock")
@@ -1981,8 +1981,8 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         return self.gas.info_people | self.supplier.info_people
 
     #-- Authorization API --#
-    
-    # Table-level CREATE permission    
+
+    # Table-level CREATE permission
     @classmethod
     def can_create(cls, user, context):
         """Who can create a new pact?
@@ -2015,7 +2015,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         elif k == 'gas':
             # gas context
             gas = context[k]
-            allowed_users = gas.tech_referrers | gas.supplier_referrers 
+            allowed_users = gas.tech_referrers | gas.supplier_referrers
 
         elif k == 'supplier':
             # supplier context
@@ -2025,7 +2025,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
             des = supplier.des
             allowed_users = des.gas_tech_referrers | des.gas_supplier_referrers
 
-        elif k == 'site': 
+        elif k == 'site':
             # des context
             # all GAS tech referrers and referrers suppliers can create a pact in a DES.
             # Within the form and authorization check, GAS choices will be limited
@@ -2037,18 +2037,18 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     # Row-level EDIT permission
     def can_edit(self, user, context):
         # Who can edit details for a pact in a GAS ?
-        # * GAS administrators 
+        # * GAS administrators
         # * referrers for that pact
-        allowed_users = self.gas.tech_referrers | self.gas.supplier_referrers 
-        return user in allowed_users 
-    
+        allowed_users = self.gas.tech_referrers | self.gas.supplier_referrers
+        return user in allowed_users
+
     # Row-level DELETE permission
     def can_delete(self, user, context):
         # Who can delete a pact in a GAS ?
-        # * GAS administrators 
-        allowed_users = self.gas.tech_referrers 
-        return user in allowed_users 
-    
+        # * GAS administrators
+        allowed_users = self.gas.tech_referrers
+        return user in allowed_users
+
     @property
     def roles(self):
         "Pact involves also roles related to Suppliers"""
