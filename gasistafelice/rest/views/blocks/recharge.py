@@ -15,7 +15,7 @@ from django.template import Context
 from django.conf import settings
 
 from gasistafelice.consts import CASH, VIEW, EDIT_MULTIPLE
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML
+from gasistafelice.consts import CONFIDENTIAL_VERBOSE_HTML
 from flexi_auth.models import ObjectWithContext
 
 import logging

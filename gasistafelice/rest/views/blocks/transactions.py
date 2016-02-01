@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseServerError
 from flexi_auth.models import ObjectWithContext
 
 from gasistafelice.rest.views.blocks.base import BlockSSDataTables, ResourceBlockAction, CREATE_CSV
-from gasistafelice.consts import VIEW_CONFIDENTIAL, CONFIDENTIAL_VERBOSE_HTML, CASH
+from gasistafelice.consts import CONFIDENTIAL_VERBOSE_HTML, CASH
 from gasistafelice.base.templatetags.accounting_tags import human_readable_account_csv,human_readable_kind, signed_ledger_entry_amount
 
 from django.template.loader import render_to_string
