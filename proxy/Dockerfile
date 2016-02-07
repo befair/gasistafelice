@@ -1,5 +1,3 @@
-FROM kobe25/nginx:latest
-
-MAINTAINER Antonio Esposito "kobe@befair.it"
+FROM befair/nginx:latest
 
 COPY site.conf /etc/nginx/conf.d/site.conf

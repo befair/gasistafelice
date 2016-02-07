@@ -1,7 +1,5 @@
 FROM iojs:2.5
 
-MAINTAINER Antonio Esposito "kobe@befair.it"
-
 COPY deps/npm /code/ui/deps/npm
 RUN npm install -g $(cat /code/ui/deps/npm)
 
