@@ -2004,12 +2004,14 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def ordered_products(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order__in=self.orders)
+        #TODO FIXME AFTER 6: there should be no entry with ordered_amount = 0 in GASMemberOrder table
+        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
 
     @property
     def basket(self):
         from gasistafelice.gas.models import GASMemberOrder
-        return GASMemberOrder.objects.filter(order__in=self.orders.open())
+        #TODO FIXME AFTER 6: there should be no entry with ordered_amount = 0 in GASMemberOrder table
+        return GASMemberOrder.objects.filter(ordered_product__order__in=self.orders.open(), ordered_amount__gt=0)
 
     #-- Authorization API --#
 
