@@ -33,6 +33,7 @@ from gasistafelice.base import const
 from gasistafelice.base import utils as base_utils
 
 from gasistafelice.gas.accounting import GasAccountingProxy
+from gasistafelice.gas import signals
 
 from gasistafelice.consts import GAS_REFERRER_SUPPLIER, GAS_REFERRER_TECH, GAS_REFERRER_CASH, GAS_MEMBER, GAS_REFERRER
 
@@ -1918,7 +1919,22 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         if self.gas.config.auto_populate_products:
             self.auto_populate_products = True
 
+        old = None
+        if self.pk:
+            old = GASSupplierSolidalPact.objects.get(pk=self.pk)
+
         super(GASSupplierSolidalPact, self).save(*args, **kw)
+
+        # CASCADING set until GASMemberOrder
+        if old and old.order_price_percent_update != self.order_price_percent_update:
+            log.debug('Percent update has changed for pact %s' % self)
+            for gsop in self.orderable_products:
+                gsop.order_price = self.price
+                gsop.save()
+
+            for gmo in self.basket:
+                if gmo.has_changed:
+                    signals.gmo_price_update.send(sender=gmo)
 
     #-- Resource API --#
 
@@ -1979,6 +1995,21 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
     @property
     def info_people(self):
         return self.gas.info_people | self.supplier.info_people
+
+    @property
+    def orderable_products(self):
+        from gasistafelice.gas.models import GASSupplierOrderProduct
+        return GASSupplierOrderProduct.objects.filter(order__in=self.orders.open())
+
+    @property
+    def ordered_products(self):
+        from gasistafelice.gas.models import GASMemberOrder
+        return GASMemberOrder.objects.filter(order__in=self.orders)
+
+    @property
+    def basket(self):
+        from gasistafelice.gas.models import GASMemberOrder
+        return GASMemberOrder.objects.filter(order__in=self.orders.open())
 
     #-- Authorization API --#
 
