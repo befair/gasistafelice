@@ -1929,7 +1929,7 @@ class GASSupplierSolidalPact(models.Model, PermissionResource):
         if old and old.order_price_percent_update != self.order_price_percent_update:
             log.debug('Percent update has changed for pact %s' % self)
             for gsop in self.orderable_products:
-                gsop.order_price = self.price
+                gsop.order_price = gsop.gasstock.stock.price*(1-self.order_price_percent_update)
                 gsop.save()
 
             for gmo in self.basket:
