@@ -1,5 +1,4 @@
 *.pyc
-settings.py
 db/
 doc*/build/
 .metatada/
@@ -18,5 +17,4 @@ gasistafelice/fixtures/supplier/import.json
 *.log
 tmp/
 *.prof
-
-
+.env

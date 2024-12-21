@@ -411,7 +411,9 @@ LONG_DATETIME_FMT = "%A %d %B %Y %H:%M"
 SHORT_DATE_FMT = "%Y-%m-%d"
 
 
-locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+# NON FUNZIONA NON CAPISCO COME MAI
+#locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+
 #DOMTHU:
 #locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
 #locale.setlocale(locale.LC_ALL, 'it_IT.1252')

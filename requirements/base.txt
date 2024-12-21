@@ -13,10 +13,13 @@ django-simple-captcha==0.4.2
 django-workflows==1.0.2
 flup==1.0.2
 ipython==3.2.1
-pisa==3.0.33
+# included in xhtml2pdf ?
+# pisa==3.0.33
 psycopg2==2.5.2
 reportlab==2.7
 simplejson==2.0.9
 six==1.6.1
-xhtml2pdf=0.2.4
--e git+https://github.com/befair/django-reversion.git@release-1.5.7-middleware-with-user#egg=django-reversion
+xhtml2pdf==0.2.4
+django-reversion==1.5.7
+#-e git+https://github.com/befair/django-reversion.git@release-1.5.7-middleware-with-user#egg=django-reversion
+gunicorn

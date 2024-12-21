@@ -1,0 +1,22 @@
+volumes:
+  gasistafelice-db: {}
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    volumes:
+      - gasistafelice-db:/var/lib/postgresql/data
+    env_file: .env
+    restart: unless-stopped
+  backend:
+    build:
+      context: .
+    command: gunicorn -c gunicorn.conf.py gasistafelice.wsgi:application
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
