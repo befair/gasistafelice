@@ -17,7 +17,8 @@ RUN dpkg-reconfigure locales
 RUN pip install --upgrade pip
 WORKDIR /app
 COPY requirements/ /app/requirements/
-RUN pip install --no-cache-dir -r requirements/prod.txt
-COPY . /app/
-WORKDIR /app/
+# The following two lines are needed to install the git src modules in /src instead of /app/src
+WORKDIR /
+RUN pip install --no-cache-dir -r /app/requirements/prod.txt
+WORKDIR /app
 CMD ["/bin/bash"]
