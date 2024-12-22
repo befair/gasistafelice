@@ -73,5 +73,5 @@ LOGGING = {
     },
 }
 
-#locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
+locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 

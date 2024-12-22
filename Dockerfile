@@ -3,17 +3,18 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 # old stretch is old
 RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
-ENV LANG=it_IT.UTF-8
-ENV LANGUAGE=it_IT.UTF-8
-ENV LC_ALL=it_IT.UTF-8
 RUN apt-get update && apt-get --no-install-recommends install -y \
     git \
     libpq-dev \
     build-essential \
-    locales \
-    && rm -rf /var/lib/apt/lists/*
-RUN locale-gen
-RUN dpkg-reconfigure locales
+    locales
+RUN echo "it_IT.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    update-locale LANG=it_IT.UTF-8
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+ENV LANG=it_IT.UTF-8 \
+    LANGUAGE=it_IT.UTF-8 \
+    LC_ALL=it_IT.UTF-8
 RUN pip install --upgrade pip
 WORKDIR /app
 COPY requirements/ /app/requirements/
