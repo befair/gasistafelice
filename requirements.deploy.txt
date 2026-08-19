@@ -12,20 +12,22 @@ alabaster==0.7.6
 argparse==1.2.1
 django-ajax-selects==1.2.4
 django-extensions==1.5.5
--e git+https://github.com/feroda/django-flexi-auth.git@35788a486fdd57440e173c0d466318b61381229b#egg=django_flexi_auth-origin/master
+-e git+https://github.com/feroda/django-flexi-auth.git@35788a486fdd57440e173c0d466318b61381229b#egg=django_flexi_auth-origin
 -e git+https://github.com/feroda/django-notification.git@9dae221c2942bca8b2cdd114dd682dfbd84d3e81#egg=django_notification-master
 django-permissions==1.1
 django-registration==0.7
 django-reversion==1.5.7
 -e git+https://github.com/feroda/django-simple-accounting.git@fc628622cea5f8877f0f437afb400f1a79ca82d8#egg=django_simple_accounting-master
-django-simple-captcha==0.4.5
+django-simple-captcha==0.3.8
 django-workflows==1.1.1
 docutils==0.12
 fpconst==0.7.2
 html5lib==0.99999
 ipython==3.2.0
-pisa==3.0.33
-psycopg2==2.5.2
+#pisa==3.0.33
+xhtml2pdf==0.2.4
+#psycopg2==2.5.2
+psycopg2==2.8.6
 pysqlite==2.6.3
 pytz==2015.4
 reportlab==2.7
