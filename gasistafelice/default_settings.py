@@ -139,6 +139,7 @@ ROOT_URLCONF = 'gasistafelice.urls'
 TEMPLATE_DIRS = (
     PROJECT_ROOT + "/rest/templates",
     PROJECT_ROOT + "/templates",
+    "/usr/local/django/contrib/admin/templates"
 )
 
 INSTALLED_APPS = [
@@ -411,9 +412,7 @@ LONG_DATETIME_FMT = "%A %d %B %Y %H:%M"
 SHORT_DATE_FMT = "%Y-%m-%d"
 
 
-# NON FUNZIONA NON CAPISCO COME MAI
-#locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
-
+locale.setlocale(locale.LC_ALL, 'it_IT.UTF8')
 #DOMTHU:
 #locale.setlocale(locale.LC_ALL, 'it_IT.ISO-8859-1')
 #locale.setlocale(locale.LC_ALL, 'it_IT.1252')
@@ -460,7 +459,7 @@ from simple_accounting_settings import *
 
 #------ NOTIFICATION settings
 
-DEFAULT_FROM_EMAIL = "gasistafelice@desmacerata.it"
+DEFAULT_FROM_EMAIL = "nonrispondere@desmacerata.it"
 NOTIFICATION_BACKENDS = (
     ("email", "notification.backends.email.EmailBackend"),
 )

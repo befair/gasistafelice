@@ -971,15 +971,22 @@ WHERE order_id = %s \
         if not isinstance(to, list):
             to = [to]
 
-        try:
+        sender = settings.DEFAULT_FROM_EMAIL
+        headers = {}
+        if len(self.gas.preferred_email_contacts):
             log.debug('self.gas.preferred_email_contacts %s ' % self.gas.preferred_email_contacts)
-            sender = self.gas.preferred_email_contacts[0].value
-        except IndexError as e:
-            msg = ugettext("GAS cannot send email, because no preferred email for GAS specified")
-            sender = settings.DEFAULT_FROM_EMAIL
-            more_info += '%s --> %s' % (msg, sender)
+            reply_to = self.gas.preferred_email_contacts[0].value
+            if reply_to != sender:
+                headers['Reply-To'] = reply_to
 
-        log.debug('SENDING EMAIL: self=%s to=%s, cc=%s, sender=%s' % (self, to, cc, sender))
+        # KO LF 2025-02-10 try:
+        # KO LF 2025-02-10     log.debug('self.gas.preferred_email_contacts %s ' % self.gas.preferred_email_contacts)
+        # KO LF 2025-02-10     sender = self.gas.preferred_email_contacts[0].value
+        # KO LF 2025-02-10 except IndexError as e:
+        # KO LF 2025-02-10     msg = ugettext("GAS cannot send email, because no preferred email for GAS specified")
+        # KO LF 2025-02-10     more_info += '%s --> %s' % (msg, sender)
+
+        log.debug('SENDING EMAIL: self=%s to=%s, cc=%s, sender=%s headers=%s' % (self, to, cc, sender, headers))
 
         subject = u"[ORDINE] %(gas_id_in_des)s - %(ord)s" % {
             'gas_id_in_des' : self.gas.id_in_des,
@@ -997,6 +1004,7 @@ WHERE order_id = %s \
             body = message,
             from_email = sender,
             to = to, cc = cc,
+            headers = headers
         )
 
         #FIXME: No handlers could be found for logger "xhtml2pdf"
